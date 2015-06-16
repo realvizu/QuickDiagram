@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+    <Allowed From="*" To="System" />
+    <Allowed From="*" To="System.Diagnostics" />
+    <Allowed From="*" To="System.Collections.*" />
+    <Allowed From="*" To="System.Linq.*" />
+    <Allowed From="*" To="System.Globalization.*" />
+
+    <Allowed From="XamlGeneratedNamespace" To="*" />
+    
+    <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.Layout" />
+    <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Diagramming" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.Controls" To="Codartis.SoftVis.Rendering.Wpf.Gestures" />
+</NsDepCopConfig>

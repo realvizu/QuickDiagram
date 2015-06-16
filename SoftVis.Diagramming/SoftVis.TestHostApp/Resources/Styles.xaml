@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Controls;assembly=SoftVis.Diagramming"
+                    xmlns:diagramming="clr-namespace:Codartis.SoftVis.Diagramming;assembly=SoftVis.Diagramming">
+
+    <!--<ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml"/>
+    </ResourceDictionary.MergedDictionaries>-->
+
+    <!--<Style TargetType="{x:Type controls:DiagramNodeControl}" BasedOn="{StaticResource DefaultDiagramNodeControlStyle}">
+        <Style.Triggers>
+            <Trigger  Property="NodeType" Value="Codartis.SoftVis.Diagramming.InterfaceNode">
+                <Setter Property="Background" Value="Yellow"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>-->
+
+</ResourceDictionary>
