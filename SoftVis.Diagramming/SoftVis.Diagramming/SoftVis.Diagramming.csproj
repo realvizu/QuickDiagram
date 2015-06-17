@@ -86,13 +86,14 @@
     <Compile Include="Rendering\Wpf\Gestures\IPanAndZoomEventSource.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanDirection.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanEventArgs.cs" />
+    <Compile Include="Rendering\Wpf\Gestures\ScaleSpecification.cs" />
+    <Compile Include="Rendering\Wpf\Gestures\ScaleSpecificationAnimation.cs" />
     <Compile Include="Rendering\Wpf\Gestures\ZoomEventArgs.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Gestures\ZoomEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Gestures\IGestureTarget.cs" />
     <Compile Include="Rendering\Wpf\Gestures\IGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\MousePanGesture.cs" />
-    <Compile Include="Rendering\Wpf\Gestures\PanAndZoomControlZoomGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\ScaleChangedEventArgs.cs" />
     <Compile Include="Rendering\Wpf\Gestures\ScaleChangedEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Gestures\TranslateChangedEventHandler.cs" />
@@ -101,10 +102,7 @@
     <Compile Include="Rendering\Wpf\Gestures\KeyboardPanAndZoomGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\MouseZoomGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanAndZoomGestureBase.cs" />
-    <Compile Include="Rendering\Wpf\LayoutContext.cs" />
     <Compile Include="Rendering\Wpf\Converters\DoubleMultiplierConverter.cs" />
-    <Compile Include="Rendering\Wpf\PositionChangedEventArgs.cs" />
-    <Compile Include="Rendering\Wpf\PositionChangedEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Controls\DiagramNodeControl.cs" />
   </ItemGroup>
   <ItemGroup>

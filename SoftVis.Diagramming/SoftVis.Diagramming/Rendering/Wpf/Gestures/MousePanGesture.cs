@@ -30,8 +30,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
         {
             if (!_isPanning)
             {
-                _cursorBeforePanning = Target.Cursor;
                 _isPanning = true;
+                _cursorBeforePanning = Target.Cursor;
                 Target.Cursor = Cursors.Hand;
                 Mouse.Capture(Target);
             }
@@ -50,11 +50,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             var position = e.GetPosition(Target);
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (_isPanning)
             {
                 Translate((Vector)position - (Vector)_lastMousePosition);
             }
             _lastMousePosition = position;
         }
-   }
+    }
 }

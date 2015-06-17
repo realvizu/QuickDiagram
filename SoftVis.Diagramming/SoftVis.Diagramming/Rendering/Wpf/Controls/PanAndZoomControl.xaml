@@ -82,7 +82,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}"/>
                         </Grid.RowDefinitions>
-                        <RepeatButton Grid.Row="0" Style="{StaticResource ZoomInRepeatButtonStyle}" />
+                        <RepeatButton Grid.Row="0" Style="{StaticResource ZoomInRepeatButtonStyle}" Command="Slider.IncreaseSmall" />
                         <Track Grid.Row="1" 
                                x:Name="PART_Track"
                                Orientation="Vertical">
@@ -96,7 +96,7 @@
                                 <RepeatButton Style="{StaticResource TrackRepeatButtonStyle}"/>
                             </Track.IncreaseRepeatButton>
                         </Track>
-                        <RepeatButton Grid.Row="2" Style="{StaticResource ZoomOutRepeatButtonStyle}" />
+                        <RepeatButton Grid.Row="2" Style="{StaticResource ZoomOutRepeatButtonStyle}" Command="Slider.DecreaseSmall"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -140,8 +140,9 @@
                               Stroke="{TemplateBinding Foreground}" Fill="{TemplateBinding Background}" />
 
                         <Slider x:Name="PART_Slider" Grid.Row="4" Grid.Column="1" Style="{StaticResource PanAndZoomSliderStyle}"
-                            Value="50" Minimum="0" Maximum="200" >
-                        </Slider>
+                                Minimum="{Binding ZoomMin}" Maximum="{Binding ZoomMax}"  Value="{Binding ZoomValue, Mode=OneWay}"
+                                SmallChange="{Binding SmallIncrement}" LargeChange="{Binding LargeIncrement}"/>
+
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

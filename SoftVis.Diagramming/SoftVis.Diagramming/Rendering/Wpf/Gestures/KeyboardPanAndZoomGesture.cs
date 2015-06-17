@@ -18,7 +18,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
         private const int _deceleration = 4;
         private const int _maxSpeed = 30;
         private const int _minSpeed = -_maxSpeed;
+        private const int _framePerSeconds = 25;
+        private const int _fullZoomSeconds = 1;
 
+        private readonly double _zoomAmountPerSpeed;
         private readonly DispatcherTimer _timer;
 
         private int _zoomSpeed = 0;
@@ -29,10 +32,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
         public KeyboardPanAndZoomGesture(IGestureTarget gestureTarget)
             : base(gestureTarget)
         {
+            var zoomRange = gestureTarget.MaxScale - gestureTarget.MinScale;
+            _zoomAmountPerSpeed = zoomRange / (_maxSpeed/2 * _framePerSeconds * _fullZoomSeconds);
+
             Target.PreviewKeyDown += OnKeyDown;
             Target.PreviewKeyUp += OnKeyUp;
 
-            _timer = CreateTimer(1000 / 25, OnTimerTick);
+            _timer = CreateTimer(1000 / _framePerSeconds, OnTimerTick);
             _timer.Start();
         }
 
@@ -46,21 +52,37 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 
         private void OnTimerTick(object sender, EventArgs e)
         {
+            ProcessZoom();
+            ProcessTranslate();
+        }
+
+        private void ProcessZoom()
+        {
             _zoomSpeed = CalculateSpeed(_zoomSpeed, GestureKeys.ZoomIn, GestureKeys.ZoomOut);
-            _verticalSpeed = CalculateSpeed(_verticalSpeed, GestureKeys.Up, GestureKeys.Down);
-            _horizontalSpeed = CalculateSpeed(_horizontalSpeed, GestureKeys.Left, GestureKeys.Right);
 
             if (_zoomSpeed != 0)
             {
                 var zoomDirection = _zoomSpeed > 0 ? ZoomDirection.In : ZoomDirection.Out;
-                var limitReached = ZoomBy(GetTargetCenterPoint(), zoomDirection, Math.Abs(_zoomSpeed));
-                if (limitReached)
+
+                if (IsZoomLimitReached(zoomDirection))
+                {
                     _zoomSpeed = 0;
+                }
+                else
+                {
+                    ZoomBy(GetTargetCenterPoint(), zoomDirection, Math.Abs(_zoomSpeed) * _zoomAmountPerSpeed);
+                }
             }
+        }
+
+        private void ProcessTranslate()
+        {
+            _verticalSpeed = CalculateSpeed(_verticalSpeed, GestureKeys.Up, GestureKeys.Down);
+            _horizontalSpeed = CalculateSpeed(_horizontalSpeed, GestureKeys.Left, GestureKeys.Right);
 
             if (_horizontalSpeed != 0 || _verticalSpeed != 0)
             {
-                Translate(new Vector(_horizontalSpeed * Target.Scale, _verticalSpeed * Target.Scale));
+                Translate(new Vector(_horizontalSpeed * Target.LinearScale, _verticalSpeed * Target.LinearScale));
             }
         }
 

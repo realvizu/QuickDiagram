@@ -9,11 +9,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 {
     public class ZoomEventArgs : EventArgs
     {
-        public double NewZoomPercent { get; private set; }
+        public double NewZoomValue { get; private set; }
 
-        public ZoomEventArgs(double newZoomPercent)
+        public ZoomEventArgs(double newZoomValue)
         {
-            NewZoomPercent = newZoomPercent;
+            NewZoomValue = newZoomValue;
         }
     }
 }

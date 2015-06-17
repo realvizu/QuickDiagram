@@ -10,10 +10,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
     internal class ScaleChangedEventArgs : EventArgs
     {
         public double NewScale { get; private set; }
+        public Point ScaleCenter { get; private set; }
 
-        public ScaleChangedEventArgs(double newScale)
+        public ScaleChangedEventArgs(double newScale, Point scaleCenter)
         {
             NewScale = newScale;
+            ScaleCenter = scaleCenter;
         }
     }
 }

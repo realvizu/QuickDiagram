@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Gestures;
 
@@ -22,11 +16,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
     /// </summary>
     public class DiagramCanvas : Panel, IGestureTarget, IPanAndZoomEventSource
     {
-        private readonly Dictionary<DiagramNode, DiagramNodeControl> _diagramNodeControls = new Dictionary<DiagramNode, DiagramNodeControl>();
-        private readonly PanAndZoomControl _panAndZoomControl = new PanAndZoomControl();
-        private readonly List<IGesture> _gestures = new List<IGesture>();
+        private const double _minScale = 0.3d;
+        private const double _maxScale = 3d;
+        private const double _exponentialScaleBase = 10d;
 
-        public double Scale { get; private set; }
+        private readonly Dictionary<DiagramNode, DiagramNodeControl> _diagramNodeControls = new Dictionary<DiagramNode, DiagramNodeControl>();
+        private readonly List<IGesture> _gestures = new List<IGesture>();
+        private PanAndZoomControl _panAndZoomControl;
+        private double _linearScale;
+
+        public double ExponentialScale { get; private set; }
         public Vector Translate { get; private set; }
 
         public event PanEventHandler Pan;
@@ -39,7 +38,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
 
         public DiagramCanvas()
         {
-            Scale = 1.0;
+            LinearScale = 1.0;
             Translate = new Vector(0, 0);
 
             InitializeGestures();
@@ -49,10 +48,24 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
             Focus();
         }
 
+        public double MinScale { get { return _minScale; } }
+        public double MaxScale { get { return _maxScale; } }
+
+        public double LinearScale
+        {
+            get { return _linearScale; }
+            private set
+            {
+                _linearScale = value;
+                ExponentialScale = LinearToExponentialScale(_linearScale);
+            }
+        }
+
         private void InitializePanAndZoomControl()
         {
-            Children.Add(_panAndZoomControl);
+            _panAndZoomControl = new PanAndZoomControl(_minScale, _maxScale, 1);
             _panAndZoomControl.Zoom += Zoom;
+            Children.Add(_panAndZoomControl);
         }
 
         #region Diagram property
@@ -80,7 +93,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
         private void InitializeGestures()
         {
             _gestures.Add(new AnimatedGesture(new MouseZoomGesture(this), TimeSpan.FromMilliseconds(200)));
-            _gestures.Add(new AnimatedGesture(new ControlZoomGesture(this), TimeSpan.FromMilliseconds(200)));
+            //_gestures.Add(new MouseZoomGesture(this));
+            _gestures.Add(new ControlZoomGesture(this));
             _gestures.Add(new MousePanGesture(this));
             _gestures.Add(new KeyboardPanAndZoomGesture(this));
 
@@ -93,8 +107,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
 
         private void OnScaleChanged(object sender, ScaleChangedEventArgs args)
         {
-            Scale = args.NewScale;
+            var oldScale = ExponentialScale;
+            LinearScale = args.NewScale;
+            Translate = (Translate + (Vector)args.ScaleCenter) * (ExponentialScale / oldScale) - (Vector)args.ScaleCenter;
+            Debug.WriteLine("ScaleChanged: T={0} Old={1} New={2}", Translate, oldScale, ExponentialScale);
             InvalidateVisual();
+
+            _panAndZoomControl.ZoomValue = LinearScale;
         }
 
         private void OnTranslateChanged(object sender, TranslateChangedEventArgs args)
@@ -103,6 +122,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
             InvalidateVisual();
         }
 
+        private static double LinearToExponentialScale(double linearScale)
+        {
+            var linearScaleFromZeroToOne = (linearScale - _minScale) / (_maxScale - _minScale);
+            var exponentialScaleFromZeroToOne = (Math.Pow(_exponentialScaleBase, linearScaleFromZeroToOne) - 1) / (_exponentialScaleBase - 1);
+            return exponentialScaleFromZeroToOne * (_maxScale - _minScale) + _minScale;
+        }
         #endregion
 
         #region Arrange
@@ -127,8 +152,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
 
         private void ArrangeChildControl(UIElement child, DiagramPoint diagramPosition, DiagramSize diagramSize)
         {
-            var x = diagramPosition.X * Scale - Translate.X;
-            var y = diagramPosition.Y * Scale - Translate.Y;
+            var x = diagramPosition.X * ExponentialScale - Translate.X;
+            var y = diagramPosition.Y * ExponentialScale - Translate.Y;
 
             child.Arrange(new Rect(x, y, diagramSize.Width, diagramSize.Height));
 
@@ -140,12 +165,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
             var scaleTransform = child.RenderTransform as ScaleTransform;
             if (scaleTransform != null)
             {
-                scaleTransform.ScaleX = Scale;
-                scaleTransform.ScaleY = Scale;
+                scaleTransform.ScaleX = ExponentialScale;
+                scaleTransform.ScaleY = ExponentialScale;
             }
             else
             {
-                child.RenderTransform = new ScaleTransform(Scale, Scale);
+                child.RenderTransform = new ScaleTransform(ExponentialScale, ExponentialScale);
             }
         }
 

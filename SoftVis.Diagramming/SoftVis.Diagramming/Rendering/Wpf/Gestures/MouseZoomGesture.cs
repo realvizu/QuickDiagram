@@ -14,17 +14,24 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
     /// </summary>
     internal class MouseZoomGesture : PanAndZoomGestureBase
     {
+        private const double WheelClicksPerZoomRange = 5;
+        private readonly double ZoomPerWheelClick;
+
         public MouseZoomGesture(IGestureTarget gestureTarget)
             : base(gestureTarget)
         {
+            ZoomPerWheelClick = (Target.MaxScale - Target.MinScale) / WheelClicksPerZoomRange;
             Target.MouseWheel += OnMouseWheel;
         }
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var scrollAmount = Math.Abs(e.Delta / 3d);
             var zoomDirection = e.Delta < 0 ? ZoomDirection.Out : ZoomDirection.In;
-            ZoomBy(e.GetPosition(Target), zoomDirection, scrollAmount);
+            if (!IsZoomLimitReached(zoomDirection))
+            {
+                var zoomAmount = Math.Abs(e.Delta / Mouse.MouseWheelDeltaForOneLine) * ZoomPerWheelClick;
+                ZoomBy(e.GetPosition(Target), zoomDirection, zoomAmount);
+            }
         }
     }
 }

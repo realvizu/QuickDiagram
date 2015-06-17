@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 
         private void OnZoom(object sender, ZoomEventArgs e)
         {
-            ZoomTo(GetTargetCenterPoint(), e.NewZoomPercent);
+            ZoomTo(GetTargetCenterPoint(), e.NewZoomValue);
         }
     }
 }

@@ -20,9 +20,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 
         public IGestureTarget Target { get; private set; }
 
-        private const double _minScale = .3;
-        private const double _maxScale = 3;
-
         protected PanAndZoomGestureBase(IGestureTarget gestureTarget)
         {
             Target = gestureTarget;
@@ -39,37 +36,32 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
             OnTranslateChanged(newTranslate);
         }
 
-        protected void ZoomTo(Point zoomCenter, double zoomPercent)
+        protected bool IsZoomLimitReached(ZoomDirection zoomDirection)
         {
-            var newScale = zoomPercent * _maxScale + _minScale;
-            var newTranslate = (Target.Translate + (Vector)zoomCenter) * (newScale / Target.Scale) - (Vector)zoomCenter;
-            OnZoomChanged(newScale, newTranslate);
+            return (zoomDirection == ZoomDirection.In && Target.LinearScale >= Target.MaxScale) ||
+                  (zoomDirection == ZoomDirection.Out && Target.LinearScale <= Target.MinScale);
         }
 
-        protected bool ZoomBy(Point zoomCenter, ZoomDirection zoomDirection, double zoomAmount)
+        protected void ZoomTo(Point zoomCenter, double newScale)
         {
-            var zoomLimitReached = false;
+            OnZoomChanged(newScale, zoomCenter);
+        }
 
+        protected void ZoomBy(Point zoomCenter, ZoomDirection zoomDirection, double zoomAmount)
+        {
             var zoomSign = zoomDirection == ZoomDirection.In ? 1 : -1;
-            var scaleFactor = Math.Pow(2, zoomSign * zoomAmount / 50);
-            var newScale = Target.Scale * scaleFactor;
+            var newScale = Target.LinearScale + (zoomAmount * zoomSign);
 
-            if (newScale <_minScale)
+            if (newScale < Target.MinScale)
             {
-                newScale = _minScale;
-                zoomLimitReached = true;
+                newScale = Target.MinScale;
             }
-            else if (newScale > _maxScale)
+            else if (newScale > Target.MaxScale)
             {
-                newScale = _maxScale;
-                zoomLimitReached = true;
+                newScale = Target.MaxScale;
             }
 
-            var newTranslate = (Target.Translate + (Vector)zoomCenter) * (newScale/Target.Scale) - (Vector)zoomCenter;
-
-            OnZoomChanged(newScale, newTranslate);
-
-            return zoomLimitReached;
+            OnZoomChanged(newScale, zoomCenter);
         }
 
         private void OnTranslateChanged(Vector translate)
@@ -78,13 +70,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
                 TranslateChanged(this, new TranslateChangedEventArgs(translate));
         }
 
-        private void OnZoomChanged(double scale, Vector translate)
+        private void OnZoomChanged(double newScale, Point center)
         {
             if (ScaleChanged != null)
-                ScaleChanged(this, new ScaleChangedEventArgs(scale));
-
-            if (TranslateChanged != null)
-                TranslateChanged(this, new TranslateChangedEventArgs(translate));
+                ScaleChanged(this, new ScaleChangedEventArgs(newScale, center));
         }
 
         protected enum ZoomDirection

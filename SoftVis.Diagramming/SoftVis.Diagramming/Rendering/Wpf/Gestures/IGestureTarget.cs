@@ -15,7 +15,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
     internal interface IGestureTarget : IInputElement, IAnimatable
     {
         Vector Translate { get; }
-        double Scale { get; }
+        double MinScale { get; }
+        double MaxScale { get; }
+        double LinearScale { get; }
         double ActualWidth { get; }
         double ActualHeight { get; }
         Cursor Cursor { get; set; }

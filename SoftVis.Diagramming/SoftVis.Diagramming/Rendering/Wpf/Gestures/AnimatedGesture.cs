@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
         }
 
         public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register("Scale", 
-            typeof(double), typeof(AnimatedGesture), new PropertyMetadata(OnScalePropertyChanged));
+            typeof(ScaleSpecification), typeof(AnimatedGesture), new PropertyMetadata(OnScalePropertyChanged));
 
         public static readonly DependencyProperty TranslateProperty = DependencyProperty.Register("Translate", 
             typeof(Vector), typeof(AnimatedGesture), new PropertyMetadata(OnTranslatePropertyChanged));
@@ -42,10 +42,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 
         private void OnScaleChanged(object sender, ScaleChangedEventArgs args)
         {
-            var animation = new DoubleAnimation(_gesture.Target.Scale, args.NewScale, _animationDuration)
-            {
-                EasingFunction = _easingFunction
-            };
+            var originScaleSpecification = new ScaleSpecification(_gesture.Target.LinearScale, args.ScaleCenter);
+            var destinationScaleSpecification = new ScaleSpecification(args.NewScale, args.ScaleCenter);
+            var animation = new ScaleSpecificationAnimation(originScaleSpecification, destinationScaleSpecification, _animationDuration, _easingFunction);
             BeginAnimation(ScaleProperty, animation);
         }
 
@@ -60,8 +59,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 
         private static void OnScalePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            var scaleSpecification = (ScaleSpecification)e.NewValue;
             var a = d as AnimatedGesture;
-            a.OnScaleChanged((double)e.NewValue);
+            a.OnScaleChanged(scaleSpecification.Scale, scaleSpecification.Center);
         }
 
         private static void OnTranslatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -70,10 +70,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
             a.OnTranslateChanged((Vector)e.NewValue);
         }
 
-        private void OnScaleChanged(double scale)
+        private void OnScaleChanged(double scale, Point center)
         {
             if (ScaleChanged != null)
-                ScaleChanged(this, new ScaleChangedEventArgs(scale));
+                ScaleChanged(this, new ScaleChangedEventArgs(scale, center));
         }
 
         private void OnTranslateChanged(Vector translate)
