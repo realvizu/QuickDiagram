@@ -82,7 +82,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}"/>
                         </Grid.RowDefinitions>
-                        <RepeatButton Grid.Row="0" Style="{StaticResource ZoomInRepeatButtonStyle}" Command="Slider.IncreaseSmall" />
+                        <RepeatButton Grid.Row="0" Style="{StaticResource ZoomInRepeatButtonStyle}" Command="Slider.IncreaseLarge" />
                         <Track Grid.Row="1" 
                                x:Name="PART_Track"
                                Orientation="Vertical">
@@ -96,7 +96,7 @@
                                 <RepeatButton Style="{StaticResource TrackRepeatButtonStyle}"/>
                             </Track.IncreaseRepeatButton>
                         </Track>
-                        <RepeatButton Grid.Row="2" Style="{StaticResource ZoomOutRepeatButtonStyle}" Command="Slider.DecreaseSmall"/>
+                        <RepeatButton Grid.Row="2" Style="{StaticResource ZoomOutRepeatButtonStyle}" Command="Slider.DecreaseLarge"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -139,8 +139,9 @@
                               Data="M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1.5 -1 L 0 1.5 M 0 1.5 L 1.5 -1" 
                               Stroke="{TemplateBinding Foreground}" Fill="{TemplateBinding Background}" />
 
-                        <Slider x:Name="PART_Slider" Grid.Row="4" Grid.Column="1" Style="{StaticResource PanAndZoomSliderStyle}"
-                                Minimum="{Binding ZoomMin}" Maximum="{Binding ZoomMax}"  Value="{Binding ZoomValue, Mode=OneWay}"
+                        <Slider Grid.Row="4" Grid.Column="1" Style="{StaticResource PanAndZoomSliderStyle}"
+                                DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                Minimum="{Binding ZoomMin}" Maximum="{Binding ZoomMax}"  Value="{Binding ZoomValue, Mode=TwoWay}"
                                 SmallChange="{Binding SmallIncrement}" LargeChange="{Binding LargeIncrement}"/>
 
                     </Grid>

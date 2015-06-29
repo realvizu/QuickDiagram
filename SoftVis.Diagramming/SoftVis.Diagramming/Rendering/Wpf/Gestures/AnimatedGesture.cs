@@ -73,13 +73,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
         private void OnScaleChanged(double scale, Point center)
         {
             if (ScaleChanged != null)
-                ScaleChanged(this, new ScaleChangedEventArgs(scale, center));
+                ScaleChanged(_gesture, new ScaleChangedEventArgs(scale, center));
         }
 
         private void OnTranslateChanged(Vector translate)
         {
             if (TranslateChanged != null)
-                TranslateChanged(this, new TranslateChangedEventArgs(translate));
+                TranslateChanged(_gesture, new TranslateChangedEventArgs(translate));
         }
 
         protected override Freezable CreateInstanceCore()

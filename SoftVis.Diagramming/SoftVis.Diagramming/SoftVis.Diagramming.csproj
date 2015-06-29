@@ -79,10 +79,13 @@
     <Compile Include="Modeling\UmlPackage.cs" />
     <Compile Include="Modeling\UmlRelationship.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rendering\ScaleCalculator.cs" />
     <Compile Include="Rendering\Wpf\Controls\DiagramCanvas.cs" />
+    <Compile Include="Rendering\Wpf\Controls\DiagramCanvas.DepProps.cs" />
     <Compile Include="Rendering\Wpf\Controls\DiagramNodeControlFactory.cs" />
+    <Compile Include="Rendering\Wpf\Controls\PanAndZoomControl.DepProps.cs" />
     <Compile Include="Rendering\Wpf\Controls\PanAndZoomControl.cs" />
-    <Compile Include="Rendering\Wpf\Gestures\ControlZoomGesture.cs" />
+    <Compile Include="Rendering\Wpf\Gestures\UIControlZoomGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\IPanAndZoomEventSource.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanDirection.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanEventArgs.cs" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,28 +6,17 @@ using Codartis.SoftVis.Rendering.Wpf.Gestures;
 
 namespace Codartis.SoftVis.Rendering.Wpf.Controls
 {
-    [TemplatePart(Name = PART_Slider, Type = typeof(Slider))]
-    public class PanAndZoomControl : Control
+    public partial class PanAndZoomControl : Control
     {
-        private const string PART_Slider = "PART_Slider";
         private const double WidthPerHeightRatio = 3d / 10d;
 
-        private Slider _slider;
+        static PanAndZoomControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PanAndZoomControl), new FrameworkPropertyMetadata(typeof(PanAndZoomControl)));
+        }
 
-        public static readonly DependencyProperty ZoomMinProperty =
-            DependencyProperty.Register("ZoomMin", typeof(double), typeof(PanAndZoomControl));
-
-        public static readonly DependencyProperty ZoomMaxProperty =
-            DependencyProperty.Register("ZoomMax", typeof(double), typeof(PanAndZoomControl));
-
-        public static readonly DependencyProperty ZoomValueProperty =
-            DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomControl));
-
-        public static readonly DependencyProperty SmallIncrementProperty =
-            DependencyProperty.Register("SmallIncrement", typeof(double), typeof(PanAndZoomControl));
-
-        public static readonly DependencyProperty LargeIncrementProperty =
-            DependencyProperty.Register("LargeIncrement", typeof(double), typeof(PanAndZoomControl));
+        public event PanEventHandler Pan;
+        public event ZoomEventHandler Zoom;
 
         public double ZoomMin
         {
@@ -45,11 +33,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
         public double ZoomValue
         {
             get { return (double)GetValue(ZoomValueProperty); }
-            set
-            {
-                SetValue(ZoomValueProperty, value);
-                Debug.WriteLine("ZoomValue={0}", value);
-            }
+            set { SetValue(ZoomValueProperty, value); }
         }
 
         public double SmallIncrement
@@ -64,30 +48,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
             set { SetValue(LargeIncrementProperty, value); }
         }
 
-        public event PanEventHandler Pan;
-        public event ZoomEventHandler Zoom;
-
-        static PanAndZoomControl()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(PanAndZoomControl), new FrameworkPropertyMetadata(typeof(PanAndZoomControl)));
-        }
-
-        public PanAndZoomControl(double zoomMin, double zoomMax, double zoomInit)
-        {
-            ZoomMin = zoomMin;
-            ZoomMax = zoomMax;
-            ZoomValue = zoomInit;
-            SmallIncrement = (zoomMax - zoomMin) / 10;
-            LargeIncrement = (zoomMax - zoomMin) / 4;
-            DataContext = this;
-        }
-
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            _slider = GetTemplateChild(PART_Slider) as Slider;
-            _slider.ValueChanged += OnSliderValueChanged;
+            SmallIncrement = (ZoomMax - ZoomMin) / 10;
+            LargeIncrement = (ZoomMax - ZoomMin) / 5;
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -105,15 +71,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            e.Handled = true;
-        }
-
-        private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (Zoom != null)
-            {
-                Zoom(this, new ZoomEventArgs(e.NewValue));
-            }
             e.Handled = true;
         }
 
@@ -144,6 +101,17 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
             var height = Math.Min(calculatedHeight, size.Height);
 
             return new Size(width, height);
+        }
+
+        private static void ZoomValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            var panAndZoomControl = obj as PanAndZoomControl;
+            if (panAndZoomControl != null &&
+                panAndZoomControl.Zoom != null &&
+                (double)e.OldValue != (double)e.NewValue)
+            {
+                panAndZoomControl.Zoom(panAndZoomControl, new ZoomEventArgs((double)e.NewValue));
+            }
         }
     }
 }

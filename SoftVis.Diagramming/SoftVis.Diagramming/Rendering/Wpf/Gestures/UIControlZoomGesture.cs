@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-
-namespace Codartis.SoftVis.Rendering.Wpf.Gestures
+﻿namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 {
     /// <summary>
-    /// Calculates scale and translate changes when zooming with zoom control.
+    /// Calculates scale and translate changes when zooming with UI zoom control.
     /// </summary>
-    internal class ControlZoomGesture : PanAndZoomGestureBase
+    internal class UIControlZoomGesture : PanAndZoomGestureBase
     {
-        public ControlZoomGesture(IGestureTarget gestureTarget)
+        public UIControlZoomGesture(IGestureTarget gestureTarget)
             : base(gestureTarget)
         {
             var panAndZoomEventSource = gestureTarget as IPanAndZoomEventSource;
