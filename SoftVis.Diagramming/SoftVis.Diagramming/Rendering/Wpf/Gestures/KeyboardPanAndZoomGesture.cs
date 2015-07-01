@@ -73,8 +73,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Gestures
 
         private void ProcessTranslate()
         {
-            _verticalSpeed = CalculateSpeed(_verticalSpeed, GestureKeys.Up, GestureKeys.Down);
-            _horizontalSpeed = CalculateSpeed(_horizontalSpeed, GestureKeys.Left, GestureKeys.Right);
+            _verticalSpeed = CalculateSpeed(_verticalSpeed, GestureKeys.Down, GestureKeys.Up);
+            _horizontalSpeed = CalculateSpeed(_horizontalSpeed, GestureKeys.Right, GestureKeys.Left);
 
             if (_horizontalSpeed != 0 || _verticalSpeed != 0)
             {

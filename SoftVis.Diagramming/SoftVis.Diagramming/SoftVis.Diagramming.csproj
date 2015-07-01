@@ -85,6 +85,7 @@
     <Compile Include="Rendering\Wpf\Controls\DiagramNodeControlFactory.cs" />
     <Compile Include="Rendering\Wpf\Controls\PanAndZoomControl.DepProps.cs" />
     <Compile Include="Rendering\Wpf\Controls\PanAndZoomControl.cs" />
+    <Compile Include="Rendering\Wpf\Gestures\UIControlPanGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\UIControlZoomGesture.cs" />
     <Compile Include="Rendering\Wpf\Gestures\IPanAndZoomEventSource.cs" />
     <Compile Include="Rendering\Wpf\Gestures\PanDirection.cs" />

@@ -82,6 +82,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
 
             _canvas = GetTemplateChild(PART_Canvas) as Canvas;
             _panAndZoomControl = GetTemplateChild(PART_PanAndZoomControl) as PanAndZoomControl;
+            _panAndZoomControl.Pan += Pan;
             _panAndZoomControl.Zoom += PropagateZoomEvent;
             _panAndZoomControl.ZoomValue = LinearScale;
         }
@@ -109,6 +110,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Controls
         {
             _gestures.Add(new AnimatedGesture(new MouseZoomGesture(this), TimeSpan.FromMilliseconds(200)));
             _gestures.Add(new AnimatedGesture(new UIControlZoomGesture(this), TimeSpan.FromMilliseconds(200)));
+            _gestures.Add(new AnimatedGesture(new UIControlPanGesture(this), TimeSpan.FromMilliseconds(200)));
             _gestures.Add(new MousePanGesture(this));
             _gestures.Add(new KeyboardPanAndZoomGesture(this));
 
