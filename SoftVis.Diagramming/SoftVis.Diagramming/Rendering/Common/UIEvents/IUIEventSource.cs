@@ -2,7 +2,7 @@
 
 namespace Codartis.SoftVis.Rendering.Common.UIEvents
 {
-    internal interface IPanAndZoomEventSource
+    internal interface IUIEventSource
     {
         event PanEventHandler Pan;
         event ZoomEventHandler Zoom;

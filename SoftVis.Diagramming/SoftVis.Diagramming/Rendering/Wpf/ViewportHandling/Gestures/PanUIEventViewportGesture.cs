@@ -7,18 +7,15 @@ namespace Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures
     /// <summary>
     /// Calculates viewport changes when panning with UI pan control.
     /// </summary>
-    internal class UIControlPanViewportGesture : ViewportGestureBase
+    internal class PanUIEventViewportGesture : UIEventViewportGestureBase
     {
         private const double _panAmount = 50;
 
-        public UIControlPanViewportGesture(IViewportHost viewportHost)
+        public PanUIEventViewportGesture(IViewportHost viewportHost)
             : base(viewportHost)
         {
-            var panAndZoomEventSource = viewportHost as IPanAndZoomEventSource;
-            if (panAndZoomEventSource != null)
-            {
-                panAndZoomEventSource.Pan += OnPan;
-            }
+            if (UIEventSource != null)
+                UIEventSource.Pan += OnPan;
         }
 
         private void OnPan(object sender, PanEventArgs e)

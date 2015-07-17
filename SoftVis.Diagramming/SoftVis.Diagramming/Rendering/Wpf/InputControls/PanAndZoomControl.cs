@@ -7,7 +7,7 @@ using System.Windows.Input;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
 
-namespace Codartis.SoftVis.Rendering.Wpf
+namespace Codartis.SoftVis.Rendering.Wpf.InputControls
 {
     /// <summary>
     /// 

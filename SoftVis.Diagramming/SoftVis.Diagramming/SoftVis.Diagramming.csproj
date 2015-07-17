@@ -84,6 +84,7 @@
     <Compile Include="Rendering\Common\UIEvents\ResizeEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
+    <Compile Include="Rendering\Wpf\NodeHandling\EnclosingRectCalculator.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ResizeViewportCommand.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\MoveViewportCenterInScreenSpaceCommand.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ZoomViewportWithCenterInScreenSpaceCommand.cs" />
@@ -92,18 +93,19 @@
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ViewportCommandHandler.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ViewportCommandBase.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ResizeViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\UIEventViewportGestureBase.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ZoomWithCenterSpecification.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ZoomWithCenterSpecificationAnimation.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Viewport.cs" />
     <Compile Include="Rendering\Wpf\DiagramCanvas.cs" />
     <Compile Include="Rendering\Wpf\DiagramCanvas.DepProps.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramNodeControlFactory.cs" />
-    <Compile Include="Rendering\Wpf\PanAndZoomControl.DepProps.cs" />
-    <Compile Include="Rendering\Wpf\PanAndZoomControl.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\UIControlFitToViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\UIControlPanViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\UIControlZoomViewportGesture.cs" />
-    <Compile Include="Rendering\Common\UIEvents\IPanAndZoomEventSource.cs" />
+    <Compile Include="Rendering\Wpf\InputControls\PanAndZoomControl.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\InputControls\PanAndZoomControl.cs" />
+    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\FitToViewUIEventViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\PanUIEventViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ZoomUIEventViewportGesture.cs" />
+    <Compile Include="Rendering\Common\UIEvents\IUIEventSource.cs" />
     <Compile Include="Rendering\Common\UIEvents\PanDirection.cs" />
     <Compile Include="Rendering\Common\UIEvents\PanEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ZoomEventArgs.cs" />
@@ -134,7 +136,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Rendering\Wpf\PanAndZoomControl.xaml">
+    <Page Include="Rendering\Wpf\InputControls\PanAndZoomControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.Rendering.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures
@@ -8,16 +7,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures
     /// <summary>
     /// Calculates viewport changes when pushing the fit-to-view button on the UI control.
     /// </summary>
-    internal class UIControlFitToViewportGesture : ViewportGestureBase
+    internal class FitToViewUIEventViewportGesture : UIEventViewportGestureBase
     {
-        public UIControlFitToViewportGesture(IViewportHost viewportHost)
+        public FitToViewUIEventViewportGesture(IViewportHost viewportHost)
             : base(viewportHost)
         {
-            var panAndZoomEventSource = viewportHost as IPanAndZoomEventSource;
-            if (panAndZoomEventSource != null)
-            {
-                panAndZoomEventSource.FitToView += OnFitToView;
-            }
+            if (UIEventSource != null)
+                UIEventSource.FitToView += OnFitToView;
         }
 
         private void OnFitToView(object sender, EventArgs e)

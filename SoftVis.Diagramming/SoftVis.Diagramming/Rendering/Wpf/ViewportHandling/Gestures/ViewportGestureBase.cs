@@ -82,7 +82,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures
         {
             var viewportCenterInScreenSpace = ViewportHost.ViewportInScreenSpace.GetCenter();
             var newCenterInScreenSpace = viewportCenterInScreenSpace + vectorInScreenSpace;
-            SendCommand(new MoveViewportCenterInScreenSpaceCommand(newCenterInScreenSpace));
+            MoveViewportCenterInScreenSpaceTo(newCenterInScreenSpace);
         }
 
         protected void MoveViewportCenterInScreenSpaceTo(Point newCenterInScreenSpace)

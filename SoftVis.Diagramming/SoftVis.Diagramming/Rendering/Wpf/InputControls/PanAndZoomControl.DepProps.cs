@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Codartis.SoftVis.Rendering.Wpf
+namespace Codartis.SoftVis.Rendering.Wpf.InputControls
 {
     public partial class PanAndZoomControl : Control
     {

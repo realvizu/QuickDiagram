@@ -5,16 +5,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures
     /// <summary>
     /// Calculates viewport changes when zooming with UI zoom control.
     /// </summary>
-    internal class UIControlZoomViewportGesture : ViewportGestureBase
+    internal class ZoomUIEventViewportGesture : UIEventViewportGestureBase
     {
-        public UIControlZoomViewportGesture(IViewportHost viewportHost)
+        public ZoomUIEventViewportGesture(IViewportHost viewportHost)
             : base(viewportHost)
         {
-            var panAndZoomEventSource = viewportHost as IPanAndZoomEventSource;
-            if (panAndZoomEventSource != null)
-            {
-                panAndZoomEventSource.Zoom += OnZoom;
-            }
+            if (UIEventSource != null)
+                UIEventSource.Zoom += OnZoom;
         }
 
         private void OnZoom(object sender, ZoomEventArgs e)

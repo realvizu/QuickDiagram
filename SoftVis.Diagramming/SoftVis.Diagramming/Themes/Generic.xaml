@@ -3,7 +3,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramCanvas.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/PanAndZoomControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/InputControls/PanAndZoomControl.xaml" />
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramFixtures/DiagramNodeControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 

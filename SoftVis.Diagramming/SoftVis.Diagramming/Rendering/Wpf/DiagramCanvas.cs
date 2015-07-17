@@ -7,8 +7,9 @@ using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
-using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
+using Codartis.SoftVis.Rendering.Wpf.InputControls;
+using Codartis.SoftVis.Rendering.Wpf.NodeHandling;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Commands;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures;
@@ -18,11 +19,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
     /// <summary>
     /// Creates the visual representation of a Diagram.
     /// Manages and arranges controls created for diagram shapes.
-    /// Gesture handling is factored out to separate classes.
+    /// Viewport handling, transform calculation and user input handling are factored out to separate classes.
     /// </summary>
     [TemplatePart(Name = PART_Canvas, Type = typeof(Canvas))]
     [TemplatePart(Name = PART_PanAndZoomControl, Type = typeof(PanAndZoomControl))]
-    public partial class DiagramCanvas : Control, IViewportHost, IPanAndZoomEventSource
+    public partial class DiagramCanvas : Control, IViewportHost, IUIEventSource
     {
         private const string PART_Canvas = "PART_Canvas";
         private const string PART_PanAndZoomControl = "PART_PanAndZoomControl";
@@ -31,7 +32,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private readonly List<IViewportGesture> _gestures = new List<IViewportGesture>();
 
         private readonly Dictionary<DiagramNode, DiagramNodeControl> _diagramNodeControls = new Dictionary<DiagramNode, DiagramNodeControl>();
-        private Rect _contentRect;
+        private Rect _contentInDiagramSpace;
 
         private Canvas _canvas;
         private PanAndZoomControl _panAndZoomControl;
@@ -81,7 +82,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         public Rect ContentInDiagramSpace
         {
-            get { return _contentRect; }
+            get { return _contentInDiagramSpace; }
         }
 
         public override void OnApplyTemplate()
@@ -134,9 +135,9 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void InitializeGestures()
         {
-            _gestures.Add(new AnimatedViewportGesture(new UIControlFitToViewportGesture(this), TimeSpan.FromMilliseconds(500)));
-            _gestures.Add(new AnimatedViewportGesture(new UIControlZoomViewportGesture(this), TimeSpan.FromMilliseconds(200)));
-            _gestures.Add(new AnimatedViewportGesture(new UIControlPanViewportGesture(this), TimeSpan.FromMilliseconds(200)));
+            _gestures.Add(new AnimatedViewportGesture(new FitToViewUIEventViewportGesture(this), TimeSpan.FromMilliseconds(500)));
+            _gestures.Add(new AnimatedViewportGesture(new ZoomUIEventViewportGesture(this), TimeSpan.FromMilliseconds(200)));
+            _gestures.Add(new AnimatedViewportGesture(new PanUIEventViewportGesture(this), TimeSpan.FromMilliseconds(200)));
             _gestures.Add(new AnimatedViewportGesture(new MouseZoomViewportGesture(this), TimeSpan.FromMilliseconds(200)));
             _gestures.Add(new MousePanViewportGesture(this));
             _gestures.Add(new KeyboardViewportGesture(this));
@@ -162,9 +163,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void SendResizeEvent(Size newSize)
         {
             if (Resize != null)
-            {
                 Resize(this, new ResizeEventArgs(newSize.Width, newSize.Height));
-            }
         }
 
         private void OnViewportCommand(object sender, ViewportCommandBase command)
@@ -178,42 +177,38 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void ArrangeChildControl(UIElement child, DiagramPoint childPosition, DiagramSize childSize)
         {
-            child.Arrange(new Rect(0, 0, childSize.Width, childSize.Height));
+            child.Arrange(new Rect(new Size(childSize.Width, childSize.Height)));
+            child.RenderTransform = CreateTransformForChild(childPosition.X, childPosition.Y);
+        }
 
+        private Transform CreateTransformForChild(double positionX, double positionY)
+        {
             var transform = new TransformGroup();
-            transform.Children.Add(new TranslateTransform(childPosition.X, childPosition.Y));
+            transform.Children.Add(new TranslateTransform(positionX, positionY));
             transform.Children.Add(_viewport.DiagramSpaceToScreenSpace);
-            child.RenderTransform = transform;
+            return transform;
         }
 
         private static void Diagram_PropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var diagramCanvas = (DiagramCanvas)obj;
             var diagram = (Diagram)e.NewValue;
-
-            diagramCanvas.AddAllGraphElements(diagram);
-            diagramCanvas.SetContentRect(CalculateEnclosingRect(diagram.Nodes));
-            diagramCanvas.FitToView(diagramCanvas, EventArgs.Empty);
+            diagramCanvas.AddDiagram(diagram);
         }
 
-        private void SetContentRect(Rect contentRect)
+        private void AddDiagram(Diagram diagram)
         {
-            _contentRect = contentRect;
+            AddAllGraphElements(diagram);
+
+            _contentInDiagramSpace = EnclosingRectCalculator.GetEnclosingRect(diagram.Nodes);
+
+            FitToView(this, EventArgs.Empty);
         }
 
         private void AddAllGraphElements(Diagram diagram)
         {
             foreach (var vertex in diagram.Nodes)
                 CreateDiagramNodeControl(vertex);
-
-            var enclosingRect = CalculateEnclosingRect(Diagram.Nodes);
-            var dummyClass = new ClassNode()
-            {
-                Position = new DiagramPoint(enclosingRect.X, enclosingRect.Y),
-                Size = new DiagramSize(enclosingRect.Width, enclosingRect.Height),
-                Name = "Enclosing",
-            };
-            CreateDiagramNodeControl(dummyClass);
         }
 
         private void CreateDiagramNodeControl(DiagramNode diagramNode)
@@ -221,40 +216,6 @@ namespace Codartis.SoftVis.Rendering.Wpf
             var control = DiagramNodeControlFactory.CreateFrom(diagramNode);
             _diagramNodeControls.Add(diagramNode, control);
             _canvas.Children.Insert(0, control);
-        }
-
-        private static Rect CalculateEnclosingRect(IEnumerable<DiagramNode> nodes)
-        {
-            var enclosingRect = Rect.Empty;
-
-            foreach (var node in nodes)
-            {
-                var childPosition = node.Position;
-                var childSize = node.Size;
-                enclosingRect = GetAdjustedEnclosingRect(enclosingRect, childPosition, childSize);
-            }
-
-            return enclosingRect;
-        }
-
-        private static Rect GetAdjustedEnclosingRect(Rect enclosingRect, DiagramPoint childPosition, DiagramSize childSize)
-        {
-            if (enclosingRect.IsEmpty)
-                return new Rect(new Point(childPosition.X, childPosition.Y), new Size(childSize.Width, childSize.Height));
-
-            if (childPosition.X < enclosingRect.X)
-                enclosingRect.X = childPosition.X;
-
-            if (childPosition.Y < enclosingRect.Y)
-                enclosingRect.Y = childPosition.Y;
-
-            if (childPosition.X + childSize.Width > enclosingRect.X + enclosingRect.Width)
-                enclosingRect.Width = childPosition.X + childSize.Width - enclosingRect.X;
-
-            if (childPosition.Y + childSize.Height > enclosingRect.Y + enclosingRect.Height)
-                enclosingRect.Height = childPosition.Y + childSize.Height - enclosingRect.Y;
-
-            return enclosingRect;
         }
     }
 }
