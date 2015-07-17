@@ -1,13 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Controls"
-                    xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Converters"
-                    xmlns:diagramming="clr-namespace:Codartis.SoftVis.Diagramming">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/Controls/DiagramCanvas.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/Controls/PanAndZoomControl.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/Controls/DiagramNodeControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramCanvas.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/PanAndZoomControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramFixtures/DiagramNodeControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Codartis.SoftVis.TestHostApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Controls;assembly=SoftVis.Diagramming"
+        xmlns:controls="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
         Title="MainWindow" Height="350" Width="525"
         x:Name="MyWindow">
 
