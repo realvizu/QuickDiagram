@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
 {
     public class InterfaceNode : DiagramNode
     {
+        public InterfaceNode(UmlModelElement modelElement, string name, DiagramPoint position, DiagramSize size)
+            :base(modelElement, name, position, size)
+        {
+        }
     }
 }

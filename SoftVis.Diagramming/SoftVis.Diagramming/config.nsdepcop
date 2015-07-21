@@ -7,7 +7,8 @@
     <Allowed From="*" To="System.Globalization.*" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
-    
+
+    <Allowed From="Codartis.SoftVis.*" To="Codartis.SoftVis.Common" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.Layout" />

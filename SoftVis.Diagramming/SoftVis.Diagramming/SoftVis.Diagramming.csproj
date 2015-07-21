@@ -62,6 +62,8 @@
     <Compile Include="Diagramming\DiagramGraph.cs" />
     <Compile Include="Diagramming\DiagramPoint.cs" />
     <Compile Include="Diagramming\DiagramNode.cs" />
+    <Compile Include="Diagramming\DiagramRect.cs" />
+    <Compile Include="Diagramming\DiagramRectExtensions.cs" />
     <Compile Include="Diagramming\DiagramShape.cs" />
     <Compile Include="Diagramming\DiagramSize.cs" />
     <Compile Include="Diagramming\InterfaceNode.cs" />
@@ -83,8 +85,15 @@
     <Compile Include="Rendering\Common\ScaleCalculator.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />
+    <Compile Include="Rendering\Wpf\Common\DiagramSizeExtensions.cs" />
+    <Compile Include="Rendering\Wpf\Common\DiagramPointExtensions.cs" />
+    <Compile Include="Rendering\Wpf\Common\DiagramRectExtensions.cs" />
+    <Compile Include="Common\IEnumerableExtensions.cs" />
+    <Compile Include="Rendering\Wpf\Common\PathFigureCollectionExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
-    <Compile Include="Rendering\Wpf\NodeHandling\EnclosingRectCalculator.cs" />
+    <Compile Include="Rendering\Wpf\Converters\DiagramConnectorToPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControl.cs" />
+    <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControlFactory.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ResizeViewportCommand.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\MoveViewportCenterInScreenSpaceCommand.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ZoomViewportWithCenterInScreenSpaceCommand.cs" />
@@ -128,6 +137,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Rendering\Wpf\DiagramFixtures\DiagramNodeControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

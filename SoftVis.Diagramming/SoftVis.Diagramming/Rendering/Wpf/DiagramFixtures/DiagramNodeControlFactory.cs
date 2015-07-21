@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
 {
@@ -15,6 +12,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
             {
                 DiagramNode = diagramNode,
                 NodeType = diagramNode.GetType().ToString(),
+                Rect = diagramNode.Rect.ToWpf(),
                 DataContext = diagramNode,
             };
         }

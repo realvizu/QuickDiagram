@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using QuickGraph;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Modeling;
-using System;
-using System.Collections.Generic;
+using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -21,8 +20,12 @@ namespace Codartis.SoftVis.Diagramming
         internal void PositionNodes(IDictionary<DiagramNode, DiagramPoint> nodePositions)
         {
             if (nodePositions != null && nodePositions.Any())
+            {
                 foreach (var vertex in Vertices)
-                    vertex.Position = nodePositions[vertex];
+                    vertex.Reposition(nodePositions[vertex]);
+                foreach (var edge in Edges)
+                    edge.RecalculatePosition();
+            }
         }
     }
 }

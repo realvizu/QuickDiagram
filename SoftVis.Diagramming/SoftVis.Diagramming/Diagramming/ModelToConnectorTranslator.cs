@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -17,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming
             var visitor = new ModelToConnectorTranslator();
             var connectorType = visitor.Visit(relationship);
 
-            var connector = new DiagramConnector(sourceNode, targetNode, connectorType);
+            var connector = new DiagramConnector(relationship, sourceNode, targetNode, connectorType);
             return connector;
         }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -18,26 +13,12 @@ namespace Codartis.SoftVis.Diagramming
 
         public override DiagramNode Visit(UmlClass item)
         {
-            var node = new ClassNode
-            {
-                ModelElement = item,
-                Name = item.Name,
-                Size = new DiagramSize(100, 25),
-                Position = DiagramPoint.Zero,
-            };
-            return node;
+            return new ClassNode(item, item.Name, DiagramPoint.Zero, new DiagramSize(100, 25));
         }
 
         public override DiagramNode Visit(UmlInterface item)
         {
-            var node = new InterfaceNode
-            {
-                ModelElement = item,
-                Name = item.Name,
-                Size = new DiagramSize(100, 35),
-                Position = DiagramPoint.Zero,
-            };
-            return node;
+            return new InterfaceNode(item, item.Name, DiagramPoint.Zero, new DiagramSize(100, 35));
         }
     }
 }

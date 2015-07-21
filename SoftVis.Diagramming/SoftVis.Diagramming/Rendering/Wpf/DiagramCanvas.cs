@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
 using Codartis.SoftVis.Rendering.Wpf.InputControls;
-using Codartis.SoftVis.Rendering.Wpf.NodeHandling;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Commands;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures;
@@ -32,6 +32,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private readonly List<IViewportGesture> _gestures = new List<IViewportGesture>();
 
         private readonly Dictionary<DiagramNode, DiagramNodeControl> _diagramNodeControls = new Dictionary<DiagramNode, DiagramNodeControl>();
+        private readonly Dictionary<DiagramConnector, DiagramConnectorControl> _diagramConnectorControls = new Dictionary<DiagramConnector, DiagramConnectorControl>();
         private Rect _contentInDiagramSpace;
 
         private Canvas _canvas;
@@ -118,16 +119,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
             if (_canvas != null)
             {
-                foreach (UIElement child in _canvas.Children)
-                {
-                    var diagramNodeControl = child as DiagramNodeControl;
-                    if (diagramNodeControl != null)
-                    {
-                        var childPosition = diagramNodeControl.DiagramNode.Position;
-                        var childSize = diagramNodeControl.DiagramNode.Size;
-                        ArrangeChildControl(child, childPosition, childSize);
-                    }
-                }
+                foreach (var child in _canvas.Children.OfType<DiagramNodeControl>())
+                    ArrangeChildControl(child, child.DiagramNode.Rect);
+
+                foreach (var child in _canvas.Children.OfType<DiagramConnectorControl>())
+                    ArrangeChildControl(child, child.DiagramConnector.Rect);
             }
 
             return arrangeSize;
@@ -175,10 +171,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
                 _panAndZoomControl.ZoomValue = _viewport.Zoom;
         }
 
-        private void ArrangeChildControl(UIElement child, DiagramPoint childPosition, DiagramSize childSize)
+        private void ArrangeChildControl(UIElement child, DiagramRect childRect)
         {
-            child.Arrange(new Rect(new Size(childSize.Width, childSize.Height)));
-            child.RenderTransform = CreateTransformForChild(childPosition.X, childPosition.Y);
+            var rect = childRect.ToWpf();
+            child.Arrange(new Rect(rect.Size));
+            child.RenderTransform = CreateTransformForChild(rect.Left, rect.Top);
         }
 
         private Transform CreateTransformForChild(double positionX, double positionY)
@@ -200,15 +197,18 @@ namespace Codartis.SoftVis.Rendering.Wpf
         {
             AddAllGraphElements(diagram);
 
-            _contentInDiagramSpace = EnclosingRectCalculator.GetEnclosingRect(diagram.Nodes);
+            _contentInDiagramSpace = diagram.GetEnclosingRect().ToWpf();
 
             FitToView(this, EventArgs.Empty);
         }
 
         private void AddAllGraphElements(Diagram diagram)
         {
-            foreach (var vertex in diagram.Nodes)
-                CreateDiagramNodeControl(vertex);
+            foreach (var node in diagram.Nodes)
+                CreateDiagramNodeControl(node);
+
+            foreach (var connector in diagram.Connectors)
+                CreateDiagramConnectorControl(connector);
         }
 
         private void CreateDiagramNodeControl(DiagramNode diagramNode)
@@ -216,6 +216,13 @@ namespace Codartis.SoftVis.Rendering.Wpf
             var control = DiagramNodeControlFactory.CreateFrom(diagramNode);
             _diagramNodeControls.Add(diagramNode, control);
             _canvas.Children.Insert(0, control);
+        }
+
+        private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
+        {
+            var control = DiagramConnectorControlFactory.CreateFrom(diagramConnector, _diagramNodeControls);
+            _diagramConnectorControls.Add(diagramConnector, control);
+            _canvas.Children.Add(control);
         }
     }
 }

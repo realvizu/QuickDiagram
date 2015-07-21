@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Modeling;
 
@@ -29,6 +26,11 @@ namespace Codartis.SoftVis.Diagramming
         public IEnumerable<DiagramConnector> Connectors
         {
             get { return _graph.Edges.OfType<DiagramConnector>(); }
+        }
+
+        public DiagramRect GetEnclosingRect()
+        {
+            return Nodes.Select(i => i.Rect).Union();
         }
 
         public void ShowModelElement(UmlModelElement modelElement)

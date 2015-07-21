@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
                 _layers.Add(new Layer());
 
             var layer = _layers[layerNumber];
-            var vertexSize = vertex.Size;
+            var vertexSize = vertex.Rect.Size;
             var vertexData = new VertexData { Parent = parent };
             _data[vertex] = vertexData;
 
@@ -99,7 +99,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
             {
                 foreach (var vertex in layer.Vertices)
                 {
-                    var size = vertex.Size;
+                    var size = vertex.Rect.Size;
                     var vertexData = _data[vertex];
                     if (vertexData.Parent != null)
                     {

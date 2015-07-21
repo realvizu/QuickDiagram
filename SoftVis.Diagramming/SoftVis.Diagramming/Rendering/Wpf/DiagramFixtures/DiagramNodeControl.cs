@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Codartis.SoftVis.Diagramming;
 
@@ -17,7 +12,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
         }
 
         public static readonly DependencyProperty DiagramNodeProperty =
-            DependencyProperty.Register("DiagramNode", typeof(DiagramNode), typeof(DiagramNodeControl), new UIPropertyMetadata(null));
+            DependencyProperty.Register("DiagramNode", typeof(DiagramNode), typeof(DiagramNodeControl));
+
+        public static readonly DependencyProperty NodeTypeProperty =
+            DependencyProperty.Register("NodeType", typeof(string), typeof(DiagramNodeControl));
+
+        public static readonly DependencyProperty RectProperty =
+            DependencyProperty.Register("Rect", typeof(Rect), typeof(DiagramNodeControl));
 
         public DiagramNode DiagramNode
         {
@@ -25,13 +26,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
             set { SetValue(DiagramNodeProperty, value); }
         }
 
-        public static readonly DependencyProperty NodeTypeProperty =
-            DependencyProperty.Register("NodeType", typeof(string), typeof(DiagramNodeControl), new UIPropertyMetadata(null));
-
         public string NodeType
         {
             get { return (string)GetValue(NodeTypeProperty); }
             set { SetValue(NodeTypeProperty, value); }
+        }
+
+        public Rect Rect
+        {
+            get { return (Rect)GetValue(RectProperty); }
+            set { SetValue(RectProperty, value); }
         }
     }
 }

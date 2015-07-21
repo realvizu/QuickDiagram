@@ -5,6 +5,7 @@
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramCanvas.xaml" />
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/InputControls/PanAndZoomControl.xaml" />
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramFixtures/DiagramNodeControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramFixtures/DiagramConnectorControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
