@@ -107,10 +107,9 @@ namespace Codartis.SoftVis.Rendering.Wpf
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            if (_viewport.SizeInScreenSpace.IsEmpty)
-                _viewport.ResizeInScreenSpace(sizeInfo.NewSize);
-            else
-                SendResizeEvent(sizeInfo.NewSize);
+            SendResizeEvent(sizeInfo.NewSize);
+
+            FitToView(this, EventArgs.Empty);
         }
 
         protected override Size ArrangeOverride(Size arrangeSize)
