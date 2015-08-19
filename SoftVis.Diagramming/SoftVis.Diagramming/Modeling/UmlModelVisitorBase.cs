@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Codartis.SoftVis.Modeling
+﻿namespace Codartis.SoftVis.Modeling
 {
-    public abstract class UmlModelVisitorBase<T>
+    public abstract class UmlModelVisitorBase<TResult>
     {
-        public T Visit(UmlModelElement item)
+        public TResult Visit(UmlModelElement item)
         {
             return item.AcceptVisitor(this);
         }
 
-        public virtual T Visit(UmlModel item) { return default(T); }
-        public virtual T Visit(UmlPackage item) { return default(T); }
-        public virtual T Visit(UmlClass item) { return default(T); }
-        public virtual T Visit(UmlInterface item) { return default(T); }
-        public virtual T Visit(UmlGeneralization item) { return default(T); }
+        public virtual TResult Visit(UmlModel item) { return default(TResult); }
+        public virtual TResult Visit(UmlPackage item) { return default(TResult); }
+        public virtual TResult Visit(UmlClass item) { return default(TResult); }
+        public virtual TResult Visit(UmlInterface item) { return default(TResult); }
+        public virtual TResult Visit(UmlGeneralization item) { return default(TResult); }
     }
 }

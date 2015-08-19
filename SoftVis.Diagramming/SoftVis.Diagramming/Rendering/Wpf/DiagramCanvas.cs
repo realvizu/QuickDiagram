@@ -190,13 +190,41 @@ namespace Codartis.SoftVis.Rendering.Wpf
             var diagramCanvas = (DiagramCanvas)obj;
             var diagram = (Diagram)e.NewValue;
             diagramCanvas.AddDiagram(diagram);
+
+            diagram.ShapeAdded += diagramCanvas.OnShapeAdded;
+            diagram.ShapeRemoved += diagramCanvas.OnShapeRemoved;
+        }
+
+        private void OnShapeAdded(object sender, DiagramShape shape)
+        {
+            if (shape is DiagramNode)
+                CreateDiagramNodeControl((DiagramNode)shape);
+            else if (shape is DiagramConnector)
+                CreateDiagramConnectorControl((DiagramConnector)shape);
+
+            OnDiagramChanged();
+        }
+
+        private void OnShapeRemoved(object sender, DiagramShape shape)
+        {
+            if (shape is DiagramNode)
+                RemoveDiagramNodeControl((DiagramNode)shape);
+            else if (shape is DiagramConnector)
+                RemoveDiagramConnectorControl((DiagramConnector)shape);
+
+            OnDiagramChanged();
         }
 
         private void AddDiagram(Diagram diagram)
         {
             AddAllGraphElements(diagram);
 
-            _contentInDiagramSpace = diagram.GetEnclosingRect().ToWpf();
+            OnDiagramChanged();
+        }
+
+        private void OnDiagramChanged()
+        {
+            _contentInDiagramSpace = Diagram.GetEnclosingRect().ToWpf();
 
             FitToView(this, EventArgs.Empty);
         }
@@ -222,6 +250,18 @@ namespace Codartis.SoftVis.Rendering.Wpf
             var control = DiagramConnectorControlFactory.CreateFrom(diagramConnector, _diagramNodeControls);
             _diagramConnectorControls.Add(diagramConnector, control);
             _canvas.Children.Add(control);
+        }
+
+        private void RemoveDiagramNodeControl(DiagramNode diagramNode)
+        {
+            _canvas.Children.Remove(_diagramNodeControls[diagramNode]);
+            _diagramNodeControls.Remove(diagramNode); 
+        }
+
+        private void RemoveDiagramConnectorControl(DiagramConnector diagramConnector)
+        {
+            _canvas.Children.Remove(_diagramConnectorControls[diagramConnector]);
+            _diagramConnectorControls.Remove(diagramConnector);
         }
     }
 }

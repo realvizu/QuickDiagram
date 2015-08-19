@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Modeling
 {
     public class UmlInterface : UmlType
     {
-        public override T AcceptVisitor<T>(UmlModelVisitorBase<T> visitor)
+        public override TResult AcceptVisitor<TResult>(UmlModelVisitorBase<TResult> visitor)
         {
             return visitor.Visit(this);
         }

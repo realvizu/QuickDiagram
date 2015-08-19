@@ -5,6 +5,8 @@
     /// </summary>
     public abstract class UmlModelElement
     {
-        public abstract T AcceptVisitor<T>(UmlModelVisitorBase<T> visitor);
+        public object NativeItem { get; set; }
+
+        public abstract TResult AcceptVisitor<TResult>(UmlModelVisitorBase<TResult> visitor);
     }
 }

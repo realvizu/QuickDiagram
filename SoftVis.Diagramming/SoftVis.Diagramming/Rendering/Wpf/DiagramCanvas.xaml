@@ -6,10 +6,15 @@
     <Style TargetType="{x:Type softVis:DiagramCanvas}">
         <Setter Property="MinZoom" Value="0.3"/>
         <Setter Property="MaxZoom" Value="3"/>
+        <Setter Property="RenderOptions.EdgeMode" Value="Unspecified"/>
+        <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+        <Setter Property="TextOptions.TextHintingMode" Value="Auto"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type softVis:DiagramCanvas}">
-                    <Canvas x:Name="PART_Canvas" Background="Beige" >
+                    <Canvas x:Name="PART_Canvas" ClipToBounds="True" Background="Beige" >
                         <inputControls:PanAndZoomControl x:Name="PART_PanAndZoomControl" 
                                                     Canvas.Top="10" Canvas.Left="10" 
                                                     Height="100" Width="100" 

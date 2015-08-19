@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Modeling;
+using System;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -17,6 +18,9 @@ namespace Codartis.SoftVis.Diagramming
     public class Diagram
     {
         private DiagramGraph _graph = new DiagramGraph();
+
+        public event EventHandler<DiagramShape> ShapeAdded;
+        public event EventHandler<DiagramShape> ShapeRemoved;
 
         public IEnumerable<DiagramNode> Nodes
         {
@@ -35,22 +39,36 @@ namespace Codartis.SoftVis.Diagramming
 
         public void ShowModelElement(UmlModelElement modelElement)
         {
+            DiagramShape shape = null;
+
             if (modelElement is UmlTypeOrPackage)
             {
                 var node = ModelToNodeTranslator.Translate(modelElement as UmlTypeOrPackage);
                 _graph.AddVertex(node);
+                shape = node;
             }
             else if (modelElement is UmlRelationship)
             {
                 var connector = ModelToConnectorTranslator.Translate(_graph, modelElement as UmlRelationship);
                 _graph.AddEdge(connector);
+                shape = connector;
             }
+
+            Layout();
+
+            if (shape != null && ShapeAdded != null)
+                ShapeAdded(this, shape);
         }
 
         public void HideModelElement(UmlModelElement modelElement)
         {
             var node = _graph.FindNode(modelElement);
             _graph.RemoveVertex(node);
+
+            Layout();
+
+            if (node != null && ShapeRemoved != null)
+                ShapeRemoved(this, node);
         }
 
         public void Layout()

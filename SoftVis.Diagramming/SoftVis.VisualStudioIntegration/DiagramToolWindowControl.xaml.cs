@@ -1,16 +1,9 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="DiagramToolWindowControl.xaml.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel;
+using System.Windows.Controls;
 
 namespace Codartis.SoftVis.VisualStudioIntegration
 {
-    using Diagramming;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Windows;
-    using System.Windows.Controls;
-
     /// <summary>
     /// Interaction logic for DiagramToolWindowControl.
     /// </summary>
@@ -34,6 +27,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration
             base.OnApplyTemplate();
 
             DiagramCanvas.DataContext = _diagram;
+        }
+
+        public void Add(RoslynBasedUmlModelElement modelElement)
+        {
+            _diagram.ShowModelElement(modelElement.UmlModelElement);
         }
     }
 }
