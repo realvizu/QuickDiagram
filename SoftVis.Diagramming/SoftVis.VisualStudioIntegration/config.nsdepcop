@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+    <Allowed From="*" To="System" />
+    <Allowed From="*" To="System.Diagnostics.*" />
+    <Allowed From="*" To="System.Collections.*" />
+    <Allowed From="*" To="System.Linq.*" />
+    <Allowed From="*" To="System.Globalization.*" />
+    <Allowed From="*" To="System.Threading.*" />
+    <Allowed From="*" To="System.CodeDom.Compiler" />
+    <Allowed From="*" To="System.ComponentModel.*" />
+
+    <Allowed From="XamlGeneratedNamespace" To="*" />
+
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Runtime.InteropServices" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Commands" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Presentation" />
+
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Presentation" />
+
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Diagramming.*" />
+
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" To="Codartis.SoftVis.Modeling.*" />
+
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.Diagramming.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.Rendering.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="System.Windows.*" />
+
+</NsDepCopConfig>

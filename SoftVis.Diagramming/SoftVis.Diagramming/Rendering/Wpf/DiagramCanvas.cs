@@ -13,6 +13,7 @@ using Codartis.SoftVis.Rendering.Wpf.InputControls;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Commands;
 using Codartis.SoftVis.Rendering.Wpf.ViewportHandling.Gestures;
+using System.Diagnostics;
 
 namespace Codartis.SoftVis.Rendering.Wpf
 {
@@ -30,9 +31,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private readonly Viewport _viewport = new Viewport();
         private readonly List<IViewportGesture> _gestures = new List<IViewportGesture>();
-
-        private readonly Dictionary<DiagramNode, DiagramNodeControl> _diagramNodeControls = new Dictionary<DiagramNode, DiagramNodeControl>();
-        private readonly Dictionary<DiagramConnector, DiagramConnectorControl> _diagramConnectorControls = new Dictionary<DiagramConnector, DiagramConnectorControl>();
+        private readonly Dictionary<DiagramShape, DiagramShapeControlBase> _diagramShapeControls = new Dictionary<DiagramShape, DiagramShapeControlBase>();
         private Rect _contentInDiagramSpace;
 
         private Canvas _canvas;
@@ -192,11 +191,15 @@ namespace Codartis.SoftVis.Rendering.Wpf
             diagramCanvas.AddDiagram(diagram);
 
             diagram.ShapeAdded += diagramCanvas.OnShapeAdded;
+            diagram.ShapeModified += diagramCanvas.OnShapeModified;
             diagram.ShapeRemoved += diagramCanvas.OnShapeRemoved;
         }
 
         private void OnShapeAdded(object sender, DiagramShape shape)
         {
+            if (_diagramShapeControls.ContainsKey(shape))
+                return;
+
             if (shape is DiagramNode)
                 CreateDiagramNodeControl((DiagramNode)shape);
             else if (shape is DiagramConnector)
@@ -205,12 +208,19 @@ namespace Codartis.SoftVis.Rendering.Wpf
             OnDiagramChanged();
         }
 
+        private void OnShapeModified(object sender, DiagramShape shape)
+        {
+            if (!_diagramShapeControls.ContainsKey(shape))
+                return;
+
+            _diagramShapeControls[shape].Update();
+
+            OnDiagramChanged();
+        }
+
         private void OnShapeRemoved(object sender, DiagramShape shape)
         {
-            if (shape is DiagramNode)
-                RemoveDiagramNodeControl((DiagramNode)shape);
-            else if (shape is DiagramConnector)
-                RemoveDiagramConnectorControl((DiagramConnector)shape);
+            RemoveDiagramShapeControl(shape);
 
             OnDiagramChanged();
         }
@@ -241,27 +251,21 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void CreateDiagramNodeControl(DiagramNode diagramNode)
         {
             var control = DiagramNodeControlFactory.CreateFrom(diagramNode);
-            _diagramNodeControls.Add(diagramNode, control);
+            _diagramShapeControls.Add(diagramNode, control);
             _canvas.Children.Insert(0, control);
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
         {
-            var control = DiagramConnectorControlFactory.CreateFrom(diagramConnector, _diagramNodeControls);
-            _diagramConnectorControls.Add(diagramConnector, control);
+            var control = DiagramConnectorControlFactory.CreateFrom(diagramConnector, _diagramShapeControls);
+            _diagramShapeControls.Add(diagramConnector, control);
             _canvas.Children.Add(control);
         }
 
-        private void RemoveDiagramNodeControl(DiagramNode diagramNode)
+        private void RemoveDiagramShapeControl(DiagramShape diagramShape)
         {
-            _canvas.Children.Remove(_diagramNodeControls[diagramNode]);
-            _diagramNodeControls.Remove(diagramNode); 
-        }
-
-        private void RemoveDiagramConnectorControl(DiagramConnector diagramConnector)
-        {
-            _canvas.Children.Remove(_diagramConnectorControls[diagramConnector]);
-            _diagramConnectorControls.Remove(diagramConnector);
+            _canvas.Children.Remove(_diagramShapeControls[diagramShape]);
+            _diagramShapeControls.Remove(diagramShape); 
         }
     }
 }

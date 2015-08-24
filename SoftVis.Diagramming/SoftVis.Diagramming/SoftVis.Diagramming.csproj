@@ -105,6 +105,7 @@
     <Compile Include="Rendering\Wpf\Converters\DiagramConnectorToPathConverter.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControl.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControlFactory.cs" />
+    <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramShapeControlBase.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ResizeViewportCommand.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\MoveViewportCenterInScreenSpaceCommand.cs" />
     <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ZoomViewportWithCenterInScreenSpaceCommand.cs" />

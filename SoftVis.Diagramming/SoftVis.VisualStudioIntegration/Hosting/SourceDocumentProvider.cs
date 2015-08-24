@@ -1,19 +1,18 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Utilities;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Codartis.SoftVis.VisualStudioIntegration
+namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
-    public class SourceDocumentProvider : IVsRunningDocTableEvents, IDisposable
+    public class SourceDocumentProvider : ISourceDocumentProvider, IVsRunningDocTableEvents, IDisposable
     {
         private const string CSHARP_CONTENTTYPE_NAME = "CSharp";
 
@@ -24,11 +23,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration
         public IWpfTextView ActiveWpfTextView { get; private set; }
 
         /// <summary>
-        /// Gets the instance of the provider.
-        /// </summary>
-        public static SourceDocumentProvider Instance { get; private set; }
-
-        /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
         private IServiceProvider ServiceProvider
@@ -36,7 +30,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration
             get { return _package; }
         }
 
-        private SourceDocumentProvider(SoftVisPackage package)
+        public SourceDocumentProvider(SoftVisPackage package)
         {
             if (package == null)
                 throw new ArgumentNullException(nameof(package));
@@ -44,15 +38,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration
             _package = package;
 
             InitializeRunningDocumentTable();
-        }
-
-        /// <summary>
-        /// Initializes the singleton instance of the command.
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(SoftVisPackage package)
-        {
-            Instance = new SourceDocumentProvider(package);
         }
 
         public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
@@ -109,12 +94,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration
             return document;
         }
 
-        public Span GetSelection()
+        public TextSpan GetSelection()
         {
-            return ActiveWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
+            var span = ActiveWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
+            Debug.Assert(span != null);
+            return new TextSpan(span.Start, span.Length);
         }
 
-        private Workspace GetWorkspace()
+        public Workspace GetWorkspace()
         {
             if (ActiveWpfTextView == null)
                 return null;
@@ -133,7 +120,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration
             {
                 var riidKey = DefGuidList.guidIWpfTextViewHost;
                 object pvtData;
-                if (((IVsUserData)textView).GetData(ref riidKey, out pvtData) == 0 && pvtData != null)
+                var vsUserData = (Microsoft.VisualStudio.TextManager.Interop.IVsUserData)textView;
+                if (vsUserData.GetData(ref riidKey, out pvtData) == 0 && pvtData != null)
                     wpfTextView = ((IWpfTextViewHost)pvtData).TextView;
             }
             return wpfTextView;

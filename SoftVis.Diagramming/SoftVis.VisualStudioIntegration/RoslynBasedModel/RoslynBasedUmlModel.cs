@@ -1,46 +1,56 @@
 ﻿using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel
 {
     public class RoslynBasedUmlModel
     {
         private UmlModel _umlModel;
-        private Dictionary<ISymbol, RoslynBasedUmlModelElement> _elements;
+        private Dictionary<string, RoslynBasedUmlClass> _roslynSymbolNameToModelElementMap;
 
         public RoslynBasedUmlModel()
         {
             _umlModel = new UmlModel();
-            _elements = new Dictionary<ISymbol, RoslynBasedUmlModelElement>();
+            _roslynSymbolNameToModelElementMap = new Dictionary<string, RoslynBasedUmlClass>();
         }
 
-        private RoslynBasedUmlModelElement Add(ISymbol symbol)
+        public RoslynBasedUmlClass GetOrAdd(INamedTypeSymbol namedTypeSymbol)
         {
-            var element = new RoslynBasedUmlModelElement(symbol);
-            _umlModel.Add((UmlType)element.UmlModelElement);
+            var element = GetModelElement(namedTypeSymbol);
+            if (element == null)
+            {
+                element = CreateModelElement(namedTypeSymbol);
+                AddModelElement(namedTypeSymbol, element);
+            }
+
             return element;
         }
 
-        private RoslynBasedUmlModelElement Get(ISymbol symbol)
+        private RoslynBasedUmlClass GetModelElement(INamedTypeSymbol namedTypeSymbol)
         {
-            if (_elements.ContainsKey(symbol))
-                return _elements[symbol];
+            var fullyQualifiedName = namedTypeSymbol.GetFullyQualifiedName();
+            if (_roslynSymbolNameToModelElementMap.ContainsKey(fullyQualifiedName))
+                return _roslynSymbolNameToModelElementMap[fullyQualifiedName];
 
             return null;
         }
 
-        public RoslynBasedUmlModelElement GetOrAdd(ISymbol symbol)
+        private RoslynBasedUmlClass CreateModelElement(INamedTypeSymbol namedTypeSymbol)
         {
-            var element = Get(symbol);
-            if (element == null)
-                element = Add(symbol);
+            UmlClass baseClass = null;
 
-            return element;
+            var baseTypeSymbol = namedTypeSymbol.BaseType;
+            if (baseTypeSymbol != null)
+                baseClass = GetOrAdd(baseTypeSymbol);
+
+            return new RoslynBasedUmlClass(namedTypeSymbol, baseClass);
+        }
+
+        private void AddModelElement(INamedTypeSymbol namedTypeSymbol, RoslynBasedUmlClass modelElement)
+        {
+            _umlModel.Add(modelElement);
+            _roslynSymbolNameToModelElementMap.Add(namedTypeSymbol.GetFullyQualifiedName(), modelElement);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
 {
-    public class DiagramConnectorControl : Control
+    public class DiagramConnectorControl : DiagramShapeControlBase
     {
         static DiagramConnectorControl()
         {
@@ -49,10 +49,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
             get { return (Rect)GetValue(RectProperty); }
             set { SetValue(RectProperty, value); }
         }
+
         public DiagramConnector DiagramConnector
         {
             get { return (DiagramConnector)GetValue(DiagramConnectorProperty); }
             set { SetValue(DiagramConnectorProperty, value); }
+        }
+
+        public override void Update()
+        {
+            Rect = DiagramConnector.Rect.ToWpf();
         }
 
     }

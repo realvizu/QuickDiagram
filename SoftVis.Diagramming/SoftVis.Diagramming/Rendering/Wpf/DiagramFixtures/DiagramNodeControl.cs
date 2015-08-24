@@ -1,10 +1,10 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
 {
-    public class DiagramNodeControl : Control
+    public class DiagramNodeControl : DiagramShapeControlBase
     {
         static DiagramNodeControl()
         {
@@ -36,6 +36,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
         {
             get { return (Rect)GetValue(RectProperty); }
             set { SetValue(RectProperty, value); }
+        }
+
+        public override void Update()
+        {
+            Rect = DiagramNode.Rect.ToWpf();
         }
     }
 }

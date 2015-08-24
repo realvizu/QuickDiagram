@@ -20,6 +20,7 @@ namespace Codartis.SoftVis.Diagramming
         private DiagramGraph _graph = new DiagramGraph();
 
         public event EventHandler<DiagramShape> ShapeAdded;
+        public event EventHandler<DiagramShape> ShapeModified;
         public event EventHandler<DiagramShape> ShapeRemoved;
 
         public IEnumerable<DiagramNode> Nodes
@@ -39,25 +40,55 @@ namespace Codartis.SoftVis.Diagramming
 
         public void ShowModelElement(UmlModelElement modelElement)
         {
-            DiagramShape shape = null;
-
             if (modelElement is UmlTypeOrPackage)
             {
-                var node = ModelToNodeTranslator.Translate(modelElement as UmlTypeOrPackage);
-                _graph.AddVertex(node);
-                shape = node;
+                ShowUmlTypeOrPackage((UmlTypeOrPackage)modelElement);
             }
             else if (modelElement is UmlRelationship)
             {
-                var connector = ModelToConnectorTranslator.Translate(_graph, modelElement as UmlRelationship);
-                _graph.AddEdge(connector);
-                shape = connector;
+                ShowUmlRelationship((UmlRelationship)modelElement);
             }
+        }
 
-            Layout();
+        private void ShowUmlTypeOrPackage(UmlTypeOrPackage umlTypeOrPackage)
+        {
+            if (_graph.Vertices.Any(i => i.ModelElement == umlTypeOrPackage))
+                return;
 
+            var node = ModelToNodeTranslator.Translate(umlTypeOrPackage);
+            _graph.AddVertex(node);
+            SignalShapeAddedEvent(node);
+
+            foreach (var relationship in umlTypeOrPackage.OutgoingRelationships)
+            {
+                if (_graph.Vertices.Any(i => i.ModelElement == relationship.SourceElement) &&
+                    _graph.Vertices.Any(i => i.ModelElement == relationship.TargetElement))
+                {
+                    ShowModelElement(relationship);
+                }
+            }
+        }
+
+        private void ShowUmlRelationship(UmlRelationship umlRelationship)
+        {
+            if (_graph.Edges.Any(i => i.ModelElement == umlRelationship))
+                return;
+
+            var connector = ModelToConnectorTranslator.Translate(_graph, umlRelationship);
+            _graph.AddEdge(connector);
+            SignalShapeAddedEvent(connector);
+        }
+
+        private void SignalShapeAddedEvent(DiagramShape shape)
+        {
             if (shape != null && ShapeAdded != null)
                 ShapeAdded(this, shape);
+        }
+
+        private void SignalShapeModifiedEvent(DiagramShape shape)
+        {
+            if (shape != null && ShapeModified != null)
+                ShapeModified(this, shape);
         }
 
         public void HideModelElement(UmlModelElement modelElement)
@@ -73,10 +104,18 @@ namespace Codartis.SoftVis.Diagramming
 
         public void Layout()
         {
+            Debug.WriteLine("Layout vertices {0}, edges {1}.", _graph.VertexCount, _graph.EdgeCount);
+
             var algorithm = new SimpleTreeLayoutAlgorithm(_graph);
             var newVertexPositions = algorithm.ComputeNewVertexPositions();
 
             _graph.PositionNodes(newVertexPositions);
+
+            foreach (var vertex in _graph.Vertices)
+                SignalShapeModifiedEvent(vertex);
+
+            foreach (var edge in _graph.Edges)
+                SignalShapeModifiedEvent(edge);
         }
     }
 }
