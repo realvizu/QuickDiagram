@@ -1,0 +1,20 @@
+﻿using System.Windows;
+
+namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Commands
+{
+    public class MoveViewportCenterInDiagramSpaceCommand : ViewportCommandBase
+    {
+        public Point NewCenterInDiagramSpace { get; private set; }
+
+        public MoveViewportCenterInDiagramSpaceCommand(object sender, Point newCenterInDiagramSpace)
+            : base(sender)
+        {
+            NewCenterInDiagramSpace = newCenterInDiagramSpace;
+        }
+
+        internal override void Execute(IViewport viewport)
+        {
+            viewport.MoveCenterInDiagramSpace(NewCenterInDiagramSpace);
+        }
+    }
+}

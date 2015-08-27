@@ -18,5 +18,5 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <softvis:DiagramCanvas x:Name="DiagramCanvas" Diagram="{Binding}" />
+    <softvis:DiagramCanvasControl x:Name="DiagramCanvasControl" Diagram="{Binding}" />
 </Window>

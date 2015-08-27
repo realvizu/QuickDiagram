@@ -210,7 +210,8 @@
 
                         <Slider Grid.Row="4" Grid.Column="1" Style="{StaticResource PanAndZoomSliderStyle}"
                                 DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                                Minimum="{Binding ZoomMin}" Maximum="{Binding ZoomMax}"  Value="{Binding LinearZoomValue, Mode=TwoWay}"
+                                Minimum="{Binding MinZoom}" Maximum="{Binding MaxZoom}"  
+                                Value="{Binding LinearZoomValue, Mode=TwoWay}"
                                 SmallChange="{Binding SmallIncrement}" LargeChange="{Binding LargeIncrement}"/>
 
                     </Grid>

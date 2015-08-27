@@ -20,9 +20,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
         public static readonly DependencyProperty RoutePointsProperty =
             DependencyProperty.Register("RoutePoints", typeof(Point[]), typeof(DiagramConnectorControl));
 
-        public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof(Rect), typeof(DiagramConnectorControl));
-
         public static readonly DependencyProperty DiagramConnectorProperty =
             DependencyProperty.Register("DiagramConnector", typeof(DiagramConnector), typeof(DiagramConnectorControl));
 
@@ -44,12 +41,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
             set { SetValue(RoutePointsProperty, value); }
         }
 
-        public Rect Rect
-        {
-            get { return (Rect)GetValue(RectProperty); }
-            set { SetValue(RectProperty, value); }
-        }
-
         public DiagramConnector DiagramConnector
         {
             get { return (DiagramConnector)GetValue(DiagramConnectorProperty); }
@@ -60,6 +51,5 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
         {
             Rect = DiagramConnector.Rect.ToWpf();
         }
-
     }
 }

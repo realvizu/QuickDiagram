@@ -103,42 +103,49 @@
     <Compile Include="Rendering\Wpf\Common\PathFigureCollectionExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
     <Compile Include="Rendering\Wpf\Converters\DiagramConnectorToPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\ViewportPanel.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\ViewportPanel.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControl.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControlFactory.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramShapeControlBase.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ResizeViewportCommand.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\MoveViewportCenterInScreenSpaceCommand.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ZoomViewportWithCenterInScreenSpaceCommand.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ZoomViewportCommand.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\MoveViewportCenterInDiagramSpaceCommand.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ViewportCommandHandler.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Commands\ViewportCommandBase.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ResizeViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\UIEventViewportGestureBase.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ZoomWithCenterSpecification.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ZoomWithCenterSpecificationAnimation.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Viewport.cs" />
-    <Compile Include="Rendering\Wpf\DiagramCanvas.cs" />
-    <Compile Include="Rendering\Wpf\DiagramCanvas.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\ResizeViewportCommand.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\MoveViewportCenterInScreenSpaceCommand.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\ZoomViewportWithCenterInScreenSpaceCommand.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\ZoomViewportCommand.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\MoveViewportCenterInDiagramSpaceCommand.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\ViewportCommandHandler.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Commands\ViewportCommandBase.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ZoomViewportWithCenterInScreenSpaceCommandAnimator.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ViewportCommandAnimatorBase.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ResizeViewportCommandAnimator.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\MoveViewportCenterInDiagramSpaceCommandAnimator.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ZoomViewportCommandAnimator.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\ResizeViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\InputEventViewportGestureBase.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\WidgetEventViewportGestureBase.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ZoomWithCenterSpecification.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ZoomWithCenterSpecificationAnimation.cs" />
+    <Compile Include="Rendering\Wpf\DiagramCanvasControl.cs" />
+    <Compile Include="Rendering\Wpf\DiagramCanvasControl.DepProps.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramNodeControlFactory.cs" />
     <Compile Include="Rendering\Wpf\InputControls\PanAndZoomControl.DepProps.cs" />
     <Compile Include="Rendering\Wpf\InputControls\PanAndZoomControl.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\FitToViewUIEventViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\PanUIEventViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ZoomUIEventViewportGesture.cs" />
-    <Compile Include="Rendering\Common\UIEvents\IUIEventSource.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\FitToViewWidgetEventViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\PanWidgetEventViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\ZoomWidgetEventViewportGesture.cs" />
+    <Compile Include="Rendering\Common\UIEvents\IWidgetEventSource.cs" />
     <Compile Include="Rendering\Common\UIEvents\PanDirection.cs" />
     <Compile Include="Rendering\Common\UIEvents\PanEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ZoomEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\PanEventHandler.cs" />
     <Compile Include="Rendering\Common\UIEvents\ZoomEventHandler.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\IViewportHost.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\IViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\MousePanViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\AnimatedViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\KeyboardViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\MouseZoomViewportGesture.cs" />
-    <Compile Include="Rendering\Wpf\ViewportHandling\Gestures\ViewportGestureBase.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\IViewport.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\IViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\MousePanViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\AnimatedViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\KeyboardViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\MouseZoomViewportGesture.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\Gestures\ViewportGestureBase.cs" />
     <Compile Include="Rendering\Wpf\Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramNodeControl.cs" />
   </ItemGroup>
@@ -162,7 +169,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Rendering\Wpf\DiagramCanvas.xaml">
+    <Page Include="Rendering\Wpf\DiagramCanvasControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

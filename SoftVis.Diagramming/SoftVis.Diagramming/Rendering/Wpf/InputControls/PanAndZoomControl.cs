@@ -38,16 +38,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
         public event ZoomEventHandler Zoom;
         public event EventHandler FitToView;
 
-        public double ZoomMin
+        public double MinZoom
         {
-            get { return (double)GetValue(ZoomMinProperty); }
-            set { SetValue(ZoomMinProperty, value); }
+            get { return (double)GetValue(MinZoomProperty); }
+            set { SetValue(MinZoomProperty, value); }
         }
 
-        public double ZoomMax
+        public double MaxZoom
         {
-            get { return (double)GetValue(ZoomMaxProperty); }
-            set { SetValue(ZoomMaxProperty, value); }
+            get { return (double)GetValue(MaxZoomProperty); }
+            set { SetValue(MaxZoomProperty, value); }
         }
 
         public double ZoomValue
@@ -61,6 +61,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             get { return (double)GetValue(LinearZoomValueProperty); }
             set { SetValue(LinearZoomValueProperty, value); }
         }
+
         public double SmallIncrement
         {
             get { return (double)GetValue(SmallIncrementProperty); }
@@ -77,8 +78,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
         {
             base.OnApplyTemplate();
 
-            SmallIncrement = (ZoomMax - ZoomMin) / 10;
-            LargeIncrement = (ZoomMax - ZoomMin) / 5;
+            SmallIncrement = (MaxZoom - MinZoom) / 10;
+            LargeIncrement = (MaxZoom - MinZoom) / 5;
 
             ((RepeatButton)GetTemplateChild(PART_PanUpRepeatButton)).Click += OnPanUp;
             ((RepeatButton)GetTemplateChild(PART_PanLeftRepeatButton)).Click += OnPanLeft;
@@ -145,13 +146,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             var panAndZoomControl = obj as PanAndZoomControl;
             if (panAndZoomControl != null)
             {
-                var linearZoomValue = ScaleCalculator.ExponentialToLinear(newValue, panAndZoomControl.ZoomMin, panAndZoomControl.ZoomMax);
+                var linearZoomValue = ScaleCalculator.ExponentialToLinear(newValue, panAndZoomControl.MinZoom, panAndZoomControl.MaxZoom);
                 panAndZoomControl.LinearZoomValue = linearZoomValue;
 
                 if (panAndZoomControl.Zoom != null)
-                {
                     panAndZoomControl.Zoom(panAndZoomControl, new ZoomEventArgs(newValue));
-                }
             }
         }
 
@@ -166,7 +165,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             var panAndZoomControl = obj as PanAndZoomControl;
             if (panAndZoomControl != null)
             {
-                var exponentialZoomValue = ScaleCalculator.LinearToExponential(newValue, panAndZoomControl.ZoomMin, panAndZoomControl.ZoomMax);
+                var exponentialZoomValue = ScaleCalculator.LinearToExponential(newValue, panAndZoomControl.MinZoom, panAndZoomControl.MaxZoom);
                 panAndZoomControl.ZoomValue = exponentialZoomValue;
             }
         }

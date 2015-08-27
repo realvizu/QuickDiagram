@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
         {
             InitializeComponent();
 
-            DiagramCanvas.DataContext = DiagramBuilder.Instance.Diagram;
+            DiagramCanvasControl.DataContext = DiagramBuilder.Instance.Diagram;
         }
     }
 }

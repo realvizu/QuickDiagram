@@ -17,9 +17,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
         public static readonly DependencyProperty NodeTypeProperty =
             DependencyProperty.Register("NodeType", typeof(string), typeof(DiagramNodeControl));
 
-        public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof(Rect), typeof(DiagramNodeControl));
-
         public DiagramNode DiagramNode
         {
             get { return (DiagramNode)GetValue(DiagramNodeProperty); }
@@ -30,12 +27,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
         {
             get { return (string)GetValue(NodeTypeProperty); }
             set { SetValue(NodeTypeProperty, value); }
-        }
-
-        public Rect Rect
-        {
-            get { return (Rect)GetValue(RectProperty); }
-            set { SetValue(RectProperty, value); }
         }
 
         public override void Update()

@@ -8,6 +8,7 @@
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
     <Style TargetType="{x:Type diagramFixtures:DiagramConnectorControl}">
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type diagramFixtures:DiagramConnectorControl}">
