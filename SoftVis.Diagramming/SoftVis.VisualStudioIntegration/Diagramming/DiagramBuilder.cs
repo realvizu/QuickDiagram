@@ -31,6 +31,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             get { return _diagram; }
         }
 
+        public void Clear()
+        {
+            _diagram.Clear();
+        }
+
         public async void AddCurrentSymbol()
         {
             var symbol = await GetCurrentSymbol();

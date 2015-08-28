@@ -88,7 +88,6 @@ namespace Codartis.SoftVis.Rendering.Wpf
         {
             base.OnRenderSizeChanged(sizeInfo);
             OnResize(sizeInfo.NewSize);
-            OnFitToView();
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)
@@ -177,6 +176,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
             diagram.ShapeAdded += diagramCanvas.OnShapeAdded;
             diagram.ShapeModified += diagramCanvas.OnShapeModified;
             diagram.ShapeRemoved += diagramCanvas.OnShapeRemoved;
+            diagram.Cleared += diagramCanvas.OnDiagramCleared;
         }
 
         private void AddDiagram(Diagram diagram)
@@ -212,6 +212,13 @@ namespace Codartis.SoftVis.Rendering.Wpf
                 return;
 
             RemoveDiagramShapeControl(shape);
+            OnDiagramChanged();
+        }
+
+        private void OnDiagramCleared(object sender, EventArgs e)
+        {
+            _viewportPanel.Children.Clear();
+            _diagramShapeControls.Clear();
             OnDiagramChanged();
         }
 

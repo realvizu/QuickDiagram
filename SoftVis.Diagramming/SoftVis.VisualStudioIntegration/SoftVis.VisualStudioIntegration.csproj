@@ -52,12 +52,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\Constants.cs" />
+    <Compile Include="Commands\ShowDiagramWindowCommand.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\ClearDiagramCommand.cs" />
     <Compile Include="Commands\IWindowManager.cs" />
     <Compile Include="Diagramming\DescendantsFinderVisitor.cs" />
     <Compile Include="Diagramming\DiagramBuilder.cs" />
     <Compile Include="Diagramming\ISourceDocumentProvider.cs" />
     <Compile Include="Hosting\DiagramToolWindow.cs" />
-    <Compile Include="Commands\DiagramToolWindowCommand.cs" />
+    <Compile Include="Commands\AddToDiagramCommand.cs" />
     <Compile Include="Presentation\DiagramToolWindowControl.xaml.cs">
       <DependentUpon>DiagramToolWindowControl.xaml</DependentUpon>
     </Compile>

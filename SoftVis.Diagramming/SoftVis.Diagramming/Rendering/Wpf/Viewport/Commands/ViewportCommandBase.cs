@@ -1,6 +1,4 @@
-﻿using Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures;
-
-namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Commands
+﻿namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Commands
 {
     public abstract class ViewportCommandBase
     {

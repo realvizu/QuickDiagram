@@ -22,6 +22,7 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeAdded;
         public event EventHandler<DiagramShape> ShapeModified;
         public event EventHandler<DiagramShape> ShapeRemoved;
+        public event EventHandler Cleared;
 
         public IEnumerable<DiagramNode> Nodes
         {
@@ -36,6 +37,12 @@ namespace Codartis.SoftVis.Diagramming
         public DiagramRect GetEnclosingRect()
         {
             return Nodes.Select(i => i.Rect).Union();
+        }
+
+        public void Clear()
+        {
+            _graph = new DiagramGraph();
+            SignalClearedEvent();
         }
 
         public void ShowModelElement(UmlModelElement modelElement)
@@ -91,15 +98,23 @@ namespace Codartis.SoftVis.Diagramming
                 ShapeModified(this, shape);
         }
 
+        private void SignalShapeRemovedEvent(DiagramShape shape)
+        {
+            if (shape != null && ShapeRemoved != null)
+                ShapeRemoved(this, shape);
+        }
+
+        private void SignalClearedEvent()
+        {
+            if (Cleared != null)
+                Cleared(this, EventArgs.Empty);
+        }
+
         public void HideModelElement(UmlModelElement modelElement)
         {
             var node = _graph.FindNode(modelElement);
             _graph.RemoveVertex(node);
-
-            Layout();
-
-            if (node != null && ShapeRemoved != null)
-                ShapeRemoved(this, node);
+            SignalShapeRemovedEvent(node);
         }
 
         public void Layout()

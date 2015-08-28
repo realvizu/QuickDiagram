@@ -3,6 +3,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -21,6 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     {
         private const string PackageGuidString = "198d9322-583a-4112-a2a8-61f4c0818966";
 
+        private readonly List<CommandBase> _commands = new List<CommandBase>();
+
         private static Microsoft.VisualStudio.OLE.Interop.IServiceProvider _globalServiceProvider;
 
         /// <summary>
@@ -33,7 +36,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             var sourceDocumentProvider = new SourceDocumentProvider(this);
             DiagramBuilder.Initialize(sourceDocumentProvider);
-            DiagramToolWindowCommand.Initialize(this, this);
+
+            InitializeCommands();
+        }
+
+        private void InitializeCommands()
+        {
+            _commands.Add(new ShowDiagramWindowCommand(this, this));
+            _commands.Add(new ClearDiagramCommand(this, this));
+            _commands.Add(new AddToDiagramCommand(this, this));
         }
 
         public static Microsoft.VisualStudio.OLE.Interop.IServiceProvider GlobalServiceProvider

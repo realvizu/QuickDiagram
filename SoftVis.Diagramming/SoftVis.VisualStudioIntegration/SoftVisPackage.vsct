@@ -1,89 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <Extern href="stdidcmd.h" />
+    <Extern href="vsshlids.h" />
 
-    <!--  This is the file that defines the actual layout and type of the commands.
-        It is divided in different sections (e.g. command definition, command
-        placement, ...), with each defining a specific set of properties.
-        See the comment before each section for more details about how to
-        use it. -->
-
-    <!--  The VSCT compiler (the tool that translates this file into the binary
-        format that VisualStudio will consume) has the ability to run a preprocessor
-        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
-        it is possible to define includes and macros with the same syntax used
-        in C++ files. Using this ability of the compiler here, we include some files
-        defining some of the constants that we will use inside the file. -->
-
-    <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-    <Extern href="stdidcmd.h"/>
-
-    <!--This header contains the command ids for the menus provided by the shell. -->
-    <Extern href="vsshlids.h"/>
-
-    <!--The Commands section is where commands, menus, and menu groups are defined.
-      This section uses a Guid to identify the package that provides the command defined inside it. -->
     <Commands package="guidSoftVisPackage">
-        <!-- Inside this section we have different sub-sections: one for the menus, another
-    for the menu groups, one for the buttons (the actual commands), one for the combos
-    and the last one for the bitmaps used. Each element is identified by a command id that
-    is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
-    called "command set" and is used to group different command inside a logically related
-    group; your package should define its own command set in order to avoid collisions
-    with command ids defined by other packages. -->
-
-        <!-- In this section you can define new menu groups. A menu group is a container for 
-         other menus or buttons (commands); from a visual point of view you can see the 
-         group as the part of a menu contained between two lines. The parent of a group 
-         must be a menu. -->
+        <Menus>
+            <Menu guid="guidDiagramMainMenu" id="DiagramMainMenu" priority="0x700" type="Menu">
+                <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+                <Strings>
+                    <ButtonText>Diagram</ButtonText>
+                    <CommandName>Diagram</CommandName>
+                </Strings>
+            </Menu>
+        </Menus>
+        
         <Groups>
-            <Group guid="guidSoftVisPackageCmdSet" id="SoftVisMenuGroup" priority="0x0600">
-                <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
+            <Group guid="guidMainMenuCommands" id="MainMenuCommands" priority="0x0600">
+                <Parent guid="guidDiagramMainMenu" id="DiagramMainMenu" />
+            </Group>
+
+            <Group guid="guidCodeEditorContextMenuCommands" id="CodeEditorCommands" priority="0x0600">
+                <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
             </Group>
         </Groups>
 
-        <!--Buttons section. -->
-        <!--This section defines the elements the user can interact with, like a menu command or a button
-        or combo box in a toolbar. -->
         <Buttons>
-            <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
-          The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
-          the CommandFlag node.
-          You can add more than one CommandFlag node e.g.:
-              <CommandFlag>DefaultInvisible</CommandFlag>
-              <CommandFlag>DynamicVisibility</CommandFlag>
-          If you do not want an image next to your command, remove the Icon node /> -->
-            <Button guid="guidSoftVisPackageCmdSet" id="DiagramToolWindowCommandId" priority="0x0100" type="Button">
-                <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>-->
-                <Parent guid="guidSoftVisPackageCmdSet" id="SoftVisMenuGroup" />
+            <Button guid="guidCodeEditorContextMenuCommands" id="AddToDiagramCommand" priority="0x0100" type="Button">
+                <Parent guid="guidCodeEditorContextMenuCommands" id="CodeEditorCommands" />
                 <Icon guid="guidImages" id="bmpPic1" />
                 <Strings>
-                    <ButtonText>Class Inheritance Diagram...</ButtonText>
+                    <ButtonText>Add to Diagram</ButtonText>
+                </Strings>
+            </Button>
+
+            <Button guid="guidMainMenuCommands" id="ShowDiagramWindowCommand" priority="0x0100" type="Button">
+                <Parent guid="guidMainMenuCommands" id="MainMenuCommands" />
+                <Icon guid="guidImages" id="bmpPic2" />
+                <Strings>
+                    <ButtonText>Show Diagram Window</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidMainMenuCommands" id="ClearDiagramCommand" priority="0x0101" type="Button">
+                <Parent guid="guidMainMenuCommands" id="MainMenuCommands" />
+                <Icon guid="guidImages" id="bmpPic1" />
+                <Strings>
+                    <ButtonText>Clear Diagram</ButtonText>
                 </Strings>
             </Button>
         </Buttons>
 
-        <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
         <Bitmaps>
-            <!--  The bitmap id is defined in a way that is a little bit different from the others:
-            the declaration starts with a guid for the bitmap strip, then there is the resource id of the
-            bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
-            inside a button definition. An important aspect of this declaration is that the element id
-            must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-            <Bitmap guid="guidImages" href="Resources\DiagramToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+            <Bitmap guid="guidImages" href="Resources\DiagramToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
         </Bitmaps>
     </Commands>
 
     <Symbols>
-        <!-- This is the package guid. -->
         <GuidSymbol name="guidSoftVisPackage" value="{198d9322-583a-4112-a2a8-61f4c0818966}" />
 
-        <!-- This is the guid used to group the menu commands together -->
-        <GuidSymbol name="guidSoftVisPackageCmdSet" value="{3ec3e947-3047-4579-a09e-921b99ce5789}">
-            <IDSymbol name="SoftVisMenuGroup" value="0x1020" />
-            <IDSymbol name="DiagramToolWindowCommandId" value="0x0100" />
+        <GuidSymbol name="guidDiagramMainMenu" value="{D45A1864-AB94-44FD-81CA-2602753B60D3}" >
+            <IDSymbol name="DiagramMainMenu" value="4128"  />
         </GuidSymbol>
 
-        <GuidSymbol name="guidImages" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}" >
+        <GuidSymbol name="guidMainMenuCommands" value="{17f0822e-ef7f-40f7-8e1a-788dde2cd2b8}" >
+            <IDSymbol name="MainMenuCommands" value="4128"  />
+            <IDSymbol name="ShowDiagramWindowCommand" value="256"/>
+            <IDSymbol name="ClearDiagramCommand" value="257"/>
+        </GuidSymbol>
+
+        <GuidSymbol name="guidCodeEditorContextMenuCommands" value="{3ec3e947-3047-4579-a09e-921b99ce5789}">
+            <IDSymbol name="CodeEditorCommands" value="4128" />
+            <IDSymbol name="AddToDiagramCommand" value="256" />
+        </GuidSymbol>
+        
+        <GuidSymbol name="guidImages" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">
             <IDSymbol name="bmpPic1" value="1" />
             <IDSymbol name="bmpPic2" value="2" />
             <IDSymbol name="bmpPicSearch" value="3" />
