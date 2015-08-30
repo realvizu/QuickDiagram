@@ -8,6 +8,12 @@
 
     <Style TargetType="{x:Type diagramFixtures:DiagramNodeControl}">
         <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="Ivory"/>
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontFamily" Value="Ariel" />
+        <Setter Property="ToolTip" Value="{Binding Path=Name}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type diagramFixtures:DiagramNodeControl}">
@@ -22,12 +28,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="BorderBrush" Value="Black"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Background" Value="Ivory"/>
-        <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="FontFamily" Value="Ariel" />
-        <Setter Property="FontSize" Value="12" />
     </Style>
 
     <DataTemplate DataType="{x:Type diagramming:ClassNode}">

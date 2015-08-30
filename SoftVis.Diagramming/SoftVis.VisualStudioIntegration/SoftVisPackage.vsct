@@ -66,6 +66,20 @@
                     <ButtonText>Clear Diagram</ButtonText>
                 </Strings>
             </Button>
+            <Button guid="guidMainMenuCommands" id="IncreaseFontSizeCommand" priority="0x0102" type="Button">
+                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" />
+                <Icon guid="guidImages" id="bmpPic1" />
+                <Strings>
+                    <ButtonText>Increase Font Size</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidMainMenuCommands" id="DecreaseFontSizeCommand" priority="0x0103" type="Button">
+                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" />
+                <Icon guid="guidImages" id="bmpPic2" />
+                <Strings>
+                    <ButtonText>Decrease Font Size</ButtonText>
+                </Strings>
+            </Button>
         </Buttons>
 
         <Bitmaps>
@@ -89,6 +103,8 @@
             <IDSymbol name="MainMenuCommands" value="4128"  />
             <IDSymbol name="ShowDiagramWindowCommand" value="256"/>
             <IDSymbol name="ClearDiagramCommand" value="257"/>
+            <IDSymbol name="IncreaseFontSizeCommand" value="258"/>
+            <IDSymbol name="DecreaseFontSizeCommand" value="259"/>
         </GuidSymbol>
 
         <GuidSymbol name="guidCodeEditorContextMenuCommands" value="{3ec3e947-3047-4579-a09e-921b99ce5789}">

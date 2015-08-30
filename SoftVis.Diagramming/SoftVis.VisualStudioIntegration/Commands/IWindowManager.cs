@@ -3,5 +3,7 @@
     public interface IWindowManager
     {
         void ShowDiagramWindow();
+        void IncreaseFontSize();
+        void DecreaseFontSize();
     }
 }

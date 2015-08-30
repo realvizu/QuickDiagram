@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:softvis="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
+             xmlns:this="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Presentation"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="DiagramToolWindow">
         
-    <softvis:DiagramCanvasControl x:Name="DiagramCanvasControl" Diagram="{Binding}" />
+    <softvis:DiagramCanvasControl x:Name="DiagramCanvasControl" 
+                                  Diagram="{Binding}" 
+                                  FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type this:DiagramToolWindowControl}}}" />
+
 </UserControl>

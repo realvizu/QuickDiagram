@@ -52,6 +52,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\DecreaseFontSizeCommand.cs" />
+    <Compile Include="Commands\IncreaseFontSizeCommand.cs" />
     <Compile Include="Commands\Constants.cs" />
     <Compile Include="Commands\ShowDiagramWindowCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />

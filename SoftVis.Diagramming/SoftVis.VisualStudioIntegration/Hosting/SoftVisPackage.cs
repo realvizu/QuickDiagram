@@ -26,6 +26,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static Microsoft.VisualStudio.OLE.Interop.IServiceProvider _globalServiceProvider;
 
+        private const double MinFontSize = 6;
+        private const double MaxFontSize = 24;
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -45,6 +48,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             _commands.Add(new ShowDiagramWindowCommand(this, this));
             _commands.Add(new ClearDiagramCommand(this, this));
             _commands.Add(new AddToDiagramCommand(this, this));
+            _commands.Add(new IncreaseFontSizeCommand(this, this));
+            _commands.Add(new DecreaseFontSizeCommand(this, this));
         }
 
         public static Microsoft.VisualStudio.OLE.Interop.IServiceProvider GlobalServiceProvider
@@ -65,6 +70,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var toolWindow = GetToolWindow();
             var windowFrame = (IVsWindowFrame)toolWindow.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        public void IncreaseFontSize()
+        {
+            var window = GetToolWindow();
+            window.FontSize = Math.Min(window.FontSize + 1, MaxFontSize);
+        }
+
+        public void DecreaseFontSize()
+        {
+            var window = GetToolWindow();
+            window.FontSize = Math.Max(window.FontSize - 1, MinFontSize);
         }
 
         private DiagramToolWindow GetToolWindow()
