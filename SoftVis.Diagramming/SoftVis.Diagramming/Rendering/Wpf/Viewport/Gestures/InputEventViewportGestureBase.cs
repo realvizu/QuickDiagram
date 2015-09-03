@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     {
         protected IInputElement InputElement { get; private set; }
 
-        protected InputEventViewportGestureBase(IViewport viewport, IInputElement inputElement)
-            : base(viewport)
+        protected InputEventViewportGestureBase(IDiagramViewport diagramViewport, IInputElement inputElement)
+            : base(diagramViewport)
         {
             InputElement = inputElement;
         }

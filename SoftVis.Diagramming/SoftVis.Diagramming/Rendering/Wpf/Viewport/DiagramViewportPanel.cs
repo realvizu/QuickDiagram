@@ -1,16 +1,14 @@
 ﻿using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Codartis.SoftVis.Rendering.Wpf.Viewport
 {
     /// <summary>
     /// Renders the visible part of a Diagram.
-    /// Manages and arranges controls created for diagram shapes.
     /// </summary>
-    internal partial class ViewportPanel : Panel, IViewport
+    internal partial class DiagramViewportPanel : DiagramPanelBase, IDiagramViewport
     {
         private double _zoom;
         private Size _sizeInScreenSpace;
@@ -20,7 +18,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport
         public Rect ViewportInDiagramSpace { get; private set; }
         public Transform DiagramSpaceToScreenSpace { get; private set; }
 
-        public ViewportPanel()
+        public DiagramViewportPanel()
         {
             _sizeInScreenSpace = Size.Empty;
             _zoom = 1.0;
@@ -43,8 +41,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport
 
         public Rect ContentInDiagramSpace
         {
-            get { return (Rect)GetValue(ContentInDiagramSpaceProperty); }
-            set { SetValue(ContentInDiagramSpaceProperty, value); }
+            get { return DiagramRect; }
         }
 
         public double Zoom

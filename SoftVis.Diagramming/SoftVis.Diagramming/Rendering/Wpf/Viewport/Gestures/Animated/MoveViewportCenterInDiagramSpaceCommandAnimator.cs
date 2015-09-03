@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures.Animated
 
         public override void BeginAnimation()
         {
-            var animation = new PointAnimation(_originalGesture.Viewport.ViewportInDiagramSpace.GetCenter(),
+            var animation = new PointAnimation(_originalGesture.DiagramViewport.ViewportInDiagramSpace.GetCenter(),
                 _originalCommand.NewCenterInDiagramSpace, _animationDuration)
             {
                 EasingFunction = _easingFunction

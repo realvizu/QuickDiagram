@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Windows.Media.Imaging;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -20,10 +21,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             Content = _diagramToolWindowControl;
         }
 
-        public double FontSize
+        public double DiagramFontSize
         {
             get { return _diagramToolWindowControl.FontSize; }
             set { _diagramToolWindowControl.FontSize = value; }
+        }
+
+        public BitmapSource GetDiagramAsBitmap()
+        {
+            return _diagramToolWindowControl.GetDiagramAsBitmap();
         }
     }
 }

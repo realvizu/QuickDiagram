@@ -9,6 +9,6 @@
             Sender = sender;
         }
 
-        internal abstract void Execute(IViewport viewport);
+        internal abstract void Execute(IDiagramViewport diagramViewport);
     }
 }

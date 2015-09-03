@@ -7,8 +7,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     /// </summary>
     internal class ZoomWidgetEventViewportGesture : WidgetEventViewportGestureBase
     {
-        public ZoomWidgetEventViewportGesture(IViewport viewport, IWidgetEventSource widgetEventSource)
-            : base(viewport, widgetEventSource)
+        public ZoomWidgetEventViewportGesture(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
+            : base(diagramViewport, widgetEventSource)
         {
             if (WidgetEventSource != null)
                 WidgetEventSource.Zoom += OnZoom;

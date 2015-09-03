@@ -12,8 +12,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
         private bool _isPanning;
         private Cursor _cursorBeforePanning;
 
-        public MousePanViewportGesture(IViewport viewport, IInputElement inputElement)
-            : base(viewport, inputElement)
+        public MousePanViewportGesture(IDiagramViewport diagramViewport, IInputElement inputElement)
+            : base(diagramViewport, inputElement)
         {
             InputElement.MouseLeftButtonDown += OnMouseLeftButtonDown;
             InputElement.MouseLeftButtonUp += OnMouseLeftButtonUp;
@@ -25,8 +25,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
             if (!_isPanning)
             {
                 _isPanning = true;
-                _cursorBeforePanning = Viewport.Cursor;
-                Viewport.Cursor = Cursors.Hand;
+                _cursorBeforePanning = DiagramViewport.Cursor;
+                DiagramViewport.Cursor = Cursors.Hand;
                 Mouse.Capture(InputElement);
             }
         }
@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
             if (_isPanning)
             {
                 _isPanning = false;
-                Viewport.Cursor = _cursorBeforePanning;
+                DiagramViewport.Cursor = _cursorBeforePanning;
                 Mouse.Capture(null);
             }
         }

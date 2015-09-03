@@ -10,9 +10,9 @@
             NewZoom = newZoom;
         }
 
-        internal override void Execute(IViewport viewport)
+        internal override void Execute(IDiagramViewport diagramViewport)
         {
-            viewport.ZoomTo(NewZoom);
+            diagramViewport.ZoomTo(NewZoom);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport
     /// <summary>
     /// Viewport is the visible part of the diagram. 
     /// </summary>
-    public interface IViewport : IAnimatable
+    public interface IDiagramViewport : IAnimatable
     {
         double MinZoom { get; }
         double MaxZoom { get; }

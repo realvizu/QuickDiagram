@@ -12,9 +12,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Commands
             NewSizeInScreenSpace = newSizeInScreenSpace;
         }
 
-        internal override void Execute(IViewport viewport)
+        internal override void Execute(IDiagramViewport diagramViewport)
         {
-            viewport.ResizeInScreenSpace(NewSizeInScreenSpace);
+            diagramViewport.ResizeInScreenSpace(NewSizeInScreenSpace);
         }
     }
 }

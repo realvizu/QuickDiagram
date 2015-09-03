@@ -12,6 +12,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
         internal static int ClearDiagramCommand = 257;
         internal static int IncreaseFontSizeCommand = 258;
         internal static int DecreaseFontSizeCommand = 259;
+        internal static int CopyToClipboradCommand = 260;
+        internal static int ExportToFileCommand = 261;
 
         internal static Guid ToolWindowToolbarCommands = new Guid("103E89FB-F029-4633-8482-B6435D4F35EF");
         internal static int ToolWindowToolbar = 4096;

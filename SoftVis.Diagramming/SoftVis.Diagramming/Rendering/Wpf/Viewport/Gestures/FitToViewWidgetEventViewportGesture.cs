@@ -10,8 +10,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     /// </summary>
     internal class FitToViewWidgetEventViewportGesture : WidgetEventViewportGestureBase
     {
-        public FitToViewWidgetEventViewportGesture(IViewport viewport, IWidgetEventSource widgetEventSource)
-            : base(viewport, widgetEventSource)
+        public FitToViewWidgetEventViewportGesture(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
+            : base(diagramViewport, widgetEventSource)
         {
             if (WidgetEventSource != null)
                 WidgetEventSource.FitToView += OnFitToView;
@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
         private void OnFitToView(object sender, EventArgs e)
         {
             var newZoom = CalculateZoom();
-            var contentCenter = Viewport.ContentInDiagramSpace.GetCenter();
+            var contentCenter = DiagramViewport.ContentInDiagramSpace.GetCenter();
             ZoomViewportTo(newZoom);
             MoveViewportCenterInDiagramSpaceTo(contentCenter);
         }
@@ -30,8 +30,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
             return new[]
             {
                 1.0,
-                Viewport.ViewportInScreenSpace.Size.Width / Viewport.ContentInDiagramSpace.Width,
-                Viewport.ViewportInScreenSpace.Size.Height / Viewport.ContentInDiagramSpace.Height,
+                DiagramViewport.ViewportInScreenSpace.Size.Width / DiagramViewport.ContentInDiagramSpace.Width,
+                DiagramViewport.ViewportInScreenSpace.Size.Height / DiagramViewport.ContentInDiagramSpace.Height,
             }.Min();
         }
     }

@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             var model = TestData.TestModel.Create();
             var diagram = TestData.TestDiagram.Create(model);
-            DiagramCanvasControl.DataContext = diagram;
+            DiagramViewerControl.DataContext = diagram;
         }
     }
 }

@@ -12,11 +12,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     {
         public event ViewportCommandHandler ViewportCommand;
 
-        public IViewport Viewport { get; private set; }
+        public IDiagramViewport DiagramViewport { get; private set; }
 
-        protected ViewportGestureBase(IViewport viewport)
+        protected ViewportGestureBase(IDiagramViewport diagramViewport)
         {
-            Viewport = viewport;
+            DiagramViewport = diagramViewport;
         }
 
         protected void ZoomViewportTo(double newZoom)
@@ -45,17 +45,17 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
         {
             var zoomSign = zoomDirection == ZoomDirection.In ? 1 : -1;
 
-            var linearZoom = ScaleCalculator.ExponentialToLinear(Viewport.Zoom, Viewport.MinZoom, Viewport.MaxZoom);
+            var linearZoom = ScaleCalculator.ExponentialToLinear(DiagramViewport.Zoom, DiagramViewport.MinZoom, DiagramViewport.MaxZoom);
             var newLinearZoom = linearZoom + (zoomAmount * zoomSign);
-            var newZoom = ScaleCalculator.LinearToExponential(newLinearZoom, Viewport.MinZoom, Viewport.MaxZoom);
+            var newZoom = ScaleCalculator.LinearToExponential(newLinearZoom, DiagramViewport.MinZoom, DiagramViewport.MaxZoom);
 
-            if (newZoom < Viewport.MinZoom)
+            if (newZoom < DiagramViewport.MinZoom)
             {
-                newZoom = Viewport.MinZoom;
+                newZoom = DiagramViewport.MinZoom;
             }
-            else if (newZoom > Viewport.MaxZoom)
+            else if (newZoom > DiagramViewport.MaxZoom)
             {
-                newZoom = Viewport.MaxZoom;
+                newZoom = DiagramViewport.MaxZoom;
             }
 
             return newZoom;
@@ -63,13 +63,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
 
         protected bool IsZoomLimitReached(ZoomDirection zoomDirection)
         {
-            return (zoomDirection == ZoomDirection.In && Viewport.Zoom >= Viewport.MaxZoom) ||
-                  (zoomDirection == ZoomDirection.Out && Viewport.Zoom <= Viewport.MinZoom);
+            return (zoomDirection == ZoomDirection.In && DiagramViewport.Zoom >= DiagramViewport.MaxZoom) ||
+                  (zoomDirection == ZoomDirection.Out && DiagramViewport.Zoom <= DiagramViewport.MinZoom);
         }
 
         protected void MoveViewportCenterInDiagramSpaceBy(Vector vectorInDiagramSpace)
         {
-            var newCenterInDiagramSpace = Viewport.ViewportInDiagramSpace.GetCenter() - vectorInDiagramSpace;
+            var newCenterInDiagramSpace = DiagramViewport.ViewportInDiagramSpace.GetCenter() - vectorInDiagramSpace;
             MoveViewportCenterInDiagramSpaceTo(newCenterInDiagramSpace);
         }
 
@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
 
         protected void MoveViewportCenterInScreenSpaceBy(Vector vectorInScreenSpace)
         {
-            var viewportCenterInScreenSpace = Viewport.ViewportInScreenSpace.GetCenter();
+            var viewportCenterInScreenSpace = DiagramViewport.ViewportInScreenSpace.GetCenter();
             var newCenterInScreenSpace = viewportCenterInScreenSpace + vectorInScreenSpace;
             MoveViewportCenterInScreenSpaceTo(newCenterInScreenSpace);
         }

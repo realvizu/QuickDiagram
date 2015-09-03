@@ -25,10 +25,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
         private int _verticalSpeed = 0;
         private bool[] _isKeyDown = new bool[(int)GestureKeys.Max + 1];
 
-        public KeyboardViewportGesture(IViewport viewport, IInputElement inputElement)
-            : base(viewport, inputElement)
+        public KeyboardViewportGesture(IDiagramViewport diagramViewport, IInputElement inputElement)
+            : base(diagramViewport, inputElement)
         {
-            var zoomRange = viewport.MaxZoom - viewport.MinZoom;
+            var zoomRange = diagramViewport.MaxZoom - diagramViewport.MinZoom;
             _zoomAmountPerSpeed = zoomRange / (_maxSpeed/2 * _framePerSeconds * _fullZoomSeconds);
 
             InputElement.PreviewKeyDown += OnKeyDown;

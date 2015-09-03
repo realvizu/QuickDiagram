@@ -23,9 +23,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures.Animated
             _animationDuration = new Duration(animationTimeSpan);
         }
 
-        public IViewport Viewport
+        public IDiagramViewport DiagramViewport
         {
-            get { return _originalGesture.Viewport; }
+            get { return _originalGesture.DiagramViewport; }
         }
 
         private void OnViewportCommand(object sender, ViewportCommandBase command)

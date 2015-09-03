@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     {
         protected IWidgetEventSource WidgetEventSource { get; private set; }
 
-        protected WidgetEventViewportGestureBase(IViewport viewport, IWidgetEventSource widgetEventSource)
-            : base(viewport)
+        protected WidgetEventViewportGestureBase(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
+            : base(diagramViewport)
         {
             WidgetEventSource = widgetEventSource;
         }

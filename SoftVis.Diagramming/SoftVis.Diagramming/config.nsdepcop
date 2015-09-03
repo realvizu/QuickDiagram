@@ -17,7 +17,7 @@
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Common.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.Common.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.DiagramFixtures" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport" To="Codartis.SoftVis.Rendering.Wpf.Viewport.*" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramFixtures" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures.*" To="Codartis.SoftVis.Rendering.Wpf.Viewport.Commands" />
 </NsDepCopConfig>

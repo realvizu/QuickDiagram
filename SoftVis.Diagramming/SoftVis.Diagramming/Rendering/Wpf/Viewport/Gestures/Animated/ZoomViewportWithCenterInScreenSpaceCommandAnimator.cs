@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures.Animated
         public override void BeginAnimation()
         {
             var originalSpecification = new ZoomWithCenterSpecification(
-                _originalGesture.Viewport.Zoom, _originalCommand.ZoomCenterInScreenSpace);
+                _originalGesture.DiagramViewport.Zoom, _originalCommand.ZoomCenterInScreenSpace);
 
             var newSpecification = new ZoomWithCenterSpecification(
                 _originalCommand.NewZoom, _originalCommand.ZoomCenterInScreenSpace);

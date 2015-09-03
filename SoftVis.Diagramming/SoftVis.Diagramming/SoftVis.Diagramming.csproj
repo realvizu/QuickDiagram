@@ -103,8 +103,12 @@
     <Compile Include="Rendering\Wpf\Common\PathFigureCollectionExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
     <Compile Include="Rendering\Wpf\Converters\DiagramConnectorToPathConverter.cs" />
-    <Compile Include="Rendering\Wpf\Viewport\ViewportPanel.DepProps.cs" />
-    <Compile Include="Rendering\Wpf\Viewport\ViewportPanel.cs" />
+    <Compile Include="Rendering\Wpf\DiagramPanelBase.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\DiagramPanelBase.cs" />
+    <Compile Include="Rendering\Wpf\ImageExport\SimpleDiagramPanel.cs" />
+    <Compile Include="Rendering\Wpf\ImageExport\ImageRenderer.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\DiagramViewportPanel.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\DiagramViewportPanel.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControl.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorControlFactory.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramShapeControlBase.cs" />
@@ -125,8 +129,8 @@
     <Compile Include="Rendering\Wpf\Viewport\Gestures\WidgetEventViewportGestureBase.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ZoomWithCenterSpecification.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\ZoomWithCenterSpecificationAnimation.cs" />
-    <Compile Include="Rendering\Wpf\DiagramCanvasControl.cs" />
-    <Compile Include="Rendering\Wpf\DiagramCanvasControl.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\DiagramViewerControl.cs" />
+    <Compile Include="Rendering\Wpf\DiagramViewerControl.DepProps.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramNodeControlFactory.cs" />
     <Compile Include="Rendering\Wpf\InputControls\PanAndZoomControl.DepProps.cs" />
     <Compile Include="Rendering\Wpf\InputControls\PanAndZoomControl.cs" />
@@ -139,7 +143,7 @@
     <Compile Include="Rendering\Common\UIEvents\ZoomEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\PanEventHandler.cs" />
     <Compile Include="Rendering\Common\UIEvents\ZoomEventHandler.cs" />
-    <Compile Include="Rendering\Wpf\Viewport\IViewport.cs" />
+    <Compile Include="Rendering\Wpf\Viewport\IDiagramViewport.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\IViewportGesture.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\MousePanViewportGesture.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\Animated\AnimatedViewportGesture.cs" />
@@ -169,7 +173,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Rendering\Wpf\DiagramCanvasControl.xaml">
+    <Page Include="Rendering\Wpf\DiagramViewerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

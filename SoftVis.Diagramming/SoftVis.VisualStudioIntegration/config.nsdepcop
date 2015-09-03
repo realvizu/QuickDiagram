@@ -11,6 +11,8 @@
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
+    <!-- ??? -->
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Runtime.InteropServices" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.CodeAnalysis.*" />
@@ -19,8 +21,15 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Presentation" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Presentation" />
+    <!-- Circular, eliminate -->
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Hosting" />
+    <!-- ??? -->
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="System.Windows.*" />
+    <!-- ??? -->
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="System.IO.*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" />

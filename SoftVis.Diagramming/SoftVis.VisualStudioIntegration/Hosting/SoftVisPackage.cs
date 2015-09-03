@@ -50,6 +50,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             _commands.Add(new AddToDiagramCommand(this, this));
             _commands.Add(new IncreaseFontSizeCommand(this, this));
             _commands.Add(new DecreaseFontSizeCommand(this, this));
+            _commands.Add(new CopyToClipboardCommand(this, this));
+            _commands.Add(new ExportToFileCommand(this, this));
         }
 
         public static Microsoft.VisualStudio.OLE.Interop.IServiceProvider GlobalServiceProvider
@@ -67,24 +69,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public void ShowDiagramWindow()
         {
-            var toolWindow = GetToolWindow();
+            var toolWindow = GetDiagramWindow();
             var windowFrame = (IVsWindowFrame)toolWindow.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
         public void IncreaseFontSize()
         {
-            var window = GetToolWindow();
-            window.FontSize = Math.Min(window.FontSize + 1, MaxFontSize);
+            var window = GetDiagramWindow();
+            window.DiagramFontSize = Math.Min(window.DiagramFontSize + 1, MaxFontSize);
         }
 
         public void DecreaseFontSize()
         {
-            var window = GetToolWindow();
-            window.FontSize = Math.Max(window.FontSize - 1, MinFontSize);
+            var window = GetDiagramWindow();
+            window.DiagramFontSize = Math.Max(window.DiagramFontSize - 1, MinFontSize);
         }
 
-        private DiagramToolWindow GetToolWindow()
+        public DiagramToolWindow GetDiagramWindow()
         {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.

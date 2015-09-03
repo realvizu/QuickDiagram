@@ -20,6 +20,15 @@
                     <CommandName>Diagram Window Toolbar</CommandName>
                 </Strings>
             </Menu>
+
+            <Menu guid="guidToolWindowToolbarCommands" id="ExportImageController" priority="0x0200" type="MenuController">
+                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup"/>
+                <CommandFlag>TextIsAnchorCommand</CommandFlag>
+                <Strings>
+                    <ButtonText>Export Image Controller</ButtonText>
+                    <CommandName>Export Image Controller</CommandName>
+                </Strings>
+            </Menu>
         </Menus>
         
         <Groups>
@@ -33,6 +42,10 @@
 
             <Group guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" priority="0x0000">
                 <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbar" />
+            </Group>
+
+            <Group guid="guidToolWindowToolbarCommands" id="ExportImageControllerGroup" priority="0x0600">
+                <Parent guid="guidToolWindowToolbarCommands" id="ExportImageController"/>
             </Group>
         </Groups>
 
@@ -80,6 +93,20 @@
                     <ButtonText>Decrease Font Size</ButtonText>
                 </Strings>
             </Button>
+
+            <Button guid="guidMainMenuCommands" id="CopyToClipboardCommand" priority="0x0104" type="Button">
+                <Parent guid="guidToolWindowToolbarCommands" id="ExportImageControllerGroup" />
+                <Strings>
+                    <ButtonText>Copy to Clipboard</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidMainMenuCommands" id="ExportToFileCommand" priority="0x0105" type="Button">
+                <Parent guid="guidToolWindowToolbarCommands" id="ExportImageControllerGroup" />
+                <Strings>
+                    <ButtonText>Export to File...</ButtonText>
+                </Strings>
+            </Button>
+
         </Buttons>
 
         <Bitmaps>
@@ -97,6 +124,8 @@
         <GuidSymbol name="guidToolWindowToolbarCommands" value="{103E89FB-F029-4633-8482-B6435D4F35EF}" >
             <IDSymbol name="ToolWindowToolbar" value="4096"  />
             <IDSymbol name="ToolWindowToolbarGroup" value="4176"  />
+            <IDSymbol name="ExportImageController" value="257" />
+            <IDSymbol name="ExportImageControllerGroup" value="513" />
         </GuidSymbol>
 
         <GuidSymbol name="guidMainMenuCommands" value="{17f0822e-ef7f-40f7-8e1a-788dde2cd2b8}" >
@@ -105,6 +134,8 @@
             <IDSymbol name="ClearDiagramCommand" value="257"/>
             <IDSymbol name="IncreaseFontSizeCommand" value="258"/>
             <IDSymbol name="DecreaseFontSizeCommand" value="259"/>
+            <IDSymbol name="CopyToClipboardCommand" value="260"/>
+            <IDSymbol name="ExportToFileCommand" value="261"/>
         </GuidSymbol>
 
         <GuidSymbol name="guidCodeEditorContextMenuCommands" value="{3ec3e947-3047-4579-a09e-921b99ce5789}">

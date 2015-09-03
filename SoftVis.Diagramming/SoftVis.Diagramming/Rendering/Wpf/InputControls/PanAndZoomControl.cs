@@ -28,6 +28,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
         private const string PART_PanDownRepeatButton = "PART_PanDownRepeatButton";
         private const string PART_CenterButton = "PART_CenterButton";
         private const double WidthPerHeightRatio = 3d / 10d;
+        private const double SmallIncrementRatio = 1d / 12d;
+        private const double LargeIncrementRatio = 1d / 6d;
 
         static PanAndZoomControl()
         {
@@ -78,8 +80,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
         {
             base.OnApplyTemplate();
 
-            SmallIncrement = (MaxZoom - MinZoom) / 10;
-            LargeIncrement = (MaxZoom - MinZoom) / 5;
+            SmallIncrement = (MaxZoom - MinZoom) / SmallIncrementRatio;
+            LargeIncrement = (MaxZoom - MinZoom) / LargeIncrementRatio;
 
             ((RepeatButton)GetTemplateChild(PART_PanUpRepeatButton)).Click += OnPanUp;
             ((RepeatButton)GetTemplateChild(PART_PanLeftRepeatButton)).Click += OnPanLeft;

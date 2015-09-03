@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures.Animated
 
         public override void BeginAnimation()
         {
-            var animation = new SizeAnimation(_originalGesture.Viewport.ViewportInScreenSpace.Size, 
+            var animation = new SizeAnimation(_originalGesture.DiagramViewport.ViewportInScreenSpace.Size, 
                 _originalCommand.NewSizeInScreenSpace, _animationDuration)
             {
                 EasingFunction = _easingFunction

@@ -10,6 +10,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     {
         event ViewportCommandHandler ViewportCommand;
 
-        IViewport Viewport { get; }
+        IDiagramViewport DiagramViewport { get; }
     }
 }

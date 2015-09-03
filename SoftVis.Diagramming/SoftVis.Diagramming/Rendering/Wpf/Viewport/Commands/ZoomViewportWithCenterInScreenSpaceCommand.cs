@@ -14,9 +14,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Commands
             ZoomCenterInScreenSpace = zoomCenterInScreenSpace;
         }
 
-        internal override void Execute(IViewport viewport)
+        internal override void Execute(IDiagramViewport diagramViewport)
         {
-            viewport.ZoomWithCenterInScreenSpace(NewZoom, ZoomCenterInScreenSpace);
+            diagramViewport.ZoomWithCenterInScreenSpace(NewZoom, ZoomCenterInScreenSpace);
         }
     }
 }

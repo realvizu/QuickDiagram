@@ -8,8 +8,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     /// </summary>
     internal class ResizeViewportGesture : WidgetEventViewportGestureBase
     {
-        public ResizeViewportGesture(IViewport viewport, IWidgetEventSource widgetEventSource)
-            : base(viewport, widgetEventSource)
+        public ResizeViewportGesture(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
+            : base(diagramViewport, widgetEventSource)
         {
             if (WidgetEventSource != null)
                 WidgetEventSource.Resize += Resize;

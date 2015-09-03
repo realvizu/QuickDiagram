@@ -11,8 +11,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures
     {
         private const double _panAmount = 50;
 
-        public PanWidgetEventViewportGesture(IViewport viewport, IWidgetEventSource widgetEventSource)
-            : base(viewport, widgetEventSource)
+        public PanWidgetEventViewportGesture(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
+            : base(diagramViewport, widgetEventSource)
         {
             if (WidgetEventSource != null)
                 WidgetEventSource.Pan += OnPan;

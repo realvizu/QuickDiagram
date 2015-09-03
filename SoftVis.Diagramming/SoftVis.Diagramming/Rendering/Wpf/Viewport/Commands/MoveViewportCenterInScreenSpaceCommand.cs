@@ -12,9 +12,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.Viewport.Commands
             NewCenterInScreenSpace = newCenterInScreenSpace;
         }
 
-        internal override void Execute(IViewport viewport)
+        internal override void Execute(IDiagramViewport diagramViewport)
         {
-            viewport.MoveCenterInScreenSpace(NewCenterInScreenSpace);
+            diagramViewport.MoveCenterInScreenSpace(NewCenterInScreenSpace);
         }
     }
 }

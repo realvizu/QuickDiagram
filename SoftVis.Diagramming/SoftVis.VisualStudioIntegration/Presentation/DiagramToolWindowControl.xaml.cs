@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
 {
@@ -15,7 +16,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
         {
             InitializeComponent();
 
-            DiagramCanvasControl.DataContext = DiagramBuilder.Instance.Diagram;
+            DiagramViewerControl.DataContext = DiagramBuilder.Instance.Diagram;
+        }
+
+        public BitmapSource GetDiagramAsBitmap()
+        {
+            return DiagramViewerControl.GetDiagramAsBitmap();
         }
     }
 }
