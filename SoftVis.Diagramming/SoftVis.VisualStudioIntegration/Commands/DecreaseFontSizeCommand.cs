@@ -4,13 +4,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
     internal sealed class DecreaseFontSizeCommand : CommandBase
     {
-        public DecreaseFontSizeCommand(IWindowManager windowManager, IServiceProvider serviceProvider)
-            : base(Constants.MainMenuCommands, Constants.DecreaseFontSizeCommand, windowManager, serviceProvider)
+        public DecreaseFontSizeCommand(IHostServices hostServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.DecreaseFontSizeCommand, hostServices)
         { }
 
-        protected override void Execute(object sender, EventArgs e)
+        public override void Execute(object sender, EventArgs e)
         {
-            _windowManager.DecreaseFontSize();
+            var diagramWindow = HostServices.GetDiagramWindow();
+            diagramWindow.DecreaseFontSize();
         }
     }
 }

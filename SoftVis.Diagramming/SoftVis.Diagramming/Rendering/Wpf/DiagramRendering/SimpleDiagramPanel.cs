@@ -1,10 +1,9 @@
-﻿using Codartis.SoftVis.Rendering.Wpf.Common;
-using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
+﻿using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
-namespace Codartis.SoftVis.Rendering.Wpf.ImageExport
+namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
     public class SimpleDiagramPanel : DiagramPanelBase
     {

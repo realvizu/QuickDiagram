@@ -1,6 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.ImageExport;
 using Codartis.SoftVis.Rendering.Wpf.InputControls;
 using Codartis.SoftVis.Rendering.Wpf.Viewport;

@@ -6,11 +6,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
     internal sealed class ExportToFileCommand : CommandBase
     {
-        public ExportToFileCommand(IWindowManager windowManager, IServiceProvider serviceProvider)
-            : base(Constants.MainMenuCommands, Constants.ExportToFileCommand, windowManager, serviceProvider)
+        public ExportToFileCommand(IHostServices hostServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.ExportToFileCommand, hostServices)
         { }
 
-        protected override void Execute(object sender, EventArgs e)
+        public override void Execute(object sender, EventArgs e)
         {
             // TODO: choose filename, save
         }

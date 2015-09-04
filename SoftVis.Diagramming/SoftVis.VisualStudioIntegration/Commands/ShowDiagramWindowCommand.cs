@@ -4,13 +4,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
     internal sealed class ShowDiagramWindowCommand : CommandBase
     {
-        public ShowDiagramWindowCommand(IWindowManager windowManager, IServiceProvider serviceProvider)
-            : base(Constants.MainMenuCommands, Constants.ShowDiagramWindowCommand, windowManager, serviceProvider)
+        public ShowDiagramWindowCommand(IHostServices hostServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.ShowDiagramWindowCommand, hostServices)
         { }
 
-        protected override void Execute(object sender, EventArgs e)
+        public override void Execute(object sender, EventArgs e)
         {
-            _windowManager.ShowDiagramWindow();
+            var diagramWindow = HostServices.GetDiagramWindow();
+            diagramWindow.Show();
         }
     }
 }

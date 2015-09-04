@@ -102,10 +102,10 @@
     <Compile Include="Common\IEnumerableExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\PathFigureCollectionExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
-    <Compile Include="Rendering\Wpf\Converters\DiagramConnectorToPathConverter.cs" />
-    <Compile Include="Rendering\Wpf\DiagramPanelBase.DepProps.cs" />
-    <Compile Include="Rendering\Wpf\DiagramPanelBase.cs" />
-    <Compile Include="Rendering\Wpf\ImageExport\SimpleDiagramPanel.cs" />
+    <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramConnectorToPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\DiagramPanelBase.DepProps.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\DiagramPanelBase.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
     <Compile Include="Rendering\Wpf\ImageExport\ImageRenderer.cs" />
     <Compile Include="Rendering\Wpf\Viewport\DiagramViewportPanel.DepProps.cs" />
     <Compile Include="Rendering\Wpf\Viewport\DiagramViewportPanel.cs" />
@@ -150,7 +150,7 @@
     <Compile Include="Rendering\Wpf\Viewport\Gestures\KeyboardViewportGesture.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\MouseZoomViewportGesture.cs" />
     <Compile Include="Rendering\Wpf\Viewport\Gestures\ViewportGestureBase.cs" />
-    <Compile Include="Rendering\Wpf\Converters\DoubleMultiplierConverter.cs" />
+    <Compile Include="Rendering\Wpf\Common\DoubleMultiplierConverter.cs" />
     <Compile Include="Rendering\Wpf\DiagramFixtures\DiagramNodeControl.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -186,7 +186,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Rendering\Wpf\DiagramRendering\Fixtures\" />
+    <Folder Include="Rendering\Wpf\DiagramRendering\Viewport\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

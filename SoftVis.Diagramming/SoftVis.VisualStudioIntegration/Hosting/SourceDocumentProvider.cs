@@ -7,8 +7,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -16,27 +14,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     {
         private const string CSHARP_CONTENTTYPE_NAME = "CSharp";
 
-        private readonly SoftVisPackage _package;
+        private readonly IHostServiceProvider _hostServiceProvider;
         private uint _runningDocumentTableCookie;
         private IVsRunningDocumentTable _runningDocumentTable;
 
         public IWpfTextView ActiveWpfTextView { get; private set; }
 
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider
+        public SourceDocumentProvider(IHostServiceProvider hostServiceProvider)
         {
-            get { return _package; }
-        }
-
-        public SourceDocumentProvider(SoftVisPackage package)
-        {
-            if (package == null)
-                throw new ArgumentNullException(nameof(package));
-
-            _package = package;
-
+            _hostServiceProvider = hostServiceProvider;
             InitializeRunningDocumentTable();
         }
 
@@ -67,7 +53,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
         {
-            IWpfTextView wpfTextView = VsWindowFrameToWpfTextView(pFrame);
+            var wpfTextView = VsWindowFrameToWpfTextView(pFrame);
             if (wpfTextView != null)
             {
                 var contentType = wpfTextView.TextBuffer.ContentType;
@@ -96,9 +82,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public TextSpan GetSelection()
         {
-            var span = ActiveWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
-            Debug.Assert(span != null);
-            return new TextSpan(span.Start, span.Length);
+            var visualStudioSpan = ActiveWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
+            var roslynSpan = new TextSpan(visualStudioSpan.Start, visualStudioSpan.Length);
+            return roslynSpan;
         }
 
         public Workspace GetWorkspace()
@@ -140,7 +126,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             get
             {
                 if (_runningDocumentTable == null)
-                    _runningDocumentTable = GetService<IVsRunningDocumentTable, SVsRunningDocumentTable>(SoftVisPackage.GlobalServiceProvider);
+                    _runningDocumentTable = _hostServiceProvider.GetService<IVsRunningDocumentTable, SVsRunningDocumentTable>();
                 return _runningDocumentTable;
             }
         }
@@ -149,37 +135,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             if ((int)_runningDocumentTableCookie == 0)
                 return;
-            _runningDocumentTable.UnadviseRunningDocTableEvents(this._runningDocumentTableCookie);
+            _runningDocumentTable.UnadviseRunningDocTableEvents(_runningDocumentTableCookie);
             _runningDocumentTableCookie = 0U;
-        }
-
-        private static TServiceInterface GetService<TServiceInterface, TService>(Microsoft.VisualStudio.OLE.Interop.IServiceProvider serviceProvider) where TServiceInterface : class where TService : class
-        {
-            return (TServiceInterface)GetService(serviceProvider, typeof(TService).GUID, false);
-        }
-
-        private static object GetService(Microsoft.VisualStudio.OLE.Interop.IServiceProvider serviceProvider, Guid guidService, bool unique)
-        {
-            var riid = VSConstants.IID_IUnknown;
-            var ppvObject = IntPtr.Zero;
-            object obj = null;
-            if (serviceProvider.QueryService(ref guidService, ref riid, out ppvObject) == 0)
-            {
-                if (ppvObject != IntPtr.Zero)
-                {
-                    try
-                    {
-                        obj = !unique 
-                            ? Marshal.GetObjectForIUnknown(ppvObject) 
-                            : Marshal.GetUniqueObjectForIUnknown(ppvObject);
-                    }
-                    finally
-                    {
-                        Marshal.Release(ppvObject);
-                    }
-                }
-            }
-            return obj;
         }
     }
 }

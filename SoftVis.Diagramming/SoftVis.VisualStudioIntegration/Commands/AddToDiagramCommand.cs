@@ -1,18 +1,19 @@
-﻿using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
-using System;
+﻿using System;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
     internal sealed class AddToDiagramCommand : CommandBase
     {
-        public AddToDiagramCommand(IWindowManager windowManager, IServiceProvider serviceProvider)
-            : base(Constants.CodeEditorContextMenuCommands, Constants.AddToDiagramCommand, windowManager, serviceProvider)
-        { }
-
-        protected override void Execute(object sender, EventArgs e)
+        public AddToDiagramCommand(IHostServices hostServices)
+            :base(VsctConstants.CodeEditorContextMenuCommands, VsctConstants.AddToDiagramCommand, hostServices)
         {
-            _windowManager.ShowDiagramWindow();
-            DiagramBuilder.Instance.AddCurrentSymbol();
+        }
+
+        public override void Execute(object sender, EventArgs e)
+        {
+            var diagramWindow = HostServices.GetDiagramWindow();
+            diagramWindow.Show();
+            diagramWindow.AddCurrentSymbol();
         }
     }
 }

@@ -12,12 +12,19 @@
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.Layout" />
+    
     <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Diagramming" />
+    
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Rendering.Wpf.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Common.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.Common.*" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.DiagramFixtures" />
+
+    <!-- Move DiagramFixtures and Viewport under DiagramRendering to simplify these. -->
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramFixtures" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.Viewport.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport" To="Codartis.SoftVis.Rendering.Wpf.Viewport.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramFixtures" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.Viewport.Gestures.*" To="Codartis.SoftVis.Rendering.Wpf.Viewport.Commands" />
 </NsDepCopConfig>

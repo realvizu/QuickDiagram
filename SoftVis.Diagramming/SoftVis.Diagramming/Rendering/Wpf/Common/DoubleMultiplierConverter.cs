@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Converters
+namespace Codartis.SoftVis.Rendering.Wpf.Common
 {
     public class DoubleMultiplierConverter : IValueConverter
     {

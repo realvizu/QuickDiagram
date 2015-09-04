@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using System.Windows;
 using System.Windows.Media;
 

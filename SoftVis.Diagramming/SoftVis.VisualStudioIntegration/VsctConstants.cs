@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration
 {
-    internal static class Constants
+    internal static class VsctConstants
     {
         internal static Guid CodeEditorContextMenuCommands = new Guid("3ec3e947-3047-4579-a09e-921b99ce5789");
         internal static int AddToDiagramCommand = 256;

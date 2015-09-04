@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Codartis.SoftVis.Rendering.Wpf
+namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
     /// <summary>
     /// Manages controls created for diagram shapes.

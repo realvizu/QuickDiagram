@@ -25,7 +25,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Codartis.SoftVis.VisualStudioIntegration</RootNamespace>
-    <AssemblyName>ClassInheritanceDiagramTool</AssemblyName>
+    <AssemblyName>DiagramTool</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -54,21 +54,20 @@
   <ItemGroup>
     <Compile Include="Commands\ExportToFileCommand.cs" />
     <Compile Include="Commands\DecreaseFontSizeCommand.cs" />
+    <Compile Include="Presentation\IDiagramWindow.cs" />
     <Compile Include="Commands\IncreaseFontSizeCommand.cs" />
-    <Compile Include="Commands\Constants.cs" />
+    <Compile Include="VsctConstants.cs" />
     <Compile Include="Commands\CopyToClipboardCommand.cs" />
     <Compile Include="Commands\ShowDiagramWindowCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\ClearDiagramCommand.cs" />
-    <Compile Include="Commands\IWindowManager.cs" />
+    <Compile Include="Commands\IHostServices.cs" />
     <Compile Include="Diagramming\DescendantsFinderVisitor.cs" />
     <Compile Include="Diagramming\DiagramBuilder.cs" />
     <Compile Include="Diagramming\ISourceDocumentProvider.cs" />
-    <Compile Include="Hosting\DiagramToolWindow.cs" />
+    <Compile Include="Presentation\DiagramToolWindow.cs" />
     <Compile Include="Commands\AddToDiagramCommand.cs" />
-    <Compile Include="Presentation\DiagramToolWindowControl.xaml.cs">
-      <DependentUpon>DiagramToolWindowControl.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Hosting\IHostServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoslynBasedModel\INamedTypeSymbolExtensions.cs" />
     <Compile Include="RoslynBasedModel\RoslynBasedUmlModel.cs" />
@@ -274,12 +273,6 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Presentation\DiagramToolWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftVis.Diagramming\SoftVis.Diagramming.csproj">

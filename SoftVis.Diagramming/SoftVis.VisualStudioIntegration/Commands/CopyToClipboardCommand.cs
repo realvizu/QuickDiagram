@@ -5,13 +5,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
     internal sealed class CopyToClipboardCommand : CommandBase
     {
-        public CopyToClipboardCommand(IWindowManager windowManager, IServiceProvider serviceProvider)
-            : base(Constants.MainMenuCommands, Constants.CopyToClipboradCommand, windowManager, serviceProvider)
+        public CopyToClipboardCommand(IHostServices hostServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.CopyToClipboradCommand, hostServices)
         { }
 
-        protected override void Execute(object sender, EventArgs e)
+        public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = _windowManager.GetDiagramWindow();
+            var diagramWindow = HostServices.GetDiagramWindow();
             var bitmap = diagramWindow.GetDiagramAsBitmap();
             Clipboard.SetImage(bitmap);
         }

@@ -1,7 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using System.Windows;
 
-namespace Codartis.SoftVis.Rendering.Wpf
+namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
     public partial class DiagramPanelBase
     {

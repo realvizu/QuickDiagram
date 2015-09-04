@@ -8,7 +8,7 @@ using System.Windows.Media;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Converters
+namespace Codartis.SoftVis.Rendering.Wpf.DiagramFixtures
 {
     public class DiagramConnectorToPathConverter : IMultiValueConverter
     {

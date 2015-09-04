@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:diagramFixtures="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramFixtures"
-                    xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Converters"
+                    xmlns:common="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common"
                     xmlns:diagramming="clr-namespace:Codartis.SoftVis.Diagramming">
 
-    <converters:DiagramConnectorToPathConverter x:Key="DiagramConnectorToPathConverter" />
-    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    <common:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    <diagramFixtures:DiagramConnectorToPathConverter x:Key="DiagramConnectorToPathConverter" />
 
     <Style TargetType="{x:Type diagramFixtures:DiagramConnectorControl}">
         <Setter Property="IsTabStop" Value="False" />

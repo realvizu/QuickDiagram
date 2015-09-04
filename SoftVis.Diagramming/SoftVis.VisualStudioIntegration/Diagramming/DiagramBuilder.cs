@@ -8,22 +8,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
     public class DiagramBuilder
     {
-        public static DiagramBuilder Instance { get; private set; }
-
         private readonly ISourceDocumentProvider _sourceDocumentProvider;
         private readonly RoslynBasedUmlModel _model;
         private readonly Diagram _diagram;
 
-        private DiagramBuilder(ISourceDocumentProvider sourceDocumentProvider)
+        public DiagramBuilder(ISourceDocumentProvider sourceDocumentProvider)
         {
             _sourceDocumentProvider = sourceDocumentProvider;
             _model = new RoslynBasedUmlModel();
             _diagram = new Diagram();
-        }
-
-        public static void Initialize(ISourceDocumentProvider sourceDocumentProvider)
-        {
-            Instance = new DiagramBuilder(sourceDocumentProvider);
         }
 
         public Diagram Diagram

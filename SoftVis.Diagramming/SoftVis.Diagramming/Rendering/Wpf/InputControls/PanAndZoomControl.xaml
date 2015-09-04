@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:inputControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.InputControls"
-                    xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Converters">
+                    xmlns:common="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common">
 
-    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    <common:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
     <Style x:Key="RepeatButtonStyleBase" TargetType="{x:Type RepeatButton}">
         <Setter Property="IsTabStop" Value="false" />
