@@ -12,5 +12,6 @@
         public virtual TResult Visit(UmlClass item) { return default(TResult); }
         public virtual TResult Visit(UmlInterface item) { return default(TResult); }
         public virtual TResult Visit(UmlGeneralization item) { return default(TResult); }
+        public virtual TResult Visit(UmlDependency item) { return default(TResult); }
     }
 }

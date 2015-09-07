@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
 using Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         {
             _sourceDocumentProvider = sourceDocumentProvider;
             _model = new RoslynBasedUmlModel();
-            _diagram = new Diagram();
+            _diagram = new BindableDiagram();
         }
 
         public Diagram Diagram

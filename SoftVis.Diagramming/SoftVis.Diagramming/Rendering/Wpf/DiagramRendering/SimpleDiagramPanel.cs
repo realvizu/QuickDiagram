@@ -1,31 +1,17 @@
-﻿using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
     public class SimpleDiagramPanel : DiagramPanelBase
     {
-        //protected override Size MeasureOverride(Size availableSize)
-        //{
-        //    base.MeasureOverride(availableSize);
-
-        //    foreach (var child in Children.OfType<DiagramShapeControlBase>())
-        //        child.Measure(child.Rect.Size);
-
-        //    var desiredSize = Children.OfType<DiagramShapeControlBase>().Select(i => i.Rect).Union().Size;
-        //    return desiredSize;
-        //}
-
         protected override Size ArrangeOverride(Size arrangeSize)
         {
-            base.ArrangeOverride(arrangeSize);
-
             foreach (var child in Children.OfType<DiagramShapeControlBase>())
             {
-                child.Update();
-                child.Arrange(new Rect(child.Rect.X - DiagramRect.X, child.Rect.Y - DiagramRect.Y, child.Rect.Width, child.Rect.Height));
+                var position = (Point)(child.Position - ContentRect.TopLeft);
+                child.Arrange(new Rect(position, child.DesiredSize));
             }
 
             return arrangeSize;

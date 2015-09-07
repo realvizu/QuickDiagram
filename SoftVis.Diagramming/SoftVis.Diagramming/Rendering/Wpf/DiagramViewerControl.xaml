@@ -1,9 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:softVis="clr-namespace:Codartis.SoftVis.Rendering.Wpf"
-                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Viewport"
                     xmlns:inputControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.InputControls"
-                    xmlns:imageExport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.ImageExport">
+                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport">
 
     <Style TargetType="{x:Type softVis:DiagramViewerControl}">
         <Setter Property="MinZoom" Value="0.2"/>
@@ -18,12 +17,12 @@
                 <ControlTemplate TargetType="{x:Type softVis:DiagramViewerControl}">
                     <Canvas>
                         <viewport:DiagramViewportPanel x:Name="PART_DiagramViewportPanel" 
-                                                Focusable="False"
-                                                ClipToBounds="True" 
-                                                Background="Beige"
-                                                Diagram="{TemplateBinding Diagram}"
-                                                MinZoom="{TemplateBinding MinZoom}" 
-                                                MaxZoom="{TemplateBinding MaxZoom}" />
+                                                       Focusable="False"
+                                                       ClipToBounds="True" 
+                                                       Background="Beige"
+                                                       Diagram="{TemplateBinding Diagram}"
+                                                       MinZoom="{TemplateBinding MinZoom}" 
+                                                       MaxZoom="{TemplateBinding MaxZoom}" />
 
                         <inputControls:PanAndZoomControl x:Name="PART_PanAndZoomControl" 
                                                          Focusable="False"

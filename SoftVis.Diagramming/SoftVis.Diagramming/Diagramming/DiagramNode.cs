@@ -6,25 +6,33 @@ namespace Codartis.SoftVis.Diagramming
     [DebuggerDisplay("{Name}")]
     public abstract class DiagramNode : DiagramShape
     {
-        private DiagramRect _rect;
-
-        public string Name { get; private set; }
+        private readonly string _name;
+        private DiagramPoint _position;
+        private DiagramSize _size;
 
         protected DiagramNode(UmlModelElement modelElement, string name, DiagramPoint position, DiagramSize size)
             :base(modelElement)
         {
-            Name = name;
-            _rect = new DiagramRect(position, size);
+            _name = name;
+            _position = position;
+            _size = size;
         }
 
-        public override DiagramRect Rect
+        public string Name
         {
-            get { return _rect; }
+            get { return _name; }
         }
 
-        public void Reposition(DiagramPoint newPosition)
+        public virtual DiagramPoint Position
         {
-            _rect = new DiagramRect(newPosition, _rect.Size);
+            get { return _position; }
+            set { _position = value; }
+        }
+
+        public virtual DiagramSize Size
+        {
+            get { return _size; }
+            set { _size = value; }
         }
 
         public override string ToString()

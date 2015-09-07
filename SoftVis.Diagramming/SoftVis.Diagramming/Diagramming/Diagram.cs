@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Codartis.SoftVis.Diagramming.Layout;
+﻿using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Modeling;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -24,20 +24,8 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeRemoved;
         public event EventHandler Cleared;
 
-        public IEnumerable<DiagramNode> Nodes
-        {
-            get { return _graph.Vertices.OfType<DiagramNode>(); }
-        }
-
-        public IEnumerable<DiagramConnector> Connectors
-        {
-            get { return _graph.Edges.OfType<DiagramConnector>(); }
-        }
-
-        public DiagramRect GetEnclosingRect()
-        {
-            return Nodes.Select(i => i.Rect).Union();
-        }
+        public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
+        public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
 
         public void Clear()
         {
@@ -47,6 +35,7 @@ namespace Codartis.SoftVis.Diagramming
 
         public void ShowModelElement(UmlModelElement modelElement)
         {
+            // TODO: replace type checks with polimorphism?
             if (modelElement is UmlTypeOrPackage)
             {
                 ShowUmlTypeOrPackage((UmlTypeOrPackage)modelElement);
@@ -57,12 +46,22 @@ namespace Codartis.SoftVis.Diagramming
             }
         }
 
+        protected virtual DiagramNode CreateDiagramNode(UmlTypeOrPackage umlTypeOrPackage)
+        {
+            return ModelToDiagramNodeTranslator.Translate(umlTypeOrPackage);
+        }
+
+        protected virtual DiagramConnector CreateDiagramConnector(UmlRelationship umlRelationship)
+        {
+            return ModelToDiagramConnectorTranslator.Translate(_graph, umlRelationship);
+        }
+
         private void ShowUmlTypeOrPackage(UmlTypeOrPackage umlTypeOrPackage)
         {
             if (_graph.Vertices.Any(i => i.ModelElement == umlTypeOrPackage))
                 return;
 
-            var node = ModelToNodeTranslator.Translate(umlTypeOrPackage);
+            var node = CreateDiagramNode(umlTypeOrPackage);
             _graph.AddVertex(node);
             SignalShapeAddedEvent(node);
 
@@ -81,33 +80,29 @@ namespace Codartis.SoftVis.Diagramming
             if (_graph.Edges.Any(i => i.ModelElement == umlRelationship))
                 return;
 
-            var connector = ModelToConnectorTranslator.Translate(_graph, umlRelationship);
+            var connector = CreateDiagramConnector(umlRelationship);
             _graph.AddEdge(connector);
             SignalShapeAddedEvent(connector);
         }
 
         private void SignalShapeAddedEvent(DiagramShape shape)
         {
-            if (shape != null && ShapeAdded != null)
-                ShapeAdded(this, shape);
+            ShapeAdded?.Invoke(this, shape);
         }
 
         private void SignalShapeModifiedEvent(DiagramShape shape)
         {
-            if (shape != null && ShapeModified != null)
-                ShapeModified(this, shape);
+            ShapeModified?.Invoke(this, shape);
         }
 
         private void SignalShapeRemovedEvent(DiagramShape shape)
         {
-            if (shape != null && ShapeRemoved != null)
-                ShapeRemoved(this, shape);
+            ShapeRemoved?.Invoke(this, shape);
         }
 
         private void SignalClearedEvent()
         {
-            if (Cleared != null)
-                Cleared(this, EventArgs.Empty);
+            Cleared?.Invoke(this, EventArgs.Empty);
         }
 
         public void HideModelElement(UmlModelElement modelElement)
@@ -119,8 +114,6 @@ namespace Codartis.SoftVis.Diagramming
 
         public void Layout()
         {
-            Debug.WriteLine("Layout vertices {0}, edges {1}.", _graph.VertexCount, _graph.EdgeCount);
-
             var algorithm = new SimpleTreeLayoutAlgorithm(_graph);
             var newVertexPositions = algorithm.ComputeNewVertexPositions();
 

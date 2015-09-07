@@ -8,9 +8,6 @@ namespace Codartis.SoftVis.Rendering.Wpf
         public static readonly DependencyProperty DiagramProperty =
             DependencyProperty.Register("Diagram", typeof(Diagram), typeof(DiagramViewerControl));
 
-        public static readonly DependencyProperty DiagramRectProperty =
-            DependencyProperty.Register("DiagramRect", typeof(Rect), typeof(DiagramViewerControl));
-
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewerControl));
 

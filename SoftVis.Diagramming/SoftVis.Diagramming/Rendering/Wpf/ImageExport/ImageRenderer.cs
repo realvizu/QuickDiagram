@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.ImageExport
             Debug.WriteLine("RenderUIElementToBitmap");
 
             var scale = targetDpi / _defaultDpi;
-            var bounds = new Rect(new Point(0, 0), uiElement.RenderSize);
+            var bounds = new Rect(new Point(0, 0), uiElement.DesiredSize);
 
             var drawingVisual = new DrawingVisual();
             using (var drawingContext = drawingVisual.RenderOpen())

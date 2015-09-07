@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace Codartis.SoftVis.Modeling
 {
+    [DebuggerDisplay("Interface: {Name}")]
     public class UmlInterface : UmlType
     {
         public override TResult AcceptVisitor<TResult>(UmlModelVisitorBase<TResult> visitor)

@@ -1,31 +1,30 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
-using Codartis.SoftVis.Rendering.Wpf.DiagramFixtures;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
     /// <summary>
     /// Manages controls created for diagram shapes.
     /// </summary>
-    public abstract partial class DiagramPanelBase : Panel
+    public abstract class DiagramPanelBase : Panel
     {
         private readonly Dictionary<DiagramShape, DiagramShapeControlBase> _diagramShapeControls =
             new Dictionary<DiagramShape, DiagramShapeControlBase>();
+
+        public static readonly DependencyProperty DiagramProperty =
+            DependencyProperty.Register("Diagram", typeof(Diagram), typeof(DiagramPanelBase),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, Diagram_PropertyChanged));
 
         public Diagram Diagram
         {
             get { return (Diagram)GetValue(DiagramProperty); }
             set { SetValue(DiagramProperty, value); }
-        }
-
-        public Rect DiagramRect
-        {
-            get { return (Rect)GetValue(DiagramRectProperty); }
-            set { SetValue(DiagramRectProperty, value); }
         }
 
         private static void Diagram_PropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
@@ -40,15 +39,20 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             diagram.Cleared += diagramPanel.OnDiagramCleared;
         }
 
-        protected virtual void OnDiagramChanged()
+        protected Rect ContentRect { get; private set; }
+
+        protected override Size MeasureOverride(Size availableSize)
         {
-            DiagramRect = Diagram.GetEnclosingRect().ToWpf();
+            foreach (var child in Children.OfType<DiagramShapeControlBase>())
+                child.Measure(availableSize);
+
+            ContentRect = Children.OfType<DiagramShapeControlBase>().Select(i => i.Rect).Union();
+            return ContentRect.Size;
         }
 
         private void AddDiagram(Diagram diagram)
         {
             AddAllGraphElements(diagram);
-            OnDiagramChanged();
         }
 
         private void OnShapeAdded(object sender, DiagramShape shape)
@@ -60,18 +64,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
                 CreateDiagramNodeControl((DiagramNode)shape);
             else if (shape is DiagramConnector)
                 CreateDiagramConnectorControl((DiagramConnector)shape);
-
-            OnDiagramChanged();
         }
 
         private void OnShapeModified(object sender, DiagramShape shape)
         {
-            if (!_diagramShapeControls.ContainsKey(shape))
-                return;
-
-            _diagramShapeControls[shape].Update();
-
-            OnDiagramChanged();
         }
 
         private void OnShapeRemoved(object sender, DiagramShape shape)
@@ -80,16 +76,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
                 return;
 
             RemoveDiagramShapeControl(shape);
-
-            OnDiagramChanged();
         }
 
         private void OnDiagramCleared(object sender, EventArgs e)
         {
             Children.Clear();
             _diagramShapeControls.Clear();
-
-            OnDiagramChanged();
         }
 
         private void AddAllGraphElements(Diagram diagram)
@@ -103,14 +95,14 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
         private void CreateDiagramNodeControl(DiagramNode diagramNode)
         {
-            var control = DiagramNodeControlFactory.CreateFrom(diagramNode);
+            var control = new DiagramNodeControl { DataContext = diagramNode };
             _diagramShapeControls.Add(diagramNode, control);
             Children.Add(control);
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
         {
-            var control = DiagramConnectorControlFactory.CreateFrom(diagramConnector, _diagramShapeControls);
+            var control = new DiagramConnectorControl { DataContext = diagramConnector };
             _diagramShapeControls.Add(diagramConnector, control);
             Children.Add(control);
         }

@@ -10,8 +10,6 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public class DiagramGraph : BidirectionalGraph<DiagramNode, DiagramConnector>
     {
-        public DiagramSize Size { get; set; }
-
         public DiagramNode FindNode(UmlModelElement umlModelElement)
         {
             return Vertices.FirstOrDefault(i => i.ModelElement == umlModelElement);
@@ -22,9 +20,7 @@ namespace Codartis.SoftVis.Diagramming
             if (nodePositions != null && nodePositions.Any())
             {
                 foreach (var vertex in Vertices)
-                    vertex.Reposition(nodePositions[vertex]);
-                foreach (var edge in Edges)
-                    edge.RecalculatePosition();
+                    vertex.Position = nodePositions[vertex];
             }
         }
     }

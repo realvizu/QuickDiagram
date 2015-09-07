@@ -80,8 +80,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
         {
             base.OnApplyTemplate();
 
-            SmallIncrement = (MaxZoom - MinZoom) / SmallIncrementRatio;
-            LargeIncrement = (MaxZoom - MinZoom) / LargeIncrementRatio;
+            SmallIncrement = (MaxZoom - MinZoom) * SmallIncrementRatio;
+            LargeIncrement = (MaxZoom - MinZoom) * LargeIncrementRatio;
 
             ((RepeatButton)GetTemplateChild(PART_PanUpRepeatButton)).Click += OnPanUp;
             ((RepeatButton)GetTemplateChild(PART_PanLeftRepeatButton)).Click += OnPanLeft;

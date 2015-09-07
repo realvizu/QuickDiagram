@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Codartis.SoftVis.Modeling
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("TypeOrPackage: {Name}")]
     public abstract class UmlTypeOrPackage : UmlModelElement
     {
-        public virtual string Name { get; set; }
+        protected string _name;
+
+        public virtual string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
 
         public abstract IEnumerable<UmlRelationship> OutgoingRelationships { get; }
     }

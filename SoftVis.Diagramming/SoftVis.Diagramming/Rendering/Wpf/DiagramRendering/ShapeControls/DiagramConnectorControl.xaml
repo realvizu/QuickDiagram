@@ -1,0 +1,46 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:common="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common"
+                    xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls">
+
+    <common:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    <common:DiagramRectToWpfConverter x:Key="DiagramRectToWpfConverter" />
+    <common:RectUnionConverter x:Key="RectUnionConverter" />
+    <shapeControls:DiagramConnectorToPathConverter x:Key="DiagramConnectorToPathConverter" />
+
+    <Style TargetType="{x:Type shapeControls:DiagramConnectorControl}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="SourceRect" Value="{Binding Path=Source.Rect, Converter={StaticResource DiagramRectToWpfConverter}}" />
+        <Setter Property="TargetRect" Value="{Binding Path=Target.Rect, Converter={StaticResource DiagramRectToWpfConverter}}" />
+        <Setter Property="Rect">
+            <Setter.Value>
+                <MultiBinding Converter="{StaticResource RectUnionConverter}">
+                    <Binding RelativeSource="{RelativeSource Self}" Path="SourceRect" />
+                    <Binding RelativeSource="{RelativeSource Self}" Path="TargetRect" />
+                </MultiBinding>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type shapeControls:DiagramConnectorControl}">
+                    <Path Stroke="{TemplateBinding Foreground}"
+                          Fill="{TemplateBinding Background}"
+                          StrokeThickness="1">
+                        <Path.Data>
+                            <PathGeometry>
+                                <PathGeometry.Figures>
+                                    <MultiBinding Converter="{StaticResource DiagramConnectorToPathConverter}">
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="SourceRect" />
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="TargetRect" />
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
+                                    </MultiBinding>
+                                </PathGeometry.Figures>
+                            </PathGeometry>
+                        </Path.Data>
+                    </Path>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

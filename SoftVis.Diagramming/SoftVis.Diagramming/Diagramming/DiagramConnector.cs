@@ -9,33 +9,20 @@ namespace Codartis.SoftVis.Diagramming
     [DebuggerDisplay("{Source}---{Type}-->{Target}")]
     public class DiagramConnector : DiagramShape, IEdge<DiagramNode>
     {
-        private DiagramRect _rect;
-
-        public DiagramNode Source { get; private set; }
-        public DiagramNode Target { get; private set; }
-        public DiagramConnectorType Type { get; private set; }
+        public DiagramNode Source { get; }
+        public DiagramNode Target { get; }
+        public DiagramConnectorType Type { get; }
         public IEnumerable<DiagramPoint> RoutePoints { get; set; }
 
         public DiagramConnector(UmlModelElement modelElement, DiagramNode source, DiagramNode target, DiagramConnectorType type)
             :base(modelElement)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (target == null) throw new ArgumentNullException("target");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
             Source = source;
             Target = target;
             Type = type;
-            RecalculatePosition();
-        }
-
-        public override DiagramRect Rect
-        {
-            get { return _rect; }
-        }
-
-        internal void RecalculatePosition()
-        {
-            _rect = DiagramRect.Union(Source.Rect, Target.Rect);
         }
 
         public override string ToString()

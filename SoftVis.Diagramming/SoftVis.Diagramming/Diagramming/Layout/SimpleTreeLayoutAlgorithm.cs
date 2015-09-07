@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
             return newVertexPositions;
         }
 
-        protected double CalculatePosition(DiagramNode vertex, DiagramNode parent, int layerNumber)
+        private double CalculatePosition(DiagramNode vertex, DiagramNode parent, int layerNumber)
         {
             if (_data.ContainsKey(vertex))
                 return -1; //this vertex is already layed out
@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
                 _layers.Add(new Layer());
 
             var layer = _layers[layerNumber];
-            var vertexSize = vertex.Rect.Size;
+            var vertexSize = vertex.Size;
             var vertexData = new VertexData { Parent = parent };
             _data[vertex] = vertexData;
 
@@ -60,18 +60,19 @@ namespace Codartis.SoftVis.Diagramming.Layout
             }
             else
             {
-                double minPos = double.MaxValue;
-                double maxPos = -double.MaxValue;
+                var minPos = double.MaxValue;
+                var maxPos = -double.MaxValue;
 
                 foreach (var child in _graph.InEdges(vertex).Select(e => e.Source))
                 {
-                    double childPos = CalculatePosition(child, vertex, layerNumber + 1);
+                    var childPos = CalculatePosition(child, vertex, layerNumber + 1);
                     if (childPos >= 0)
                     {
                         minPos = Math.Min(minPos, childPos);
                         maxPos = Math.Max(maxPos, childPos);
                     }
                 }
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (minPos != double.MaxValue)
                     vertexData.Position = (minPos + maxPos) / 2.0;
                 else
@@ -99,7 +100,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
             {
                 foreach (var vertex in layer.Vertices)
                 {
-                    var size = vertex.Rect.Size;
+                    var size = vertex.Size;
                     var vertexData = _data[vertex];
                     if (vertexData.Parent != null)
                     {

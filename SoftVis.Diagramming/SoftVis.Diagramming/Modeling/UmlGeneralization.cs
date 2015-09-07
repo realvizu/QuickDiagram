@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace Codartis.SoftVis.Modeling
 {
-    [DebuggerDisplay("{SpecificElement}---Generalization-->{GeneralElement}")]
+    [DebuggerDisplay("{SpecificElement.Name}---Generalization-->{GeneralElement.Name}")]
     public class UmlGeneralization : UmlRelationship
     {
-        public UmlType SpecificElement { get; private set; }
-        public UmlType GeneralElement { get; private set; }
+        public UmlType SpecificElement { get; }
+        public UmlType GeneralElement { get; }
 
         public UmlGeneralization(UmlType specificElement, UmlType generalElement)
         {
@@ -19,15 +14,8 @@ namespace Codartis.SoftVis.Modeling
             GeneralElement = generalElement;
         }
 
-        public override UmlTypeOrPackage SourceElement
-        {
-            get { return SpecificElement; }
-        }
-
-        public override UmlTypeOrPackage TargetElement
-        {
-            get { return GeneralElement; }
-        }
+        public override UmlTypeOrPackage SourceElement => SpecificElement;
+        public override UmlTypeOrPackage TargetElement => GeneralElement;
 
         public override TResult AcceptVisitor<TResult>(UmlModelVisitorBase<TResult> visitor)
         {

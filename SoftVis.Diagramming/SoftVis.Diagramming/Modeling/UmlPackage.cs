@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Codartis.SoftVis.Modeling
 {
@@ -14,7 +11,7 @@ namespace Codartis.SoftVis.Modeling
     [DebuggerDisplay("Count={_elements.Count}")]
     public class UmlPackage : UmlTypeOrPackage, IEnumerable<UmlTypeOrPackage>
     {
-        private HashSet<UmlTypeOrPackage> _elements = new HashSet<UmlTypeOrPackage>();
+        private readonly HashSet<UmlTypeOrPackage> _elements = new HashSet<UmlTypeOrPackage>();
 
         public void Add(UmlTypeOrPackage element)
         {
@@ -26,15 +23,9 @@ namespace Codartis.SoftVis.Modeling
             _elements.Remove(element);
         }
 
-        public IEnumerable<UmlType> Types
-        {
-            get { return _elements.OfType<UmlType>(); }
-        }
+        public IEnumerable<UmlType> Types => _elements.OfType<UmlType>();
 
-        public IEnumerable<UmlPackage> Packages
-        {
-            get { return _elements.OfType<UmlPackage>(); }
-        }
+        public IEnumerable<UmlPackage> Packages => _elements.OfType<UmlPackage>();
 
         public IEnumerator<UmlTypeOrPackage> GetEnumerator()
         {
