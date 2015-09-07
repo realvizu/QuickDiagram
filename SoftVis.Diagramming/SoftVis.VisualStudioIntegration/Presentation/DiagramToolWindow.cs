@@ -45,6 +45,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
         public void AddCurrentSymbol()
         {
             _diagramBuilder.AddCurrentSymbol();
+            _diagramViewerControl.FitDiagramToView();
         }
 
         public void Clear()

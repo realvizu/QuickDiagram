@@ -17,6 +17,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         private readonly Dictionary<DiagramShape, DiagramShapeControlBase> _diagramShapeControls =
             new Dictionary<DiagramShape, DiagramShapeControlBase>();
 
+        private Rect _contentRect;
+
         public static readonly DependencyProperty DiagramProperty =
             DependencyProperty.Register("Diagram", typeof(Diagram), typeof(DiagramPanelBase),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, Diagram_PropertyChanged));
@@ -39,7 +41,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             diagram.Cleared += diagramPanel.OnDiagramCleared;
         }
 
-        protected Rect ContentRect { get; private set; }
+        protected Rect ContentRect
+        {
+            get { return _contentRect == Rect.Empty ? new Rect(0,0,0,0) : _contentRect ; }
+            private set { _contentRect = value; }
+        }
 
         protected override Size MeasureOverride(Size availableSize)
         {

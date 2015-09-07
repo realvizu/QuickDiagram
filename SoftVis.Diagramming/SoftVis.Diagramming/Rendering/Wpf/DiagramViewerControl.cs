@@ -61,6 +61,12 @@ namespace Codartis.SoftVis.Rendering.Wpf
             set { SetValue(MaxZoomProperty, value); }
         }
 
+        public void FitDiagramToView()
+        {
+            EnsureThatDelayedRenderingOperationsAreCompleted();
+            OnFitToView();
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
