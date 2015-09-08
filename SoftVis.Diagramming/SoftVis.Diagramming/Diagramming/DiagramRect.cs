@@ -3,11 +3,14 @@ using System.Diagnostics;
 
 namespace Codartis.SoftVis.Diagramming
 {
+    /// <summary>
+    /// Represents a rectangle with a given position and size.
+    /// </summary>
     [DebuggerDisplay("( {TopLeft.X}, {TopLeft.Y} )  ( {Size.Width}, {Size.Height} )")]
     public struct DiagramRect
     {
-        public DiagramPoint TopLeft { get; private set; }
-        public DiagramSize Size { get; private set; }
+        public DiagramPoint TopLeft { get; }
+        public DiagramSize Size { get; }
 
         public DiagramRect(DiagramPoint topLeft, DiagramSize size)
         {
@@ -16,9 +19,8 @@ namespace Codartis.SoftVis.Diagramming
         }
 
         public DiagramRect(DiagramPoint topLeft, DiagramPoint bottomRight)
+            : this(topLeft, new DiagramSize(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y))
         {
-            TopLeft = topLeft;
-            Size = new DiagramSize(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
         }
 
         public DiagramRect(double left, double top, double right, double bottom)
@@ -26,45 +28,15 @@ namespace Codartis.SoftVis.Diagramming
         {
         }
 
-        public double Top
-        {
-            get { return TopLeft.Y; }
-        }
+        public double Top => TopLeft.Y;
+        public double Bottom => TopLeft.Y + Size.Height;
+        public double Left => TopLeft.X;
+        public double Right => TopLeft.X + Size.Width;
+        public double Width => Size.Width;
+        public double Height => Size.Height;
 
-        public double Bottom
-        {
-            get { return TopLeft.Y + Size.Height; }
-        }
-
-        public double Left
-        {
-            get { return TopLeft.X; }
-        }
-
-        public double Right
-        {
-            get { return TopLeft.X + Size.Width; }
-        }
-
-        public DiagramPoint BottomRight
-        {
-            get { return new DiagramPoint(Right, Bottom); }
-        }
-
-        public DiagramPoint Center
-        {
-            get { return new DiagramPoint(Left + Size.Width / 2, Top + Size.Height / 2); }
-        }
-
-        public double Width
-        {
-            get { return Size.Width; }
-        }
-
-        public double Height
-        {
-            get { return Size.Height; }
-        }
+        public DiagramPoint BottomRight => new DiagramPoint(Right, Bottom);
+        public DiagramPoint Center => new DiagramPoint(Left + Size.Width / 2, Top + Size.Height / 2);
 
         public static DiagramRect Union(DiagramRect rect1, DiagramRect rect2)
         {

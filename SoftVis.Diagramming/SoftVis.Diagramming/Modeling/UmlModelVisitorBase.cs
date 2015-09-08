@@ -2,7 +2,7 @@
 {
     public abstract class UmlModelVisitorBase<TResult>
     {
-        public TResult Visit(UmlModelElement item)
+        protected TResult Visit(UmlModelElement item)
         {
             return item.AcceptVisitor(this);
         }

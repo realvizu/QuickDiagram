@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Diagramming
+﻿namespace Codartis.SoftVis.Diagramming.Shapes
 {
     public enum DiagramConnectorType
     {

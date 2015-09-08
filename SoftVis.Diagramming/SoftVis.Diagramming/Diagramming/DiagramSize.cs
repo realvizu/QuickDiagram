@@ -2,38 +2,25 @@
 
 namespace Codartis.SoftVis.Diagramming
 {
+    /// <summary>
+    /// Represents a width + height pair.
+    /// </summary>
     [DebuggerDisplay("( {Width} x {Height} )")]
     public struct DiagramSize
     {
-        private readonly double _width;
-        private readonly double _height;
+        public double Width { get; }
+        public double Height { get; }
 
-        public double Width
+        public DiagramSize(double width, double height)
         {
-            get { return _width; }
-        }
-
-        public double Height
-        {
-            get { return _height; }
-        }
-
-        public DiagramSize(double x, double y)
-        {
-            _width = x;
-            _height = y;
-        }
-
-        public DiagramSize(DiagramPoint point)
-        {
-            _width = point.X;
-            _height = point.Y;
+            Width = width;
+            Height = height;
         }
 
         public static bool Equals(DiagramSize size1, DiagramSize size2)
         {
-            return size1._width.Equals(size2._width) &&
-                   size1._height.Equals(size2._height);
+            return size1.Width.Equals(size2.Width) &&
+                   size1.Height.Equals(size2.Height);
         }
 
         public bool Equals(DiagramSize other)
@@ -43,10 +30,7 @@ namespace Codartis.SoftVis.Diagramming
 
         public override bool Equals(object obj)
         {
-            if ((null == obj) || !(obj is DiagramSize))
-            {
-                return false;
-            }
+            if (!(obj is DiagramSize)) return false;
 
             var value = (DiagramSize)obj;
             return Equals(this, value);
@@ -56,10 +40,9 @@ namespace Codartis.SoftVis.Diagramming
         {
             unchecked
             {
-                return _width.GetHashCode() ^ _height.GetHashCode();
+                return Width.GetHashCode() ^ Height.GetHashCode();
             }
         }
-
 
         public static bool operator ==(DiagramSize left, DiagramSize right)
         {

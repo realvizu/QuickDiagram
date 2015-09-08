@@ -11,13 +11,13 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
             foreach(var element in umlModel)
             {
-                diagram.ShowModelElement(element);
+                diagram.ShowNode(element);
 
                 var umlType = element as UmlType;
                 if (umlType != null)
                 {
                     foreach (var relationship in umlType.OutgoingRelationships)
-                        diagram.ShowModelElement(relationship);
+                        diagram.ShowConnector(relationship);
                 }
             }
 

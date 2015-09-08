@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Codartis.SoftVis.Diagramming.Layout
+namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
 {
-    public class SimpleTreeLayoutAlgorithm
+    /// <summary>
+    /// Implements a graph layout algorithm that arranges the vertices into a top-down tree.
+    /// The root (topmost vertex) is the one with no outbound edges.
+    /// No edge routing.
+    /// </summary>
+    internal class SimpleTreeLayoutAlgorithm
     {
         private readonly DiagramGraph _graph;
         private readonly IList<Layer> _layers = new List<Layer>();
@@ -13,12 +18,16 @@ namespace Codartis.SoftVis.Diagramming.Layout
         private const int LayerGap = 30;
         private const int VertexGap = 10;
 
-        public SimpleTreeLayoutAlgorithm(DiagramGraph graph)
+        internal SimpleTreeLayoutAlgorithm(DiagramGraph graph)
         {
             _graph = graph;
         }
 
-        public IDictionary<DiagramNode, DiagramPoint> ComputeNewVertexPositions()
+        /// <summary>
+        /// Calculates the new positions of the graph's vertices. 
+        /// </summary>
+        /// <returns>A dictionary of the (vertex, position) items.</returns>
+        internal IDictionary<DiagramNode, DiagramPoint> ComputeNewVertexPositions()
         {
             //first layout the vertices with 0 out-edge
             foreach (var vertex in _graph.Vertices.Where(v => _graph.OutDegree(v) == 0))
@@ -118,17 +127,17 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
         private class Layer
         {
-            public double Size;
-            public double NextPosition;
-            public double LastTranslate;
-            public readonly IList<DiagramNode> Vertices = new List<DiagramNode>();
+            internal double Size;
+            internal double NextPosition;
+            internal double LastTranslate;
+            internal readonly IList<DiagramNode> Vertices = new List<DiagramNode>();
         }
 
         private class VertexData
         {
-            public DiagramNode Parent;
-            public double Translate;
-            public double Position;
+            internal DiagramNode Parent;
+            internal double Translate;
+            internal double Position;
         }
     }
 }

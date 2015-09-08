@@ -1,9 +1,13 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Shapes;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
 {
-    class ModelToBindableDiagramNodeTranslator : UmlModelVisitorBase<DiagramNode>
+    /// <summary>
+    /// Translates model elements into data-bindable diagram nodes.
+    /// </summary>
+    internal class ModelToBindableDiagramNodeTranslator : UmlModelVisitorBase<DiagramNode>
     {
         internal static DiagramNode Translate(UmlTypeOrPackage typeOrPackage)
         {

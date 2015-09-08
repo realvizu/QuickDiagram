@@ -5,16 +5,30 @@ namespace Codartis.SoftVis.Common
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> collection, int count = 1)
+        /// <summary>
+        /// Returns the last n items of a collection.
+        /// </summary>
+        /// <typeparam name="T">The item type.</typeparam>
+        /// <param name="sourceCollection">The source collection.</param>
+        /// <param name="count">The number of items to return. Optional, the default is 1.</param>
+        /// <returns>The last n items of the source collection.</returns>
+        public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> sourceCollection, int count = 1)
         {
-            var enumerable = collection as IList<T> ?? collection.ToList();
-            return enumerable.Skip(enumerable.Count - count).Take(count);
+            var sourceList = sourceCollection as IList<T> ?? sourceCollection.ToList();
+            return sourceList.Skip(sourceList.Count - count).Take(count);
         }
 
-        public static IEnumerable<T> TakeButLast<T>(this IEnumerable<T> collection, int count = 1)
+        /// <summary>
+        /// Returns the items of the source collection, except the last n items.
+        /// </summary>
+        /// <typeparam name="T">The item type.</typeparam>
+        /// <param name="sourceCollection">The source collection.</param>
+        /// <param name="count">The number of items to return. Optional, the default is 1.</param>
+        /// <returns>The items of the source collection except the last n items.</returns>
+        public static IEnumerable<T> TakeButLast<T>(this IEnumerable<T> sourceCollection, int count = 1)
         {
-            var enumerable = collection as IList<T> ?? collection.ToList();
-            return enumerable.Take(enumerable.Count - count);
+            var sourceList = sourceCollection as IList<T> ?? sourceCollection.ToList();
+            return sourceList.Take(sourceList.Count - count);
         }
     }
 }

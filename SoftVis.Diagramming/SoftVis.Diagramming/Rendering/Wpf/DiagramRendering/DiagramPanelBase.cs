@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Codartis.SoftVis.Diagramming.Shapes;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering

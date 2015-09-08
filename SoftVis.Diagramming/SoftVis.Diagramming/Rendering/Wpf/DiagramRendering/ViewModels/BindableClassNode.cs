@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Shapes;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
 {
     internal class BindableClassNode : ClassNode, INotifyPropertyChanged
     {
-        public BindableClassNode(UmlModelElement modelElement, string name, DiagramPoint position, DiagramSize size)
-            : base(modelElement, name, position, size)
+        public BindableClassNode(UmlClass umlClass, string name, DiagramPoint position, DiagramSize size)
+            : base(umlClass, name, position, size)
         {
         }
 

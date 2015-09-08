@@ -1,8 +1,11 @@
 ﻿using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Diagramming
+namespace Codartis.SoftVis.Diagramming.Shapes.Factories
 {
-    class ModelToDiagramNodeTranslator : UmlModelVisitorBase<DiagramNode>
+    /// <summary>
+    /// Translates a model type or package into a diagram node.
+    /// </summary>
+    internal class ModelToDiagramNodeTranslator : UmlModelVisitorBase<DiagramNode>
     {
         internal static DiagramNode Translate(UmlTypeOrPackage typeOrPackage)
         {

@@ -66,21 +66,21 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Diagramming\ClassNode.cs" />
-    <Compile Include="Diagramming\DiagramConnector.cs" />
-    <Compile Include="Diagramming\DiagramConnectorType.cs" />
     <Compile Include="Diagramming\Diagram.cs" />
-    <Compile Include="Diagramming\DiagramGraph.cs" />
+    <Compile Include="Diagramming\Shapes\Graph\DiagramGraph.cs" />
     <Compile Include="Diagramming\DiagramPoint.cs" />
-    <Compile Include="Diagramming\DiagramNode.cs" />
     <Compile Include="Diagramming\DiagramRect.cs" />
     <Compile Include="Diagramming\DiagramRectExtensions.cs" />
-    <Compile Include="Diagramming\DiagramShape.cs" />
     <Compile Include="Diagramming\DiagramSize.cs" />
-    <Compile Include="Diagramming\InterfaceNode.cs" />
-    <Compile Include="Diagramming\Layout\SimpleTreeLayoutAlgorithm.cs" />
-    <Compile Include="Diagramming\ModelToDiagramConnectorTranslator.cs" />
-    <Compile Include="Diagramming\ModelToDiagramNodeTranslator.cs" />
+    <Compile Include="Diagramming\Shapes\Factories\ModelToDiagramConnectorTranslator.cs" />
+    <Compile Include="Diagramming\Shapes\Factories\ModelToDiagramNodeTranslator.cs" />
+    <Compile Include="Diagramming\Shapes\Graph\Layout\SimpleTreeLayoutAlgorithm.cs" />
+    <Compile Include="Diagramming\Shapes\ClassNode.cs" />
+    <Compile Include="Diagramming\Shapes\DiagramConnector.cs" />
+    <Compile Include="Diagramming\Shapes\DiagramConnectorType.cs" />
+    <Compile Include="Diagramming\Shapes\DiagramNode.cs" />
+    <Compile Include="Diagramming\Shapes\DiagramShape.cs" />
+    <Compile Include="Diagramming\Shapes\InterfaceNode.cs" />
     <Compile Include="Modeling\UmlDependency.cs" />
     <Compile Include="Modeling\UmlGeneralization.cs" />
     <Compile Include="Modeling\UmlInterface.cs" />

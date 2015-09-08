@@ -86,7 +86,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private void AddSymbolToDiagram(INamedTypeSymbol namedTypeSymbol)
         {
             var modelElement = GetModelElement(namedTypeSymbol);
-            AddModelElementToDiagram(modelElement);
+            AddClassToDiagram(modelElement);
         }
 
         private RoslynBasedUmlClass GetModelElement(INamedTypeSymbol namedTypeSymbol)
@@ -94,9 +94,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             return _model.GetOrAdd(namedTypeSymbol);
         }
 
-        private void AddModelElementToDiagram(RoslynBasedUmlClass modelElement)
+        private void AddClassToDiagram(RoslynBasedUmlClass umlClass)
         {
-            _diagram.ShowModelElement(modelElement);
+            _diagram.ShowNode(umlClass);
         }
 
         private IEnumerable<INamedTypeSymbol> GetChildTypeSymbols(ISymbol symbol)
