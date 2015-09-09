@@ -24,13 +24,13 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="System.Windows.Media.Imaging" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Presentation" />
 
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling" To="Codartis.SoftVis.Modeling" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Diagramming" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Microsoft.VisualStudio.*" />

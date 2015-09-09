@@ -1,19 +1,19 @@
-﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Rendering.Common;
-using Codartis.SoftVis.Rendering.Common.UIEvents;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
-using Codartis.SoftVis.Rendering.Wpf.ImageExport;
-using Codartis.SoftVis.Rendering.Wpf.InputControls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Common;
+using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated;
+using Codartis.SoftVis.Rendering.Wpf.ImageExport;
+using Codartis.SoftVis.Rendering.Wpf.InputControls;
 
 namespace Codartis.SoftVis.Rendering.Wpf
 {

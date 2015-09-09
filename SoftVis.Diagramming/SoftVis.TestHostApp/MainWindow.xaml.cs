@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -17,8 +18,10 @@ namespace Codartis.SoftVis.TestHostApp
             base.OnApplyTemplate();
 
             var model = TestData.TestModel.Create();
-            var diagram = TestData.TestDiagram.Create(model);
+            var diagram = new TestData.TestDiagram(model);
             DiagramViewerControl.DataContext = diagram;
+
+            Dispatcher.BeginInvoke(new Action(() => DiagramViewerControl.FitDiagramToView()));
         }
     }
 }

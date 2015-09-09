@@ -1,12 +1,11 @@
-﻿using Codartis.SoftVis.Diagramming.Shapes;
-using Codartis.SoftVis.Diagramming.Shapes.Graph;
-using Codartis.SoftVis.Diagramming.Shapes.Graph.Layout;
-using Codartis.SoftVis.Modeling;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Shapes.Factories;
+using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Diagramming.Shapes.Graph;
+using Codartis.SoftVis.Diagramming.Shapes.Graph.Layout;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -18,8 +17,11 @@ namespace Codartis.SoftVis.Diagramming
     /// The layout of the shapes (relative positions and size) also conveys meaning.
     /// </summary>
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
-    public class Diagram
+    public abstract class Diagram
     {
+        protected static readonly DiagramPoint DefaultNodePosition = DiagramPoint.Zero;
+        protected static readonly DiagramSize DefaultNodeSize = new DiagramSize(100,25);
+
         private readonly DiagramGraph _graph = new DiagramGraph();
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
@@ -33,22 +35,22 @@ namespace Codartis.SoftVis.Diagramming
         /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
-        /// <param name="umlTypeOrPackage">A type or package model element.</param>
-        public void ShowNode(UmlTypeOrPackage umlTypeOrPackage)
+        /// <param name="modelEntity">A type or package model element.</param>
+        public void ShowNode(IModelEntity modelEntity)
         {
-            if (NodeExists(umlTypeOrPackage))
+            if (NodeExists(modelEntity))
                 return;
 
-            var node = CreateDiagramNode(umlTypeOrPackage);
+            var node = CreateDiagramNode(modelEntity);
             _graph.AddVertex(node);
             SignalShapeAddedEvent(node);
 
-            foreach (var relationship in umlTypeOrPackage.OutgoingRelationships)
+            foreach (var modelRelationship in modelEntity.OutgoingRelationships)
             {
-                if (NodeExists(relationship.SourceElement) &&
-                    NodeExists(relationship.TargetElement))
+                if (NodeExists(modelRelationship.Source) &&
+                    NodeExists(modelRelationship.Target))
                 {
-                    ShowConnector(relationship);
+                    ShowConnector(modelRelationship);
                 }
             }
         }
@@ -56,13 +58,13 @@ namespace Codartis.SoftVis.Diagramming
         /// <summary>
         /// Show a connector on the diagram that represents the given model element.
         /// </summary>
-        /// <param name="umlRelationship">A relationship model element.</param>
-        public void ShowConnector(UmlRelationship umlRelationship)
+        /// <param name="modelRelationship">A relationship model item.</param>
+        public void ShowConnector(IModelRelationship modelRelationship)
         {
-            if (ConnectorExists(umlRelationship))
+            if (ConnectorExists(modelRelationship))
                 return;
 
-            var connector = CreateDiagramConnector(umlRelationship);
+            var connector = CreateDiagramConnector(modelRelationship);
             _graph.AddEdge(connector);
             SignalShapeAddedEvent(connector);
         }
@@ -70,13 +72,13 @@ namespace Codartis.SoftVis.Diagramming
         /// <summary>
         /// Hide a node from the diagram that represents the given model element.
         /// </summary>
-        /// <param name="umlTypeOrPackage">A type or package model element.</param>
-        public void HideNode(UmlTypeOrPackage umlTypeOrPackage)
+        /// <param name="modelEntity">A type or package model element.</param>
+        public void HideNode(IModelEntity modelEntity)
         {
-            if (!NodeExists(umlTypeOrPackage))
+            if (!NodeExists(modelEntity))
                 return;
 
-            var node = FindNode(umlTypeOrPackage);
+            var node = FindNode(modelEntity);
             _graph.RemoveVertex(node);
             SignalShapeRemovedEvent(node);
         }
@@ -84,13 +86,13 @@ namespace Codartis.SoftVis.Diagramming
         /// <summary>
         /// Hodes a connector from the diagram that represents the given model element.
         /// </summary>
-        /// <param name="umlRelationship">A relationship model element.</param>
-        public void HideConnector(UmlRelationship umlRelationship)
+        /// <param name="modelRelationship">A modelRelationship model item.</param>
+        public void HideConnector(IModelRelationship modelRelationship)
         {
-            if (!ConnectorExists(umlRelationship))
+            if (!ConnectorExists(modelRelationship))
                 return;
 
-            var connector = FindConnector(umlRelationship);
+            var connector = FindConnector(modelRelationship);
             _graph.RemoveEdge(connector);
             SignalShapeRemovedEvent(connector);
         }
@@ -119,36 +121,33 @@ namespace Codartis.SoftVis.Diagramming
             SignalClearedEvent();
         }
 
-        protected virtual DiagramNode CreateDiagramNode(UmlTypeOrPackage umlTypeOrPackage)
+        protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
+
+        private DiagramConnector CreateDiagramConnector(IModelRelationship relationship)
         {
-            return ModelToDiagramNodeTranslator.Translate(umlTypeOrPackage);
+            var sourceNode = FindNode(relationship.Source);
+            var targetNode = FindNode(relationship.Target);
+            return new DiagramConnector(relationship, sourceNode, targetNode);
         }
 
-        protected virtual DiagramConnector CreateDiagramConnector(UmlRelationship umlRelationship)
+        private DiagramNode FindNode(IModelEntity modelEntity)
         {
-            var sourceNode = FindNode(umlRelationship.SourceElement);
-            var targetNode = FindNode(umlRelationship.TargetElement);
-            return ModelToDiagramConnectorTranslator.Translate(umlRelationship, sourceNode, targetNode);
+            return Nodes.FirstOrDefault(i => i.ModelEntity == modelEntity);
         }
 
-        private DiagramNode FindNode(UmlTypeOrPackage typeOrPackage)
+        private bool NodeExists(IModelEntity modelEntity)
         {
-            return Nodes.FirstOrDefault(i => i.UmlTypeOrPackage == typeOrPackage);
+            return Nodes.Any(i => i.ModelEntity == modelEntity);
         }
 
-        private bool NodeExists(UmlTypeOrPackage typeOrPackage)
+        private DiagramConnector FindConnector(IModelRelationship modelRelationship)
         {
-            return Nodes.Any(i => i.UmlTypeOrPackage == typeOrPackage);
+            return Connectors.FirstOrDefault(i => i.ModelRelationship == modelRelationship);
         }
 
-        private DiagramConnector FindConnector(UmlRelationship relationship)
+        private bool ConnectorExists(IModelRelationship modelRelationship)
         {
-            return Connectors.FirstOrDefault(i => i.UmlRelationship == relationship);
-        }
-
-        private bool ConnectorExists(UmlRelationship relationship)
-        {
-            return Connectors.Any(i => i.UmlRelationship == relationship);
+            return Connectors.Any(i => i.ModelRelationship == modelRelationship);
         }
 
         private void SignalShapeAddedEvent(DiagramShape shape)

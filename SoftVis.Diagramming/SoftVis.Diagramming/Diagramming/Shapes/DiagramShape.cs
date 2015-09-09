@@ -4,17 +4,18 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.Diagramming.Shapes
 {
     /// <summary>
-    /// A diagram shape is a representation of a model element on a diagram.
+    /// A diagram shape is a representation of a model item on a diagram.
     /// </summary>
     public abstract class DiagramShape
     {
-        public UmlModelElement ModelElement { get; private set; }
+        public IModelItem ModelItem { get; }
 
-        protected DiagramShape(UmlModelElement modelElement)
+        protected DiagramShape(IModelItem modelItem)
         {
-            if (modelElement == null) throw new ArgumentNullException(nameof(modelElement));
+            if (modelItem == null)
+                throw new ArgumentNullException(nameof(modelItem));
 
-            ModelElement = modelElement;
+            ModelItem = modelItem;
         }
     }
 }

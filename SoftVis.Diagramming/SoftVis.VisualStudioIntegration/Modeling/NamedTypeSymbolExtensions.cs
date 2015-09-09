@@ -1,8 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel
+namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
-    public static class INamedTypeSymbolExtensions
+    public static class NamedTypeSymbolExtensions
     {
         public static string GetFullyQualifiedName(this INamedTypeSymbol namedTypeSymbol)
         {

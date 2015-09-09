@@ -1,17 +1,20 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
+    /// <summary>
+    /// Finds the descendants of the given type symbol.
+    /// </summary>
     public class DescendantsFinderVisitor : SymbolVisitor
     {
-        private readonly INamedTypeSymbol _baseTypeSymbol;
-
-        public List<INamedTypeSymbol> Descendants = new List<INamedTypeSymbol>();
+        private INamedTypeSymbol BaseTypeSymbol { get; }
+        public List<INamedTypeSymbol> Descendants { get; }
 
         public DescendantsFinderVisitor(INamedTypeSymbol baseTypeSymbol)
         {
-            _baseTypeSymbol = baseTypeSymbol;
+            BaseTypeSymbol = baseTypeSymbol;
+            Descendants = new List<INamedTypeSymbol>();
         }
 
         public override void VisitAssembly(IAssemblySymbol symbol)
@@ -30,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
-            if (symbol.BaseType == _baseTypeSymbol)
+            if (symbol.BaseType == BaseTypeSymbol)
                 Descendants.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())

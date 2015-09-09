@@ -1,17 +1,17 @@
-﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Rendering.Wpf.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
     /// <summary>
-    /// Manages controls created for diagram shapes.
+    /// Base class for panels that render diagrams by creating and arranging diagram shapes.
     /// </summary>
     public abstract class DiagramPanelBase : Panel
     {

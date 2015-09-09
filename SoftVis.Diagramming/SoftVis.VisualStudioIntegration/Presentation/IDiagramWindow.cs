@@ -2,6 +2,9 @@
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
 {
+    /// <summary>
+    /// Defines the operations of a diagram window.
+    /// </summary>
     public interface IDiagramWindow
     {
         void Show();

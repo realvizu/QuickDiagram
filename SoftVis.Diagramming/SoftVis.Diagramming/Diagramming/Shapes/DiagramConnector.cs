@@ -1,7 +1,7 @@
-﻿using Codartis.SoftVis.Modeling;
-using QuickGraph;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Codartis.SoftVis.Modeling;
+using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Shapes
 {
@@ -14,21 +14,20 @@ namespace Codartis.SoftVis.Diagramming.Shapes
     {
         public DiagramNode Source { get; }
         public DiagramNode Target { get; }
-        public DiagramConnectorType Type { get; }
         public IEnumerable<DiagramPoint> RoutePoints { get; set; }
 
-        public DiagramConnector(UmlRelationship umlRelationship, DiagramNode source, DiagramNode target, DiagramConnectorType type)
-            :base(umlRelationship)
+        public DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
+            :base(relationship)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             Source = source;
             Target = target;
-            Type = type;
         }
 
-        public UmlRelationship UmlRelationship => (UmlRelationship)ModelElement;
+        public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
+        public ModelRelationshipType Type => ModelRelationship.Type;
 
         public override string ToString()
         {

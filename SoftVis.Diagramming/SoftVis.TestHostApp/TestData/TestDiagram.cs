@@ -1,29 +1,21 @@
-﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    class TestDiagram
+    class TestDiagram : WpfDiagram
     {
-        public static Diagram Create(UmlModel umlModel)
+        public TestDiagram(IModel model)
         {
-            var diagram = new Diagram();
-
-            foreach(var element in umlModel)
+            foreach (var entity in model.Entities)
             {
-                diagram.ShowNode(element);
+                ShowNode(entity);
 
-                var umlType = element as UmlType;
-                if (umlType != null)
-                {
-                    foreach (var relationship in umlType.OutgoingRelationships)
-                        diagram.ShowConnector(relationship);
-                }
+                foreach (var relationship in entity.OutgoingRelationships)
+                    ShowConnector(relationship);
             }
 
-            diagram.Layout();
-
-            return diagram;
+            Layout();
         }
     }
 }

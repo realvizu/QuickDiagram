@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:common="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common"
-                    xmlns:shapes="clr-namespace:Codartis.SoftVis.Diagramming.Shapes"
                     xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls">
 
+    <common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <common:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
     <common:DiagramRectToWpfConverter x:Key="DiagramRectToWpfConverter" />
 
@@ -23,26 +23,20 @@
 							BorderBrush="{TemplateBinding BorderBrush}" 
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}">
-                        <ContentPresenter Content="{TemplateBinding DataContext}" 
-                                          HorizontalAlignment="Center" 
-                                          VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Vertical" 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" 
+                                       Visibility="{Binding Path=IsStereotypeVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       Text="{Binding Path=StereotypeText}" 
+                                       FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
+                                          Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" />
+                            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" HorizontalAlignment="Center" />
+                        </StackPanel>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
-    <DataTemplate DataType="{x:Type shapes:ClassNode}">
-        <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type shapes:InterfaceNode}">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-            <TextBlock Text="&lt;&lt;interface&gt;&gt;" HorizontalAlignment="Center" 
-                       FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
-                                          Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" />
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" HorizontalAlignment="Center" />
-        </StackPanel>
-    </DataTemplate>
 
 </ResourceDictionary>

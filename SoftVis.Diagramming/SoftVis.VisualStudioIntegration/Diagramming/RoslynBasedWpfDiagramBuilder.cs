@@ -1,33 +1,31 @@
-﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
-using Codartis.SoftVis.VisualStudioIntegration.RoslynBasedModel;
-using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
-    public class DiagramBuilder
+    /// <summary>
+    /// Builds a WPF-rendered diagram, and the underlying Roslyn-based model.
+    /// </summary>
+    public class RoslynBasedWpfDiagramBuilder
     {
-        private readonly ISourceDocumentProvider _sourceDocumentProvider;
-        private readonly RoslynBasedUmlModel _model;
-        private readonly Diagram _diagram;
+        private ISourceDocumentProvider SourceDocumentProvider { get; }
+        private RoslynBasedModel Model { get; }
+        public Diagram Diagram { get; }
 
-        public DiagramBuilder(ISourceDocumentProvider sourceDocumentProvider)
+        public RoslynBasedWpfDiagramBuilder(ISourceDocumentProvider sourceDocumentProvider)
         {
-            _sourceDocumentProvider = sourceDocumentProvider;
-            _model = new RoslynBasedUmlModel();
-            _diagram = new BindableDiagram();
-        }
-
-        public Diagram Diagram
-        {
-            get { return _diagram; }
+            SourceDocumentProvider = sourceDocumentProvider;
+            Model = new RoslynBasedModel();
+            Diagram = new WpfDiagram();
         }
 
         public void Clear()
         {
-            _diagram.Clear();
+            Diagram.Clear();
         }
 
         public async void AddCurrentSymbol()
@@ -42,13 +40,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         private async Task<ISymbol> GetCurrentSymbol()
         {
-            var document = _sourceDocumentProvider.GetCurrentDocument();
+            var document = SourceDocumentProvider.GetCurrentDocument();
             if (document == null)
                 return null;
 
             var syntaxTree = await document.GetSyntaxTreeAsync();
             var syntaxRoot = syntaxTree.GetRoot();
-            var span = _sourceDocumentProvider.GetSelection();
+            var span = SourceDocumentProvider.GetSelection();
             var currentNode = syntaxRoot.FindNode(span);
 
             var semanticModel = await document.GetSemanticModelAsync();
@@ -89,14 +87,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             AddClassToDiagram(modelElement);
         }
 
-        private RoslynBasedUmlClass GetModelElement(INamedTypeSymbol namedTypeSymbol)
+        private RoslynBasedClass GetModelElement(INamedTypeSymbol namedTypeSymbol)
         {
-            return _model.GetOrAdd(namedTypeSymbol);
+            return Model.GetOrAdd(namedTypeSymbol);
         }
 
-        private void AddClassToDiagram(RoslynBasedUmlClass umlClass)
+        private void AddClassToDiagram(RoslynBasedClass @class)
         {
-            _diagram.ShowNode(umlClass);
+            Diagram.ShowNode(@class);
         }
 
         private IEnumerable<INamedTypeSymbol> GetChildTypeSymbols(ISymbol symbol)
@@ -105,7 +103,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             if (namedTypeSymbol == null)
                 return null;
 
-            var workspace = _sourceDocumentProvider.GetWorkspace();
+            var workspace = SourceDocumentProvider.GetWorkspace();
             var childTypeSymbols = FindChildTypesAsync(workspace, namedTypeSymbol);
             return childTypeSymbols;
         }
@@ -124,7 +122,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         private void UpdateLayout()
         {
-            _diagram.Layout();
+            Diagram.Layout();
         }
     }
 }

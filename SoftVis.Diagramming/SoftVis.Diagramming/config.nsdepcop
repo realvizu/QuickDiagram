@@ -24,7 +24,7 @@
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.Common.*" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.*" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.*" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands" />
