@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.Rendering.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 {
     /// <summary>
     /// Calculates viewport changes when pushing the fit-to-view button on the UI control.
     /// </summary>
-    internal class FitToViewWidgetEventViewportGesture : WidgetEventViewportGestureBase
+    internal class FitToViewViewportGesture : ViewportGestureBase
     {
-        public FitToViewWidgetEventViewportGesture(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
-            : base(diagramViewport, widgetEventSource)
+        internal FitToViewViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
+            : base(diagramViewport, uiEventSource)
         {
-            if (WidgetEventSource != null)
-                WidgetEventSource.FitToView += OnFitToView;
+            UIEventSource.FitToViewWidget += OnFitToView;
         }
 
         private void OnFitToView(object sender, EventArgs e)

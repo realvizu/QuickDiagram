@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:common="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common"
-                    xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls">
+                    xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls"
+                    xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common.Converters">
 
-    <common:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
-    <common:DiagramRectToWpfConverter x:Key="DiagramRectToWpfConverter" />
-    <common:RectUnionConverter x:Key="RectUnionConverter" />
+    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    <converters:DiagramRectToWpfConverter x:Key="DiagramRectToWpfConverter" />
+    <converters:RectUnionConverter x:Key="RectUnionConverter" />
     <shapeControls:DiagramConnectorToPathConverter x:Key="DiagramConnectorToPathConverter" />
 
     <Style TargetType="{x:Type shapeControls:DiagramConnectorControl}">

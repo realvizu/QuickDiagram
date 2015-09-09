@@ -1,22 +1,23 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 {
     /// <summary>
     /// Calculates viewport changes when zooming with mouse.
     /// </summary>
-    internal class MouseZoomViewportGesture : InputEventViewportGestureBase
+    internal class MouseZoomViewportGesture : ViewportGestureBase
     {
         private const double WheelClicksPerZoomRange = 10;
         private readonly double _zoomPerWheelClick;
 
-        public MouseZoomViewportGesture(IDiagramViewport diagramViewport, IInputElement inputElement)
-            : base(diagramViewport, inputElement)
+        internal MouseZoomViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
+            : base(diagramViewport, uiEventSource)
         {
             _zoomPerWheelClick = (DiagramViewport.MaxZoom - DiagramViewport.MinZoom) / WheelClicksPerZoomRange;
-            InputElement.MouseWheel += OnMouseWheel;
+
+            UIEventSource.MouseWheel += OnMouseWheel;
         }
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -25,7 +26,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
             if (!IsZoomLimitReached(zoomDirection))
             {
                 var zoomAmount = Math.Abs(e.Delta / Mouse.MouseWheelDeltaForOneLine) * _zoomPerWheelClick;
-                ZoomViewportWithCenterInScreenSpaceBy(zoomDirection, zoomAmount, e.GetPosition(InputElement));
+                ZoomViewportWithCenterInScreenSpaceBy(zoomDirection, zoomAmount, e.GetPosition(UIEventSource));
             }
         }
     }

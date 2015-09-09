@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
     /// <summary>
     /// Renders the visible part of a Diagram.
     /// </summary>
-    internal partial class DiagramViewportPanel : DiagramPanelBase, IDiagramViewport
+    internal class DiagramViewportPanel : DiagramPanelBase, IDiagramViewport
     {
         private double _zoom;
         private Size _sizeInScreenSpace;
@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         public Rect ViewportInScreenSpace { get; private set; }
         public Rect ViewportInDiagramSpace { get; private set; }
-        public Transform DiagramSpaceToScreenSpace { get; private set; }
+        private Transform DiagramSpaceToScreenSpace { get; set; }
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewportPanel));
@@ -46,15 +46,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             set { SetValue(MaxZoomProperty, value); }
         }
 
-        public Rect ContentInDiagramSpace
-        {
-            get { return ContentRect; }
-        }
+        public Rect ContentInDiagramSpace => ContentRect;
 
         public double Zoom
         {
             get { return _zoom; }
-            set
+            private set
             {
                 lock (this)
                 {
@@ -67,7 +64,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         public Size SizeInScreenSpace
         {
             get { return _sizeInScreenSpace; }
-            set
+            private set
             {
                 lock (this)
                 {
@@ -80,7 +77,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         public Point CenterInDiagramSpace
         {
             get { return _centerInDiagramSpace; }
-            set
+            private set
             {
                 lock (this)
                 {
@@ -176,7 +173,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         private Transform CalculateTransformForDiagramSpaceToScreenSpace(Rect viewportInDiagramSpace)
         {
             var translateVector = (Vector)viewportInDiagramSpace.TopLeft * -1;
-            //var zoomCenter = new Rect(SizeInScreenSpace).GetCenter();
 
             var transform = new TransformGroup();
             transform.Children.Add(new TranslateTransform(translateVector.X, translateVector.Y));

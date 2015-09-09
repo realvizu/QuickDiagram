@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
@@ -18,11 +19,13 @@ using Codartis.SoftVis.Rendering.Wpf.InputControls;
 namespace Codartis.SoftVis.Rendering.Wpf
 {
     /// <summary>
-    /// Routes user input events to gestures that translate them to viewport commands.
+    /// This control is responsible for displaying the diagram viewport and the PanAndZoomControl,
+    /// and hooking together the viewport manipulation events and gestures.
+    /// Also responsible for hosting a diagram panel for image export.
     /// </summary>
     [TemplatePart(Name = PART_DiagramViewportPanel, Type = typeof(DiagramViewportPanel))]
     [TemplatePart(Name = PART_PanAndZoomControl, Type = typeof(PanAndZoomControl))]
-    public partial class DiagramViewerControl : Control, IInputElement, IWidgetEventSource
+    public partial class DiagramViewerControl : Control, IUIEventSource
     {
         private const string PART_DiagramViewportPanel = "PART_DiagramViewportPanel";
         private const string PART_PanAndZoomControl = "PART_PanAndZoomControl";
@@ -35,13 +38,14 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         static DiagramViewerControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramViewerControl), new FrameworkPropertyMetadata(typeof(DiagramViewerControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramViewerControl), 
+                new FrameworkPropertyMetadata(typeof(DiagramViewerControl)));
         }
 
-        public event PanEventHandler Pan;
-        public event ZoomEventHandler Zoom;
-        public event EventHandler FitToView;
-        public event ResizeEventHandler Resize;
+        public event PanEventHandler PanWidget;
+        public event ZoomEventHandler ZoomWidget;
+        public event EventHandler FitToViewWidget;
+        public event ResizeEventHandler WindowResized;
 
         public Diagram Diagram
         {
@@ -67,6 +71,13 @@ namespace Codartis.SoftVis.Rendering.Wpf
             OnFitToView();
         }
 
+        public BitmapSource GetDiagramAsBitmap()
+        {
+            EnsureUpToDateDiagramForExport();
+            var bitmap = ImageRenderer.RenderUIElementToBitmap(_diagramPanelForImageExport, 300);
+            return bitmap;
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -82,12 +93,12 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void InitializeDiagramViewportPanel()
         {
-            _diagramViewportPanel = GetTemplateChild(PART_DiagramViewportPanel) as DiagramViewportPanel;
+            _diagramViewportPanel = FindChildControlInTemplate<DiagramViewportPanel>(PART_DiagramViewportPanel);
         }
 
         private void InitializePanAndZoomControl()
         {
-            _panAndZoomControl = GetTemplateChild(PART_PanAndZoomControl) as PanAndZoomControl;
+            _panAndZoomControl = FindChildControlInTemplate<PanAndZoomControl>(PART_PanAndZoomControl);
             _panAndZoomControl.Pan += OnPan;
             _panAndZoomControl.FitToView += OnFitToView;
             _panAndZoomControl.Zoom += OnZoom;
@@ -102,9 +113,9 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void InitializeGestures()
         {
-            _gestures.Add(new AnimatedViewportGesture(new FitToViewWidgetEventViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(500)));
-            _gestures.Add(new AnimatedViewportGesture(new ZoomWidgetEventViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
-            _gestures.Add(new AnimatedViewportGesture(new PanWidgetEventViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
+            _gestures.Add(new AnimatedViewportGesture(new FitToViewViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(500)));
+            _gestures.Add(new AnimatedViewportGesture(new ZoomWidgetViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
+            _gestures.Add(new AnimatedViewportGesture(new PanWidgetViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
             _gestures.Add(new AnimatedViewportGesture(new MouseZoomViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
             _gestures.Add(new MousePanViewportGesture(_diagramViewportPanel, this));
             _gestures.Add(new KeyboardViewportGesture(_diagramViewportPanel, this));
@@ -133,12 +144,12 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void OnPan(object sender, PanEventArgs args)
         {
-            Pan?.Invoke(sender, args);
+            PanWidget?.Invoke(sender, args);
         }
 
         private void OnFitToView(object sender = null, EventArgs args = null)
         {
-            FitToView?.Invoke(sender ?? this, args ?? EventArgs.Empty);
+            FitToViewWidget?.Invoke(sender ?? this, args ?? EventArgs.Empty);
         }
 
         private void OnZoom(object sender, ZoomEventArgs args)
@@ -146,12 +157,12 @@ namespace Codartis.SoftVis.Rendering.Wpf
             if (_diagramViewportPanel.Zoom.EqualsWithTolerance(args.NewZoomValue))
                 return;
 
-            Zoom?.Invoke(sender, args);
+            ZoomWidget?.Invoke(sender, args);
         }
 
         private void OnResize(Size newSize)
         {
-            Resize?.Invoke(this, new ResizeEventArgs(newSize.Width, newSize.Height));
+            WindowResized?.Invoke(this, new ResizeEventArgs(newSize.Width, newSize.Height));
         }
 
         private void OnViewportCommand(object sender, ViewportCommandBase command)
@@ -173,16 +184,9 @@ namespace Codartis.SoftVis.Rendering.Wpf
             return _diagramViewportPanel.Zoom.EqualsWithTolerance(_panAndZoomControl.ZoomValue);
         }
 
-        private bool IsCommandAnimatedFromZoomWidgetEvent(ViewportCommandBase command)
+        private static bool IsCommandAnimatedFromZoomWidgetEvent(ViewportCommandBase command)
         {
-            return command.Sender is ZoomWidgetEventViewportGesture;
-        }
-
-        public BitmapSource GetDiagramAsBitmap()
-        {
-            EnsureUpToDateDiagramForExport();
-            var bitmap = ImageRenderer.RenderUIElementToBitmap(_diagramPanelForImageExport, 300);
-            return bitmap;
+            return command.Sender is ZoomWidgetViewportGesture;
         }
 
         private void EnsureUpToDateDiagramForExport()
@@ -196,6 +200,14 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void EnsureThatDelayedRenderingOperationsAreCompleted()
         {
             Dispatcher.Invoke(DispatcherPriority.Loaded, new Action(() => { }));
+        }
+
+        private TUIElement FindChildControlInTemplate<TUIElement>(string controlName) where TUIElement : UIElement
+        {
+            var childControl = GetTemplateChild(controlName) as TUIElement;
+            if (childControl == null)
+                throw new Exception($"{controlName} control not found in the control template.");
+            return childControl;
         }
     }
 }

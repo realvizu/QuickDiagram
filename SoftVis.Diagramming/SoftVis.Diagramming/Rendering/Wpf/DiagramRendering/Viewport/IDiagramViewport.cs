@@ -5,9 +5,9 @@ using System.Windows.Media.Animation;
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 {
     /// <summary>
-    /// Viewport is the visible part of the diagram. 
+    /// The viewport is the visible part of the diagram. 
     /// </summary>
-    public interface IDiagramViewport : IAnimatable
+    internal interface IDiagramViewport : IAnimatable
     {
         double MinZoom { get; }
         double MaxZoom { get; }

@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
     /// <summary>
     /// Base class for panels that render diagrams by creating and arranging diagram shapes.
     /// </summary>
-    public abstract class DiagramPanelBase : Panel
+    internal abstract class DiagramPanelBase : Panel
     {
         private readonly Dictionary<DiagramShape, DiagramShapeControlBase> _diagramShapeControls =
             new Dictionary<DiagramShape, DiagramShapeControlBase>();
@@ -37,7 +37,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             diagramPanel.AddDiagram(diagram);
 
             diagram.ShapeAdded += diagramPanel.OnShapeAdded;
-            diagram.ShapeModified += diagramPanel.OnShapeModified;
             diagram.ShapeRemoved += diagramPanel.OnShapeRemoved;
             diagram.Cleared += diagramPanel.OnDiagramCleared;
         }
@@ -71,10 +70,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
                 CreateDiagramNodeControl((DiagramNode)shape);
             else if (shape is DiagramConnector)
                 CreateDiagramConnectorControl((DiagramConnector)shape);
-        }
-
-        private void OnShapeModified(object sender, DiagramShape shape)
-        {
         }
 
         private void OnShapeRemoved(object sender, DiagramShape shape)

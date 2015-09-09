@@ -4,19 +4,23 @@ using System.Windows.Media.Animation;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public class ZoomWithCenterSpecificationAnimation : AnimationTimeline
+    internal class ZoomWithCenterSpecificationAnimation : AnimationTimeline
     {
         public static readonly DependencyProperty FromProperty =
-            DependencyProperty.Register("From", typeof(ZoomWithCenterSpecification), typeof(ZoomWithCenterSpecificationAnimation));
+            DependencyProperty.Register("From", typeof(ZoomWithCenterSpecification), 
+                typeof(ZoomWithCenterSpecificationAnimation));
 
         public static readonly DependencyProperty ToProperty =
-            DependencyProperty.Register("To", typeof(ZoomWithCenterSpecification), typeof(ZoomWithCenterSpecificationAnimation));
+            DependencyProperty.Register("To", typeof(ZoomWithCenterSpecification), 
+                typeof(ZoomWithCenterSpecificationAnimation));
 
         public static readonly DependencyProperty CenterProperty =
-            DependencyProperty.Register("Center", typeof(Point), typeof(ZoomWithCenterSpecificationAnimation));
+            DependencyProperty.Register("Center", typeof(Point), 
+                typeof(ZoomWithCenterSpecificationAnimation));
 
         public static readonly DependencyProperty DoubleAnimationProperty =
-            DependencyProperty.Register("DoubleAnimation", typeof(DoubleAnimation), typeof(ZoomWithCenterSpecificationAnimation));
+            DependencyProperty.Register("DoubleAnimation", typeof(DoubleAnimation), 
+                typeof(ZoomWithCenterSpecificationAnimation));
 
         public ZoomWithCenterSpecification From
         {
@@ -42,11 +46,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
             set { SetValue(DoubleAnimationProperty, value); }
         }
 
-        public ZoomWithCenterSpecificationAnimation()
-        { }
+        private ZoomWithCenterSpecificationAnimation()
+        {}
 
-        public ZoomWithCenterSpecificationAnimation(ZoomWithCenterSpecification fromValue, ZoomWithCenterSpecification toValue,
-            Duration duration, IEasingFunction easingFunction)
+        internal ZoomWithCenterSpecificationAnimation(ZoomWithCenterSpecification fromValue, 
+            ZoomWithCenterSpecification toValue, Duration duration, IEasingFunction easingFunction)
         {
             if (fromValue.CenterInScreenSpace != toValue.CenterInScreenSpace)
                 throw new ArgumentException("FromValue and ToValue centers must be the same!");
@@ -61,13 +65,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
             };
         }
 
-        public override Type TargetPropertyType
-        {
-            get
-            {
-                return typeof(ZoomWithCenterSpecification);
-            }
-        }
+        public override Type TargetPropertyType => typeof(ZoomWithCenterSpecification);
 
         public override object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock)
         {

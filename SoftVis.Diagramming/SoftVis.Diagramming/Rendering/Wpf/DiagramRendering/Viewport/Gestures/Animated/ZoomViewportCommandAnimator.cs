@@ -4,14 +4,15 @@ using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public class ZoomViewportCommandAnimator : ViewportCommandAnimatorBase
+    internal class ZoomViewportCommandAnimator : ViewportCommandAnimatorBase
     {
         private readonly ZoomViewportCommand _originalCommand;
 
-        public static readonly DependencyProperty ZoomProperty = DependencyProperty.Register("Zoom",
-            typeof(double), typeof(ZoomViewportCommandAnimator), new PropertyMetadata(OnZoomPropertyChanged));
+        public static readonly DependencyProperty ZoomProperty = 
+            DependencyProperty.Register("Zoom", typeof(double), typeof(ZoomViewportCommandAnimator), 
+                new PropertyMetadata(OnZoomPropertyChanged));
 
-        public ZoomViewportCommandAnimator(IViewportGesture originalGesture, Duration animationDuration,
+        internal ZoomViewportCommandAnimator(IViewportGesture originalGesture, Duration animationDuration,
             ZoomViewportCommand originalCommand)
             : base(originalGesture, animationDuration)
         {
@@ -20,10 +21,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         public override void BeginAnimation()
         {
-            var animation = new DoubleAnimation(_originalGesture.DiagramViewport.Zoom, 
-                _originalCommand.NewZoom, _animationDuration)
+            var animation = new DoubleAnimation(OriginalGesture.DiagramViewport.Zoom, 
+                _originalCommand.NewZoom, AnimationDuration)
             {
-                EasingFunction = _easingFunction
+                EasingFunction = EasingFunction
             };
             BeginAnimation(ZoomProperty, animation);
         }
@@ -36,7 +37,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         private void OnZoomPropertyChanged(double newZoom)
         {
-            SendCommand(new ZoomViewportCommand(_originalGesture, newZoom));
+            SendCommand(new ZoomViewportCommand(OriginalGesture, newZoom));
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
@@ -12,11 +14,18 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
     {
         public event ViewportCommandHandler ViewportCommand;
 
-        public IDiagramViewport DiagramViewport { get; private set; }
+        public IDiagramViewport DiagramViewport { get;  }
+        protected IUIEventSource UIEventSource { get; }
 
-        protected ViewportGestureBase(IDiagramViewport diagramViewport)
+        protected ViewportGestureBase(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
         {
+            if (diagramViewport == null)
+                throw new ArgumentNullException(nameof(diagramViewport));
+            if (uiEventSource == null)
+                throw new ArgumentNullException(nameof(uiEventSource));
+
             DiagramViewport = diagramViewport;
+            UIEventSource = uiEventSource;
         }
 
         protected void ZoomViewportTo(double newZoom)
@@ -97,8 +106,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 
         private void SendCommand(ViewportCommandBase command)
         {
-            if (ViewportCommand != null)
-                ViewportCommand(this, command);
+            ViewportCommand?.Invoke(this, command);
         }
 
         protected enum ZoomDirection

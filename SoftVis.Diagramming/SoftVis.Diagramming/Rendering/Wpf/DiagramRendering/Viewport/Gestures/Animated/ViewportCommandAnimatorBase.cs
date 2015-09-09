@@ -5,26 +5,25 @@ using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public abstract class ViewportCommandAnimatorBase : Animatable
+    internal abstract class ViewportCommandAnimatorBase : Animatable
     {
         public event ViewportCommandHandler ViewportCommand;
 
-        protected readonly IViewportGesture _originalGesture;
-        protected readonly Duration _animationDuration;
-        protected readonly EasingFunctionBase _easingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseOut };
+        protected readonly IViewportGesture OriginalGesture;
+        protected readonly Duration AnimationDuration;
+        protected readonly EasingFunctionBase EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut };
 
         protected ViewportCommandAnimatorBase(IViewportGesture originalGesture, Duration animationDuration)
         {
-            _originalGesture = originalGesture;
-            _animationDuration = animationDuration;
+            OriginalGesture = originalGesture;
+            AnimationDuration = animationDuration;
         }
 
         public abstract void BeginAnimation();
 
         protected void SendCommand(ViewportCommandBase command)
         {
-            if (ViewportCommand != null)
-                ViewportCommand(this, command);
+            ViewportCommand?.Invoke(this, command);
         }
 
         protected override Freezable CreateInstanceCore()

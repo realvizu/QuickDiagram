@@ -1,23 +1,24 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 {
     /// <summary>
     /// Calculates viewport changes when panning with mouse.
     /// </summary>
-    internal class MousePanViewportGesture : InputEventViewportGestureBase
+    internal class MousePanViewportGesture : ViewportGestureBase
     {
         private Point _lastMousePosition;
         private bool _isPanning;
         private Cursor _cursorBeforePanning;
 
-        public MousePanViewportGesture(IDiagramViewport diagramViewport, IInputElement inputElement)
-            : base(diagramViewport, inputElement)
+        internal MousePanViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
+            : base(diagramViewport, uiEventSource)
         {
-            InputElement.MouseLeftButtonDown += OnMouseLeftButtonDown;
-            InputElement.MouseLeftButtonUp += OnMouseLeftButtonUp;
-            InputElement.MouseMove += OnMouseMove;
+            UIEventSource.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            UIEventSource.MouseLeftButtonUp += OnMouseLeftButtonUp;
+            UIEventSource.MouseMove += OnMouseMove;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -27,7 +28,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
                 _isPanning = true;
                 _cursorBeforePanning = DiagramViewport.Cursor;
                 DiagramViewport.Cursor = Cursors.Hand;
-                Mouse.Capture(InputElement);
+                Mouse.Capture(UIEventSource);
             }
         }
 
@@ -43,7 +44,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            var position = e.GetPosition(InputElement);
+            var position = e.GetPosition(UIEventSource);
             if (_isPanning)
             {
                 MoveViewportCenterInScreenSpaceBy(_lastMousePosition - position);

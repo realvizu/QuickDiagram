@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
     /// A viewport gesture is a logic that turns input events (mouse, keyboard, control manipulation) 
     /// into viewport commands (zoom and move).
     /// </summary>
-    public interface IViewportGesture
+    internal interface IViewportGesture
     {
         event ViewportCommandHandler ViewportCommand;
 

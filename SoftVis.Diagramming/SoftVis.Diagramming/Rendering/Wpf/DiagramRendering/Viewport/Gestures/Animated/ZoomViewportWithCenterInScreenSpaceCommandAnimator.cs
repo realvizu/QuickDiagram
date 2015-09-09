@@ -3,16 +3,17 @@ using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public class ZoomViewportWithCenterInScreenSpaceCommandAnimator : ViewportCommandAnimatorBase
+    internal class ZoomViewportWithCenterInScreenSpaceCommandAnimator : ViewportCommandAnimatorBase
     {
         private readonly ZoomViewportWithCenterInScreenSpaceCommand _originalCommand;
 
-        public static readonly DependencyProperty ZoomWithCenterProperty = DependencyProperty.Register("ZoomWithCenter",
-            typeof(ZoomWithCenterSpecification), typeof(ZoomViewportWithCenterInScreenSpaceCommandAnimator), 
-            new PropertyMetadata(OnZoomWithCenterPropertyChanged));
+        public static readonly DependencyProperty ZoomWithCenterProperty = 
+            DependencyProperty.Register("ZoomWithCenter", typeof(ZoomWithCenterSpecification), 
+                typeof(ZoomViewportWithCenterInScreenSpaceCommandAnimator), 
+                new PropertyMetadata(OnZoomWithCenterPropertyChanged));
 
-        public ZoomViewportWithCenterInScreenSpaceCommandAnimator(IViewportGesture originalGesture, Duration animationDuration, 
-            ZoomViewportWithCenterInScreenSpaceCommand originalCommand)
+        internal ZoomViewportWithCenterInScreenSpaceCommandAnimator(IViewportGesture originalGesture, 
+            Duration animationDuration, ZoomViewportWithCenterInScreenSpaceCommand originalCommand)
             : base(originalGesture, animationDuration)
         {
             _originalCommand = originalCommand;
@@ -21,13 +22,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
         public override void BeginAnimation()
         {
             var originalSpecification = new ZoomWithCenterSpecification(
-                _originalGesture.DiagramViewport.Zoom, _originalCommand.ZoomCenterInScreenSpace);
+                OriginalGesture.DiagramViewport.Zoom, _originalCommand.ZoomCenterInScreenSpace);
 
             var newSpecification = new ZoomWithCenterSpecification(
                 _originalCommand.NewZoom, _originalCommand.ZoomCenterInScreenSpace);
 
             var animation = new ZoomWithCenterSpecificationAnimation(
-                originalSpecification, newSpecification, _animationDuration, _easingFunction);
+                originalSpecification, newSpecification, AnimationDuration, EasingFunction);
 
             BeginAnimation(ZoomWithCenterProperty, animation);
         }
@@ -40,7 +41,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         private void OnZoomWithCenterPropertyChanged(ZoomWithCenterSpecification newSpecification)
         {
-            SendCommand(new ZoomViewportWithCenterInScreenSpaceCommand(_originalGesture, 
+            SendCommand(new ZoomViewportWithCenterInScreenSpaceCommand(OriginalGesture, 
                 newSpecification.Zoom, newSpecification.CenterInScreenSpace));
         }
     }

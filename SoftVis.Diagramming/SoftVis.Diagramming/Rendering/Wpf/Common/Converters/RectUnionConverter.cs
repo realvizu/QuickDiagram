@@ -3,9 +3,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Common
+namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
 {
-    public class RectUnionConverter : IMultiValueConverter
+    /// <summary>
+    /// Calculates the union of the given Rect values.
+    /// </summary>
+    internal class RectUnionConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

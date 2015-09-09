@@ -1,17 +1,17 @@
 ﻿using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 {
     /// <summary>
     /// Calculates viewport changes when zooming with UI zoom control.
     /// </summary>
-    internal class ZoomWidgetEventViewportGesture : WidgetEventViewportGestureBase
+    internal class ZoomWidgetViewportGesture : ViewportGestureBase
     {
-        public ZoomWidgetEventViewportGesture(IDiagramViewport diagramViewport, IWidgetEventSource widgetEventSource)
-            : base(diagramViewport, widgetEventSource)
+        internal ZoomWidgetViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
+            : base(diagramViewport, uiEventSource)
         {
-            if (WidgetEventSource != null)
-                WidgetEventSource.Zoom += OnZoom;
+            UIEventSource.ZoomWidget += OnZoom;
         }
 
         private void OnZoom(object sender, ZoomEventArgs e)

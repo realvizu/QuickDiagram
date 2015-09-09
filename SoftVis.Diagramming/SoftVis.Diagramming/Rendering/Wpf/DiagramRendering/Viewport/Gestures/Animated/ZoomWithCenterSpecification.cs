@@ -2,12 +2,12 @@
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public class ZoomWithCenterSpecification
+    internal class ZoomWithCenterSpecification
     {
         public double Zoom { get; private set; }
         public Point CenterInScreenSpace { get; private set; }
 
-        public ZoomWithCenterSpecification(double zoom, Point centerInScreenSpace)
+        internal ZoomWithCenterSpecification(double zoom, Point centerInScreenSpace)
         {
             Zoom = zoom;
             CenterInScreenSpace = centerInScreenSpace;

@@ -1,8 +1,8 @@
 ﻿namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands
 {
-    public abstract class ViewportCommandBase
+    internal abstract class ViewportCommandBase
     {
-        public object Sender { get; private set; }
+        internal object Sender { get; private set; }
 
         protected ViewportCommandBase(object sender)
         {

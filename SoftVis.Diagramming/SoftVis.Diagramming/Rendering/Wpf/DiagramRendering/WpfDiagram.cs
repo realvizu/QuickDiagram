@@ -14,5 +14,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         {
             return new DiagramNodeViewModel(modelEntity, DefaultNodePosition, DefaultNodeSize);
         }
+
+        protected override DiagramConnector CreateDiagramConnector(IModelRelationship relationship)
+        {
+            var sourceNode = (DiagramNodeViewModel)FindNode(relationship.Source);
+            var targetNode = (DiagramNodeViewModel)FindNode(relationship.Target);
+            return new DiagramConnectorViewModel(relationship, sourceNode, targetNode);
+        }
     }
 }

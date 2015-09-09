@@ -123,14 +123,9 @@ namespace Codartis.SoftVis.Diagramming
 
         protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
 
-        private DiagramConnector CreateDiagramConnector(IModelRelationship relationship)
-        {
-            var sourceNode = FindNode(relationship.Source);
-            var targetNode = FindNode(relationship.Target);
-            return new DiagramConnector(relationship, sourceNode, targetNode);
-        }
+        protected abstract DiagramConnector CreateDiagramConnector(IModelRelationship relationship);
 
-        private DiagramNode FindNode(IModelEntity modelEntity)
+        protected DiagramNode FindNode(IModelEntity modelEntity)
         {
             return Nodes.FirstOrDefault(i => i.ModelEntity == modelEntity);
         }

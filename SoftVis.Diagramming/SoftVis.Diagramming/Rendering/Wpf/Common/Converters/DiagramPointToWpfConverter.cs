@@ -1,11 +1,14 @@
-﻿using Codartis.SoftVis.Diagramming;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Codartis.SoftVis.Diagramming;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Common
+namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
 {
-    public class DiagramPointToWpfConverter : IValueConverter
+    /// <summary>
+    /// Converts a DiagramPoint into a WPF Point.
+    /// </summary>
+    internal class DiagramPointToWpfConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

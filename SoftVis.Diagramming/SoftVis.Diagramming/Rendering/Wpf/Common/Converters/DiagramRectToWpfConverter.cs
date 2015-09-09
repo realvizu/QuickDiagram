@@ -1,11 +1,14 @@
-﻿using Codartis.SoftVis.Diagramming;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Codartis.SoftVis.Diagramming;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Common
+namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
 {
-    public class DiagramRectToWpfConverter : IValueConverter
+    /// <summary>
+    /// Converts a DiagramRect into a WPF Rect.
+    /// </summary>
+    internal class DiagramRectToWpfConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

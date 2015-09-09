@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Shapes
     /// </summary>
     public abstract class DiagramShape
     {
-        public IModelItem ModelItem { get; }
+        protected IModelItem ModelItem { get; }
 
         protected DiagramShape(IModelItem modelItem)
         {

@@ -4,14 +4,15 @@ using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public class ResizeViewportCommandAnimator : ViewportCommandAnimatorBase
+    internal class ResizeViewportCommandAnimator : ViewportCommandAnimatorBase
     {
         private readonly ResizeViewportCommand _originalCommand;
 
-        public static readonly DependencyProperty SizeProperty = DependencyProperty.Register("Size",
-            typeof(Size), typeof(ResizeViewportCommandAnimator), new PropertyMetadata(OnSizePropertyChanged));
+        public static readonly DependencyProperty SizeProperty = 
+            DependencyProperty.Register("Size", typeof(Size), typeof(ResizeViewportCommandAnimator), 
+                new PropertyMetadata(OnSizePropertyChanged));
 
-        public ResizeViewportCommandAnimator(IViewportGesture originalGesture, Duration animationDuration,
+        internal ResizeViewportCommandAnimator(IViewportGesture originalGesture, Duration animationDuration,
             ResizeViewportCommand originalCommand)
             : base(originalGesture, animationDuration)
         {
@@ -20,10 +21,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         public override void BeginAnimation()
         {
-            var animation = new SizeAnimation(_originalGesture.DiagramViewport.ViewportInScreenSpace.Size, 
-                _originalCommand.NewSizeInScreenSpace, _animationDuration)
+            var animation = new SizeAnimation(OriginalGesture.DiagramViewport.ViewportInScreenSpace.Size, 
+                _originalCommand.NewSizeInScreenSpace, AnimationDuration)
             {
-                EasingFunction = _easingFunction
+                EasingFunction = EasingFunction
             };
             BeginAnimation(SizeProperty, animation);
         }
@@ -36,7 +37,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         private void OnSizePropertyChanged(Size newSize)
         {
-            SendCommand(new ResizeViewportCommand(_originalGesture, newSize));
+            SendCommand(new ResizeViewportCommand(OriginalGesture, newSize));
         }
     }
 }

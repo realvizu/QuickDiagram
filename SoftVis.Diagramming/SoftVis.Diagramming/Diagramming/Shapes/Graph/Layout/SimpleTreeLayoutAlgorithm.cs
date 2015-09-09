@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
     /// The root (topmost vertex) is the one with no outbound edges.
     /// No edge routing.
     /// </summary>
-    internal class SimpleTreeLayoutAlgorithm
+    internal sealed class SimpleTreeLayoutAlgorithm
     {
         private readonly DiagramGraph _graph;
         private readonly IList<Layer> _layers = new List<Layer>();

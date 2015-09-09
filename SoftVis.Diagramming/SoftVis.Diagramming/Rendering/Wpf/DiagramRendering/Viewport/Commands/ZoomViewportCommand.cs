@@ -1,10 +1,10 @@
 ﻿namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands
 {
-    public class ZoomViewportCommand : ViewportCommandBase
+    internal class ZoomViewportCommand : ViewportCommandBase
     {
-        public double NewZoom { get; private set; }
+        internal double NewZoom { get; private set; }
 
-        public ZoomViewportCommand(object sender, double newZoom)
+        internal ZoomViewportCommand(object sender, double newZoom)
             : base(sender)
         {
             NewZoom = newZoom;

@@ -16,17 +16,14 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
         private readonly Duration _animationDuration;
         private readonly List<ViewportCommandAnimatorBase> _commandAnimators = new List<ViewportCommandAnimatorBase>();
 
-        public AnimatedViewportGesture(IViewportGesture originalGesture, TimeSpan animationTimeSpan)
+        internal AnimatedViewportGesture(IViewportGesture originalGesture, TimeSpan animationTimeSpan)
         {
             _originalGesture = originalGesture;
             _originalGesture.ViewportCommand += OnViewportCommand;
             _animationDuration = new Duration(animationTimeSpan);
         }
 
-        public IDiagramViewport DiagramViewport
-        {
-            get { return _originalGesture.DiagramViewport; }
-        }
+        public IDiagramViewport DiagramViewport => _originalGesture.DiagramViewport;
 
         private void OnViewportCommand(object sender, ViewportCommandBase command)
         {
@@ -54,7 +51,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
                 return new ZoomViewportWithCenterInScreenSpaceCommandAnimator(_originalGesture, _animationDuration, 
                     command as ZoomViewportWithCenterInScreenSpaceCommand);
 
-            throw new Exception(string.Format("Unexpected command type {0}", command.GetType()));
+            throw new Exception($"Unexpected command type {command.GetType()}");
         }
     }
 }

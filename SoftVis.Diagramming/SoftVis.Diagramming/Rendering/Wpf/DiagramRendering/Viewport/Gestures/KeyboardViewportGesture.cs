@@ -2,43 +2,44 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 {
     /// <summary>
     /// Calculates translate changes when panning and zooming with keys.
     /// </summary>
-    internal class KeyboardViewportGesture : InputEventViewportGestureBase
+    internal class KeyboardViewportGesture : ViewportGestureBase
     {
-        private const int _acceleration = 3;
-        private const int _deceleration = 9;
-        private const int _maxSpeed = 50;
-        private const int _minSpeed = -_maxSpeed;
-        private const int _framePerSeconds = 25;
-        private const int _fullZoomSeconds = 1;
+        private const int Acceleration = 3;
+        private const int Deceleration = 9;
+        private const int MaxSpeed = 50;
+        private const int FramePerSeconds = 25;
+        private const int FullZoomSeconds = 1;
 
         private readonly double _zoomAmountPerSpeed;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly DispatcherTimer _timer;
 
-        private int _zoomSpeed = 0;
-        private int _horizontalSpeed = 0;
-        private int _verticalSpeed = 0;
-        private bool[] _isKeyDown = new bool[(int)GestureKeys.Max + 1];
+        private int _zoomSpeed;
+        private int _horizontalSpeed;
+        private int _verticalSpeed;
+        private readonly bool[] _isKeyDown = new bool[(int)GestureKeys.Max + 1];
 
-        public KeyboardViewportGesture(IDiagramViewport diagramViewport, IInputElement inputElement)
-            : base(diagramViewport, inputElement)
+        internal KeyboardViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
+            : base(diagramViewport, uiEventSource)
         {
             var zoomRange = diagramViewport.MaxZoom - diagramViewport.MinZoom;
-            _zoomAmountPerSpeed = zoomRange / (_maxSpeed/2 * _framePerSeconds * _fullZoomSeconds);
+            _zoomAmountPerSpeed = zoomRange / (MaxSpeed/2 * FramePerSeconds * FullZoomSeconds);
 
-            InputElement.PreviewKeyDown += OnKeyDown;
-            InputElement.PreviewKeyUp += OnKeyUp;
+            UIEventSource.PreviewKeyDown += OnKeyDown;
+            UIEventSource.PreviewKeyUp += OnKeyUp;
 
-            _timer = CreateTimer(1000 / _framePerSeconds, OnTimerTick);
+            _timer = CreateTimer(1000 / FramePerSeconds, OnTimerTick);
             _timer.Start();
         }
 
-        private DispatcherTimer CreateTimer(int intervalMillisec, EventHandler tickHandler)
+        private static DispatcherTimer CreateTimer(int intervalMillisec, EventHandler tickHandler)
         {
             var timer = new DispatcherTimer();
             timer.Tick += tickHandler;
@@ -56,19 +57,15 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
         {
             _zoomSpeed = CalculateSpeed(_zoomSpeed, GestureKeys.ZoomIn, GestureKeys.ZoomOut);
 
-            if (_zoomSpeed != 0)
-            {
-                var zoomDirection = _zoomSpeed > 0 ? ZoomDirection.In : ZoomDirection.Out;
+            if (_zoomSpeed == 0)
+                return;
 
-                if (IsZoomLimitReached(zoomDirection))
-                {
-                    _zoomSpeed = 0;
-                }
-                else
-                {
-                    ZoomViewportBy(zoomDirection, Math.Abs(_zoomSpeed) * _zoomAmountPerSpeed);
-                }
-            }
+            var zoomDirection = _zoomSpeed > 0 ? ZoomDirection.In : ZoomDirection.Out;
+
+            if (IsZoomLimitReached(zoomDirection))
+                _zoomSpeed = 0;
+            else
+                ZoomViewportBy(zoomDirection, Math.Abs(_zoomSpeed) * _zoomAmountPerSpeed);
         }
 
         private void ProcessTranslate()
@@ -82,29 +79,48 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
             }
         }
 
-        private int CalculateSpeed(int speed, GestureKeys positiveDirection, GestureKeys negativeDirection)
+        private int CalculateSpeed(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
         {
-            if (_isKeyDown[(int)positiveDirection] && !(_isKeyDown[(int)negativeDirection]) && speed >= 0)
+            if (IsAcceleratingInPositiveDirection(speed, positiveKey, negativeKey))
             {
-                speed += _acceleration;
+                speed += Acceleration;
             }
-            else if (_isKeyDown[(int)negativeDirection] && !(_isKeyDown[(int)positiveDirection]) && speed <= 0)
+            else if (IsAccelaratingInNegativeDirection(speed, positiveKey, negativeKey))
             {
-                speed -= _acceleration;
+                speed -= Acceleration;
             }
             else if (speed < 0)
             {
-                speed += Math.Min(Math.Abs(speed), _deceleration);
+                speed += CalculateDeceleration(speed);
             }
             else if (speed > 0)
             {
-                speed -= Math.Min(Math.Abs(speed), _deceleration);
+                speed -= CalculateDeceleration(speed);
             }
 
-            speed = Math.Min(_maxSpeed, speed);
-            speed = Math.Max(_minSpeed, speed);
+            speed = Math.Min(MaxSpeed, speed);
+            speed = Math.Max(-MaxSpeed, speed);
 
             return speed;
+        }
+
+        private static int CalculateDeceleration(int speed)
+        {
+            return Math.Min(Math.Abs(speed), Deceleration);
+        }
+
+        private bool IsAcceleratingInPositiveDirection(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
+        {
+            return _isKeyDown[(int)positiveKey] 
+                && !(_isKeyDown[(int)negativeKey]) 
+                && speed >= 0;
+        }
+
+        private bool IsAccelaratingInNegativeDirection(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
+        {
+            return _isKeyDown[(int)negativeKey] 
+                && !(_isKeyDown[(int)positiveKey]) 
+                && speed <= 0;
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)

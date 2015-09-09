@@ -5,14 +5,15 @@ using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated
 {
-    public class MoveViewportCenterInDiagramSpaceCommandAnimator : ViewportCommandAnimatorBase
+    internal class MoveViewportCenterInDiagramSpaceCommandAnimator : ViewportCommandAnimatorBase
     {
         private readonly MoveViewportCenterInDiagramSpaceCommand _originalCommand;
 
-        public static readonly DependencyProperty CenterProperty = DependencyProperty.Register("Center",
-            typeof(Point), typeof(MoveViewportCenterInDiagramSpaceCommandAnimator), new PropertyMetadata(OnCenterPropertyChanged));
+        public static readonly DependencyProperty CenterProperty = 
+            DependencyProperty.Register("Center", typeof(Point), typeof(MoveViewportCenterInDiagramSpaceCommandAnimator), 
+            new PropertyMetadata(OnCenterPropertyChanged));
 
-        public MoveViewportCenterInDiagramSpaceCommandAnimator(IViewportGesture originalGesture, Duration animationDuration, 
+        internal MoveViewportCenterInDiagramSpaceCommandAnimator(IViewportGesture originalGesture, Duration animationDuration, 
             MoveViewportCenterInDiagramSpaceCommand originalCommand)
             : base(originalGesture, animationDuration)
         {
@@ -21,10 +22,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         public override void BeginAnimation()
         {
-            var animation = new PointAnimation(_originalGesture.DiagramViewport.ViewportInDiagramSpace.GetCenter(),
-                _originalCommand.NewCenterInDiagramSpace, _animationDuration)
+            var animation = new PointAnimation(OriginalGesture.DiagramViewport.ViewportInDiagramSpace.GetCenter(),
+                _originalCommand.NewCenterInDiagramSpace, AnimationDuration)
             {
-                EasingFunction = _easingFunction
+                EasingFunction = EasingFunction
             };
             BeginAnimation(CenterProperty, animation);
         }
@@ -37,7 +38,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Anim
 
         private void OnCenterPropertyChanged(Point newCenter)
         {
-            SendCommand(new MoveViewportCenterInDiagramSpaceCommand(_originalGesture, newCenter));
+            SendCommand(new MoveViewportCenterInDiagramSpaceCommand(OriginalGesture, newCenter));
         }
     }
 }

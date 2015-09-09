@@ -2,11 +2,11 @@
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands
 {
-    public class MoveViewportCenterInDiagramSpaceCommand : ViewportCommandBase
+    internal class MoveViewportCenterInDiagramSpaceCommand : ViewportCommandBase
     {
-        public Point NewCenterInDiagramSpace { get; private set; }
+        internal Point NewCenterInDiagramSpace { get; }
 
-        public MoveViewportCenterInDiagramSpaceCommand(object sender, Point newCenterInDiagramSpace)
+        internal MoveViewportCenterInDiagramSpaceCommand(object sender, Point newCenterInDiagramSpace)
             : base(sender)
         {
             NewCenterInDiagramSpace = newCenterInDiagramSpace;

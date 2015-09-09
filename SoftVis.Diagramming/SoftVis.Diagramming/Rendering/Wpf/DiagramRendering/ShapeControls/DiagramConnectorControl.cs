@@ -2,11 +2,17 @@
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 {
+    /// <summary>
+    /// This control draws a diagram connector on its parent canvas/panel.
+    /// The visual appearance and the data bindings to its ViewModel are defined in XAML.
+    /// The PathGeometry of the connector (arrow) is created by the DiagramConnectorToPathConverter.
+    /// </summary>
     public class DiagramConnectorControl : DiagramShapeControlBase
     {
         static DiagramConnectorControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramConnectorControl), new FrameworkPropertyMetadata(typeof(DiagramConnectorControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramConnectorControl), 
+                new FrameworkPropertyMetadata(typeof(DiagramConnectorControl)));
         }
 
         public static readonly DependencyProperty SourceRectProperty =
