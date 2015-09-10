@@ -4,10 +4,13 @@ using System.Windows.Media.Imaging;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
+    /// <summary>
+    /// Exports the current diagram to a file.
+    /// </summary>
     internal sealed class ExportToFileCommand : CommandBase
     {
-        public ExportToFileCommand(IHostServices hostServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.ExportToFileCommand, hostServices)
+        public ExportToFileCommand(IPackageServices packageServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.ExportToFileCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)

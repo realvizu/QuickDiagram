@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
         /// Calculates the new positions of the graph's vertices. 
         /// </summary>
         /// <returns>A dictionary of the (vertex, position) items.</returns>
-        internal IDictionary<DiagramNode, DiagramPoint> ComputeNewVertexPositions()
+        public IDictionary<DiagramNode, DiagramPoint> ComputeNewVertexPositions()
         {
             //first layout the vertices with 0 out-edge
             foreach (var vertex in _graph.Vertices.Where(v => _graph.OutDegree(v) == 0))

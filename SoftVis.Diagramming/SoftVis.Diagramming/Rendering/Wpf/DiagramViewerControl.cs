@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport;
@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
     /// </summary>
     [TemplatePart(Name = PART_DiagramViewportPanel, Type = typeof(DiagramViewportPanel))]
     [TemplatePart(Name = PART_PanAndZoomControl, Type = typeof(PanAndZoomControl))]
-    public partial class DiagramViewerControl : Control, IUIEventSource
+    public partial class DiagramViewerControl : TemplatedControlBase, IUIEventSource
     {
         private const string PART_DiagramViewportPanel = "PART_DiagramViewportPanel";
         private const string PART_PanAndZoomControl = "PART_PanAndZoomControl";
@@ -200,14 +200,6 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void EnsureThatDelayedRenderingOperationsAreCompleted()
         {
             Dispatcher.Invoke(DispatcherPriority.Loaded, new Action(() => { }));
-        }
-
-        private TUIElement FindChildControlInTemplate<TUIElement>(string controlName) where TUIElement : UIElement
-        {
-            var childControl = GetTemplateChild(controlName) as TUIElement;
-            if (childControl == null)
-                throw new Exception($"{controlName} control not found in the control template.");
-            return childControl;
         }
     }
 }

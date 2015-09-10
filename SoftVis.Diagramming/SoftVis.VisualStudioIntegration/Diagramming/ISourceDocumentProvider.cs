@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// <summary>
     /// Defines operations for accessing the source documents.
     /// </summary>
-    public interface ISourceDocumentProvider
+    internal interface ISourceDocumentProvider
     {
         Document GetCurrentDocument();
         TextSpan GetSelection();

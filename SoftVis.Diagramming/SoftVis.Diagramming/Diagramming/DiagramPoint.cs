@@ -1,11 +1,8 @@
-﻿using System.Diagnostics;
-
-namespace Codartis.SoftVis.Diagramming
+﻿namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// Represents a point in the diagram-space.
     /// </summary>
-    [DebuggerDisplay("( {X} , {Y} )")]
     public struct DiagramPoint
     {
         public double X { get; }
@@ -46,6 +43,11 @@ namespace Codartis.SoftVis.Diagramming
             }
         }
 
+        public override string ToString()
+        {
+            return $"( {X} , {Y} )";
+        }
+
         public static bool operator ==(DiagramPoint left, DiagramPoint right)
         {
             return left.Equals(right);
@@ -54,6 +56,26 @@ namespace Codartis.SoftVis.Diagramming
         public static bool operator !=(DiagramPoint left, DiagramPoint right)
         {
             return !left.Equals(right);
+        }
+
+        public static DiagramPoint operator +(DiagramPoint left, DiagramPoint right)
+        {
+            return new DiagramPoint(left.X + right.X, left.Y + right.Y);
+        }
+
+        public static DiagramPoint operator -(DiagramPoint left, DiagramPoint right)
+        {
+            return new DiagramPoint(left.X - right.X, left.Y - right.Y);
+        }
+
+        public static DiagramPoint operator *(DiagramPoint point, double multiplier)
+        {
+            return new DiagramPoint(point.X * multiplier, point.Y * multiplier);
+        }
+
+        public static DiagramPoint operator *(double multiplier, DiagramPoint point)
+        {
+            return point * multiplier;
         }
     }
 }

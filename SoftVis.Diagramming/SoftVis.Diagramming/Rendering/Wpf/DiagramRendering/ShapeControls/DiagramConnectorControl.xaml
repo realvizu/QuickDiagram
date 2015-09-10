@@ -3,39 +3,33 @@
                     xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls"
                     xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common.Converters">
 
-    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    <converters:DiagramRectsToWpfUnionConverter x:Key="RectUnionConverter" />
     <converters:DiagramRectToWpfConverter x:Key="DiagramRectToWpfConverter" />
-    <converters:RectUnionConverter x:Key="RectUnionConverter" />
-    <shapeControls:DiagramConnectorToPathConverter x:Key="DiagramConnectorToPathConverter" />
+    <converters:DiagramPointsToWpfConverter x:Key="DiagramPointsToWpfConverter" />
+    <shapeControls:PointsToPathRelativeToRectConverter x:Key="PointsToPathRelativeToRectConverter" />
 
     <Style TargetType="{x:Type shapeControls:DiagramConnectorControl}">
         <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="SourceRect" Value="{Binding Path=Source.Rect, Converter={StaticResource DiagramRectToWpfConverter}}" />
-        <Setter Property="TargetRect" Value="{Binding Path=Target.Rect, Converter={StaticResource DiagramRectToWpfConverter}}" />
+        <Setter Property="RoutePoints" Value="{Binding Path=RoutePoints, Converter={StaticResource DiagramPointsToWpfConverter}}" />
         <Setter Property="Rect">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource RectUnionConverter}">
-                    <Binding RelativeSource="{RelativeSource Self}" Path="SourceRect" />
-                    <Binding RelativeSource="{RelativeSource Self}" Path="TargetRect" />
+                    <Binding Path="Source.Rect" />
+                    <Binding Path="Target.Rect" />
                 </MultiBinding>
             </Setter.Value>
-        </Setter>
+        </Setter> 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type shapeControls:DiagramConnectorControl}">
                     <Path Stroke="{TemplateBinding Foreground}"
                           Fill="{TemplateBinding Background}"
-                          StrokeThickness="1">
+                          StrokeThickness="1" >
                         <Path.Data>
-                            <PathGeometry>
-                                <PathGeometry.Figures>
-                                    <MultiBinding Converter="{StaticResource DiagramConnectorToPathConverter}">
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="SourceRect" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="TargetRect" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
-                                    </MultiBinding>
-                                </PathGeometry.Figures>
-                            </PathGeometry>
+                            <MultiBinding Converter="{StaticResource PointsToPathRelativeToRectConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Rect" />
+                            </MultiBinding>
                         </Path.Data>
                     </Path>
                 </ControlTemplate>

@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagramming\Diagram.cs" />
+    <Compile Include="Diagramming\DiagramPointExtensions.cs" />
     <Compile Include="Diagramming\Shapes\Graph\DiagramGraph.cs" />
     <Compile Include="Diagramming\DiagramPoint.cs" />
     <Compile Include="Diagramming\DiagramRect.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Diagramming\Shapes\DiagramConnector.cs" />
     <Compile Include="Diagramming\Shapes\DiagramNode.cs" />
     <Compile Include="Diagramming\Shapes\DiagramShape.cs" />
+    <Compile Include="Diagramming\Shapes\Graph\Routing\StraightRoutingAlgorithm.cs" />
     <Compile Include="Modeling\IModelItem.cs" />
     <Compile Include="Modeling\IModelEntity.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
@@ -89,7 +91,9 @@
     <Compile Include="Rendering\Common\UIEvents\ResizeEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Rendering\Wpf\Common\Converters\RectUnionConverter.cs" />
+    <Compile Include="Rendering\Wpf\Common\Converters\PointsToBoundingRectConverter.cs" />
+    <Compile Include="Rendering\Wpf\Common\Converters\DiagramPointsToWpfConverter.cs" />
+    <Compile Include="Rendering\Wpf\Common\Converters\DiagramRectsToWpfUnionConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\DiagramRectToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\DiagramSizeToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\DiagramSizeExtensions.cs" />
@@ -98,8 +102,9 @@
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\DiagramPointToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\PathFigureCollectionExtensions.cs" />
+    <Compile Include="Rendering\Wpf\Common\PointExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
-    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\DiagramConnectorToPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToPathRelativeToRectConverter.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\DiagramPanelBase.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\ViewModels\DiagramConnectorViewModel.cs" />
@@ -146,6 +151,7 @@
     <Compile Include="Rendering\Wpf\DiagramRendering\Viewport\Gestures\ViewportGestureBase.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\DiagramNodeControl.cs" />
+    <Compile Include="Rendering\Wpf\Common\TemplatedControlBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Key.snk">

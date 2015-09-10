@@ -5,22 +5,25 @@ using System.Windows.Media.Imaging;
 
 namespace Codartis.SoftVis.Rendering.Wpf.ImageExport
 {
+    /// <summary>
+    /// Static helper class that renders WPF UI into bitmap.
+    /// </summary>
     public static class ImageRenderer
     {
-        private const double _defaultDpi = 96d;
-        private const int _renderingTileSize = 64;
+        private const double DefaultDpi = 96d;
+        private const int RenderingTileSize = 64;
 
         public static BitmapSource RenderUIElementToBitmap(UIElement uiElement, double targetDpi)
         {
             Debug.WriteLine("RenderUIElementToBitmap");
 
-            var scale = targetDpi / _defaultDpi;
+            var scale = targetDpi / DefaultDpi;
             var bounds = new Rect(new Point(0, 0), uiElement.DesiredSize);
 
             var drawingVisual = new DrawingVisual();
             using (var drawingContext = drawingVisual.RenderOpen())
             {
-                DrawContentTiles(uiElement, bounds, drawingContext, _renderingTileSize, _renderingTileSize);
+                DrawContentTiles(uiElement, bounds, drawingContext, RenderingTileSize, RenderingTileSize);
             }
 
             var imageWidth = bounds.Width * scale;

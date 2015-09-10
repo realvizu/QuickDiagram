@@ -5,6 +5,7 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Shapes;
 using Codartis.SoftVis.Diagramming.Shapes.Graph;
 using Codartis.SoftVis.Diagramming.Shapes.Graph.Layout;
+using Codartis.SoftVis.Diagramming.Shapes.Graph.Routing;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -100,7 +101,7 @@ namespace Codartis.SoftVis.Diagramming
         /// <summary>
         /// Recalculates the layout of the diagram and applies the new shape positions.
         /// </summary>
-        public void Layout()
+        public void LayoutNodes()
         {
             var algorithm = new SimpleTreeLayoutAlgorithm(_graph);
             var newNodePositions = algorithm.ComputeNewVertexPositions();
@@ -109,6 +110,21 @@ namespace Codartis.SoftVis.Diagramming
             {
                 node.Position = newNodePositions[node];
                 SignalShapeModifiedEvent(node);
+            }
+        }
+
+        /// <summary>
+        /// Recalculates the route of the edges on the diagram and applies the routes to the connectors.
+        /// </summary>
+        public void RouteConnectors()
+        {
+            var algorithm = new StraightRoutingAlgorithm(_graph);
+            var newConnectorRoutes = algorithm.ComputeEdgeRoutes();
+
+            foreach (var connector in Connectors)
+            {
+                connector.RoutePoints = newConnectorRoutes[connector];
+                SignalShapeModifiedEvent(connector);
             }
         }
 
@@ -127,22 +143,22 @@ namespace Codartis.SoftVis.Diagramming
 
         protected DiagramNode FindNode(IModelEntity modelEntity)
         {
-            return Nodes.FirstOrDefault(i => i.ModelEntity == modelEntity);
+            return Nodes.FirstOrDefault(i => Equals(i.ModelEntity, modelEntity));
         }
 
         private bool NodeExists(IModelEntity modelEntity)
         {
-            return Nodes.Any(i => i.ModelEntity == modelEntity);
+            return Nodes.Any(i => Equals(i.ModelEntity, modelEntity));
         }
 
         private DiagramConnector FindConnector(IModelRelationship modelRelationship)
         {
-            return Connectors.FirstOrDefault(i => i.ModelRelationship == modelRelationship);
+            return Connectors.FirstOrDefault(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
         private bool ConnectorExists(IModelRelationship modelRelationship)
         {
-            return Connectors.Any(i => i.ModelRelationship == modelRelationship);
+            return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
         private void SignalShapeAddedEvent(DiagramShape shape)

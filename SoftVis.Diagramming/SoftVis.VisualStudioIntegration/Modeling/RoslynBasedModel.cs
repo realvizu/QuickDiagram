@@ -7,11 +7,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// A model created from Roslyn symbols.
     /// </summary>
-    public class RoslynBasedModel : IModel
+    internal class RoslynBasedModel : IModel
     {
         private readonly Dictionary<string, RoslynBasedClass> _roslynSymbolNameToModelEntityMap;
 
-        public RoslynBasedModel()
+        internal RoslynBasedModel()
         {
             _roslynSymbolNameToModelEntityMap = new Dictionary<string, RoslynBasedClass>();
         }

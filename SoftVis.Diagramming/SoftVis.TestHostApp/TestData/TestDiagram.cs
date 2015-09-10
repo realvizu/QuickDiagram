@@ -15,7 +15,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                     ShowConnector(relationship);
             }
 
-            Layout();
+            LayoutNodes();
+            RouteConnectors();
         }
     }
 }

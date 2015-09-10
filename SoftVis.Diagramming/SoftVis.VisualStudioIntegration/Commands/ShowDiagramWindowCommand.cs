@@ -2,15 +2,18 @@
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
+    /// <summary>
+    /// Makes the diagram window visible.
+    /// </summary>
     internal sealed class ShowDiagramWindowCommand : CommandBase
     {
-        public ShowDiagramWindowCommand(IHostServices hostServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.ShowDiagramWindowCommand, hostServices)
+        public ShowDiagramWindowCommand(IPackageServices packageServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.ShowDiagramWindowCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = HostServices.GetDiagramWindow();
+            var diagramWindow = PackageServices.GetDiagramWindow();
             diagramWindow.Show();
         }
     }

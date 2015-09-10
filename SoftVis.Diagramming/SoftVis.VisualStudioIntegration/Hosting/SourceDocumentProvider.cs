@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+﻿using System;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
@@ -6,21 +7,24 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
-using System;
+using Microsoft.VisualStudio.TextManager.Interop;
+using TextSpan = Microsoft.CodeAnalysis.Text.TextSpan;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
-    public class SourceDocumentProvider : ISourceDocumentProvider, IVsRunningDocTableEvents, IDisposable
+    /// <summary>
+    /// Gets information from Visual Studio about the currently edited source document.
+    /// </summary>
+    internal class SourceDocumentProvider : ISourceDocumentProvider, IVsRunningDocTableEvents, IDisposable
     {
-        private const string CSHARP_CONTENTTYPE_NAME = "CSharp";
+        private const string CSharpContentTypeName = "CSharp";
 
         private readonly IHostServiceProvider _hostServiceProvider;
         private uint _runningDocumentTableCookie;
         private IVsRunningDocumentTable _runningDocumentTable;
+        private IWpfTextView _activeWpfTextView;
 
-        public IWpfTextView ActiveWpfTextView { get; private set; }
-
-        public SourceDocumentProvider(IHostServiceProvider hostServiceProvider)
+        internal SourceDocumentProvider(IHostServiceProvider hostServiceProvider)
         {
             _hostServiceProvider = hostServiceProvider;
             InitializeRunningDocumentTable();
@@ -58,7 +62,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             {
                 var contentType = wpfTextView.TextBuffer.ContentType;
 
-                ActiveWpfTextView = contentType.IsOfType(CSHARP_CONTENTTYPE_NAME)
+                _activeWpfTextView = contentType.IsOfType(CSharpContentTypeName)
                     ? wpfTextView
                     : null;
             }
@@ -68,12 +72,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public Document GetCurrentDocument()
         {
-            if (ActiveWpfTextView == null)
+            if (_activeWpfTextView == null)
                 return null;
 
-            var currentSnapshot = ActiveWpfTextView.TextBuffer.CurrentSnapshot;
+            var currentSnapshot = _activeWpfTextView.TextBuffer.CurrentSnapshot;
             var contentType = currentSnapshot.ContentType;
-            if (!contentType.IsOfType("CSharp"))
+            if (!contentType.IsOfType(CSharpContentTypeName))
                 return null;
 
             var document = currentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
@@ -82,23 +86,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public TextSpan GetSelection()
         {
-            var visualStudioSpan = ActiveWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
+            var visualStudioSpan = _activeWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
             var roslynSpan = new TextSpan(visualStudioSpan.Start, visualStudioSpan.Length);
             return roslynSpan;
         }
 
         public Workspace GetWorkspace()
         {
-            if (ActiveWpfTextView == null)
-                return null;
-
-            if (ActiveWpfTextView.TextBuffer == null)
-                return null;
-
-            return ActiveWpfTextView.TextBuffer.GetWorkspace();
+            return _activeWpfTextView?.TextBuffer?.GetWorkspace();
         }
 
-        private IWpfTextView VsWindowFrameToWpfTextView(IVsWindowFrame vsWindowFrame)
+        private static IWpfTextView VsWindowFrameToWpfTextView(IVsWindowFrame vsWindowFrame)
         {
             IWpfTextView wpfTextView = null;
             var textView = VsShellUtilities.GetTextView(vsWindowFrame);
@@ -106,7 +104,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             {
                 var riidKey = DefGuidList.guidIWpfTextViewHost;
                 object pvtData;
-                var vsUserData = (Microsoft.VisualStudio.TextManager.Interop.IVsUserData)textView;
+                var vsUserData = (IVsUserData)textView;
                 if (vsUserData.GetData(ref riidKey, out pvtData) == 0 && pvtData != null)
                     wpfTextView = ((IWpfTextViewHost)pvtData).TextView;
             }
@@ -115,10 +113,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private void InitializeRunningDocumentTable()
         {
-            if (RunningDocumentTable == null)
-                return;
-
-            RunningDocumentTable.AdviseRunningDocTableEvents(this, out _runningDocumentTableCookie);
+            RunningDocumentTable?.AdviseRunningDocTableEvents(this, out _runningDocumentTableCookie);
         }
 
         private IVsRunningDocumentTable RunningDocumentTable

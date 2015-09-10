@@ -7,12 +7,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// A model entity created from a Roslyn class symbol.
     /// </summary>
-    public class RoslynBasedClass : IModelEntity
+    internal class RoslynBasedClass : IModelEntity
     {
         private INamedTypeSymbol RoslynSymbol { get; }
         public RoslynBasedClass BaseClass { get; set; }
 
-        public RoslynBasedClass(INamedTypeSymbol namedTypeSymbol, RoslynBasedClass baseClass = null)
+        internal RoslynBasedClass(INamedTypeSymbol namedTypeSymbol, RoslynBasedClass baseClass = null)
         {
             RoslynSymbol = namedTypeSymbol;
             BaseClass = baseClass;

@@ -1,26 +1,28 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.InputControls
 {
     /// <summary>
-    /// 
+    /// A widget that the user can use to pan, zoom and fit-to-view some content.
     /// </summary>
     /// <remarks>
     /// IMPORTANT: The ZoomValue is communicated to the outside world on an exponential scale.
+    /// That is, a movement on the zoom knob gives a small ZoomValue change at the lower end of the scale, 
+    /// and gives larger and larger change as the knob moves towards the higher end of the scale.
     /// </remarks>
     [TemplatePart(Name = PART_PanUpRepeatButton, Type = typeof(RepeatButton))]
     [TemplatePart(Name = PART_PanLeftRepeatButton, Type = typeof(RepeatButton))]
     [TemplatePart(Name = PART_PanRightRepeatButton, Type = typeof(RepeatButton))]
     [TemplatePart(Name = PART_PanDownRepeatButton, Type = typeof(RepeatButton))]
     [TemplatePart(Name = PART_CenterButton, Type = typeof(Button))]
-    public partial class PanAndZoomControl : Control
+    internal partial class PanAndZoomControl : TemplatedControlBase
     {
         private const string PART_PanUpRepeatButton = "PART_PanUpRepeatButton";
         private const string PART_PanLeftRepeatButton = "PART_PanLeftRepeatButton";
@@ -83,11 +85,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             SmallIncrement = (MaxZoom - MinZoom) * SmallIncrementRatio;
             LargeIncrement = (MaxZoom - MinZoom) * LargeIncrementRatio;
 
-            ((RepeatButton)GetTemplateChild(PART_PanUpRepeatButton)).Click += OnPanUp;
-            ((RepeatButton)GetTemplateChild(PART_PanLeftRepeatButton)).Click += OnPanLeft;
-            ((RepeatButton)GetTemplateChild(PART_PanRightRepeatButton)).Click += OnPanRight;
-            ((RepeatButton)GetTemplateChild(PART_PanDownRepeatButton)).Click += OnPanDown;
-            ((Button)GetTemplateChild(PART_CenterButton)).Click += OnFitToView;
+            FindChildControlInTemplate<RepeatButton>(PART_PanUpRepeatButton).Click += OnPanUp;
+            FindChildControlInTemplate<RepeatButton>(PART_PanLeftRepeatButton).Click += OnPanLeft;
+            FindChildControlInTemplate<RepeatButton>(PART_PanRightRepeatButton).Click += OnPanRight;
+            FindChildControlInTemplate<RepeatButton>(PART_PanDownRepeatButton).Click += OnPanDown;
+            FindChildControlInTemplate<Button>(PART_CenterButton).Click += OnFitToView;
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -126,10 +128,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             return arrangeBounds;
         }
 
-        private Size SizeToRatio(Size size)
+        private static Size SizeToRatio(Size size)
         {
-            double calculatedHeight = size.Width / WidthPerHeightRatio;
-            double calculatedWidth = size.Height * WidthPerHeightRatio;
+            var calculatedHeight = size.Width / WidthPerHeightRatio;
+            var calculatedWidth = size.Height * WidthPerHeightRatio;
 
             var width = Math.Min(calculatedWidth, size.Width);
             var height = Math.Min(calculatedHeight, size.Height);
@@ -145,15 +147,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             if (oldValue.EqualsWithTolerance(newValue))
                 return;
 
-            var panAndZoomControl = obj as PanAndZoomControl;
-            if (panAndZoomControl != null)
-            {
-                var linearZoomValue = ScaleCalculator.ExponentialToLinear(newValue, panAndZoomControl.MinZoom, panAndZoomControl.MaxZoom);
-                panAndZoomControl.LinearZoomValue = linearZoomValue;
+            var panAndZoomControl = (PanAndZoomControl)obj;
+            var linearZoomValue = ScaleCalculator.ExponentialToLinear(newValue, panAndZoomControl.MinZoom, panAndZoomControl.MaxZoom);
+            panAndZoomControl.LinearZoomValue = linearZoomValue;
 
-                if (panAndZoomControl.Zoom != null)
-                    panAndZoomControl.Zoom(panAndZoomControl, new ZoomEventArgs(newValue));
-            }
+            panAndZoomControl.Zoom?.Invoke(panAndZoomControl, new ZoomEventArgs(newValue));
         }
 
         private static void LinearZoomValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
@@ -164,48 +162,39 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             if (oldValue.EqualsWithTolerance(newValue))
                 return;
 
-            var panAndZoomControl = obj as PanAndZoomControl;
-            if (panAndZoomControl != null)
-            {
-                var exponentialZoomValue = ScaleCalculator.LinearToExponential(newValue, panAndZoomControl.MinZoom, panAndZoomControl.MaxZoom);
-                panAndZoomControl.ZoomValue = exponentialZoomValue;
-            }
+            var panAndZoomControl = (PanAndZoomControl)obj;
+            var exponentialZoomValue = ScaleCalculator.LinearToExponential(newValue, panAndZoomControl.MinZoom, panAndZoomControl.MaxZoom);
+            panAndZoomControl.ZoomValue = exponentialZoomValue;
         }
 
-        public void OnPanUp(object sender, RoutedEventArgs e)
+        private void OnPanUp(object sender, RoutedEventArgs e)
         {
             RaisePanEvent(PanDirection.Up);
         }
 
-        public void OnPanLeft(object sender, RoutedEventArgs e)
+        private void OnPanLeft(object sender, RoutedEventArgs e)
         {
             RaisePanEvent(PanDirection.Left);
         }
 
-        public void OnPanRight(object sender, RoutedEventArgs e)
+        private void OnPanRight(object sender, RoutedEventArgs e)
         {
             RaisePanEvent(PanDirection.Right);
         }
 
-        public void OnPanDown(object sender, RoutedEventArgs e)
+        private void OnPanDown(object sender, RoutedEventArgs e)
         {
             RaisePanEvent(PanDirection.Down);
         }
 
         private void RaisePanEvent(PanDirection direction)
         {
-            if (Pan != null)
-            {
-                Pan(this, new PanEventArgs(direction, 1));
-            }
+            Pan?.Invoke(this, new PanEventArgs(direction, 1));
         }
 
-        public void OnFitToView(object sender, RoutedEventArgs e)
+        private void OnFitToView(object sender, RoutedEventArgs e)
         {
-            if (FitToView != null)
-            {
-                FitToView(this, EventArgs.Empty);
-            }
+            FitToView?.Invoke(this, EventArgs.Empty);
         }
     }
 }

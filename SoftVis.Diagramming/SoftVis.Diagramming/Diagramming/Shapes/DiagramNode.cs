@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Shapes
 
         public IModelEntity ModelEntity => (IModelEntity)ModelItem;
         public string Name => ModelEntity.Name;
+        public DiagramRect Rect => new DiagramRect(Position, Size);
 
         public virtual DiagramPoint Position
         {

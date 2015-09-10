@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     {
         public static readonly DependencyProperty RectProperty =
             DependencyProperty.Register("Rect", typeof(Rect), typeof(DiagramShapeControlBase),
-                new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.AffectsParentArrange));
+                new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public Rect Rect
         {

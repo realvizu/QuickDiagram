@@ -30,5 +30,28 @@ namespace Codartis.SoftVis.Common
             var sourceList = sourceCollection as IList<T> ?? sourceCollection.ToList();
             return sourceList.Take(sourceList.Count - count);
         }
+
+        /// <summary>
+        /// Compares two sequences for equality (item-be-item).
+        /// They are equal if both are null or both has te same length and the corresponding items are equal 
+        /// using their default equality comparer.
+        /// </summary>
+        /// <typeparam name="T">The item type.</typeparam>
+        /// <param name="collection1">A collection</param>
+        /// <param name="collection2">A collection.</param>
+        /// <returns>True if both collections are null or they have the same length 
+        /// and the corresponding items are equal using their default equality comparer.</returns>
+        public static bool NullableSequenceEqual<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            if (collection1 == null && collection2 == null)
+                return true;
+
+            if (collection1 != null
+                && collection2 != null
+                && collection1.SequenceEqual(collection2))
+                return true;
+
+            return false;
+        }
     }
 }

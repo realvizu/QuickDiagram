@@ -10,13 +10,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// <summary>
     /// Builds a WPF-rendered diagram, and the underlying Roslyn-based model.
     /// </summary>
-    public class RoslynBasedWpfDiagramBuilder
+    internal class RoslynBasedWpfDiagramBuilder
     {
         private ISourceDocumentProvider SourceDocumentProvider { get; }
         private RoslynBasedModel Model { get; }
         public Diagram Diagram { get; }
 
-        public RoslynBasedWpfDiagramBuilder(ISourceDocumentProvider sourceDocumentProvider)
+        internal RoslynBasedWpfDiagramBuilder(ISourceDocumentProvider sourceDocumentProvider)
         {
             SourceDocumentProvider = sourceDocumentProvider;
             Model = new RoslynBasedModel();
@@ -122,7 +122,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         private void UpdateLayout()
         {
-            Diagram.Layout();
+            Diagram.LayoutNodes();
+            Diagram.RouteConnectors();
         }
     }
 }

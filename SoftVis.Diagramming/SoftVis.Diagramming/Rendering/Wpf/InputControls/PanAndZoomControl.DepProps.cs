@@ -1,9 +1,8 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 
 namespace Codartis.SoftVis.Rendering.Wpf.InputControls
 {
-    public partial class PanAndZoomControl : Control
+    internal partial class PanAndZoomControl
     {
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(PanAndZoomControl));

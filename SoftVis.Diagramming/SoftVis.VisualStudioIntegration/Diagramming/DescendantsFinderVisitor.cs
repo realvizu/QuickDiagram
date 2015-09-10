@@ -6,12 +6,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// <summary>
     /// Finds the descendants of the given type symbol.
     /// </summary>
-    public class DescendantsFinderVisitor : SymbolVisitor
+    internal class DescendantsFinderVisitor : SymbolVisitor
     {
         private INamedTypeSymbol BaseTypeSymbol { get; }
         public List<INamedTypeSymbol> Descendants { get; }
 
-        public DescendantsFinderVisitor(INamedTypeSymbol baseTypeSymbol)
+        internal DescendantsFinderVisitor(INamedTypeSymbol baseTypeSymbol)
         {
             BaseTypeSymbol = baseTypeSymbol;
             Descendants = new List<INamedTypeSymbol>();

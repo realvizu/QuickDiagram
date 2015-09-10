@@ -1,13 +1,15 @@
-﻿using Codartis.SoftVis.VisualStudioIntegration.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Codartis.SoftVis.VisualStudioIntegration.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Presentation;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using IVisualStudioServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
@@ -21,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(DiagramToolWindow))]
-    public sealed class SoftVisPackage : Package, IHostServices, IHostServiceProvider
+    public sealed class SoftVisPackage : Package, IPackageServices, IHostServiceProvider
     {
         private const string PackageGuidString = "198d9322-583a-4112-a2a8-61f4c0818966";
         private const int SingletonToolWindowInstanceId = 0;
@@ -42,54 +44,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             InitializeCommands();
         }
 
-        private DiagramToolWindow CreateToolWindow(ISourceDocumentProvider sourceDocumentProvider)
-        {
-            var toolWindow = CreateToolWindow(typeof(DiagramToolWindow), SingletonToolWindowInstanceId) as DiagramToolWindow;
-            if (toolWindow == null || toolWindow.Frame == null)
-                throw new NotSupportedException("Cannot create tool window.");
-
-            toolWindow.Initialize(sourceDocumentProvider);
-
-            return toolWindow;
-        }
-
-        private void InitializeCommands()
-        {
-            InitializeCommand(i => new AddToDiagramCommand(i));
-            InitializeCommand(i => new ShowDiagramWindowCommand(i));
-            InitializeCommand(i => new ClearDiagramCommand(i));
-            InitializeCommand(i => new IncreaseFontSizeCommand(i));
-            InitializeCommand(i => new DecreaseFontSizeCommand(i));
-            InitializeCommand(i => new CopyToClipboardCommand(i));
-            InitializeCommand(i => new ExportToFileCommand(i));
-        }
-
-        private void InitializeCommand<TCommand>(Func<IHostServices, TCommand> constructorDelegate)
-            where TCommand : CommandBase
-        {
-            var command = constructorDelegate(this);
-            _commands.Add(command);
-            AddMenuCommand(this, command);
-        }
-
-        private void AddMenuCommand(IServiceProvider serviceProvider, CommandBase command)
-        {
-            var commandService = serviceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
-            {
-                var menuCommandID = new CommandID(command.CommandSet, command.CommandId);
-                var menuItem = new MenuCommand(command.Execute, menuCommandID);
-                commandService.AddCommand(menuItem);
-            }
-        }
-
         public IDiagramWindow GetDiagramWindow()
         {
             return _diagramToolWindow;
         }
 
-        public TServiceInterface GetService<TServiceInterface, TService>() 
-            where TServiceInterface : class 
+        public TServiceInterface GetService<TServiceInterface, TService>()
+            where TServiceInterface : class
             where TService : class
         {
             return (TServiceInterface)GetService(_globalServiceProvider, typeof(TService).GUID, false);
@@ -119,5 +80,46 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return obj;
         }
 
+        private DiagramToolWindow CreateToolWindow(ISourceDocumentProvider sourceDocumentProvider)
+        {
+            var toolWindow = CreateToolWindow(typeof(DiagramToolWindow), SingletonToolWindowInstanceId) as DiagramToolWindow;
+            if (toolWindow?.Frame == null)
+                throw new NotSupportedException("Cannot create tool window.");
+
+            toolWindow.Initialize(sourceDocumentProvider);
+
+            return toolWindow;
+        }
+
+        private void InitializeCommands()
+        {
+            foreach (var commandType in DiscoverCommandTypes())
+            {
+                var command = (CommandBase)Activator.CreateInstance(commandType, this);
+                AddMenuCommand(this, command);
+                _commands.Add(command);
+            }
+        }
+
+        /// <summary>
+        /// Returns all types defined in this assembly that are derived from CommandBase.
+        /// </summary>
+        /// <returns>A collection of types derived from CommandBase.</returns>
+        private static IEnumerable<Type> DiscoverCommandTypes()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(CommandBase)));
+        }
+
+        private static void AddMenuCommand(IServiceProvider serviceProvider, CommandBase command)
+        {
+            var commandService = serviceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (commandService == null)
+                throw new Exception($"Unable to get IMenuCommandService.");
+
+            var menuCommandId = new CommandID(command.CommandSet, command.CommandId);
+            var menuItem = new MenuCommand(command.Execute, menuCommandId);
+            commandService.AddCommand(menuItem);
+        }
     }
 }

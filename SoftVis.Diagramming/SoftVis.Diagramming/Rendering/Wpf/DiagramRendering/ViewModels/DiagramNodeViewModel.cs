@@ -18,7 +18,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
         {
         }
 
-        public DiagramRect Rect => new DiagramRect(Position, Size);
         public bool IsStereotypeVisible => ModelEntity.Type != ModelEntityType.Class;
         public string StereotypeText => $"<<{ModelEntity.Type.ToString().ToLower()}>>";
 
@@ -50,16 +49,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
             }
         }
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private static DiagramSize SizeAdjustedWithStereotype(IModelEntity modelEntity, DiagramSize size)
         {
             return modelEntity.Type == ModelEntityType.Class
                 ? size
                 : new DiagramSize(size.Width, size.Height + 10);
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

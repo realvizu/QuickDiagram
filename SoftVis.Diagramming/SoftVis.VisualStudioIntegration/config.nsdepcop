@@ -12,6 +12,7 @@
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Reflection" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Windows.Media.Imaging" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.CodeAnalysis.*" />

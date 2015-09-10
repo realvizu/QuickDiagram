@@ -61,7 +61,7 @@
     <Compile Include="Commands\ShowDiagramWindowCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\ClearDiagramCommand.cs" />
-    <Compile Include="Commands\IHostServices.cs" />
+    <Compile Include="Commands\IPackageServices.cs" />
     <Compile Include="Diagramming\DescendantsFinderVisitor.cs" />
     <Compile Include="Diagramming\RoslynBasedWpfDiagramBuilder.cs" />
     <Compile Include="Diagramming\ISourceDocumentProvider.cs" />

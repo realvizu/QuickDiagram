@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Codartis.SoftVis.Modeling;
 using QuickGraph;
 
@@ -12,9 +11,9 @@ namespace Codartis.SoftVis.Diagramming.Shapes
     /// </summary>
     public abstract class DiagramConnector : DiagramShape, IEdge<DiagramNode>
     {
+        private DiagramPoint[] _routePoints;
         public DiagramNode Source { get; }
         public DiagramNode Target { get; }
-        public IEnumerable<DiagramPoint> RoutePoints { get; set; }
 
         protected DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
             :base(relationship)
@@ -24,6 +23,12 @@ namespace Codartis.SoftVis.Diagramming.Shapes
 
             Source = source;
             Target = target;
+        }
+
+        public virtual DiagramPoint[] RoutePoints
+        {
+            get { return _routePoints; }
+            set { _routePoints = value; }
         }
 
         public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;

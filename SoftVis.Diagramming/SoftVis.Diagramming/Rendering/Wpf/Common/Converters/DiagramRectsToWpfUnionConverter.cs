@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
+using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
 {
     /// <summary>
-    /// Calculates the union of the given Rect values.
+    /// Converts the given DiagramRect[] to WPF Rects and calculates their union.
     /// </summary>
-    internal class RectUnionConverter : IMultiValueConverter
+    internal class DiagramRectsToWpfUnionConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var resultRect = Rect.Empty;
-
-            foreach (var inputRect in values.OfType<Rect>())
-                resultRect.Union(inputRect);
-
-            return resultRect;
+            return values.OfType<DiagramRect>().Select(i => i.ToWpf()).Union();
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)

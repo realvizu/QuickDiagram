@@ -2,15 +2,18 @@
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
+    /// <summary>
+    /// Clears the diagram.
+    /// </summary>
     internal sealed class ClearDiagramCommand : CommandBase
     {
-        public ClearDiagramCommand(IHostServices hostServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.ClearDiagramCommand, hostServices)
+        public ClearDiagramCommand(IPackageServices packageServices)
+            : base(VsctConstants.MainMenuCommands, VsctConstants.ClearDiagramCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = HostServices.GetDiagramWindow();
+            var diagramWindow = PackageServices.GetDiagramWindow();
             diagramWindow.Show();
             diagramWindow.Clear();
         }
