@@ -3,110 +3,86 @@
     <Extern href="stdidcmd.h" />
     <Extern href="vsshlids.h" />
 
-    <Commands package="guidSoftVisPackage">
+    <Commands package="SoftVisPackageGuid">
         <Menus>
-            <Menu guid="guidDiagramMainMenu" id="DiagramMainMenu" priority="0x700" type="Menu">
-                <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+            <Menu guid="SoftVisCommandSetGuid" id="DiagramMainMenu" type="Menu">
                 <Strings>
                     <ButtonText>Diagram</ButtonText>
-                    <CommandName>Diagram</CommandName>
                 </Strings>
             </Menu>
-
-            <Menu guid="guidToolWindowToolbarCommands" id="ToolWindowToolbar" type="ToolWindowToolbar">
+            <Menu guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" type="ToolWindowToolbar">
                 <CommandFlag>DefaultDocked</CommandFlag>
                 <Strings>
                     <ButtonText>Diagram Window Toolbar</ButtonText>
-                    <CommandName>Diagram Window Toolbar</CommandName>
                 </Strings>
             </Menu>
-
-            <Menu guid="guidToolWindowToolbarCommands" id="ExportImageController" priority="0x0200" type="MenuController">
-                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup"/>
+            <Menu guid="SoftVisCommandSetGuid" id="ExportImageMenuController" type="MenuController">
                 <CommandFlag>TextIsAnchorCommand</CommandFlag>
                 <Strings>
-                    <ButtonText>Export Image Controller</ButtonText>
-                    <CommandName>Export Image Controller</CommandName>
+                    <ButtonText>ExportImage MenuController</ButtonText>
                 </Strings>
             </Menu>
         </Menus>
-        
+
         <Groups>
-            <Group guid="guidMainMenuCommands" id="MainMenuCommands" priority="0x0600">
-                <Parent guid="guidDiagramMainMenu" id="DiagramMainMenu" />
-            </Group>
-
-            <Group guid="guidCodeEditorContextMenuCommands" id="CodeEditorCommands" priority="0x0600">
-                <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
-            </Group>
-
-            <Group guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" priority="0x0000">
-                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbar" />
-            </Group>
-
-            <Group guid="guidToolWindowToolbarCommands" id="ExportImageControllerGroup" priority="0x0600">
-                <Parent guid="guidToolWindowToolbarCommands" id="ExportImageController"/>
-            </Group>
+            <Group guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup"/>
+            <Group guid="SoftVisCommandSetGuid" id="CodeEditorCommandGroup"/>
+            <Group guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup"/>
+            <Group guid="SoftVisCommandSetGuid" id="ToolbarCommonGroup"/>
+            <Group guid="SoftVisCommandSetGuid" id="ToolbarFontGroup"/>
+            <Group guid="SoftVisCommandSetGuid" id="ToolbarImageGroup"/>
         </Groups>
 
+        <Combos>
+            <Combo guid="SoftVisCommandSetGuid" id="ImageDpiComboCommand" priority="20" type="DropDownCombo"
+                   defaultWidth="67" idCommandList="ImageDpiComboGetItemsCommand">
+                <Strings>
+                    <ButtonText>DPI</ButtonText>
+                    <ToolTipText>Exported image resolution (DPI)</ToolTipText>
+                </Strings>
+            </Combo>
+        </Combos>
+
         <Buttons>
-            <Button guid="guidCodeEditorContextMenuCommands" id="AddToDiagramCommand" priority="0x0100" type="Button">
-                <Parent guid="guidCodeEditorContextMenuCommands" id="CodeEditorCommands" />
+            <Button guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" type="Button">
                 <Strings>
                     <ButtonText>Add to Diagram</ButtonText>
                 </Strings>
             </Button>
-
-            <Button guid="guidMainMenuCommands" id="ShowDiagramWindowCommand" priority="0x0100" type="Button">
-                <Parent guid="guidMainMenuCommands" id="MainMenuCommands" />
+            <Button guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" type="Button">
+                <Icon guid="guidImages" id="bmpPicX" />
+                <Strings>
+                    <ButtonText>Clear Diagram</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1" type="Button">
                 <Icon guid="guidImages" id="bmpPicSearch" />
                 <Strings>
                     <ButtonText>Show Diagram Window</ButtonText>
                 </Strings>
             </Button>
-            <Button guid="guidMainMenuCommands" id="ClearDiagramCommand" priority="0x0101" type="Button">
-                <Parent guid="guidMainMenuCommands" id="MainMenuCommands" />
-                <Icon guid="guidImages" id="bmpPicX" />
-                <Strings>
-                    <ButtonText>Clear Diagram</ButtonText>
-                </Strings>
-            </Button>
-
-            <Button guid="guidMainMenuCommands" id="ClearDiagramCommand" priority="0x0101" type="Button">
-                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" />
-                <Icon guid="guidImages" id="bmpPicX" />
-                <Strings>
-                    <ButtonText>Clear Diagram</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="guidMainMenuCommands" id="IncreaseFontSizeCommand" priority="0x0102" type="Button">
-                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" />
+            <Button guid="SoftVisCommandSetGuid" id="IncreaseFontSizeCommand" priority="2" type="Button">
                 <Icon guid="guidImages" id="bmpPic1" />
                 <Strings>
                     <ButtonText>Increase Font Size</ButtonText>
                 </Strings>
             </Button>
-            <Button guid="guidMainMenuCommands" id="DecreaseFontSizeCommand" priority="0x0103" type="Button">
-                <Parent guid="guidToolWindowToolbarCommands" id="ToolWindowToolbarGroup" />
+            <Button guid="SoftVisCommandSetGuid" id="DecreaseFontSizeCommand" priority="3" type="Button">
                 <Icon guid="guidImages" id="bmpPic2" />
                 <Strings>
                     <ButtonText>Decrease Font Size</ButtonText>
                 </Strings>
             </Button>
-
-            <Button guid="guidMainMenuCommands" id="CopyToClipboardCommand" priority="0x0104" type="Button">
-                <Parent guid="guidToolWindowToolbarCommands" id="ExportImageControllerGroup" />
+            <Button guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" priority="1" type="Button">
                 <Strings>
                     <ButtonText>Copy to Clipboard</ButtonText>
                 </Strings>
             </Button>
-            <Button guid="guidMainMenuCommands" id="ExportToFileCommand" priority="0x0105" type="Button">
-                <Parent guid="guidToolWindowToolbarCommands" id="ExportImageControllerGroup" />
+            <Button guid="SoftVisCommandSetGuid" id="ExportToFileCommand" priority="2" type="Button">
                 <Strings>
                     <ButtonText>Export to File...</ButtonText>
                 </Strings>
             </Button>
-
         </Buttons>
 
         <Bitmaps>
@@ -114,35 +90,102 @@
         </Bitmaps>
     </Commands>
 
+    <CommandPlacements>
+        <!-- MainMenu DIAGRAM item -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="DiagramMainMenu" priority="0x1000">
+            <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+        </CommandPlacement>
+
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="DiagramMainMenu" />
+        </CommandPlacement>
+
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="2">
+            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />    
+        </CommandPlacement>
+
+        <!-- CodeEditor context menu -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="CodeEditorCommandGroup" priority="0x1000">
+            <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
+        </CommandPlacement>
+
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="CodeEditorCommandGroup" />
+        </CommandPlacement>
+
+        <!-- DiagramToolWindow toolbar -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarCommonGroup" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarFontGroup" priority="2">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarImageGroup" priority="3">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
+        </CommandPlacement>
+
+        <!-- DiagramToolWindow toolbar command group 1 -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarCommonGroup" />
+        </CommandPlacement>
+
+        <!-- DiagramToolWindow toolbar command group 2 -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="IncreaseFontSizeCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarFontGroup" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="DecreaseFontSizeCommand" priority="2">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarFontGroup" />
+        </CommandPlacement>
+
+        <!-- DiagramToolWindow toolbar command group 3 -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportImageMenuController" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarImageGroup" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ImageDpiComboCommand" priority="2">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarImageGroup"/>
+        </CommandPlacement>
+
+        <!-- ExportImage menu controller -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup">
+            <Parent guid="SoftVisCommandSetGuid" id="ExportImageMenuController" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportToFileCommand" priority="2">
+            <Parent guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup" />
+        </CommandPlacement>
+    </CommandPlacements>
+    
     <Symbols>
-        <GuidSymbol name="guidSoftVisPackage" value="{198d9322-583a-4112-a2a8-61f4c0818966}" />
+        <GuidSymbol name="SoftVisPackageGuid" value="{198d9322-583a-4112-a2a8-61f4c0818966}" />
 
-        <GuidSymbol name="guidDiagramMainMenu" value="{D45A1864-AB94-44FD-81CA-2602753B60D3}" >
-            <IDSymbol name="DiagramMainMenu" value="4128"  />
+        <GuidSymbol name="SoftVisCommandSetGuid" value="{D45A1864-AB94-44FD-81CA-2602753B60D3}" >
+            <IDSymbol name="ToolWindowToolbar" value="1" />
+            <IDSymbol name="DiagramMainMenu" value="2" />
+            <IDSymbol name="ExportImageMenuController" value="3" />
+
+            <IDSymbol name="MainMenuCommandGroup" value="50" />
+            <IDSymbol name="CodeEditorCommandGroup" value="51" />
+            <IDSymbol name="ExportImageCommandGroup" value="52" />
+            <IDSymbol name="ToolbarCommonGroup" value="53" />
+            <IDSymbol name="ToolbarFontGroup" value="54" />
+            <IDSymbol name="ToolbarImageGroup" value="55" />
+
+            <IDSymbol name="ShowDiagramWindowCommand" value="100"/>
+            <IDSymbol name="AddToDiagramCommand" value="101" />
+            <IDSymbol name="ClearDiagramCommand" value="102"/>
+            <IDSymbol name="IncreaseFontSizeCommand" value="103"/>
+            <IDSymbol name="DecreaseFontSizeCommand" value="104"/>
+            <IDSymbol name="CopyToClipboardCommand" value="105"/>
+            <IDSymbol name="ExportToFileCommand" value="106"/>
+            <IDSymbol name="ImageDpiComboCommand" value="107" />
+            <IDSymbol name="ImageDpiComboGetItemsCommand" value="108" />
         </GuidSymbol>
 
-        <GuidSymbol name="guidToolWindowToolbarCommands" value="{103E89FB-F029-4633-8482-B6435D4F35EF}" >
-            <IDSymbol name="ToolWindowToolbar" value="4096"  />
-            <IDSymbol name="ToolWindowToolbarGroup" value="4176"  />
-            <IDSymbol name="ExportImageController" value="257" />
-            <IDSymbol name="ExportImageControllerGroup" value="513" />
-        </GuidSymbol>
-
-        <GuidSymbol name="guidMainMenuCommands" value="{17f0822e-ef7f-40f7-8e1a-788dde2cd2b8}" >
-            <IDSymbol name="MainMenuCommands" value="4128"  />
-            <IDSymbol name="ShowDiagramWindowCommand" value="256"/>
-            <IDSymbol name="ClearDiagramCommand" value="257"/>
-            <IDSymbol name="IncreaseFontSizeCommand" value="258"/>
-            <IDSymbol name="DecreaseFontSizeCommand" value="259"/>
-            <IDSymbol name="CopyToClipboardCommand" value="260"/>
-            <IDSymbol name="ExportToFileCommand" value="261"/>
-        </GuidSymbol>
-
-        <GuidSymbol name="guidCodeEditorContextMenuCommands" value="{3ec3e947-3047-4579-a09e-921b99ce5789}">
-            <IDSymbol name="CodeEditorCommands" value="4128" />
-            <IDSymbol name="AddToDiagramCommand" value="256" />
-        </GuidSymbol>
-        
         <GuidSymbol name="guidImages" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">
             <IDSymbol name="bmpPic1" value="1" />
             <IDSymbol name="bmpPic2" value="2" />

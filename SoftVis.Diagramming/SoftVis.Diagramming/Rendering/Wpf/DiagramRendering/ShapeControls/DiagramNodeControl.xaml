@@ -25,16 +25,14 @@
 							Padding="{TemplateBinding Padding}">
                         <StackPanel Orientation="Vertical" 
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Margin="0,5,0,5">
+                                    VerticalAlignment="Center">
                             <TextBlock HorizontalAlignment="Center" 
                                        Visibility="{Binding Path=IsStereotypeVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                        Text="{Binding Path=StereotypeText}" 
                                        FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
                                           Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" />
                             <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
-                                       HorizontalAlignment="Left" 
-                                       Margin="5,0,0,0"/>
+                                       HorizontalAlignment="Left" />
                         </StackPanel>
                     </Border>
                 </ControlTemplate>

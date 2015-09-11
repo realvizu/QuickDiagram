@@ -71,10 +71,10 @@ namespace Codartis.SoftVis.Rendering.Wpf
             OnFitToView();
         }
 
-        public BitmapSource GetDiagramAsBitmap()
+        public BitmapSource GetDiagramAsBitmap(int dpi)
         {
             EnsureUpToDateDiagramForExport();
-            var bitmap = ImageRenderer.RenderUIElementToBitmap(_diagramPanelForImageExport, 300);
+            var bitmap = ImageRenderer.RenderUIElementToBitmap(_diagramPanelForImageExport, dpi);
             return bitmap;
         }
 

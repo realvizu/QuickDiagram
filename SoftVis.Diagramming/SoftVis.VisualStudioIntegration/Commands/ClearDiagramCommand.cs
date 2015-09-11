@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
     internal sealed class ClearDiagramCommand : CommandBase
     {
         public ClearDiagramCommand(IPackageServices packageServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.ClearDiagramCommand, packageServices)
+            : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ClearDiagramCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)

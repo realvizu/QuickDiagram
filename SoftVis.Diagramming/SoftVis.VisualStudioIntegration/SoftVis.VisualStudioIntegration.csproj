@@ -54,6 +54,10 @@
   <ItemGroup>
     <Compile Include="Commands\ExportToFileCommand.cs" />
     <Compile Include="Commands\DecreaseFontSizeCommand.cs" />
+    <Compile Include="Commands\FontSizeCommandBase.cs" />
+    <Compile Include="Commands\ImageDpiComboGetItemsCommand.cs" />
+    <Compile Include="Commands\ImageDpiComboCommand.cs" />
+    <Compile Include="ImageExport\Dpi.cs" />
     <Compile Include="Presentation\IDiagramWindow.cs" />
     <Compile Include="Commands\IncreaseFontSizeCommand.cs" />
     <Compile Include="VsctConstants.cs" />

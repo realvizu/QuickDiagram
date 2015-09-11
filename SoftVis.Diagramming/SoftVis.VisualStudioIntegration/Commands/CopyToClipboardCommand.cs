@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
     internal sealed class CopyToClipboardCommand : CommandBase
     {
         public CopyToClipboardCommand(IPackageServices packageServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.CopyToClipboradCommand, packageServices)
+            : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.CopyToClipboradCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)

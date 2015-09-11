@@ -5,16 +5,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
     /// <summary>
     /// Increases the font size of the diagram.
     /// </summary>
-    internal sealed class IncreaseFontSizeCommand : CommandBase
+    internal sealed class IncreaseFontSizeCommand : FontSizeCommandBase
     {
         public IncreaseFontSizeCommand(IPackageServices packageServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.IncreaseFontSizeCommand, packageServices)
+            : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.IncreaseFontSizeCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)
         {
             var diagramWindow = PackageServices.GetDiagramWindow();
-            diagramWindow.IncreaseFontSize();
+            diagramWindow.FontSize = IncreaseFontSize(diagramWindow.FontSize);
         }
     }
 }

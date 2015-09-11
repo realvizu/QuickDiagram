@@ -23,7 +23,9 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="System.IO" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="System.Windows" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="System.Windows.Media.Imaging" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Microsoft.VisualStudio.Shell" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.Presentation" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands" To="Codartis.SoftVis.VisualStudioIntegration.ImageExport" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling" To="Codartis.SoftVis.Modeling" />
@@ -38,5 +40,6 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.Rendering.Wpf" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Presentation" To="Codartis.SoftVis.VisualStudioIntegration.ImageExport" />
 
 </NsDepCopConfig>

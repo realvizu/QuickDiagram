@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.Design;
+﻿using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Rendering.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -16,20 +16,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
     [Guid("02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e")]
     public class DiagramToolWindow : ToolWindowPane, IDiagramWindow
     {
-        private const double MinFontSize = 6;
-        private const double MaxFontSize = 24;
-
         private readonly DiagramViewerControl _diagramViewerControl;
         private ISourceDocumentProvider _sourceDocumentProvider;
         private RoslynBasedWpfDiagramBuilder _diagramBuilder;
+
+        public Dpi ImageExportDpi { get; set; }
 
         public DiagramToolWindow() : base(null)
         {
             _diagramViewerControl = new DiagramViewerControl();
 
-            Content = _diagramViewerControl;
             Caption = "Diagram";
-            ToolBar = new CommandID(VsctConstants.ToolWindowToolbarCommands, VsctConstants.ToolWindowToolbar);
+            ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
+            Content = _diagramViewerControl;
+            ImageExportDpi = Dpi.Default;
         }
 
         internal void Initialize(ISourceDocumentProvider sourceDocumentProvider)
@@ -37,6 +37,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
             _sourceDocumentProvider = sourceDocumentProvider;
             _diagramBuilder = new RoslynBasedWpfDiagramBuilder(_sourceDocumentProvider);
             _diagramViewerControl.Diagram = _diagramBuilder.Diagram;
+        }
+
+        public int FontSize
+        {
+            get { return (int)_diagramViewerControl.FontSize; }
+            set { _diagramViewerControl.FontSize = value; }
         }
 
         public void Show()
@@ -56,19 +62,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
             _diagramBuilder.Clear();
         }
 
-        public void IncreaseFontSize()
-        {
-            _diagramViewerControl.FontSize = Math.Min(_diagramViewerControl.FontSize + 1, MaxFontSize);
-        }
-
-        public void DecreaseFontSize()
-        {
-            _diagramViewerControl.FontSize = Math.Max(_diagramViewerControl.FontSize - 1, MinFontSize);
-        }
-
         public BitmapSource GetDiagramAsBitmap()
         {
-            return _diagramViewerControl.GetDiagramAsBitmap();
+            return _diagramViewerControl.GetDiagramAsBitmap(ImageExportDpi.Value);
         }
     }
 }

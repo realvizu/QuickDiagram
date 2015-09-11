@@ -4,18 +4,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration
 {
     internal static class VsctConstants
     {
-        internal static Guid CodeEditorContextMenuCommands = new Guid("3ec3e947-3047-4579-a09e-921b99ce5789");
-        internal const int AddToDiagramCommand = 256;
+        internal static Guid SoftVisCommandSetGuid = new Guid("D45A1864-AB94-44FD-81CA-2602753B60D3");
 
-        internal static Guid MainMenuCommands = new Guid("17f0822e-ef7f-40f7-8e1a-788dde2cd2b8");
-        internal const int ShowDiagramWindowCommand = 256;
-        internal const int ClearDiagramCommand = 257;
-        internal const int IncreaseFontSizeCommand = 258;
-        internal const int DecreaseFontSizeCommand = 259;
-        internal const int CopyToClipboradCommand = 260;
-        internal const int ExportToFileCommand = 261;
+        internal const int ToolWindowToolbar = 1;
 
-        internal static Guid ToolWindowToolbarCommands = new Guid("103E89FB-F029-4633-8482-B6435D4F35EF");
-        internal const int ToolWindowToolbar = 4096;
+        internal const int ShowDiagramWindowCommand = 100;
+        internal const int AddToDiagramCommand = 101;
+        internal const int ClearDiagramCommand = 102;
+        internal const int IncreaseFontSizeCommand = 103;
+        internal const int DecreaseFontSizeCommand = 104;
+        internal const int CopyToClipboradCommand = 105;
+        internal const int ExportToFileCommand = 106;
+        internal const int ImageDpiComboCommand = 107;
+        internal const int ImageDpiComboGetItemsCommand = 108;
+
     }
 }

@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
     internal sealed class ShowDiagramWindowCommand : CommandBase
     {
         public ShowDiagramWindowCommand(IPackageServices packageServices)
-            : base(VsctConstants.MainMenuCommands, VsctConstants.ShowDiagramWindowCommand, packageServices)
+            : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ShowDiagramWindowCommand, packageServices)
         { }
 
         public override void Execute(object sender, EventArgs e)

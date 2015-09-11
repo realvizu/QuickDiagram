@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
     internal sealed class AddToDiagramCommand : CommandBase
     {
         public AddToDiagramCommand(IPackageServices packageServices)
-            :base(VsctConstants.CodeEditorContextMenuCommands, VsctConstants.AddToDiagramCommand, packageServices)
+            :base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.AddToDiagramCommand, packageServices)
         {
         }
 

@@ -108,17 +108,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private static IEnumerable<Type> DiscoverCommandTypes()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(CommandBase)));
+            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(CommandBase)) && !i.IsAbstract);
         }
 
         private static void AddMenuCommand(IServiceProvider serviceProvider, CommandBase command)
         {
             var commandService = serviceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService == null)
-                throw new Exception($"Unable to get IMenuCommandService.");
+                throw new Exception("Unable to get IMenuCommandService.");
 
             var menuCommandId = new CommandID(command.CommandSet, command.CommandId);
-            var menuItem = new MenuCommand(command.Execute, menuCommandId);
+            var menuItem = new OleMenuCommand(command.Execute, menuCommandId);
             commandService.AddCommand(menuItem);
         }
     }

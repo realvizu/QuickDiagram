@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media.Imaging;
+using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
 {
@@ -10,8 +11,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
         void Show();
         void AddCurrentSymbol();
         void Clear();
-        void IncreaseFontSize();
-        void DecreaseFontSize();
+
+        int FontSize { get; set; }
+        Dpi ImageExportDpi { get; set; }
+
         BitmapSource GetDiagramAsBitmap();
     }
 }
