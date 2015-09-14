@@ -2,12 +2,12 @@
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Exports the current diagram to a file.
     /// </summary>
-    internal sealed class ExportToFileCommand : CommandBase
+    internal sealed class ExportToFileCommand : ShellTriggeredCommandBase
     {
         public ExportToFileCommand(IPackageServices packageServices)
             : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ExportToFileCommand, packageServices)

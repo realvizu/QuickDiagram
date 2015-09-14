@@ -1,32 +1,19 @@
-﻿using System;
+using System;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 {
     /// <summary>
-    /// A command is on operation that Visual Studio invokes in response to certain user interactions (toolbar, menu, etc.)
-    /// This is the abstract base class for commands.
+    /// Base class for all commands. Commands are the application logic of the package.
     /// </summary>
     internal abstract class CommandBase
     {
-        /// <summary>
-        /// The Guid of a command set that this command belongs to. It is defined in the VSCT (Visual Studio Command Table) file.
-        /// </summary>
-        public Guid CommandSet { get; }
-
-        /// <summary>
-        /// The id of this command. It is defined in the VSCT (Visual Studio Command Table) file.
-        /// </summary>
-        public int CommandId { get; }
-
         /// <summary>
         /// The command can consume package services via this interface.
         /// </summary>
         protected IPackageServices PackageServices { get; }
 
-        protected CommandBase(Guid commandSet, int commandId, IPackageServices packageServices)
+        protected CommandBase(IPackageServices packageServices)
         {
-            CommandSet = commandSet;
-            CommandId = commandId;
             PackageServices = packageServices;
         }
 

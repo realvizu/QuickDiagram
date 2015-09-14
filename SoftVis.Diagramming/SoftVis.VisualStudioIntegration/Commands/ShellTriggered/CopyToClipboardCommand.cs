@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Copies the current diagram to the clipboard.
     /// </summary>
-    internal sealed class CopyToClipboardCommand : CommandBase
+    internal sealed class CopyToClipboardCommand : ShellTriggeredCommandBase
     {
         public CopyToClipboardCommand(IPackageServices packageServices)
             : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.CopyToClipboradCommand, packageServices)
@@ -14,8 +14,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = PackageServices.GetDiagramWindow();
-            var bitmap = diagramWindow.GetDiagramAsBitmap();
+            var diagramServices = PackageServices.GetDiagramServices();
+            var bitmap = diagramServices.GetDiagramAsBitmap();
             Clipboard.SetImage(bitmap);
         }
     }

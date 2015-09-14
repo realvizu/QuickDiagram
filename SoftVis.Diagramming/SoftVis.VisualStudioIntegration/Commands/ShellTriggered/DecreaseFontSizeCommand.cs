@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Decreases the font size of the diagram.
@@ -13,8 +13,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = PackageServices.GetDiagramWindow();
-            diagramWindow.FontSize = DecreaseFontSize(diagramWindow.FontSize);
+            var diagramServices = PackageServices.GetDiagramServices();
+            diagramServices.FontSize = DecreaseFontSize(diagramServices.FontSize);
         }
     }
 }

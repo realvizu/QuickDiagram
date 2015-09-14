@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Clears the diagram.
     /// </summary>
-    internal sealed class ClearDiagramCommand : CommandBase
+    internal sealed class ClearDiagramCommand : ShellTriggeredCommandBase
     {
         public ClearDiagramCommand(IPackageServices packageServices)
             : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ClearDiagramCommand, packageServices)
@@ -13,9 +13,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = PackageServices.GetDiagramWindow();
-            diagramWindow.Show();
-            diagramWindow.Clear();
+            var diagramServices = PackageServices.GetDiagramServices();
+            diagramServices.ShowDiagram();
+            diagramServices.ClearDiagram();
         }
     }
 }

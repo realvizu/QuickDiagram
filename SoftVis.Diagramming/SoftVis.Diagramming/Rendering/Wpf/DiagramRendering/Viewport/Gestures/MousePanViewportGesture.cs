@@ -19,6 +19,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
             UIEventSource.MouseLeftButtonDown += OnMouseLeftButtonDown;
             UIEventSource.MouseLeftButtonUp += OnMouseLeftButtonUp;
             UIEventSource.MouseMove += OnMouseMove;
+            UIEventSource.LostMouseCapture += OnLostMouseCapture;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -50,6 +51,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
                 MoveViewportCenterInScreenSpaceBy(_lastMousePosition - position);
             }
             _lastMousePosition = position;
+        }
+
+        private void OnLostMouseCapture(object sender, MouseEventArgs e)
+        {
+            _isPanning = false;
+            DiagramViewport.Cursor = _cursorBeforePanning;
         }
     }
 }

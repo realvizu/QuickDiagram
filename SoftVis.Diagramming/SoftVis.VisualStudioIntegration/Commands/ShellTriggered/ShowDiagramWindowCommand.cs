@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Makes the diagram window visible.
     /// </summary>
-    internal sealed class ShowDiagramWindowCommand : CommandBase
+    internal sealed class ShowDiagramWindowCommand : ShellTriggeredCommandBase
     {
         public ShowDiagramWindowCommand(IPackageServices packageServices)
             : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ShowDiagramWindowCommand, packageServices)
@@ -13,8 +13,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramWindow = PackageServices.GetDiagramWindow();
-            diagramWindow.Show();
+            var diagramServices = PackageServices.GetDiagramServices();
+            diagramServices.ShowDiagram();
         }
     }
 }

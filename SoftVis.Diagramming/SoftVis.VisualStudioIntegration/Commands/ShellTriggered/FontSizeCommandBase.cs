@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Base class for those commands that modify FontSize.
     /// </summary>
-    internal abstract class FontSizeCommandBase : CommandBase
+    internal abstract class FontSizeCommandBase : ShellTriggeredCommandBase
     {
         private const int MinFontSize = 6;
         private const int MaxFontSize = 24;

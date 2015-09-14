@@ -8,5 +8,6 @@ namespace Codartis.SoftVis.Modeling
     public interface IModel
     {
         IEnumerable<IModelEntity> Entities { get; }
+        IEnumerable<IModelRelationship> Relationships { get; }
     }
 }

@@ -1,28 +1,41 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    abstract class TestModelEntity : IModelEntity
+    internal abstract class TestModelEntity : IModelEntity
     {
+        private readonly List<TestModelRelationship> _outgoingRelationships = new List<TestModelRelationship>();
+        private readonly List<TestModelRelationship> _incomingRelationships = new List<TestModelRelationship>();
+
         public string Name { get; }
         public ModelEntityType Type { get; }
-        public TestModelEntity BaseEntity { get; }
 
-        protected TestModelEntity(string name, ModelEntityType type, TestModelEntity baseEntity = null)
+        protected TestModelEntity(string name, ModelEntityType type)
         {
             Name = name;
             Type = type;
-            BaseEntity = baseEntity;
         }
 
-        public IEnumerable<IModelRelationship> OutgoingRelationships
+        public IEnumerable<IModelRelationship> OutgoingRelationships => _outgoingRelationships;
+        public IEnumerable<IModelRelationship> IncomingRelationships => _incomingRelationships;
+
+        public TestModelEntity BaseEntity
         {
-            get
-            {
-                if (BaseEntity != null)
-                    yield return new ModelRelationship(this, BaseEntity, ModelRelationshipType.Generalization);
-            }
+            get { return _outgoingRelationships
+                    .FirstOrDefault(i => i.Type == ModelRelationshipType.Generalization)
+                    ?.TargetTestModelEntity; }
+        }
+
+        public void AddOutgoingRelationship(TestModelRelationship relationship)
+        {
+            _outgoingRelationships.Add(relationship);
+        }
+
+        public void AddIncomingRelationship(TestModelRelationship relationship)
+        {
+            _incomingRelationships.Add(relationship);
         }
     }
 }

@@ -11,5 +11,6 @@ namespace Codartis.SoftVis.Modeling
         string Name { get; }
         ModelEntityType Type { get; }
         IEnumerable<IModelRelationship> OutgoingRelationships { get; }
+        IEnumerable<IModelRelationship> IncomingRelationships { get; }
     }
 }

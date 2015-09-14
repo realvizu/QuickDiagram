@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
+namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
     /// Finds the descendants of the given type symbol.

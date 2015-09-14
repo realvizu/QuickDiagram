@@ -52,32 +52,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands\ExportToFileCommand.cs" />
-    <Compile Include="Commands\DecreaseFontSizeCommand.cs" />
-    <Compile Include="Commands\FontSizeCommandBase.cs" />
-    <Compile Include="Commands\ImageDpiComboGetItemsCommand.cs" />
-    <Compile Include="Commands\ImageDpiComboCommand.cs" />
-    <Compile Include="ImageExport\Dpi.cs" />
-    <Compile Include="Presentation\IDiagramWindow.cs" />
-    <Compile Include="Commands\IncreaseFontSizeCommand.cs" />
-    <Compile Include="VsctConstants.cs" />
-    <Compile Include="Commands\CopyToClipboardCommand.cs" />
-    <Compile Include="Commands\ShowDiagramWindowCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\AddToDiagramCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\ClearDiagramCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
-    <Compile Include="Commands\ClearDiagramCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\ShellTriggeredCommandBase.cs" />
+    <Compile Include="Commands\ShellTriggered\CopyToClipboardCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\DecreaseFontSizeCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\ExportToFileCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\FontSizeCommandBase.cs" />
+    <Compile Include="Commands\ShellTriggered\ImageDpiComboCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\ImageDpiComboGetItemsCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\IncreaseFontSizeCommand.cs" />
+    <Compile Include="Commands\ShellTriggered\ShowDiagramWindowCommand.cs" />
+    <Compile Include="Commands\EventTriggered\EventTriggeredCommandBase.cs" />
+    <Compile Include="Commands\EventTriggered\ShowSourceFileCommand.cs" />
+    <Compile Include="Events\DiagramNodeActivatedEventArgs.cs" />
+    <Compile Include="Diagramming\DiagramManager.cs" />
+    <Compile Include="ImageExport\Dpi.cs" />
+    <Compile Include="Modeling\IModelServices.cs" />
+    <Compile Include="Modeling\RoslynBasedModelBuilder.cs" />
+    <Compile Include="Diagramming\IDiagramServices.cs" />
+    <Compile Include="VsctConstants.cs" />
     <Compile Include="Commands\IPackageServices.cs" />
-    <Compile Include="Diagramming\DescendantsFinderVisitor.cs" />
-    <Compile Include="Diagramming\RoslynBasedWpfDiagramBuilder.cs" />
-    <Compile Include="Diagramming\ISourceDocumentProvider.cs" />
-    <Compile Include="Presentation\DiagramToolWindow.cs" />
-    <Compile Include="Commands\AddToDiagramCommand.cs" />
-    <Compile Include="Hosting\IHostServiceProvider.cs" />
+    <Compile Include="Modeling\DescendantsFinderVisitor.cs" />
+    <Compile Include="Diagramming\RoslynBasedDiagramBuilder.cs" />
+    <Compile Include="WorkspaceContext\IWorkspaceServices.cs" />
+    <Compile Include="Diagramming\DiagramToolWindow.cs" />
+    <Compile Include="IHostServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modeling\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Modeling\RoslynBasedModel.cs" />
     <Compile Include="Modeling\RoslynBasedClass.cs" />
     <Compile Include="Hosting\SoftVisPackage.cs" />
-    <Compile Include="Hosting\SourceDocumentProvider.cs" />
+    <Compile Include="WorkspaceContext\WorkspaceServices.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Key.snk">
@@ -133,6 +140,14 @@
       <HintPath>..\packages\Microsoft.CodeAnalysis.EditorFeatures.Text.1.0.0\lib\net45\Microsoft.CodeAnalysis.EditorFeatures.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.1.0.0\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.Workspaces.1.0.0\lib\net45\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
       <Private>True</Private>
@@ -145,10 +160,15 @@
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Editor, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.0.23107\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.LanguageServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.LanguageServices.1.0.0\lib\net45\Microsoft.VisualStudio.LanguageServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

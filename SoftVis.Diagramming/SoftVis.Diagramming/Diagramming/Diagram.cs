@@ -31,6 +31,8 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeAdded;
         public event EventHandler<DiagramShape> ShapeModified;
         public event EventHandler<DiagramShape> ShapeRemoved;
+        public event EventHandler<DiagramShape> ShapeSelected;
+        public event EventHandler<DiagramShape> ShapeActivated;
         public event EventHandler Cleared;
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Codartis.SoftVis.Diagramming
 
             var node = CreateDiagramNode(modelEntity);
             _graph.AddVertex(node);
-            SignalShapeAddedEvent(node);
+            OnShapeAdded(node);
 
             foreach (var modelRelationship in modelEntity.OutgoingRelationships)
             {
@@ -67,7 +69,7 @@ namespace Codartis.SoftVis.Diagramming
 
             var connector = CreateDiagramConnector(modelRelationship);
             _graph.AddEdge(connector);
-            SignalShapeAddedEvent(connector);
+            OnShapeAdded(connector);
         }
 
         /// <summary>
@@ -81,7 +83,7 @@ namespace Codartis.SoftVis.Diagramming
 
             var node = FindNode(modelEntity);
             _graph.RemoveVertex(node);
-            SignalShapeRemovedEvent(node);
+            OnShapeRemoved(node);
         }
 
         /// <summary>
@@ -95,7 +97,7 @@ namespace Codartis.SoftVis.Diagramming
 
             var connector = FindConnector(modelRelationship);
             _graph.RemoveEdge(connector);
-            SignalShapeRemovedEvent(connector);
+            OnShapeRemoved(connector);
         }
 
         /// <summary>
@@ -109,7 +111,7 @@ namespace Codartis.SoftVis.Diagramming
             foreach (var node in Nodes)
             {
                 node.Position = newNodePositions[node];
-                SignalShapeModifiedEvent(node);
+                OnShapeModified(node);
             }
         }
 
@@ -124,7 +126,7 @@ namespace Codartis.SoftVis.Diagramming
             foreach (var connector in Connectors)
             {
                 connector.RoutePoints = newConnectorRoutes[connector];
-                SignalShapeModifiedEvent(connector);
+                OnShapeModified(connector);
             }
         }
 
@@ -134,7 +136,7 @@ namespace Codartis.SoftVis.Diagramming
         public void Clear()
         {
             _graph.Clear();
-            SignalClearedEvent();
+            OnCleared();
         }
 
         protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
@@ -161,24 +163,34 @@ namespace Codartis.SoftVis.Diagramming
             return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
-        private void SignalShapeAddedEvent(DiagramShape shape)
+        private void OnShapeAdded(DiagramShape shape)
         {
             ShapeAdded?.Invoke(this, shape);
         }
 
-        private void SignalShapeModifiedEvent(DiagramShape shape)
+        private void OnShapeModified(DiagramShape shape)
         {
             ShapeModified?.Invoke(this, shape);
         }
 
-        private void SignalShapeRemovedEvent(DiagramShape shape)
+        private void OnShapeRemoved(DiagramShape shape)
         {
             ShapeRemoved?.Invoke(this, shape);
         }
 
-        private void SignalClearedEvent()
+        private void OnCleared()
         {
             Cleared?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnShapeSelected(DiagramShape diagramShape)
+        {
+            ShapeSelected?.Invoke(this, diagramShape);
+        }
+
+        public void OnShapeActivated(DiagramShape diagramShape)
+        {
+            ShapeActivated?.Invoke(this, diagramShape);
         }
     }
 }

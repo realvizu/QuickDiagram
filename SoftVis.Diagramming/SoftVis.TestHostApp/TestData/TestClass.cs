@@ -4,8 +4,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     class TestClass : TestModelEntity
     {
-        public TestClass(string name, TestModelEntity baseEntity = null)
-            : base(name, ModelEntityType.Class, baseEntity)
+        public TestClass(string name)
+            : base(name, ModelEntityType.Class)
         {
         }
     }

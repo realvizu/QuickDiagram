@@ -3,12 +3,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
     /// <summary>
     /// Executed when the host requests the items for ImageDpiCombo.
     /// </summary>
-    internal sealed class ImageDpiComboGetItemsCommand : CommandBase
+    internal sealed class ImageDpiComboGetItemsCommand : ShellTriggeredCommandBase
     {
         private static readonly string[] ComboItems;
 

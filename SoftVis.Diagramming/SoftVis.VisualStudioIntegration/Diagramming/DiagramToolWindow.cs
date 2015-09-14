@@ -1,24 +1,22 @@
 ﻿using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
+namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
     /// <summary>
     /// Implements a Visual Studio tool window that displays a diagram.
     /// </summary>
     [Guid("02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e")]
-    public class DiagramToolWindow : ToolWindowPane, IDiagramWindow
+    public class DiagramToolWindow : ToolWindowPane
     {
         private readonly DiagramViewerControl _diagramViewerControl;
-        private ISourceDocumentProvider _sourceDocumentProvider;
-        private RoslynBasedWpfDiagramBuilder _diagramBuilder;
 
         public Dpi ImageExportDpi { get; set; }
 
@@ -32,11 +30,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
             ImageExportDpi = Dpi.Default;
         }
 
-        internal void Initialize(ISourceDocumentProvider sourceDocumentProvider)
+        internal void Initialize(Diagram diagram)
         {
-            _sourceDocumentProvider = sourceDocumentProvider;
-            _diagramBuilder = new RoslynBasedWpfDiagramBuilder(_sourceDocumentProvider);
-            _diagramViewerControl.Diagram = _diagramBuilder.Diagram;
+            _diagramViewerControl.Diagram = diagram;
         }
 
         public int FontSize
@@ -51,15 +47,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Presentation
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
-        public void AddCurrentSymbol()
+        public void FitDiagramToView()
         {
-            _diagramBuilder.AddCurrentSymbol();
             _diagramViewerControl.FitDiagramToView();
-        }
-
-        public void Clear()
-        {
-            _diagramBuilder.Clear();
         }
 
         public BitmapSource GetDiagramAsBitmap()

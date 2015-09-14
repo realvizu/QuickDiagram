@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -9,24 +11,51 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal class RoslynBasedClass : IModelEntity
     {
-        private INamedTypeSymbol RoslynSymbol { get; }
-        public RoslynBasedClass BaseClass { get; set; }
+        private readonly List<IModelRelationship> _outgoingRelationships = new List<IModelRelationship>();
+        private readonly List<IModelRelationship> _incomingRelationships = new List<IModelRelationship>();
 
-        internal RoslynBasedClass(INamedTypeSymbol namedTypeSymbol, RoslynBasedClass baseClass = null)
+        public INamedTypeSymbol RoslynSymbol { get; }
+
+        internal RoslynBasedClass(INamedTypeSymbol namedTypeSymbol)
         {
+            if (namedTypeSymbol.TypeKind != TypeKind.Class )
+                throw new ArgumentException($"{namedTypeSymbol.Name} is not a class.");
+
             RoslynSymbol = namedTypeSymbol;
-            BaseClass = baseClass;
         }
 
         public string Name => RoslynSymbol.Name;
         public ModelEntityType Type => ModelEntityType.Class;
-        
-        public IEnumerable<IModelRelationship> OutgoingRelationships
+        public IEnumerable<IModelRelationship> OutgoingRelationships => _outgoingRelationships;
+        public IEnumerable<IModelRelationship> IncomingRelationships => _incomingRelationships;
+
+        public void AddOutgoingRelationship(IModelRelationship relationship)
+        {
+            _outgoingRelationships.Add(relationship);
+        }
+
+        public void AddIncomingRelationship(IModelRelationship relationship)
+        {
+            _incomingRelationships.Add(relationship);
+        }
+
+        public RoslynBasedClass BaseClass
         {
             get
             {
-                if (BaseClass != null)
-                    yield return new ModelRelationship(this, BaseClass, ModelRelationshipType.Generalization);
+                return _outgoingRelationships
+                    .FirstOrDefault(i => i.Type == ModelRelationshipType.Generalization)
+                    ?.Target as RoslynBasedClass;
+            }
+        }
+
+        public IEnumerable<RoslynBasedClass> ChildClasses
+        {
+            get
+            {
+                return _incomingRelationships
+                    .Where(i => i.Type == ModelRelationshipType.Generalization)
+                    .Select(i=>i.Source).OfType<RoslynBasedClass>();
             }
         }
     }

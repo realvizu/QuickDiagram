@@ -1,5 +1,6 @@
 ﻿using System;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
@@ -10,12 +11,12 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using TextSpan = Microsoft.CodeAnalysis.Text.TextSpan;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
+namespace Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext
 {
     /// <summary>
     /// Gets information from Visual Studio about the currently edited source document.
     /// </summary>
-    internal class SourceDocumentProvider : ISourceDocumentProvider, IVsRunningDocTableEvents, IDisposable
+    internal class WorkspaceServices : IWorkspaceServices, IVsRunningDocTableEvents, IDisposable
     {
         private const string CSharpContentTypeName = "CSharp";
 
@@ -24,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private IVsRunningDocumentTable _runningDocumentTable;
         private IWpfTextView _activeWpfTextView;
 
-        internal SourceDocumentProvider(IHostServiceProvider hostServiceProvider)
+        internal WorkspaceServices(IHostServiceProvider hostServiceProvider)
         {
             _hostServiceProvider = hostServiceProvider;
             InitializeRunningDocumentTable();
@@ -70,7 +71,38 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return VSConstants.S_OK;
         }
 
-        public Document GetCurrentDocument()
+        public Workspace GetWorkspace()
+        {
+            return _hostServiceProvider.GetVisualStudioWorkspace();
+        }
+
+        public async Task<ISymbol> GetCurrentSymbol()
+        {
+            var document = GetCurrentDocument();
+            if (document == null)
+                return null;
+
+            var syntaxTree = await document.GetSyntaxTreeAsync();
+            var syntaxRoot = syntaxTree.GetRoot();
+            var span = GetSelection();
+            var currentNode = syntaxRoot.FindNode(span);
+
+            var semanticModel = await document.GetSemanticModelAsync();
+            var symbolInfo = semanticModel.GetSymbolInfo(currentNode);
+            var symbol = symbolInfo.Symbol ?? semanticModel.GetDeclaredSymbol(currentNode);
+            return symbol;
+        }
+
+        public void ShowSourceFile(ISymbol symbol)
+        {
+            var workspace = GetWorkspace();
+            var documentId = workspace?.CurrentSolution?.GetDocumentId(symbol?.Locations.FirstOrDefault()?.SourceTree);
+
+            if (documentId != null)
+                workspace.OpenDocument(documentId);
+        }
+
+        private Document GetCurrentDocument()
         {
             if (_activeWpfTextView == null)
                 return null;
@@ -84,16 +116,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return document;
         }
 
-        public TextSpan GetSelection()
+        private TextSpan GetSelection()
         {
             var visualStudioSpan = _activeWpfTextView.Selection.StreamSelectionSpan.SnapshotSpan.Span;
             var roslynSpan = new TextSpan(visualStudioSpan.Start, visualStudioSpan.Length);
             return roslynSpan;
-        }
-
-        public Workspace GetWorkspace()
-        {
-            return _activeWpfTextView?.TextBuffer?.GetWorkspace();
         }
 
         private static IWpfTextView VsWindowFrameToWpfTextView(IVsWindowFrame vsWindowFrame)
@@ -121,7 +148,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             get
             {
                 if (_runningDocumentTable == null)
-                    _runningDocumentTable = _hostServiceProvider.GetService<IVsRunningDocumentTable, SVsRunningDocumentTable>();
+                    _runningDocumentTable = _hostServiceProvider.GetRunningDocumentTableService();
                 return _runningDocumentTable;
             }
         }
