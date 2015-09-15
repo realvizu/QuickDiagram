@@ -32,9 +32,8 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private DiagramViewportPanel _diagramViewportPanel;
         private PanAndZoomControl _panAndZoomControl;
-
-        private readonly SimpleDiagramPanel _diagramPanelForImageExport = new SimpleDiagramPanel();
         private readonly List<IViewportGesture> _gestures = new List<IViewportGesture>();
+        private readonly SimpleDiagramPanel _diagramPanelForImageExport = new SimpleDiagramPanel();
 
         static DiagramViewerControl()
         {
@@ -191,6 +190,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void EnsureUpToDateDiagramForExport()
         {
+            _diagramPanelForImageExport.FontSize = FontSize;
             _diagramPanelForImageExport.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             _diagramPanelForImageExport.Arrange(new Rect(_diagramPanelForImageExport.DesiredSize));
 

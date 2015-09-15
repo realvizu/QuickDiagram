@@ -16,10 +16,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
     /// </summary>
     internal abstract class DiagramPanelBase : Panel
     {
-        private readonly Dictionary<DiagramShape, DiagramShapeControlBase> _diagramShapeToControlMap =
+        protected readonly Dictionary<DiagramShape, DiagramShapeControlBase> DiagramShapeToControlMap =
             new Dictionary<DiagramShape, DiagramShapeControlBase>();
 
-        private readonly Dictionary<DiagramShapeControlBase, DiagramShape> _controlToDiagramShapeMap =
+        protected readonly Dictionary<DiagramShapeControlBase, DiagramShape> ControlToDiagramShapeMap =
             new Dictionary<DiagramShapeControlBase, DiagramShape>();
 
         private Rect _contentRect;
@@ -67,7 +67,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
         private void OnShapeAdded(object sender, DiagramShape shape)
         {
-            if (_diagramShapeToControlMap.ContainsKey(shape))
+            if (DiagramShapeToControlMap.ContainsKey(shape))
                 return;
 
             if (shape is DiagramNode)
@@ -78,7 +78,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
         private void OnShapeRemoved(object sender, DiagramShape shape)
         {
-            if (!_diagramShapeToControlMap.ContainsKey(shape))
+            if (!DiagramShapeToControlMap.ContainsKey(shape))
                 return;
 
             RemoveDiagramShapeControl(shape);
@@ -87,8 +87,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         private void OnDiagramCleared(object sender, EventArgs e)
         {
             Children.Clear();
-            _diagramShapeToControlMap.Clear();
-            _controlToDiagramShapeMap.Clear();
+            DiagramShapeToControlMap.Clear();
+            ControlToDiagramShapeMap.Clear();
         }
 
         private void AddAllGraphElements(Diagram diagram)
@@ -106,43 +106,43 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             control.PreviewMouseDoubleClick += OnDiagramNodeDoubleClicked;
             control.PreviewMouseLeftButtonDown += OnDiagramNodeLeftButtonDown;
 
-            _diagramShapeToControlMap.Add(diagramNode, control);
-            _controlToDiagramShapeMap.Add(control, diagramNode);
+            DiagramShapeToControlMap.Add(diagramNode, control);
+            ControlToDiagramShapeMap.Add(control, diagramNode);
             Children.Add(control);
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
         {
             var control = new DiagramConnectorControl { DataContext = diagramConnector };
-            _diagramShapeToControlMap.Add(diagramConnector, control);
-            _controlToDiagramShapeMap.Add(control, diagramConnector);
+            DiagramShapeToControlMap.Add(diagramConnector, control);
+            ControlToDiagramShapeMap.Add(control, diagramConnector);
             Children.Add(control);
         }
 
         private void RemoveDiagramShapeControl(DiagramShape diagramShape)
         {
-            var control = _diagramShapeToControlMap[diagramShape];
+            var control = DiagramShapeToControlMap[diagramShape];
             Children.Remove(control);
-            _diagramShapeToControlMap.Remove(diagramShape);
-            _controlToDiagramShapeMap.Remove(control);
+            DiagramShapeToControlMap.Remove(diagramShape);
+            ControlToDiagramShapeMap.Remove(control);
         }
 
         private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderDiagramNode = sender as DiagramNodeControl;
-            if (senderDiagramNode == null || !_controlToDiagramShapeMap.ContainsKey(senderDiagramNode))
+            if (senderDiagramNode == null || !ControlToDiagramShapeMap.ContainsKey(senderDiagramNode))
                 return;
 
-            Diagram.OnShapeSelected(_controlToDiagramShapeMap[senderDiagramNode]);
+            Diagram.OnShapeSelected(ControlToDiagramShapeMap[senderDiagramNode]);
         }
 
         private void OnDiagramNodeDoubleClicked(object sender, MouseButtonEventArgs e)
         {
             var senderDiagramNode = sender as DiagramNodeControl;
-            if (senderDiagramNode == null || !_controlToDiagramShapeMap.ContainsKey(senderDiagramNode))
+            if (senderDiagramNode == null || !ControlToDiagramShapeMap.ContainsKey(senderDiagramNode))
                 return;
 
-            Diagram.OnShapeActivated(_controlToDiagramShapeMap[senderDiagramNode]);
+            Diagram.OnShapeActivated(ControlToDiagramShapeMap[senderDiagramNode]);
             e.Handled = true;
         }
     }
