@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Editor;
@@ -88,9 +89,35 @@ namespace Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext
             var currentNode = syntaxRoot.FindNode(span);
 
             var semanticModel = await document.GetSemanticModelAsync();
-            var symbolInfo = semanticModel.GetSymbolInfo(currentNode);
-            var symbol = symbolInfo.Symbol ?? semanticModel.GetDeclaredSymbol(currentNode);
+            var symbol = GetSymbolForSyntaxNode(semanticModel, currentNode);
             return symbol;
+        }
+
+        private static ISymbol GetSymbolForSyntaxNode(SemanticModel semanticModel, SyntaxNode node)
+        {
+            if (node is TypeDeclarationSyntax || node is EnumDeclarationSyntax)
+                return semanticModel.GetDeclaredSymbol(node);
+
+            var identifierNode = FindSimpleNameSyntax(node);
+            return identifierNode == null 
+                ? null 
+                : semanticModel.GetSymbolInfo(identifierNode).Symbol;
+        }
+
+        private static SimpleNameSyntax FindSimpleNameSyntax(SyntaxNode node)
+        {
+            var simpleNameSyntax = node as SimpleNameSyntax;
+            if (simpleNameSyntax != null)
+                return simpleNameSyntax;
+
+            foreach (var childNode in node.ChildNodes())
+            {
+                simpleNameSyntax = FindSimpleNameSyntax(childNode);
+                if (simpleNameSyntax != null)
+                    break;
+            }
+
+            return simpleNameSyntax;
         }
 
         public void ShowSourceFile(ISymbol symbol)

@@ -18,13 +18,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         internal RoslynBasedClass(INamedTypeSymbol namedTypeSymbol)
         {
-            if (namedTypeSymbol.TypeKind != TypeKind.Class )
-                throw new ArgumentException($"{namedTypeSymbol.Name} is not a class.");
+            //TODO: now treat all user defined types as class
+            //if (namedTypeSymbol.TypeKind != TypeKind.Class)
+            //    throw new ArgumentException($"{namedTypeSymbol.Name} is not a class.");
 
             RoslynSymbol = namedTypeSymbol;
         }
 
-        public string Name => RoslynSymbol.Name;
+        public string Name => RoslynSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
         public ModelEntityType Type => ModelEntityType.Class;
         public IEnumerable<IModelRelationship> OutgoingRelationships => _outgoingRelationships;
         public IEnumerable<IModelRelationship> IncomingRelationships => _incomingRelationships;
