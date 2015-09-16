@@ -81,10 +81,13 @@
     <Compile Include="Modeling\IModelItem.cs" />
     <Compile Include="Modeling\IModelEntity.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
+    <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
+    <Compile Include="Modeling\ModelEntityStereotype.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />
     <Compile Include="Modeling\ModelEntityType.cs" />
     <Compile Include="Modeling\IModel.cs" />
     <Compile Include="Modeling\ModelRelationship.cs" />
+    <Compile Include="Modeling\ModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Common\DoubleHelper.cs" />
     <Compile Include="Rendering\Common\ScaleCalculator.cs" />
@@ -186,7 +189,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

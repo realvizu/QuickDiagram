@@ -20,39 +20,94 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         {
             if (modelEntity is RoslynBasedClass)
             {
-                ShowClassWithBaseAndChildren((RoslynBasedClass)modelEntity);
+                ShowClassWithRelatedEntities((RoslynBasedClass)modelEntity);
+                UpdateLayout();
+            }
+            else if (modelEntity is RoslynBasedInterface)
+            {
+                ShowInterfaceWithRelatedEntities((RoslynBasedInterface)modelEntity);
+                UpdateLayout();
+            }
+            else if (modelEntity is RoslynBasedStruct)
+            {
+                ShowStructWithRelatedEntities((RoslynBasedStruct)modelEntity);
                 UpdateLayout();
             }
         }
 
-        private void ShowClassWithBaseAndChildren(RoslynBasedClass @class)
+        private void ShowClassWithRelatedEntities(RoslynBasedClass @class)
         {
-            ShowBase(@class);
-            ShowClass(@class);
-            ShowChildren(@class);
+            _diagram.ShowNode(@class);
+            ShowBaseClass(@class);
+            ShowImplementedInterfaces(@class);
+            ShowDerivedClasses(@class);
         }
 
-        private void ShowChildren(RoslynBasedClass @class)
+        private void ShowInterfaceWithRelatedEntities(RoslynBasedInterface @interface)
         {
-            foreach (var childClass in @class.ChildClasses)
+            _diagram.ShowNode(@interface);
+            ShowBaseInterfaces(@interface);
+            ShowDerivedInterfaces(@interface);
+            ShowImplementers(@interface);
+        }
+
+        private void ShowStructWithRelatedEntities(RoslynBasedStruct @struct)
+        {
+            _diagram.ShowNode(@struct);
+            ShowImplementedInterfaces(@struct);
+        }
+
+        private void ShowImplementedInterfaces(dynamic @classOrStruct)
+        {
+            foreach (var @interface in @classOrStruct.ImplementedInterfaces)
             {
-                ShowClass(childClass);
-                ShowChildren(childClass);
+                _diagram.ShowNode(@interface);
+                ShowBaseInterfaces(@interface);
             }
         }
 
-        private void ShowBase(RoslynBasedClass @class)
+        private void ShowDerivedClasses(RoslynBasedClass @class)
+        {
+            foreach (var childClass in @class.DerivedClasses)
+            {
+                _diagram.ShowNode(childClass);
+                ShowDerivedClasses(childClass);
+            }
+        }
+
+        private void ShowDerivedInterfaces(RoslynBasedInterface @interface)
+        {
+            foreach (var @derivedInterface in @interface.DerivedInterfaces)
+            {
+                _diagram.ShowNode(@derivedInterface);
+                ShowDerivedInterfaces(@derivedInterface);
+            }
+        }
+
+        private void ShowImplementers(RoslynBasedInterface @interface)
+        {
+            foreach (var @class in @interface.ImplementerTypes)
+            {
+                _diagram.ShowNode(@class);
+            }
+        }
+
+        private void ShowBaseClass(RoslynBasedClass @class)
         {
             if (@class.BaseClass != null)
             {
-                ShowBase(@class.BaseClass);
-                ShowClass(@class.BaseClass);
+                _diagram.ShowNode(@class.BaseClass);
+                ShowBaseClass(@class.BaseClass);
             }
         }
 
-        private void ShowClass(RoslynBasedClass @class)
+        private void ShowBaseInterfaces(RoslynBasedInterface @interface)
         {
-            _diagram.ShowNode(@class);
+            foreach (var baseInterface in @interface.BaseInterfaces)
+            {
+                _diagram.ShowNode(baseInterface);
+                ShowBaseInterfaces(baseInterface);
+            }
         }
 
         private void UpdateLayout()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -9,68 +10,94 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal class RoslynBasedModel : IModel
     {
-        private readonly Dictionary<string, RoslynBasedClass> _roslynSymbolNameToModelEntityMap;
-        private readonly List<IModelRelationship> _relationships;
+        private readonly Dictionary<string, RoslynBasedModelEntity> _entities;
+        private readonly Dictionary<string, ModelRelationship> _relationships;
 
         internal RoslynBasedModel()
         {
-            _roslynSymbolNameToModelEntityMap = new Dictionary<string, RoslynBasedClass>();
-            _relationships = new List<IModelRelationship>();
+            _entities = new Dictionary<string, RoslynBasedModelEntity>();
+            _relationships = new Dictionary<string, ModelRelationship>();
         }
 
-        public IEnumerable<IModelEntity> Entities => _roslynSymbolNameToModelEntityMap.Values;
-        public IEnumerable<IModelRelationship> Relationships => _relationships;
+        public IEnumerable<IModelEntity> Entities => _entities.Values;
+        public IEnumerable<IModelRelationship> Relationships => _relationships.Values;
 
-        public RoslynBasedClass GetOrAdd(INamedTypeSymbol namedTypeSymbol)
+        public RoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol namedTypeSymbol)
         {
-            var element = GetModelElement(namedTypeSymbol);
-            if (element == null)
+            return GetModelEntity(namedTypeSymbol) 
+                ?? CreateAndAddModelEntity(namedTypeSymbol);
+        }
+
+        public ModelRelationship GetOrAddRelationship(INamedTypeSymbol sourceSymbol, INamedTypeSymbol targetSymbol,
+            ModelRelationshipType type, ModelRelationshipStereotype stereotype = null)
+        {
+            var sourceEntity = GetOrAddEntity(sourceSymbol);
+            var targetEntity = GetOrAddEntity(targetSymbol);
+
+            return GetModelRelationship(sourceEntity, targetEntity, type, stereotype) 
+                ?? CreateAndAddModelRelationship(sourceEntity, targetEntity, type, stereotype);
+        }
+
+        private RoslynBasedModelEntity GetModelEntity(INamedTypeSymbol namedTypeSymbol)
+        {
+            var key = namedTypeSymbol.GetKey();
+            RoslynBasedModelEntity entity;
+            return _entities.TryGetValue(key, out entity) ? entity : null;
+        }
+
+        private ModelRelationship GetModelRelationship(
+            RoslynBasedModelEntity sourceEntity, RoslynBasedModelEntity targetEntity,
+            ModelRelationshipType type, ModelRelationshipStereotype stereotype)
+        {
+            var key = GetRelationshipKey(sourceEntity, targetEntity, type, stereotype);
+            ModelRelationship relationship;
+            return _relationships.TryGetValue(key, out relationship) ? relationship : null;
+        }
+
+        private RoslynBasedModelEntity CreateAndAddModelEntity(INamedTypeSymbol namedTypeSymbol)
+        {
+            RoslynBasedModelEntity newEntity;
+
+            switch (namedTypeSymbol.TypeKind)
             {
-                element = CreateModelElement(namedTypeSymbol);
-                AddModelElement(namedTypeSymbol, element);
+                case (TypeKind.Class):
+                    newEntity = new RoslynBasedClass(namedTypeSymbol);
+                    break;
+                case (TypeKind.Interface):
+                    newEntity = new RoslynBasedInterface(namedTypeSymbol);
+                    break;
+                case (TypeKind.Struct):
+                    newEntity = new RoslynBasedStruct(namedTypeSymbol);
+                    break;
+                default:
+                    throw new ArgumentException($"Unexpected TypeKind: {namedTypeSymbol.TypeKind}.");
             }
 
-            return element;
+            _entities.Add(namedTypeSymbol.GetKey(), newEntity);
+
+            return newEntity;
         }
 
-        private RoslynBasedClass GetModelElement(INamedTypeSymbol namedTypeSymbol)
+        private ModelRelationship CreateAndAddModelRelationship(
+            RoslynBasedModelEntity sourceEntity, RoslynBasedModelEntity targetEntity,
+            ModelRelationshipType type, ModelRelationshipStereotype stereotype)
         {
-            var fullyQualifiedName = namedTypeSymbol.GetFullyQualifiedName();
+            var newRelationship = new ModelRelationship(sourceEntity, targetEntity, type, stereotype);
 
-            return _roslynSymbolNameToModelEntityMap.ContainsKey(fullyQualifiedName)
-                ? _roslynSymbolNameToModelEntityMap[fullyQualifiedName]
-                : null;
+            sourceEntity.AddOutgoingRelationship(newRelationship);
+            targetEntity.AddIncomingRelationship(newRelationship);
+
+            var key = GetRelationshipKey(sourceEntity, targetEntity, type, stereotype);
+            _relationships.Add(key, newRelationship);
+
+            return newRelationship;
         }
 
-        private RoslynBasedClass CreateModelElement(INamedTypeSymbol namedTypeSymbol)
+        private static string GetRelationshipKey(
+            RoslynBasedModelEntity sourceEntity, RoslynBasedModelEntity targetEntity,
+            ModelRelationshipType type, ModelRelationshipStereotype stereotype)
         {
-            RoslynBasedClass baseClass = null;
-
-            var baseTypeSymbol = namedTypeSymbol.BaseType;
-            if (baseTypeSymbol != null)
-                baseClass = GetOrAdd(baseTypeSymbol);
-
-            return CreateClassWithBaseRelationship(namedTypeSymbol, baseClass);
-        }
-
-        private RoslynBasedClass CreateClassWithBaseRelationship(INamedTypeSymbol namedTypeSymbol, RoslynBasedClass baseClass)
-        {
-            var newClass = new RoslynBasedClass(namedTypeSymbol);
-
-            if (baseClass != null)
-            {
-                var newRelationship = new ModelRelationship(newClass, baseClass, ModelRelationshipType.Generalization);
-                newClass.AddOutgoingRelationship(newRelationship);
-                baseClass.AddIncomingRelationship(newRelationship);
-                _relationships.Add(newRelationship);
-            }
-
-            return newClass;
-        }
-
-        private void AddModelElement(INamedTypeSymbol namedTypeSymbol, RoslynBasedClass modelElement)
-        {
-            _roslynSymbolNameToModelEntityMap.Add(namedTypeSymbol.GetFullyQualifiedName(), modelElement);
+            return $"{sourceEntity.Id}--({type}/{stereotype})-->{targetEntity.Id}";
         }
     }
 }

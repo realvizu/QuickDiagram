@@ -19,23 +19,20 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public IEnumerable<IModelEntity> Entities => _entities;
         public IEnumerable<IModelRelationship> Relationships => _relationships;
 
-        private TestModel AddEntity(string name, ModelEntityType type)
+        private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype)
         {
             if (_entities.Any(i => i.Name == name))
                 throw new InvalidOperationException($"Entity with name {name} already exists.");
 
             IModelEntity newEntity;
-            switch (type)
-            {
-                case (ModelEntityType.Class):
-                    newEntity = new TestClass(name);
-                    break;
-                case (ModelEntityType.Interface):
-                    newEntity = new TestInterface(name);
-                    break;
-                default:
-                    throw new ArgumentException($"Unexpected entity type: {type}");
-            }
+
+            if (type == ModelEntityType.Class && stereotype == null)
+                newEntity = new TestClass(name);
+            else if (type == ModelEntityType.Class && stereotype == TestModelEntityStereotype.Interface)
+                newEntity = new TestInterface(name);
+            else
+                throw new ArgumentException($"Unexpected entity type: {type}, stereotype: {stereotype}");
+
             _entities.Add(newEntity);
 
             return this;
@@ -46,15 +43,15 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             if (_relationships.Any(i => i.Source.Name == sourceName && i.Type == type && i.Target.Name == targetName))
                 throw new InvalidOperationException($"Relationship already exists {sourceName}--{type}-->{targetName}.");
 
-            var sourceEntity = _entities.FirstOrDefault(i => i.Name == sourceName) as TestModelEntity;
+            var sourceEntity = _entities.FirstOrDefault(i => i.Name == sourceName) as ModelEntity;
             if (sourceEntity == null)
                 throw new InvalidOperationException($"Entity with name {sourceName} not found.");
 
-            var targetEntity = _entities.FirstOrDefault(i => i.Name == targetName) as TestModelEntity;
+            var targetEntity = _entities.FirstOrDefault(i => i.Name == targetName) as ModelEntity;
             if (targetEntity == null)
                 throw new InvalidOperationException($"Entity with name {targetName} not found.");
 
-            var newRelationship = new TestModelRelationship(sourceEntity, targetEntity, type);
+            var newRelationship = new ModelRelationship(sourceEntity, targetEntity, type);
             sourceEntity.AddOutgoingRelationship(newRelationship);
             targetEntity.AddIncomingRelationship(newRelationship);
             _relationships.Add(newRelationship);
@@ -62,9 +59,10 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private TestModel AddEntityWithOptionalBase(string name, ModelEntityType type, string baseName = null)
+        private TestModel AddEntityWithOptionalBase(string name, ModelEntityType type, ModelEntityStereotype stereotype,
+            string baseName = null)
         {
-            var model = AddEntity(name, type);
+            var model = AddEntity(name, type, stereotype);
 
             if (baseName != null)
                 model = AddRelationship(name, ModelRelationshipType.Generalization, baseName);
@@ -74,12 +72,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         private TestModel AddInterface(string name, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, ModelEntityType.Interface, baseName);
+            return AddEntityWithOptionalBase(name, ModelEntityType.Class, TestModelEntityStereotype.Interface, baseName);
         }
 
         private TestModel AddClass(string name, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, ModelEntityType.Class, baseName);
+            return AddEntityWithOptionalBase(name, ModelEntityType.Class, null, baseName);
         }
 
         public static TestModel Create()

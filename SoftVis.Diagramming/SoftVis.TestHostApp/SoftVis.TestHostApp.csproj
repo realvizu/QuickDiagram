@@ -71,8 +71,7 @@
     <Compile Include="TestData\TestClass.cs" />
     <Compile Include="TestData\TestModel.cs" />
     <Compile Include="TestData\TestInterface.cs" />
-    <Compile Include="TestData\TestModelEntity.cs" />
-    <Compile Include="TestData\TestModelRelationship.cs" />
+    <Compile Include="TestData\TestModelEntityStereotype.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

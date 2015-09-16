@@ -18,8 +18,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
         {
         }
 
-        public bool IsStereotypeVisible => ModelEntity.Type != ModelEntityType.Class;
-        public string StereotypeText => $"<<{ModelEntity.Type.ToString().ToLower()}>>";
+        public bool IsStereotypeVisible => ModelEntity.Stereotype != null;
+        public string StereotypeText => $"<<{ModelEntity.Stereotype.Name.ToLower()}>>";
 
         public override DiagramPoint Position
         {
@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
 
         private static DiagramSize SizeAdjustedWithStereotype(IModelEntity modelEntity, DiagramSize size)
         {
-            return modelEntity.Type == ModelEntityType.Class
+            return modelEntity.Stereotype == null
                 ? size
                 : new DiagramSize(size.Width, size.Height + 10);
         }

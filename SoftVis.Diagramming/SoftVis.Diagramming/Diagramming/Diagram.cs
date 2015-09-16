@@ -41,14 +41,14 @@ namespace Codartis.SoftVis.Diagramming
         /// <param name="modelEntity">A type or package model element.</param>
         public void ShowNode(IModelEntity modelEntity)
         {
-            if (NodeExists(modelEntity))
-                return;
+            if (!NodeExists(modelEntity))
+            {
+                var node = CreateDiagramNode(modelEntity);
+                _graph.AddVertex(node);
+                OnShapeAdded(node);
+            }
 
-            var node = CreateDiagramNode(modelEntity);
-            _graph.AddVertex(node);
-            OnShapeAdded(node);
-
-            foreach (var modelRelationship in modelEntity.OutgoingRelationships)
+            foreach (var modelRelationship in modelEntity.OutgoingRelationships.Concat(modelEntity.IncomingRelationships))
             {
                 if (NodeExists(modelRelationship.Source) &&
                     NodeExists(modelRelationship.Target))

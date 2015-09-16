@@ -5,8 +5,17 @@
     /// </summary>
     public interface IModelRelationship : IModelItem
     {
-        ModelRelationshipType Type { get; }
         IModelEntity Source { get; }
         IModelEntity Target { get; }
+
+        /// <summary>
+        /// Provides a fixed set of relationship categories.
+        /// </summary>
+        ModelRelationshipType Type { get; }
+
+        /// <summary>
+        /// Provides an extensible set of relationship categories.
+        /// </summary>
+        ModelRelationshipStereotype Stereotype { get; }
     }
 }
