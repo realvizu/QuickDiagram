@@ -19,20 +19,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         public void ShowModelEntity(IModelEntity modelEntity)
         {
             if (modelEntity is RoslynBasedClass)
-            {
                 ShowClassWithRelatedEntities((RoslynBasedClass)modelEntity);
-                UpdateLayout();
-            }
+
             else if (modelEntity is RoslynBasedInterface)
-            {
                 ShowInterfaceWithRelatedEntities((RoslynBasedInterface)modelEntity);
-                UpdateLayout();
-            }
+
             else if (modelEntity is RoslynBasedStruct)
-            {
                 ShowStructWithRelatedEntities((RoslynBasedStruct)modelEntity);
-                UpdateLayout();
-            }
+
+            else
+                _diagram.ShowNode(modelEntity);
+
+            UpdateLayout();
         }
 
         private void ShowClassWithRelatedEntities(RoslynBasedClass @class)

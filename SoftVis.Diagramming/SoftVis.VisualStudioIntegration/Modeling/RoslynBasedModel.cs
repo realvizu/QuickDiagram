@@ -69,6 +69,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
                 case (TypeKind.Struct):
                     newEntity = new RoslynBasedStruct(namedTypeSymbol);
                     break;
+                case (TypeKind.Enum):
+                    newEntity = new RoslynBasedEnum(namedTypeSymbol);
+                    break;
+                case (TypeKind.Delegate):
+                    newEntity = new RoslynBasedDelegate(namedTypeSymbol);
+                    break;
                 default:
                     throw new ArgumentException($"Unexpected TypeKind: {namedTypeSymbol.TypeKind}.");
             }

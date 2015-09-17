@@ -23,6 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         public DiagramToolWindow() : base(null)
         {
             _diagramViewerControl = new DiagramViewerControl();
+            _diagramViewerControl.AddResourceDictionary("Diagramming/DiagramStyles.xaml");
 
             Caption = "Diagram";
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
@@ -32,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         internal void Initialize(Diagram diagram)
         {
-            _diagramViewerControl.Diagram = diagram;
+            _diagramViewerControl.DataContext = diagram;
         }
 
         public int FontSize

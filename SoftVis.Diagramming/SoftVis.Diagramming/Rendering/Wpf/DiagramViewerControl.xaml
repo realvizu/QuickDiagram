@@ -1,12 +1,19 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    mc:Ignorable="d"   
                     xmlns:this="clr-namespace:Codartis.SoftVis.Rendering.Wpf"
                     xmlns:inputControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.InputControls"
-                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport">
+                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport"
+                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.Diagramming">
 
-    <Style TargetType="{x:Type this:DiagramViewerControl}">
+    <Style TargetType="{x:Type this:DiagramViewerControl}"
+           d:DataContext="{d:DesignInstance {x:Type viewModels:Diagram}}">
+        <Setter Property="Diagram" Value="{Binding}"/>
         <Setter Property="MinZoom" Value="0.2"/>
         <Setter Property="MaxZoom" Value="10"/>
+        <Setter Property="Background" Value="Beige"/>
         <Setter Property="RenderOptions.EdgeMode" Value="Unspecified"/>
         <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
         <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
@@ -19,7 +26,7 @@
                         <viewport:DiagramViewportPanel x:Name="PART_DiagramViewportPanel" 
                                                        Focusable="False"
                                                        ClipToBounds="True" 
-                                                       Background="Beige"
+                                                       Background="{TemplateBinding Background}"
                                                        Diagram="{TemplateBinding Diagram}"
                                                        MinZoom="{TemplateBinding MinZoom}" 
                                                        MaxZoom="{TemplateBinding MaxZoom}" />

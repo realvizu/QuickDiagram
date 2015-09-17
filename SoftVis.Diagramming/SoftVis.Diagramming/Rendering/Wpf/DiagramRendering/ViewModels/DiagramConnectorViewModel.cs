@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
     /// <summary>
     /// A diagram connector that support data binding and can be used as a ViewModel from WPF controls.
     /// </summary>
-    internal class DiagramConnectorViewModel : DiagramConnector, INotifyPropertyChanged
+    public class DiagramConnectorViewModel : DiagramConnector, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

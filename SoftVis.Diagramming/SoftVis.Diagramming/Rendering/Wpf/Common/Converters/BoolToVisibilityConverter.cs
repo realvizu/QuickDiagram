@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     /// <summary>
     /// Converts a bool value to Visibility.Visible / Visibility.Collapsed
     /// </summary>
-    internal class BoolToVisibilityConverter : IValueConverter
+    public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

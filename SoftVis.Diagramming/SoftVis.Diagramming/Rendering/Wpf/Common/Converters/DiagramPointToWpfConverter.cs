@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     /// <summary>
     /// Converts a DiagramPoint into a WPF Point.
     /// </summary>
-    internal class DiagramPointToWpfConverter : IValueConverter
+    public class DiagramPointToWpfConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

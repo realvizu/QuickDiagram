@@ -95,7 +95,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext
 
         private static ISymbol GetSymbolForSyntaxNode(SemanticModel semanticModel, SyntaxNode node)
         {
-            if (node is TypeDeclarationSyntax || node is EnumDeclarationSyntax)
+            if (node is TypeDeclarationSyntax || 
+                node is EnumDeclarationSyntax ||
+                node is DelegateDeclarationSyntax)
                 return semanticModel.GetDeclaredSymbol(node);
 
             var identifierNode = FindSimpleNameSyntax(node);

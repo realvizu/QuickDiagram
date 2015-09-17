@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     /// <summary>
     /// Multiplies the given double amount with the given parameter amount.
     /// </summary>
-    internal class DoubleMultiplierConverter : IValueConverter
+    public class DoubleMultiplierConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     /// <summary>
     /// Converts a DiagramRect into a WPF Rect.
     /// </summary>
-    internal class DiagramRectToWpfConverter : IValueConverter
+    public class DiagramRectToWpfConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

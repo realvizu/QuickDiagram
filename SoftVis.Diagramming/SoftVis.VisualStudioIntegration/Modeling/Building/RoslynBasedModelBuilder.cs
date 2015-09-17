@@ -39,6 +39,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
                     return GetOrAddInterfaceWithRelatedSymbols(namedTypeSymbol);
                 case TypeKind.Struct:
                     return GetOrAddStructWithRelatedSymbols(namedTypeSymbol);
+                case TypeKind.Enum:
+                    return Model.GetOrAddEntity(namedTypeSymbol);
+                case TypeKind.Delegate:
+                    return Model.GetOrAddEntity(namedTypeSymbol);
                 default:
                     throw new Exception($"Unexpected TypeKind: {namedTypeSymbol.TypeKind}");
             }

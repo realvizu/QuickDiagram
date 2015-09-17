@@ -66,13 +66,16 @@
     <Compile Include="Commands\ShellTriggered\ShowDiagramWindowCommand.cs" />
     <Compile Include="Commands\EventTriggered\EventTriggeredCommandBase.cs" />
     <Compile Include="Commands\EventTriggered\ShowSourceFileCommand.cs" />
+    <Compile Include="Diagramming\FrameworkElementExtensions.cs" />
     <Compile Include="Events\DiagramNodeActivatedEventArgs.cs" />
     <Compile Include="Diagramming\DiagramManager.cs" />
     <Compile Include="ImageExport\Dpi.cs" />
     <Compile Include="Modeling\Building\ImplementingTypesFinderVisitor.cs" />
     <Compile Include="Modeling\IModelServices.cs" />
     <Compile Include="Modeling\ModelRelationshipExtensions.cs" />
+    <Compile Include="Modeling\RoslynBasedDelegate.cs" />
     <Compile Include="Modeling\RoslynBasedModelRelationshipStereotype.cs" />
+    <Compile Include="Modeling\RoslynBasedEnum.cs" />
     <Compile Include="Modeling\RoslynBasedStruct.cs" />
     <Compile Include="Modeling\RoslynBasedInterface.cs" />
     <Compile Include="Modeling\Building\RoslynBasedModelBuilder.cs" />
@@ -112,11 +115,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Diagramming\Images\Class.png" />
-    <Content Include="Diagramming\Images\Delegate.png" />
-    <Content Include="Diagramming\Images\Enum.png" />
-    <Content Include="Diagramming\Images\Interface.png" />
-    <Content Include="Diagramming\Images\Structure.png" />
+    <Resource Include="Diagramming\Images\Class.png" />
+    <Resource Include="Diagramming\Images\Delegate.png" />
+    <Resource Include="Diagramming\Images\Enum.png" />
+    <Resource Include="Diagramming\Images\Interface.png" />
+    <Resource Include="Diagramming\Images\Structure.png" />
     <Content Include="Resources\DiagramToolWindowCommand.png" />
     <Content Include="Resources\SoftVisPackage.ico" />
     <VSCTCompile Include="SoftVisPackage.vsct">
@@ -317,7 +320,12 @@
       <Name>SoftVis.Diagramming</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Diagramming\DiagramStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming
     public abstract class Diagram
     {
         protected static readonly DiagramPoint DefaultNodePosition = DiagramPoint.Zero;
-        protected static readonly DiagramSize DefaultNodeSize = new DiagramSize(100,25);
+        protected static readonly DiagramSize DefaultNodeSize = new DiagramSize(100,38);
 
         private readonly DiagramGraph _graph = new DiagramGraph();
 

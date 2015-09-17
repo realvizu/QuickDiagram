@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
     /// <summary>
     /// A diagram node that support data binding and can be used as a ViewModel from WPF controls.
     /// </summary>
-    internal class DiagramNodeViewModel : DiagramNode, INotifyPropertyChanged
+    public class DiagramNodeViewModel : DiagramNode, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,8 +18,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
         {
         }
 
-        public bool IsStereotypeVisible => ModelEntity.Stereotype != null;
-        public string StereotypeText => $"<<{ModelEntity.Stereotype.Name.ToLower()}>>";
+        public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
+        public bool IsStereotypeVisible => Stereotype != null;
+        public string StereotypeText => $"<<{Stereotype.Name.ToLower()}>>";
 
         public override DiagramPoint Position
         {

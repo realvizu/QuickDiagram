@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     /// <summary>
     /// Converts a Point[] to their bounding Rect.
     /// </summary>
-    internal class PointsToBoundingRectConverter : IValueConverter
+    public class PointsToBoundingRectConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

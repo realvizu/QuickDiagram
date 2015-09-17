@@ -17,6 +17,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
         {
             var workspaceServices = PackageServices.GetWorkspaceServices();
             var symbol = await workspaceServices.GetCurrentSymbol();
+            if (symbol == null)
+                return;
 
             var modelBuilder = PackageServices.GetModelServices();
             var modelEntity = modelBuilder.GetModelEntity(symbol);

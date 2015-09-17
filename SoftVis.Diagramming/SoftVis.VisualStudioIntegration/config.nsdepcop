@@ -9,20 +9,20 @@
     <Allowed From="*" To="System.CodeDom.Compiler" />
     <Allowed From="*" To="System.ComponentModel.*" />
     <Allowed From="*" To="System.Runtime.InteropServices" />
+    <Allowed From="*" To="System.Reflection" />
+    <Allowed From="*" To="System.IO" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration" To="Microsoft.VisualStudio.Shell.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration" To="Microsoft.VisualStudio.LanguageServices" />
 
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Reflection" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Commands.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
 
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.*" To="System.IO" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.*" To="System.Windows" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.*" To="System.Windows.Media.Imaging" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.*" To="Microsoft.CodeAnalysis" />

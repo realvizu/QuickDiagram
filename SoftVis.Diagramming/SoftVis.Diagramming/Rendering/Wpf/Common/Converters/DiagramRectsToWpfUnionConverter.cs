@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     /// <summary>
     /// Converts the given DiagramRect[] to WPF Rects and calculates their union.
     /// </summary>
-    internal class DiagramRectsToWpfUnionConverter : IMultiValueConverter
+    public class DiagramRectsToWpfUnionConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

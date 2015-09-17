@@ -7,9 +7,9 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <!--<ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>-->
+            </ResourceDictionary.MergedDictionaries>
 
             <!--<Style TargetType="{x:Type controls:DiagramNodeControl}">
                 <Setter Property="Background" Value="LightYellow"/>
