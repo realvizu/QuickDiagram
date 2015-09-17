@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
-            if (symbol.BaseType == BaseTypeSymbol)
+            if (Equals(symbol.BaseType, BaseTypeSymbol))
                 DerivedTypeSymbols.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())

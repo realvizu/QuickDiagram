@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.EventTriggered
 
         protected override void Execute(object source, DiagramNodeActivatedEventArgs args)
         {
-            var roslynBasedClass = args?.DiagramNode?.ModelEntity as RoslynBasedClass;
+            var roslynBasedClass = args?.DiagramNode?.ModelEntity as RoslynBasedModelEntity;
             if (roslynBasedClass != null)
             {
                 var workspaceServices = PackageServices.GetWorkspaceServices();

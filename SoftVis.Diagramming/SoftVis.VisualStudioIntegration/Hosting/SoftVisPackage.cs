@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Commands.EventTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered;
@@ -49,6 +51,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         protected override void Initialize()
         {
             base.Initialize();
+
+            // This is needed otherwise VS catches the exception and shows no stack trace.
+            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) => { Debugger.Break(); };
 
             _visualStudioServiceProvider = GetGlobalService(typeof(IVisualStudioServiceProvider)) as IVisualStudioServiceProvider;
             if (_visualStudioServiceProvider == null)
@@ -177,7 +182,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return assembly.DefinedTypes
                 .Where(i => i.BaseType != null
                             && i.BaseType.IsConstructedGenericType
-                            && i.BaseType.GetGenericTypeDefinition() == typeof (EventTriggeredCommandBase<>)
+                            && i.BaseType.GetGenericTypeDefinition() == typeof(EventTriggeredCommandBase<>)
                             && !i.IsAbstract);
         }
 

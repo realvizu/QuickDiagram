@@ -12,6 +12,7 @@
     <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="System.IO" />
     <Allowed From="*" To="System.Windows.Media.Imaging" />
+    <Allowed From="*" To="System.Windows.Threading" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 

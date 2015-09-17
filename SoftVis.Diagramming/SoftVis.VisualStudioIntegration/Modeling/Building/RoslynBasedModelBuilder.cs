@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
 using Microsoft.CodeAnalysis;
@@ -50,8 +51,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
         private RoslynBasedModelEntity GetOrAddClassWithRelatedSymbols(INamedTypeSymbol classSymbol)
         {
+            EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
+
             var newEntity = Model.GetOrAddEntity(classSymbol);
-            AddBaseType(classSymbol);
+            AddBaseClass(classSymbol);
             AddImplementedInterfaces(classSymbol);
             AddDerivedTypes(classSymbol);
             return newEntity;
@@ -59,63 +62,89 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
         private RoslynBasedModelEntity GetOrAddInterfaceWithRelatedSymbols(INamedTypeSymbol interfaceSymbol)
         {
+            EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
+
             var newEntity = Model.GetOrAddEntity(interfaceSymbol);
-            AddImplementedInterfaces(interfaceSymbol);
-            AddDerivedInterface(interfaceSymbol);
+            AddBaseInterfaces(interfaceSymbol);
+            AddDerivedInterfaces(interfaceSymbol);
             AddImplementingTypes(interfaceSymbol);
             return newEntity;
         }
 
         private RoslynBasedModelEntity GetOrAddStructWithRelatedSymbols(INamedTypeSymbol structSymbol)
         {
+            EnsureSymbolTypeKind(structSymbol, TypeKind.Struct);
+
             var newEntity = Model.GetOrAddEntity(structSymbol);
             AddImplementedInterfaces(structSymbol);
             return newEntity;
         }
 
-        private void AddBaseType(INamedTypeSymbol namedTypeSymbol)
+        private void AddBaseClass(INamedTypeSymbol classSymbol)
         {
-            if (namedTypeSymbol.BaseType != null)
+            EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
+
+            if (classSymbol.BaseType != null)
             {
-                Model.GetOrAddEntity(namedTypeSymbol.BaseType);
-                Model.GetOrAddRelationship(namedTypeSymbol, namedTypeSymbol.BaseType, ModelRelationshipType.Generalization);
-                AddBaseType(namedTypeSymbol.BaseType);
+                Model.GetOrAddEntity(classSymbol.BaseType);
+                Model.GetOrAddRelationship(classSymbol, classSymbol.BaseType, ModelRelationshipType.Generalization);
+                AddBaseClass(classSymbol.BaseType);
             }
         }
 
-        private void AddImplementedInterfaces(INamedTypeSymbol namedTypeSymbol)
+        private void AddImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)
         {
-            foreach (var interfaceSymbol in namedTypeSymbol.Interfaces)
+            EnsureSymbolTypeKind(classOrStructSymbol, TypeKind.Class, TypeKind.Struct);
+
+            foreach (var implementedInterfaceSymbol in classOrStructSymbol.Interfaces)
             {
-                Model.GetOrAddEntity(interfaceSymbol);
-                Model.GetOrAddRelationship(namedTypeSymbol, interfaceSymbol, 
+                Model.GetOrAddEntity(implementedInterfaceSymbol);
+                Model.GetOrAddRelationship(classOrStructSymbol, implementedInterfaceSymbol, 
                     ModelRelationshipType.Generalization, RoslynBasedModelRelationshipStereotype.Implementation);
-                AddImplementedInterfaces(interfaceSymbol);
+                AddBaseInterfaces(implementedInterfaceSymbol);
             }
         }
 
-        private void AddDerivedTypes(INamedTypeSymbol namedTypeSymbol)
+        private void AddBaseInterfaces(INamedTypeSymbol interfaceSymbol)
         {
-            foreach (var childTypeSymbol in GetDerivedTypeSymbols(namedTypeSymbol))
+            EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
+
+            foreach (var baseInterfaceSymbol in interfaceSymbol.Interfaces)
             {
-                Model.GetOrAddEntity(childTypeSymbol);
-                Model.GetOrAddRelationship(childTypeSymbol, namedTypeSymbol, ModelRelationshipType.Generalization);
-                AddDerivedTypes(childTypeSymbol);
+                Model.GetOrAddEntity(baseInterfaceSymbol);
+                Model.GetOrAddRelationship(interfaceSymbol, baseInterfaceSymbol, ModelRelationshipType.Generalization);
+                AddBaseInterfaces(baseInterfaceSymbol);
             }
         }
 
-        private IEnumerable<INamedTypeSymbol> GetDerivedTypeSymbols(INamedTypeSymbol namedTypeSymbol)
+        private void AddDerivedTypes(INamedTypeSymbol classSymbol)
         {
-            var workspace = WorkspaceServices.GetWorkspace();
-            return FindDerivedTypesAsync(workspace, namedTypeSymbol);
+            EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
+
+            foreach (var derivedTypeSymbol in GetDerivedTypeSymbols(classSymbol))
+            {
+                Model.GetOrAddEntity(derivedTypeSymbol);
+                Model.GetOrAddRelationship(derivedTypeSymbol, classSymbol, ModelRelationshipType.Generalization);
+                AddDerivedTypes(derivedTypeSymbol);
+            }
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindDerivedTypesAsync(Workspace workspace, INamedTypeSymbol namedTypeSymbol)
+        private IEnumerable<INamedTypeSymbol> GetDerivedTypeSymbols(INamedTypeSymbol classSymbol)
         {
+            EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
+
+            var workspace = WorkspaceServices.GetWorkspace();
+            return FindDerivedTypesAsync(workspace, classSymbol);
+        }
+
+        private static IEnumerable<INamedTypeSymbol> FindDerivedTypesAsync(Workspace workspace, INamedTypeSymbol classSymbol)
+        {
+            EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
+
             foreach (var project in workspace.CurrentSolution.Projects)
             {
                 var compilation = project.GetCompilationAsync().Result;
-                var visitor = new DerivedTypesFinderVisitor(namedTypeSymbol);
+                var visitor = new DerivedTypesFinderVisitor(classSymbol);
                 compilation.Assembly.Accept(visitor);
                 foreach (var descendant in visitor.DerivedTypeSymbols)
                     yield return descendant;
@@ -124,10 +153,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
         private void AddImplementingTypes(INamedTypeSymbol interfaceSymbol)
         {
+            EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
+
             foreach (var implementingTypeSymbols in GetImplementingTypeSymbols(interfaceSymbol))
             {
-                if (implementingTypeSymbols.TypeKind == TypeKind.Class ||
-                    implementingTypeSymbols.TypeKind == TypeKind.Struct)
+                // The relationship between an interface and a derived interface 
+                // is modeled as generalization, not implementation (no stereotype!).
+                // So here we want to find non-interface children only.
+                if (implementingTypeSymbols.TypeKind != TypeKind.Interface)
                 {
                     Model.GetOrAddEntity(implementingTypeSymbols);
                     Model.GetOrAddRelationship(implementingTypeSymbols, interfaceSymbol,
@@ -136,8 +169,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
             }
         }
 
-        private void AddDerivedInterface(INamedTypeSymbol interfaceSymbol)
+        private void AddDerivedInterfaces(INamedTypeSymbol interfaceSymbol)
         {
+            EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
+
             foreach (var implementingTypeSymbols in GetImplementingTypeSymbols(interfaceSymbol))
             {
                 if (implementingTypeSymbols.TypeKind == TypeKind.Interface)
@@ -148,22 +183,34 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
             }
         }
 
-        private IEnumerable<INamedTypeSymbol> GetImplementingTypeSymbols(INamedTypeSymbol namedTypeSymbol)
+        private IEnumerable<INamedTypeSymbol> GetImplementingTypeSymbols(INamedTypeSymbol interfaceSymbol)
         {
+            EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
+
             var workspace = WorkspaceServices.GetWorkspace();
-            return FindImplementingTypesAsync(workspace, namedTypeSymbol);
+            return FindImplementingTypesAsync(workspace, interfaceSymbol);
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindImplementingTypesAsync(Workspace workspace, INamedTypeSymbol namedTypeSymbol)
+        private static IEnumerable<INamedTypeSymbol> FindImplementingTypesAsync(Workspace workspace, INamedTypeSymbol interfaceSymbol)
         {
+            EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
+
             foreach (var project in workspace.CurrentSolution.Projects)
             {
                 var compilation = project.GetCompilationAsync().Result;
-                var visitor = new ImplementingTypesFinderVisitor(namedTypeSymbol);
+                var visitor = new ImplementingTypesFinderVisitor(interfaceSymbol);
                 compilation.Assembly.Accept(visitor);
                 foreach (var descendant in visitor.ImplementingTypeSymbols)
                     yield return descendant;
             }
+        }
+
+        private static void EnsureSymbolTypeKind(INamedTypeSymbol symbol, params TypeKind[] expectedTypeKinds)
+        {
+            if (expectedTypeKinds.Any(i => symbol.TypeKind == i))
+                return;
+
+            throw new InvalidOperationException($"Unexpected symbol type: {symbol.TypeKind}");
         }
     }
 }
