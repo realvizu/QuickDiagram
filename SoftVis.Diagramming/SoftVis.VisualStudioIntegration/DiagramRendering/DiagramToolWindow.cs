@@ -8,7 +8,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
+namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
 {
     /// <summary>
     /// Implements a Visual Studio tool window that displays a diagram.
@@ -16,6 +16,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     [Guid("02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e")]
     public class DiagramToolWindow : ToolWindowPane
     {
+        private const string DiagramStylesXaml = "DiagramRendering/DiagramStyles.xaml";
+
         private readonly DiagramViewerControl _diagramViewerControl;
 
         public Dpi ImageExportDpi { get; set; }
@@ -23,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         public DiagramToolWindow() : base(null)
         {
             _diagramViewerControl = new DiagramViewerControl();
-            _diagramViewerControl.AddResourceDictionary("Diagramming/DiagramStyles.xaml");
+            _diagramViewerControl.AddResourceDictionary(DiagramStylesXaml);
 
             Caption = "Diagram";
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);

@@ -4,6 +4,7 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Shapes;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
+using Codartis.SoftVis.VisualStudioIntegration.DiagramRendering;
 using Codartis.SoftVis.VisualStudioIntegration.Events;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 

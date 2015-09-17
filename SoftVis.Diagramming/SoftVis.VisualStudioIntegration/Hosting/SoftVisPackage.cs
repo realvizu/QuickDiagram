@@ -9,6 +9,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Commands.EventTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.DiagramRendering;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Building;
 using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
