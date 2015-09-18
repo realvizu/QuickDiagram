@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.VisualStudioIntegration.DiagramRendering;

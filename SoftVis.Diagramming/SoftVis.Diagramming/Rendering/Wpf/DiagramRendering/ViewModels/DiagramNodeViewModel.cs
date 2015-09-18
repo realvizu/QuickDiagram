@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
 
         public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
         public bool IsStereotypeVisible => Stereotype != null;
-        public string StereotypeText => $"<<{Stereotype.Name.ToLower()}>>";
+        public string StereotypeText => $"<<{Stereotype?.Name.ToLower()}>>";
 
         public override DiagramPoint Position
         {

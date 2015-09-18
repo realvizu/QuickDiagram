@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Shapes;
-using Codartis.SoftVis.Diagramming.Shapes.Graph;
-using Codartis.SoftVis.Diagramming.Shapes.Graph.Layout;
-using Codartis.SoftVis.Diagramming.Shapes.Graph.Routing;
+using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Diagramming.Graph.Layout;
+using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -101,32 +100,20 @@ namespace Codartis.SoftVis.Diagramming
         }
 
         /// <summary>
-        /// Recalculates the layout of the diagram and applies the new shape positions.
+        /// Recalculates the layout of the diagram and applies the new shape positions and edge routes.
         /// </summary>
-        public void LayoutNodes()
+        public void Layout(LayoutType layoutType, ILayoutParameters layoutParameters = null)
         {
-            var algorithm = new SimpleTreeLayoutAlgorithm(_graph);
-            var newNodePositions = algorithm.ComputeNewVertexPositions();
-
-            foreach (var node in Nodes)
+            switch (layoutType)
             {
-                node.Position = newNodePositions[node];
-                OnShapeModified(node);
-            }
-        }
-
-        /// <summary>
-        /// Recalculates the route of the edges on the diagram and applies the routes to the connectors.
-        /// </summary>
-        public void RouteConnectors()
-        {
-            var algorithm = new StraightRoutingAlgorithm(_graph);
-            var newConnectorRoutes = algorithm.ComputeEdgeRoutes();
-
-            foreach (var connector in Connectors)
-            {
-                connector.RoutePoints = newConnectorRoutes[connector];
-                OnShapeModified(connector);
+                case (LayoutType.Tree):
+                    ApplySimpleTreeLayoutAndStraightEdgeRouting();
+                    break;
+                case (LayoutType.Sugiyama):
+                    ApplySugiyamaLayoutAndRouting(layoutParameters);
+                    break;
+                default:
+                    throw new ArgumentException($"Unexpected layout type: {layoutType}");
             }
         }
 
@@ -142,6 +129,46 @@ namespace Codartis.SoftVis.Diagramming
         protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
 
         protected abstract DiagramConnector CreateDiagramConnector(IModelRelationship relationship);
+
+        private void ApplySimpleTreeLayoutAndStraightEdgeRouting()
+        {
+            var layoutAlgorithm = new SimpleTreeLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph);
+            layoutAlgorithm.Compute();
+
+            ApplyVertexCenters(layoutAlgorithm.VertexCenters);
+
+            var routingAlgorithm = new StraightEdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(_graph);
+            routingAlgorithm.Compute();
+
+            ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
+        }
+
+        private void ApplySugiyamaLayoutAndRouting(ILayoutParameters layoutParameters)
+        {
+            var algorithm = new SugiyamaLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph, (SugiyamaLayoutParameters)layoutParameters);
+            algorithm.Compute();
+
+            ApplyVertexCenters(algorithm.VertexCenters);
+            ApplyConnectorRoutes(algorithm.EdgeRoutes);
+        }
+
+        private void ApplyVertexCenters(IDictionary<DiagramNode, DiagramPoint> vertexCenters)
+        {
+            foreach (var node in Nodes)
+            {
+                node.Center = vertexCenters[node];
+                OnShapeModified(node);
+            }
+        }
+
+        private void ApplyConnectorRoutes(IDictionary<DiagramConnector, DiagramPoint[]> edgeRoutes)
+        {
+            foreach (var connector in Connectors)
+            {
+                connector.RoutePoints = edgeRoutes[connector];
+                OnShapeModified(connector);
+            }
+        }
 
         protected DiagramNode FindNode(IModelEntity modelEntity)
         {

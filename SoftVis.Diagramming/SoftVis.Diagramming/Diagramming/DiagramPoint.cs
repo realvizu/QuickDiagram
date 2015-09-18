@@ -1,4 +1,6 @@
-﻿namespace Codartis.SoftVis.Diagramming
+﻿using System.Collections.Generic;
+
+namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// Represents a point in the diagram-space.
@@ -9,6 +11,7 @@
         public double Y { get; }
 
         public static DiagramPoint Zero = new DiagramPoint(0, 0);
+        public static DiagramPoint Extreme = new DiagramPoint(double.NaN, double.NaN);
 
         public DiagramPoint(double x, double y)
         {
@@ -76,6 +79,39 @@
         public static DiagramPoint operator *(double multiplier, DiagramPoint point)
         {
             return point * multiplier;
+        }
+
+        public static DiagramPoint[] CreateRoute(DiagramPoint firstPoint, DiagramPoint secondPoint, DiagramPoint? thirdPoint,
+            IEnumerable<DiagramPoint> internalPoints, DiagramPoint? beforePenultimatePoint, DiagramPoint penultimatePoint, DiagramPoint lastPoint)
+        {
+            var route = new List<DiagramPoint>();
+
+            route.Add(firstPoint);
+            route.Add(secondPoint);
+            if (thirdPoint!=null) route.Add(thirdPoint.Value);
+
+            if (internalPoints != null)
+                route.AddRange(internalPoints);
+
+            if (beforePenultimatePoint != null) route.Add(beforePenultimatePoint.Value);
+            route.Add(penultimatePoint);
+            route.Add(lastPoint);
+
+            return route.ToArray();
+        }
+
+        public static DiagramPoint[] CreateRoute(DiagramPoint firstPoint, IEnumerable<DiagramPoint> internalPoints, DiagramPoint lastPoint)
+        {
+            var route = new List<DiagramPoint>();
+
+            route.Add(firstPoint);
+
+            if (internalPoints != null)
+                route.AddRange(internalPoints);
+
+            route.Add(lastPoint);
+
+            return route.ToArray();
         }
     }
 }

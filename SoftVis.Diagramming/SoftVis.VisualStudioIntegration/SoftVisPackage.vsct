@@ -149,7 +149,7 @@
         </CommandPlacement>
 
         <!-- ExportImage menu controller -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup">
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ExportImageMenuController" />
         </CommandPlacement>
         <CommandPlacement guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" priority="1">

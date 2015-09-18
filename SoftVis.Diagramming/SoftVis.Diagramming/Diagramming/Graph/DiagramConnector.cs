@@ -2,18 +2,21 @@
 using Codartis.SoftVis.Modeling;
 using QuickGraph;
 
-namespace Codartis.SoftVis.Diagramming.Shapes
+namespace Codartis.SoftVis.Diagramming.Graph
 {
     /// <summary>
     /// A diagram connector is an edge in the diagram graph.
     /// It is the representation of a directed model relationship and it connects two diagram nodes.
     /// Eg. an inheritance arrow pointing from a derived class shape to its base class shape.
     /// </summary>
-    public abstract class DiagramConnector : DiagramShape, IEdge<DiagramNode>
+    public abstract class DiagramConnector : DiagramShape, IEdge<DiagramNode>, IEdge<IExtent>
     {
         private DiagramPoint[] _routePoints;
         public DiagramNode Source { get; }
         public DiagramNode Target { get; }
+
+        IExtent IEdge<IExtent>.Target => Target;
+        IExtent IEdge<IExtent>.Source => Source;
 
         protected DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
             :base(relationship)

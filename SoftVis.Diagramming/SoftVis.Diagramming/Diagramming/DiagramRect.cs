@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -37,6 +38,14 @@ namespace Codartis.SoftVis.Diagramming
 
         public DiagramPoint BottomRight => new DiagramPoint(Right, Bottom);
         public DiagramPoint Center => new DiagramPoint(Left + Size.Width / 2, Top + Size.Height / 2);
+        public DiagramPoint Position => TopLeft;
+
+        public static DiagramRect CreateFromCenterAndSize(DiagramPoint center, DiagramSize size)
+        {
+            var halfWidth = size.Width / 2;
+            var halfHeight = size.Height / 2;
+            return new DiagramRect(center.X - halfWidth, center.Y - halfHeight, center.X + halfWidth, center.Y + halfHeight);
+        }
 
         public static DiagramRect Union(DiagramRect rect1, DiagramRect rect2)
         {
@@ -47,6 +56,22 @@ namespace Codartis.SoftVis.Diagramming
             var bottom = Math.Max(rect1.Bottom, rect2.Bottom);
 
             return new DiagramRect(new DiagramPoint(left, top), new DiagramPoint(right, bottom));
+        }
+
+        public DiagramPoint GetAttachPointToward(DiagramPoint targetPoint)
+        {
+            var center = Center;
+            var sides = new[]
+            {
+                (Left - targetPoint.X)/(center.X - targetPoint.X),
+                (Top - targetPoint.Y)/(center.Y - targetPoint.Y),
+                (Right - targetPoint.X)/(center.X - targetPoint.X),
+                (Bottom - targetPoint.Y)/(center.Y - targetPoint.Y)
+            };
+
+            var fi = Math.Max(0, sides.Where(i => i <= 1).Max());
+
+            return targetPoint + fi * (center - targetPoint);
         }
     }
 }

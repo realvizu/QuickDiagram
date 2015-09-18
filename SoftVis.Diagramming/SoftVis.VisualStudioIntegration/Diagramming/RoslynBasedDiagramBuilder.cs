@@ -1,4 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph.Layout;
+using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -110,8 +112,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         private void UpdateLayout()
         {
-            _diagram.LayoutNodes();
-            _diagram.RouteConnectors();
+            var sugiyamaLayoutParameters = new SugiyamaLayoutParameters
+            {
+                LayoutDirection = LayoutDirection.SourcesAtTop,
+                MinimizeEdgeLength = true,
+                EdgeRoutingType = EdgeRoutingType.Straight,
+                LayerDistance = 40,
+            };
+            _diagram.Layout(LayoutType.Sugiyama, sugiyamaLayoutParameters);
         }
     }
 }

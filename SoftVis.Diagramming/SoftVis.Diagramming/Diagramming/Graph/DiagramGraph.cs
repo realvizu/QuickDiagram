@@ -1,6 +1,6 @@
 ﻿using QuickGraph;
 
-namespace Codartis.SoftVis.Diagramming.Shapes.Graph
+namespace Codartis.SoftVis.Diagramming.Graph
 {
     /// <summary>
     /// The graph formed by the nodes and connectors of a diagram.

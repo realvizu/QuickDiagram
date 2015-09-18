@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Codartis.SoftVis.TestHostApp.TestData;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -22,6 +23,11 @@ namespace Codartis.SoftVis.TestHostApp
             DiagramViewerControl.DataContext = diagram;
 
             Dispatcher.BeginInvoke(new Action(() => DiagramViewerControl.FitDiagramToView()));
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            ((TestDiagram)DiagramViewerControl.Diagram).Layout();
         }
     }
 }

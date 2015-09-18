@@ -1,7 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Diagramming.Shapes
+namespace Codartis.SoftVis.Diagramming.Graph
 {
     /// <summary>
     /// A diagram shape is a representation of a model item on a diagram.

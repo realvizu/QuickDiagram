@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels

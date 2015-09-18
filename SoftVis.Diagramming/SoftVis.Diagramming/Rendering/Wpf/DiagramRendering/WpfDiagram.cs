@@ -1,5 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
 

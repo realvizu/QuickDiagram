@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 
         public static readonly DependencyProperty RoutePointsProperty =
             DependencyProperty.Register("RoutePoints", typeof(Point[]), typeof(DiagramConnectorControl),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsParentMeasure));
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
         public Point[] RoutePoints
         {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.SoftVis.Diagramming.Shapes;
+using Codartis.SoftVis.Diagramming.Graph;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Events
 {

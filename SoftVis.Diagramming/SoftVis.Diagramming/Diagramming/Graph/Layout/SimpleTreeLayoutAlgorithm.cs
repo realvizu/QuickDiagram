@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuickGraph;
 
-namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
+namespace Codartis.SoftVis.Diagramming.Graph.Layout
 {
     /// <summary>
     /// Implements a graph layout algorithm that arranges the vertices into a top-down tree.
     /// The root (topmost vertex) is the one with no outbound edges.
     /// No edge routing.
     /// </summary>
-    internal sealed class SimpleTreeLayoutAlgorithm
+    internal sealed class SimpleTreeLayoutAlgorithm<TVertex, TEdge> : IVertexPositioningAlgorithm<TVertex>
+        where TVertex : class, IExtent
+        where TEdge : IEdge<TVertex>
     {
-        private readonly DiagramGraph _graph;
+        public IDictionary<TVertex, DiagramPoint> VertexCenters { get; private set; }
+
+        private readonly IBidirectionalGraph<TVertex, TEdge> _graph;
         private readonly IList<Layer> _layers = new List<Layer>();
-        private readonly IDictionary<DiagramNode, VertexData> _data = new Dictionary<DiagramNode, VertexData>();
+        private readonly IDictionary<TVertex, VertexData> _data = new Dictionary<TVertex, VertexData>();
 
         private const int LayerGap = 30;
         private const int VertexGap = 10;
 
-        internal SimpleTreeLayoutAlgorithm(DiagramGraph graph)
+        internal SimpleTreeLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> graph)
         {
             _graph = graph;
         }
@@ -26,8 +31,7 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
         /// <summary>
         /// Calculates the new positions of the graph's vertices. 
         /// </summary>
-        /// <returns>A dictionary of the (vertex, position) items.</returns>
-        public IDictionary<DiagramNode, DiagramPoint> ComputeNewVertexPositions()
+        public void Compute()
         {
             //first layout the vertices with 0 out-edge
             foreach (var vertex in _graph.Vertices.Where(v => _graph.OutDegree(v) == 0))
@@ -37,11 +41,10 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
             foreach (var vertex in _graph.Vertices)
                 CalculatePosition(vertex, null, 0);
 
-            var newVertexPositions = AssignPositions();
-            return newVertexPositions;
+            VertexCenters = AssignPositions();
         }
 
-        private double CalculatePosition(DiagramNode vertex, DiagramNode parent, int layerNumber)
+        private double CalculatePosition(TVertex vertex, TVertex parent, int layerNumber)
         {
             if (_data.ContainsKey(vertex))
                 return -1; //this vertex is already layed out
@@ -54,10 +57,10 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
             var vertexData = new VertexData { Parent = parent };
             _data[vertex] = vertexData;
 
-            layer.NextPosition += vertexSize.Width / 2.0;
+            layer.NextCenter += vertexSize.Width / 2.0;
             if (layerNumber > 0)
             {
-                layer.NextPosition += _layers[layerNumber - 1].LastTranslate;
+                layer.NextCenter += _layers[layerNumber - 1].LastTranslate;
                 _layers[layerNumber - 1].LastTranslate = 0;
             }
             layer.Size = Math.Max(layer.Size, vertexSize.Height + LayerGap);
@@ -65,7 +68,7 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
 
             if (_graph.InDegree(vertex) == 0)
             {
-                vertexData.Position = layer.NextPosition;
+                vertexData.Center = layer.NextCenter;
             }
             else
             {
@@ -83,25 +86,25 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
                 }
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (minPos != double.MaxValue)
-                    vertexData.Position = (minPos + maxPos) / 2.0;
+                    vertexData.Center = (minPos + maxPos) / 2.0;
                 else
-                    vertexData.Position = layer.NextPosition;
+                    vertexData.Center = layer.NextCenter;
 
-                vertexData.Translate = Math.Max(layer.NextPosition - vertexData.Position, 0);
+                vertexData.Translate = Math.Max(layer.NextCenter - vertexData.Center, 0);
 
                 layer.LastTranslate = vertexData.Translate;
-                vertexData.Position += vertexData.Translate;
-                layer.NextPosition = vertexData.Position;
+                vertexData.Center += vertexData.Translate;
+                layer.NextCenter = vertexData.Center;
             }
 
-            layer.NextPosition += vertexSize.Width / 2.0 + VertexGap;
+            layer.NextCenter += vertexSize.Width / 2.0 + VertexGap;
 
-            return vertexData.Position;
+            return vertexData.Center;
         }
 
-        private IDictionary<DiagramNode, DiagramPoint> AssignPositions()
+        private IDictionary<TVertex, DiagramPoint> AssignPositions()
         {
-            var newVertexPositions = new Dictionary<DiagramNode, DiagramPoint>();
+            var newVertexPositions = new Dictionary<TVertex, DiagramPoint>();
 
             double layerSize = 0;
 
@@ -113,11 +116,11 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
                     var vertexData = _data[vertex];
                     if (vertexData.Parent != null)
                     {
-                        vertexData.Position += _data[vertexData.Parent].Translate;
+                        vertexData.Center += _data[vertexData.Parent].Translate;
                         vertexData.Translate += _data[vertexData.Parent].Translate;
                     }
 
-                    newVertexPositions[vertex] = new DiagramPoint(vertexData.Position, layerSize + size.Height / 2.0);
+                    newVertexPositions[vertex] = new DiagramPoint(vertexData.Center, layerSize + size.Height / 2.0);
                 }
                 layerSize += layer.Size;
             }
@@ -128,16 +131,16 @@ namespace Codartis.SoftVis.Diagramming.Shapes.Graph.Layout
         private class Layer
         {
             internal double Size;
-            internal double NextPosition;
+            internal double NextCenter;
             internal double LastTranslate;
-            internal readonly IList<DiagramNode> Vertices = new List<DiagramNode>();
+            internal readonly IList<TVertex> Vertices = new List<TVertex>();
         }
 
         private class VertexData
         {
-            internal DiagramNode Parent;
+            internal TVertex Parent;
             internal double Translate;
-            internal double Position;
+            internal double Center;
         }
     }
 }
