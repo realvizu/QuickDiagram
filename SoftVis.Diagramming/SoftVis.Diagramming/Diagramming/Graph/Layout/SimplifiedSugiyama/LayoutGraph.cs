@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QuickGraph;
 using QuickGraph.Algorithms.Search;
@@ -16,9 +17,14 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             AddVertexRange(_originalToLayoutVertexMap.Values);
             AddEdgeRange(originalEdges.Select(CreateLayoutEdge));
 
-            RemoveCyclesByReversingEdges();
+            Normalize();
+        }
 
-            // TODO? Also remove loops and multiple edges.
+        public List<LayoutVertex> RemoveIsolatedVertices()
+        {
+            var isolatedVertices = Vertices.Where(i => Degree(i) == 0).ToList();
+            isolatedVertices.ForEach(i => RemoveVertex(i));
+            return isolatedVertices;
         }
 
         private LayoutEdge CreateLayoutEdge(IEdge<IExtent> originalEdge)
@@ -28,9 +34,21 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             return new LayoutEdge(originalEdge, sourceLayoutVertex, targetLayoutVertex);
         }
 
+        private void Normalize()
+        {
+            RemoveLoops();
+            RemoveCyclesByReversingEdges();
+            //TODO? Remove multi-edges? Which instances?
+        }
+
+        private void RemoveLoops()
+        {
+            RemoveEdgeIf(i => i.Source == i.Target);
+        }
+
         private void RemoveCyclesByReversingEdges()
         {
-            // TODO? Reverse edges that participate in many cycles.
+            // TODO? Reverse those edges that participate in many cycles.
 
             var cycleEdges = new List<LayoutEdge>();
 
@@ -45,11 +63,9 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             }
         }
 
-        public List<LayoutVertex> RemoveIsolatedVertices()
+        public void AssignVertexRanks()
         {
-            var isolatedVertices = Vertices.Where(i => Degree(i) == 0).ToList();
-            isolatedVertices.ForEach(i => RemoveVertex(i));
-            return isolatedVertices;
+            throw new NotImplementedException();
         }
     }
 }

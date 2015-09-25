@@ -1,9 +1,12 @@
-﻿using QuickGraph;
+﻿using System.Diagnostics;
+using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
 {
+    [DebuggerDisplay("{ToString()}")]
     internal class LayoutEdge : Edge<LayoutVertex>
-    {
+    { 
+        // TODO: eliminate original?
         public IEdge<IExtent> OriginalEdge { get; }
         public bool IsReversed { get; }
 
@@ -17,6 +20,13 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
         public LayoutEdge Reverse()
         {
             return new LayoutEdge(OriginalEdge, Target, Source, true);
+        }
+
+        private string IsReversedAsString => IsReversed ? " (reversed)" : "";
+
+        public override string ToString()
+        {
+            return $"{OriginalEdge}{IsReversedAsString}";
         }
     }
 }

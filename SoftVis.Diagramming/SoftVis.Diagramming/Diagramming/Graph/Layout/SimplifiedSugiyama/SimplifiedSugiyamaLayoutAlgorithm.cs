@@ -40,18 +40,36 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             // TODO? Lay out each connected sub-graph separately.
 
             var isolatedVertices = _layoutGraph.RemoveIsolatedVertices();
-            var layers = CreateLayers(_layoutGraph);
+            var layoutVertexLayers = CreateLayers(_layoutGraph);
+            //InsertVirtualNodes(_layoutGraph, layoutVertexLayers);
 
             // TODO lay out isolated vertices
         }
 
-        private static List<HashSet<LayoutVertex>> CreateLayers(LayoutGraph layoutGraph)
+        private static LayoutVertexLayers CreateLayers(LayoutGraph layoutGraph)
         {
             // TODO? Set sort order based on layout parameter (top-down or bottom-up layout)
             var sortOrder = TopologicalSortOrder.SinksFirst;
             var sortAlgorithm = new ClusteredTopologicalSortAlgorithm<LayoutVertex, LayoutEdge>(layoutGraph, sortOrder);
             sortAlgorithm.Compute();
-            return sortAlgorithm.Clusters;
+            return new LayoutVertexLayers(sortAlgorithm.Clusters);
         }
+
+        //private void InsertVirtualNodes(LayoutGraph layoutGraph, LayoutVertexLayers layoutVertexLayers)
+        //{
+        //    foreach (var layoutEdge in layoutGraph.Edges)
+        //        if (layoutEdge.Source.LayerIndex - layoutEdge.Target.LayerIndex > 1)
+        //            ReplaceEdgeWithDummyNodes(layoutEdge, layoutVertexLayers);
+        //}
+
+        //private void ReplaceEdgeWithDummyNodes(LayoutEdge layoutEdge, LayoutVertexLayers layoutVertexLayers)
+        //{
+        //    for (var i = layoutEdge.Target.LayerIndex + 1; i < layoutEdge.Source.LayerIndex - 1; i++)
+        //    {
+        //        var dummyNode = _layoutGraph.AddDummyNode()
+        //        layoutVertexLayers[i].AddItem(dummyNode);
+        //        _layoutGraph.a
+        //    }
+        //}
     }
 }

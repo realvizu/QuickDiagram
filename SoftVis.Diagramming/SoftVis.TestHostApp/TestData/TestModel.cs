@@ -100,7 +100,17 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("ForeverAlone")
                 .AddClass("ForeverAlone2")
 
-                // These relationships are wrong, just testing the layout algorithm
+                // Loop
+                .AddInterface("Loop")
+                .AddInterface("Loop", baseName: "Loop")
+
+                // Small circle where edge reversing results a multi-edge
+                .AddInterface("SmallCircle1")
+                .AddInterface("SmallCircle2")
+                .AddInterface("SmallCircle1", baseName: "SmallCircle2")
+                .AddInterface("SmallCircle2", baseName: "SmallCircle1")
+
+                // Large circle
                 .AddInterface("Circle1")
                 .AddInterface("Circle2")
                 .AddInterface("Circle3")
@@ -110,7 +120,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddInterface("Circle3", baseName: "Circle4")
                 .AddInterface("Circle4", baseName: "Circle1")
 
-                // For edge-crossings
+                // Edge-crossings
                 .AddClass("Child1", baseName: "BaseInterface")
                 .AddClass("Child3", baseName: "MyInterface3")
                 .AddClass("Child3", baseName: "Circle4")

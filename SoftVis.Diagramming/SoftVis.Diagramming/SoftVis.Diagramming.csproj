@@ -104,6 +104,8 @@
     <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Pair.cs" />
     <Compile Include="Diagramming\Graph\Layout\EdgeRoutingType.cs" />
     <Compile Include="Diagramming\Graph\Layout\HashSetExtensions.cs" />
+    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertexLayer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertexLayers.cs" />
     <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutEdge.cs" />
     <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutGraph.cs" />
     <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertex.cs" />
