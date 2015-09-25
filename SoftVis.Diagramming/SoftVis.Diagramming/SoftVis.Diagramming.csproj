@@ -104,8 +104,8 @@
     <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Pair.cs" />
     <Compile Include="Diagramming\Graph\Layout\EdgeRoutingType.cs" />
     <Compile Include="Diagramming\Graph\Layout\HashSetExtensions.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertexLayer.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertexLayers.cs" />
+    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\RankLayer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\RankLayers.cs" />
     <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutEdge.cs" />
     <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutGraph.cs" />
     <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertex.cs" />
@@ -230,6 +230,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Diagramming\Graph\Routing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

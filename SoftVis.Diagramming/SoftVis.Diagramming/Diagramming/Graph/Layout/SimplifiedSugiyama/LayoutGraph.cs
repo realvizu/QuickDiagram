@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using QuickGraph;
 using QuickGraph.Algorithms.Search;
@@ -12,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
 
         public LayoutGraph(IEnumerable<IExtent> originalVertice, IEnumerable<IEdge<IExtent>> originalEdges)
         {
-            _originalToLayoutVertexMap = originalVertice.ToDictionary(i => i, i => new LayoutVertex(i));
+            _originalToLayoutVertexMap = originalVertice.ToDictionary(i => i, LayoutVertex.Create);
 
             AddVertexRange(_originalToLayoutVertexMap.Values);
             AddEdgeRange(originalEdges.Select(CreateLayoutEdge));
@@ -25,6 +24,23 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             var isolatedVertices = Vertices.Where(i => Degree(i) == 0).ToList();
             isolatedVertices.ForEach(i => RemoveVertex(i));
             return isolatedVertices;
+        }
+
+        public void BreakEdgeWithInterimVertices(LayoutEdge edgeToBreak, List<LayoutVertex> interimVertices)
+        {
+            RemoveEdge(edgeToBreak);
+
+            foreach (var interimVertex in interimVertices)
+                AddVertex(interimVertex);
+
+            interimVertices.Insert(0, edgeToBreak.Source);
+            interimVertices.Add(edgeToBreak.Target);
+
+            for (var i = 0; i < interimVertices.Count - 1; i++)
+            {
+                var newEdge = new LayoutEdge(edgeToBreak.OriginalEdge, interimVertices[i], interimVertices[i + 1], edgeToBreak.IsReversed);
+                AddEdge(newEdge);
+            }
         }
 
         private LayoutEdge CreateLayoutEdge(IEdge<IExtent> originalEdge)
@@ -61,11 +77,6 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
                 RemoveEdge(edge);
                 AddEdge(edge.Reverse());
             }
-        }
-
-        public void AssignVertexRanks()
-        {
-            throw new NotImplementedException();
         }
     }
 }

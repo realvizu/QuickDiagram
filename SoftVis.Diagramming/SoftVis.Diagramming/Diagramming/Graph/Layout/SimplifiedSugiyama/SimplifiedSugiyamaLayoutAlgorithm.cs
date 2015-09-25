@@ -10,66 +10,72 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
     /// </summary>
     /// <typeparam name="TVertex">The type of the vertices.</typeparam>
     /// <typeparam name="TEdge">The type of the edges.</typeparam>
-    /// <remarks>
-    /// Terminology differences to the original with paper:
-    /// <para>rank = layer</para>
-    /// </remarks>
     internal class SimplifiedSugiyamaLayoutAlgorithm<TVertex, TEdge>
-        : IVertexPositioningAlgorithm<TVertex>, IEdgeRoutingAlgorithm<TVertex, TEdge>
+        : IVertexPositioningAlgorithm<TVertex>,
+          IEdgeRoutingAlgorithm<TVertex, TEdge>
         where TVertex : class, IExtent
         where TEdge : IEdge<TVertex>, IEdge<IExtent>
     {
         private readonly IBidirectionalGraph<TVertex, TEdge> _originalGraph;
         private readonly SimplifiedSugiyamaLayoutParameters _layoutParameters;
-        private readonly LayoutGraph _layoutGraph;
 
         public IDictionary<TVertex, DiagramPoint> VertexCenters { get; private set; }
         public IDictionary<TEdge, DiagramPoint[]> EdgeRoutes { get; private set; }
 
-        internal SimplifiedSugiyamaLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> originalGraph, 
+        internal SimplifiedSugiyamaLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> originalGraph,
             SimplifiedSugiyamaLayoutParameters layoutParameters)
         {
             _originalGraph = originalGraph;
             _layoutParameters = layoutParameters;
-
-            _layoutGraph = new LayoutGraph(_originalGraph.Vertices, _originalGraph.Edges.OfType<IEdge<IExtent>>());
         }
 
         public void Compute()
         {
+            var layoutGraph = new LayoutGraph(_originalGraph.Vertices, _originalGraph.Edges.OfType<IEdge<IExtent>>());
+
             // TODO? Lay out each connected sub-graph separately.
 
-            var isolatedVertices = _layoutGraph.RemoveIsolatedVertices();
-            var layoutVertexLayers = CreateLayers(_layoutGraph);
-            //InsertVirtualNodes(_layoutGraph, layoutVertexLayers);
+            var isolatedVertices = layoutGraph.RemoveIsolatedVertices();
+            var rankLayers = CreateLayers(layoutGraph);
+            InsertVirtualNodes(layoutGraph, rankLayers);
 
             // TODO lay out isolated vertices
         }
 
-        private static LayoutVertexLayers CreateLayers(LayoutGraph layoutGraph)
+        private static RankLayers CreateLayers(LayoutGraph layoutGraph)
         {
-            // TODO? Set sort order based on layout parameter (top-down or bottom-up layout)
+            // TODO? adjust for top-down layout
             var sortOrder = TopologicalSortOrder.SinksFirst;
             var sortAlgorithm = new ClusteredTopologicalSortAlgorithm<LayoutVertex, LayoutEdge>(layoutGraph, sortOrder);
             sortAlgorithm.Compute();
-            return new LayoutVertexLayers(sortAlgorithm.Clusters);
+            return new RankLayers(sortAlgorithm.Clusters);
         }
 
-        //private void InsertVirtualNodes(LayoutGraph layoutGraph, LayoutVertexLayers layoutVertexLayers)
-        //{
-        //    foreach (var layoutEdge in layoutGraph.Edges)
-        //        if (layoutEdge.Source.LayerIndex - layoutEdge.Target.LayerIndex > 1)
-        //            ReplaceEdgeWithDummyNodes(layoutEdge, layoutVertexLayers);
-        //}
+        private static void InsertVirtualNodes(LayoutGraph layoutGraph, RankLayers rankLayers)
+        {
+            foreach (var layoutEdge in layoutGraph.Edges.ToList())
+            { 
+                // TODO: adjust for top-down layout
+                if (layoutEdge.Source.Rank - layoutEdge.Target.Rank > 1)
+                {
+                    ReplaceEdgeWithDummyNodes(layoutEdge, layoutGraph, rankLayers);
+                }
+            }
+        }
 
-        //private void ReplaceEdgeWithDummyNodes(LayoutEdge layoutEdge, LayoutVertexLayers layoutVertexLayers)
-        //{
-        //    for (var i = layoutEdge.Target.LayerIndex + 1; i < layoutEdge.Source.LayerIndex - 1; i++)
-        //    {
-        //        var dummyNode = _layoutGraph.AddDummyNode()
-        //        layoutVertexLayers[i].AddItem(dummyNode);
-        //        _layoutGraph.a
-        //    }
-        //}
+        private static void ReplaceEdgeWithDummyNodes(LayoutEdge layoutEdge, LayoutGraph layoutGraph,  RankLayers rankLayers)
+        {
+            var dummyNodes = new List<LayoutVertex>();
+
+            // TODO: adjust for top-down layout
+            for (var i = layoutEdge.Source.Rank - 1; i > layoutEdge.Target.Rank + 1; i--)
+            {
+                var dummyNode = LayoutVertex.CreateDummy();
+                rankLayers[i].AddItem(dummyNode);
+                dummyNodes.Add(dummyNode);
+            }
+
+            layoutGraph.BreakEdgeWithInterimVertices(layoutEdge, dummyNodes);
+        }
     }
 }

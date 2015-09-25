@@ -4,25 +4,25 @@ using System.Collections.Generic;
 namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
 {
     /// <summary>
-    /// An ordered list of layers.
+    /// An ordered list of rank layers.
     /// </summary>
-    internal class LayoutVertexLayers : IEnumerable<LayoutVertexLayer>
+    internal class RankLayers : IEnumerable<RankLayer>
     {
-        private readonly List<LayoutVertexLayer> _layers;
+        private readonly List<RankLayer> _layers;
 
-        internal LayoutVertexLayers(IEnumerable<IEnumerable<LayoutVertex>> layoutVerticeClusters)
+        internal RankLayers(IEnumerable<IEnumerable<LayoutVertex>> layoutVerticeClusters)
         {
-            _layers = new List<LayoutVertexLayer>();
+            _layers = new List<RankLayer>();
 
             foreach (var layoutVerticeCluster in layoutVerticeClusters)
                 Add(layoutVerticeCluster);
         }
 
         public int Count => _layers.Count;
-        public LayoutVertexLayer this[int index] => _layers[index];
-        public LayoutVertexLayer this[LayoutVertex item] => _layers[item.LayerIndex];
+        public RankLayer this[int index] => _layers[index];
+        public RankLayer this[LayoutVertex item] => _layers[item.Rank];
 
-        public IEnumerator<LayoutVertexLayer> GetEnumerator()
+        public IEnumerator<RankLayer> GetEnumerator()
         {
             return _layers.GetEnumerator();
         }
@@ -34,13 +34,13 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
 
         private void Add(IEnumerable<LayoutVertex> newLayerItems)
         {
-            var newLayer = new LayoutVertexLayer(newLayerItems, _layers.Count);
+            var newLayer = new RankLayer(newLayerItems, _layers.Count);
             _layers.Add(newLayer);
         }
 
         public void MoveItem(LayoutVertex item, int newLayerIndex)
         {
-            _layers[item.LayerIndex].RemoveItem(item);
+            _layers[item.Rank].RemoveItem(item);
             _layers[newLayerIndex].AddItem(item);
         }
     }

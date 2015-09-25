@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
 
         public override string ToString()
         {
-            return $"{OriginalEdge}{IsReversedAsString}";
+            return $"{Source}->{Target} Original: {OriginalEdge}{IsReversedAsString}";
         }
     }
 }

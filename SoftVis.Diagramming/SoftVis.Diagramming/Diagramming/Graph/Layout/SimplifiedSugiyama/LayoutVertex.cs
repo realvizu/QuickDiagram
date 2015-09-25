@@ -3,18 +3,29 @@
     internal class LayoutVertex
     {
         private IExtent OriginalVertex { get; }
-        public int LayerIndex { get; set; }
+        public int Rank { get; set; }
 
-        public LayoutVertex(IExtent originalVertex)
+        private LayoutVertex(IExtent originalVertex)
         {
             OriginalVertex = originalVertex;
         }
 
+        public static LayoutVertex Create(IExtent originalVertex)
+        {
+            return new LayoutVertex(originalVertex);
+        }
+
+        public static LayoutVertex CreateDummy()
+        {
+            return new LayoutVertex(null);
+        }
+
+        public bool IsDummy => OriginalVertex == null;
         public double Height => OriginalVertex?.Height ?? 0d;
 
         public override string ToString()
         {
-            return OriginalVertex.ToString();
+            return OriginalVertex?.ToString() ?? "(dummy)";
         }
     }
 }

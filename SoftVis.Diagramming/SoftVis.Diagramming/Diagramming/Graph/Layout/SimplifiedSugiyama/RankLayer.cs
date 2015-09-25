@@ -5,10 +5,11 @@ using System.Linq;
 namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
 {
     /// <summary>
-    /// A layer has an ordered list of LayoutVertices and some other properties like height and position.
-    /// Each item is aware of which layer it belongs to (has a LayerIndex property).
+    /// A rank layer is an ordered list of LayoutVertices with the same rank.
+    /// Each item is aware of which layer it belongs to (has a Rank property).
+    /// The order of the items determines their horizontal order in the layout.
     /// </summary>
-    internal class LayoutVertexLayer : IEnumerable<LayoutVertex>
+    internal class RankLayer : IEnumerable<LayoutVertex>
     {
         private readonly List<LayoutVertex> _items;
         private readonly int _layerIndex;
@@ -19,11 +20,11 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
         public double Height { get; private set; }
         public double Position { get; private set; }
 
-        internal LayoutVertexLayer(IEnumerable<LayoutVertex> items, int layerIndex)
+        internal RankLayer(IEnumerable<LayoutVertex> items, int layerIndex)
         {
             _layerIndex = layerIndex;
             _items = items as List<LayoutVertex> ?? items.ToList();
-            _items.ForEach(i => i.LayerIndex = layerIndex);
+            _items.ForEach(i => i.Rank = layerIndex);
         }
 
         public IEnumerator<LayoutVertex> GetEnumerator()
@@ -39,7 +40,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
         public void AddItem(LayoutVertex item)
         {
             _items.Add(item);
-            item.LayerIndex = _layerIndex;
+            item.Rank = _layerIndex;
         }
 
         public void RemoveItem(LayoutVertex item)
