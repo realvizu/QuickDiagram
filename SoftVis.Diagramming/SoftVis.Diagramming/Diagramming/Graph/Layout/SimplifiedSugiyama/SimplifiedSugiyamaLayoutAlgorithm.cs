@@ -38,8 +38,8 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             var isolatedVertices = layoutGraph.RemoveIsolatedVertices();
             var rankLayers = CreateLayers(layoutGraph);
             InsertVirtualNodes(layoutGraph, rankLayers);
-
-            // TODO lay out isolated vertices
+            //MinimizeCrossings();
+            VertexCenters = AssignCoordinates(layoutGraph, rankLayers, isolatedVertices, _layoutParameters);
         }
 
         private static RankLayers CreateLayers(LayoutGraph layoutGraph)
@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
         private static void InsertVirtualNodes(LayoutGraph layoutGraph, RankLayers rankLayers)
         {
             foreach (var layoutEdge in layoutGraph.Edges.ToList())
-            { 
+            {
                 // TODO: adjust for top-down layout
                 if (layoutEdge.Source.Rank - layoutEdge.Target.Rank > 1)
                 {
@@ -63,7 +63,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             }
         }
 
-        private static void ReplaceEdgeWithDummyNodes(LayoutEdge layoutEdge, LayoutGraph layoutGraph,  RankLayers rankLayers)
+        private static void ReplaceEdgeWithDummyNodes(LayoutEdge layoutEdge, LayoutGraph layoutGraph, RankLayers rankLayers)
         {
             var dummyNodes = new List<LayoutVertex>();
 
@@ -76,6 +76,24 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             }
 
             layoutGraph.BreakEdgeWithInterimVertices(layoutEdge, dummyNodes);
+        }
+
+        private static IDictionary<TVertex, DiagramPoint> AssignCoordinates(LayoutGraph layoutGraph, RankLayers rankLayers,
+            List<LayoutVertex> isolatedVertices, SimplifiedSugiyamaLayoutParameters layoutParameters)
+        {
+            var horizontalGap = layoutParameters.HorizontalGap;
+            var verticalGap = layoutParameters.VerticalGap;
+
+            rankLayers.CalculatePositions(horizontalGap, verticalGap);
+
+            var vertexCenters = new Dictionary<TVertex, DiagramPoint>();
+
+            foreach (var layoutVertex in layoutGraph.Vertices.Where(i => !i.IsDummy))
+            {
+                vertexCenters.Add((TVertex)layoutVertex.OriginalVertex, layoutVertex.Center);
+            }
+
+            return vertexCenters;
         }
     }
 }

@@ -2,8 +2,9 @@
 {
     internal class LayoutVertex
     {
-        private IExtent OriginalVertex { get; }
+        public IExtent OriginalVertex { get; }
         public int Rank { get; set; }
+        public DiagramPoint Center { get; set; }
 
         private LayoutVertex(IExtent originalVertex)
         {

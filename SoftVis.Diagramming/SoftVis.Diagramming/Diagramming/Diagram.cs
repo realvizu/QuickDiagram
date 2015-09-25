@@ -153,7 +153,11 @@ namespace Codartis.SoftVis.Diagramming
             algorithm.Compute();
 
             ApplyVertexCenters(algorithm.VertexCenters);
-            ApplyConnectorRoutes(algorithm.EdgeRoutes);
+
+            var routingAlgorithm = new StraightEdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(_graph);
+            routingAlgorithm.Compute();
+
+            ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
         }
 
         private void ApplyEfficientSugiyamaLayoutAndRouting(EfficientSugiyamaLayoutParameters layoutParameters)
@@ -169,8 +173,12 @@ namespace Codartis.SoftVis.Diagramming
         {
             foreach (var node in Nodes)
             {
-                node.Center = vertexCenters[node];
-                OnShapeModified(node);
+                DiagramPoint center;
+                if (vertexCenters.TryGetValue(node, out center))
+                {
+                    node.Center = center;
+                    OnShapeModified(node);
+                }
             }
         }
 
@@ -178,8 +186,12 @@ namespace Codartis.SoftVis.Diagramming
         {
             foreach (var connector in Connectors)
             {
-                connector.RoutePoints = edgeRoutes[connector];
-                OnShapeModified(connector);
+                DiagramPoint[] route;
+                if (edgeRoutes.TryGetValue(connector, out route))
+                {
+                    connector.RoutePoints = edgeRoutes[connector];
+                    OnShapeModified(connector);
+                }
             }
         }
 

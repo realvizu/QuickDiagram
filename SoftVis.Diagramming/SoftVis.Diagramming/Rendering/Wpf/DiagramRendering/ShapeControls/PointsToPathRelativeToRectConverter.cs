@@ -20,11 +20,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || 
+            if (value == null ||
                 value.Length != 2 ||
                 !(value[0] is Point[]) ||
                 !(value[1] is Rect))
-                throw new ArgumentException($"{typeof(PointsToPathRelativeToRectConverter)} expects these parameters: Point[], Rect.");
+                return null;
+                //throw new ArgumentException($"{typeof(PointsToPathRelativeToRectConverter)} expects these parameters: Point[], Rect.");
 
             var routePoints = (Point[])value[0];
             var boundingRect = (Rect)value[1];

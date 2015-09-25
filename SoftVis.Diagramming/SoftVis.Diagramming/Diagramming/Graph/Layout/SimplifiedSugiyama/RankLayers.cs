@@ -32,16 +32,22 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             return GetEnumerator();
         }
 
+        public void CalculatePositions(double horizontalGap, double verticalGap)
+        {
+            double? previousLayerPosition = null;
+            foreach (var layer in _layers)
+            {
+                layer.CalculateHeight();
+                layer.CalculateVerticalPosition(previousLayerPosition, verticalGap);
+                layer.CalculateVertexPositions(horizontalGap);
+                previousLayerPosition = layer.CenterY;
+            }
+        }
+
         private void Add(IEnumerable<LayoutVertex> newLayerItems)
         {
             var newLayer = new RankLayer(newLayerItems, _layers.Count);
             _layers.Add(newLayer);
-        }
-
-        public void MoveItem(LayoutVertex item, int newLayerIndex)
-        {
-            _layers[item.Rank].RemoveItem(item);
-            _layers[newLayerIndex].AddItem(item);
         }
     }
 }

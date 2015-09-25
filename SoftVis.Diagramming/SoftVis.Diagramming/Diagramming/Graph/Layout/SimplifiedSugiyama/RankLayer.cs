@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
         public LayoutVertex this[int i] => _items[i];
 
         public double Height { get; private set; }
-        public double Position { get; private set; }
+        public double CenterY { get; private set; }
 
         internal RankLayer(IEnumerable<LayoutVertex> items, int layerIndex)
         {
@@ -48,19 +48,27 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama
             _items.Remove(item);
         }
 
-        public void Clear()
-        {
-            _items.Clear();
-        }
-
-        public void UpdateHight()
+        public void CalculateHeight()
         {
             Height = _items.Max(i => i.Height);
         }
 
-        public void UpdatePosition(double? previousLayerPosition, double layerDistance)
+        public void CalculateVerticalPosition(double? previousLayerPosition, double verticalGap)
         {
-            Position = previousLayerPosition + Height + layerDistance ?? 0;
+            CenterY = previousLayerPosition + Height + verticalGap ?? 0;
+        }
+
+        public void CalculateVertexPositions(double horizontalGap)
+        {
+            var x = 0d;
+            foreach (var layoutVertex in _items)
+            {
+                var vertexWidth = layoutVertex.OriginalVertex?.Width ?? 0;
+
+                layoutVertex.Center = new DiagramPoint( x + vertexWidth / 2, CenterY);
+
+                x += vertexWidth + horizontalGap;
+            }
         }
     }
 }
