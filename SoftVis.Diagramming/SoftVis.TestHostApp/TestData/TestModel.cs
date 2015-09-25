@@ -23,7 +23,6 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             if (_entities.Any(i => i.Name == name))
                 return this;
-            //throw new InvalidOperationException($"Entity with name {name} already exists.");
 
             IModelEntity newEntity;
 

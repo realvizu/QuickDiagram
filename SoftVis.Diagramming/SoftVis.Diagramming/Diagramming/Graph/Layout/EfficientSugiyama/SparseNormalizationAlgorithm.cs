@@ -10,12 +10,12 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
     internal sealed class SparseNormalizationAlgorithm : IAlgorithm
     {
         private readonly SugiGraph _sugiGraph;
-        private readonly SugiyamaLayoutParameters _layoutParameters;
+        private readonly EfficientSugiyamaLayoutParameters _layoutParameters;
 
         public Layers Layers { get; private set; }
         public EdgeToDummyVerticesMap EdgeToDummyVerticesMap { get; private set; }
 
-        internal SparseNormalizationAlgorithm(SugiGraph sugiGraph, SugiyamaLayoutParameters layoutParameters)
+        internal SparseNormalizationAlgorithm(SugiGraph sugiGraph, EfficientSugiyamaLayoutParameters layoutParameters)
         {
             _sugiGraph = sugiGraph;
             _layoutParameters = layoutParameters;

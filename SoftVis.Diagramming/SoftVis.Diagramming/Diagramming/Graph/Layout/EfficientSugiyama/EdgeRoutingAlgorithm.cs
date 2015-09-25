@@ -9,14 +9,14 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
     {
         private readonly IEnumerable<IEdge<IExtent>> _originalEdges;
         private readonly SugiGraph _sugiGraph;
-        private readonly SugiyamaLayoutParameters _layoutParameters;
+        private readonly EfficientSugiyamaLayoutParameters _layoutParameters;
         private readonly Layers _layers;
         private readonly EdgeToDummyVerticesMap _edgeToDummyVerticesMap;
 
         public IDictionary<IEdge<IExtent>, DiagramPoint[]> EdgeRoutes { get; private set; }
 
         public EdgeRoutingAlgorithm(IEnumerable<IEdge<IExtent>> originalEdges, SugiGraph sugiGraph, 
-            SugiyamaLayoutParameters layoutParameters, Layers layers, EdgeToDummyVerticesMap edgeToDummyVerticesMap)
+            EfficientSugiyamaLayoutParameters layoutParameters, Layers layers, EdgeToDummyVerticesMap edgeToDummyVerticesMap)
         {
             _originalEdges = originalEdges;
             _sugiGraph = sugiGraph;

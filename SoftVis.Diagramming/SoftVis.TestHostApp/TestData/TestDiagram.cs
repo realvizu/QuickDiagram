@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming.Graph.Layout;
 using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 
@@ -26,16 +27,37 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         public void Layout()
         {
-            var sugiyamaLayoutParameters = new SugiyamaLayoutParameters
+            LayoutSimplifiedSugiyama();
+            //LayoutEfficientSugiyama();
+            //LayoutTree();
+        }
+
+        private void LayoutSimplifiedSugiyama()
+        {
+            var sugiyamaLayoutParameters = new SimplifiedSugiyamaLayoutParameters()
+            {
+                VerticalGap = 40,
+                HorizontalGap = 10,
+                EdgeRoutingType = EdgeRoutingType.Straight
+            };
+            Layout(LayoutType.SimplifiedSugiyama, sugiyamaLayoutParameters);
+        }
+
+        private void LayoutEfficientSugiyama()
+        {
+            var sugiyamaLayoutParameters = new EfficientSugiyamaLayoutParameters
             {
                 LayoutDirection = LayoutDirection.SourcesAtTop,
                 MinimizeEdgeLength = false,
                 EdgeRoutingType = EdgeRoutingType.Straight,
                 LayerDistance = 40,
             };
-            Layout(LayoutType.Sugiyama, sugiyamaLayoutParameters);
+            Layout(LayoutType.EfficientSugiyama, sugiyamaLayoutParameters);
+        }
 
-            //Layout(LayoutType.Tree);
+        private void LayoutTree()
+        {
+            Layout(LayoutType.Tree);
         }
     }
 }

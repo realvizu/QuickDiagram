@@ -375,7 +375,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
                     }
                 }
 
-                int maxPermutations = SugiyamaLayoutParameters.MaxPermutations;
+                int maxPermutations = EfficientSugiyamaLayoutParameters.MaxPermutations;
                 do
                 {
                     maxPermutations--;

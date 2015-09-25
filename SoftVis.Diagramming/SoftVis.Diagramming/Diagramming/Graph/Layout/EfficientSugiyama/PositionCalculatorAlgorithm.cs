@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
     internal class PositionCalculatorAlgorithm : IAlgorithm
     {
         private readonly SugiGraph _sugiGraph;
-        private readonly SugiyamaLayoutParameters _layoutParameters;
+        private readonly EfficientSugiyamaLayoutParameters _layoutParameters;
         private readonly Layers _layers;
         private readonly IMutableBidirectionalGraph<Data, IEdge<Data>> _sparseCompactionGraph;
         private readonly List<SugiVertex> _isolatedVertices;
@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
         public Dictionary<IExtent, DiagramPoint> VertexCenters { get; private set; }
 
         internal PositionCalculatorAlgorithm(SugiGraph sugiGraph,
-            SugiyamaLayoutParameters layoutParameters,
+            EfficientSugiyamaLayoutParameters layoutParameters,
             Layers layers,
             IMutableBidirectionalGraph<Data, IEdge<Data>> sparseCompactionGraph,
             IList<Edge<Data>>[] sparseCompactionByLayerBackup,

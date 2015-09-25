@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout
 
         internal ClusteredTopologicalSortAlgorithm(IVertexAndEdgeListGraph<TVertex, TEdge> graph, TopologicalSortOrder sortOrder)
         {
-            _unprocessedGraph = graph.CopyToBidirectionalGraph();
+            _unprocessedGraph = graph.CopyTo<TVertex, TEdge, BidirectionalGraph<TVertex, TEdge>>();
             _sortOrder = sortOrder;
         }
 

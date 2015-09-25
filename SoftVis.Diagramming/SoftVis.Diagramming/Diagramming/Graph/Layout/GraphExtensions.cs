@@ -39,12 +39,14 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout
             return edge.Source.Equals(thisVertex) ? edge.Target : edge.Source;
         }
 
-        public static BidirectionalGraph<TVertex, TEdge> CopyToBidirectionalGraph<TVertex, TEdge>(
+        public static TGraphImplementation CopyTo<TVertex, TEdge, TGraphImplementation>(
             this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
+            where TGraphImplementation : IMutableVertexSet<TVertex>, IMutableEdgeListGraph<TVertex, TEdge>, new()
         {
-            var newGraph = new BidirectionalGraph<TVertex, TEdge>();
-            newGraph.AddVerticesAndEdgeRange(graph.Edges);
+            var newGraph = new TGraphImplementation();
+            newGraph.AddVertexRange(graph.Vertices);
+            newGraph.AddEdgeRange(graph.Edges);
             return newGraph;
         }
     }

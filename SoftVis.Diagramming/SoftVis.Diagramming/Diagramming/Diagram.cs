@@ -5,6 +5,7 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Diagramming.Graph.Layout;
 using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -109,8 +110,11 @@ namespace Codartis.SoftVis.Diagramming
                 case (LayoutType.Tree):
                     ApplySimpleTreeLayoutAndStraightEdgeRouting();
                     break;
-                case (LayoutType.Sugiyama):
-                    ApplySugiyamaLayoutAndRouting(layoutParameters);
+                case (LayoutType.SimplifiedSugiyama):
+                    ApplySimplifiedSugiyamaLayoutAndRouting((SimplifiedSugiyamaLayoutParameters)layoutParameters);
+                    break;
+                case (LayoutType.EfficientSugiyama):
+                    ApplyEfficientSugiyamaLayoutAndRouting((EfficientSugiyamaLayoutParameters)layoutParameters);
                     break;
                 default:
                     throw new ArgumentException($"Unexpected layout type: {layoutType}");
@@ -143,9 +147,18 @@ namespace Codartis.SoftVis.Diagramming
             ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
         }
 
-        private void ApplySugiyamaLayoutAndRouting(ILayoutParameters layoutParameters)
+        private void ApplySimplifiedSugiyamaLayoutAndRouting(SimplifiedSugiyamaLayoutParameters layoutParameters)
         {
-            var algorithm = new SugiyamaLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph, (SugiyamaLayoutParameters)layoutParameters);
+            var algorithm = new SimplifiedSugiyamaLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph, layoutParameters);
+            algorithm.Compute();
+
+            ApplyVertexCenters(algorithm.VertexCenters);
+            ApplyConnectorRoutes(algorithm.EdgeRoutes);
+        }
+
+        private void ApplyEfficientSugiyamaLayoutAndRouting(EfficientSugiyamaLayoutParameters layoutParameters)
+        {
+            var algorithm = new EfficientSugiyamaLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph, layoutParameters);
             algorithm.Compute();
 
             ApplyVertexCenters(algorithm.VertexCenters);

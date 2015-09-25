@@ -3,6 +3,7 @@
     public enum LayoutType
     {
         Tree,
-        Sugiyama
+        SimplifiedSugiyama,
+        EfficientSugiyama,
     }
 }

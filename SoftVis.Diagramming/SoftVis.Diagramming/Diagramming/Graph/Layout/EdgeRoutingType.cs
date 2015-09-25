@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
+﻿namespace Codartis.SoftVis.Diagramming.Graph.Layout
 {
     public enum EdgeRoutingType
     {

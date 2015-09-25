@@ -10,17 +10,17 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
     /// </summary>
     /// <typeparam name="TVertex">The type of the graph's vertices.</typeparam>
     /// <typeparam name="TEdge">The type of the graph's edges.</typeparam>
-    internal class SugiyamaLayoutAlgorithm<TVertex, TEdge> : IVertexPositioningAlgorithm<TVertex>, IEdgeRoutingAlgorithm<TVertex, TEdge>
+    internal class EfficientSugiyamaLayoutAlgorithm<TVertex, TEdge> : IVertexPositioningAlgorithm<TVertex>, IEdgeRoutingAlgorithm<TVertex, TEdge>
         where TVertex : class, IExtent
         where TEdge : IEdge<TVertex>, IEdge<IExtent>
     {
         private readonly IBidirectionalGraph<TVertex, TEdge> _graph;
-        private readonly SugiyamaLayoutParameters _layoutParameters;
+        private readonly EfficientSugiyamaLayoutParameters _layoutParameters;
 
         public IDictionary<TVertex, DiagramPoint> VertexCenters { get; private set; }
         public IDictionary<TEdge, DiagramPoint[]> EdgeRoutes { get; private set; }
 
-        internal SugiyamaLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> graph, SugiyamaLayoutParameters layoutParameters)
+        internal EfficientSugiyamaLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> graph, EfficientSugiyamaLayoutParameters layoutParameters)
         {
             _graph = graph;
             _layoutParameters = layoutParameters;

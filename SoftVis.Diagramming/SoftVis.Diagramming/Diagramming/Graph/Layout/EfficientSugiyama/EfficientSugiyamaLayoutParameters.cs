@@ -1,6 +1,6 @@
 ﻿namespace Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama
 {
-	public class SugiyamaLayoutParameters : ILayoutParameters
+	public class EfficientSugiyamaLayoutParameters : ILayoutParameters
 	{
         public LayoutDirection LayoutDirection = LayoutDirection.SourcesAtTop;
 	    public double LayerDistance = 30.0;
