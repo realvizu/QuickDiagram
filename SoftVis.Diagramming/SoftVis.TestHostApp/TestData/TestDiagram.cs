@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming.Graph.Layout;
-using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
-using Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.EdgeRouting;
+using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.EfficientSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 
@@ -36,9 +37,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             var sugiyamaLayoutParameters = new SimplifiedSugiyamaLayoutParameters()
             {
+                EdgeRoutingType = EdgeRoutingType.Straight,
                 VerticalGap = 40,
                 HorizontalGap = 10,
-                EdgeRoutingType = EdgeRoutingType.Straight
             };
             Layout(LayoutType.SimplifiedSugiyama, sugiyamaLayoutParameters);
         }

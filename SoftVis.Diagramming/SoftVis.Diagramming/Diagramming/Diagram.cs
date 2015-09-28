@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Diagramming.Graph.Layout;
-using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
-using Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.EdgeRouting;
+using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement;
+using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.EfficientSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -21,7 +23,7 @@ namespace Codartis.SoftVis.Diagramming
     public abstract class Diagram
     {
         protected static readonly DiagramPoint DefaultNodePosition = DiagramPoint.Zero;
-        protected static readonly DiagramSize DefaultNodeSize = new DiagramSize(100,38);
+        protected static readonly DiagramSize DefaultNodeSize = new DiagramSize(100, 38);
 
         private readonly DiagramGraph _graph = new DiagramGraph();
 
@@ -111,7 +113,8 @@ namespace Codartis.SoftVis.Diagramming
                     ApplySimpleTreeLayoutAndStraightEdgeRouting();
                     break;
                 case (LayoutType.SimplifiedSugiyama):
-                    ApplySimplifiedSugiyamaLayoutAndRouting((SimplifiedSugiyamaLayoutParameters)layoutParameters);
+                    var edgeRoutingSpecification = ApplySimplifiedSugiyamaLayout((SimplifiedSugiyamaLayoutParameters)layoutParameters);
+                    ApplyEdgeRouting(edgeRoutingSpecification);
                     break;
                 case (LayoutType.EfficientSugiyama):
                     ApplyEfficientSugiyamaLayoutAndRouting((EfficientSugiyamaLayoutParameters)layoutParameters);
@@ -147,14 +150,20 @@ namespace Codartis.SoftVis.Diagramming
             ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
         }
 
-        private void ApplySimplifiedSugiyamaLayoutAndRouting(SimplifiedSugiyamaLayoutParameters layoutParameters)
+        private EdgeRoutingSpecification ApplySimplifiedSugiyamaLayout(SimplifiedSugiyamaLayoutParameters layoutParameters)
         {
             var algorithm = new SimplifiedSugiyamaLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph, layoutParameters);
             algorithm.Compute();
 
             ApplyVertexCenters(algorithm.VertexCenters);
 
-            var routingAlgorithm = new StraightEdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(_graph);
+            return new EdgeRoutingSpecification(layoutParameters.EdgeRoutingType, algorithm.InterimRoutePointsOfEdges);
+        }
+
+        private void ApplyEdgeRouting(EdgeRoutingSpecification specification)
+        {
+            var routingAlgorithm = new EdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(
+                _graph.Edges, specification.EdgeRoutingType, specification.InterimRoutePointsOfEdges);
             routingAlgorithm.Compute();
 
             ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);

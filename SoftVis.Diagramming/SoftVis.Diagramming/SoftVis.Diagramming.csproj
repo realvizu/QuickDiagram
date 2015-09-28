@@ -73,53 +73,60 @@
     <Compile Include="Diagramming\DiagramRect.cs" />
     <Compile Include="Diagramming\DiagramRectExtensions.cs" />
     <Compile Include="Diagramming\DiagramSize.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\EdgeToDummyVerticesMap.cs" />
+    <Compile Include="Diagramming\Graph\EdgeDirection.cs" />
+    <Compile Include="Diagramming\Graph\Layout\EdgeRouting\EdgeRoutingSpecification.cs" />
+    <Compile Include="Diagramming\Graph\Layout\LayoutParametersBase.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\EdgeToDummyVerticesMap.cs" />
     <Compile Include="Diagramming\Graph\IAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\EdgeRoutingAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Layer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\EdgeRoutingAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\Layer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\IEdgeRoutingSupportAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\Layout\IEdgeRoutingAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\Layout\ILayoutParameters.cs" />
-    <Compile Include="Diagramming\Graph\Layout\IVertexPositioningAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\Layout\LayoutType.cs" />
     <Compile Include="Diagramming\Graph\IExtent.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\AlternatingLayer.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Data.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\EdgeTypes.cs" />
-    <Compile Include="Diagramming\Graph\Layout\GraphExtensions.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Layers.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\LayoutDirection.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\SparseNormalizationAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\CrossingMinimizationAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\IData.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\ISegmentContainer.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Segment.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\SegmentContainer.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\SugiEdge.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\SugiGraph.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\SugiVertex.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\EfficientSugiyamaLayoutAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\PositionCalculatorAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\EfficientSugiyamaLayoutParameters.cs" />
-    <Compile Include="Diagramming\Graph\Layout\ClusteredTopologicalSortAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\Pair.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\AlternatingLayer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\Data.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\EdgeTypes.cs" />
+    <Compile Include="Diagramming\Graph\GraphExtensions.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\Layers.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\LayoutDirection.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\SparseNormalizationAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\CrossingMinimizationAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\IData.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\ISegmentContainer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\Segment.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\SegmentContainer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\SugiEdge.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\SugiGraph.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\SugiVertex.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\EfficientSugiyamaLayoutAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\PositionCalculatorAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\EfficientSugiyamaLayoutParameters.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\ClusteredTopologicalSortAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\Pair.cs" />
     <Compile Include="Diagramming\Graph\Layout\EdgeRoutingType.cs" />
-    <Compile Include="Diagramming\Graph\Layout\HashSetExtensions.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\RankLayer.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\RankLayers.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutEdge.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutGraph.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\LayoutVertex.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\SimplifiedSugiyamaLayoutAlgorithm.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimplifiedSugiyama\SimplifiedSugiyamaLayoutParameters.cs" />
-    <Compile Include="Diagramming\Graph\Layout\TopologicalSortOrder.cs" />
-    <Compile Include="Diagramming\Graph\Layout\EfficientSugiyama\SugiVertexType.cs" />
-    <Compile Include="Diagramming\Graph\Layout\SimpleTreeLayoutAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\HashSetExtensions.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\LayoutVertexExtensions.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\RankLayer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\RankLayers.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\LayoutEdge.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\LayoutGraph.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\LayoutVertex.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\SimplifiedSugiyamaLayoutAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\SimplifiedSugiyamaLayoutParameters.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimplifiedSugiyama\Span.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\TopologicalSortOrder.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\EfficientSugiyama\SugiVertexType.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\SimpleTreeLayoutAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\DiagramConnector.cs" />
     <Compile Include="Diagramming\Graph\DiagramNode.cs" />
     <Compile Include="Diagramming\Graph\DiagramShape.cs" />
-    <Compile Include="Diagramming\Graph\Layout\StraightEdgeRoutingAlgorithm.cs" />
+    <Compile Include="Diagramming\Graph\Layout\EdgeRouting\StraightEdgeRoutingAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\IPositioned.cs" />
     <Compile Include="Diagramming\Graph\IPositionedExtent.cs" />
+    <Compile Include="Diagramming\Graph\Layout\EdgeRouting\EdgeRoutingAlgorithm.cs" />
     <Compile Include="Modeling\IModelItem.cs" />
     <Compile Include="Modeling\IModelEntity.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
@@ -231,9 +238,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Diagramming\Graph\Routing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

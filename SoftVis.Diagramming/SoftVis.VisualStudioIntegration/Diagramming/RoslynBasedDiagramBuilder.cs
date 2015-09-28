@@ -1,7 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph.Layout;
-using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
-using Codartis.SoftVis.Diagramming.Graph.Layout.SimplifiedSugiyama;
+using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 

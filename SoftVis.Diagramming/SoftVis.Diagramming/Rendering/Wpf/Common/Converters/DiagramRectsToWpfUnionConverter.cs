@@ -12,7 +12,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return values.OfType<DiagramRect>().Select(i => i.ToWpf()).Union();
+            var rectUnion = values.OfType<DiagramRect>().Select(i => i.ToWpf()).Union();
+
+            foreach (var wpfPoint in values.OfType<DiagramPoint[]>().SelectMany(i => i.Select(j => j.ToWpf())))
+                rectUnion.Union(wpfPoint);
+
+            return rectUnion;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
