@@ -9,6 +9,7 @@ using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement;
 using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.EfficientSugiyama;
 using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
+using QuickGraph.Algorithms;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -66,12 +67,34 @@ namespace Codartis.SoftVis.Diagramming
         /// <param name="modelRelationship">A relationship model item.</param>
         public void ShowConnector(IModelRelationship modelRelationship)
         {
-            if (ConnectorExists(modelRelationship))
-                return;
+            var connector = FindConnector(modelRelationship);
+            if (connector == null)
+            {
+                connector = CreateDiagramConnector(modelRelationship);
+                _graph.AddEdge(connector);
+                OnShapeAdded(connector);
+            }
 
-            var connector = CreateDiagramConnector(modelRelationship);
-            _graph.AddEdge(connector);
-            OnShapeAdded(connector);
+            HideRedundantDirectEdges();
+        }
+
+        private void HideRedundantDirectEdges()
+        {
+            // TODO: should only hide same-type connectors!!!
+
+            foreach (var connector in Connectors.ToList())
+            {
+                var paths = _graph.RankedShortestPathHoffmanPavley(i => 1, connector.Source, connector.Target, 2).ToList();
+                if (paths.Count > 1)
+                {
+                    foreach (var path in paths)
+                    {
+                        var pathArray = path.ToArray();
+                        if (pathArray.Length == 1)
+                            HideConnector(pathArray[0].ModelRelationship);
+                    }
+                }
+            }
         }
 
         /// <summary>

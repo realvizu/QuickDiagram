@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Graph.Layout.EdgeRouting;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSugiyama
@@ -128,28 +126,28 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
 
         private static void AdjustHorizontalPositions(LayoutGraph layoutGraph, RankLayer upperLayer, RankLayer lowerLayer)
         {
-            DumpLayer(upperLayer, "before");
+            //DumpLayer(upperLayer, "before");
 
             foreach (var upperVertex in upperLayer)
             {
-                Debug.WriteLine($"{((DiagramNode)upperVertex.OriginalVertex)?.Name}");
+                //Debug.WriteLine($"{((DiagramNode)upperVertex.OriginalVertex)?.Name}");
 
                 var lowerNeighbours = layoutGraph.GetInNeighbours(upperVertex).ToList();
-                Debug.WriteLine($"lowerNeighbours count = {lowerNeighbours.Count}");
+                //Debug.WriteLine($"lowerNeighbours count = {lowerNeighbours.Count}");
                 if (!lowerNeighbours.Any())
                     continue;
 
                 var lowerSpan = lowerNeighbours.GetHorizontalSpan();
-                Debug.WriteLine($"lowerSpan = {lowerSpan}");
+                //Debug.WriteLine($"lowerSpan = {lowerSpan}");
 
                 foreach (var lowerVertex in lowerNeighbours)
                 {
-                    Debug.WriteLine($"{((DiagramNode)lowerVertex.OriginalVertex)?.Name}");
+                    //Debug.WriteLine($"{((DiagramNode)lowerVertex.OriginalVertex)?.Name}");
 
                     var upperNeighbours = layoutGraph.GetOutNeighbours(lowerVertex).ToList();
-                    Debug.WriteLine($"upperNeighbours count = {upperNeighbours.Count}");
+                    //Debug.WriteLine($"upperNeighbours count = {upperNeighbours.Count}");
                     var upperSpan = upperNeighbours.GetHorizontalSpan();
-                    Debug.WriteLine($"upperSpan = {upperSpan}");
+                    //Debug.WriteLine($"upperSpan = {upperSpan}");
 
                     if (upperSpan.Center < lowerSpan.Center)
                         upperLayer.HorizontalTranslateAtLeastTo(upperVertex, lowerSpan.Center);
@@ -158,8 +156,8 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
                 }
             }
 
-            DumpLayer(upperLayer, "after");
-            Debug.WriteLine("---------------------------------");
+            //DumpLayer(upperLayer, "after");
+            //Debug.WriteLine("---------------------------------");
         }
 
         private static void DumpLayer(RankLayer adjustedLayer, string tag)

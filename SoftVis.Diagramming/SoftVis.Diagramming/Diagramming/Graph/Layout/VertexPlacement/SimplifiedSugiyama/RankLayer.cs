@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSugiyama
@@ -82,8 +80,6 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
 
         public void HorizontalTranslateAtLeastTo(LayoutVertex layoutVertex, double newHorizontalCenter)
         {
-            Debug.WriteLine($"{((DiagramNode)layoutVertex.OriginalVertex)?.Name} from {layoutVertex.Center.X} to {newHorizontalCenter}");
-
             if (layoutVertex.Center.X >= newHorizontalCenter)
                 return;
 
