@@ -73,7 +73,8 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
             var x = 0d;
             foreach (var layoutVertex in _items)
             {
-                layoutVertex.Center = new DiagramPoint(x + layoutVertex.Width / 2, CenterY);
+                layoutVertex.Center = new DiagramPoint(0, CenterY);
+                //layoutVertex.Center = new DiagramPoint(x + layoutVertex.Width / 2, CenterY);
                 x += layoutVertex.Width + HorizontalGap;
             }
         }
@@ -83,7 +84,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
             if (layoutVertex.Center.X >= newHorizontalCenter)
                 return;
 
-            layoutVertex.HorizontalTranslateTo(newHorizontalCenter);
+            layoutVertex.HorizontalTranslateCenterTo(newHorizontalCenter);
 
             var vertexIndexInLayer = _items.IndexOf(layoutVertex);
             if (vertexIndexInLayer < _items.Count - 1)

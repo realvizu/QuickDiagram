@@ -97,12 +97,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("Child3", baseName: "BaseClass")
                 .AddClass("Child1OfChild1WithLongName", baseName: "Child1")
                 
-                .AddClass("ForeverAlone")
-                .AddClass("ForeverAlone2")
+                //.AddClass("ForeverAlone")
+                //.AddClass("ForeverAlone2")
 
-                // Loop
-                .AddInterface("Loop")
-                .AddInterface("Loop", baseName: "Loop")
+                //// Loop
+                //.AddInterface("Loop")
+                //.AddInterface("Loop", baseName: "Loop")
 
                 // Small circle where edge reversing results a multi-edge
                 .AddInterface("SmallCircle1")

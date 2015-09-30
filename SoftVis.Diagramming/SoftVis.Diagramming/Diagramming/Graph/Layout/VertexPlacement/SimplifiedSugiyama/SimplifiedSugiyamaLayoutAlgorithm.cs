@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
             var rankLayers = CreateLayers(layoutGraph, _layoutParameters.HorizontalGap, _layoutParameters.VerticalGap);
             InsertVirtualNodes(layoutGraph, rankLayers);
             rankLayers = MinimizeCrossings(layoutGraph, rankLayers);
-            AssignCoordinates(layoutGraph, rankLayers, isolatedVertices);
+            AssignCoordinates(layoutGraph, rankLayers, isolatedVertices, _layoutParameters.SweepNumber);
 
             VertexCenters = GetVertexCenters(layoutGraph);
             InterimRoutePointsOfEdges = GetInterimRoutePointsOfEdges(layoutGraph);
@@ -112,42 +112,164 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
         }
 
         private static void AssignCoordinates(LayoutGraph layoutGraph, RankLayers rankLayers,
-            List<LayoutVertex> isolatedVertices)
+            List<LayoutVertex> isolatedVertices, int sweepNumber)
         {
             rankLayers.CalculatePositions();
-            BalancePositions(layoutGraph, rankLayers);
+            //rankLayers.CalculatePositions();
+            RemoveOverlapsInAllLayers(layoutGraph, rankLayers);
         }
 
-        private static void BalancePositions(LayoutGraph layoutGraph, RankLayers rankLayers)
+        private static void RemoveOverlapsInAllLayers(LayoutGraph layoutGraph, RankLayers rankLayers)
         {
-            for (var i = 0; i < rankLayers.Count - 1; i++)
-                AdjustHorizontalPositions(layoutGraph, rankLayers[i], rankLayers[i + 1]);
+            foreach (var rankLayer in rankLayers)
+            {
+                foreach (var layoutVertex in rankLayer)
+                {
+                    RemoveOverlapsOfVertex(layoutVertex, rankLayer, layoutGraph);
+                }
+            }
+        }
+
+        private static void RemoveOverlapsOfVertex(LayoutVertex fixedVertex, RankLayer rankLayer, LayoutGraph layoutGraph)
+        {
+            foreach (var otherVertex in rankLayer)
+            {
+                if (otherVertex == fixedVertex)
+                    continue;
+
+                if (IsOverlap(fixedVertex, otherVertex, rankLayer.HorizontalGap))
+                    RemoveOverlap(fixedVertex, otherVertex, rankLayer, layoutGraph);
+            }
+        }
+
+        private static bool IsOverlap(LayoutVertex layoutVertex, LayoutVertex otherVertex, double margin)
+        {
+            return layoutVertex.Rect.WithMargin(margin / 2, 0).Intersect(otherVertex.Rect.WithMargin(margin / 2, 0)).Width > 0;
+        }
+
+        private static void RemoveOverlap(LayoutVertex fixedVertex, LayoutVertex movableVertex, RankLayer rankLayer, LayoutGraph layoutGraph)
+        {
+            var movementAmount = fixedVertex.Center.X >= movableVertex.Center.X
+                ? fixedVertex.Left - movableVertex.Right - rankLayer.HorizontalGap
+                : fixedVertex.Right - movableVertex.Left + rankLayer.HorizontalGap;
+
+            HorizontalMoveWithNeighboursBy(movableVertex, movementAmount, rankLayer, layoutGraph);
+        }
+
+        private static void HorizontalMoveWithNeighboursBy(LayoutVertex movableVertex, double movementAmount,
+            RankLayer rankLayer, LayoutGraph layoutGraph)
+        {
+            movableVertex.HorizontalTranslateCenterBy(movementAmount);
+            RemoveOverlapsOfVertex(movableVertex, rankLayer, layoutGraph);
+            //layoutGraph.GetOutNeighbours(movableVertex).ToList().ForEach(i => HorizontalMoveWithOutNeighboursBy(layoutGraph, i, movementAmount));
+            //layoutGraph.GetInNeighbours(movableVertex).ToList().ForEach(i => HorizontalMoveWithInNeighboursBy(layoutGraph, i, movementAmount));
+        }
+
+        private static void HorizontalMoveWithOutNeighboursBy(LayoutGraph layoutGraph, LayoutVertex movableVertex, double movementAmount)
+        {
+            movableVertex.HorizontalTranslateCenterBy(movementAmount);
+            layoutGraph.GetOutNeighbours(movableVertex).ToList().ForEach(i => HorizontalMoveWithOutNeighboursBy(layoutGraph, i, movementAmount));
+        }
+
+        private static void HorizontalMoveWithInNeighboursBy(LayoutGraph layoutGraph, LayoutVertex movableVertex, double movementAmount)
+        {
+            movableVertex.HorizontalTranslateCenterBy(movementAmount);
+            layoutGraph.GetInNeighbours(movableVertex).ToList().ForEach(i => HorizontalMoveWithInNeighboursBy(layoutGraph, i, movementAmount));
+        }
+
+        private static void BalancePositions3(LayoutGraph layoutGraph, RankLayers rankLayers)
+        {
+            foreach (var rankLayer in rankLayers)
+            {
+                foreach (var layoutVertex in rankLayer)
+                {
+                    LayOutSmallTree(layoutVertex, layoutGraph, rankLayers.HorizontalGap);
+                }
+            }
+        }
+
+        private static void LayOutSmallTree(LayoutVertex layoutVertex, LayoutGraph layoutGraph, double horizontalGap)
+        {
+            var neighbours = layoutGraph.GetInNeighbours(layoutVertex).ToList();
+            if (!neighbours.Any())
+                return;
+
+            var neighboursWidth = neighbours.GetWidth(horizontalGap);
+            var x = layoutVertex.Center.X - neighboursWidth / 2;
+
+            foreach (var neighbourVertex in neighbours)
+            {
+                x += neighbourVertex.Width / 2;
+                neighbourVertex.HorizontalTranslateCenterTo(x);
+                x += neighbourVertex.Width / 2 + horizontalGap;
+            }
+        }
+
+        private static void BalancePositions(LayoutGraph layoutGraph, RankLayers rankLayers, int sweepNumber)
+        {
+            var maxSweep = sweepNumber;
+            for (var sweepIndex = 0; sweepIndex < maxSweep; sweepIndex++)
+            {
+                if (sweepIndex % 2 == 0)
+                {
+                    for (var i = 0; i < rankLayers.Count - 1; i++)
+                        AdjustHorizontalPositions(layoutGraph, rankLayers[i], SweepDirection.Down);
+                }
+                else
+                {
+                    for (var i = rankLayers.Count - 1; i > 0; i--)
+                        AdjustHorizontalPositions(layoutGraph, rankLayers[i], SweepDirection.Up);
+                }
+            }
+        }
+
+        private static void AdjustHorizontalPositions(LayoutGraph layoutGraph, RankLayer rankLayer, SweepDirection sweepDirection)
+        {
+            foreach (var layoutVertex in rankLayer)
+            {
+                var edgeDirection = sweepDirection == SweepDirection.Down ? EdgeDirection.In : EdgeDirection.Out;
+                var neighbours = layoutGraph.GetNeighbours(layoutVertex, edgeDirection).ToList();
+                if (!neighbours.Any())
+                    continue;
+
+                var neighbourSpan = neighbours.GetHorizontalSpan();
+
+                foreach (var neighbourVertex in neighbours)
+                {
+                    var reverseEdgeDirection = sweepDirection == SweepDirection.Down ? EdgeDirection.Out : EdgeDirection.In;
+                    var siblings = layoutGraph.GetNeighbours(neighbourVertex, reverseEdgeDirection).ToList();
+                    var siblingSpan = siblings.GetHorizontalSpan();
+
+                    if (siblingSpan.Center < neighbourSpan.Center)
+                        rankLayer.HorizontalTranslateAtLeastTo(layoutVertex, neighbourSpan.Center);
+                }
+            }
+        }
+
+        private static void BalancePositions2(LayoutGraph layoutGraph, RankLayers rankLayers, int sweepNumber)
+        {
+            var maxSweep = sweepNumber;
+            for (var sweepIndex = 0; sweepIndex < maxSweep; sweepIndex++)
+            {
+                for (var i = 0; i < rankLayers.Count - 1; i++)
+                    AdjustHorizontalPositions(layoutGraph, rankLayers[i], rankLayers[i + 1]);
+            }
         }
 
         private static void AdjustHorizontalPositions(LayoutGraph layoutGraph, RankLayer upperLayer, RankLayer lowerLayer)
         {
-            //DumpLayer(upperLayer, "before");
-
             foreach (var upperVertex in upperLayer)
             {
-                //Debug.WriteLine($"{((DiagramNode)upperVertex.OriginalVertex)?.Name}");
-
                 var lowerNeighbours = layoutGraph.GetInNeighbours(upperVertex).ToList();
-                //Debug.WriteLine($"lowerNeighbours count = {lowerNeighbours.Count}");
                 if (!lowerNeighbours.Any())
                     continue;
 
                 var lowerSpan = lowerNeighbours.GetHorizontalSpan();
-                //Debug.WriteLine($"lowerSpan = {lowerSpan}");
 
                 foreach (var lowerVertex in lowerNeighbours)
                 {
-                    //Debug.WriteLine($"{((DiagramNode)lowerVertex.OriginalVertex)?.Name}");
-
                     var upperNeighbours = layoutGraph.GetOutNeighbours(lowerVertex).ToList();
-                    //Debug.WriteLine($"upperNeighbours count = {upperNeighbours.Count}");
                     var upperSpan = upperNeighbours.GetHorizontalSpan();
-                    //Debug.WriteLine($"upperSpan = {upperSpan}");
 
                     if (upperSpan.Center < lowerSpan.Center)
                         upperLayer.HorizontalTranslateAtLeastTo(upperVertex, lowerSpan.Center);
@@ -155,9 +277,6 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
                         lowerLayer.HorizontalTranslateAtLeastTo(lowerVertex, upperSpan.Center);
                 }
             }
-
-            //DumpLayer(upperLayer, "after");
-            //Debug.WriteLine("---------------------------------");
         }
 
         private static void DumpLayer(RankLayer adjustedLayer, string tag)
@@ -178,6 +297,12 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.SimplifiedSu
         private static IDictionary<TEdge, DiagramPoint[]> GetInterimRoutePointsOfEdges(LayoutGraph layoutGraph)
         {
             return layoutGraph.GetInterimRoutePointsOfEdges().ToDictionary(i => (TEdge)i.Key, i => i.Value);
+        }
+
+        private enum SweepDirection
+        {
+            Up,
+            Down
         }
     }
 }

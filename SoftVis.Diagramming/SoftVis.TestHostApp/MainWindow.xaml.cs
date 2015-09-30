@@ -27,7 +27,8 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            ((TestDiagram)DiagramViewerControl.Diagram).Layout();
+            ((TestDiagram)DiagramViewerControl.Diagram).Layout(int.Parse(SweepNumber.Text));
+            SweepNumber.Text = (int.Parse(SweepNumber.Text) + 1).ToString();
         }
     }
 }

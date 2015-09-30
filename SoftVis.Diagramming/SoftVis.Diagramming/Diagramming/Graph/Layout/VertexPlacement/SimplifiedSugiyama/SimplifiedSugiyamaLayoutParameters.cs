@@ -4,5 +4,6 @@
     {
         public double VerticalGap = 30.0;
         public double HorizontalGap = 15.0;
+        public int SweepNumber = 10;
     }
 }

@@ -23,7 +23,10 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Click="ButtonBase_OnClick" Width="40" Height="20">Layout</Button>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBox x:Name="SweepNumber">0</TextBox>
+            <Button Click="ButtonBase_OnClick" Width="40" Height="20">Layout</Button>
+        </StackPanel>
         <softvis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" Diagram="{Binding}" />
     </Grid>
 </Window>

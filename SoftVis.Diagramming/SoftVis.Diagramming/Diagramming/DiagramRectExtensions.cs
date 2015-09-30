@@ -21,7 +21,12 @@ namespace Codartis.SoftVis.Diagramming
                     enumerable.Select(i => i.Right).Max(),
                     enumerable.Select(i => i.Bottom).Max()
                     )
-                : new DiagramRect(0, 0, 0, 0);
+                : DiagramRect.Empty;
+        }
+
+        public static DiagramRect Intersect(this DiagramRect diagramRect1, DiagramRect diagramRect2)
+        {
+            return DiagramRect.Intersect(diagramRect1, diagramRect2);
         }
     }
 }

@@ -23,23 +23,24 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 }
             }
 
-            Layout();
+            Layout(1);
         }
 
-        public void Layout()
+        public void Layout(int sweepNumber)
         {
-            LayoutSimplifiedSugiyama();
+            LayoutSimplifiedSugiyama(sweepNumber);
             //LayoutEfficientSugiyama();
             //LayoutTree();
         }
 
-        private void LayoutSimplifiedSugiyama()
+        private void LayoutSimplifiedSugiyama(int sweepNumber)
         {
             var sugiyamaLayoutParameters = new SimplifiedSugiyamaLayoutParameters()
             {
                 EdgeRoutingType = EdgeRoutingType.Straight,
                 VerticalGap = 40,
                 HorizontalGap = 10,
+                SweepNumber = sweepNumber
             };
             Layout(LayoutType.SimplifiedSugiyama, sugiyamaLayoutParameters);
         }

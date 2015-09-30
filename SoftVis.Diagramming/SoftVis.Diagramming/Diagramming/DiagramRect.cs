@@ -10,6 +10,8 @@ namespace Codartis.SoftVis.Diagramming
     [DebuggerDisplay("( {TopLeft.X}, {TopLeft.Y} )  ( {Size.Width}, {Size.Height} )")]
     public struct DiagramRect
     {
+        public static readonly DiagramRect Empty = new DiagramRect(0, 0, 0, 0);
+
         public DiagramPoint TopLeft { get; }
         public DiagramSize Size { get; }
 
@@ -58,6 +60,19 @@ namespace Codartis.SoftVis.Diagramming
             return new DiagramRect(new DiagramPoint(left, top), new DiagramPoint(right, bottom));
         }
 
+        public static DiagramRect Intersect(DiagramRect rect1, DiagramRect rect2)
+        {
+            var left = Math.Max(rect1.Left, rect2.Left);
+            var top = Math.Max(rect1.Top, rect2.Top);
+
+            var right = Math.Min(rect1.Right, rect2.Right);
+            var bottom = Math.Min(rect1.Bottom, rect2.Bottom);
+
+            return left > right || top > bottom
+                ? Empty
+                : new DiagramRect(new DiagramPoint(left, top), new DiagramPoint(right, bottom));
+        }
+
         public DiagramPoint GetAttachPointToward(DiagramPoint targetPoint)
         {
             var center = Center;
@@ -72,6 +87,40 @@ namespace Codartis.SoftVis.Diagramming
             var fi = Math.Max(0, sides.Where(i => i <= 1).Max());
 
             return targetPoint + fi * (center - targetPoint);
+        }
+
+        public bool Equals(DiagramRect other)
+        {
+            return TopLeft.Equals(other.TopLeft) && Size.Equals(other.Size);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is DiagramRect && Equals((DiagramRect)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (TopLeft.GetHashCode() * 397) ^ Size.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(DiagramRect left, DiagramRect right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(DiagramRect left, DiagramRect right)
+        {
+            return !left.Equals(right);
+        }
+
+        public DiagramRect WithMargin(double horizontalMargin, double verticalMargin)
+        {
+            return new DiagramRect(Left - horizontalMargin, Top - verticalMargin, Right + horizontalMargin, Bottom + verticalMargin);
         }
     }
 }
