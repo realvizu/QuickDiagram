@@ -27,6 +27,11 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram = new TestDiagram(_testModel);
             DiagramViewerControl.DataContext = _testDiagram;
 
+            FitToView();
+        }
+
+        private void FitToView()
+        {
             Dispatcher.BeginInvoke(new Action(() => DiagramViewerControl.FitDiagramToView()));
         }
 
@@ -41,6 +46,8 @@ namespace Codartis.SoftVis.TestHostApp
 
             if (shownModelEntityIndex < _testDiagram.ModelItemsAddByClicks.Count - 1)
                 shownModelEntityIndex++;
+
+            FitToView();
         }
     }
 }

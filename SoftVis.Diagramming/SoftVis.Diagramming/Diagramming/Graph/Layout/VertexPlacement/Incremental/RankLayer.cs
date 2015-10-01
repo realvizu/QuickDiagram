@@ -36,11 +36,11 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.Incremental
 
         public void AddVertex(LayoutVertex vertex)
         {
+            vertex.Rank = Rank;
+            _vertices.Add(vertex);
+
             var centerX = Rect.Right + HorizontalGap + vertex.Width / 2;
             vertex.Center = new DiagramPoint(centerX, Top + Math.Max(Height, vertex.Height) / 2);
-            vertex.Rank = Rank;
-
-            _vertices.Add(vertex);
         }
 
         public void InsertVertex(int index, LayoutVertex vertex)

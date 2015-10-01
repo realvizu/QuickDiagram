@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Codartis.SoftVis.Common;
 
 namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.Incremental
 {
@@ -41,11 +43,16 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.Incremental
             EnsureLayerExists(rank);
 
             _layers[rank].AddVertex(vertex);
+            vertex.CenterChanged += OnVertexCenterChanged;
 
             foreach (var inEdge in _layoutGraph.InEdges(vertex))
                 ArrangeVerticesOf(inEdge);
 
             AdjustLayerVerticalPositions(rank);
+        }
+
+        private void OnVertexCenterChanged(object sender, DiagramPoint diagramPoint)
+        {
         }
 
         private void EnsureLayerExists(int rank)
@@ -69,6 +76,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.Incremental
         public void RemoveVertex(LayoutVertex vertex)
         {
             GetLayer(vertex).RemoveVertex(vertex);
+            vertex.CenterChanged -= OnVertexCenterChanged;
         }
 
         public void MoveVertex(LayoutVertex vertex, int newRank)
@@ -96,9 +104,15 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.Incremental
         {
             var vertexToMove = ChooseVertexToMove(edge.Source, edge.Target);
             if (vertexToMove == edge.Source)
-                ArrangeSourceVertexOf(edge);
+            {
+                ArrangeVertexToOutNeighbours(edge.Source);
+                AdjustOtherLayers(edge.Source);
+            }
             else
-                ArrangeTargetVertexOf(edge);
+            {
+                ArrangeVertexToInNeighbours(edge.Target);
+                AdjustOtherLayers(edge.Target);
+            }
         }
 
         private LayoutVertex ChooseVertexToMove(LayoutVertex vertex1, LayoutVertex vertex2)
@@ -123,19 +137,47 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.Incremental
                 : vertex2;
         }
 
-        private void MoveVertexCenterXTo(LayoutVertex vertex, double centerX)
+        private void MoveVertexCenterXTo(LayoutVertex layoutVertex, double centerX)
         {
-            GetLayer(vertex).MoveVertexCenterXTo(vertex, centerX);
+            if (!layoutVertex.Center.X.IsEqualWithTolerance(centerX))
+                GetLayer(layoutVertex).MoveVertexCenterXTo(layoutVertex, centerX);
         }
 
-        private void ArrangeSourceVertexOf(LayoutEdge edge)
+        private void ArrangeVertexToOutNeighbours(LayoutVertex layoutVertex)
         {
-            MoveVertexCenterXTo(edge.Source, edge.Target.Center.X);
+            var outNeighboursRect = _layoutGraph.GetOutNeighbours(layoutVertex).Select(i => i.Rect).Union();
+            if (outNeighboursRect != DiagramRect.Empty)
+                MoveVertexCenterXTo(layoutVertex, outNeighboursRect.Center.X);
         }
 
-        private void ArrangeTargetVertexOf(LayoutEdge edge)
+        private void ArrangeVertexToInNeighbours(LayoutVertex layoutVertex)
         {
-            MoveVertexCenterXTo(edge.Target, edge.Source.Center.X);
+            var inNeighboursRect = _layoutGraph.GetInNeighbours(layoutVertex).Select(i => i.Rect).Union();
+            if (inNeighboursRect != DiagramRect.Empty)
+                MoveVertexCenterXTo(layoutVertex, inNeighboursRect.Center.X);
+        }
+
+        private void AdjustOtherLayers(LayoutVertex layoutVertex)
+        {
+            if (layoutVertex.Rank == null) throw new InvalidOperationException($"{nameof(layoutVertex)} has no rank assigned.");
+
+            for (var i = layoutVertex.Rank.Value - 1; i >= 0; i--)
+                AdjustLayerToInNeighbours(_layers[i]);
+
+            for (var i = layoutVertex.Rank.Value + 1; i < Count; i++)
+                AdjustLayerToOutNeighbours(_layers[i]);
+        }
+
+        private void AdjustLayerToInNeighbours(RankLayer rankLayer)
+        {
+            foreach (var layoutVertex in rankLayer)
+                ArrangeVertexToInNeighbours(layoutVertex);
+        }
+
+        private void AdjustLayerToOutNeighbours(RankLayer rankLayer)
+        {
+            foreach (var layoutVertex in rankLayer)
+                ArrangeVertexToOutNeighbours(layoutVertex);
         }
     }
 }

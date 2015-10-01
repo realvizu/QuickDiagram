@@ -121,7 +121,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 //.AddInterface("Circle4", baseName: "Circle1")
 
                 // Edge-crossings
-                .AddClass("Child1", baseName: "BaseInterface")
+                //.AddClass("Child1", baseName: "BaseInterface")
                 .AddClass("Child3", baseName: "MyInterface3")
                 //.AddClass("Child3", baseName: "Circle4")
                 //.AddClass("MyInterface3", baseName: "Circle2")

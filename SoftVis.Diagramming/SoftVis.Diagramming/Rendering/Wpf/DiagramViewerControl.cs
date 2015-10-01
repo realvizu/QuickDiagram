@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
@@ -153,7 +154,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void OnZoom(object sender, ZoomEventArgs args)
         {
-            if (_diagramViewportPanel.Zoom.EqualsWithTolerance(args.NewZoomValue))
+            if (_diagramViewportPanel.Zoom.IsEqualWithTolerance(args.NewZoomValue))
                 return;
 
             ZoomWidget?.Invoke(sender, args);
@@ -180,7 +181,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private bool ViewportZoomMatchesWidgetZoom()
         {
-            return _diagramViewportPanel.Zoom.EqualsWithTolerance(_panAndZoomControl.ZoomValue);
+            return _diagramViewportPanel.Zoom.IsEqualWithTolerance(_panAndZoomControl.ZoomValue);
         }
 
         private static bool IsCommandAnimatedFromZoomWidgetEvent(ViewportCommandBase command)

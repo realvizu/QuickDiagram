@@ -145,7 +145,7 @@
     <Compile Include="Modeling\ModelRelationship.cs" />
     <Compile Include="Modeling\ModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\Common\DoubleHelper.cs" />
+    <Compile Include="Common\DoubleHelper.cs" />
     <Compile Include="Rendering\Common\ScaleCalculator.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />

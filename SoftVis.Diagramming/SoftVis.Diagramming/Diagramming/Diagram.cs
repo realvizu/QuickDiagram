@@ -51,14 +51,14 @@ namespace Codartis.SoftVis.Diagramming
                 OnShapeAdded(node);
             }
 
-            foreach (var modelRelationship in modelEntity.OutgoingRelationships.Concat(modelEntity.IncomingRelationships))
-            {
-                if (NodeExists(modelRelationship.Source) &&
-                    NodeExists(modelRelationship.Target))
-                {
-                    ShowConnector(modelRelationship);
-                }
-            }
+            //foreach (var modelRelationship in modelEntity.OutgoingRelationships.Concat(modelEntity.IncomingRelationships))
+            //{
+            //    if (NodeExists(modelRelationship.Source) &&
+            //        NodeExists(modelRelationship.Target))
+            //    {
+            //        ShowConnector(modelRelationship);
+            //    }
+            //}
         }
 
         /// <summary>
