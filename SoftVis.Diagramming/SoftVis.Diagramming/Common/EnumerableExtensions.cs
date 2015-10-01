@@ -53,5 +53,21 @@ namespace Codartis.SoftVis.Common
 
             return false;
         }
+
+        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> collection)
+        {
+            return collection ?? Enumerable.Empty<T>();
+        }
+
+        public static IEnumerable<T> ToEnumerable<T>(this T item)
+        {
+            if (item != null)
+                yield return item;
+        }
+
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T item)
+        {
+            return collection.Concat(item.ToEnumerable());
+        }
     }
 }

@@ -14,6 +14,7 @@
     
     <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Graph" To="Codartis.SoftVis.Diagramming.Graph.Layout.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Graph.*" To="QuickGraph" />
     <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.*" To="QuickGraph.Algorithms.*" />
 

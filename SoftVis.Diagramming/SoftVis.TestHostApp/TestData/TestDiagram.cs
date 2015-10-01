@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Diagramming.Graph.Layout;
 using Codartis.SoftVis.Diagramming.Graph.Layout.EdgeRouting;
 using Codartis.SoftVis.Diagramming.Graph.Layout.VertexPlacement.EfficientSugiyama;
@@ -10,20 +12,16 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     class TestDiagram : WpfDiagram
     {
+        public readonly List<IModelItem> ModelItemsAddByClicks = new List<IModelItem>();
+
         public TestDiagram(IModel model)
         {
             foreach (var entity in model.Entities)
-            {
                 ShowNode(entity);
 
+            foreach (var entity in model.Entities)
                 foreach (var relationship in entity.OutgoingRelationships)
-                {
-                    if (Nodes.Any(i => i.ModelEntity.Equals(relationship.Target)))
-                        ShowConnector(relationship);
-                }
-            }
-
-            Layout(1);
+                    ModelItemsAddByClicks.Add(relationship);
         }
 
         public void Layout(int sweepNumber)

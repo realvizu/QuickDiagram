@@ -112,12 +112,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         private void UpdateLayout()
         {
-            var sugiyamaLayoutParameters = new SimplifiedSugiyamaLayoutParameters()
-            {
-                VerticalGap = 40,
-                HorizontalGap = 15
-            };
-            _diagram.Layout(LayoutType.SimplifiedSugiyama, sugiyamaLayoutParameters);
+            //var sugiyamaLayoutParameters = new SimplifiedSugiyamaLayoutParameters()
+            //{
+            //    VerticalGap = 40,
+            //    HorizontalGap = 15
+            //};
+            //_diagram.Layout(LayoutType.SimplifiedSugiyama, sugiyamaLayoutParameters);
         }
     }
 }

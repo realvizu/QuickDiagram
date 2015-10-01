@@ -68,7 +68,7 @@ namespace Codartis.SoftVis.Diagramming
             var right = Math.Min(rect1.Right, rect2.Right);
             var bottom = Math.Min(rect1.Bottom, rect2.Bottom);
 
-            return left > right || top > bottom
+            return left >= right || top >= bottom
                 ? Empty
                 : new DiagramRect(new DiagramPoint(left, top), new DiagramPoint(right, bottom));
         }
@@ -122,5 +122,8 @@ namespace Codartis.SoftVis.Diagramming
         {
             return new DiagramRect(Left - horizontalMargin, Top - verticalMargin, Right + horizontalMargin, Bottom + verticalMargin);
         }
+
+        public DiagramRect WithMarginX(double horizontalMargin) => WithMargin(horizontalMargin, 0);
+        public DiagramRect WithMarginY(double verticalMargin) => WithMargin(0, verticalMargin);
     }
 }

@@ -83,6 +83,13 @@
     <Compile Include="Diagramming\Graph\Layout\IEdgeRoutingSupportAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\Layout\IEdgeRoutingAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\Layout\ILayoutParameters.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\IncrementalLayoutEngine.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\LayoutEdge.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\LayoutGraph.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\LayoutVertex.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\RankLayer.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\RankLayers.cs" />
+    <Compile Include="Diagramming\Graph\Layout\VertexPlacement\Incremental\Span.cs" />
     <Compile Include="Diagramming\Graph\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Diagramming\Graph\Layout\LayoutType.cs" />
     <Compile Include="Diagramming\Graph\IExtent.cs" />

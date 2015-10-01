@@ -96,35 +96,38 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("Child2", baseName: "MyClass")
                 .AddClass("Child3", baseName: "BaseClass")
                 .AddClass("Child1OfChild1WithLongName", baseName: "Child1")
-                
-                //.AddClass("ForeverAlone")
-                //.AddClass("ForeverAlone2")
+
+                .AddClass("ForeverAlone")
+                .AddClass("ForeverAlone2")
 
                 //// Loop
                 //.AddInterface("Loop")
                 //.AddInterface("Loop", baseName: "Loop")
 
-                // Small circle where edge reversing results a multi-edge
-                .AddInterface("SmallCircle1")
-                .AddInterface("SmallCircle2")
-                .AddInterface("SmallCircle1", baseName: "SmallCircle2")
-                .AddInterface("SmallCircle2", baseName: "SmallCircle1")
+                //// Small circle where edge reversing results a multi-edge
+                //.AddInterface("SmallCircle1")
+                //.AddInterface("SmallCircle2")
+                //.AddInterface("SmallCircle1", baseName: "SmallCircle2")
+                //.AddInterface("SmallCircle2", baseName: "SmallCircle1")
 
-                // Large circle
-                .AddInterface("Circle1")
-                .AddInterface("Circle2")
-                .AddInterface("Circle3")
-                .AddInterface("Circle4")
-                .AddInterface("Circle1", baseName: "Circle2")
-                .AddInterface("Circle2", baseName: "Circle3")
-                .AddInterface("Circle3", baseName: "Circle4")
-                .AddInterface("Circle4", baseName: "Circle1")
+                //// Large circle
+                //.AddInterface("Circle1")
+                //.AddInterface("Circle2")
+                //.AddInterface("Circle3")
+                //.AddInterface("Circle4")
+                //.AddInterface("Circle1", baseName: "Circle2")
+                //.AddInterface("Circle2", baseName: "Circle3")
+                //.AddInterface("Circle3", baseName: "Circle4")
+                //.AddInterface("Circle4", baseName: "Circle1")
 
                 // Edge-crossings
                 .AddClass("Child1", baseName: "BaseInterface")
                 .AddClass("Child3", baseName: "MyInterface3")
-                .AddClass("Child3", baseName: "Circle4")
-                .AddClass("MyInterface3", baseName: "Circle2")
+                //.AddClass("Child3", baseName: "Circle4")
+                //.AddClass("MyInterface3", baseName: "Circle2")
+
+                .AddClass("IntermediateInterface", baseName: "BaseInterface")
+                .AddClass("MyInterface1", baseName: "IntermediateInterface")
 
                 ;
         }
