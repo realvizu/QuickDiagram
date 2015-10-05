@@ -12,12 +12,12 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
     {
         private readonly IEnumerable<TEdge> _originalEdges;
         private readonly EdgeRoutingType _edgeRoutingType;
-        private readonly IDictionary<TEdge, Point2D[]> _interimRoutePointsOfEdges;
+        private readonly IDictionary<TEdge, Route> _interimRoutePointsOfEdges;
 
-        public IDictionary<TEdge, Point2D[]> EdgeRoutes { get; private set; }
+        public IDictionary<TEdge, Route> EdgeRoutes { get; private set; }
 
         public EdgeRoutingAlgorithm(IEnumerable<TEdge> originalEdges, EdgeRoutingType edgeRoutingType, 
-            IDictionary<TEdge, Point2D[]> interimRoutePointsOfEdges)
+            IDictionary<TEdge, Route> interimRoutePointsOfEdges)
         {
             _originalEdges = originalEdges;
             _interimRoutePointsOfEdges = interimRoutePointsOfEdges;
@@ -39,16 +39,16 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
             }
         }
 
-        private Dictionary<TEdge, Point2D[]> CalculateStraightEdgeRouting()
+        private Dictionary<TEdge, Route> CalculateStraightEdgeRouting()
         {
-            var edgeRoutes = new Dictionary<TEdge, Point2D[]>();
+            var edgeRoutes = new Dictionary<TEdge, Route>();
 
             foreach (var edge in _originalEdges)
             {
                 var source = edge.Source;
                 var target = edge.Target;
 
-                Point2D[] interimRoutePoints;
+                Route interimRoutePoints;
                 _interimRoutePointsOfEdges.TryGetValue(edge, out interimRoutePoints);
 
                 var secondPoint = interimRoutePoints?.FirstOrDefault() ?? target.Center;
@@ -57,15 +57,16 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
                 var penultimatePoint = interimRoutePoints?.LastOrDefault() ?? source.Center;
                 var lastPoint = target.Rect.GetAttachPointToward(penultimatePoint);
 
-                edgeRoutes.Add(edge, Point2D.CreateRoute(firstPoint, interimRoutePoints, lastPoint));
+                var route = new Route {firstPoint, interimRoutePoints, lastPoint};
+                edgeRoutes.Add(edge, route);
             }
 
             return edgeRoutes;
         }
 
-        private Dictionary<TEdge, Point2D[]> CalculateOrthogonalEdgeRouting()
+        private Dictionary<TEdge, Route> CalculateOrthogonalEdgeRouting()
         {
-            var edgeRoutes = new Dictionary<TEdge, Point2D[]>();
+            var edgeRoutes = new Dictionary<TEdge, Route>();
 
             //var layerDistance = _layoutParameters.LayerDistance;
 
@@ -103,7 +104,7 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
             //        beforePenultimatePoint = new Point2D(dummyVertexPoints.Last().X, penultimatePoint.Y);
             //    }
 
-            //    var route = Point2D.CreateRoute(firstPoint, secondPoint, thirdPoint, dummyVertexPoints,
+            //    var route = Point2D.Create(firstPoint, secondPoint, thirdPoint, dummyVertexPoints,
             //        beforePenultimatePoint, penultimatePoint, lastPoint);
             //    route = RemoveConsecutiveSamePoints(route);
 
@@ -111,22 +112,6 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
             //}
 
             return edgeRoutes;
-        }
-
-        private static Point2D[] RemoveConsecutiveSamePoints(Point2D[] route)
-        {
-            var resultPoints = new List<Point2D>();
-
-            var previousPoint = Point2D.Extreme;
-            foreach (var point in route)
-            {
-                if (point != previousPoint)
-                    resultPoints.Add(point);
-                
-                previousPoint = point;
-            }
-
-            return resultPoints.ToArray();
         }
     }
 }

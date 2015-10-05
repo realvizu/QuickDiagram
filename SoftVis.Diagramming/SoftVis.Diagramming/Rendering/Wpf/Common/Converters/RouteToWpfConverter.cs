@@ -7,19 +7,19 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
 {
     /// <summary>
-    /// Converts a Point2D[] into a WPF Point[].
+    /// Converts a Route into a WPF Point[].
     /// </summary>
-    public class PointsToWpfConverter : IValueConverter
+    public class RouteToWpfConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
                 return null;
 
-            if (!(value is Point2D[]))
-                throw new ArgumentException($"{typeof(PointsToWpfConverter).Name} expects a {typeof(Point2D).Name}[] value.");
+            if (!(value is Route))
+                throw new ArgumentException($"{typeof(RouteToWpfConverter).Name} expects a {typeof(Route).Name}[] value.");
 
-            return ((Point2D[])value).Select(i => i.ToWpf()).ToArray();
+            return ((Route)value).Select(i => i.ToWpf()).ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

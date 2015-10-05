@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
         private readonly Layers _layers;
         private readonly EdgeToDummyVerticesMap _edgeToDummyVerticesMap;
 
-        public IDictionary<IEdge<ISized>, Point2D[]> EdgeRoutes { get; private set; }
+        public IDictionary<IEdge<ISized>, Route> EdgeRoutes { get; private set; }
 
         public EdgeRoutingAlgorithm(IEnumerable<IEdge<ISized>> originalEdges, SugiGraph sugiGraph, 
             EfficientSugiyamaLayoutParameters layoutParameters, Layers layers, EdgeToDummyVerticesMap edgeToDummyVerticesMap)
@@ -43,9 +43,9 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
             }
         }
 
-        private Dictionary<IEdge<ISized>, Point2D[]> CalculateStraightEdgeRouting()
+        private Dictionary<IEdge<ISized>, Route> CalculateStraightEdgeRouting()
         {
-            var edgeRoutes = new Dictionary<IEdge<ISized>, Point2D[]>();
+            var edgeRoutes = new Dictionary<IEdge<ISized>, Route>();
 
             foreach (var edge in _originalEdges)
             {
@@ -57,15 +57,16 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
                 var penultimatePoint = internalRoutePoints?.Last() ?? NewCenter(edge.Source);
                 var lastPoint = NewRect(edge.Target).GetAttachPointToward(penultimatePoint);
 
-                edgeRoutes.Add(edge, Point2D.CreateRoute(firstPoint, internalRoutePoints, lastPoint));
+                var route = new Route {firstPoint, internalRoutePoints, lastPoint};
+                edgeRoutes.Add(edge, route);
             }
 
             return edgeRoutes;
         }
 
-        private Dictionary<IEdge<ISized>, Point2D[]> CalculateOrthogonalEdgeRouting()
+        private Dictionary<IEdge<ISized>, Route> CalculateOrthogonalEdgeRouting()
         {
-            var edgeRoutes = new Dictionary<IEdge<ISized>, Point2D[]>();
+            var edgeRoutes = new Dictionary<IEdge<ISized>, Route>();
 
             var layerDistance = _layoutParameters.LayerDistance;
 
@@ -103,30 +104,17 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
                     beforePenultimatePoint = new Point2D(dummyVertexPoints.Last().X, penultimatePoint.Y);
                 }
 
-                var route = Point2D.CreateRoute(firstPoint, secondPoint, thirdPoint, dummyVertexPoints,
-                    beforePenultimatePoint, penultimatePoint, lastPoint);
-                route = RemoveConsecutiveSamePoints(route);
+                var route = new Route
+                {
+                    firstPoint, secondPoint, thirdPoint,
+                    dummyVertexPoints,
+                    beforePenultimatePoint, penultimatePoint, lastPoint
+                };
 
                 edgeRoutes.Add(edge, route);
             }
 
             return edgeRoutes;
-        }
-
-        private static Point2D[] RemoveConsecutiveSamePoints(Point2D[] route)
-        {
-            var resultPoints = new List<Point2D>();
-
-            var previousPoint = Point2D.Extreme;
-            foreach (var point in route)
-            {
-                if (point != previousPoint)
-                    resultPoints.Add(point);
-                
-                previousPoint = point;
-            }
-
-            return resultPoints.ToArray();
         }
 
         private Point2D NewCenter(ISized vertex)

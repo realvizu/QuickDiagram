@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.Diagramming
             ((DiagramNode)sender).Center = point2D;
         }
 
-        private static void OnEdgeRouteChanged(object sender, Point2D[] routePoints)
+        private static void OnEdgeRouteChanged(object sender, Route routePoints)
         {
             ((DiagramConnector)sender).RoutePoints = routePoints;
         }

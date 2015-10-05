@@ -7,6 +7,6 @@ namespace Codartis.SoftVis.Graphs.Layout
     internal interface IEdgeRoutingAlgorithm<TVertex, TEdge> : IAlgorithm
         where TEdge: IEdge<TVertex>
     {
-        IDictionary<TEdge, Point2D[]> EdgeRoutes { get; }
+        IDictionary<TEdge, Route> EdgeRoutes { get; }
     }
 }

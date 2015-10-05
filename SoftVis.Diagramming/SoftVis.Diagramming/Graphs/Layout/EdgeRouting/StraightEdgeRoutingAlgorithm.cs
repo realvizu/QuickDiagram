@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Codartis.SoftVis.Geometry;
 using QuickGraph;
 
@@ -14,7 +13,7 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
     {
         private readonly IEdgeSet<TVertex, TEdge> _graph;
 
-        public IDictionary<TEdge, Point2D[]> EdgeRoutes { get; private set; }
+        public IDictionary<TEdge, Route> EdgeRoutes { get; private set; }
 
         internal StraightEdgeRoutingAlgorithm(IEdgeSet<TVertex, TEdge> graph)
         {
@@ -23,7 +22,7 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
 
         public void Compute()
         {
-            var routes = new Dictionary<TEdge, Point2D[]>();
+            var routes = new Dictionary<TEdge, Route>();
 
             foreach (var edge in _graph.Edges)
             {
@@ -34,18 +33,16 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
             EdgeRoutes = routes;
         }
 
-        private static Point2D[] CreateRoute(TEdge edge)
+        private static Route CreateRoute(TEdge edge)
         {
             var sourceRect = edge.Source.Rect;
             var targetRect = edge.Target.Rect;
 
-            return AlignEndpointsToNodeSides(sourceRect, targetRect).ToArray();
-        }
-
-        private static IEnumerable<Point2D> AlignEndpointsToNodeSides(Rect2D sourceRect, Rect2D targetRect)
-        {
-            yield return sourceRect.GetAttachPointToward(targetRect.Center);
-            yield return targetRect.GetAttachPointToward(sourceRect.Center);
+            return new Route
+            {
+                sourceRect.GetAttachPointToward(targetRect.Center),
+                targetRect.GetAttachPointToward(sourceRect.Center)
+            };
         }
     }
 }

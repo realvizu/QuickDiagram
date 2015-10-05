@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         private readonly IDictionary<IEdge<IRect>, IList<LayoutVertex>> _edgeToDummyVerticesMap;
 
         public event EventHandler<Point2D> VertexCenterChanged;
-        public event EventHandler<Point2D[]> EdgeRouteChanged;
+        public event EventHandler<Route> EdgeRouteChanged;
 
         public IncrementalLayoutEngine(double horizontalGap, double verticalGap)
         {
@@ -92,23 +92,29 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         private void OnEdgeRouteChanged(LayoutEdge layoutEdge)
         {
-            var edgeRoute = GetEdgeRoute(layoutEdge).ToArray();
+            var edgeRoute = GetEdgeRoute(layoutEdge);
             EdgeRouteChanged?.Invoke(layoutEdge.OriginalEdge, edgeRoute);
         }
 
-        private IEnumerable<Point2D> GetEdgeRoute(LayoutEdge layoutEdge)
+        private Route GetEdgeRoute(LayoutEdge layoutEdge)
         {
             var sourceRect = layoutEdge.Source.Rect;
             var targetRect = layoutEdge.Target.Rect;
 
-            yield return sourceRect.GetAttachPointToward(targetRect.Center);
+            return new Route
+            {
+                sourceRect.GetAttachPointToward(targetRect.Center),
+                GetInterimRoutePoints(layoutEdge),
+                targetRect.GetAttachPointToward(sourceRect.Center)
+            };
+        }
 
+        private IEnumerable<Point2D> GetInterimRoutePoints(LayoutEdge layoutEdge)
+        {
             IList<LayoutVertex> dummyVertices;
-            if (_edgeToDummyVerticesMap.TryGetValue(layoutEdge.OriginalEdge, out dummyVertices))
-                foreach (var dummyVertex in dummyVertices)
-                    yield return dummyVertex.Center;
-
-            yield return targetRect.GetAttachPointToward(sourceRect.Center);
+            return _edgeToDummyVerticesMap.TryGetValue(layoutEdge.OriginalEdge, out dummyVertices) 
+                ? dummyVertices.Select(i => i.Center) 
+                : null;
         }
 
         private static LayoutVertex CreateLayoutVertex(IRect originalVertex)

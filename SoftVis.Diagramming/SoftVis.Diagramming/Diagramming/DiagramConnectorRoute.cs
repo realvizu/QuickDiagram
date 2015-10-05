@@ -7,10 +7,10 @@ namespace Codartis.SoftVis.Diagramming
     internal class DiagramConnectorRoute
     {
         public EdgeRoutingType EdgeRoutingType { get; }
-        public IDictionary<DiagramConnector, Point2D[]> InterimRoutePointsOfEdges { get; }
+        public IDictionary<DiagramConnector, Route> InterimRoutePointsOfEdges { get; }
 
         public DiagramConnectorRoute(EdgeRoutingType edgeRoutingType,
-            IDictionary<DiagramConnector, Point2D[]> interimRoutePointsOfEdges)
+            IDictionary<DiagramConnector, Route> interimRoutePointsOfEdges)
         {
             EdgeRoutingType = edgeRoutingType;
             InterimRoutePointsOfEdges = interimRoutePointsOfEdges;

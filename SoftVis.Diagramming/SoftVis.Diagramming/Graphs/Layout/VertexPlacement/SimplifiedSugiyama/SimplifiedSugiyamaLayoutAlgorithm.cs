@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.SimplifiedSugiyama
         private readonly SimplifiedSugiyamaLayoutParameters _layoutParameters;
 
         public IDictionary<TVertex, Point2D> VertexCenters { get; private set; }
-        public IDictionary<TEdge, Point2D[]> InterimRoutePointsOfEdges { get; private set; }
+        public IDictionary<TEdge, Route> InterimRoutePointsOfEdges { get; private set; }
 
         internal SimplifiedSugiyamaLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> originalGraph,
             SimplifiedSugiyamaLayoutParameters layoutParameters)
@@ -295,7 +295,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.SimplifiedSugiyama
                 .ToDictionary(i => (TVertex)i.OriginalVertex, i => i.Center);
         }
 
-        private static IDictionary<TEdge, Point2D[]> GetInterimRoutePointsOfEdges(LayoutGraph layoutGraph)
+        private static IDictionary<TEdge, Route> GetInterimRoutePointsOfEdges(LayoutGraph layoutGraph)
         {
             return layoutGraph.GetInterimRoutePointsOfEdges().ToDictionary(i => (TEdge)i.Key, i => i.Value);
         }

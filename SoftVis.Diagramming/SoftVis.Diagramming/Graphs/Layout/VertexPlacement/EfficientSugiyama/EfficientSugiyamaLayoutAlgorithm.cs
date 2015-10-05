@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
         private readonly EfficientSugiyamaLayoutParameters _layoutParameters;
 
         public IDictionary<TVertex, Point2D> VertexCenters { get; private set; }
-        public IDictionary<TEdge, Point2D[]> EdgeRoutes { get; private set; }
+        public IDictionary<TEdge, Route> EdgeRoutes { get; private set; }
 
         internal EfficientSugiyamaLayoutAlgorithm(IBidirectionalGraph<TVertex, TEdge> graph, EfficientSugiyamaLayoutParameters layoutParameters)
         {

@@ -12,9 +12,9 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public abstract class DiagramConnector : DiagramShape, IEdge<DiagramNode>, IEdge<IRect>, IEdge<ISized>
     {
-        private Point2D[] _routePoints;
         public DiagramNode Source { get; }
         public DiagramNode Target { get; }
+        public virtual Route RoutePoints { get; set; }
 
         IRect IEdge<IRect>.Target => Target;
         IRect IEdge<IRect>.Source => Source;
@@ -30,12 +30,6 @@ namespace Codartis.SoftVis.Diagramming
 
             Source = source;
             Target = target;
-        }
-
-        public virtual Point2D[] RoutePoints
-        {
-            get { return _routePoints; }
-            set { _routePoints = value; }
         }
 
         public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;

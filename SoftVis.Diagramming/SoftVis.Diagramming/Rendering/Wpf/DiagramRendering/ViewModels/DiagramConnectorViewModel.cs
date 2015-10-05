@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -14,17 +13,18 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DiagramConnectorViewModel(IModelRelationship relationship, DiagramNodeViewModel source, DiagramNodeViewModel target)
+        public DiagramConnectorViewModel(IModelRelationship relationship, 
+            DiagramNodeViewModel source, DiagramNodeViewModel target)
             : base(relationship, source, target)
         {
         }
 
-        public override Point2D[] RoutePoints
+        public override Route RoutePoints
         {
             get { return base.RoutePoints; }
             set
             {
-                if (!RoutePoints.NullableSequenceEqual(value))
+                if (RoutePoints != value)
                 {
                     base.RoutePoints = value;
                     OnPropertyChanged();

@@ -22,9 +22,9 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.SimplifiedSugiyama
             Normalize();
         }
 
-        public IDictionary<IEdge<ISized>, Point2D[]> GetInterimRoutePointsOfEdges()
+        public IDictionary<IEdge<ISized>, Route> GetInterimRoutePointsOfEdges()
         {
-            return _edgeToDummyVerticesMap.ToDictionary(i => i.Key, i => i.Value.Select(v => v.Center).ToArray());
+            return _edgeToDummyVerticesMap.ToDictionary(i => i.Key, i => new Route(i.Value.Select(v => v.Center)));
         }
 
         public List<LayoutVertex> RemoveIsolatedVertices()

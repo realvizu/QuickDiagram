@@ -209,14 +209,14 @@ namespace Codartis.SoftVis.Diagramming
             }
         }
 
-        private void ApplyConnectorRoutes(IDictionary<DiagramConnector, Point2D[]> edgeRoutes)
+        private void ApplyConnectorRoutes(IDictionary<DiagramConnector, Route> edgeRoutes)
         {
             foreach (var connector in Connectors)
             {
-                Point2D[] route;
+                Route route;
                 if (edgeRoutes.TryGetValue(connector, out route))
                 {
-                    connector.RoutePoints = edgeRoutes[connector];
+                    connector.RoutePoints = route;
                     OnShapeModified(connector);
                 }
             }

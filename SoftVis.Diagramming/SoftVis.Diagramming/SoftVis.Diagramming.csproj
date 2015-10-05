@@ -60,6 +60,7 @@
     <Compile Include="Geometry\Point2D.cs" />
     <Compile Include="Geometry\Rect2D.cs" />
     <Compile Include="Geometry\Rect2DExtensions.cs" />
+    <Compile Include="Geometry\Route.cs" />
     <Compile Include="Geometry\Size2D.cs" />
     <Compile Include="Diagramming\DiagramPath.cs" />
     <Compile Include="Graphs\EdgeDirection.cs" />
@@ -141,8 +142,8 @@
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\PointsToBoundingRectConverter.cs" />
-    <Compile Include="Rendering\Wpf\Common\Converters\PointsToWpfConverter.cs" />
-    <Compile Include="Rendering\Wpf\Common\Converters\RectsToWpfUnionConverter.cs" />
+    <Compile Include="Rendering\Wpf\Common\Converters\RouteToWpfConverter.cs" />
+    <Compile Include="Rendering\Wpf\Common\Converters\RectsAndRoutesToWpfUnionConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\RectToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\SizeToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Size2DExtensions.cs" />

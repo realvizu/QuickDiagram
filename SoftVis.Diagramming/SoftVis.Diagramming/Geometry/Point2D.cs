@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Codartis.SoftVis.Geometry
+﻿namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// Represents a point in 2D space.
@@ -79,39 +77,6 @@ namespace Codartis.SoftVis.Geometry
         public static Point2D operator *(double multiplier, Point2D point)
         {
             return point * multiplier;
-        }
-
-        public static Point2D[] CreateRoute(Point2D firstPoint, Point2D secondPoint, Point2D? thirdPoint,
-            IEnumerable<Point2D> internalPoints, Point2D? beforePenultimatePoint, Point2D penultimatePoint, Point2D lastPoint)
-        {
-            var route = new List<Point2D>();
-
-            route.Add(firstPoint);
-            route.Add(secondPoint);
-            if (thirdPoint!=null) route.Add(thirdPoint.Value);
-
-            if (internalPoints != null)
-                route.AddRange(internalPoints);
-
-            if (beforePenultimatePoint != null) route.Add(beforePenultimatePoint.Value);
-            route.Add(penultimatePoint);
-            route.Add(lastPoint);
-
-            return route.ToArray();
-        }
-
-        public static Point2D[] CreateRoute(Point2D firstPoint, IEnumerable<Point2D> internalPoints, Point2D lastPoint)
-        {
-            var route = new List<Point2D>();
-
-            route.Add(firstPoint);
-
-            if (internalPoints != null)
-                route.AddRange(internalPoints);
-
-            route.Add(lastPoint);
-
-            return route.ToArray();
         }
     }
 }
