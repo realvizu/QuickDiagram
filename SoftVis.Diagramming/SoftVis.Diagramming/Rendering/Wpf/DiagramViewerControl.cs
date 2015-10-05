@@ -5,7 +5,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;

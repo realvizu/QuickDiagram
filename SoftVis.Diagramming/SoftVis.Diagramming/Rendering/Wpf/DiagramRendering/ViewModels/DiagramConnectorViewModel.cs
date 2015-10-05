@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
         {
         }
 
-        public override DiagramPoint[] RoutePoints
+        public override Point2D[] RoutePoints
         {
             get { return base.RoutePoints; }
             set

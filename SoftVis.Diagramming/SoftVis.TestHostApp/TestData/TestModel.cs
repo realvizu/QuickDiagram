@@ -84,21 +84,46 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             return new TestModel()
 
-                .AddInterface("BaseInterface")
-                .AddInterface("MyInterface1", baseName: "BaseInterface")
-                .AddInterface("MyInterface2", baseName: "BaseInterface")
-                .AddInterface("MyInterface3", baseName: "BaseInterface")
-                .AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
+                .AddClass("1")
+                .AddClass("2")
+                .AddClass("3")
+                .AddClass("4")
+                .AddClass("5")
+                .AddClass("6")
+                .AddClass("7")
+                .AddClass("8")
+                .AddClass("9")
+                .AddClass("10")
+                .AddClass("11")
+                .AddClass("12")
+                .AddClass("13")
 
-                .AddClass("BaseClass")
-                .AddClass("MyClass", baseName: "BaseClass")
-                .AddClass("Child1", baseName: "MyClass")
-                .AddClass("Child2", baseName: "MyClass")
-                .AddClass("Child3", baseName: "BaseClass")
-                .AddClass("Child1OfChild1WithLongName", baseName: "Child1")
+                .AddClass("2", "1")
+                .AddClass("1", "3")
+                .AddClass("4", "3")
+                .AddClass("5", "1")
+                .AddClass("6", "7")
+                .AddClass("9", "8")
+                .AddClass("7", "10")
+                //.AddClass("7", "11")
+                .AddClass("11", "12")
+                .AddClass("13", "7")
 
-                .AddClass("ForeverAlone")
-                .AddClass("ForeverAlone2")
+                //.AddInterface("BaseInterface")
+                //.AddInterface("MyInterface1", baseName: "BaseInterface")
+                //.AddInterface("MyInterface2", baseName: "BaseInterface")
+                //.AddInterface("MyInterface3", baseName: "BaseInterface")
+                //.AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
+
+                //.AddClass("BaseClass")
+                //.AddClass("MyClass", baseName: "BaseClass")
+                //.AddClass("Child1", baseName: "MyClass")
+                //.AddClass("Child2", baseName: "MyClass")
+                ////.AddClass("Child3", baseName: "BaseClass")
+                //.AddClass("Child1OfChild1WithLongName", baseName: "Child1")
+
+                //.AddClass("ForeverAlone")
+                //.AddClass("ForeverAlone2")
 
                 //// Loop
                 //.AddInterface("Loop")
@@ -122,12 +147,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
                 // Edge-crossings
                 //.AddClass("Child1", baseName: "BaseInterface")
-                .AddClass("Child3", baseName: "MyInterface3")
+                //.AddClass("Child3", baseName: "MyInterface3")
                 //.AddClass("Child3", baseName: "Circle4")
                 //.AddClass("MyInterface3", baseName: "Circle2")
 
-                .AddClass("IntermediateInterface", baseName: "BaseInterface")
-                .AddClass("MyInterface1", baseName: "IntermediateInterface")
+                //.AddClass("IntermediateInterface", baseName: "BaseInterface")
+                //.AddClass("MyInterface1", baseName: "IntermediateInterface")
 
                 ;
         }

@@ -7,17 +7,17 @@
                     xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common.Converters"
                     xmlns:viewModels="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels">
 
-    <converters:DiagramRectsToWpfUnionConverter x:Key="RectUnionConverter" />
-    <converters:DiagramPointsToWpfConverter x:Key="DiagramPointsToWpfConverter" />
+    <converters:RectsToWpfUnionConverter x:Key="RectsToWpfUnionConverter" />
+    <converters:PointsToWpfConverter x:Key="PointsToWpfConverter" />
     <shapeControls:PointsToPathRelativeToRectConverter x:Key="PointsToPathRelativeToRectConverter" />
 
     <Style TargetType="{x:Type shapeControls:DiagramConnectorControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramConnectorViewModel}}">
         <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="RoutePoints" Value="{Binding Path=RoutePoints, Converter={StaticResource DiagramPointsToWpfConverter}}" />
+        <Setter Property="RoutePoints" Value="{Binding Path=RoutePoints, Converter={StaticResource PointsToWpfConverter}}" />
         <Setter Property="Rect">
             <Setter.Value>
-                <MultiBinding Converter="{StaticResource RectUnionConverter}">
+                <MultiBinding Converter="{StaticResource RectsToWpfUnionConverter}">
                     <Binding Path="Source.Rect" />
                     <Binding Path="Target.Rect" />
                     <Binding Path="RoutePoints" />
