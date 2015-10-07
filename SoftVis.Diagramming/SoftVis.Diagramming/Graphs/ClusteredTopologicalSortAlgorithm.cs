@@ -59,8 +59,8 @@ namespace Codartis.SoftVis.Graphs
         private IEnumerable<TVertex> GetTopologicallyFirstVertices(IEnumerable<TVertex> vertices)
         {
             return _sortOrder == TopologicalSortOrder.SinksFirst
-                ? _unprocessedGraph.GetVerticesWithNoOutEdges(vertices)
-                : _unprocessedGraph.GetVerticesWithNoInEdges(vertices);
+                ? _unprocessedGraph.GetSinks(vertices)
+                : _unprocessedGraph.GetSources(vertices);
         }
 
         private IEnumerable<TVertex> GetTopologicallyNextVertices(TVertex vertex)

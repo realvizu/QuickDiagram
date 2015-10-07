@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 {
     /// <summary>
     /// An ordered list of rank layers.
+    /// Responsible for adjusting the vertical position of the layers,
+    /// and for moving vertices between layers.
     /// </summary>
     internal class RankLayers : IEnumerable<RankLayer>
     {
@@ -50,24 +51,6 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
             AdjustLayerVerticalPositions(rank);
         }
-        
-        private void EnsureLayerExists(int rank)
-        {
-            for (var i = Count; i <= rank; i++)
-                _layers.Add(new RankLayer(i, HorizontalGap));
-
-            AdjustLayerVerticalPositions(rank);
-        }
-
-        private void AdjustLayerVerticalPositions(int fromRank)
-        {
-            for (var i = fromRank; i < Count; i++)
-            {
-                _layers[i].Top = (i == 0)
-                    ? 0
-                    : _layers[i - 1].Rect.Bottom + VerticalGap;
-            }
-        }
 
         public void RemoveVertex(LayoutVertex vertex)
         {
@@ -80,23 +63,43 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             AddVertex(newRank, vertex);
         }
 
-        public void EnsureOneVertexIsAboveTheOther(LayoutVertex oneVertex, LayoutVertex otherVertex)
+        public void EnsureVertexIsUnderParentVertex(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
-            if (oneVertex.Rank == null) throw new InvalidOperationException($"{nameof(oneVertex)} has no rank assigned.");
-            if (otherVertex.Rank == null) throw new InvalidOperationException($"{nameof(otherVertex)} has no rank assigned.");
+            if (childVertex.Rank == null) throw new InvalidOperationException($"{nameof(childVertex)} has no rank assigned.");
+            if (parentVertex.Rank == null) throw new InvalidOperationException($"{nameof(parentVertex)} has no rank assigned.");
 
-            while (otherVertex.Rank <= oneVertex.Rank)
-                MoveVertex(otherVertex, otherVertex.Rank.Value + 1);
+            while (childVertex.Rank <= parentVertex.Rank)
+                MoveVertex(childVertex, childVertex.Rank.Value + 1);
         }
 
-        public void MoveVertexCenterXTo(LayoutVertex layoutVertex, double centerX)
+        public void MoveVertexCenterXBy(LayoutVertex layoutVertex, double translateVectorX)
         {
-            if (layoutVertex.Center.X.IsEqualWithTolerance(centerX))
-                return;
+            var direction = translateVectorX < 0 ? TranslateDirection.Left : TranslateDirection.Right;
+            MoveVertexCenterXTo(layoutVertex, layoutVertex.Center.X + translateVectorX, direction);
+        }
 
-            //MakeRoomForVertex(layoutVertex, centerX);
+        public void MoveVertexCenterXTo(LayoutVertex layoutVertex, double centerX, 
+            TranslateDirection? overlapResolutionDirection = null)
+        {
+            GetLayer(layoutVertex).MoveVertexCenterXTo(layoutVertex, centerX, overlapResolutionDirection);
+        }
 
-            GetLayer(layoutVertex).MoveVertexCenterXTo(layoutVertex, centerX);
+        private void EnsureLayerExists(int rank)
+        {
+            for (var i = Count; i <= rank; i++)
+                _layers.Add(new RankLayer(i, HorizontalGap, _layoutGraph));
+
+            AdjustLayerVerticalPositions(rank);
+        }
+
+        private void AdjustLayerVerticalPositions(int fromRank)
+        {
+            for (var i = fromRank; i < Count; i++)
+            {
+                _layers[i].Top = (i == 0)
+                    ? 0
+                    : _layers[i - 1].Rect.Bottom + VerticalGap;
+            }
         }
 
         private void MakeRoomForVertex(LayoutVertex layoutVertex, double centerX)
@@ -144,20 +147,6 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
                 if (overlapRect != Rect2D.Empty)
                     yield return overlapRect;
             }
-        }
-
-        private void ArrangeVertexToOutNeighbours(LayoutVertex layoutVertex)
-        {
-            var outNeighboursRect = _layoutGraph.GetOutNeighbours(layoutVertex).Select(i => i.Rect).Union();
-            if (outNeighboursRect != Rect2D.Empty)
-                MoveVertexCenterXTo(layoutVertex, outNeighboursRect.Center.X);
-        }
-
-        private void ArrangeVertexToInNeighbours(LayoutVertex layoutVertex)
-        {
-            var inNeighboursRect = _layoutGraph.GetInNeighbours(layoutVertex).Select(i => i.Rect).Union();
-            if (inNeighboursRect != Rect2D.Empty)
-                MoveVertexCenterXTo(layoutVertex, inNeighboursRect.Center.X);
         }
     }
 }

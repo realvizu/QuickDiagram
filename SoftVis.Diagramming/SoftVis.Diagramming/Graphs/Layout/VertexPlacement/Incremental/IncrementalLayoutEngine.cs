@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Media.Animation;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
 using QuickGraph;
@@ -11,6 +13,9 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
     /// Calculates positions whenever vertices and edges are added.
     /// Sends events about vertex position changes.
     /// </summary>
+    /// <remarks>
+    /// When a node moves it takes its children with it.
+    /// </remarks>
     internal sealed class IncrementalLayoutEngine
     {
         private readonly double _horizontalGap;
@@ -20,7 +25,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         private readonly Dictionary<IRect, LayoutVertex> _originalToLayoutVertexMap;
         private readonly IDictionary<IEdge<IRect>, IList<LayoutVertex>> _edgeToDummyVerticesMap;
 
-        public event EventHandler<Point2D> VertexCenterChanged;
+        public event EventHandler<MoveEventArgs> VertexCenterChanged;
         public event EventHandler<Route> EdgeRouteChanged;
 
         public IncrementalLayoutEngine(double horizontalGap, double verticalGap)
@@ -55,36 +60,105 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             MoveTreeUnderParent(newLayoutEdge.Source, newLayoutEdge.Target);
 
             OnEdgeRouteChanged(newLayoutEdge);
+
+            //foreach (var root in _rankLayers[0])
+            //    DumpCenters(root);
         }
 
         private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
+            RemoveTreeFromRankLayers(childVertex);
+            AddTreeToRankLayers(childVertex, parentVertex);
+
+            //MoveTreeUnderParentInRankLayers(childVertex, parentVertex);
+            //MoveTreeUnderParentInLayout(childVertex, parentVertex);
+        }
+
+        private void AddTreeToRankLayers(LayoutVertex childVertex, LayoutVertex parentVertex)
+        {
+            _rankLayers.AddVertex(parentVertex.Rank.Value + 1, childVertex);
             MoveChildUnderParent(childVertex, parentVertex);
 
-            //_layoutGraph.TraverseTreeEdges(childVertex, EdgeDirection.In, i => MoveChildUnderParent(i.Source, i.Target));
+            _layoutGraph.ExecuteOnTreeEdges(childVertex, EdgeDirection.In,
+                i =>
+                {
+                    _rankLayers.AddVertex(i.Target.Rank.Value + 1, i.Source);
+                    MoveChildUnderParent(i.Source, i.Target);
+                });
+        }
+
+        private void RemoveTreeFromRankLayers(LayoutVertex rootVertex)
+        {
+            _rankLayers.RemoveVertex(rootVertex);
+            _layoutGraph.ExecuteOnTreeEdges(rootVertex, EdgeDirection.In,
+                i => _rankLayers.RemoveVertex(i.Source));
+        }
+
+        private void MoveTreeUnderParentInRankLayers(LayoutVertex childVertex, LayoutVertex parentVertex)
+        {
+            _rankLayers.EnsureVertexIsUnderParentVertex(childVertex, parentVertex);
+            _layoutGraph.ExecuteOnTreeEdges(childVertex, EdgeDirection.In,
+                i => _rankLayers.EnsureVertexIsUnderParentVertex(i.Source, i.Target));
+        }
+
+        private void MoveTreeUnderParentInLayout(LayoutVertex childVertex, LayoutVertex parentVertex)
+        {
+            MoveChildUnderParent(childVertex, parentVertex);
+            _layoutGraph.ExecuteOnTreeEdges(childVertex, EdgeDirection.In, i => MoveChildUnderParent(i.Source, i.Target));
         }
 
         private void MoveChildUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
-            _rankLayers.EnsureOneVertexIsAboveTheOther(parentVertex, childVertex);
-
-            var siblings = _layoutGraph.GetSiblings(childVertex, parentVertex, EdgeDirection.In).ToArray();
-
-            // TODO: a siblingek ne lehessenek különböző layerekben -> dummy node-ok bevezetése
-            if (siblings.Any(i => i.Rank != childVertex.Rank))
-                throw new Exception("Dummy vertexek kellenek!");
-
+            var siblings = _layoutGraph.GetSiblings(childVertex, parentVertex, EdgeDirection.In).Where(i => i.Rank != null).ToArray();
+            EnsureSiblingsAreSameRank(childVertex, siblings);
             var insertionCenterX = siblings.GetInsertionPointX(childVertex, parentVertex, _horizontalGap);
 
             _rankLayers.MoveVertexCenterXTo(childVertex, insertionCenterX);
         }
 
-        private void OnVertexCenterChanged(object sender, Point2D point2D)
+        private static void EnsureSiblingsAreSameRank(LayoutVertex childVertex, IEnumerable<LayoutVertex> siblings)
+        {
+            // TODO: a siblingek ne lehessenek különböző layerekben -> dummy node-ok bevezetése
+            if (siblings.Any(i => i.Rank != childVertex.Rank))
+                throw new Exception("Dummy vertexek kellenek!");
+        }
+
+        private void OnVertexCenterChanged(object sender, MoveEventArgs args)
         {
             var layoutVertex = (LayoutVertex)sender;
+            PropagateVertexCenterChangedEvent(layoutVertex, args);
 
+            MoveChildrenWithParent(layoutVertex, args.From, args.To);
+            //BalanceParents(layoutVertex);
+        }
+
+        private void BalanceParents(LayoutVertex layoutVertex)
+        {
+            var parents = _layoutGraph.GetOutNeighbours(layoutVertex);
+            foreach (var parentVertex in parents)
+            {
+                var targetCenterX = _layoutGraph.GetInNeighbours(parentVertex).Where(i => i.Rank != null).Select(i => i.Rect).Union().Center.X;
+                _rankLayers.MoveVertexCenterXBy(parentVertex, targetCenterX - parentVertex.Center.X);
+            }
+        }
+
+        private void MoveChildrenWithParent(LayoutVertex movedVertex, Point2D @from, Point2D to)
+        {
+            var translateVectorX = to.X - @from.X;
+            _layoutGraph.GetInNeighbours(movedVertex).ForEach(i =>
+            {
+                if (i.Rank != null)
+                {
+                    Debug.WriteLine($"Moving vertex {i} with parent {movedVertex} by {translateVectorX}.");
+                    _rankLayers.MoveVertexCenterXBy(i, translateVectorX);
+                }
+            });
+        }
+
+        private void PropagateVertexCenterChangedEvent(LayoutVertex layoutVertex, MoveEventArgs args)
+        {
             if (!layoutVertex.IsDummy)
-                VertexCenterChanged?.Invoke(layoutVertex.OriginalVertex, point2D);
+                VertexCenterChanged?.Invoke(layoutVertex.OriginalVertex, args);
 
             foreach (var layoutEdge in _layoutGraph.GetAllEdges(layoutVertex))
                 OnEdgeRouteChanged(layoutEdge);
@@ -112,8 +186,8 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         private IEnumerable<Point2D> GetInterimRoutePoints(LayoutEdge layoutEdge)
         {
             IList<LayoutVertex> dummyVertices;
-            return _edgeToDummyVerticesMap.TryGetValue(layoutEdge.OriginalEdge, out dummyVertices) 
-                ? dummyVertices.Select(i => i.Center) 
+            return _edgeToDummyVerticesMap.TryGetValue(layoutEdge.OriginalEdge, out dummyVertices)
+                ? dummyVertices.Select(i => i.Center)
                 : null;
         }
 
@@ -170,9 +244,18 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             if (vertex1.Rank < vertex2.Rank)
                 return vertex2;
 
-            return _rankLayers.GetLayer(vertex1).IndexOf(vertex1) > _rankLayers.GetLayer(vertex2).IndexOf(vertex2)
+            return vertex1.Center.X > vertex2.Center.X
                 ? vertex1
                 : vertex2;
+        }
+
+        private void DumpCenters(LayoutVertex root)
+        {
+            var childrenCenterX = _layoutGraph.GetInNeighbours(root).GetRect().Center.X;
+            Debug.WriteLine($"Root {root} center: {root.Center.X}, children center: {childrenCenterX}");
+
+            foreach (var inNeighbour in _layoutGraph.GetInNeighbours(root))
+                DumpCenters(inNeighbour);
         }
     }
 }

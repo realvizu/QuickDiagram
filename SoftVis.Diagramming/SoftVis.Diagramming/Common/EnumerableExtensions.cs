@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Codartis.SoftVis.Common
@@ -68,6 +69,12 @@ namespace Codartis.SoftVis.Common
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T item)
         {
             return collection.Concat(item.ToEnumerable());
+        }
+
+        public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+        {
+            foreach (var item in collection)
+                action(item);
         }
     }
 }

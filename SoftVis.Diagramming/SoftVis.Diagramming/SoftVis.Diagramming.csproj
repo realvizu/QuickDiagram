@@ -65,6 +65,7 @@
     <Compile Include="Diagramming\DiagramPath.cs" />
     <Compile Include="Graphs\EdgeDirection.cs" />
     <Compile Include="Diagramming\DiagramConnectorRoute.cs" />
+    <Compile Include="Graphs\EdgeExtensions.cs" />
     <Compile Include="Graphs\Layout\LayoutParametersBase.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\EfficientSugiyama\EdgeToDummyVerticesMap.cs" />
     <Compile Include="Graphs\IAlgorithm.cs" />
@@ -78,8 +79,10 @@
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\LayoutGraph.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\LayoutVertex.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\LayoutVertexExtensions.cs" />
+    <Compile Include="Graphs\Layout\VertexPlacement\Incremental\MoveEventArgs.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\RankLayer.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\RankLayers.cs" />
+    <Compile Include="Graphs\Layout\VertexPlacement\Incremental\TranslateDirection.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Graphs\Layout\LayoutType.cs" />
     <Compile Include="Geometry\ISized.cs" />

@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Layout;
 using Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama;
 using Codartis.SoftVis.Graphs.Layout.VertexPlacement.SimplifiedSugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
@@ -17,9 +20,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             foreach (var entity in model.Entities)
                 ShowNode(entity);
 
-            foreach (var entity in model.Entities)
-                foreach (var relationship in entity.OutgoingRelationships)
-                    ModelItemsAddByClicks.Add(relationship);
+            foreach (var relationship in model.Relationships)
+                ModelItemsAddByClicks.Add(relationship);
+        }
+
+        protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
+        {
+            var size = new Size2D(((TestModelEntity)modelEntity).Size, 30);
+            return new DiagramNodeViewModel(modelEntity, Point2D.Zero, size);
         }
 
         public void Layout(int sweepNumber)

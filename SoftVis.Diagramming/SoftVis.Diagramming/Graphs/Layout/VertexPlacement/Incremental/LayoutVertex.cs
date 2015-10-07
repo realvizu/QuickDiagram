@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         public IRect OriginalVertex { get; }
         public int? Rank { get; set; }
 
-        public event EventHandler<Point2D> CenterChanged;
+        public event EventHandler<MoveEventArgs> CenterChanged;
 
         private LayoutVertex(IRect originalVertex)
         {
@@ -44,8 +44,9 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
                 if (_center == value)
                     return;
 
+                var oldValue = _center;
                 _center = value;
-                CenterChanged?.Invoke(this, value);
+                CenterChanged?.Invoke(this, new MoveEventArgs(oldValue, value));
             }
         }
 

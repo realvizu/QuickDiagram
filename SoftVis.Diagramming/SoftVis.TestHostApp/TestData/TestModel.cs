@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public IEnumerable<IModelEntity> Entities => _entities;
         public IEnumerable<IModelRelationship> Relationships => _relationships;
 
-        private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype)
+        private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype, int size)
         {
             if (_entities.Any(i => i.Name == name))
                 return this;
@@ -27,9 +27,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             IModelEntity newEntity;
 
             if (type == ModelEntityType.Class && stereotype == null)
-                newEntity = new TestClass(name);
+                newEntity = new TestClass(name, size);
             else if (type == ModelEntityType.Class && stereotype == TestModelEntityStereotype.Interface)
-                newEntity = new TestInterface(name);
+                newEntity = new TestInterface(name, size);
             else
                 throw new ArgumentException($"Unexpected entity type: {type}, stereotype: {stereotype}");
 
@@ -59,10 +59,10 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private TestModel AddEntityWithOptionalBase(string name, ModelEntityType type, ModelEntityStereotype stereotype,
+        private TestModel AddEntityWithOptionalBase(string name, int size, ModelEntityType type, ModelEntityStereotype stereotype,
             string baseName = null)
         {
-            var model = AddEntity(name, type, stereotype);
+            var model = AddEntity(name, type, stereotype, size);
 
             if (baseName != null)
                 model = AddRelationship(name, ModelRelationshipType.Generalization, baseName);
@@ -70,44 +70,51 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return model;
         }
 
-        private TestModel AddInterface(string name, string baseName = null)
+        private TestModel AddInterface(string name, int size, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, ModelEntityType.Class, TestModelEntityStereotype.Interface, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, TestModelEntityStereotype.Interface, baseName);
         }
 
-        private TestModel AddClass(string name, string baseName = null)
+        private TestModel AddClass(string name, int size, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, ModelEntityType.Class, null, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, null, baseName);
+        }
+
+        private TestModel AddClassBase(string name, string baseName = null)
+        {
+            return AddRelationship(name, ModelRelationshipType.Generalization, baseName);
         }
 
         public static TestModel Create()
         {
             return new TestModel()
 
-                .AddClass("1")
-                .AddClass("2")
-                .AddClass("3")
-                .AddClass("4")
-                .AddClass("5")
-                .AddClass("6")
-                .AddClass("7")
-                .AddClass("8")
-                .AddClass("9")
-                .AddClass("10")
-                .AddClass("11")
-                .AddClass("12")
-                .AddClass("13")
+                .AddClass("1", 40)
+                .AddClass("2", 25)
+                .AddClass("3", 60)
+                .AddClass("4", 35)
+                .AddClass("5", 80)
+                .AddClass("6", 45)
+                .AddClass("7", 10)
+                .AddClass("8", 10)
+                .AddClass("9", 20)
+                .AddClass("10", 30)
+                .AddClass("11", 40)
+                .AddClass("12", 50)
+                .AddClass("13", 60)
 
-                .AddClass("2", "1")
-                .AddClass("1", "3")
-                .AddClass("4", "3")
-                .AddClass("5", "1")
-                .AddClass("6", "7")
-                .AddClass("9", "8")
-                .AddClass("7", "10")
-                //.AddClass("7", "11")
-                .AddClass("11", "12")
-                .AddClass("13", "7")
+                .AddClassBase("2", "1")
+                .AddClassBase("1", "3")
+                .AddClassBase("4", "3")
+                .AddClassBase("5", "1")
+                .AddClassBase("6", "7")
+                .AddClassBase("9", "8")
+                .AddClassBase("7", "10")
+                .AddClassBase("3", "10")
+                .AddClassBase("8", "11")
+                .AddClassBase("11", "12")
+                .AddClassBase("10", "12")
+                .AddClassBase("13", "7")
 
                 //.AddInterface("BaseInterface")
                 //.AddInterface("MyInterface1", baseName: "BaseInterface")

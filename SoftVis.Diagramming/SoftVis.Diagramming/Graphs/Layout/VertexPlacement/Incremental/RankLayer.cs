@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
@@ -9,19 +11,29 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
     /// <summary>
     /// A rank layer is an ordered list of LayoutVertex items with the same rank.
     /// Each vertex is aware of which layer it belongs to (has a Rank property).
-    /// The order of the items determines their horizontal order in the layout.
     /// </summary>
+    /// <remarks>
+    /// Responsible for calculating the height of the layer and the horizontal positions of the vertices.
+    /// If a new or moved vertex overlaps with another then automatically move the other away (recursively),
+    /// to make room for the new/moved vertex.
+    /// 
+    /// WARNING: the order of the vertices in the list does not necessarily correspond 
+    /// to their horizontal position order.
+    /// </remarks>
     internal class RankLayer : IEnumerable<LayoutVertex>
     {
         public int Rank { get; }
         public double HorizontalGap { get; }
+        private readonly LayoutGraph _layoutGraph;
         private readonly List<LayoutVertex> _vertices;
         public double Top { get; set; }
 
-        internal RankLayer(int rank, double horizontalGap)
+        internal RankLayer(int rank, double horizontalGap, LayoutGraph layoutGraph)
         {
             Rank = rank;
             HorizontalGap = horizontalGap;
+            _layoutGraph = layoutGraph;
+
             _vertices = new List<LayoutVertex>();
         }
 
@@ -41,7 +53,8 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             _vertices.Add(vertex);
 
             var centerX = Rect.Right + HorizontalGap + vertex.Width / 2;
-            vertex.Center = new Point2D(centerX, Top + Math.Max(Height, vertex.Height) / 2);
+            var centerY = Top + Math.Max(Height, vertex.Height) / 2;
+            vertex.Center = new Point2D(centerX, centerY);
         }
 
         public void InsertVertex(int index, LayoutVertex vertex)
@@ -57,31 +70,48 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             vertex.Rank = null;
         }
 
-        public void MoveVertexCenterXTo(LayoutVertex vertex, double centerX)
+        public void MoveVertexCenterXTo(LayoutVertex vertex, double centerX, 
+            TranslateDirection? overlapResolutionDirection = null)
         {
             EnsureVertexBelongsToThisLayer(vertex);
+
+            if (vertex.Center.X.IsEqualWithTolerance(centerX))
+                return;
+
+            Debug.WriteLine($"Vertex {vertex} moving to: {vertex.Center} ({overlapResolutionDirection})");
             vertex.Center = new Point2D(centerX, vertex.Center.Y);
-            ResolveOverlaps(vertex);
+            ResolveOverlaps(vertex, overlapResolutionDirection);
         }
 
-        private void ResolveOverlaps(LayoutVertex fixedVertex)
+        private void ResolveOverlaps(LayoutVertex fixedVertex, TranslateDirection? translateDirection)
         {
             foreach (var otherVertex in _vertices)
             {
-                if (otherVertex == fixedVertex) continue;
+                if (otherVertex == fixedVertex || 
+                    otherVertex.IsNeighbourOf(fixedVertex, _layoutGraph))
+                    continue;
 
                 if (fixedVertex.OverlapsWith(otherVertex, HorizontalGap))
-                    ResolveOverlap(fixedVertex, otherVertex);
+                {
+                    Debug.WriteLine($"Resolving overlap of {fixedVertex} by moving {otherVertex}.");
+                    ResolveOverlap(fixedVertex, otherVertex, translateDirection);
+                }
             }
         }
 
-        private void ResolveOverlap(LayoutVertex fixedVertex, LayoutVertex movedVertex)
+        private void ResolveOverlap(LayoutVertex fixedVertex, LayoutVertex movedVertex,
+            TranslateDirection? translateDirection)
         {
-            var moveXAmount = fixedVertex.Center.X >= movedVertex.Center.X
+            if (translateDirection == null)
+                translateDirection = fixedVertex.Center.X >= movedVertex.Center.X
+                    ? TranslateDirection.Left
+                    : TranslateDirection.Right;
+
+            var translateVectorX = translateDirection == TranslateDirection.Left
                 ? fixedVertex.Left - movedVertex.Right - HorizontalGap
                 : fixedVertex.Right - movedVertex.Left + HorizontalGap;
 
-            MoveVertexCenterXTo(movedVertex, movedVertex.Center.X + moveXAmount);
+            MoveVertexCenterXTo(movedVertex, movedVertex.Center.X + translateVectorX, translateDirection);
         }
 
         private void EnsureVertexBelongsToThisLayer(LayoutVertex vertex)

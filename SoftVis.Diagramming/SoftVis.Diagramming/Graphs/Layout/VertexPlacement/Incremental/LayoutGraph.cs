@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using QuickGraph;
 
@@ -19,14 +20,14 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
                 .Where(i => i != childVertex);
         }
 
-        public void TraverseTreeEdges(LayoutVertex rootVertex, EdgeDirection edgeDirection, Action<LayoutEdge> action)
+        public void ExecuteOnTreeEdges(LayoutVertex rootVertex, EdgeDirection edgeDirection, Action<LayoutEdge> action)
         {
             foreach (var layoutEdge in this.GetEdges(rootVertex, edgeDirection))
             {
                 action(layoutEdge);
 
                 var nextVertex = GetOtherEndOfEdge(layoutEdge, edgeDirection);
-                TraverseTreeEdges(nextVertex, edgeDirection, action);
+                ExecuteOnTreeEdges(nextVertex, edgeDirection, action);
             }
         }
 

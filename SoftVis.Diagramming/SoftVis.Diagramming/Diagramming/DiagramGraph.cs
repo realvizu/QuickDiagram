@@ -50,9 +50,9 @@ namespace Codartis.SoftVis.Diagramming
             return this.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCounts).Select(i => new DiagramPath(i));
         }
 
-        private static void OnVertexCenterChanged(object sender, Point2D point2D)
+        private static void OnVertexCenterChanged(object sender, MoveEventArgs args)
         {
-            ((DiagramNode)sender).Center = point2D;
+            ((DiagramNode)sender).Center = args.To;
         }
 
         private static void OnEdgeRouteChanged(object sender, Route routePoints)
