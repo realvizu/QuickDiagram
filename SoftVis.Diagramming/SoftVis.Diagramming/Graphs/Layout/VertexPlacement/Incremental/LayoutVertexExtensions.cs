@@ -31,11 +31,5 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
             return result;
         }
-
-        public static bool IsNeighbourOf(this LayoutVertex layoutVertex, LayoutVertex potentialOutNeighbourVertex,
-            LayoutGraph layoutGraph)
-        {
-            return layoutGraph.GetNeighbours(layoutVertex).Contains(potentialOutNeighbourVertex);
-        }
     }
 }

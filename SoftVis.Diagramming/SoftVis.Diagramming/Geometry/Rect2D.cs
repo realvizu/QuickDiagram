@@ -42,6 +42,39 @@ namespace Codartis.SoftVis.Geometry
         public Point2D Center => new Point2D(Left + Size.Width / 2, Top + Size.Height / 2);
         public Point2D Position => TopLeft;
 
+        public Rect2D OuterAlignedTo(Rect2D alignToRect, Side side, VerticalAlignment verticalAlignment)
+        {
+            double centerX;
+            double centerY;
+
+            switch (side)
+            {
+                case (Side.Right):
+                    centerX = alignToRect.Right + Width / 2;
+                    break;
+                case (Side.Left):
+                    centerX = alignToRect.Left - Width / 2;
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unexpected Side: {side}");
+            }
+
+            switch (verticalAlignment)
+            {
+                case (VerticalAlignment.Center):
+                    centerY = alignToRect.Top + Math.Max(alignToRect.Height, Height) / 2;
+                    break;
+                case (VerticalAlignment.Top):
+                case (VerticalAlignment.Bottom):
+                    throw new NotImplementedException();
+                default:
+                    throw new InvalidOperationException($"Unexpected VerticalAlignment: {verticalAlignment}");
+            }
+
+            var center = new Point2D(centerX, centerY);
+            return Rect2D.CreateFromCenterAndSize(center, Size);
+        }
+
         public static Rect2D CreateFromCenterAndSize(Point2D center, Size2D size)
         {
             var halfWidth = size.Width / 2;

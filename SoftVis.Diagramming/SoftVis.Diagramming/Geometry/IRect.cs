@@ -11,6 +11,6 @@ namespace Codartis.SoftVis.Geometry
     /// </remarks>
     public interface IRect : IPositioned, ISized, IComparable<IRect>
     {
-        Rect2D Rect { get; }
+        Rect2D Rect { get; }        
     }
 }

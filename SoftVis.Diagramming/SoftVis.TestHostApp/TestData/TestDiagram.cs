@@ -26,7 +26,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
         {
-            var size = new Size2D(((TestModelEntity)modelEntity).Size, 30);
+            var height = (int.Parse(modelEntity.Name) % 4) * 5 + 25;
+            var size = new Size2D(((TestModelEntity)modelEntity).Size, height);
             return new DiagramNodeViewModel(modelEntity, Point2D.Zero, size);
         }
 

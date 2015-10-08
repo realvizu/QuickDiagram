@@ -3,27 +3,44 @@ using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 {
+    /// <summary>
+    /// A vertex used in a LayoutGraph. 
+    /// Either a dummy vertex or encapulates a real vertex.
+    /// </summary>
+    /// <remarks>
+    /// <para>LayoutVertices can float which indicates that the edge 
+    /// does not take part in layout calculations.</para>
+    /// <para>Dummy vertices are used to break long edges spanning more than two layers.
+    /// They ensure that adjacent vertices in the graph are always on adjacent layers.</para>
+    /// <para>LayoutVertices can be compared to each other.
+    /// Comparing to a dummy yields 0 (equal).
+    /// Comparing real vertices yields the comparison of thier originals.</para>
+    /// </remarks>
     internal class LayoutVertex : IComparable<LayoutVertex>
     {
         private Point2D _center;
         public IRect OriginalVertex { get; }
-        public int? Rank { get; set; }
+        public bool IsFloating { get; set; }
 
         public event EventHandler<MoveEventArgs> CenterChanged;
 
-        private LayoutVertex(IRect originalVertex)
+        private LayoutVertex(IRect originalVertex, bool isFloating)
         {
             OriginalVertex = originalVertex;
+            IsFloating = isFloating;
+
+            if (originalVertex != null)
+                _center = originalVertex.Center;
         }
 
-        public static LayoutVertex Create(IRect originalVertex)
+        public static LayoutVertex Create(IRect originalVertex, bool isFloating = false)
         {
-            return new LayoutVertex(originalVertex);
+            return new LayoutVertex(originalVertex, isFloating);
         }
 
-        public static LayoutVertex CreateDummy()
+        public static LayoutVertex CreateDummy(bool isFloating = false)
         {
-            return new LayoutVertex(null);
+            return new LayoutVertex(null, isFloating);
         }
 
         public bool IsDummy => OriginalVertex == null;
@@ -41,6 +58,8 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             get { return _center; }
             set
             {
+                IsFloating = false;
+
                 if (_center == value)
                     return;
 
