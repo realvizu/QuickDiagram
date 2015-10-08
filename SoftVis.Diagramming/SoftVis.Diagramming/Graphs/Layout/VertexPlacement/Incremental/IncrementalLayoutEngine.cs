@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
+using MoreLinq;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
@@ -20,6 +21,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         private readonly Layers _layers;
         private readonly Dictionary<IRect, LayoutVertex> _originalToLayoutVertexMap;
         private readonly IDictionary<IEdge<IRect>, IList<LayoutVertex>> _edgeToDummyVerticesMap;
+        public List<RectMove> VertexMoves { get; }
 
         public event EventHandler<MoveEventArgs> VertexCenterChanged;
         public event EventHandler<Route> EdgeRouteChanged;
@@ -33,21 +35,38 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             _layers = new Layers(_layoutGraph, verticalGap);
             _originalToLayoutVertexMap = new Dictionary<IRect, LayoutVertex>();
             _edgeToDummyVerticesMap = new Dictionary<IEdge<IRect>, IList<LayoutVertex>>();
+            VertexMoves = new List<RectMove>();
+        }
+
+        public void Clear()
+        {
+            _layoutGraph.Clear();
+            _originalToLayoutVertexMap.Clear();
+            _edgeToDummyVerticesMap.Clear();
         }
 
         public void Add(IRect originalVertex)
         {
+            Debug.WriteLine($"Adding node {originalVertex}");
+
+            VertexMoves.Clear();
+
             var newLayoutVertex = CreateLayoutVertex(originalVertex);
 
             _layoutGraph.AddVertex(newLayoutVertex);
             _originalToLayoutVertexMap.Add(originalVertex, newLayoutVertex);
 
             var alignToRect = _layers.First().Rect.WithMarginX(_horizontalGap);
-            newLayoutVertex.Center = originalVertex.Rect.OuterAlignedTo(alignToRect, Side.Right, VerticalAlignment.Center).Center;
+            var centerX = originalVertex.Rect.OuterAlignedTo(alignToRect, Side.Right, VerticalAlignment.Center).Center.X;
+            MoveVertexTo(newLayoutVertex, centerX, null);
         }
 
         internal void Add(IEdge<IRect> originalEdge)
         {
+            Debug.WriteLine($"Adding edge {originalEdge}");
+
+            VertexMoves.Clear();
+
             // TODO: ha kell, fordítsuk meg az edge-et!
 
             var newLayoutEdge = CreateLayoutEdge(originalEdge);
@@ -60,28 +79,40 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
+            Debug.WriteLine($"Moving tree {childVertex} under {parentVertex}");
+
             FloatTree(childVertex);
             PlaceTreeUnderParent(childVertex, parentVertex);
         }
 
         private void FloatTree(LayoutVertex rootVertex)
         {
+            Debug.WriteLine($"Floating tree {rootVertex}");
+
             _layoutGraph.ExecuteOnTree(rootVertex, EdgeDirection.In, i => i.IsFloating = true);
         }
 
         private void PlaceTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
-            var translateVectorX = CalculateVectorToMoveUnderParent(childVertex, parentVertex);
-            _layoutGraph.ExecuteOnTree(childVertex, EdgeDirection.In,
-                i => MoveVertexBy(i, translateVectorX, new PushyOverlapResolver(_horizontalGap)));
-        }
-
-        private double CalculateVectorToMoveUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
-        {
             var siblings = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).ToArray();
             EnsureSiblingsAreSameRank(childVertex, siblings);
-            var insertionCenterX = siblings.GetInsertionPointX(childVertex, parentVertex, _horizontalGap);
-            return insertionCenterX - childVertex.Center.X;
+
+            double insertionCenterX;
+            IOverlapResolver overlapResolver;
+            if (siblings.Any())
+            {
+                insertionCenterX = siblings.GetInsertionPointX(childVertex, _horizontalGap);
+                overlapResolver = new PushyOverlapResolver(_horizontalGap, insertionCenterX);
+            }
+            else
+            {
+                insertionCenterX = parentVertex.Center.X;
+                overlapResolver = new SiblingBlockAvoiderOverlapResolver(_layoutGraph, insertionCenterX, _horizontalGap);
+            }
+
+            var translateVectorX = insertionCenterX - childVertex.Center.X;
+
+            _layoutGraph.ExecuteOnTree(childVertex, EdgeDirection.In, i => MoveVertexBy(i, translateVectorX, overlapResolver));
         }
 
         private void EnsureSiblingsAreSameRank(LayoutVertex childVertex, IEnumerable<LayoutVertex> siblings)
@@ -149,16 +180,24 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         private void CenterParents(LayoutVertex layoutVertex)
         {
+            Debug.WriteLine($"Centering parents of {layoutVertex}");
+
             foreach (var parentVertex in _layoutGraph.GetOutNeighbours(layoutVertex))
             {
+                Debug.WriteLine($"Centering {parentVertex}");
+
                 var targetCenterX = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).GetRect().Center.X;
                 var overlapResolver = new BackSlidingOverlapResolver(_horizontalGap, parentVertex.Center.X);
                 MoveVertexTo(parentVertex, targetCenterX, overlapResolver);
+                CenterParents(parentVertex);
             }
         }
 
         private void MoveTreeBy(LayoutVertex rootVertex, double translateVectorX, IOverlapResolver overlapResolver)
         {
+            Debug.WriteLine($"Moving tree {rootVertex} by {translateVectorX}");
+
+            FloatTree(rootVertex);
             _layoutGraph.ExecuteOnTree(rootVertex, EdgeDirection.In, i => MoveVertexBy(i, translateVectorX, overlapResolver));
         }
 
@@ -169,14 +208,21 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         private void MoveVertexTo(LayoutVertex movingVertex, double centerX, IOverlapResolver overlapResolver)
         {
-            if (movingVertex.Center.X.IsEqualWithTolerance(centerX))
+            var centerY = _layers.GetCenterY(movingVertex);
+
+            if (movingVertex.Center.X.IsEqualWithTolerance(centerX) &&
+                movingVertex.Center.Y.IsEqualWithTolerance(centerY))
                 return;
 
-            Debug.WriteLine($"Vertex {movingVertex} moving to X: {movingVertex.Center.X}");
+            Debug.WriteLine($"Moving vertex {movingVertex} to: {movingVertex.Center.X}");
 
-            movingVertex.Center = new Point2D(centerX, _layers.GetCenterY(movingVertex));
+            var oldCenter = movingVertex.Center;
+            movingVertex.Center = new Point2D(centerX, centerY);
+
+            if (!movingVertex.IsDummy)
+                VertexMoves.Add(new RectMove(movingVertex.OriginalVertex, oldCenter, movingVertex.Center));
+
             ResolveOverlaps(movingVertex, overlapResolver);
-            CenterParents(movingVertex);
         }
 
         private void ResolveOverlaps(LayoutVertex movingVertex, IOverlapResolver overlapResolver)
@@ -190,6 +236,8 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
                         MoveTreeBy(resolution.Vertex, resolution.TranslateVectorX, overlapResolver);
                     else
                         MoveVertexBy(resolution.Vertex, resolution.TranslateVectorX, overlapResolver);
+
+                    CenterParents(resolution.Vertex);
                 }
             }
         }
@@ -244,5 +292,6 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         }
 
         #endregion
+
     }
 }

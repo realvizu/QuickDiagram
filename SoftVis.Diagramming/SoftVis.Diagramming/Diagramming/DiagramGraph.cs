@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental;
@@ -15,13 +16,19 @@ namespace Codartis.SoftVis.Diagramming
         private const double HorizontalGap = 20;
         private const double VerticalGap = 40;
 
-        private readonly IncrementalLayoutEngine _layoutEngine;
+        public readonly IncrementalLayoutEngine LayoutEngine;
 
         public DiagramGraph()
         {
-            _layoutEngine = new IncrementalLayoutEngine(HorizontalGap, VerticalGap);
-            _layoutEngine.VertexCenterChanged += OnVertexCenterChanged;
-            _layoutEngine.EdgeRouteChanged += OnEdgeRouteChanged;
+            LayoutEngine = new IncrementalLayoutEngine(HorizontalGap, VerticalGap);
+            LayoutEngine.VertexCenterChanged += OnVertexCenterChanged;
+            LayoutEngine.EdgeRouteChanged += OnEdgeRouteChanged;
+            Cleared += OnCleared;
+        }
+
+        private void OnCleared(object sender, EventArgs e)
+        {
+            LayoutEngine.Clear();
         }
 
         public override bool AddVertex(DiagramNode node)
@@ -29,7 +36,7 @@ namespace Codartis.SoftVis.Diagramming
             var isAdded = base.AddVertex(node);
 
             if (isAdded)
-                _layoutEngine.Add(node);
+                LayoutEngine.Add(node);
 
             return isAdded;
         }
@@ -39,7 +46,7 @@ namespace Codartis.SoftVis.Diagramming
             var isAdded = base.AddEdge(connector);
 
             if (isAdded)
-                _layoutEngine.Add(connector);
+                LayoutEngine.Add(connector);
 
             return isAdded;
         }

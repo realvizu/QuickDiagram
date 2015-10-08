@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 {
@@ -21,12 +22,12 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             var currentCenterX = movingVertex.Center.X;
 
             var newCenterX = _originalCenterX < currentCenterX
-                ? placedVertex.Rect.Left - _horizontalGap - movingVertex.Width/2
-                : placedVertex.Rect.Right + _horizontalGap + movingVertex.Width/2;
+                ? Math.Max(_originalCenterX, placedVertex.Rect.Left - _horizontalGap - movingVertex.Width/2)
+                : Math.Min(_originalCenterX, placedVertex.Rect.Right + _horizontalGap + movingVertex.Width/2);
 
             Debug.WriteLine($"Resolving overlap ({movingVertex},{placedVertex}) by moving back {movingVertex} to X {newCenterX}.");
 
-            return new VertexMoveSpecification(movingVertex, currentCenterX, newCenterX, withChildren: false);
+            return new VertexMoveSpecification(movingVertex, currentCenterX, newCenterX);
         }
     }
 }

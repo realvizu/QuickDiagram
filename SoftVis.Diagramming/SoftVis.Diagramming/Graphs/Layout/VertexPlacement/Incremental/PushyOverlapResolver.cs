@@ -11,28 +11,28 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
     internal class PushyOverlapResolver : IOverlapResolver
     {
         private readonly double _horizontalGap;
-        private TranslateDirection? _pushDirection;
+        private readonly double _originalCenterX;
 
-        public PushyOverlapResolver(double horizontalGap)
+        public PushyOverlapResolver(double horizontalGap, double originalCenterX)
         {
             _horizontalGap = horizontalGap;
+            _originalCenterX = originalCenterX;
         }
 
         public VertexMoveSpecification GetResolution(LayoutVertex movingVertex, LayoutVertex placedVertex)
         {
-            if (_pushDirection == null)
-                _pushDirection = movingVertex.Center.X >= placedVertex.Center.X
+             var pushDirection = _originalCenterX >= placedVertex.Center.X
                         ? TranslateDirection.Left
                         : TranslateDirection.Right;
 
-            var translateVectorX = _pushDirection == TranslateDirection.Left
+            var translateVectorX = pushDirection == TranslateDirection.Left
                 ? movingVertex.Left - placedVertex.Right - _horizontalGap
                 : movingVertex.Right - placedVertex.Left + _horizontalGap;
 
-            Debug.WriteLine($"Resolving overlap of ({movingVertex},{placedVertex}) by moving {placedVertex} by X {translateVectorX} with children.");
+            Debug.WriteLine($"Resolving overlap of ({movingVertex},{placedVertex}) by moving {placedVertex} by X {translateVectorX} with children (pushDirection:{pushDirection}).");
 
-            return new VertexMoveSpecification(placedVertex, placedVertex.Center.X, 
-                placedVertex.Center.X + translateVectorX, withChildren: true);
+            var targetCenterX = placedVertex.Center.X + translateVectorX;
+            return new VertexMoveSpecification(placedVertex, placedVertex.Center.X, targetCenterX, this);
         }
     }
 }

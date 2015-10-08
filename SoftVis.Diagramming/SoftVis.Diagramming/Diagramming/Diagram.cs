@@ -45,6 +45,8 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeActivated;
         public event EventHandler Cleared;
 
+        public List<RectMove> NodeMoves => _graph.LayoutEngine.VertexMoves;
+         
         /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>

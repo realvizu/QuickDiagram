@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
 
@@ -11,22 +12,19 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             return vertices.Select(i => i.Rect).Union();
         }
 
-        public static double GetInsertionPointX(this IEnumerable<LayoutVertex> siblings, 
-            LayoutVertex newVertex, LayoutVertex parentVertex, double horizontalGap)
+        public static double GetInsertionPointX(this IEnumerable<LayoutVertex> siblings, LayoutVertex newVertex, double horizontalGap)
         {
-            var result = parentVertex.Center.X;
-
             var orderedSiblings = siblings.OrderBy(i => i.Center.X).ToArray();
-            if (orderedSiblings.Any())
-            {
-                result = orderedSiblings[0].Left - horizontalGap / 2;
+            if (!orderedSiblings.Any())
+                throw new ArgumentException("Siblings must contain items.");
 
-                var index = 0;
-                while (index < orderedSiblings.Length && orderedSiblings[index].CompareTo(newVertex) < 0)
-                {
-                    result = orderedSiblings[index].Right + horizontalGap / 2;
-                    index++;
-                }
+            var result = orderedSiblings[0].Left - horizontalGap / 2;
+
+            var index = 0;
+            while (index < orderedSiblings.Length && orderedSiblings[index].CompareTo(newVertex) < 0)
+            {
+                result = orderedSiblings[index].Right + horizontalGap / 2;
+                index++;
             }
 
             return result;

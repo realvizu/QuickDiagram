@@ -37,6 +37,10 @@
     <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MoreLinq, Version=1.3.18902.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.1.3.0\lib\net35\MoreLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
@@ -87,7 +91,9 @@
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\MoveEventArgs.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\BackSlidingOverlapResolver.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\PushyOverlapResolver.cs" />
+    <Compile Include="Graphs\Layout\VertexPlacement\Incremental\SiblingBlockAvoiderOverlapResolver.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\TranslateDirection.cs" />
+    <Compile Include="Geometry\RectMove.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\VertexMoveSpecification.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Graphs\Layout\LayoutType.cs" />
@@ -219,6 +225,7 @@
     <None Include="config.nsdepcop">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Rendering\Wpf\DiagramRendering\ShapeControls\DiagramConnectorControl.xaml">

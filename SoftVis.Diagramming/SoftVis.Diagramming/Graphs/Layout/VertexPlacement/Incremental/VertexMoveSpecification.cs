@@ -8,16 +8,17 @@
         public LayoutVertex Vertex { get; }
         public double FromCenterX { get; }
         public double ToCenterX { get; }
-        public bool WithChildren { get; }
+        public IOverlapResolver ResolverForChildren { get; }
 
-        public VertexMoveSpecification(LayoutVertex vertex, double fromCenterX, double toCenterX, bool withChildren)
+        public VertexMoveSpecification(LayoutVertex vertex, double fromCenterX, double toCenterX, IOverlapResolver resolverForChildren = null)
         {
             Vertex = vertex;
             FromCenterX = fromCenterX;
             ToCenterX = toCenterX;
-            WithChildren = withChildren;
+            ResolverForChildren = resolverForChildren;
         }
 
         public double TranslateVectorX => ToCenterX - FromCenterX;
+        public bool WithChildren => ResolverForChildren != null;
     }
 }
