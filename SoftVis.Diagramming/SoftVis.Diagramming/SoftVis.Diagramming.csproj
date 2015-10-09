@@ -91,7 +91,6 @@
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\MoveEventArgs.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\BackSlidingOverlapResolver.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\PushyOverlapResolver.cs" />
-    <Compile Include="Graphs\Layout\VertexPlacement\Incremental\SiblingBlockAvoiderOverlapResolver.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\TranslateDirection.cs" />
     <Compile Include="Geometry\RectMove.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\VertexMoveSpecification.cs" />

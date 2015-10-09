@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.Graphs
                 : graph.OutEdges(vertex);
         }
 
-        public static IEnumerable<TVertex> GetNeighbours<TVertex, TEdge>(
+        public static IEnumerable<TVertex> GetAllNeighbours<TVertex, TEdge>(
             this IBidirectionalGraph<TVertex, TEdge> graph, TVertex vertex)
             where TEdge : IEdge<TVertex>
         {
@@ -51,6 +51,15 @@ namespace Codartis.SoftVis.Graphs
             where TEdge : IEdge<TVertex>
         {
             return graph.OutEdges(vertex).Select(e => e.Target).Distinct();
+        }
+
+        public static bool AreSiblings<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
+            TVertex vertex1, TVertex vertex2, EdgeDirection edgeDirection)
+            where TEdge : IEdge<TVertex>
+        {
+            var vertex1Parents = graph.GetNeighbours(vertex1, edgeDirection);
+            var vertex2Parents = graph.GetNeighbours(vertex2, edgeDirection);
+            return vertex1Parents.Intersect(vertex2Parents).Any();
         }
 
         public static IEnumerable<TVertex> GetSources<TVertex, TEdge>(

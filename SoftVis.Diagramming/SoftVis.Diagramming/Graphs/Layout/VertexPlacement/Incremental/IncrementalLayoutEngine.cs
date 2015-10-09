@@ -110,23 +110,15 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         private void PlaceTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
-            var siblings = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).ToArray();
-            EnsureSiblingsAreSameRank(childVertex, siblings);
+            var nonFloatingSiblings = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).ToArray();
+            EnsureSiblingsAreSameRank(childVertex, nonFloatingSiblings);
 
-            double insertionCenterX;
-            IOverlapResolver overlapResolver;
-            if (siblings.Any())
-            {
-                insertionCenterX = siblings.GetInsertionPointX(childVertex, _horizontalGap);
-                overlapResolver = new PushyOverlapResolver(_horizontalGap, insertionCenterX);
-            }
-            else
-            {
-                insertionCenterX = parentVertex.Center.X;
-                overlapResolver = new SiblingBlockAvoiderOverlapResolver(_layoutGraph, insertionCenterX, _horizontalGap);
-            }
+            var insertionCenterX = nonFloatingSiblings.Any() 
+                ? nonFloatingSiblings.GetInsertionPointX(childVertex, _horizontalGap) 
+                : parentVertex.Center.X;
 
             var translateVectorX = insertionCenterX - childVertex.Center.X;
+            var overlapResolver = new PushyOverlapResolver(_layoutGraph, _horizontalGap, insertionCenterX);
 
             _layoutGraph.ExecuteOnTree(childVertex, EdgeDirection.In, i => MoveVertexBy(i, translateVectorX, overlapResolver));
         }

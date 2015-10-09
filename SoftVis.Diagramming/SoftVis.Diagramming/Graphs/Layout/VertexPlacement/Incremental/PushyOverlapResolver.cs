@@ -1,27 +1,40 @@
 ﻿using System.Diagnostics;
+using MoreLinq;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 {
     /// <summary>
     /// Resolves the overlap of two vertices by pushing away the placed vertex.
+    /// If the moving and the placed vertex are not siblings then it pushes away all of the placed vertex' siblings too.
     /// </summary>
-    /// <remarks>
-    /// At the first usage it calculates and stores the push direction and subsequently uses that.
-    /// </remarks>
     internal class PushyOverlapResolver : IOverlapResolver
     {
+        private readonly LayoutGraph _layoutGraph;
         private readonly double _horizontalGap;
-        private readonly double _originalCenterX;
+        private readonly double _insertionCenterX;
 
-        public PushyOverlapResolver(double horizontalGap, double originalCenterX)
+        public PushyOverlapResolver(LayoutGraph layoutGraph, double horizontalGap, double insertionCenterX)
         {
+            _layoutGraph = layoutGraph;
             _horizontalGap = horizontalGap;
-            _originalCenterX = originalCenterX;
+            _insertionCenterX = insertionCenterX;
         }
 
         public VertexMoveSpecification GetResolution(LayoutVertex movingVertex, LayoutVertex placedVertex)
         {
-             var pushDirection = _originalCenterX >= placedVertex.Center.X
+            double leftRightPushCutOffX;
+            if (_layoutGraph.AreSiblings(movingVertex, placedVertex, EdgeDirection.Out))
+            {
+                leftRightPushCutOffX = placedVertex.Center.X;
+            }
+            else
+            {
+                var parentsOfPlacedVertex = _layoutGraph.GetOutNeighbours(placedVertex);
+                var nearestParent = parentsOfPlacedVertex.MinBy(i => i.Center.X - _insertionCenterX);
+                leftRightPushCutOffX = nearestParent.Center.X;
+            }
+
+            var pushDirection = _insertionCenterX >= leftRightPushCutOffX
                         ? TranslateDirection.Left
                         : TranslateDirection.Right;
 
