@@ -89,7 +89,6 @@
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\LayoutVertex.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\LayoutVertexExtensions.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\MoveEventArgs.cs" />
-    <Compile Include="Graphs\Layout\VertexPlacement\Incremental\BackSlidingOverlapResolver.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\PushyOverlapResolver.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\Incremental\TranslateDirection.cs" />
     <Compile Include="Geometry\RectMove.cs" />

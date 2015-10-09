@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using MoreLinq;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
@@ -22,19 +23,13 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         public VertexMoveSpecification GetResolution(LayoutVertex movingVertex, LayoutVertex placedVertex)
         {
-            double leftRightPushCutOffX;
-            if (_layoutGraph.AreSiblings(movingVertex, placedVertex, EdgeDirection.Out))
-            {
-                leftRightPushCutOffX = placedVertex.Center.X;
-            }
-            else
-            {
-                var parentsOfPlacedVertex = _layoutGraph.GetOutNeighbours(placedVertex);
-                var nearestParent = parentsOfPlacedVertex.MinBy(i => i.Center.X - _insertionCenterX);
-                leftRightPushCutOffX = nearestParent.Center.X;
-            }
+            var parentsOfPlacedVertex = _layoutGraph.GetOutNeighbours(placedVertex).ToArray();
 
-            var pushDirection = _insertionCenterX >= leftRightPushCutOffX
+            var pushDirectionCutOffPointX = !AreSiblings(movingVertex, placedVertex) && parentsOfPlacedVertex.Any()
+                ? GetNearestParent(parentsOfPlacedVertex).Center.X
+                : placedVertex.Center.X;
+
+            var pushDirection = _insertionCenterX >= pushDirectionCutOffPointX
                         ? TranslateDirection.Left
                         : TranslateDirection.Right;
 
@@ -46,6 +41,16 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
             var targetCenterX = placedVertex.Center.X + translateVectorX;
             return new VertexMoveSpecification(placedVertex, placedVertex.Center.X, targetCenterX, this);
+        }
+
+        private bool AreSiblings(LayoutVertex movingVertex, LayoutVertex placedVertex)
+        {
+            return _layoutGraph.AreSiblings(movingVertex, placedVertex, EdgeDirection.Out);
+        }
+
+        private LayoutVertex GetNearestParent(LayoutVertex[] parentsOfPlacedVertex)
+        {
+            return parentsOfPlacedVertex.MinBy(i => i.Center.X - _insertionCenterX);
         }
     }
 }

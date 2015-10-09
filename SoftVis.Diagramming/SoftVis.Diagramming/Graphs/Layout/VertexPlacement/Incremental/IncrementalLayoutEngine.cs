@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
     /// <para>When a tree is moved it is first set to "floating", that is it won't cause any vertex overlaps.</para>
     /// <para>When a vertex is placed (its center property is set) then it stops floating.</para>
     /// <para>When a vertex is placed (for any reason) its vertical position is acquired from its layer.</para>
-    /// <para>When a vertex is moved because of overlap resolution then its parent is centered again to its child block (recursive on parents upwards).</para>
+    /// <para>When a vertex is moved because of overlap resolution then its parent is centered again to its child block (recursive on parents upwards), possibly pushing away other nodes.</para>
     /// Events:
     /// <para>The layout engine subscribes to the vertices center property changed event.</para>
     /// <para>VertexCenterChanged event is fired whenever a vertex is moved.</para>
@@ -113,8 +113,8 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             var nonFloatingSiblings = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).ToArray();
             EnsureSiblingsAreSameRank(childVertex, nonFloatingSiblings);
 
-            var insertionCenterX = nonFloatingSiblings.Any() 
-                ? nonFloatingSiblings.GetInsertionPointX(childVertex, _horizontalGap) 
+            var insertionCenterX = nonFloatingSiblings.Any()
+                ? nonFloatingSiblings.GetInsertionPointX(childVertex, _horizontalGap)
                 : parentVertex.Center.X;
 
             var translateVectorX = insertionCenterX - childVertex.Center.X;
@@ -207,11 +207,14 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             Debug.WriteLine($"Moving tree {rootVertex} by {translateVectorX}");
 
             FloatTree(rootVertex);
+
             _layoutGraph.ExecuteOnTree(rootVertex, EdgeDirection.In, i => MoveVertexBy(i, translateVectorX, overlapResolver));
         }
 
         private void MoveVertexBy(LayoutVertex movingVertex, double translateVectorX, IOverlapResolver overlapResolver)
         {
+            Debug.WriteLine($"Moving vertex {movingVertex} by {translateVectorX}");
+
             MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, overlapResolver);
         }
 
@@ -220,7 +223,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             foreach (var parentVertex in _layoutGraph.GetOutNeighbours(layoutVertex))
             {
                 var targetCenterX = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).GetRect().Center.X;
-                var overlapResolver = new BackSlidingOverlapResolver(_horizontalGap, parentVertex.Center.X);
+                var overlapResolver = new PushyOverlapResolver(_layoutGraph, _horizontalGap, parentVertex.Center.X);
                 MoveVertexTo(parentVertex, targetCenterX, overlapResolver);
                 CenterParents(parentVertex);
             }
