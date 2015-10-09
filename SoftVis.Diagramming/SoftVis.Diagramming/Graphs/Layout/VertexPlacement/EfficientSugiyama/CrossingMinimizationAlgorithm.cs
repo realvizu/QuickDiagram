@@ -931,7 +931,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
                 int count = 0;
                 foreach (var edge in edges)
                 {
-                    var otherVertex = edge.OtherVertex(vertex);
+                    var otherVertex = edge.GetOtherEnd(vertex);
                     vertex.MeasuredPosition += otherVertex.Position;
                     count++;
                 }

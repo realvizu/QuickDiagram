@@ -340,7 +340,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.EfficientSugiyama
                             var edge = neighbourEdges[medians[m]];
                             if (edge.Marked)
                                 Debug.WriteLine("Edge marked: " + edge.Source.OriginalVertex + ", " + edge.Target.OriginalVertex);
-                            var neighbour = edge.OtherVertex(vertex);
+                            var neighbour = edge.GetOtherEnd(vertex);
                             if (!edge.Marked &&
                                 ((leftRightMode == LeftRightMode.Left && r < neighbour.Position)
                                     || (leftRightMode == LeftRightMode.Right && r > neighbour.Position)))

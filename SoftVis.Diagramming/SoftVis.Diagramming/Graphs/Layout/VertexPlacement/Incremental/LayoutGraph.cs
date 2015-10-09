@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Geometry;
+using MoreLinq;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
@@ -12,13 +15,16 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
     /// Differences to the original graph:
     /// <para>Dummy vertices can be added to break long edges and ensure that neighbours are always on adjacent layers.</para>
     /// <para>Edges can be reversed to ensure an acyclic graph.</para>
-    /// <para>When rearranging vertices the "floating" ones are removed from this graph so they don't cause overlaps.</para>
+    /// <para>When rearranging vertices the "floating" ones are not considered so they don't cause overlaps.</para>
     /// </remarks>
     internal sealed class LayoutGraph : BidirectionalGraph<LayoutVertex, LayoutEdge>
     {
-        public IEnumerable<LayoutEdge> GetAllEdges(LayoutVertex layoutVertex)
+        private readonly IDictionary<IEdge<IRect>, IList<LayoutVertex>> _edgeToDummyVerticesMap;
+
+        public LayoutGraph()
         {
-            return InEdges(layoutVertex).Union(OutEdges(layoutVertex));
+            _edgeToDummyVerticesMap = new Dictionary<IEdge<IRect>, IList<LayoutVertex>>();
+            Cleared += OnCleared;
         }
 
         public IEnumerable<LayoutVertex> GetNonFloatingNeighbours(LayoutVertex layoutVertex, EdgeDirection edgeDirection)
@@ -26,32 +32,58 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             return this.GetNeighbours(layoutVertex, edgeDirection).Where(i => !i.IsFloating);
         }
 
-        public void ExecuteOnTree(LayoutVertex rootVertex, EdgeDirection edgeDirection, Action<LayoutVertex> actionOnVertex)
+        public Route GetEdgeRoute(LayoutEdge layoutEdge)
         {
-            actionOnVertex(rootVertex);
-            foreach (var layoutEdge in this.GetEdges(rootVertex, edgeDirection))
+            var sourceRect = layoutEdge.Source.Rect;
+            var targetRect = layoutEdge.Target.Rect;
+
+            return new Route
             {
-                var nextVertex = GetOtherEndOfEdge(layoutEdge, edgeDirection);
-                ExecuteOnTree(nextVertex, edgeDirection, actionOnVertex);
+                sourceRect.GetAttachPointToward(targetRect.Center),
+                GetInterimRoutePoints(layoutEdge),
+                targetRect.GetAttachPointToward(sourceRect.Center)
+            };
+        }
+
+        private IEnumerable<Point2D> GetInterimRoutePoints(LayoutEdge layoutEdge)
+        {
+            IList<LayoutVertex> dummyVertices;
+            return _edgeToDummyVerticesMap.TryGetValue(layoutEdge.OriginalEdge, out dummyVertices)
+                ? dummyVertices.Select(i => i.Center)
+                : null;
+        }
+
+        private void OnCleared(object sender, EventArgs args)
+        {
+            _edgeToDummyVerticesMap.Clear();
+        }
+
+        #region Unused
+
+        private void BreakEdgeWithInterimVertices(LayoutEdge edgeToBreak, List<LayoutVertex> interimVertices)
+        {
+            SaveEdgeToDummyVerticesMapping(edgeToBreak, interimVertices);
+
+            RemoveEdge(edgeToBreak);
+
+            AddVertexRange(interimVertices);
+
+            var vertexPath = edgeToBreak.Source.ToEnumerable().Concat(interimVertices).Concat(edgeToBreak.Target).ToArray();
+
+            for (var i = 0; i < vertexPath.Length - 1; i++)
+            {
+                var newEdge = new LayoutEdge(edgeToBreak.OriginalEdge, vertexPath[i], vertexPath[i + 1], edgeToBreak.IsReversed);
+                AddEdge(newEdge);
             }
         }
 
-        public void ExecuteOnTree(LayoutVertex rootVertex, LayoutVertex parentVertex, EdgeDirection edgeDirection, 
-            Action<LayoutVertex, LayoutVertex> actionOnVertexAndParent)
+        private void SaveEdgeToDummyVerticesMapping(LayoutEdge edge, IEnumerable<LayoutVertex> interimVertices)
         {
-            actionOnVertexAndParent(rootVertex, parentVertex);
-            foreach (var layoutEdge in this.GetEdges(rootVertex, edgeDirection))
-            {
-                var nextVertex = GetOtherEndOfEdge(layoutEdge, edgeDirection);
-                ExecuteOnTree(nextVertex, rootVertex, edgeDirection, actionOnVertexAndParent);
-            }
+            interimVertices = edge.IsReversed ? interimVertices.Reverse() : interimVertices;
+
+            _edgeToDummyVerticesMap.Add(edge.OriginalEdge, interimVertices.ToArray());
         }
 
-        private static LayoutVertex GetOtherEndOfEdge(LayoutEdge layoutEdge, EdgeDirection edgeDirection)
-        {
-            return edgeDirection == EdgeDirection.In
-                ? layoutEdge.Source
-                : layoutEdge.Target;
-        }
+        #endregion
     }
 }

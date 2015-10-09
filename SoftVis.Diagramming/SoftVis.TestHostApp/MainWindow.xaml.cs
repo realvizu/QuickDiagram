@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
@@ -10,16 +12,47 @@ namespace Codartis.SoftVis.TestHostApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private TestModel _testModel;
         private TestDiagram _testDiagram;
-        private int _shownModelEntityIndex = 0;
+        private int _shownModelEntityIndex;
+        private int _totalNodeMoveCount;
         private int _frame;
-
+        private string _frameLabel;
+        
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+        }
+
+        public int TotalNodeMoveCount
+        {
+            get { return _totalNodeMoveCount; }
+            set
+            {
+                if (_totalNodeMoveCount != value)
+                {
+                    _totalNodeMoveCount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string FrameLabel
+        {
+            get { return _frameLabel; }
+            set
+            {
+                if (_frameLabel != value)
+                {
+                    _frameLabel = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public override void OnApplyTemplate()
@@ -40,7 +73,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void Next_OnClick(object sender, RoutedEventArgs e)
         {
-            _testDiagram.NodeMoves.ForEach(PlayFrameForward);
+            _testDiagram.LastConnectorTriggeredNodeMoves.ForEach(PlayFrameForward);
 
             var modelItem = _testDiagram.ModelItemsAddByClicks[_shownModelEntityIndex];
 
@@ -53,39 +86,42 @@ namespace Codartis.SoftVis.TestHostApp
                 _shownModelEntityIndex++;
 
             FitToView();
-            _frame = _testDiagram.NodeMoves.Count - 1;
-        }
-
-        private void Back_OnClick(object sender, RoutedEventArgs e)
-        {
-            PlayFrameBackward(_testDiagram.NodeMoves[_frame]);
-
-            if (_frame > 0)
-            {
-                _frame--;
-                Frame.Text = _frame.ToString();
-            }
+            TotalNodeMoveCount = _testDiagram.TotalNodeMoveCount;
+            _frame = _testDiagram.LastConnectorTriggeredNodeMoves.Count - 1;
+            FrameLabel = _frame + " (To)";
         }
 
         private void Forward_OnClick(object sender, RoutedEventArgs e)
         {
-            PlayFrameForward(_testDiagram.NodeMoves[_frame]);
+            PlayFrameForward(_testDiagram.LastConnectorTriggeredNodeMoves[_frame]);
 
-            if (_frame < _testDiagram.NodeMoves.Count - 1)
-            {
+            if (_frame < _testDiagram.LastConnectorTriggeredNodeMoves.Count - 1)
                 _frame++;
-                Frame.Text = _frame.ToString();
-            }
         }
 
-        private void PlayFrameBackward(RectMove nodeMove)
+        private void Back_OnClick(object sender, RoutedEventArgs e)
         {
-            ((DiagramNode)nodeMove.Node).Center = nodeMove.FromCenter;
+            PlayFrameBackward(_testDiagram.LastConnectorTriggeredNodeMoves[_frame]);
+
+            if (_frame > 0)
+                _frame--;
         }
 
         private void PlayFrameForward(RectMove nodeMove)
         {
             ((DiagramNode)nodeMove.Node).Center = nodeMove.ToCenter;
+            FrameLabel = _frame + " (To)";
+        }
+
+        private void PlayFrameBackward(RectMove nodeMove)
+        {
+            ((DiagramNode)nodeMove.Node).Center = nodeMove.FromCenter;
+            FrameLabel = _frame + " (From)";
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
