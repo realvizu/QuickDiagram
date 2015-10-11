@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using Codartis.SoftVis.Geometry;
 using MoreLinq;
 
 namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
@@ -25,22 +26,31 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         {
             var parentsOfPlacedVertex = _layoutGraph.GetOutNeighbours(placedVertex).ToArray();
 
-            var pushDirectionCutOffPointX = !AreSiblings(movingVertex, placedVertex) && parentsOfPlacedVertex.Any()
-                ? GetNearestParent(parentsOfPlacedVertex).Center.X
-                : placedVertex.Center.X;
+            LayoutVertex pushedVertex;
+            Rect2D pushedRect;
+            if (!AreSiblings(movingVertex, placedVertex) && parentsOfPlacedVertex.Any())
+            {
+                pushedVertex = GetNearestParent(parentsOfPlacedVertex);
+                pushedRect = _layoutGraph.GetInNeighbours(pushedVertex).Select(i => i.Rect).Union();
+            }
+            else
+            {
+                pushedVertex = placedVertex;
+                pushedRect = placedVertex.Rect;
+            }
 
-            var pushDirection = _insertionCenterX >= pushDirectionCutOffPointX
+            var pushDirection = _insertionCenterX >= pushedVertex.Center.X
                         ? TranslateDirection.Left
                         : TranslateDirection.Right;
 
             var translateVectorX = pushDirection == TranslateDirection.Left
-                ? movingVertex.Left - placedVertex.Right - _horizontalGap
-                : movingVertex.Right - placedVertex.Left + _horizontalGap;
+                ? movingVertex.Left - pushedRect.Right - _horizontalGap
+                : movingVertex.Right - pushedRect.Left + _horizontalGap;
 
-            Debug.WriteLine($"Resolving overlap of ({movingVertex},{placedVertex}) by moving {placedVertex} by X {translateVectorX} with children (pushDirection:{pushDirection}).");
+            Debug.WriteLine($"Resolving overlap of ({movingVertex},{placedVertex}) by moving {pushedVertex} by X {translateVectorX} with children (pushDirection:{pushDirection}).");
 
-            var targetCenterX = placedVertex.Center.X + translateVectorX;
-            return new VertexMoveSpecification(placedVertex, placedVertex.Center.X, targetCenterX, this);
+            var targetCenterX = pushedVertex.Center.X + translateVectorX;
+            return new VertexMoveSpecification(pushedVertex, pushedVertex.Center.X, targetCenterX, this);
         }
 
         private bool AreSiblings(LayoutVertex movingVertex, LayoutVertex placedVertex)
