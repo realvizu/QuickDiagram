@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         }
 
         public int Count => _items.Count;
+        public int IndexOf(LayoutVertex layoutVertex) => _items.IndexOf(layoutVertex);
         public IEnumerator<LayoutVertex> GetEnumerator() => _items.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 
@@ -58,6 +59,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private int DetermineItemIndex(LayoutVertex insertedVertex)
         {
             var insertedVertexParent = insertedVertex.GetParent();
+            var insertedVertexParentIndexInLayer = insertedVertexParent?.GetIndexInLayer();
 
             var index = 0;
             foreach (var existingVertex in _items)
@@ -69,7 +71,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                     break;
 
                 var differentParents = insertedVertexParent != null && existingVertexParent != insertedVertexParent;
-                if (differentParents && insertedVertexParent.Precedes(existingVertexParent))
+                if (differentParents && existingVertexParent.GetIndexInLayer() > insertedVertexParentIndexInLayer.Value)
                     break;
 
                 index++;

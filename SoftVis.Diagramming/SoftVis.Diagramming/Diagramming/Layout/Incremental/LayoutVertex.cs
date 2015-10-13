@@ -66,22 +66,30 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
+        public void FloatTree() => ExecuteOnTree(i => i.IsFloating = true);
+
         public IEnumerable<LayoutVertex> GetParents() => _graph.GetOutNeighbours(this);
         public IEnumerable<LayoutVertex> GetChildren() => _graph.GetInNeighbours(this);
         public IEnumerable<LayoutVertex> GetPositionedChildren() => GetChildren().Where(i => !i.IsFloating);
         public IEnumerable<LayoutVertex> GetSiblings() => GetParents().SelectMany(i => i.GetChildren()).Where(i => i != this);
         public LayoutVertex GetParent() => GetParents().OrderByDescending(i => i.DiagramNode?.Priority).FirstOrDefault();
         public bool HasSiblings() => GetSiblings().Any();
-
+        
         public bool IsSiblingOf(LayoutVertex layoutVertex)
         {
             return layoutVertex != null && GetParents().Intersect(layoutVertex.GetParents()).Any();
+        }
+
+        public void ExecuteOnTree(Action<LayoutVertex> actionOnVertex)
+        {
+            _graph.ExecuteOnTree(this, EdgeDirection.In, actionOnVertex);
         }
 
         public DiagramLayer GetLayer() => _graph.GetLayer(this);
         public int GetLayerIndex() => _graph.GetLayerIndex(this);
         public LayoutVertex GetPreviousInLayer() => GetLayer().GetPrevious(this);
         public LayoutVertex GetNextInLayer() => GetLayer().GetNext(this);
+        public int GetIndexInLayer() => GetLayer().IndexOf(this);
         public IEnumerable<LayoutVertex> GetOtherPositionedVerticesInLayer() => GetLayer().Where(i => i != this && !i.IsFloating);
 
         public LayoutVertex GetPreviousSibling()

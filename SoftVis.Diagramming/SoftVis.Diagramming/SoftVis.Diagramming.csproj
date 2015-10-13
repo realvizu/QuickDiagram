@@ -81,7 +81,6 @@
     <Compile Include="Graphs\Layout\IEdgeRoutingAlgorithm.cs" />
     <Compile Include="Graphs\Layout\ILayoutParameters.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IncrementalLayoutEngine.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\IOverlapResolver.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramLayer.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramLayers.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutEdge.cs" />
@@ -89,9 +88,7 @@
     <Compile Include="Diagramming\Layout\Incremental\LayoutVertex.cs" />
     <Compile Include="Geometry\IRectExtensions.cs" />
     <Compile Include="Geometry\RectMoveEventArgs.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\PushyOverlapResolver.cs" />
     <Compile Include="Diagramming\Layout\TranslateDirection.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\VertexMoveSpecification.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Graphs\Layout\LayoutType.cs" />
     <Compile Include="Geometry\ISized.cs" />

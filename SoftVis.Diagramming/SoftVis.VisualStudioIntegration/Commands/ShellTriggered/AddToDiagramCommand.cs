@@ -22,6 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 
             var modelBuilder = PackageServices.GetModelServices();
             var modelEntity = modelBuilder.GetModelEntity(symbol);
+            if (modelEntity == null)
+                return;
 
             var diagramServices = PackageServices.GetDiagramServices();
             diagramServices.ShowModelEntity(modelEntity);

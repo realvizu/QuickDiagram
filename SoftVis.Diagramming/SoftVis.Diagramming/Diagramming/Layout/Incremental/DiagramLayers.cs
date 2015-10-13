@@ -47,16 +47,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return _layers[layerIndex];
         }
 
-        public IEnumerable<LayoutVertex> GetOtherNonFloatingVerticesInLayer(LayoutVertex layoutVertex)
-        {
-            return GetLayer(layoutVertex).Where(i => i != layoutVertex && !i.IsFloating);
-        }
-
-        public double GetCenterY(LayoutVertex layoutVertex)
-        {
-            return GetLayer(layoutVertex).CenterY;
-        }
-
         private void OnVertexAdded(LayoutVertex layoutVertex)
         {
             AddVertexToLayer(layoutVertex, 0);
@@ -89,7 +79,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private int? GetMaxParentLayerIndex(LayoutVertex layoutVertex)
         {
-            var parentVertices = _layoutGraph.GetOutNeighbours(layoutVertex).ToList();
+            var parentVertices = layoutVertex.GetParents().ToList();
             return parentVertices.Any()
                 ? parentVertices.Where(i => _vertexToLayerIndexMap.ContainsKey(i)).Max(i => _vertexToLayerIndexMap[i])
                 : (int?)null;
@@ -107,8 +97,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private void AddVertexToLayer(LayoutVertex layoutVertex, int layerIndex)
         {
             var layer = EnsureLayerExists(layerIndex);
-            layer.Add(layoutVertex);
             _vertexToLayerIndexMap.Add(layoutVertex, layerIndex);
+            layer.Add(layoutVertex);
 
             UpdateLayerVerticalPositions(layerIndex);
         }
@@ -117,9 +107,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             _layers[layerIndex].Remove(layoutVertex);
             _vertexToLayerIndexMap.Remove(layoutVertex);
-
-            if (_layers[layerIndex].Count == 0)
-                _layers.RemoveAt(layerIndex);
 
             UpdateLayerVerticalPositions(layerIndex);
         }
