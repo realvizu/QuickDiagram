@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Geometry
     /// These rectangular areas can be compared to each other.
     /// Warning: the comparison is not necessarily based on location or size; it can be based on anything.
     /// </remarks>
-    public interface IRect : IPositioned, ISized, IComparable<IRect>
+    public interface IRect : IPositioned, ISized
     {
         Rect2D Rect { get; }        
     }

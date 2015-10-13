@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
-using QuickGraph;
+using Codartis.SoftVis.Graphs;
 
-namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// Calculates positions whenever vertices and edges are added.
@@ -34,63 +32,88 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         private readonly double _horizontalGap;
         private readonly double _verticalGap;
         private readonly LayoutGraph _layoutGraph;
-        private readonly Layers _layers;
-        private readonly Dictionary<IRect, LayoutVertex> _originalToLayoutVertexMap;
 
-        public List<RectMove> LastEdgeTriggeredVertexMoves { get; }
+        public List<RectMoveEventArgs> LastEdgeTriggeredVertexMoves { get; }
         public int TotalVertexMoveCount { get; private set; }
 
-        public event EventHandler<MoveEventArgs> VertexCenterChanged;
+        public event EventHandler<RectMoveEventArgs> VertexCenterChanged;
         public event EventHandler<Route> EdgeRouteChanged;
 
         public IncrementalLayoutEngine(double horizontalGap, double verticalGap)
         {
             _horizontalGap = horizontalGap;
             _verticalGap = verticalGap;
+            _layoutGraph = new LayoutGraph(horizontalGap, verticalGap);
 
-            _layoutGraph = new LayoutGraph();
-            _layers = new Layers(_layoutGraph, _verticalGap);
-            _originalToLayoutVertexMap = new Dictionary<IRect, LayoutVertex>();
-            LastEdgeTriggeredVertexMoves = new List<RectMove>();
+            LastEdgeTriggeredVertexMoves = new List<RectMoveEventArgs>();
         }
 
         public void Clear()
         {
             _layoutGraph.Clear();
-            _originalToLayoutVertexMap.Clear();
             TotalVertexMoveCount = 0;
         }
 
-        public void Add(IRect originalVertex)
+        public void Add(DiagramNode diagramNode)
         {
-            Debug.WriteLine($"Adding node {originalVertex}");
+            Debug.WriteLine("-----------------------");
+            Debug.WriteLine($"Adding node {diagramNode}");
 
             LastEdgeTriggeredVertexMoves.Clear();
 
-            var newLayoutVertex = CreateLayoutVertex(originalVertex);
+            var layoutVertex = _layoutGraph.CreateVertex(diagramNode);
+            layoutVertex.CenterChanged += OnVertexCenterChanged;
 
-            _layoutGraph.AddVertex(newLayoutVertex);
-            _originalToLayoutVertexMap.Add(originalVertex, newLayoutVertex);
-
-            var alignToRect = _layers.First().Rect.WithMarginX(_horizontalGap);
-            var centerX = originalVertex.Rect.OuterAlignedTo(alignToRect, Side.Right, VerticalAlignment.Center).Center.X;
-            MoveVertexTo(newLayoutVertex, centerX, null);
+            var centerX = GetRootVertexInsertionCenterX(layoutVertex);
+            MoveVertexTo(layoutVertex, centerX, new PushyOverlapResolver(_layoutGraph, _horizontalGap, centerX));
         }
 
-        internal void Add(IEdge<IRect> originalEdge)
+        internal void Add(DiagramConnector diagramConnector)
         {
-            Debug.WriteLine($"Adding edge {originalEdge}");
+            Debug.WriteLine("-----------------------");
+            Debug.WriteLine($"Adding edge {diagramConnector}");
 
             LastEdgeTriggeredVertexMoves.Clear();
 
             // TODO: ha kell, fordítsuk meg az edge-et!
 
-            var newLayoutEdge = CreateLayoutEdge(originalEdge);
+            var layoutEdge = _layoutGraph.CreateEdge(diagramConnector);
 
-            _layoutGraph.AddEdge(newLayoutEdge);
-            MoveTreeUnderParent(newLayoutEdge.Source, newLayoutEdge.Target);
+            MoveTreeUnderParent(layoutEdge.Source, layoutEdge.Target);
 
-            OnEdgeRouteChanged(newLayoutEdge);
+            OnEdgeRouteChanged(layoutEdge);
+        }
+
+        private double GetRootVertexInsertionCenterX(LayoutVertex childVertex)
+        {
+            var previousVertex = childVertex.GetPreviousInLayer();
+            var nextVertex = childVertex.GetNextInLayer();
+
+            if (previousVertex == null && nextVertex == null)
+                return 0;
+
+            return CalculateInsertionCenterXFromNeighbours(previousVertex, nextVertex);
+        }
+
+        private double GetNonRootVertexInsertionCenterX(LayoutVertex childVertex, LayoutVertex parentVertex)
+        {
+            if (!childVertex.HasSiblings())
+                return parentVertex.Center.X;
+
+            var previousSibling = childVertex.GetPreviousSibling();
+            var nextSibling = childVertex.GetNextSibling();
+
+            return CalculateInsertionCenterXFromNeighbours(previousSibling, nextSibling);
+        }
+
+        private double CalculateInsertionCenterXFromNeighbours(LayoutVertex previousSibling, LayoutVertex nextSibling)
+        {
+            if (previousSibling == null && nextSibling == null)
+                throw new ArgumentNullException(nameof(nextSibling) + " and " + nameof(previousSibling));
+
+            return previousSibling == null
+                ? nextSibling.Left - _horizontalGap / 2
+                : previousSibling.Right + _horizontalGap / 2;
         }
 
         private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
@@ -110,12 +133,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
         private void PlaceTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
-            var nonFloatingSiblings = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).ToArray();
-            EnsureSiblingsAreSameRank(childVertex, nonFloatingSiblings);
-
-            var insertionCenterX = nonFloatingSiblings.Any()
-                ? nonFloatingSiblings.GetInsertionPointX(childVertex, _horizontalGap)
-                : parentVertex.Center.X;
+            var insertionCenterX = GetNonRootVertexInsertionCenterX(childVertex, parentVertex);
 
             var translateVectorX = insertionCenterX - childVertex.Center.X;
             var overlapResolver = new PushyOverlapResolver(_layoutGraph, _horizontalGap, insertionCenterX);
@@ -123,23 +141,15 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             _layoutGraph.ExecuteOnTree(childVertex, EdgeDirection.In, i => MoveVertexBy(i, translateVectorX, overlapResolver));
         }
 
-        private void EnsureSiblingsAreSameRank(LayoutVertex childVertex, IEnumerable<LayoutVertex> siblings)
-        {
-            // TODO: a siblingek ne lehessenek különböző layerekben -> dummy node-ok bevezetése
-            var childLayerIndex = _layers.GetLayerIndex(childVertex);
-            if (siblings.Any(i => _layers.GetLayerIndex(i) != childLayerIndex))
-                throw new Exception("Dummy vertexek kellenek!");
-        }
-
-        private void OnVertexCenterChanged(object sender, MoveEventArgs args)
+        private void OnVertexCenterChanged(object sender, RectMoveEventArgs args)
         {
             PropagateVertexCenterChangedEvent((LayoutVertex)sender, args);
         }
 
-        private void PropagateVertexCenterChangedEvent(LayoutVertex layoutVertex, MoveEventArgs args)
+        private void PropagateVertexCenterChangedEvent(LayoutVertex layoutVertex, RectMoveEventArgs args)
         {
             if (!layoutVertex.IsDummy)
-                VertexCenterChanged?.Invoke(layoutVertex.OriginalVertex, args);
+                VertexCenterChanged?.Invoke(layoutVertex.DiagramNode, args);
 
             foreach (var layoutEdge in _layoutGraph.GetAllEdges(layoutVertex))
                 OnEdgeRouteChanged(layoutEdge);
@@ -148,46 +158,27 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         private void OnEdgeRouteChanged(LayoutEdge layoutEdge)
         {
             var edgeRoute = _layoutGraph.GetEdgeRoute(layoutEdge);
-            EdgeRouteChanged?.Invoke(layoutEdge.OriginalEdge, edgeRoute);
-        }
-
-        private LayoutVertex CreateLayoutVertex(IRect originalVertex)
-        {
-            var newLayoutVertex = LayoutVertex.Create(originalVertex, isFloating: true);
-            newLayoutVertex.CenterChanged += OnVertexCenterChanged;
-            return newLayoutVertex;
-        }
-
-        private LayoutEdge CreateLayoutEdge(IEdge<IRect> originalEdge)
-        {
-            var sourceLayoutVertex = _originalToLayoutVertexMap[originalEdge.Source];
-            var targetLayoutVertex = _originalToLayoutVertexMap[originalEdge.Target];
-            return new LayoutEdge(originalEdge, sourceLayoutVertex, targetLayoutVertex);
+            EdgeRouteChanged?.Invoke(layoutEdge.DiagramConnector, edgeRoute);
         }
 
         private void MoveVertexTo(LayoutVertex movingVertex, double centerX, IOverlapResolver overlapResolver)
         {
-            var centerY = _layers.GetCenterY(movingVertex);
-
-            if (movingVertex.Center.X.IsEqualWithTolerance(centerX) &&
-                movingVertex.Center.Y.IsEqualWithTolerance(centerY))
-                return;
-
             Debug.WriteLine($"Moving vertex {movingVertex} to: {movingVertex.Center.X}");
 
             var oldCenter = movingVertex.Center;
+            var centerY = movingVertex.GetLayer().CenterY;
             movingVertex.Center = new Point2D(centerX, centerY);
 
             TotalVertexMoveCount++;
             if (!movingVertex.IsDummy)
-                LastEdgeTriggeredVertexMoves.Add(new RectMove(movingVertex.OriginalVertex, oldCenter, movingVertex.Center));
+                LastEdgeTriggeredVertexMoves.Add(new RectMoveEventArgs(movingVertex.DiagramNode, oldCenter, movingVertex.Center));
 
             ResolveOverlaps(movingVertex, overlapResolver);
         }
 
         private void ResolveOverlaps(LayoutVertex movingVertex, IOverlapResolver overlapResolver)
         {
-            foreach (var placedVertex in _layers.GetOtherNonFloatingVerticesInLayer(movingVertex))
+            foreach (var placedVertex in movingVertex.GetOtherPositionedVerticesInLayer())
             {
                 if (movingVertex.OverlapsWith(placedVertex, _horizontalGap))
                 {
@@ -222,7 +213,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
         {
             foreach (var parentVertex in _layoutGraph.GetOutNeighbours(layoutVertex))
             {
-                var targetCenterX = _layoutGraph.GetNonFloatingNeighbours(parentVertex, EdgeDirection.In).GetRect().Center.X;
+                var targetCenterX = parentVertex.GetPositionedChildren().GetRect().Center.X;
                 var overlapResolver = new PushyOverlapResolver(_layoutGraph, _horizontalGap, parentVertex.Center.X);
                 MoveVertexTo(parentVertex, targetCenterX, overlapResolver);
                 CenterParents(parentVertex);
@@ -241,8 +232,8 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             if (vertex1EdgeCount > vertex2EdgeCount)
                 return vertex2;
 
-            var vertex1LayerIndex = _layers.GetLayerIndex(vertex1);
-            var vertex2LayerIndex = _layers.GetLayerIndex(vertex2);
+            var vertex1LayerIndex = vertex1.GetLayerIndex();
+            var vertex2LayerIndex = vertex2.GetLayerIndex();
 
             if (vertex1LayerIndex > vertex2LayerIndex)
                 return vertex1;

@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 using MoreLinq;
 
-namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// Resolves the overlap of two vertices by pushing away the placed vertex.

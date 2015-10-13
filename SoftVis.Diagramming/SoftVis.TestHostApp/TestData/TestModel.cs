@@ -9,15 +9,18 @@ namespace Codartis.SoftVis.TestHostApp.TestData
     {
         private readonly List<IModelEntity> _entities;
         private readonly List<IModelRelationship> _relationships;
+        private readonly List<IModelItem> _modelItems;
 
         private TestModel()
         {
             _entities = new List<IModelEntity>();
             _relationships = new List<IModelRelationship>();
+            _modelItems = new List<IModelItem>();
         }
 
         public IEnumerable<IModelEntity> Entities => _entities;
         public IEnumerable<IModelRelationship> Relationships => _relationships;
+        public IEnumerable<IModelItem> Items => _modelItems;
 
         private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype, int size)
         {
@@ -34,6 +37,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 throw new ArgumentException($"Unexpected entity type: {type}, stereotype: {stereotype}");
 
             _entities.Add(newEntity);
+            _modelItems.Add(newEntity);
 
             return this;
         }
@@ -55,6 +59,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             sourceEntity.AddOutgoingRelationship(newRelationship);
             targetEntity.AddIncomingRelationship(newRelationship);
             _relationships.Add(newRelationship);
+            _modelItems.Add(newRelationship);
 
             return this;
         }
@@ -89,28 +94,28 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             return new TestModel()
 
+                .AddClass("3", 60)
                 .AddClass("1", 40)
                 .AddClass("2", 25)
-                .AddClass("3", 60)
-                .AddClass("4", 35)
-                .AddClass("5", 80)
-                .AddClass("6", 45)
-                .AddClass("7", 10)
-                .AddClass("8", 10)
-                .AddClass("9", 20)
-                .AddClass("10", 30)
-                .AddClass("11", 40)
-                .AddClass("12", 50)
-                .AddClass("13", 60)
+                .AddClass("4", 60)
+                .AddClass("5", 65)
+                .AddClass("6", 70)
+                .AddClass("7", 60)
+                .AddClass("8", 70)
+                .AddClass("9", 80)
 
-                .AddClassBase("3", "2")
+                .AddClassBase("2", "1")
+                .AddClassBase("3", "1")
                 .AddClassBase("4", "2")
                 .AddClassBase("5", "2")
                 .AddClassBase("6", "2")
-                .AddClassBase("7", "2")
-                .AddClassBase("8", "2")
-                .AddClassBase("9", "2")
-                .AddClassBase("10", "1")
+                .AddClassBase("7", "3")
+                .AddClassBase("8", "3")
+                .AddClassBase("9", "3")
+
+                .AddClass("0", 15)
+                .AddClass("10", 15)
+                .AddClassBase("10", "0")
 
                 //.AddInterface("BaseInterface")
                 //.AddInterface("MyInterface1", baseName: "BaseInterface")

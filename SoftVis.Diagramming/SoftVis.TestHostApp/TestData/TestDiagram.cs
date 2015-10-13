@@ -13,15 +13,11 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     class TestDiagram : WpfDiagram
     {
-        public readonly List<IModelItem> ModelItemsAddByClicks = new List<IModelItem>();
+        public List<IModelItem> ModelItems { get; }
 
-        public TestDiagram(IModel model)
+        public TestDiagram(TestModel model)
         {
-            foreach (var entity in model.Entities)
-                ShowNode(entity);
-
-            foreach (var relationship in model.Relationships)
-                ModelItemsAddByClicks.Add(relationship);
+            ModelItems = model.Items.ToList();
         }
 
         protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)

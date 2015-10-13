@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Graphs;
 
-namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// Calculates a layering from a layout graph that gives the basis for vertical position calculation.
     /// </summary>
-    internal class Layers
+    internal class DiagramLayers
     {
         private readonly LayoutGraph _layoutGraph;
         private readonly double _verticalGap;
-        private readonly List<Layer> _layers;
+        private readonly List<DiagramLayer> _layers;
         private readonly Dictionary<LayoutVertex, int> _vertexToLayerIndexMap;
 
-        public Layers(LayoutGraph layoutGraph, double verticalGap)
+        public DiagramLayers(LayoutGraph layoutGraph, double verticalGap)
         {
             _layoutGraph = layoutGraph;
             _layoutGraph.VertexAdded += OnVertexAdded;
@@ -25,11 +26,11 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
 
             _verticalGap = verticalGap;
 
-            _layers = new List<Layer>();
+            _layers = new List<DiagramLayer>();
             _vertexToLayerIndexMap = new Dictionary<LayoutVertex, int>();
         }
 
-        public Layer First()
+        public DiagramLayer First()
         {
             EnsureLayerExists(0);
             return _layers[0];
@@ -40,7 +41,7 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             return _vertexToLayerIndexMap[layoutVertex];
         }
 
-        public Layer GetLayer(LayoutVertex layoutVertex)
+        public DiagramLayer GetLayer(LayoutVertex layoutVertex)
         {
             var layerIndex = GetLayerIndex(layoutVertex);
             return _layers[layerIndex];
@@ -129,10 +130,10 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
             AddVertexToLayer(layoutVertex, toLayerIndex);
         }
 
-        private Layer EnsureLayerExists(int layerIndex)
+        private DiagramLayer EnsureLayerExists(int layerIndex)
         {
             for (var i = _layers.Count; i <= layerIndex; i++)
-                _layers.Add(new Layer(i));
+                _layers.Add(new DiagramLayer(i));
 
             UpdateLayerVerticalPositions(layerIndex);
 

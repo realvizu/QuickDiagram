@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using Codartis.SoftVis.Geometry;
 using QuickGraph;
 
-namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// An edge used in LayoutGraphs.
@@ -16,27 +15,30 @@ namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
     /// </remarks>
     [DebuggerDisplay("{ToString()}")]
     internal class LayoutEdge : Edge<LayoutVertex>
-    { 
-        public IEdge<IRect> OriginalEdge { get; }
+    {
+        private readonly LayoutGraph _graph;
+        public DiagramConnector DiagramConnector { get; }
         public bool IsReversed { get; }
 
-        public LayoutEdge(IEdge<IRect> originalEdge, LayoutVertex source, LayoutVertex target, bool isReversed = false) 
+        public LayoutEdge(LayoutGraph graph, LayoutVertex source, LayoutVertex target, 
+            DiagramConnector diagramConnector, bool isReversed = false) 
             : base(source, target)
         {
-            OriginalEdge = originalEdge;
+            _graph = graph;
+            DiagramConnector = diagramConnector;
             IsReversed = isReversed;
         }
 
         public LayoutEdge Reverse()
         {
-            return new LayoutEdge(OriginalEdge, Target, Source, true);
+            return new LayoutEdge(_graph, Target, Source, DiagramConnector, true);
         }
 
         private string IsReversedAsString => IsReversed ? " (reversed)" : "";
 
         public override string ToString()
         {
-            return $"{Source}->{Target} Original: {OriginalEdge}{IsReversedAsString}";
+            return $"{Source}->{Target} Original: {DiagramConnector}{IsReversedAsString}";
         }
     }
 }

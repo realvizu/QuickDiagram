@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental
+﻿namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// Describes a vertex movement.

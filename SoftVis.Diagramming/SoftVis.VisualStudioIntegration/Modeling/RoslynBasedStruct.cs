@@ -14,6 +14,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         {
         }
 
+        public override int Priority => 3;
+
         public IEnumerable<RoslynBasedInterface> ImplementedInterfaces
         {
             get

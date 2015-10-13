@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming
     /// <remarks>
     /// Warning: DiagramNode comparison is based on name order, not position or size!
     /// </remarks>
-    public abstract class DiagramNode : DiagramShape, IRect
+    public abstract class DiagramNode : DiagramShape, IRect, IComparable<DiagramNode>
     {
         private Point2D _position;
         private Size2D _size;
@@ -42,19 +42,17 @@ namespace Codartis.SoftVis.Diagramming
             set { _size = value; }
         }
 
+        public int Priority => ModelEntity.Priority;
+
         public Point2D Center
         {
             get { return Rect.Center; }
             set { Position = new Point2D(value.X - Width / 2, value.Y - Height / 2); }
         }
 
-        public int CompareTo(IRect other)
+        public int CompareTo(DiagramNode otherNode)
         {
-            var otherNode = other as DiagramNode;
-            if (otherNode == null)
-                throw new ArgumentException("Comparison to null or not a DiagramNode.");
-
-            return string.CompareOrdinal(Name, otherNode.Name);
+            return string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override string ToString()

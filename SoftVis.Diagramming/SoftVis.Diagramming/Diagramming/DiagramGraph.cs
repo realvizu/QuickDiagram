@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs.Layout.VertexPlacement.Incremental;
 using QuickGraph;
 using QuickGraph.Algorithms;
 
@@ -10,6 +10,7 @@ namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// The graph formed by the nodes and connectors of a diagram.
+    /// Has a layout engine that calculates how to arrange nodes and connectors.
     /// </summary>
     internal sealed class DiagramGraph : BidirectionalGraph<DiagramNode, DiagramConnector>
     {
@@ -17,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming
         private const double VerticalGap = 40;
         private readonly IncrementalLayoutEngine _layoutEngine;
 
-        public List<RectMove> LastEdgeTriggeredVertexMoves => _layoutEngine.LastEdgeTriggeredVertexMoves;
+        public List<RectMoveEventArgs> LastEdgeTriggeredVertexMoves => _layoutEngine.LastEdgeTriggeredVertexMoves;
         public int TotalVertexMoveCount => _layoutEngine.TotalVertexMoveCount;
 
         public DiagramGraph()
@@ -53,15 +54,14 @@ namespace Codartis.SoftVis.Diagramming
             return isAdded;
         }
 
-        public IEnumerable<DiagramPath> GetShortestPaths(
-            DiagramNode source, DiagramNode target, int pathCounts)
+        public IEnumerable<DiagramPath> GetShortestPaths(DiagramNode source, DiagramNode target, int pathCount)
         {
-            return this.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCounts).Select(i => new DiagramPath(i));
+            return this.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCount).Select(i => new DiagramPath(i));
         }
 
-        private static void OnVertexCenterChanged(object sender, MoveEventArgs args)
+        private static void OnVertexCenterChanged(object sender, RectMoveEventArgs args)
         {
-            ((DiagramNode)sender).Center = args.To;
+            ((DiagramNode)sender).Center = args.ToCenter;
         }
 
         private static void OnEdgeRouteChanged(object sender, Route routePoints)

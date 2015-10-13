@@ -8,5 +8,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             : base(name, size, ModelEntityType.Class)
         {
         }
+
+        public override int Priority => 1;
     }
 }

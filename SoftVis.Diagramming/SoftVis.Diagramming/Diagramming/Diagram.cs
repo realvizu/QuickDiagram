@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Diagramming
 
         private readonly DiagramGraph _graph = new DiagramGraph();
 
-        public List<RectMove> LastConnectorTriggeredNodeMoves => _graph.LastEdgeTriggeredVertexMoves;
+        public List<RectMoveEventArgs> LastConnectorTriggeredNodeMoves => _graph.LastEdgeTriggeredVertexMoves;
         public int TotalNodeMoveCount => _graph.TotalVertexMoveCount;
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;

@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private TestModel _testModel;
         private TestDiagram _testDiagram;
-        private int _shownModelEntityIndex;
+        private int _modelItemIndex;
         private int _totalNodeMoveCount;
         private int _frame;
         private string _frameLabel;
@@ -75,15 +75,15 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _testDiagram.LastConnectorTriggeredNodeMoves.ForEach(PlayFrameForward);
 
-            var modelItem = _testDiagram.ModelItemsAddByClicks[_shownModelEntityIndex];
+            var modelItem = _testDiagram.ModelItems[_modelItemIndex];
 
             if (modelItem is IModelEntity)
                 _testDiagram.ShowNode((IModelEntity)modelItem);
             else if (modelItem is IModelRelationship)
                 _testDiagram.ShowConnector((IModelRelationship)modelItem);
 
-            if (_shownModelEntityIndex < _testDiagram.ModelItemsAddByClicks.Count - 1)
-                _shownModelEntityIndex++;
+            if (_modelItemIndex < _testDiagram.ModelItems.Count - 1)
+                _modelItemIndex++;
 
             FitToView();
             TotalNodeMoveCount = _testDiagram.TotalNodeMoveCount;
@@ -107,15 +107,15 @@ namespace Codartis.SoftVis.TestHostApp
                 _frame--;
         }
 
-        private void PlayFrameForward(RectMove nodeMove)
+        private void PlayFrameForward(RectMoveEventArgs nodeMove)
         {
-            ((DiagramNode)nodeMove.Node).Center = nodeMove.ToCenter;
+            ((DiagramNode)nodeMove.Rect).Center = nodeMove.ToCenter;
             FrameLabel = _frame + " (To)";
         }
 
-        private void PlayFrameBackward(RectMove nodeMove)
+        private void PlayFrameBackward(RectMoveEventArgs nodeMove)
         {
-            ((DiagramNode)nodeMove.Node).Center = nodeMove.FromCenter;
+            ((DiagramNode)nodeMove.Rect).Center = nodeMove.FromCenter;
             FrameLabel = _frame + " (From)";
         }
 

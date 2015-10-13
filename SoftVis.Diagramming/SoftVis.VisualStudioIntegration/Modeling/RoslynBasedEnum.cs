@@ -11,5 +11,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             : base(namedTypeSymbol, TypeKind.Enum)
         {
         }
+
+        public override int Priority => 1;
     }
 }
