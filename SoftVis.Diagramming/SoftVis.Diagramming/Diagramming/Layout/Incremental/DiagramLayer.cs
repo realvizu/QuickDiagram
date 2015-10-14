@@ -23,6 +23,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _items = new List<LayoutVertex>();
         }
 
+        public LayoutVertex this[int i] => _items[i];
         public int Count => _items.Count;
         public int IndexOf(LayoutVertex layoutVertex) => _items.IndexOf(layoutVertex);
         public IEnumerator<LayoutVertex> GetEnumerator() => _items.GetEnumerator();

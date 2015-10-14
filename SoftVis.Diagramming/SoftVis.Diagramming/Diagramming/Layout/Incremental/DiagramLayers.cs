@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
@@ -8,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// Calculates a layering from a layout graph that gives the basis for vertical position calculation.
     /// </summary>
-    internal class DiagramLayers
+    internal class DiagramLayers : IEnumerable<DiagramLayer>
     {
         private readonly LayoutGraph _layoutGraph;
         private readonly double _verticalGap;
@@ -30,11 +31,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _vertexToLayerIndexMap = new Dictionary<LayoutVertex, int>();
         }
 
-        public DiagramLayer First()
-        {
-            EnsureLayerExists(0);
-            return _layers[0];
-        }
+        public int Count => _layers.Count;
+        public DiagramLayer this[int i] => _layers[i];
+        public IEnumerator<DiagramLayer> GetEnumerator() => _layers.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public int GetLayerIndex(LayoutVertex layoutVertex)
         {
@@ -54,8 +54,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void OnVertexRemoved(LayoutVertex layoutVertex)
         {
-            var index = _vertexToLayerIndexMap[layoutVertex];
-            RemoveVertexFromLayer(layoutVertex, index);
+            var layerIndex = _vertexToLayerIndexMap[layoutVertex];
+            RemoveVertexFromLayer(layoutVertex, layerIndex);
         }
 
         private void OnEdgeAdded(LayoutEdge layoutEdge)
@@ -113,6 +113,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void MoveVertexBetweenLayers(LayoutVertex layoutVertex, int fromLayerIndex, int toLayerIndex)
         {
+            layoutVertex.IsFloating = true;
             RemoveVertexFromLayer(layoutVertex, fromLayerIndex);
             AddVertexToLayer(layoutVertex, toLayerIndex);
         }

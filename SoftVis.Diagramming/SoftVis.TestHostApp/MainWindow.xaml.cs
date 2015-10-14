@@ -6,6 +6,7 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
+using MoreLinq;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -64,6 +65,9 @@ namespace Codartis.SoftVis.TestHostApp
             DiagramViewerControl.DataContext = _testDiagram;
 
             FitToView();
+
+            _testDiagram.ModelItems.TakeUntil(i => i is TestModelEntity && ((TestModelEntity)i).Name == "13")
+                .ForEach(i => Next_OnClick(null, null));
         }
 
         private void FitToView()

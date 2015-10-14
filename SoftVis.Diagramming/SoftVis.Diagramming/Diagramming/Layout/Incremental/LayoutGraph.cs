@@ -45,6 +45,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _edgeToDummyVerticesMap = new Dictionary<DiagramConnector, IList<LayoutVertex>>();
         }
 
+        public IEnumerable<DiagramLayer> Layers => _diagramLayers;
+
         private void SetUpGraphEventPropagation()
         {
             _graph.VertexAdded += i => VertexAdded?.Invoke(i);
@@ -108,8 +110,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public DiagramLayer GetLayer(LayoutVertex layoutVertex) => _diagramLayers.GetLayer(layoutVertex);
         public int GetLayerIndex(LayoutVertex layoutVertex) => _diagramLayers.GetLayerIndex(layoutVertex);
-
-        public IEnumerable<LayoutVertex> GetRootVertices() => _graph.Vertices.Where(i => _graph.OutDegree(i) == 0);
 
         #region Unused
 

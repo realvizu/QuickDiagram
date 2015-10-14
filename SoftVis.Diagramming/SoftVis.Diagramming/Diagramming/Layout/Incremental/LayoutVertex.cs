@@ -66,6 +66,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
+        public void RefreshVerticalPosition() => Center = new Point2D(_center.X, GetLayer().CenterY);
         public void FloatTree() => ExecuteOnTree(i => i.IsFloating = true);
 
         public IEnumerable<LayoutVertex> GetParents() => _graph.GetOutNeighbours(this);
@@ -74,7 +75,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public IEnumerable<LayoutVertex> GetSiblings() => GetParents().SelectMany(i => i.GetChildren()).Where(i => i != this);
         public LayoutVertex GetParent() => GetParents().OrderByDescending(i => i.DiagramNode?.Priority).FirstOrDefault();
         public bool HasSiblings() => GetSiblings().Any();
-        
+        public bool IsLeaf => !GetChildren().Any();
+
         public bool IsSiblingOf(LayoutVertex layoutVertex)
         {
             return layoutVertex != null && GetParents().Intersect(layoutVertex.GetParents()).Any();

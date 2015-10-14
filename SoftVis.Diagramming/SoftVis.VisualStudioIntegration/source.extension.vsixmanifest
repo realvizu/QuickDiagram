@@ -2,8 +2,8 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="Codartis.SoftVis.7481ead5-87e4-4ac0-86d1-317e7adab60c" Version="1.0" Language="en-US" Publisher="Codartis" />
-        <DisplayName>Class Inheritance Diagram Tool</DisplayName>
-        <Description xml:space="preserve">This tool generates class inheritance diagrams from source code.</Description>
+        <DisplayName>Diagram Tool</DisplayName>
+        <Description xml:space="preserve">This tool generates diagrams from source code.</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,15.0)" />

@@ -104,6 +104,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("8", 70)
                 .AddClass("9", 80)
 
+                .AddClass("25", 50)
+                .AddClassBase("25", "1")
+
                 .AddClassBase("2", "1")
                 .AddClassBase("3", "1")
                 .AddClassBase("4", "2")
@@ -116,6 +119,25 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("0", 15)
                 .AddClass("10", 15)
                 .AddClassBase("10", "0")
+                                
+                .AddClass("11", 65)
+                .AddClass("12", 35)
+                .AddClassBase("11", "9")
+
+                .AddClass("00", 55)
+                .AddClassBase("00", "4")
+
+                .AddClass("100", 50)
+                .AddClassBase("100", "10")
+
+                .AddClass("12", 100)
+                .AddClassBase("12", "1")
+
+                .AddClass("120", 100)
+                .AddClassBase("120", "12")
+
+                .AddClass("13", 150)
+                .AddClassBase("13", "1")
 
                 //.AddInterface("BaseInterface")
                 //.AddInterface("MyInterface1", baseName: "BaseInterface")
