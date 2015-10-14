@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
 

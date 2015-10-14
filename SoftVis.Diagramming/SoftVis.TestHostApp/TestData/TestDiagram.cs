@@ -1,41 +1,33 @@
-﻿using System.Linq;
-using Codartis.SoftVis.Diagramming.Graph.Layout;
-using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs.Layout;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
     class TestDiagram : WpfDiagram
     {
-        public TestDiagram(IModel model)
+        public List<IModelItem> ModelItems { get; }
+
+        public TestDiagram(TestModel model)
         {
-            foreach (var entity in model.Entities)
-            {
-                ShowNode(entity);
-
-                foreach (var relationship in entity.OutgoingRelationships)
-                {
-                    if (Nodes.Any(i => i.ModelEntity.Equals(relationship.Target)))
-                        ShowConnector(relationship);
-                }
-            }
-
-            Layout();
+            ModelItems = model.Items.ToList();
         }
 
-        public void Layout()
+        protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
         {
-            var sugiyamaLayoutParameters = new SugiyamaLayoutParameters
-            {
-                LayoutDirection = LayoutDirection.SourcesAtTop,
-                MinimizeEdgeLength = false,
-                EdgeRoutingType = EdgeRoutingType.Straight,
-                LayerDistance = 40,
-            };
-            Layout(LayoutType.Sugiyama, sugiyamaLayoutParameters);
+            var height = (int.Parse(modelEntity.Name) % 4) * 5 + 25;
+            var size = new Size2D(((TestModelEntity)modelEntity).Size, height);
+            return new DiagramNodeViewModel(modelEntity, Point2D.Zero, size);
+        }
 
-            //Layout(LayoutType.Tree);
+        private void LayoutTree()
+        {
+            Layout(LayoutType.Tree);
         }
     }
 }

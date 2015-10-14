@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Rendering.Common;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.Common;
@@ -144,7 +145,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             var oldValue = (double)e.OldValue;
             var newValue = (double)e.NewValue;
 
-            if (oldValue.EqualsWithTolerance(newValue))
+            if (oldValue.IsEqualWithTolerance(newValue))
                 return;
 
             var panAndZoomControl = (PanAndZoomControl)obj;
@@ -159,7 +160,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.InputControls
             var oldValue = (double)e.OldValue;
             var newValue = (double)e.NewValue;
 
-            if (oldValue.EqualsWithTolerance(newValue))
+            if (oldValue.IsEqualWithTolerance(newValue))
                 return;
 
             var panAndZoomControl = (PanAndZoomControl)obj;

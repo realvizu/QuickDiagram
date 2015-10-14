@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.Rendering.Wpf.Common
 {
@@ -28,11 +27,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common
         public static string ToOneString(this IEnumerable<Point> points)
         {
             return points.Aggregate("", (s, p) => s += p.ToString() + " | ");
-        }
-
-        public static DiagramPoint ToDiagramPoint(this Point point)
-        {
-            return new DiagramPoint(point.X, point.Y);
         }
     }
 }

@@ -10,7 +10,7 @@
 
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
-    <converters:DiagramRectToWpfConverter x:Key="DiagramRectToWpfConverter" />
+    <converters:RectToWpfConverter x:Key="RectToWpfConverter" />
 
     <Style TargetType="{x:Type shapeControls:DiagramNodeControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramNodeViewModel}}">
@@ -21,7 +21,7 @@
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="FontFamily" Value="Ariel" />
         <Setter Property="ToolTip" Value="{Binding Path=Name}" />
-        <Setter Property="Rect" Value="{Binding Path=Rect, Converter={StaticResource DiagramRectToWpfConverter}}" />
+        <Setter Property="Rect" Value="{Binding Path=Rect, Converter={StaticResource RectToWpfConverter}}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type shapeControls:DiagramNodeControl}">

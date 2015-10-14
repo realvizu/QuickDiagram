@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Codartis.SoftVis.Modeling
 {
@@ -7,7 +8,7 @@ namespace Codartis.SoftVis.Modeling
     /// A simple implementation of the IModelEntity interface.
     /// </summary>
     [DebuggerDisplay("{Name} ({Type}/{Stereotype})")]
-    public class ModelEntity : IModelEntity
+    public abstract class ModelEntity : IModelEntity
     {
         private readonly List<ModelRelationship> _outgoingRelationships = new List<ModelRelationship>();
         private readonly List<ModelRelationship> _incomingRelationships = new List<ModelRelationship>();
@@ -15,6 +16,7 @@ namespace Codartis.SoftVis.Modeling
         public string Name { get; }
         public ModelEntityType Type { get; }
         public ModelEntityStereotype Stereotype { get; }
+        public abstract int Priority { get; }
 
         public ModelEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype = null)
         {
@@ -25,6 +27,7 @@ namespace Codartis.SoftVis.Modeling
 
         public IEnumerable<IModelRelationship> OutgoingRelationships => _outgoingRelationships;
         public IEnumerable<IModelRelationship> IncomingRelationships => _incomingRelationships;
+        public IEnumerable<IModelRelationship> AllRelationships => _incomingRelationships.Union(_outgoingRelationships);
 
         public void AddOutgoingRelationship(ModelRelationship relationship)
         {

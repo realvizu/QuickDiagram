@@ -1,9 +1,14 @@
 ﻿<Window x:Class="Codartis.SoftVis.TestHostApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:softvis="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
+        xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
         Title="MainWindow" Height="600" Width="1200"
-        x:Name="MyWindow">
+        x:Name="MyWindow"
+        d:DataContext="{d:DesignInstance {x:Type testHostApp:MainWindow }}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -23,7 +28,15 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Click="ButtonBase_OnClick" Width="40" Height="20">Layout</Button>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
+            <Button Click="Next_OnClick" Width="60" Height="20">Next</Button>
+            <TextBlock Margin="2">Moves:</TextBlock>
+            <TextBlock Margin="2" Text="{Binding Path=TotalNodeMoveCount}"/>
+            <Button Click="Back_OnClick" Width="60" Height="20">Back</Button>
+            <TextBlock Margin="2">Frame:</TextBlock>
+            <TextBlock Margin="2" Text="{Binding Path=FrameLabel}"/>
+            <Button Click="Forward_OnClick" Width="60" Height="20">Forward</Button>
+        </StackPanel>
         <softvis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" Diagram="{Binding}" />
     </Grid>
 </Window>

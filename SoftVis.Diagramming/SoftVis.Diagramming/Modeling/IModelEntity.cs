@@ -24,6 +24,12 @@ namespace Codartis.SoftVis.Modeling
         ModelEntityStereotype Stereotype { get; }
 
         /// <summary>
+        /// The relative importance of this model entity compared to others. Used for layout.
+        /// Higher value means more important.
+        /// </summary>
+        int Priority { get; }
+
+        /// <summary>
         /// All relationships within the model whose source entity is this.
         /// </summary>
         IEnumerable<IModelRelationship> OutgoingRelationships { get; }
@@ -32,5 +38,10 @@ namespace Codartis.SoftVis.Modeling
         /// All relationships within the model whose target entity is this.
         /// </summary>
         IEnumerable<IModelRelationship> IncomingRelationships { get; }
+
+        /// <summary>
+        /// All relationships within the model whose source or target entity is this.
+        /// </summary>
+        IEnumerable<IModelRelationship> AllRelationships { get; }
     }
 }

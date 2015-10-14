@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Graph;
-using Codartis.SoftVis.Diagramming.Graph.Layout;
-using Codartis.SoftVis.Diagramming.Graph.Layout.EfficientSugiyama;
+using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs.Layout;
+using Codartis.SoftVis.Graphs.Layout.EdgeRouting;
+using Codartis.SoftVis.Graphs.Layout.VertexPlacement;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -19,10 +20,21 @@ namespace Codartis.SoftVis.Diagramming
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
     public abstract class Diagram
     {
-        protected static readonly DiagramPoint DefaultNodePosition = DiagramPoint.Zero;
-        protected static readonly DiagramSize DefaultNodeSize = new DiagramSize(100,38);
+        protected static readonly Point2D DefaultNodePosition = Point2D.Zero;
+
+        protected static readonly double MinimumNodeWidth = 40;
+        protected static readonly double DefaultNodeWidth = 100;
+        protected static readonly double MaximumNodeWidth = 250;
+        protected static readonly double MinimumNodeHeight = 20;
+        protected static readonly double DefaultNodeHeight = 38;
+        protected static readonly double MaximumNodeHeight = 50;
+
+        protected static readonly Size2D DefaultNodeSize = new Size2D(DefaultNodeWidth, DefaultNodeHeight);
 
         private readonly DiagramGraph _graph = new DiagramGraph();
+
+        public List<RectMoveEventArgs> LastConnectorTriggeredNodeMoves => _graph.LastEdgeTriggeredVertexMoves;
+        public int TotalNodeMoveCount => _graph.TotalVertexMoveCount;
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
@@ -33,27 +45,18 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeSelected;
         public event EventHandler<DiagramShape> ShapeActivated;
         public event EventHandler Cleared;
-
+         
         /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        public void ShowNode(IModelEntity modelEntity)
+        public virtual void ShowNode(IModelEntity modelEntity)
         {
             if (!NodeExists(modelEntity))
             {
                 var node = CreateDiagramNode(modelEntity);
                 _graph.AddVertex(node);
                 OnShapeAdded(node);
-            }
-
-            foreach (var modelRelationship in modelEntity.OutgoingRelationships.Concat(modelEntity.IncomingRelationships))
-            {
-                if (NodeExists(modelRelationship.Source) &&
-                    NodeExists(modelRelationship.Target))
-                {
-                    ShowConnector(modelRelationship);
-                }
             }
         }
 
@@ -63,12 +66,31 @@ namespace Codartis.SoftVis.Diagramming
         /// <param name="modelRelationship">A relationship model item.</param>
         public void ShowConnector(IModelRelationship modelRelationship)
         {
-            if (ConnectorExists(modelRelationship))
-                return;
+            var connector = FindConnector(modelRelationship);
+            if (connector == null)
+            {
+                connector = CreateDiagramConnector(modelRelationship);
+                _graph.AddEdge(connector);
+                OnShapeAdded(connector);
+            }
 
-            var connector = CreateDiagramConnector(modelRelationship);
-            _graph.AddEdge(connector);
-            OnShapeAdded(connector);
+            HideRedundantDirectEdges();
+        }
+
+        private void HideRedundantDirectEdges()
+        {
+            // TODO: should only hide same-type connectors!!!
+
+            foreach (var connector in Connectors.ToList())
+            {
+                var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).ToList();
+                if (paths.Count > 1)
+                {
+                    var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
+                    if (pathToHide != null)
+                        HideConnector(pathToHide[0].ModelRelationship);
+                }
+            }
         }
 
         /// <summary>
@@ -109,9 +131,6 @@ namespace Codartis.SoftVis.Diagramming
                 case (LayoutType.Tree):
                     ApplySimpleTreeLayoutAndStraightEdgeRouting();
                     break;
-                case (LayoutType.Sugiyama):
-                    ApplySugiyamaLayoutAndRouting(layoutParameters);
-                    break;
                 default:
                     throw new ArgumentException($"Unexpected layout type: {layoutType}");
             }
@@ -143,30 +162,38 @@ namespace Codartis.SoftVis.Diagramming
             ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
         }
 
-        private void ApplySugiyamaLayoutAndRouting(ILayoutParameters layoutParameters)
+        private void ApplyEdgeRouting(DiagramConnectorRoute specification)
         {
-            var algorithm = new SugiyamaLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph, (SugiyamaLayoutParameters)layoutParameters);
-            algorithm.Compute();
+            var routingAlgorithm = new EdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(
+                _graph.Edges, specification.EdgeRoutingType, specification.InterimRoutePointsOfEdges);
+            routingAlgorithm.Compute();
 
-            ApplyVertexCenters(algorithm.VertexCenters);
-            ApplyConnectorRoutes(algorithm.EdgeRoutes);
+            ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
         }
 
-        private void ApplyVertexCenters(IDictionary<DiagramNode, DiagramPoint> vertexCenters)
+        private void ApplyVertexCenters(IDictionary<DiagramNode, Point2D> vertexCenters)
         {
             foreach (var node in Nodes)
             {
-                node.Center = vertexCenters[node];
-                OnShapeModified(node);
+                Point2D center;
+                if (vertexCenters.TryGetValue(node, out center))
+                {
+                    node.Center = center;
+                    OnShapeModified(node);
+                }
             }
         }
 
-        private void ApplyConnectorRoutes(IDictionary<DiagramConnector, DiagramPoint[]> edgeRoutes)
+        private void ApplyConnectorRoutes(IDictionary<DiagramConnector, Route> edgeRoutes)
         {
             foreach (var connector in Connectors)
             {
-                connector.RoutePoints = edgeRoutes[connector];
-                OnShapeModified(connector);
+                Route route;
+                if (edgeRoutes.TryGetValue(connector, out route))
+                {
+                    connector.RoutePoints = route;
+                    OnShapeModified(connector);
+                }
             }
         }
 
@@ -175,7 +202,7 @@ namespace Codartis.SoftVis.Diagramming
             return Nodes.FirstOrDefault(i => Equals(i.ModelEntity, modelEntity));
         }
 
-        private bool NodeExists(IModelEntity modelEntity)
+        protected bool NodeExists(IModelEntity modelEntity)
         {
             return Nodes.Any(i => Equals(i.ModelEntity, modelEntity));
         }

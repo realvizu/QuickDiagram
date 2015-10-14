@@ -2,11 +2,13 @@
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    class TestInterface : ModelEntity
+    class TestInterface : TestModelEntity
     {
-        public TestInterface(string name)
-            : base(name, ModelEntityType.Class, TestModelEntityStereotype.Interface)
+        public TestInterface(string name, int size)
+            : base(name, size, ModelEntityType.Class, TestModelEntityStereotype.Interface)
         {
         }
+
+        public override int Priority => 0;
     }
 }

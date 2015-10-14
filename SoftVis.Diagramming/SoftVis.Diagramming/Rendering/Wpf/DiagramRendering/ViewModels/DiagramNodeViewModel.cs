@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DiagramNodeViewModel(IModelEntity modelEntity, DiagramPoint position, DiagramSize size)
+        public DiagramNodeViewModel(IModelEntity modelEntity, Point2D position, Size2D size)
             : base(modelEntity, position, SizeAdjustedWithStereotype(modelEntity, size))
         {
         }
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
         public bool IsStereotypeVisible => Stereotype != null;
         public string StereotypeText => $"<<{Stereotype?.Name.ToLower()}>>";
 
-        public override DiagramPoint Position
+        public override Point2D Position
         {
             get { return base.Position; }
             set
@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
             }
         }
 
-        public override DiagramSize Size
+        public override Size2D Size
         {
             get { return base.Size; }
             set
@@ -50,11 +50,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
             }
         }
 
-        private static DiagramSize SizeAdjustedWithStereotype(IModelEntity modelEntity, DiagramSize size)
+        private static Size2D SizeAdjustedWithStereotype(IModelEntity modelEntity, Size2D size)
         {
             return modelEntity.Stereotype == null
                 ? size
-                : new DiagramSize(size.Width, size.Height + 10);
+                : new Size2D(size.Width, size.Height + 10);
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
     /// </summary>
     internal class MouseZoomViewportGesture : ViewportGestureBase
     {
-        private const double WheelClicksPerZoomRange = 10;
+        private const double WheelClicksPerZoomRange = 12;
         private readonly double _zoomPerWheelClick;
 
         internal MouseZoomViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)

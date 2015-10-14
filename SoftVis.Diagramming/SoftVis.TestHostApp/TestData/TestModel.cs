@@ -9,32 +9,35 @@ namespace Codartis.SoftVis.TestHostApp.TestData
     {
         private readonly List<IModelEntity> _entities;
         private readonly List<IModelRelationship> _relationships;
+        private readonly List<IModelItem> _modelItems;
 
         private TestModel()
         {
             _entities = new List<IModelEntity>();
             _relationships = new List<IModelRelationship>();
+            _modelItems = new List<IModelItem>();
         }
 
         public IEnumerable<IModelEntity> Entities => _entities;
         public IEnumerable<IModelRelationship> Relationships => _relationships;
+        public IEnumerable<IModelItem> Items => _modelItems;
 
-        private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype)
+        private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype, int size)
         {
             if (_entities.Any(i => i.Name == name))
                 return this;
-            //throw new InvalidOperationException($"Entity with name {name} already exists.");
 
             IModelEntity newEntity;
 
             if (type == ModelEntityType.Class && stereotype == null)
-                newEntity = new TestClass(name);
+                newEntity = new TestClass(name, size);
             else if (type == ModelEntityType.Class && stereotype == TestModelEntityStereotype.Interface)
-                newEntity = new TestInterface(name);
+                newEntity = new TestInterface(name, size);
             else
                 throw new ArgumentException($"Unexpected entity type: {type}, stereotype: {stereotype}");
 
             _entities.Add(newEntity);
+            _modelItems.Add(newEntity);
 
             return this;
         }
@@ -56,14 +59,15 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             sourceEntity.AddOutgoingRelationship(newRelationship);
             targetEntity.AddIncomingRelationship(newRelationship);
             _relationships.Add(newRelationship);
+            _modelItems.Add(newRelationship);
 
             return this;
         }
 
-        private TestModel AddEntityWithOptionalBase(string name, ModelEntityType type, ModelEntityStereotype stereotype,
+        private TestModel AddEntityWithOptionalBase(string name, int size, ModelEntityType type, ModelEntityStereotype stereotype,
             string baseName = null)
         {
-            var model = AddEntity(name, type, stereotype);
+            var model = AddEntity(name, type, stereotype, size);
 
             if (baseName != null)
                 model = AddRelationship(name, ModelRelationshipType.Generalization, baseName);
@@ -71,51 +75,92 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return model;
         }
 
-        private TestModel AddInterface(string name, string baseName = null)
+        private TestModel AddInterface(string name, int size, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, ModelEntityType.Class, TestModelEntityStereotype.Interface, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, TestModelEntityStereotype.Interface, baseName);
         }
 
-        private TestModel AddClass(string name, string baseName = null)
+        private TestModel AddClass(string name, int size, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, ModelEntityType.Class, null, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, null, baseName);
+        }
+
+        private TestModel AddClassBase(string name, string baseName = null)
+        {
+            return AddRelationship(name, ModelRelationshipType.Generalization, baseName);
         }
 
         public static TestModel Create()
         {
             return new TestModel()
 
-                .AddInterface("BaseInterface")
-                .AddInterface("MyInterface1", baseName: "BaseInterface")
-                .AddInterface("MyInterface2", baseName: "BaseInterface")
-                .AddInterface("MyInterface3", baseName: "BaseInterface")
-                .AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
+                .AddClass("3", 60)
+                .AddClass("1", 40)
+                .AddClass("2", 25)
+                .AddClass("4", 60)
+                .AddClass("5", 65)
+                .AddClass("6", 70)
+                .AddClass("7", 60)
+                .AddClass("8", 70)
+                .AddClass("9", 80)
 
-                .AddClass("BaseClass")
-                .AddClass("MyClass", baseName: "BaseClass")
-                .AddClass("Child1", baseName: "MyClass")
-                .AddClass("Child2", baseName: "MyClass")
-                .AddClass("Child3", baseName: "BaseClass")
-                .AddClass("Child1OfChild1WithLongName", baseName: "Child1")
-                
-                .AddClass("ForeverAlone")
-                .AddClass("ForeverAlone2")
+                .AddClassBase("2", "1")
+                .AddClassBase("3", "1")
+                .AddClassBase("4", "2")
+                .AddClassBase("5", "2")
+                .AddClassBase("6", "2")
+                .AddClassBase("7", "3")
+                .AddClassBase("8", "3")
+                .AddClassBase("9", "3")
 
-                // These relationships are wrong, just testing the layout algorithm
-                .AddInterface("Circle1")
-                .AddInterface("Circle2")
-                .AddInterface("Circle3")
-                .AddInterface("Circle4")
-                .AddInterface("Circle1", baseName: "Circle2")
-                .AddInterface("Circle2", baseName: "Circle3")
-                .AddInterface("Circle3", baseName: "Circle4")
-                .AddInterface("Circle4", baseName: "Circle1")
+                .AddClass("0", 15)
+                .AddClass("10", 15)
+                .AddClassBase("10", "0")
 
-                // For edge-crossings
-                .AddClass("Child1", baseName: "BaseInterface")
-                .AddClass("Child3", baseName: "MyInterface3")
-                .AddClass("Child3", baseName: "Circle4")
-                .AddClass("MyInterface3", baseName: "Circle2")
+                //.AddInterface("BaseInterface")
+                //.AddInterface("MyInterface1", baseName: "BaseInterface")
+                //.AddInterface("MyInterface2", baseName: "BaseInterface")
+                //.AddInterface("MyInterface3", baseName: "BaseInterface")
+                //.AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
+
+                //.AddClass("BaseClass")
+                //.AddClass("MyClass", baseName: "BaseClass")
+                //.AddClass("Child1", baseName: "MyClass")
+                //.AddClass("Child2", baseName: "MyClass")
+                ////.AddClass("Child3", baseName: "BaseClass")
+                //.AddClass("Child1OfChild1WithLongName", baseName: "Child1")
+
+                //.AddClass("ForeverAlone")
+                //.AddClass("ForeverAlone2")
+
+                //// Loop
+                //.AddInterface("Loop")
+                //.AddInterface("Loop", baseName: "Loop")
+
+                //// Small circle where edge reversing results a multi-edge
+                //.AddInterface("SmallCircle1")
+                //.AddInterface("SmallCircle2")
+                //.AddInterface("SmallCircle1", baseName: "SmallCircle2")
+                //.AddInterface("SmallCircle2", baseName: "SmallCircle1")
+
+                //// Large circle
+                //.AddInterface("Circle1")
+                //.AddInterface("Circle2")
+                //.AddInterface("Circle3")
+                //.AddInterface("Circle4")
+                //.AddInterface("Circle1", baseName: "Circle2")
+                //.AddInterface("Circle2", baseName: "Circle3")
+                //.AddInterface("Circle3", baseName: "Circle4")
+                //.AddInterface("Circle4", baseName: "Circle1")
+
+                // Edge-crossings
+                //.AddClass("Child1", baseName: "BaseInterface")
+                //.AddClass("Child3", baseName: "MyInterface3")
+                //.AddClass("Child3", baseName: "Circle4")
+                //.AddClass("MyInterface3", baseName: "Circle2")
+
+                //.AddClass("IntermediateInterface", baseName: "BaseInterface")
+                //.AddClass("MyInterface1", baseName: "IntermediateInterface")
 
                 ;
         }
