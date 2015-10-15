@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TestData\TestModelRelationshipStereotype.cs" />
     <Compile Include="TestData\TestDiagram.cs" />
     <Compile Include="TestData\TestClass.cs" />
     <Compile Include="TestData\TestModel.cs" />

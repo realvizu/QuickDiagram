@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         {
             _diagram.ShowNode(@class);
             ShowBaseClass(@class);
-            //ShowImplementedInterfaces(@class);
+            ShowImplementedInterfaces(@class);
             ShowDerivedClasses(@class);
         }
 

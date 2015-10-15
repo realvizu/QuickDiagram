@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -11,28 +8,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </summary>
     internal class DiagramLayers : IEnumerable<DiagramLayer>
     {
-        private readonly LayoutGraph _layoutGraph;
         private readonly double _verticalGap;
         private readonly List<DiagramLayer> _layers;
         private readonly Dictionary<LayoutVertex, int> _vertexToLayerIndexMap;
 
-        public DiagramLayers(LayoutGraph layoutGraph, double verticalGap)
+        public DiagramLayers(double verticalGap)
         {
-            _layoutGraph = layoutGraph;
-            _layoutGraph.VertexAdded += OnVertexAdded;
-            _layoutGraph.VertexRemoved += OnVertexRemoved;
-            _layoutGraph.EdgeAdded += OnEdgeAdded;
-            _layoutGraph.EdgeRemoved += OnEdgeRemoved;
-            _layoutGraph.Cleared += OnCleared;
-
             _verticalGap = verticalGap;
 
             _layers = new List<DiagramLayer>();
             _vertexToLayerIndexMap = new Dictionary<LayoutVertex, int>();
         }
 
-        public int Count => _layers.Count;
-        public DiagramLayer this[int i] => _layers[i];
         public IEnumerator<DiagramLayer> GetEnumerator() => _layers.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -47,45 +34,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return _layers[layerIndex];
         }
 
-        private void OnVertexAdded(LayoutVertex layoutVertex)
+        public void AddVertex(LayoutVertex layoutVertex)
         {
             AddVertexToLayer(layoutVertex, 0);
         }
 
-        private void OnVertexRemoved(LayoutVertex layoutVertex)
-        {
-            var layerIndex = _vertexToLayerIndexMap[layoutVertex];
-            RemoveVertexFromLayer(layoutVertex, layerIndex);
-        }
-
-        private void OnEdgeAdded(LayoutEdge layoutEdge)
-        {
-            _layoutGraph.ExecuteOnTree(layoutEdge.Source, layoutEdge.Target, EdgeDirection.In, EnsureVertexIsUnderParentVertex);
-        }
-
-        private void OnEdgeRemoved(LayoutEdge layoutEdge)
-        {
-            var vertexToMove = layoutEdge.Source;
-            var vertexLayerIndex = _vertexToLayerIndexMap[vertexToMove];
-            var parentLayerIndex = GetMaxParentLayerIndex(vertexToMove) ?? -1;
-            MoveVertexBetweenLayers(vertexToMove, vertexLayerIndex, parentLayerIndex + 1);
-        }
-
-        private void OnCleared(object sender, EventArgs e)
-        {
-            _layers.Clear();
-            _vertexToLayerIndexMap.Clear();
-        }
-
-        private int? GetMaxParentLayerIndex(LayoutVertex layoutVertex)
-        {
-            var parentVertices = layoutVertex.GetParents().ToList();
-            return parentVertices.Any()
-                ? parentVertices.Where(i => _vertexToLayerIndexMap.ContainsKey(i)).Max(i => _vertexToLayerIndexMap[i])
-                : (int?)null;
-        }
-
-        private void EnsureVertexIsUnderParentVertex(LayoutVertex childVertex, LayoutVertex parentVertex)
+        public void EnsureVertexIsUnderParentVertex(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
             var childVertexLayerIndex = _vertexToLayerIndexMap[childVertex];
             var parentVertexLayerIndex = _vertexToLayerIndexMap[parentVertex];
@@ -93,6 +47,34 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             if (childVertexLayerIndex <= parentVertexLayerIndex)
                 MoveVertexBetweenLayers(childVertex, childVertexLayerIndex, parentVertexLayerIndex + 1);
         }
+
+        public void Clear()
+        {
+            _layers.Clear();
+            _vertexToLayerIndexMap.Clear();
+        }
+
+        //public void RemoveVertex(LayoutVertex layoutVertex)
+        //{
+        //    var layerIndex = _vertexToLayerIndexMap[layoutVertex];
+        //    RemoveVertexFromLayer(layoutVertex, layerIndex);
+        //}
+
+        //public void RemoveEdge(LayoutEdge layoutEdge)
+        //{
+        //    var vertexToMove = layoutEdge.Source;
+        //    var vertexLayerIndex = _vertexToLayerIndexMap[vertexToMove];
+        //    var parentLayerIndex = GetMaxParentLayerIndex(vertexToMove) ?? -1;
+        //    MoveVertexBetweenLayers(vertexToMove, vertexLayerIndex, parentLayerIndex + 1);
+        //}
+
+        //private int? GetMaxParentLayerIndex(LayoutVertex layoutVertex)
+        //{
+        //    var parentVertices = layoutVertex.GetParents().ToList();
+        //    return parentVertices.Any()
+        //        ? parentVertices.Where(i => _vertexToLayerIndexMap.ContainsKey(i)).Max(i => _vertexToLayerIndexMap[i])
+        //        : (int?)null;
+        //}
 
         private void AddVertexToLayer(LayoutVertex layoutVertex, int layerIndex)
         {

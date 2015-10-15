@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
@@ -28,6 +29,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             DiagramConnector = diagramConnector;
             IsReversed = isReversed;
         }
+
+        public void ExecuteOnTree(Action<LayoutEdge> action) => _graph.ExecuteOnTree(this, action);
 
         public LayoutEdge Reverse()
         {

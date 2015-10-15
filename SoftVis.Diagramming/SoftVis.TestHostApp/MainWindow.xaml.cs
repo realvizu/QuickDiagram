@@ -66,8 +66,8 @@ namespace Codartis.SoftVis.TestHostApp
 
             FitToView();
 
-            _testDiagram.ModelItems.TakeUntil(i => i is TestModelEntity && ((TestModelEntity)i).Name == "13")
-                .ForEach(i => Next_OnClick(null, null));
+            //_testDiagram.ModelItems.TakeUntil(i => i is TestModelEntity && ((TestModelEntity)i).Name == "13")
+            //    .ForEach(i => Next_OnClick(null, null));
         }
 
         private void FitToView()

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -67,24 +66,23 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         }
 
         public void RefreshVerticalPosition() => Center = new Point2D(_center.X, GetLayer().CenterY);
-        public void FloatTree() => ExecuteOnTree(i => i.IsFloating = true);
+        public void FloatPrimaryTree() => ExecuteOnPrimaryTree(i => i.IsFloating = true);
 
-        public IEnumerable<LayoutVertex> GetParents() => _graph.GetOutNeighbours(this);
-        public IEnumerable<LayoutVertex> GetChildren() => _graph.GetInNeighbours(this);
-        public IEnumerable<LayoutVertex> GetPositionedChildren() => GetChildren().Where(i => !i.IsFloating);
-        public IEnumerable<LayoutVertex> GetSiblings() => GetParents().SelectMany(i => i.GetChildren()).Where(i => i != this);
-        public LayoutVertex GetParent() => GetParents().OrderByDescending(i => i.DiagramNode?.Priority).FirstOrDefault();
+        public IEnumerable<LayoutVertex> GetParents() => _graph.GetParents(this);
+        public IEnumerable<LayoutVertex> GetChildren() => _graph.GetChildren(this);
+        public IEnumerable<LayoutVertex> GetPositionedChildren() => _graph.GetPositionedChildren(this);
+        public IEnumerable<LayoutVertex> GetSiblings() => _graph.GetSiblings(this);
+        public LayoutVertex GetPrimaryParent() => _graph.GetPrimaryParent(this);
+        public IEnumerable<LayoutVertex> GetNonPrimaryParents() => _graph.GetNonPrimaryParents(this);
         public bool HasSiblings() => GetSiblings().Any();
         public bool IsLeaf => !GetChildren().Any();
+        public int Degree => _graph.Degree(this);
+
+        public void ExecuteOnPrimaryTree(Action<LayoutVertex> action) => _graph.ExecuteOnPrimaryTree(this, action);
 
         public bool IsSiblingOf(LayoutVertex layoutVertex)
         {
             return layoutVertex != null && GetParents().Intersect(layoutVertex.GetParents()).Any();
-        }
-
-        public void ExecuteOnTree(Action<LayoutVertex> actionOnVertex)
-        {
-            _graph.ExecuteOnTree(this, EdgeDirection.In, actionOnVertex);
         }
 
         public DiagramLayer GetLayer() => _graph.GetLayer(this);

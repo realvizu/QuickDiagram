@@ -59,13 +59,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private int DetermineItemIndex(LayoutVertex insertedVertex)
         {
-            var insertedVertexParent = insertedVertex.GetParent();
+            var insertedVertexParent = insertedVertex.GetPrimaryParent();
             var insertedVertexParentIndexInLayer = insertedVertexParent?.GetIndexInLayer();
 
             var index = 0;
             foreach (var existingVertex in _items)
             {
-                var existingVertexParent = existingVertex.GetParent();
+                var existingVertexParent = existingVertex.GetPrimaryParent();
 
                 var noParentOrSameParent = insertedVertexParent == null || existingVertexParent == insertedVertexParent;
                 if (noParentOrSameParent && insertedVertex.Precedes(existingVertex))

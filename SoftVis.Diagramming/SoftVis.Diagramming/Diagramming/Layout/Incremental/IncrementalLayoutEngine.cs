@@ -128,7 +128,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason)
         {
-            childVertex.FloatTree();
+            childVertex.FloatPrimaryTree();
             PlaceTreeUnderParent(childVertex, parentVertex, reason);
         }
 
@@ -137,7 +137,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var insertionCenterX = GetNonRootVertexInsertionCenterX(childVertex, parentVertex);
             var translateVectorX = insertionCenterX - childVertex.Center.X;
 
-            childVertex.ExecuteOnTree(i => MoveVertexBy(i, translateVectorX, reason));
+            childVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, reason));
         }
 
         private void MoveVertexTo(LayoutVertex movingVertex, double centerX, string reason)
@@ -199,8 +199,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void MoveTreeBy(LayoutVertex rootVertex, double translateVectorX, string reason)
         {
-            rootVertex.FloatTree();
-            rootVertex.ExecuteOnTree(i => MoveVertexBy(i, translateVectorX, $"{reason} --> Moving tree {rootVertex} by {translateVectorX}"));
+            rootVertex.FloatPrimaryTree();
+            rootVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, $"{reason} --> Moving tree {rootVertex} by {translateVectorX}"));
         }
 
         private void MoveVertexBy(LayoutVertex movingVertex, double translateVectorX, string reason)
@@ -210,12 +210,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void CenterParents(LayoutVertex layoutVertex)
         {
-            foreach (var parentVertex in layoutVertex.GetParents())
-            {
-                var targetCenterX = parentVertex.GetPositionedChildren().GetRect().Center.X;
-                MoveVertexTo(parentVertex, targetCenterX, $"Centering parents of {layoutVertex}");
-                CenterParents(parentVertex);
-            }
+            var parentVertex = layoutVertex.GetPrimaryParent();
+            if (parentVertex == null)
+                return;
+
+            var targetCenterX = parentVertex.GetPositionedChildren().GetRect().Center.X;
+            MoveVertexTo(parentVertex, targetCenterX, $"Centering parents of {layoutVertex}");
+            CenterParents(parentVertex);
+
+            // TODO: how to place non-primary parents?
         }
 
         private void Compact()
@@ -238,7 +241,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                     var leftVertex = layer[i - 1];
                     var rightVertex = layer[i];
 
-                    if (leftVertex.GetParent() != rightVertex.GetParent())
+                    if (leftVertex.GetPrimaryParent() != rightVertex.GetPrimaryParent())
                         continue;
 
                     var gap = DetermineGap(leftVertex, rightVertex);
@@ -257,15 +260,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var gap = rightVertex.Left - leftVertex.Right;
             if (gap <= _horizontalGap)
                 return gap;
-            
+
             var rightVertexLeftmostChild = rightVertex.GetChildren().OrderBy(i => i.Right).FirstOrDefault();
             if (rightVertexLeftmostChild == null)
                 return gap;
-            
+
             var previousVertex = rightVertexLeftmostChild.GetPreviousInLayer();
             if (previousVertex == null)
                 return gap;
-            
+
             var childrenGap = DetermineGap(previousVertex, rightVertexLeftmostChild);
             var result = Math.Min(childrenGap, gap);
             return result;
@@ -301,8 +304,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private LayoutVertex ChooseVertexToMove(LayoutVertex vertex1, LayoutVertex vertex2)
         {
-            var vertex1EdgeCount = _layoutGraph.Degree(vertex1);
-            var vertex2EdgeCount = _layoutGraph.Degree(vertex2);
+            var vertex1EdgeCount = vertex1.Degree;
+            var vertex2EdgeCount = vertex2.Degree;
 
             if (vertex1EdgeCount < vertex2EdgeCount)
                 return vertex1;

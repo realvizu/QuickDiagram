@@ -87,8 +87,8 @@ namespace Codartis.SoftVis.Graphs
             return newGraph;
         }
 
-        public static void ExecuteOnTree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, TVertex rootVertex, 
-            EdgeDirection edgeDirection, Action<TVertex> actionOnVertex)
+        public static void ExecuteOnTree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
+            TVertex rootVertex, EdgeDirection edgeDirection, Action<TVertex> actionOnVertex)
             where TEdge : IEdge<TVertex>
         {
             actionOnVertex(rootVertex);
@@ -99,16 +99,13 @@ namespace Codartis.SoftVis.Graphs
             }
         }
 
-        public static void ExecuteOnTree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, TVertex rootVertex, 
-            TVertex parentVertex, EdgeDirection edgeDirection, Action<TVertex, TVertex> actionOnVertexAndParent)
+        public static void ExecuteOnTree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
+            TEdge edge, EdgeDirection edgeDirection, Action<TEdge> actionOnEdge)
             where TEdge : IEdge<TVertex>
         {
-            actionOnVertexAndParent(rootVertex, parentVertex);
-            foreach (var layoutEdge in graph.GetEdges(rootVertex, edgeDirection))
-            {
-                var nextVertex = layoutEdge.GetEndVertex(edgeDirection);
-                graph.ExecuteOnTree(nextVertex, rootVertex, edgeDirection, actionOnVertexAndParent);
-            }
+            actionOnEdge(edge);
+            foreach (var nextEdge in graph.GetEdges(edge.GetEndVertex(edgeDirection), edgeDirection))
+                graph.ExecuteOnTree(nextEdge, edgeDirection, actionOnEdge);
         }
     }
 }

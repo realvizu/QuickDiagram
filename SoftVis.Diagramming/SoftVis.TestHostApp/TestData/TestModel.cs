@@ -42,10 +42,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private TestModel AddRelationship(string sourceName, ModelRelationshipType type, string targetName)
+        private TestModel AddRelationship(string sourceName, string targetName, 
+            ModelRelationshipType type, ModelRelationshipStereotype stereotype = null)
         {
-            if (_relationships.Any(i => i.Source.Name == sourceName && i.Type == type && i.Target.Name == targetName))
-                throw new InvalidOperationException($"Relationship already exists {sourceName}--{type}-->{targetName}.");
+            if (_relationships
+                .Any(i => i.Source.Name == sourceName && i.Type == type && i.Stereotype == stereotype && i.Target.Name == targetName))
+                throw new InvalidOperationException($"Relationship already exists {sourceName}--{type}({stereotype})-->{targetName}.");
 
             var sourceEntity = _entities.FirstOrDefault(i => i.Name == sourceName) as ModelEntity;
             if (sourceEntity == null)
@@ -55,7 +57,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             if (targetEntity == null)
                 throw new InvalidOperationException($"Entity with name {targetName} not found.");
 
-            var newRelationship = new ModelRelationship(sourceEntity, targetEntity, type);
+            var newRelationship = new ModelRelationship(sourceEntity, targetEntity, type, stereotype);
             sourceEntity.AddOutgoingRelationship(newRelationship);
             targetEntity.AddIncomingRelationship(newRelationship);
             _relationships.Add(newRelationship);
@@ -70,74 +72,43 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             var model = AddEntity(name, type, stereotype, size);
 
             if (baseName != null)
-                model = AddRelationship(name, ModelRelationshipType.Generalization, baseName);
+                AddBase(name, baseName);
 
             return model;
         }
 
-        private TestModel AddInterface(string name, int size, string baseName = null)
+        private TestModel AddInterface(string name, int size = 100, string baseName = null)
         {
             return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, TestModelEntityStereotype.Interface, baseName);
         }
 
-        private TestModel AddClass(string name, int size, string baseName = null)
+        private TestModel AddClass(string name, int size = 100, string baseName = null)
         {
             return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, null, baseName);
         }
 
-        private TestModel AddClassBase(string name, string baseName = null)
+        private TestModel AddBase(string name, string baseName = null)
         {
-            return AddRelationship(name, ModelRelationshipType.Generalization, baseName);
+            return AddRelationship(name, baseName, ModelRelationshipType.Generalization);
+        }
+
+        private TestModel AddImplements(string name, string baseName = null)
+        {
+            return AddRelationship(name, baseName, ModelRelationshipType.Generalization, TestModelRelationshipStereotype.Implementation);
         }
 
         public static TestModel Create()
         {
             return new TestModel()
 
-                .AddClass("3", 60)
-                .AddClass("1", 40)
-                .AddClass("2", 25)
-                .AddClass("4", 60)
-                .AddClass("5", 65)
-                .AddClass("6", 70)
-                .AddClass("7", 60)
-                .AddClass("8", 70)
-                .AddClass("9", 80)
-
-                .AddClass("25", 50)
-                .AddClassBase("25", "1")
-
-                .AddClassBase("2", "1")
-                .AddClassBase("3", "1")
-                .AddClassBase("4", "2")
-                .AddClassBase("5", "2")
-                .AddClassBase("6", "2")
-                .AddClassBase("7", "3")
-                .AddClassBase("8", "3")
-                .AddClassBase("9", "3")
-
-                .AddClass("0", 15)
-                .AddClass("10", 15)
-                .AddClassBase("10", "0")
-                                
-                .AddClass("11", 65)
-                .AddClass("12", 35)
-                .AddClassBase("11", "9")
-
-                .AddClass("00", 55)
-                .AddClassBase("00", "4")
-
-                .AddClass("100", 50)
-                .AddClassBase("100", "10")
-
-                .AddClass("12", 100)
-                .AddClassBase("12", "1")
-
-                .AddClass("120", 100)
-                .AddClassBase("120", "12")
-
-                .AddClass("13", 150)
-                .AddClassBase("13", "1")
+                .AddClass("1", 50)
+                .AddClass("2", 40)
+                .AddClass("3", 30)
+                .AddClass("4", 20)
+                .AddBase("3", "1")
+                .AddBase("3", "2")
+                .AddBase("4", "1")
+                .AddBase("4", "3")
 
                 //.AddInterface("BaseInterface")
                 //.AddInterface("MyInterface1", baseName: "BaseInterface")
@@ -149,7 +120,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 //.AddClass("MyClass", baseName: "BaseClass")
                 //.AddClass("Child1", baseName: "MyClass")
                 //.AddClass("Child2", baseName: "MyClass")
-                ////.AddClass("Child3", baseName: "BaseClass")
+                //.AddClass("Child3", baseName: "BaseClass")
                 //.AddClass("Child1OfChild1WithLongName", baseName: "Child1")
 
                 //.AddClass("ForeverAlone")
