@@ -111,13 +111,13 @@ namespace Codartis.SoftVis.TestHostApp
                 _frame--;
         }
 
-        private void PlayFrameForward(RectMoveEventArgs nodeMove)
+        private void PlayFrameForward(RectMove nodeMove)
         {
             ((DiagramNode)nodeMove.Rect).Center = nodeMove.ToCenter;
             FrameLabel = _frame + " (To)";
         }
 
-        private void PlayFrameBackward(RectMoveEventArgs nodeMove)
+        private void PlayFrameBackward(RectMove nodeMove)
         {
             ((DiagramNode)nodeMove.Rect).Center = nodeMove.FromCenter;
             FrameLabel = _frame + " (From)";

@@ -30,7 +30,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             IsReversed = isReversed;
         }
 
-        public void ExecuteOnTree(Action<LayoutEdge> action) => _graph.ExecuteOnTree(this, action);
+        public void TraverseInEdges(Action<LayoutEdge> action)
+        {
+            _graph.TraverseInEdges(this, action);
+        }
 
         public LayoutEdge Reverse()
         {

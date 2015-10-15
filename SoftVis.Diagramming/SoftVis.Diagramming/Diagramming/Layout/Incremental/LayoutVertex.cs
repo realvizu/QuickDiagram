@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public DiagramNode DiagramNode { get; }
         public bool IsFloating { get; set; }
 
-        public event EventHandler<RectMoveEventArgs> CenterChanged;
+        public event EventHandler<RectMove> CenterChanged;
 
         public LayoutVertex(LayoutGraph graph, DiagramNode diagramNode, bool isFloating)
         {
@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 _center = value;
 
                 if (!IsDummy)
-                    CenterChanged?.Invoke(this, new RectMoveEventArgs(DiagramNode, oldValue, value));
+                    CenterChanged?.Invoke(this, new RectMove(DiagramNode, oldValue, value));
             }
         }
 
@@ -71,18 +71,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public IEnumerable<LayoutVertex> GetParents() => _graph.GetParents(this);
         public IEnumerable<LayoutVertex> GetChildren() => _graph.GetChildren(this);
         public IEnumerable<LayoutVertex> GetPositionedChildren() => _graph.GetPositionedChildren(this);
-        public IEnumerable<LayoutVertex> GetSiblings() => _graph.GetSiblings(this);
+        public IEnumerable<LayoutVertex> GetPrimarySiblings() => _graph.GetPrimarySiblings(this);
         public LayoutVertex GetPrimaryParent() => _graph.GetPrimaryParent(this);
         public IEnumerable<LayoutVertex> GetNonPrimaryParents() => _graph.GetNonPrimaryParents(this);
-        public bool HasSiblings() => GetSiblings().Any();
-        public bool IsLeaf => !GetChildren().Any();
-        public int Degree => _graph.Degree(this);
-
         public void ExecuteOnPrimaryTree(Action<LayoutVertex> action) => _graph.ExecuteOnPrimaryTree(this, action);
 
-        public bool IsSiblingOf(LayoutVertex layoutVertex)
+        public bool HasPrimarySiblingsInSameLayer()
         {
-            return layoutVertex != null && GetParents().Intersect(layoutVertex.GetParents()).Any();
+            return GetPrimarySiblings().Any(i => i.GetLayerIndex() == GetLayerIndex());
+        }
+
+        public bool IsPrimarySiblingOf(LayoutVertex layoutVertex)
+        {
+            return layoutVertex != null && GetPrimaryParent() == layoutVertex.GetPrimaryParent();
         }
 
         public DiagramLayer GetLayer() => _graph.GetLayer(this);
@@ -92,16 +93,16 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public int GetIndexInLayer() => GetLayer().IndexOf(this);
         public IEnumerable<LayoutVertex> GetOtherPositionedVerticesInLayer() => GetLayer().Where(i => i != this && !i.IsFloating);
 
-        public LayoutVertex GetPreviousSibling()
+        public LayoutVertex GetPreviousSiblingInLayer()
         {
             var previousVertex = GetPreviousInLayer();
-            return IsSiblingOf(previousVertex) ? previousVertex : null;
+            return IsPrimarySiblingOf(previousVertex) ? previousVertex : null;
         }
 
-        public LayoutVertex GetNextSibling()
+        public LayoutVertex GetNextSiblingInLayer()
         {
             var nextVertex = GetNextInLayer();
-            return IsSiblingOf(nextVertex) ? nextVertex : null;
+            return IsPrimarySiblingOf(nextVertex) ? nextVertex : null;
         }
 
         public bool OverlapsWith(LayoutVertex otherVertex, double marginX)

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Common;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs
@@ -16,6 +17,11 @@ namespace Codartis.SoftVis.Graphs
         where TEdge : IEdge<TVertex>
     {
         private readonly TEdge[] _edges;
+
+        public Path(TEdge edge)
+            : this(edge.ToEnumerable())
+        {
+        } 
 
         public Path(IEnumerable<TEdge> edges)
         {

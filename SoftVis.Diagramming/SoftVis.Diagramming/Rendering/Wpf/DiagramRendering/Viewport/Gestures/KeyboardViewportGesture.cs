@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
             : base(diagramViewport, uiEventSource)
         {
             var zoomRange = diagramViewport.MaxZoom - diagramViewport.MinZoom;
-            _zoomAmountPerSpeed = zoomRange / (MaxSpeed/2 * FramePerSeconds * FullZoomSeconds);
+            _zoomAmountPerSpeed = zoomRange / (MaxSpeed / 2 * FramePerSeconds * FullZoomSeconds);
 
             UIEventSource.PreviewKeyDown += OnKeyDown;
             UIEventSource.PreviewKeyUp += OnKeyUp;
@@ -111,15 +111,15 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 
         private bool IsAcceleratingInPositiveDirection(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
         {
-            return _isKeyDown[(int)positiveKey] 
-                && !(_isKeyDown[(int)negativeKey]) 
+            return _isKeyDown[(int)positiveKey]
+                && !(_isKeyDown[(int)negativeKey])
                 && speed >= 0;
         }
 
         private bool IsAccelaratingInNegativeDirection(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
         {
-            return _isKeyDown[(int)negativeKey] 
-                && !(_isKeyDown[(int)positiveKey]) 
+            return _isKeyDown[(int)negativeKey]
+                && !(_isKeyDown[(int)positiveKey])
                 && speed <= 0;
         }
 
@@ -137,28 +137,24 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
 
         private void SetKeyDownState(Key key, bool newState)
         {
+            var gestureKey = KeyToGestureKey(key);
+            if (gestureKey == null)
+                return;
+
+            _isKeyDown[(int)gestureKey.Value] = newState;
+        }
+
+        private static GestureKeys? KeyToGestureKey(Key key)
+        {
             switch (key)
             {
-                case (Key.Up):
-                    _isKeyDown[(int)GestureKeys.Up] = newState;
-                    break;
-                case (Key.Down):
-                    _isKeyDown[(int)GestureKeys.Down] = newState;
-                    break;
-                case (Key.Left):
-                    _isKeyDown[(int)GestureKeys.Left] = newState;
-                    break;
-                case (Key.Right):
-                    _isKeyDown[(int)GestureKeys.Right] = newState;
-                    break;
-                case (Key.W):
-                    _isKeyDown[(int)GestureKeys.ZoomIn] = newState;
-                    break;
-                case (Key.S):
-                    _isKeyDown[(int)GestureKeys.ZoomOut] = newState;
-                    break;
-                default:
-                    break;
+                case (Key.Up): return GestureKeys.Up;
+                case (Key.Down): return GestureKeys.Down;
+                case (Key.Left): return GestureKeys.Left;
+                case (Key.Right): return GestureKeys.Right;
+                case (Key.W): return GestureKeys.ZoomIn;
+                case (Key.S): return GestureKeys.ZoomOut;
+                default: return null;
             }
         }
 

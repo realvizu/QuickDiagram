@@ -18,14 +18,14 @@ namespace Codartis.SoftVis.Diagramming
         private const double VerticalGap = 40;
         private readonly IncrementalLayoutEngine _layoutEngine;
 
-        public List<RectMoveEventArgs> LastEdgeTriggeredVertexMoves => _layoutEngine.LastEdgeTriggeredVertexMoves;
+        public List<RectMove> LastEdgeTriggeredVertexMoves => _layoutEngine.LastEdgeTriggeredVertexMoves;
         public int TotalVertexMoveCount => _layoutEngine.TotalVertexMoveCount;
 
         public DiagramGraph()
         {
             _layoutEngine = new IncrementalLayoutEngine(HorizontalGap, VerticalGap);
-            _layoutEngine.VertexCenterChanged += OnVertexCenterChanged;
-            _layoutEngine.EdgeRouteChanged += OnEdgeRouteChanged;
+            _layoutEngine.DiagramNodeCenterChanged += OnDiagramNodeCenterChanged;
+            _layoutEngine.DiagramConnectorRouteChanged += OnDiagramConnectorRouteChanged;
             Cleared += OnCleared;
         }
 
@@ -59,12 +59,12 @@ namespace Codartis.SoftVis.Diagramming
             return this.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCount).Select(i => new DiagramPath(i));
         }
 
-        private static void OnVertexCenterChanged(object sender, RectMoveEventArgs args)
+        private static void OnDiagramNodeCenterChanged(object sender, RectMove args)
         {
             ((DiagramNode)sender).Center = args.ToCenter;
         }
 
-        private static void OnEdgeRouteChanged(object sender, Route routePoints)
+        private static void OnDiagramConnectorRouteChanged(object sender, Route routePoints)
         {
             ((DiagramConnector)sender).RoutePoints = routePoints;
         }

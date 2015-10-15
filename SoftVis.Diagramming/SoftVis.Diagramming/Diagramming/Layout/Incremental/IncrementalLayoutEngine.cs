@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -32,8 +31,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// possibly pushing away other nodes.</para>
     /// Events:
     /// <para>The layout engine subscribes to the vertices center property changed event.</para>
-    /// <para>VertexCenterChanged event is fired whenever a vertex is moved.</para>
-    /// <para>EdgeRouteChanged event is fired when the edge is first added and whenever any of the end-vertices are moved.</para>
+    /// <para>DiagramNodeCenterChanged event is fired whenever a vertex is moved.</para>
+    /// <para>DiagramConnectorRouteChanged event is fired when the edge is first added and whenever any of the end-vertices are moved.</para>
     /// </remarks>
     internal sealed class IncrementalLayoutEngine
     {
@@ -41,24 +40,28 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private readonly double _verticalGap;
         private readonly LayoutGraph _layoutGraph;
 
-        public List<RectMoveEventArgs> LastEdgeTriggeredVertexMoves { get; }
+        public List<RectMove> LastEdgeTriggeredVertexMoves { get; }
         public int TotalVertexMoveCount { get; private set; }
 
-        public event EventHandler<RectMoveEventArgs> VertexCenterChanged;
-        public event EventHandler<Route> EdgeRouteChanged;
+        public event EventHandler<RectMove> DiagramNodeCenterChanged;
+        public event EventHandler<Route> DiagramConnectorRouteChanged;
 
         public IncrementalLayoutEngine(double horizontalGap, double verticalGap)
         {
             _horizontalGap = horizontalGap;
             _verticalGap = verticalGap;
-            _layoutGraph = new LayoutGraph(horizontalGap, verticalGap);
 
-            LastEdgeTriggeredVertexMoves = new List<RectMoveEventArgs>();
+            _layoutGraph = new LayoutGraph(horizontalGap, verticalGap);
+            _layoutGraph.LayoutVertexCenterChanged += OnVertexCenterChanged;
+
+            LastEdgeTriggeredVertexMoves = new List<RectMove>();
         }
 
         public void Clear()
         {
             _layoutGraph.Clear();
+
+            LastEdgeTriggeredVertexMoves.Clear();
             TotalVertexMoveCount = 0;
         }
 
@@ -68,8 +71,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             LastEdgeTriggeredVertexMoves.Clear();
 
-            var layoutVertex = _layoutGraph.CreateVertex(diagramNode);
-            layoutVertex.CenterChanged += OnVertexCenterChanged;
+            var layoutVertex = _layoutGraph.AddNode(diagramNode);
 
             var centerX = GetRootVertexInsertionCenterX(layoutVertex);
             MoveVertexTo(layoutVertex, centerX, $"Adding node {diagramNode}");
@@ -84,15 +86,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             LastEdgeTriggeredVertexMoves.Clear();
 
-            // TODO: turn edge direction if needed!
+            var layoutPath = _layoutGraph.AddConnector(diagramConnector);
+            var lastEdgeOfPath = layoutPath.Last();
 
-            var layoutEdge = _layoutGraph.CreateEdge(diagramConnector);
-
-            MoveTreeUnderParent(layoutEdge.Source, layoutEdge.Target, $"Moving tree {layoutEdge.Source} under {layoutEdge.Target}");
+            MoveTreeUnderParent(lastEdgeOfPath.Source, lastEdgeOfPath.Target, $"Moving tree of {lastEdgeOfPath.Source} under {lastEdgeOfPath.Target}");
             Compact();
             AdjustVerticalPositions();
 
-            OnEdgeRouteChanged(layoutEdge);
+            FireDiagramConnectorRouteChanged(diagramConnector);
         }
 
         private double GetRootVertexInsertionCenterX(LayoutVertex rootVertex)
@@ -107,11 +108,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private double GetNonRootVertexInsertionCenterX(LayoutVertex childVertex, LayoutVertex parentVertex)
         {
-            if (!childVertex.HasSiblings())
+            if (!childVertex.HasPrimarySiblingsInSameLayer())
                 return parentVertex.Center.X;
 
-            var previousSibling = childVertex.GetPreviousSibling();
-            var nextSibling = childVertex.GetNextSibling();
+            var previousSibling = childVertex.GetPreviousSiblingInLayer();
+            var nextSibling = childVertex.GetNextSiblingInLayer();
 
             return CalculateInsertionCenterXFromNeighbours(previousSibling, nextSibling);
         }
@@ -155,9 +156,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
                 movingVertex.Center = new Point2D(centerX, centerY);
 
-                TotalVertexMoveCount++;
                 if (!movingVertex.IsDummy)
-                    LastEdgeTriggeredVertexMoves.Add(new RectMoveEventArgs(movingVertex.DiagramNode, oldCenter, movingVertex.Center));
+                {
+                    TotalVertexMoveCount++;
+                    LastEdgeTriggeredVertexMoves.Add(new RectMove(movingVertex.DiagramNode, oldCenter, movingVertex.Center));
+                }
             }
 
             PushOtherVerticesFromTheWay(movingVertex);
@@ -280,51 +283,21 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 layoutVertex.RefreshVerticalPosition();
         }
 
-        private void OnVertexCenterChanged(object sender, RectMoveEventArgs args)
+        private void OnVertexCenterChanged(object sender, RectMove args)
         {
-            PropagateVertexCenterChangedEvent((LayoutVertex)sender, args);
-        }
+            var layoutVertex = (LayoutVertex) sender;
 
-        private void PropagateVertexCenterChangedEvent(LayoutVertex layoutVertex, RectMoveEventArgs args)
-        {
             if (!layoutVertex.IsDummy)
-                VertexCenterChanged?.Invoke(layoutVertex.DiagramNode, args);
+                DiagramNodeCenterChanged?.Invoke(layoutVertex.DiagramNode, args);
 
             foreach (var layoutEdge in _layoutGraph.GetAllEdges(layoutVertex))
-                OnEdgeRouteChanged(layoutEdge);
+                FireDiagramConnectorRouteChanged(layoutEdge.DiagramConnector);
         }
 
-        private void OnEdgeRouteChanged(LayoutEdge layoutEdge)
+        private void FireDiagramConnectorRouteChanged(DiagramConnector diagramConnector)
         {
-            var edgeRoute = _layoutGraph.GetEdgeRoute(layoutEdge);
-            EdgeRouteChanged?.Invoke(layoutEdge.DiagramConnector, edgeRoute);
+            var route = _layoutGraph.GetRouteForDiagramConnector(diagramConnector);
+            DiagramConnectorRouteChanged?.Invoke(diagramConnector, route);
         }
-
-        #region Unused
-
-        private LayoutVertex ChooseVertexToMove(LayoutVertex vertex1, LayoutVertex vertex2)
-        {
-            var vertex1EdgeCount = vertex1.Degree;
-            var vertex2EdgeCount = vertex2.Degree;
-
-            if (vertex1EdgeCount < vertex2EdgeCount)
-                return vertex1;
-            if (vertex1EdgeCount > vertex2EdgeCount)
-                return vertex2;
-
-            var vertex1LayerIndex = vertex1.GetLayerIndex();
-            var vertex2LayerIndex = vertex2.GetLayerIndex();
-
-            if (vertex1LayerIndex > vertex2LayerIndex)
-                return vertex1;
-            if (vertex1LayerIndex < vertex2LayerIndex)
-                return vertex2;
-
-            return vertex1.Center.X > vertex2.Center.X
-                ? vertex1
-                : vertex2;
-        }
-
-        #endregion
     }
 }

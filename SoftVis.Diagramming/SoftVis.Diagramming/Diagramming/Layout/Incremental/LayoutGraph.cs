@@ -20,12 +20,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </remarks>
     internal sealed class LayoutGraph
     {
+        public event EventHandler<RectMove> LayoutVertexCenterChanged;
+
         private readonly double _horizontalGap;
         private readonly double _verticalGap;
         private readonly BidirectionalGraph<LayoutVertex, LayoutEdge> _graph;
         private readonly DiagramLayers _diagramLayers;
         private readonly Dictionary<DiagramNode, LayoutVertex> _originalToLayoutVertexMap;
-        private readonly IDictionary<DiagramConnector, IList<LayoutVertex>> _edgeToDummyVerticesMap;
+        private readonly Dictionary<DiagramConnector, LayoutPath> _connectorToLayoutPath;
 
         public LayoutGraph(double horizontalGap, double verticalGap)
         {
@@ -36,53 +38,71 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _diagramLayers = new DiagramLayers(_verticalGap);
 
             _originalToLayoutVertexMap = new Dictionary<DiagramNode, LayoutVertex>();
-            _edgeToDummyVerticesMap = new Dictionary<DiagramConnector, IList<LayoutVertex>>();
+            _connectorToLayoutPath = new Dictionary<DiagramConnector, LayoutPath>();
         }
 
         public IEnumerable<DiagramLayer> Layers => _diagramLayers;
 
-        public LayoutVertex CreateVertex(DiagramNode diagramNode)
+        public LayoutVertex AddNode(DiagramNode diagramNode)
         {
             var newVertex = new LayoutVertex(this, diagramNode, isFloating: true);
+            SetUpEventPropagation(newVertex);
             AddVertex(newVertex, diagramNode);
             return newVertex;
         }
 
-        public LayoutVertex CreateDummyVertex()
+        public LayoutPath AddConnector(DiagramConnector diagramConnector)
         {
-            var dummyVertex = new LayoutVertex(this, null, isFloating: true);
-            AddVertex(dummyVertex);
-            return dummyVertex;
-        }
+            // TODO: turn edge direction if needed!
+            var isReversed = false;
 
-        public LayoutEdge CreateEdge(DiagramConnector diagramConnector)
-        {
             var sourceLayoutVertex = _originalToLayoutVertexMap[diagramConnector.Source];
             var targetLayoutVertex = _originalToLayoutVertexMap[diagramConnector.Target];
+
             var newEdge = new LayoutEdge(this, sourceLayoutVertex, targetLayoutVertex, diagramConnector);
             AddEdge(newEdge);
-            return newEdge;
+
+            var layerGap = newEdge.Source.GetLayerIndex() - newEdge.Target.GetLayerIndex();
+            if (layerGap < 1)
+                throw new Exception($"Invalid layerGap: {layerGap}");
+
+            var layoutPath = (layerGap == 1)
+                ? new LayoutPath(newEdge)
+                : BreakEdgeWithDummyVertices(newEdge, layerGap - 1);
+
+            SaveConnectorToLayoutPathMapping(diagramConnector, isReversed, layoutPath);
+            return layoutPath;
+        }
+
+        public Route GetRouteForDiagramConnector(DiagramConnector diagramConnector)
+        {
+            var layoutPath = _connectorToLayoutPath[diagramConnector];
+
+            var sourceRect = layoutPath.Source.Rect;
+            var interimRoutePoints = layoutPath.GetInterimVertices().Select(i => i.Center).ToArray();
+            var targetRect = layoutPath.Target.Rect;
+
+            var secondPoint = interimRoutePoints.Any()
+                ? interimRoutePoints.First()
+                : targetRect.Center;
+            var penultimatePoint = interimRoutePoints.Any()
+                ? interimRoutePoints.Last()
+                : sourceRect.Center;
+
+            return new Route
+            {
+                sourceRect.GetAttachPointToward(secondPoint),
+                interimRoutePoints,
+                targetRect.GetAttachPointToward(penultimatePoint)
+            };
         }
 
         public void Clear()
         {
+            _connectorToLayoutPath.Clear();
             _originalToLayoutVertexMap.Clear();
-            _edgeToDummyVerticesMap.Clear();
             _graph.Clear();
             _diagramLayers.Clear();
-        }
-
-        public Route GetEdgeRoute(LayoutEdge layoutEdge)
-        {
-            var sourceRect = layoutEdge.Source.Rect;
-            var targetRect = layoutEdge.Target.Rect;
-
-            return new Route
-            {
-                sourceRect.GetAttachPointToward(targetRect.Center),
-                GetInterimRoutePoints(layoutEdge),
-                targetRect.GetAttachPointToward(sourceRect.Center)
-            };
         }
 
         public IEnumerable<LayoutVertex> Vertices => _graph.Vertices;
@@ -100,9 +120,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return GetChildren(layoutVertex).Where(i => !i.IsFloating);
         }
 
-        public IEnumerable<LayoutVertex> GetSiblings(LayoutVertex layoutVertex)
+        public IEnumerable<LayoutVertex> GetPrimarySiblings(LayoutVertex layoutVertex)
         {
-            return GetParents(layoutVertex).SelectMany(i => i.GetChildren()).Where(i => i != layoutVertex);
+            return GetPrimaryParent(layoutVertex)?.GetChildren().Where(i => i != layoutVertex);
         }
 
         public LayoutVertex GetPrimaryParent(LayoutVertex layoutVertex)
@@ -113,8 +133,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private IEnumerable<LayoutVertex> GetOrderedParents(LayoutVertex layoutVertex)
         {
             return GetParents(layoutVertex)
-                .OrderByDescending(i => i.DiagramNode?.Priority)
-                .ThenBy(i => i.DiagramNode?.Name);
+                .OrderByDescending(i => i.DiagramNode?.Priority ?? 0)
+                .ThenBy(i => i.DiagramNode?.Name ?? string.Empty);
         }
 
         public IEnumerable<LayoutVertex> GetNonPrimaryParents(LayoutVertex layoutVertex)
@@ -137,20 +157,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return _graph.InEdges(layoutVertex).Where(i => i.Source.GetPrimaryParent() == layoutVertex);
         }
 
-        public void ExecuteOnTree(LayoutEdge edge, Action<LayoutEdge> action)
+        public void TraverseInEdges(LayoutEdge edge, Action<LayoutEdge> action)
         {
-            _graph.ExecuteOnTree(edge, EdgeDirection.In, action);
+            _graph.TraverseEdges(edge, EdgeDirection.In, action);
         }
 
         public DiagramLayer GetLayer(LayoutVertex layoutVertex) => _diagramLayers.GetLayer(layoutVertex);
         public int GetLayerIndex(LayoutVertex layoutVertex) => _diagramLayers.GetLayerIndex(layoutVertex);
 
-        private IEnumerable<Point2D> GetInterimRoutePoints(LayoutEdge layoutEdge)
+        private IEnumerable<LayoutVertex> CreateDummyVertices(int count)
         {
-            IList<LayoutVertex> dummyVertices;
-            return _edgeToDummyVerticesMap.TryGetValue(layoutEdge.DiagramConnector, out dummyVertices)
-                ? dummyVertices.Select(i => i.Center)
-                : null;
+            for (var i = 0; i < count; i++)
+                yield return new LayoutVertex(this, null, isFloating: true);
         }
 
         private void AddVertex(LayoutVertex newVertex, DiagramNode diagramNode = null)
@@ -165,36 +183,45 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private void AddEdge(LayoutEdge newEdge)
         {
             _graph.AddEdge(newEdge);
-            newEdge.ExecuteOnTree(i => _diagramLayers.EnsureVertexIsUnderParentVertex(i.Source, i.Target));
+            newEdge.TraverseInEdges(i => _diagramLayers.EnsureVertexIsUnderParentVertex(i.Source, i.Target));
         }
 
-        #region Unused
-
-        private void BreakEdgeWithInterimVertices(LayoutEdge edgeToBreak, List<LayoutVertex> interimVertices)
+        private LayoutPath BreakEdgeWithDummyVertices(LayoutEdge edgeToBreak, int dummyVertexCount)
         {
-            SaveEdgeToDummyVerticesMapping(edgeToBreak, interimVertices);
-
             _graph.RemoveEdge(edgeToBreak);
 
-            _graph.AddVertexRange(interimVertices);
+            var dummyVertices = CreateDummyVertices(dummyVertexCount).ToArray();
+            dummyVertices.ForEach(i => AddVertex(i));
 
-            var vertexPath = edgeToBreak.Source.ToEnumerable().Concat(interimVertices).Concat(edgeToBreak.Target).ToArray();
+            var vertices = edgeToBreak.Source.ToEnumerable()
+                .Concat(dummyVertices)
+                .Concat(edgeToBreak.Target).ToArray();
 
-            for (var i = 0; i < vertexPath.Length - 1; i++)
+            var diagramConnector = edgeToBreak.DiagramConnector;
+            var isReversed = edgeToBreak.IsReversed;
+
+            var edges = new List<LayoutEdge>();
+            for (var i = 0; i < vertices.Length - 1; i++)
             {
-                var newEdge = new LayoutEdge(this, vertexPath[i], vertexPath[i + 1],
-                    edgeToBreak.DiagramConnector, edgeToBreak.IsReversed);
-                _graph.AddEdge(newEdge);
+                 var newEdge = new LayoutEdge(this, vertices[i], vertices[i + 1], diagramConnector, isReversed);
+                AddEdge(newEdge);
+                edges.Add(newEdge);
             }
+
+            return new LayoutPath(edges);
         }
 
-        private void SaveEdgeToDummyVerticesMapping(LayoutEdge edge, IEnumerable<LayoutVertex> interimVertices)
+        private void SaveConnectorToLayoutPathMapping(DiagramConnector diagramConnector, bool isReversed,
+            LayoutPath layoutPath)
         {
-            interimVertices = edge.IsReversed ? interimVertices.Reverse() : interimVertices;
-
-            _edgeToDummyVerticesMap.Add(edge.DiagramConnector, interimVertices.ToArray());
+            // TODO: reverse stored path?
+            //IEnumerable<LayoutEdge> edges = isReversed ? layoutPath.Reverse() : layoutPath;
+            _connectorToLayoutPath.Add(diagramConnector, layoutPath);
         }
 
-        #endregion
+        private void SetUpEventPropagation(LayoutVertex layoutVertex)
+        {
+            layoutVertex.CenterChanged += (o, a) => LayoutVertexCenterChanged?.Invoke(o, a);
+        }
     }
 }

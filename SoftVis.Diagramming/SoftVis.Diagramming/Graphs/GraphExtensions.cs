@@ -87,7 +87,7 @@ namespace Codartis.SoftVis.Graphs
             return newGraph;
         }
 
-        public static void ExecuteOnTree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
+        public static void TraverseEdges<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
             TVertex rootVertex, EdgeDirection edgeDirection, Action<TVertex> actionOnVertex)
             where TEdge : IEdge<TVertex>
         {
@@ -95,17 +95,17 @@ namespace Codartis.SoftVis.Graphs
             foreach (var layoutEdge in graph.GetEdges(rootVertex, edgeDirection))
             {
                 var nextVertex = layoutEdge.GetEndVertex(edgeDirection);
-                graph.ExecuteOnTree(nextVertex, edgeDirection, actionOnVertex);
+                graph.TraverseEdges(nextVertex, edgeDirection, actionOnVertex);
             }
         }
 
-        public static void ExecuteOnTree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
+        public static void TraverseEdges<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
             TEdge edge, EdgeDirection edgeDirection, Action<TEdge> actionOnEdge)
             where TEdge : IEdge<TVertex>
         {
             actionOnEdge(edge);
             foreach (var nextEdge in graph.GetEdges(edge.GetEndVertex(edgeDirection), edgeDirection))
-                graph.ExecuteOnTree(nextEdge, edgeDirection, actionOnEdge);
+                graph.TraverseEdges(nextEdge, edgeDirection, actionOnEdge);
         }
     }
 }

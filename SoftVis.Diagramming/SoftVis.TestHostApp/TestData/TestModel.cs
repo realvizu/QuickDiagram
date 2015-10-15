@@ -106,9 +106,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("3", 30)
                 .AddClass("4", 20)
                 .AddBase("3", "1")
-                .AddBase("3", "2")
-                .AddBase("4", "1")
                 .AddBase("4", "3")
+                .AddBase("4", "2")
 
                 //.AddInterface("BaseInterface")
                 //.AddInterface("MyInterface1", baseName: "BaseInterface")
