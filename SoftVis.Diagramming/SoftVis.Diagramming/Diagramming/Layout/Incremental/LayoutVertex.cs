@@ -92,6 +92,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public LayoutVertex GetNextInLayer() => GetLayer().GetNext(this);
         public int GetIndexInLayer() => GetLayer().IndexOf(this);
         public IEnumerable<LayoutVertex> GetOtherPositionedVerticesInLayer() => GetLayer().Where(i => i != this && !i.IsFloating);
+        public bool IsLayerItemIndexValid => GetLayer().IsItemIndexValid(this);
+
+        public void RearrangeItemInLayer()
+        {
+            var layer = GetLayer();
+            layer.Remove(this);
+            layer.Add(this);
+        }
 
         public LayoutVertex GetPreviousSiblingInLayer()
         {

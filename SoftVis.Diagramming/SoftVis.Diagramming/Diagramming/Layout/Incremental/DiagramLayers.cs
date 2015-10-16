@@ -46,6 +46,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             if (childVertexLayerIndex <= parentVertexLayerIndex)
                 MoveVertexBetweenLayers(childVertex, childVertexLayerIndex, parentVertexLayerIndex + 1);
+            else
+                EnsureItemIndexIsValid(childVertex);
+        }
+
+        private static void EnsureItemIndexIsValid(LayoutVertex layoutVertex)
+        {
+            if (!layoutVertex.IsLayerItemIndexValid)
+                layoutVertex.RearrangeItemInLayer();
         }
 
         public void Clear()

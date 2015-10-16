@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
+using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -39,6 +41,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private readonly double _horizontalGap;
         private readonly double _verticalGap;
         private readonly LayoutGraph _layoutGraph;
+        private readonly BidirectionalGraph<VertexMove, VertexMoveCause> _vertexMoveGraph;
 
         public List<RectMove> LastEdgeTriggeredVertexMoves { get; }
         public int TotalVertexMoveCount { get; private set; }
@@ -54,11 +57,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _layoutGraph = new LayoutGraph(horizontalGap, verticalGap);
             _layoutGraph.LayoutVertexCenterChanged += OnVertexCenterChanged;
 
+            _vertexMoveGraph = new BidirectionalGraph<VertexMove, VertexMoveCause>();
+
             LastEdgeTriggeredVertexMoves = new List<RectMove>();
         }
 
         public void Clear()
         {
+            _vertexMoveGraph.Clear();
             _layoutGraph.Clear();
 
             LastEdgeTriggeredVertexMoves.Clear();
@@ -69,12 +75,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             Debug.WriteLine("-----------------------");
 
+            _vertexMoveGraph.Clear();
             LastEdgeTriggeredVertexMoves.Clear();
 
             var layoutVertex = _layoutGraph.AddNode(diagramNode);
 
             var centerX = GetRootVertexInsertionCenterX(layoutVertex);
-            MoveVertexTo(layoutVertex, centerX, $"Adding node {diagramNode}");
+            MoveVertexTo(layoutVertex, centerX, $"Adding node {diagramNode}", null);
             Compact();
             AdjustVerticalPositions();
         }
@@ -84,12 +91,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             Debug.WriteLine("-----------------------");
             Debug.WriteLine($"Adding edge {diagramConnector}, moving {diagramConnector.Source}");
 
+            _vertexMoveGraph.Clear();
             LastEdgeTriggeredVertexMoves.Clear();
 
             var layoutPath = _layoutGraph.AddConnector(diagramConnector);
             var lastEdgeOfPath = layoutPath.Last();
 
-            MoveTreeUnderParent(lastEdgeOfPath.Source, lastEdgeOfPath.Target, $"Moving tree of {lastEdgeOfPath.Source} under {lastEdgeOfPath.Target}");
+            var primaryParent = lastEdgeOfPath.Source.GetPrimaryParent();
+            MoveTreeUnderParent(lastEdgeOfPath.Source, primaryParent, $"Moving tree of {lastEdgeOfPath.Source} under {primaryParent}", null);
             Compact();
             AdjustVerticalPositions();
 
@@ -103,7 +112,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             return (previousVertex == null && nextVertex == null)
                 ? 0
-                : CalculateInsertionCenterXFromNeighbours(previousVertex, nextVertex);
+                : CalculateInsertionCenterXFromNeighbours(rootVertex, previousVertex, nextVertex);
         }
 
         private double GetNonRootVertexInsertionCenterX(LayoutVertex childVertex, LayoutVertex parentVertex)
@@ -114,47 +123,53 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var previousSibling = childVertex.GetPreviousSiblingInLayer();
             var nextSibling = childVertex.GetNextSiblingInLayer();
 
-            return CalculateInsertionCenterXFromNeighbours(previousSibling, nextSibling);
+            return CalculateInsertionCenterXFromNeighbours(childVertex, previousSibling, nextSibling);
         }
 
-        private double CalculateInsertionCenterXFromNeighbours(LayoutVertex previousSibling, LayoutVertex nextSibling)
+        private double CalculateInsertionCenterXFromNeighbours(LayoutVertex insertedVertex,
+            LayoutVertex previousSibling, LayoutVertex nextSibling)
         {
             if (previousSibling == null && nextSibling == null)
                 throw new ArgumentNullException(nameof(nextSibling) + " and " + nameof(previousSibling));
 
             return previousSibling == null
-                ? nextSibling.Left - _horizontalGap / 2
-                : previousSibling.Right + _horizontalGap / 2;
+                ? nextSibling.Left - _horizontalGap - insertedVertex.Width / 2
+                : previousSibling.Right + _horizontalGap + insertedVertex.Width / 2;
         }
 
-        private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason)
+        private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason, VertexMove previousMove)
         {
             childVertex.FloatPrimaryTree();
-            PlaceTreeUnderParent(childVertex, parentVertex, reason);
+            PlaceTreeUnderParent(childVertex, parentVertex, reason, previousMove);
+            CenterParents(childVertex, null);
         }
 
-        private void PlaceTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason)
+        private void PlaceTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason, VertexMove previousMove)
         {
             var insertionCenterX = GetNonRootVertexInsertionCenterX(childVertex, parentVertex);
             var translateVectorX = insertionCenterX - childVertex.Center.X;
 
-            childVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, reason));
+            childVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, reason, previousMove));
         }
 
-        private void MoveVertexTo(LayoutVertex movingVertex, double centerX, string reason)
+        private void MoveVertexTo(LayoutVertex movingVertex, double newCenterX,
+            string reason, VertexMove previousMove)
         {
             movingVertex.IsFloating = false;
 
-            var centerY = movingVertex.GetLayer().CenterY;
+            var oldCenter = movingVertex.Center;
+            var newCenterY = movingVertex.GetLayer().CenterY;
+            var newCenter = new Point2D(newCenterX, newCenterY);
 
-            if (!movingVertex.Center.X.IsEqualWithTolerance(centerX) ||
-                !movingVertex.Center.Y.IsEqualWithTolerance(centerY))
+            var thisMove = new VertexMove(movingVertex, oldCenter, newCenter);
+            RecordMove(thisMove, previousMove, reason);
+
+            if (!oldCenter.X.IsEqualWithTolerance(newCenterX) ||
+                !oldCenter.Y.IsEqualWithTolerance(newCenterY))
             {
-                Debug.WriteLine($"{reason} --> Moving vertex {movingVertex} to: {centerX}");
+                Debug.WriteLine($"{reason} --> Moving vertex {movingVertex} to: {newCenterX}");
 
-                var oldCenter = movingVertex.Center;
-
-                movingVertex.Center = new Point2D(centerX, centerY);
+                movingVertex.Center = newCenter;
 
                 if (!movingVertex.IsDummy)
                 {
@@ -163,10 +178,25 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 }
             }
 
-            PushOtherVerticesFromTheWay(movingVertex);
+            if (_vertexMoveGraph.HasCycle())
+                Debug.WriteLine("Move cycle detected, pushing omitted.");
+            else
+                PushOtherVerticesFromTheWay(movingVertex, thisMove);
         }
 
-        private void PushOtherVerticesFromTheWay(LayoutVertex pushyVertex)
+        private void RecordMove(VertexMove move, VertexMove previousMove, string reason)
+        {
+            if (!_vertexMoveGraph.ContainsVertex(move))
+                _vertexMoveGraph.AddVertex(move);
+
+            if (previousMove != null)
+            {
+                var moveEdge = new VertexMoveCause(previousMove, move, reason);
+                _vertexMoveGraph.AddEdge(moveEdge);
+            }
+        }
+
+        private void PushOtherVerticesFromTheWay(LayoutVertex pushyVertex, VertexMove previousMove)
         {
             var pushyVertexIndex = pushyVertex.GetIndexInLayer();
             foreach (var existingVertex in pushyVertex.GetOtherPositionedVerticesInLayer())
@@ -174,52 +204,52 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 var existingVertexIndex = existingVertex.GetIndexInLayer();
 
                 if (existingVertexIndex < pushyVertexIndex)
-                    EnsureVertexIsToTheLeft(existingVertex, pushyVertex);
+                    EnsureVertexIsToTheLeft(existingVertex, pushyVertex, previousMove);
                 else if (existingVertexIndex > pushyVertexIndex)
-                    EnsureVertexIsToTheRight(existingVertex, pushyVertex);
+                    EnsureVertexIsToTheRight(existingVertex, pushyVertex, previousMove);
             }
         }
 
-        private void EnsureVertexIsToTheRight(LayoutVertex rightVertex, LayoutVertex leftVertex)
+        private void EnsureVertexIsToTheRight(LayoutVertex rightVertex, LayoutVertex leftVertex, VertexMove previousMove)
         {
             var vertexDistance = rightVertex.Left - leftVertex.Right;
             if (vertexDistance >= _horizontalGap)
                 return;
 
-            MoveTreeBy(rightVertex, _horizontalGap - vertexDistance, $"Vertex {leftVertex} is pushing vertex {rightVertex} to the right");
-            CenterParents(rightVertex);
+            MoveTreeBy(rightVertex, _horizontalGap - vertexDistance, $"Vertex {leftVertex} is pushing vertex {rightVertex} to the right", previousMove);
+            CenterParents(rightVertex, previousMove);
         }
 
-        private void EnsureVertexIsToTheLeft(LayoutVertex leftVertex, LayoutVertex rightVertex)
+        private void EnsureVertexIsToTheLeft(LayoutVertex leftVertex, LayoutVertex rightVertex, VertexMove previousMove)
         {
             var vertexDistance = rightVertex.Left - leftVertex.Right;
             if (vertexDistance >= _horizontalGap)
                 return;
 
-            MoveTreeBy(leftVertex, vertexDistance - _horizontalGap, $"Vertex {rightVertex} is pushing vertex {leftVertex} to the left");
-            CenterParents(leftVertex);
+            MoveTreeBy(leftVertex, vertexDistance - _horizontalGap, $"Vertex {rightVertex} is pushing vertex {leftVertex} to the left", previousMove);
+            CenterParents(leftVertex, previousMove);
         }
 
-        private void MoveTreeBy(LayoutVertex rootVertex, double translateVectorX, string reason)
+        private void MoveTreeBy(LayoutVertex rootVertex, double translateVectorX, string reason, VertexMove previousMove)
         {
             rootVertex.FloatPrimaryTree();
-            rootVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, $"{reason} --> Moving tree {rootVertex} by {translateVectorX}"));
+            rootVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, $"{reason} --> Moving tree {rootVertex} by {translateVectorX}", previousMove));
         }
 
-        private void MoveVertexBy(LayoutVertex movingVertex, double translateVectorX, string reason)
+        private void MoveVertexBy(LayoutVertex movingVertex, double translateVectorX, string reason, VertexMove previousMove)
         {
-            MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, reason);
+            MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, reason, previousMove);
         }
 
-        private void CenterParents(LayoutVertex layoutVertex)
+        private void CenterParents(LayoutVertex layoutVertex, VertexMove previousMove)
         {
             var parentVertex = layoutVertex.GetPrimaryParent();
             if (parentVertex == null)
                 return;
 
             var targetCenterX = parentVertex.GetPositionedChildren().GetRect().Center.X;
-            MoveVertexTo(parentVertex, targetCenterX, $"Centering parents of {layoutVertex}");
-            CenterParents(parentVertex);
+            MoveVertexTo(parentVertex, targetCenterX, $"Centering parents of {layoutVertex}", previousMove);
+            CenterParents(parentVertex, previousMove);
 
             // TODO: how to place non-primary parents?
         }
@@ -251,8 +281,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                     if (gap > _horizontalGap)
                     {
                         var translate = -gap + _horizontalGap;
-                        MoveTreeBy(rightVertex, translate, $"Compacting {rightVertex} (layer {layer.LayerIndex}) by {translate}");
-                        CenterParents(rightVertex);
+                        MoveTreeBy(rightVertex, translate, $"Compacting {rightVertex} (layer {layer.LayerIndex}) by {translate}", null);
+                        CenterParents(rightVertex, null);
                     }
                 }
             }
@@ -285,7 +315,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void OnVertexCenterChanged(object sender, RectMove args)
         {
-            var layoutVertex = (LayoutVertex) sender;
+            var layoutVertex = (LayoutVertex)sender;
 
             if (!layoutVertex.IsDummy)
                 DiagramNodeCenterChanged?.Invoke(layoutVertex.DiagramNode, args);

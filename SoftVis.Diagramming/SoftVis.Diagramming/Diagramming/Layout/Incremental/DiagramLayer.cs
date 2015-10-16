@@ -57,6 +57,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return index == Count - 1 ? null : _items[index + 1];
         }
 
+        public bool IsItemIndexValid(LayoutVertex layoutVertex)
+        {
+            return IndexOf(layoutVertex) == DetermineItemIndex(layoutVertex);
+        }
+
         private int DetermineItemIndex(LayoutVertex insertedVertex)
         {
             var insertedVertexParent = insertedVertex.GetPrimaryParent();

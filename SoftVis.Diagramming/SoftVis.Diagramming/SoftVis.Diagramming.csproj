@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="Diagramming\Diagram.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPath.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\VertexMove.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\VertexMoveCause.cs" />
     <Compile Include="Geometry\Point2DExtensions.cs" />
     <Compile Include="Diagramming\DiagramGraph.cs" />
     <Compile Include="Geometry\Point2D.cs" />

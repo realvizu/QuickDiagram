@@ -30,6 +30,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             IsReversed = isReversed;
         }
 
+        public bool IsPrimary => Source.GetPrimaryParent() == Target;
+
         public void TraverseInEdges(Action<LayoutEdge> action)
         {
             _graph.TraverseInEdges(this, action);

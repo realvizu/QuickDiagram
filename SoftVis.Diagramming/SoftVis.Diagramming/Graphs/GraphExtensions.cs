@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using QuickGraph;
+using QuickGraph.Algorithms.Search;
 
 namespace Codartis.SoftVis.Graphs
 {
@@ -87,7 +88,7 @@ namespace Codartis.SoftVis.Graphs
             return newGraph;
         }
 
-        public static void TraverseEdges<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
+        public static void TraverseEdges<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
             TVertex rootVertex, EdgeDirection edgeDirection, Action<TVertex> actionOnVertex)
             where TEdge : IEdge<TVertex>
         {
@@ -106,6 +107,24 @@ namespace Codartis.SoftVis.Graphs
             actionOnEdge(edge);
             foreach (var nextEdge in graph.GetEdges(edge.GetEndVertex(edgeDirection), edgeDirection))
                 graph.TraverseEdges(nextEdge, edgeDirection, actionOnEdge);
+        }
+
+        public static IEnumerable<TEdge> FindCycleEdges<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            var cycleEdges = new List<TEdge>();
+
+            var searchAlgorithm = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
+            searchAlgorithm.BackEdge += cycleEdges.Add;
+            searchAlgorithm.Compute();
+
+            return cycleEdges;
+        }
+
+        public static bool HasCycle<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            return FindCycleEdges(graph).Any();
         }
     }
 }
