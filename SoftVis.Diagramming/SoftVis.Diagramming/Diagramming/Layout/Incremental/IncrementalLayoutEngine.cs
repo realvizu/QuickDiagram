@@ -179,6 +179,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
 
             if (_vertexMoveGraph.HasCycle())
+                // TODO: find best empty place instead of push?
                 Debug.WriteLine("Move cycle detected, pushing omitted.");
             else
                 PushOtherVerticesFromTheWay(movingVertex, thisMove);
@@ -267,25 +268,38 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void CompactHorizontally()
         {
-            foreach (var layer in _layoutGraph.Layers)
+            var gapFound = true;
+            while (gapFound)
             {
-                for (var i = 1; i < layer.Count; i++)
+                gapFound = false;
+                foreach (var layer in _layoutGraph.Layers)
                 {
-                    var leftVertex = layer[i - 1];
-                    var rightVertex = layer[i];
-
-                    if (leftVertex.GetPrimaryParent() != rightVertex.GetPrimaryParent())
-                        continue;
-
-                    var gap = DetermineGap(leftVertex, rightVertex);
-                    if (gap > _horizontalGap)
-                    {
-                        var translate = -gap + _horizontalGap;
-                        MoveTreeBy(rightVertex, translate, $"Compacting {rightVertex} (layer {layer.LayerIndex}) by {translate}", null);
-                        CenterParents(rightVertex, null);
-                    }
+                    gapFound = CompactLayer(layer) || gapFound;
                 }
             }
+        }
+
+        private bool CompactLayer(DiagramLayer layer)
+        {
+            var gapFound = false;
+            for (var i = 1; i < layer.Count; i++)
+            {
+                var leftVertex = layer[i - 1];
+                var rightVertex = layer[i];
+
+                if (leftVertex.GetPrimaryParent() != rightVertex.GetPrimaryParent())
+                    continue;
+
+                var gap = DetermineGap(leftVertex, rightVertex);
+                if (gap > _horizontalGap)
+                {
+                    gapFound = true;
+                    var translate = -gap + _horizontalGap;
+                    MoveTreeBy(rightVertex, translate, $"Compacting {rightVertex} (layer {layer.LayerIndex}) by {translate}", null);
+                    CenterParents(rightVertex, null);
+                }
+            }
+            return gapFound;
         }
 
         private double DetermineGap(LayoutVertex leftVertex, LayoutVertex rightVertex)

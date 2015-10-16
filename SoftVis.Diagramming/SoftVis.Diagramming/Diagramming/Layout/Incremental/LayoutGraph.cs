@@ -132,8 +132,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private IEnumerable<LayoutVertex> GetOrderedParents(LayoutVertex layoutVertex)
         {
+            var layerIndex = layoutVertex.GetLayerIndex();
+
             return GetParents(layoutVertex)
                 .OrderByDescending(i => i.DiagramNode?.Priority ?? 0)
+                .ThenBy(i => layerIndex - i.GetLayerIndex())
                 .ThenBy(i => i.DiagramNode?.Name ?? string.Empty);
         }
 
