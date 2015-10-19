@@ -101,14 +101,16 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             return new TestModel()
 
-                .AddClass("2", 40)
-                .AddClass("3", 30)
-                .AddClass("4", 20)
-                .AddClass("5", 20)
+                .AddClass("1", 40)
+                .AddClass("2", 30)
+                .AddClass("3", 20)
                 .AddBase("3", "2")
-                .AddBase("4", "5")
-                .AddInterface("1", 50)
-                .AddBase("4", "1")
+                .AddBase("2", "1")
+                .AddInterface("4", 50)
+                .AddBase("3", "4")
+                .AddInterface("5", 50)
+                .AddBase("3", "5")
+                .AddBase("5", "4")
 
                 .AddInterface("BaseInterface")
                 .AddInterface("MyInterface1", baseName: "BaseInterface")

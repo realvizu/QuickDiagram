@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// Calculates a layering from a layout graph that gives the basis for vertical position calculation.
+    /// Tracks vertex layering and calculates vertical positions.
     /// </summary>
     internal class DiagramLayers : IEnumerable<DiagramLayer>
     {
@@ -39,21 +39,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             AddVertexToLayer(layoutVertex, 0);
         }
 
-        public void EnsureVertexIsUnderParentVertex(LayoutVertex childVertex, LayoutVertex parentVertex)
+        public void RemoveVertex(LayoutVertex layoutVertex)
         {
-            var childVertexLayerIndex = _vertexToLayerIndexMap[childVertex];
-            var parentVertexLayerIndex = _vertexToLayerIndexMap[parentVertex];
-
-            if (childVertexLayerIndex <= parentVertexLayerIndex)
-                MoveVertexBetweenLayers(childVertex, childVertexLayerIndex, parentVertexLayerIndex + 1);
-            else
-                EnsureItemIndexIsValid(childVertex);
-        }
-
-        private static void EnsureItemIndexIsValid(LayoutVertex layoutVertex)
-        {
-            if (!layoutVertex.IsLayerItemIndexValid)
-                layoutVertex.RearrangeItemInLayer();
+            var layerIndex = _vertexToLayerIndexMap[layoutVertex];
+            RemoveVertexFromLayer(layoutVertex, layerIndex);
         }
 
         public void Clear()
@@ -61,28 +50,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _layers.Clear();
             _vertexToLayerIndexMap.Clear();
         }
-
-        //public void RemoveVertex(LayoutVertex layoutVertex)
-        //{
-        //    var layerIndex = _vertexToLayerIndexMap[layoutVertex];
-        //    RemoveVertexFromLayer(layoutVertex, layerIndex);
-        //}
-
-        //public void RemoveEdge(LayoutEdge layoutEdge)
-        //{
-        //    var vertexToMove = layoutEdge.Source;
-        //    var vertexLayerIndex = _vertexToLayerIndexMap[vertexToMove];
-        //    var parentLayerIndex = GetMaxParentLayerIndex(vertexToMove) ?? -1;
-        //    MoveVertexBetweenLayers(vertexToMove, vertexLayerIndex, parentLayerIndex + 1);
-        //}
-
-        //private int? GetMaxParentLayerIndex(LayoutVertex layoutVertex)
-        //{
-        //    var parentVertices = layoutVertex.GetParents().ToList();
-        //    return parentVertices.Any()
-        //        ? parentVertices.Where(i => _vertexToLayerIndexMap.ContainsKey(i)).Max(i => _vertexToLayerIndexMap[i])
-        //        : (int?)null;
-        //}
 
         private void AddVertexToLayer(LayoutVertex layoutVertex, int layerIndex)
         {
@@ -101,7 +68,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             UpdateLayerVerticalPositions(layerIndex);
         }
 
-        private void MoveVertexBetweenLayers(LayoutVertex layoutVertex, int fromLayerIndex, int toLayerIndex)
+        public void MoveVertexBetweenLayers(LayoutVertex layoutVertex, int fromLayerIndex, int toLayerIndex)
         {
             layoutVertex.IsFloating = true;
             RemoveVertexFromLayer(layoutVertex, fromLayerIndex);

@@ -44,6 +44,16 @@ namespace Codartis.SoftVis.Diagramming
             return isAdded;
         }
 
+        public override bool RemoveVertex(DiagramNode node)
+        {
+            var isRemoved = base.RemoveVertex(node);
+
+            if (isRemoved)
+                _layoutEngine.Remove(node);
+
+            return isRemoved;
+        }
+
         public override bool AddEdge(DiagramConnector connector)
         {
             var isAdded = base.AddEdge(connector);
@@ -52,6 +62,16 @@ namespace Codartis.SoftVis.Diagramming
                 _layoutEngine.Add(connector);
 
             return isAdded;
+        }
+
+        public override bool RemoveEdge(DiagramConnector connector)
+        {
+            var isRemoved = base.RemoveEdge(connector);
+
+            if (isRemoved)
+                _layoutEngine.Remove(connector);
+
+            return isRemoved;
         }
 
         public IEnumerable<DiagramPath> GetShortestPaths(DiagramNode source, DiagramNode target, int pathCount)

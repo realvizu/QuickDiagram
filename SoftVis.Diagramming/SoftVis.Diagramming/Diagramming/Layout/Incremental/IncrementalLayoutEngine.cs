@@ -86,6 +86,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             AdjustVerticalPositions();
         }
 
+        public void Remove(DiagramNode diagramNode)
+        {
+            _vertexMoveGraph.Clear();
+
+            // TODO
+        }
+
         public void Add(DiagramConnector diagramConnector)
         {
             Debug.WriteLine("-----------------------");
@@ -103,6 +110,40 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             AdjustVerticalPositions();
 
             FireDiagramConnectorRouteChanged(diagramConnector);
+        }
+
+        public void Remove(DiagramConnector diagramConnector)
+        {
+            _vertexMoveGraph.Clear();
+
+            var dummyVerticesInPath = _layoutGraph.GetPath(diagramConnector).GetInterimVertices();
+            foreach (var dummyVertex in dummyVerticesInPath)
+                CompactSiblings(dummyVertex);
+
+            _layoutGraph.RemoveConnector(diagramConnector);
+
+            Compact();
+            AdjustVerticalPositions();
+        }
+
+        private void CompactSiblings(LayoutVertex layoutVertex)
+        {
+            layoutVertex.IsFloating = true;
+
+            var layerIndex = layoutVertex.GetLayerIndex();
+            var itemIndexInLayer = layoutVertex.GetIndexInLayer();
+
+            var translateXAbs = (layoutVertex.Width + _horizontalGap) / 2;
+
+            var siblings = layoutVertex.GetPrimarySiblings();
+            foreach (var sibling in siblings.Where(i => i.GetLayerIndex() == layerIndex))
+            {
+                var translateX = (sibling.GetIndexInLayer() < itemIndexInLayer)
+                    ? translateXAbs
+                    : -translateXAbs;
+
+                MoveTreeBy(sibling, translateX, $"Compacting siblings of {layoutVertex}", null);
+            }
         }
 
         private double GetRootVertexInsertionCenterX(LayoutVertex rootVertex)
@@ -340,7 +381,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void FireDiagramConnectorRouteChanged(DiagramConnector diagramConnector)
         {
-            var route = _layoutGraph.GetRouteForDiagramConnector(diagramConnector);
+            var route = _layoutGraph.GetPath(diagramConnector).GetRoute();
             DiagramConnectorRouteChanged?.Invoke(diagramConnector, route);
         }
     }

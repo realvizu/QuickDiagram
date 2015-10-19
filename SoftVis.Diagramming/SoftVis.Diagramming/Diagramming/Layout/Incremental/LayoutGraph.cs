@@ -51,6 +51,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return newVertex;
         }
 
+        public void RemoveNode(DiagramNode diagramNode)
+        {
+            if (!_originalToLayoutVertexMap.ContainsKey(diagramNode))
+                return;
+
+            RemoveVertex(_originalToLayoutVertexMap[diagramNode]);
+            _originalToLayoutVertexMap.Remove(diagramNode);
+        }
+
         public LayoutPath AddConnector(DiagramConnector diagramConnector)
         {
             // TODO: turn edge direction if needed!
@@ -74,27 +83,26 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return layoutPath;
         }
 
-        public Route GetRouteForDiagramConnector(DiagramConnector diagramConnector)
+        public void RemoveConnector(DiagramConnector diagramConnector)
         {
             var layoutPath = _connectorToLayoutPath[diagramConnector];
-
-            var sourceRect = layoutPath.Source.Rect;
-            var interimRoutePoints = layoutPath.GetInterimVertices().Select(i => i.Center).ToArray();
-            var targetRect = layoutPath.Target.Rect;
-
-            var secondPoint = interimRoutePoints.Any()
-                ? interimRoutePoints.First()
-                : targetRect.Center;
-            var penultimatePoint = interimRoutePoints.Any()
-                ? interimRoutePoints.Last()
-                : sourceRect.Center;
-
-            return new Route
+            foreach (var layoutEdge in layoutPath)
             {
-                sourceRect.GetAttachPointToward(secondPoint),
-                interimRoutePoints,
-                targetRect.GetAttachPointToward(penultimatePoint)
-            };
+                _graph.RemoveEdge(layoutEdge);
+                var sourceVertex = layoutEdge.Source;
+                if (sourceVertex.IsDummy)
+                {
+                    _graph.RemoveVertex(sourceVertex);
+                    _diagramLayers.RemoveVertex(sourceVertex);
+                }
+            }
+
+            _connectorToLayoutPath.Remove(diagramConnector);
+        }
+
+        public LayoutPath GetPath(DiagramConnector diagramConnector)
+        {
+            return _connectorToLayoutPath[diagramConnector];
         }
 
         public void Clear()
@@ -111,9 +119,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public int EdgeCount => _graph.EdgeCount;
         public int Degree(LayoutVertex v) => _graph.Degree(v);
 
-        public IEnumerable<LayoutVertex> GetParents(LayoutVertex layoutVertex) => _graph.GetOutNeighbours(layoutVertex);
-        public IEnumerable<LayoutVertex> GetChildren(LayoutVertex layoutVertex) => _graph.GetInNeighbours(layoutVertex);
-        public IEnumerable<LayoutEdge> GetAllEdges(LayoutVertex layoutVertex) => _graph.GetAllEdges(layoutVertex);
+        public IEnumerable<LayoutVertex> GetParents(LayoutVertex vertex) => _graph.GetOutNeighbours(vertex);
+        public IEnumerable<LayoutVertex> GetChildren(LayoutVertex vertex) => _graph.GetInNeighbours(vertex);
+        public IEnumerable<LayoutEdge> OutEdges(LayoutVertex vertex) => _graph.OutEdges(vertex);
+        public IEnumerable<LayoutEdge> InEdges(LayoutVertex vertex) => _graph.InEdges(vertex);
+        public IEnumerable<LayoutEdge> GetAllEdges(LayoutVertex vertex) => _graph.GetAllEdges(vertex);
 
         public IEnumerable<LayoutVertex> GetPositionedChildren(LayoutVertex layoutVertex)
         {
@@ -186,7 +196,89 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private void AddEdge(LayoutEdge newEdge)
         {
             _graph.AddEdge(newEdge);
-            newEdge.TraverseInEdges(i => _diagramLayers.EnsureVertexIsUnderParentVertex(i.Source, i.Target));
+            newEdge.TraverseInEdges(i => EnsureVertexIsUnderParentVertex(i.Source, i.Target));
+        }
+
+        private void RemoveEdge(LayoutEdge layoutEdge)
+        {
+            _graph.RemoveEdge(layoutEdge);
+        }
+
+        private void EnsureVertexIsUnderParentVertex(LayoutVertex childVertex, LayoutVertex parentVertex)
+        {
+            var childVertexLayerIndex = GetLayerIndex(childVertex);
+            var parentVertexLayerIndex = GetLayerIndex(parentVertex);
+
+            if (childVertexLayerIndex > parentVertexLayerIndex)
+                EnsureItemIndexIsValid(childVertex);
+            else
+                PushVertexDownToLayer(childVertex, parentVertexLayerIndex + 1);
+        }
+
+        private void PushVertexDownToLayer(LayoutVertex layoutVertex, int targetLayer)
+        {
+            while (layoutVertex.GetLayerIndex() < targetLayer)
+                PushVertexDownOneLayer(layoutVertex);
+        }
+
+        private void PushVertexDownOneLayer(LayoutVertex layoutVertex)
+        {
+            var currentLayer = layoutVertex.GetLayerIndex();
+            _diagramLayers.MoveVertexBetweenLayers(layoutVertex, currentLayer, currentLayer+1);
+
+            foreach (var inEdge in layoutVertex.InEdges().ToList())
+            {
+                var sourceVertex = inEdge.Source;
+                if (sourceVertex.IsDummy)
+                {
+                    var path = _connectorToLayoutPath[inEdge.DiagramConnector];
+                    var modifiedPath = RemoveVertexFromPath(sourceVertex, path);
+                    _connectorToLayoutPath[inEdge.DiagramConnector] = modifiedPath;
+                    RemoveVertex(sourceVertex);
+                }
+            }
+        }
+
+        private void RemoveVertex(LayoutVertex layoutVertex)
+        {
+            _graph.RemoveVertex(layoutVertex);
+            _diagramLayers.RemoveVertex(layoutVertex);
+        }
+
+        private LayoutPath RemoveVertexFromPath(LayoutVertex layoutVertex, LayoutPath layoutPath)
+        {
+            var edgesInPath = layoutPath.ToList();
+
+            for (var i = 1; i < edgesInPath.Count; i++)
+            {
+                var currentEdge = edgesInPath[i];
+                if (currentEdge.Source == layoutVertex)
+                {
+                    var previousEdge = edgesInPath[i - 1];
+
+                    var mergedEdge = new LayoutEdge(this, previousEdge.Source, currentEdge.Target,
+                        currentEdge.DiagramConnector, currentEdge.IsReversed);
+
+                    AddEdge(mergedEdge);
+                    edgesInPath.Insert(i, mergedEdge);
+
+                    RemoveEdge(previousEdge);
+                    edgesInPath.Remove(previousEdge);
+
+                    RemoveEdge(currentEdge);
+                    edgesInPath.Remove(currentEdge);
+
+                    break;
+                }
+            }
+
+            return new LayoutPath(edgesInPath);
+        }
+
+        private static void EnsureItemIndexIsValid(LayoutVertex layoutVertex)
+        {
+            if (!layoutVertex.IsLayerItemIndexValid)
+                layoutVertex.RearrangeItemInLayer();
         }
 
         private LayoutPath BreakEdgeWithDummyVertices(LayoutEdge edgeToBreak, int dummyVertexCount)
@@ -206,7 +298,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var edges = new List<LayoutEdge>();
             for (var i = 0; i < vertices.Length - 1; i++)
             {
-                 var newEdge = new LayoutEdge(this, vertices[i], vertices[i + 1], diagramConnector, isReversed);
+                var newEdge = new LayoutEdge(this, vertices[i], vertices[i + 1], diagramConnector, isReversed);
                 AddEdge(newEdge);
                 edges.Add(newEdge);
             }

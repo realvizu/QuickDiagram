@@ -77,22 +77,6 @@ namespace Codartis.SoftVis.Diagramming
             HideRedundantDirectEdges();
         }
 
-        private void HideRedundantDirectEdges()
-        {
-            // TODO: should only hide same-type connectors!!!
-
-            foreach (var connector in Connectors.ToList())
-            {
-                var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).ToList();
-                if (paths.Count > 1)
-                {
-                    var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
-                    if (pathToHide != null)
-                        HideConnector(pathToHide[0].ModelRelationship);
-                }
-            }
-        }
-
         /// <summary>
         /// Hide a node from the diagram that represents the given model element.
         /// </summary>
@@ -148,6 +132,23 @@ namespace Codartis.SoftVis.Diagramming
         protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
 
         protected abstract DiagramConnector CreateDiagramConnector(IModelRelationship relationship);
+
+
+        private void HideRedundantDirectEdges()
+        {
+            // TODO: should only hide same-type connectors!!!
+
+            foreach (var connector in Connectors.ToList())
+            {
+                var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).ToList();
+                if (paths.Count > 1)
+                {
+                    var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
+                    if (pathToHide != null)
+                        HideConnector(pathToHide[0].ModelRelationship);
+                }
+            }
+        }
 
         private void ApplySimpleTreeLayoutAndStraightEdgeRouting()
         {

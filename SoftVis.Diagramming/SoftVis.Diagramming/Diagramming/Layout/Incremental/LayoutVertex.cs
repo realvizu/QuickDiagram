@@ -135,5 +135,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             return DiagramNode?.ToString() ?? "(dummy)";
         }
+
+        public IEnumerable<LayoutEdge> OutEdges() => _graph.OutEdges(this);
+        public IEnumerable<LayoutEdge> InEdges() => _graph.InEdges(this);
     }
 }
