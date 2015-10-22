@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
-using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -41,10 +40,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private readonly double _horizontalGap;
         private readonly double _verticalGap;
         private readonly LayoutGraph _layoutGraph;
-        private readonly BidirectionalGraph<VertexMove, VertexMoveCause> _vertexMoveGraph;
+        private readonly Dictionary<DiagramNode, LayoutVertexBase> _diagramNodeToLayoutVertexMap;
+        private readonly Dictionary<DiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
+        private readonly Dictionary<DummyLayoutVertex, DiagramConnector> _dummyVertexToDiagramConnectorMap;
 
-        public List<RectMove> LastEdgeTriggeredVertexMoves { get; }
         public int TotalVertexMoveCount { get; private set; }
+        public ILayoutActionGraph LastLayoutActionGraph { get; private set; }
 
         public event EventHandler<RectMove> DiagramNodeCenterChanged;
         public event EventHandler<Route> DiagramConnectorRouteChanged;
@@ -53,335 +54,233 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             _horizontalGap = horizontalGap;
             _verticalGap = verticalGap;
-
-            _layoutGraph = new LayoutGraph(horizontalGap, verticalGap);
-            _layoutGraph.LayoutVertexCenterChanged += OnVertexCenterChanged;
-
-            _vertexMoveGraph = new BidirectionalGraph<VertexMove, VertexMoveCause>();
-
-            LastEdgeTriggeredVertexMoves = new List<RectMove>();
+            _layoutGraph = new LayoutGraph(verticalGap);
+            _diagramNodeToLayoutVertexMap = new Dictionary<DiagramNode, LayoutVertexBase>();
+            _diagramConnectorToLayoutPathMap = new Dictionary<DiagramConnector, LayoutPath>();
+            _dummyVertexToDiagramConnectorMap = new Dictionary<DummyLayoutVertex, DiagramConnector>();
         }
 
         public void Clear()
         {
-            _vertexMoveGraph.Clear();
             _layoutGraph.Clear();
-
-            LastEdgeTriggeredVertexMoves.Clear();
+            _diagramNodeToLayoutVertexMap.Clear();
+            _diagramConnectorToLayoutPathMap.Clear();
+            _dummyVertexToDiagramConnectorMap.Clear();
             TotalVertexMoveCount = 0;
         }
 
         public void Add(DiagramNode diagramNode)
         {
-            Debug.WriteLine("-----------------------");
+            RecordVertexLayoutActions(vertexLayoutLogic =>
+            {
+                var newLayoutVertex = CreateLayoutVertex(diagramNode);
 
-            _vertexMoveGraph.Clear();
-            LastEdgeTriggeredVertexMoves.Clear();
+                _diagramNodeToLayoutVertexMap.Add(diagramNode, newLayoutVertex);
 
-            var layoutVertex = _layoutGraph.AddNode(diagramNode);
-
-            var centerX = GetRootVertexInsertionCenterX(layoutVertex);
-            MoveVertexTo(layoutVertex, centerX, $"Adding node {diagramNode}", null);
-            Compact();
-            AdjustVerticalPositions();
+                vertexLayoutLogic.AddVertex(newLayoutVertex);
+            });
         }
 
         public void Remove(DiagramNode diagramNode)
         {
-            _vertexMoveGraph.Clear();
+            RecordVertexLayoutActions(vertexLayoutLogic =>
+            {
+                var layoutVertex = GetLayoutVertex(diagramNode);
 
-            // TODO
+                vertexLayoutLogic.RemoveVertex(layoutVertex);
+
+                _diagramNodeToLayoutVertexMap.Remove(diagramNode);
+            });
         }
 
         public void Add(DiagramConnector diagramConnector)
         {
-            Debug.WriteLine("-----------------------");
-            Debug.WriteLine($"Adding edge {diagramConnector}, moving {diagramConnector.Source}");
+            RecordEdgeLayoutActions(edgeLayoutLogic =>
+            {
+                var newLayoutPath = CreateLayoutPath(diagramConnector);
 
-            _vertexMoveGraph.Clear();
-            LastEdgeTriggeredVertexMoves.Clear();
+                UpdateDiagramConnectorToLayoutPathMap(diagramConnector, newLayoutPath);
 
-            var layoutPath = _layoutGraph.AddConnector(diagramConnector);
-            var lastEdgeOfPath = layoutPath.Last();
-
-            var primaryParent = lastEdgeOfPath.Source.GetPrimaryParent();
-            MoveTreeUnderParent(lastEdgeOfPath.Source, primaryParent, $"Moving tree of {lastEdgeOfPath.Source} under {primaryParent}", null);
-            Compact();
-            AdjustVerticalPositions();
-
-            FireDiagramConnectorRouteChanged(diagramConnector);
+                edgeLayoutLogic.AddPath(newLayoutPath);
+            });
         }
 
         public void Remove(DiagramConnector diagramConnector)
         {
-            _vertexMoveGraph.Clear();
-
-            var dummyVerticesInPath = _layoutGraph.GetPath(diagramConnector).GetInterimVertices();
-            foreach (var dummyVertex in dummyVerticesInPath)
-                CompactSiblings(dummyVertex);
-
-            _layoutGraph.RemoveConnector(diagramConnector);
-
-            Compact();
-            AdjustVerticalPositions();
-        }
-
-        private void CompactSiblings(LayoutVertex layoutVertex)
-        {
-            layoutVertex.IsFloating = true;
-
-            var layerIndex = layoutVertex.GetLayerIndex();
-            var itemIndexInLayer = layoutVertex.GetIndexInLayer();
-
-            var translateXAbs = (layoutVertex.Width + _horizontalGap) / 2;
-
-            var siblings = layoutVertex.GetPrimarySiblings();
-            foreach (var sibling in siblings.Where(i => i.GetLayerIndex() == layerIndex))
+            RecordEdgeLayoutActions(edgeLayoutLogic =>
             {
-                var translateX = (sibling.GetIndexInLayer() < itemIndexInLayer)
-                    ? translateXAbs
-                    : -translateXAbs;
+                var layoutPath = GetLayoutPath(diagramConnector);
+                edgeLayoutLogic.RemovePath(layoutPath);
 
-                MoveTreeBy(sibling, translateX, $"Compacting siblings of {layoutVertex}", null);
-            }
+                foreach (var dummyVertex in layoutPath.GetInterimVertices())
+                    _dummyVertexToDiagramConnectorMap.Remove(dummyVertex);
+
+                _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
+            });
         }
 
-        private double GetRootVertexInsertionCenterX(LayoutVertex rootVertex)
+        private void RecordVertexLayoutActions(Action<LayoutActionGraph, VertexLayoutLogic> action)
         {
-            var previousVertex = rootVertex.GetPreviousInLayer();
-            var nextVertex = rootVertex.GetNextInLayer();
+            var layoutActionGraph = new LayoutActionGraph();
+            var vertexLayoutLogic = CreateVertexLayoutLogic(layoutActionGraph);
 
-            return (previousVertex == null && nextVertex == null)
-                ? 0
-                : CalculateInsertionCenterXFromNeighbours(rootVertex, previousVertex, nextVertex);
+            action(layoutActionGraph, vertexLayoutLogic);
+
+            LastLayoutActionGraph = layoutActionGraph;
+            TotalVertexMoveCount += layoutActionGraph.VertexMoveCount;
         }
 
-        private double GetNonRootVertexInsertionCenterX(LayoutVertex childVertex, LayoutVertex parentVertex)
+        private void RecordVertexLayoutActions(Action<VertexLayoutLogic> action)
         {
-            if (!childVertex.HasPrimarySiblingsInSameLayer())
-                return parentVertex.Center.X;
-
-            var previousSibling = childVertex.GetPreviousSiblingInLayer();
-            var nextSibling = childVertex.GetNextSiblingInLayer();
-
-            return CalculateInsertionCenterXFromNeighbours(childVertex, previousSibling, nextSibling);
-        }
-
-        private double CalculateInsertionCenterXFromNeighbours(LayoutVertex insertedVertex,
-            LayoutVertex previousSibling, LayoutVertex nextSibling)
-        {
-            if (previousSibling == null && nextSibling == null)
-                throw new ArgumentNullException(nameof(nextSibling) + " and " + nameof(previousSibling));
-
-            return previousSibling == null
-                ? nextSibling.Left - _horizontalGap - insertedVertex.Width / 2
-                : previousSibling.Right + _horizontalGap + insertedVertex.Width / 2;
-        }
-
-        private void MoveTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason, VertexMove previousMove)
-        {
-            childVertex.FloatPrimaryTree();
-            PlaceTreeUnderParent(childVertex, parentVertex, reason, previousMove);
-            CenterParents(childVertex, null);
-        }
-
-        private void PlaceTreeUnderParent(LayoutVertex childVertex, LayoutVertex parentVertex, string reason, VertexMove previousMove)
-        {
-            var insertionCenterX = GetNonRootVertexInsertionCenterX(childVertex, parentVertex);
-            var translateVectorX = insertionCenterX - childVertex.Center.X;
-
-            childVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, reason, previousMove));
-        }
-
-        private void MoveVertexTo(LayoutVertex movingVertex, double newCenterX,
-            string reason, VertexMove previousMove)
-        {
-            movingVertex.IsFloating = false;
-
-            var oldCenter = movingVertex.Center;
-            var newCenterY = movingVertex.GetLayer().CenterY;
-            var newCenter = new Point2D(newCenterX, newCenterY);
-
-            var thisMove = new VertexMove(movingVertex, oldCenter, newCenter);
-            RecordMove(thisMove, previousMove, reason);
-
-            if (!oldCenter.X.IsEqualWithTolerance(newCenterX) ||
-                !oldCenter.Y.IsEqualWithTolerance(newCenterY))
+            RecordVertexLayoutActions((layoutActionGraph, vertexLayoutLogic) =>
             {
-                Debug.WriteLine($"{reason} --> Moving vertex {movingVertex} to: {newCenterX}");
+                action(vertexLayoutLogic);
+            });
+        }
 
-                movingVertex.Center = newCenter;
+        private void RecordEdgeLayoutActions(Action<EdgeLayoutLogic> action)
+        {
+            RecordVertexLayoutActions((layoutActionGraph, vertexLayoutLogic) =>
+            {
+                var edgeLayoutLogic = CreateEdgeLayoutLogic(layoutActionGraph, vertexLayoutLogic);
 
-                if (!movingVertex.IsDummy)
-                {
-                    TotalVertexMoveCount++;
-                    LastEdgeTriggeredVertexMoves.Add(new RectMove(movingVertex.DiagramNode, oldCenter, movingVertex.Center));
-                }
-            }
+                action(edgeLayoutLogic);
+            });
+        }
 
-            if (_vertexMoveGraph.HasCycle())
-                // TODO: find best empty place instead of push?
-                Debug.WriteLine("Move cycle detected, pushing omitted.");
+        private VertexLayoutLogic CreateVertexLayoutLogic(LayoutActionGraph layoutActionGraph)
+        {
+            return new VertexLayoutLogic(_horizontalGap, _verticalGap, _layoutGraph, layoutActionGraph);
+        }
+
+        private EdgeLayoutLogic CreateEdgeLayoutLogic(LayoutActionGraph layoutActionGraph, VertexLayoutLogic vertexLayoutLogic)
+        {
+            var edgeLayoutLogic = new EdgeLayoutLogic(_horizontalGap, _verticalGap, _layoutGraph, layoutActionGraph, vertexLayoutLogic);
+            edgeLayoutLogic.LayoutPathChanged += OnLayoutPathChanged;
+            return edgeLayoutLogic;
+        }
+
+        private LayoutVertexBase CreateLayoutVertex(DiagramNode diagramNode)
+        {
+            var newLayoutVertex = new DiagramNodeLayoutVertex(_layoutGraph, diagramNode, isFloating: true);
+            newLayoutVertex.CenterChanged += OnDiagramNodeLayoutVertexCenterChanged;
+            return newLayoutVertex;
+        }
+
+        private LayoutVertexBase GetLayoutVertex(DiagramNode diagramNode)
+        {
+            return _diagramNodeToLayoutVertexMap[diagramNode];
+        }
+
+        //private void RemoveVertex(LayoutVertexBase layoutVertex)
+        //{
+        //    foreach (var inEdge in layoutVertex.InEdges.ToList())
+        //    {
+        //        var sourceVertex = inEdge.Source;
+        //        if (sourceVertex.IsDummy)
+        //        {
+        //            var path = _diagramConnectorToLayoutPathMap[inEdge.DiagramConnector];
+        //            var modifiedPath = _edgeLayoutLogic.RemoveVertexFromPath(sourceVertex, path);
+        //            _diagramConnectorToLayoutPathMap[inEdge.DiagramConnector] = modifiedPath;
+        //            RemoveVertex(sourceVertex);
+        //        }
+        //    }
+        //}
+
+        private LayoutEdge CreateLayoutEdge(DiagramConnector diagramConnector)
+        {
+            // TODO: turn edge direction if needed!
+            var isReversed = false;
+
+            var sourceLayoutVertex = _diagramNodeToLayoutVertexMap[diagramConnector.Source];
+            var targetLayoutVertex = _diagramNodeToLayoutVertexMap[diagramConnector.Target];
+
+            var newLayoutEdge = new LayoutEdge(_layoutGraph, sourceLayoutVertex, targetLayoutVertex,
+                diagramConnector, isReversed);
+
+            return newLayoutEdge;
+        }
+
+        private LayoutPath CreateLayoutPath(DiagramConnector diagramConnector)
+        {
+            var layoutEdge = CreateLayoutEdge(diagramConnector);
+
+            var childLayerIndex = layoutEdge.Source.GetLayerIndex();
+            var parentLayerIndex = layoutEdge.Target.GetLayerIndex();
+            var intermediateLayers = Math.Max(childLayerIndex - parentLayerIndex - 1, 0);
+
+            var dummyVertices = CreateDummyVertices(intermediateLayers).ToArray();
+            foreach (var dummyVertex in dummyVertices)
+                _dummyVertexToDiagramConnectorMap.Add(dummyVertex, diagramConnector);
+
+            return new LayoutPath(layoutEdge, dummyVertices);
+        }
+
+        private LayoutPath GetLayoutPath(DiagramConnector diagramConnector)
+        {
+            return _diagramConnectorToLayoutPathMap[diagramConnector];
+        }
+
+        private IEnumerable<DummyLayoutVertex> CreateDummyVertices(int count)
+        {
+            for (var i = 0; i < count; i++)
+                yield return CreateDummyVertex();
+        }
+
+        private DummyLayoutVertex CreateDummyVertex()
+        {
+            var dummyLayoutVertex = new DummyLayoutVertex(_layoutGraph, isFloating: true);
+            dummyLayoutVertex.CenterChanged += OnDummyLayoutVertexCenterChanged;
+            return dummyLayoutVertex;
+        }
+
+        private void UpdateDiagramConnectorToLayoutPathMap(DiagramConnector diagramConnector, LayoutPath layoutPath)
+        {
+            if (_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
+                _diagramConnectorToLayoutPathMap[diagramConnector] = layoutPath;
             else
-                PushOtherVerticesFromTheWay(movingVertex, thisMove);
+                _diagramConnectorToLayoutPathMap.Add(diagramConnector, layoutPath);
         }
 
-        private void RecordMove(VertexMove move, VertexMove previousMove, string reason)
+        private void OnDiagramNodeLayoutVertexCenterChanged(object sender, RectMove args)
         {
-            if (!_vertexMoveGraph.ContainsVertex(move))
-                _vertexMoveGraph.AddVertex(move);
-
-            if (previousMove != null)
+            var diagramNodeLayoutVertex = sender as DiagramNodeLayoutVertex;
+            if (diagramNodeLayoutVertex != null)
             {
-                var moveEdge = new VertexMoveCause(previousMove, move, reason);
-                _vertexMoveGraph.AddEdge(moveEdge);
+                FireDiagramNodeCenterChanged(diagramNodeLayoutVertex, args);
             }
         }
 
-        private void PushOtherVerticesFromTheWay(LayoutVertex pushyVertex, VertexMove previousMove)
+        private void OnDummyLayoutVertexCenterChanged(object sender, RectMove args)
         {
-            var pushyVertexIndex = pushyVertex.GetIndexInLayer();
-            foreach (var existingVertex in pushyVertex.GetOtherPositionedVerticesInLayer())
+            var dummyLayoutVertex = sender as DummyLayoutVertex;
+            if (dummyLayoutVertex != null)
             {
-                var existingVertexIndex = existingVertex.GetIndexInLayer();
-
-                if (existingVertexIndex < pushyVertexIndex)
-                    EnsureVertexIsToTheLeft(existingVertex, pushyVertex, previousMove);
-                else if (existingVertexIndex > pushyVertexIndex)
-                    EnsureVertexIsToTheRight(existingVertex, pushyVertex, previousMove);
+                var diagramConnector = _dummyVertexToDiagramConnectorMap[dummyLayoutVertex];
+                FireDiagramConnectorRouteChanged(diagramConnector);
             }
         }
 
-        private void EnsureVertexIsToTheRight(LayoutVertex rightVertex, LayoutVertex leftVertex, VertexMove previousMove)
+        private void OnLayoutPathChanged(object sender, LayoutPath layoutPath)
         {
-            var vertexDistance = rightVertex.Left - leftVertex.Right;
-            if (vertexDistance >= _horizontalGap)
-                return;
+            var diagramConnector = layoutPath.First().DiagramConnector;
 
-            MoveTreeBy(rightVertex, _horizontalGap - vertexDistance, $"Vertex {leftVertex} is pushing vertex {rightVertex} to the right", previousMove);
-            CenterParents(rightVertex, previousMove);
+            UpdateDiagramConnectorToLayoutPathMap(diagramConnector, layoutPath);
+
+            FireDiagramConnectorRouteChanged(diagramConnector);
         }
 
-        private void EnsureVertexIsToTheLeft(LayoutVertex leftVertex, LayoutVertex rightVertex, VertexMove previousMove)
+        private void FireDiagramNodeCenterChanged(DiagramNodeLayoutVertex diagramNodeLayoutVertex, RectMove args)
         {
-            var vertexDistance = rightVertex.Left - leftVertex.Right;
-            if (vertexDistance >= _horizontalGap)
-                return;
+            DiagramNodeCenterChanged?.Invoke(diagramNodeLayoutVertex.DiagramNode, args);
 
-            MoveTreeBy(leftVertex, vertexDistance - _horizontalGap, $"Vertex {rightVertex} is pushing vertex {leftVertex} to the left", previousMove);
-            CenterParents(leftVertex, previousMove);
-        }
-
-        private void MoveTreeBy(LayoutVertex rootVertex, double translateVectorX, string reason, VertexMove previousMove)
-        {
-            rootVertex.FloatPrimaryTree();
-            rootVertex.ExecuteOnPrimaryTree(i => MoveVertexBy(i, translateVectorX, $"{reason} --> Moving tree {rootVertex} by {translateVectorX}", previousMove));
-        }
-
-        private void MoveVertexBy(LayoutVertex movingVertex, double translateVectorX, string reason, VertexMove previousMove)
-        {
-            MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, reason, previousMove);
-        }
-
-        private void CenterParents(LayoutVertex layoutVertex, VertexMove previousMove)
-        {
-            var parentVertex = layoutVertex.GetPrimaryParent();
-            if (parentVertex == null)
-                return;
-
-            var targetCenterX = parentVertex.GetPositionedChildren().GetRect().Center.X;
-            MoveVertexTo(parentVertex, targetCenterX, $"Centering parents of {layoutVertex}", previousMove);
-            CenterParents(parentVertex, previousMove);
-
-            // TODO: how to place non-primary parents?
-        }
-
-        private void Compact()
-        {
-            CompactVertically();
-            CompactHorizontally();
-        }
-
-        private void CompactVertically()
-        {
-            //TODO: remove empty and dummy-only layers
-        }
-
-        private void CompactHorizontally()
-        {
-            var gapFound = true;
-            while (gapFound)
-            {
-                gapFound = false;
-                foreach (var layer in _layoutGraph.Layers)
-                {
-                    gapFound = CompactLayer(layer) || gapFound;
-                }
-            }
-        }
-
-        private bool CompactLayer(DiagramLayer layer)
-        {
-            var gapFound = false;
-            for (var i = 1; i < layer.Count; i++)
-            {
-                var leftVertex = layer[i - 1];
-                var rightVertex = layer[i];
-
-                if (leftVertex.GetPrimaryParent() != rightVertex.GetPrimaryParent())
-                    continue;
-
-                var gap = DetermineGap(leftVertex, rightVertex);
-                if (gap > _horizontalGap)
-                {
-                    gapFound = true;
-                    var translate = -gap + _horizontalGap;
-                    MoveTreeBy(rightVertex, translate, $"Compacting {rightVertex} (layer {layer.LayerIndex}) by {translate}", null);
-                    CenterParents(rightVertex, null);
-                }
-            }
-            return gapFound;
-        }
-
-        private double DetermineGap(LayoutVertex leftVertex, LayoutVertex rightVertex)
-        {
-            var gap = rightVertex.Left - leftVertex.Right;
-            if (gap <= _horizontalGap)
-                return gap;
-
-            var rightVertexLeftmostChild = rightVertex.GetChildren().OrderBy(i => i.Right).FirstOrDefault();
-            if (rightVertexLeftmostChild == null)
-                return gap;
-
-            var previousVertex = rightVertexLeftmostChild.GetPreviousInLayer();
-            if (previousVertex == null)
-                return gap;
-
-            var childrenGap = DetermineGap(previousVertex, rightVertexLeftmostChild);
-            var result = Math.Min(childrenGap, gap);
-            return result;
-        }
-
-        private void AdjustVerticalPositions()
-        {
-            foreach (var layoutVertex in _layoutGraph.Vertices)
-                layoutVertex.RefreshVerticalPosition();
-        }
-
-        private void OnVertexCenterChanged(object sender, RectMove args)
-        {
-            var layoutVertex = (LayoutVertex)sender;
-
-            if (!layoutVertex.IsDummy)
-                DiagramNodeCenterChanged?.Invoke(layoutVertex.DiagramNode, args);
-
-            foreach (var layoutEdge in _layoutGraph.GetAllEdges(layoutVertex))
+            foreach (var layoutEdge in _layoutGraph.GetAllEdges(diagramNodeLayoutVertex))
                 FireDiagramConnectorRouteChanged(layoutEdge.DiagramConnector);
         }
 
         private void FireDiagramConnectorRouteChanged(DiagramConnector diagramConnector)
         {
-            var route = _layoutGraph.GetPath(diagramConnector).GetRoute();
+            var route = GetLayoutPath(diagramConnector).GetRoute();
             DiagramConnectorRouteChanged?.Invoke(diagramConnector, route);
         }
     }

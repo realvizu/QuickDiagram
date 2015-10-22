@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
 
-namespace Codartis.SoftVis.Diagramming.Layout.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
     /// An ordered list of layout vertices that belong to the same horizontal layer.
@@ -11,22 +12,22 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <remarks>
     /// Ordering is based on LayoutVertex' CompareTo implementation (node name).
     /// </remarks>
-    internal class DiagramLayer : IEnumerable<LayoutVertex>
+    internal class LayoutVertexLayer : IEnumerable<LayoutVertexBase>
     {
         public int LayerIndex { get; }
         public double Top { get; set; }
-        private readonly List<LayoutVertex> _items;
+        private readonly List<LayoutVertexBase> _items;
 
-        internal DiagramLayer(int layerIndex)
+        internal LayoutVertexLayer(int layerIndex)
         {
             LayerIndex = layerIndex;
-            _items = new List<LayoutVertex>();
+            _items = new List<LayoutVertexBase>();
         }
 
-        public LayoutVertex this[int i] => _items[i];
+        public LayoutVertexBase this[int i] => _items[i];
         public int Count => _items.Count;
-        public int IndexOf(LayoutVertex layoutVertex) => _items.IndexOf(layoutVertex);
-        public IEnumerator<LayoutVertex> GetEnumerator() => _items.GetEnumerator();
+        public int IndexOf(LayoutVertexBase layoutVertex) => _items.IndexOf(layoutVertex);
+        public IEnumerator<LayoutVertexBase> GetEnumerator() => _items.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 
         public double Height => _items.Count == 0 ? 0 : _items.Max(i => i.Height);
@@ -34,41 +35,41 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public double CenterY => Top + Height / 2;
         public Rect2D Rect => _items.Where(i => !i.IsFloating).Select(i => i.Rect).Union();
 
-        public void Add(LayoutVertex layoutVertex)
+        public void Add(LayoutVertexBase layoutVertex)
         {
             var itemIndex = DetermineItemIndex(layoutVertex);
             _items.Insert(itemIndex, layoutVertex);
         }
 
-        public void Remove(LayoutVertex layoutVertex)
+        public void Remove(LayoutVertexBase layoutVertex)
         {
             _items.Remove(layoutVertex);
         }
 
-        public LayoutVertex GetPrevious(LayoutVertex layoutVertex)
+        public LayoutVertexBase GetPrevious(LayoutVertexBase layoutVertex)
         {
             var index = _items.IndexOf(layoutVertex);
             return index == 0 ? null : _items[index - 1];
         }
 
-        public LayoutVertex GetNext(LayoutVertex layoutVertex)
+        public LayoutVertexBase GetNext(LayoutVertexBase layoutVertex)
         {
             var index = _items.IndexOf(layoutVertex);
             return index == Count - 1 ? null : _items[index + 1];
         }
 
-        public bool IsItemIndexValid(LayoutVertex layoutVertex)
+        public bool IsItemIndexValid(LayoutVertexBase layoutVertex)
         {
             return IndexOf(layoutVertex) == DetermineItemIndex(layoutVertex);
         }
 
-        private int DetermineItemIndex(LayoutVertex insertedVertex)
+        private int DetermineItemIndex(LayoutVertexBase insertedVertex)
         {
             var insertedVertexParent = insertedVertex.GetPrimaryParent();
             var insertedVertexParentIndexInLayer = insertedVertexParent?.GetIndexInLayer();
 
             var index = 0;
-            foreach (var existingVertex in _items)
+            foreach (var existingVertex in _items.Except(insertedVertex.ToEnumerable()))
             {
                 var existingVertexParent = existingVertex.GetPrimaryParent();
 

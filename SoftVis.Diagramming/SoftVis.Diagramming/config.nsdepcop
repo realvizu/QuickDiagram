@@ -7,6 +7,9 @@
     <Allowed From="*" To="System.Globalization.*" />
     <Allowed From="*" To="System.ComponentModel" />
     <Allowed From="*" To="System.Runtime.*" />
+    <Allowed From="*" To="System.Xml" />
+    <Allowed From="*" To="System.Text" />
+    <Allowed From="*" To="System.IO" />
     <Allowed From="*" To="MoreLinq" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
@@ -21,6 +24,7 @@
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.ActionTracking.*" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Rendering.Wpf.*" />

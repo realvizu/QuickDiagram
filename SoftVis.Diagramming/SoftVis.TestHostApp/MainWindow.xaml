@@ -29,13 +29,15 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
-            <Button Click="Next_OnClick" Width="60" Height="20">Next</Button>
-            <TextBlock Margin="2">Moves:</TextBlock>
-            <TextBlock Margin="2" Text="{Binding Path=TotalNodeMoveCount}"/>
-            <Button Click="Back_OnClick" Width="60" Height="20">Back</Button>
-            <TextBlock Margin="2">Frame:</TextBlock>
-            <TextBlock Margin="2" Text="{Binding Path=FrameLabel}"/>
-            <Button Click="Forward_OnClick" Width="60" Height="20">Forward</Button>
+            <Button Margin="5" Click="Add_OnClick" Width="60" Height="20">Add</Button>
+            <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20">Remove</Button>
+            <TextBlock Margin="2" VerticalAlignment="Center">Moves:</TextBlock>
+            <TextBlock Margin="2" VerticalAlignment="Center" Text="{Binding Path=TotalNodeMoveCount}"/>
+            <Button Margin="5" Click="Back_OnClick" Width="60" Height="20">Back</Button>
+            <TextBlock Margin="2" VerticalAlignment="Center">Frame:</TextBlock>
+            <TextBlock Margin="2" VerticalAlignment="Center" Text="{Binding Path=FrameLabel}"/>
+            <Button Margin="5" Click="Forward_OnClick" Width="60" Height="20">Forward</Button>
+            <Button Margin="5" Click="LastLayoutActionGraph_OnClick" Width="150" Height="20">LastLayoutActionGraph</Button>
         </StackPanel>
         <softvis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" Diagram="{Binding}" />
     </Grid>

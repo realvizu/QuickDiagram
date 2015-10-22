@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 using QuickGraph;
 using QuickGraph.Algorithms;
 
@@ -18,10 +20,10 @@ namespace Codartis.SoftVis.Diagramming
         private const double VerticalGap = 40;
         private readonly IncrementalLayoutEngine _layoutEngine;
 
-        public List<RectMove> LastEdgeTriggeredVertexMoves => _layoutEngine.LastEdgeTriggeredVertexMoves;
+        public ILayoutActionGraph LastLayoutActionGraph => _layoutEngine.LastLayoutActionGraph;
         public int TotalVertexMoveCount => _layoutEngine.TotalVertexMoveCount;
 
-        public DiagramGraph()
+        public DiagramGraph() : base(false)
         {
             _layoutEngine = new IncrementalLayoutEngine(HorizontalGap, VerticalGap);
             _layoutEngine.DiagramNodeCenterChanged += OnDiagramNodeCenterChanged;
@@ -37,40 +39,32 @@ namespace Codartis.SoftVis.Diagramming
         public override bool AddVertex(DiagramNode node)
         {
             var isAdded = base.AddVertex(node);
-
             if (isAdded)
                 _layoutEngine.Add(node);
-
             return isAdded;
         }
 
         public override bool RemoveVertex(DiagramNode node)
         {
             var isRemoved = base.RemoveVertex(node);
-
             if (isRemoved)
                 _layoutEngine.Remove(node);
-
             return isRemoved;
         }
 
         public override bool AddEdge(DiagramConnector connector)
         {
             var isAdded = base.AddEdge(connector);
-
             if (isAdded)
                 _layoutEngine.Add(connector);
-
             return isAdded;
         }
 
         public override bool RemoveEdge(DiagramConnector connector)
         {
             var isRemoved = base.RemoveEdge(connector);
-
             if (isRemoved)
                 _layoutEngine.Remove(connector);
-
             return isRemoved;
         }
 

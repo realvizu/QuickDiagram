@@ -2,10 +2,15 @@
 using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
+using MoreLinq;
 
-namespace Codartis.SoftVis.Diagramming.Layout.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout
 {
-    internal class LayoutPath : Path<LayoutVertex, LayoutEdge>
+    /// <summary>
+    /// A list of LayoutEdges that form a path,
+    /// that is the target of an edge is the source of the next edge in the path.
+    /// </summary>
+    internal class LayoutPath : Path<LayoutVertexBase, LayoutEdge>
     {
         public LayoutPath(LayoutEdge layoutEdge)
             : base(layoutEdge)
@@ -17,10 +22,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
         }
 
-        public IEnumerable<LayoutVertex> GetInterimVertices()
+        public LayoutPath(LayoutEdge layoutEdge, IEnumerable<LayoutVertexBase> intermediateVertices)
+            :this(layoutEdge.Split(intermediateVertices))
         {
-            return this.Skip(1).Select(i => i.Source);
         }
+
+        public IEnumerable<LayoutVertexBase> GetVertices() => this.Select(i => i.Source).Concat(this.Last().Target);
+        public IEnumerable<DummyLayoutVertex> GetInterimVertices() => this.Skip(1).Select(i => i.Source).OfType<DummyLayoutVertex>();
 
         public Route GetRoute()
         {
@@ -41,6 +49,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 interimRoutePoints,
                 targetRect.GetAttachPointToward(penultimatePoint)
             };
+        }
+
+        public override string ToString()
+        {
+            return GetVertices().ToDelimitedString("->");
         }
     }
 }

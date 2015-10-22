@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Layout;
 using Codartis.SoftVis.Graphs.Layout.EdgeRouting;
 using Codartis.SoftVis.Graphs.Layout.VertexPlacement;
@@ -33,8 +35,8 @@ namespace Codartis.SoftVis.Diagramming
 
         private readonly DiagramGraph _graph = new DiagramGraph();
 
-        public List<RectMove> LastConnectorTriggeredNodeMoves => _graph.LastEdgeTriggeredVertexMoves;
-        public int TotalNodeMoveCount => _graph.TotalVertexMoveCount;
+        public ILayoutActionGraph LastLayoutActionGraph => _graph.LastLayoutActionGraph;
+        public int TotalVertexMoveCount => _graph.TotalVertexMoveCount;
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
@@ -52,27 +54,28 @@ namespace Codartis.SoftVis.Diagramming
         /// <param name="modelEntity">A type or package model element.</param>
         public virtual void ShowNode(IModelEntity modelEntity)
         {
-            if (!NodeExists(modelEntity))
-            {
-                var node = CreateDiagramNode(modelEntity);
-                _graph.AddVertex(node);
-                OnShapeAdded(node);
-            }
+            if (NodeExists(modelEntity))
+                return;
+
+            var node = CreateDiagramNode(modelEntity);
+            _graph.AddVertex(node);
+            OnShapeAdded(node);
         }
 
         /// <summary>
         /// Show a connector on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A relationship model item.</param>
-        public void ShowConnector(IModelRelationship modelRelationship)
+        public virtual void ShowConnector(IModelRelationship modelRelationship)
         {
-            var connector = FindConnector(modelRelationship);
-            if (connector == null)
-            {
-                connector = CreateDiagramConnector(modelRelationship);
-                _graph.AddEdge(connector);
-                OnShapeAdded(connector);
-            }
+            if (ConnectorExists(modelRelationship) || 
+                !NodeExists(modelRelationship.Source) || 
+                !NodeExists(modelRelationship.Target))
+                return;
+
+            var connector = CreateDiagramConnector(modelRelationship);
+            _graph.AddEdge(connector);
+            OnShapeAdded(connector);
 
             HideRedundantDirectEdges();
         }
@@ -86,13 +89,17 @@ namespace Codartis.SoftVis.Diagramming
             if (!NodeExists(modelEntity))
                 return;
 
-            var node = FindNode(modelEntity);
-            _graph.RemoveVertex(node);
-            OnShapeRemoved(node);
+            var diagramNode = FindNode(modelEntity);
+
+            foreach (var connector in _graph.GetAllEdges(diagramNode).ToArray())
+                HideConnector(connector.ModelRelationship);
+
+            _graph.RemoveVertex(diagramNode);
+            OnShapeRemoved(diagramNode);
         }
 
         /// <summary>
-        /// Hodes a connector from the diagram that represents the given model element.
+        /// Hides a connector from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A modelRelationship model item.</param>
         public void HideConnector(IModelRelationship modelRelationship)

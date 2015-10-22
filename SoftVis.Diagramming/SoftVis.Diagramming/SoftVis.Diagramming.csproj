@@ -47,6 +47,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
     </Reference>
+    <Reference Include="QuickGraph.Serialization">
+      <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -59,9 +62,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagramming\Diagram.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutPath.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\VertexMove.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\VertexMoveCause.cs" />
+    <Compile Include="Diagramming\Layout\DummyLayoutVertex.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\ILayoutActionEdge.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\IPathAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\LayoutActionEdge.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\PathAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\IEdgeAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\IVertexAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\ILayoutAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\ILayoutActionGraph.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\EdgeAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\VertexAction.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\LayoutLogicBase.cs" />
+    <Compile Include="Diagramming\Layout\LayoutPath.cs" />
+    <Compile Include="Diagramming\Layout\DiagramNodeLayoutVertex.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\EdgeLayoutLogic.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\IVertexMoveAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\LayoutAction.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\VertexLayoutLogic.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\VertexMoveAction.cs" />
+    <Compile Include="Diagramming\Layout\ActionTracking\Implementation\LayoutActionGraph.cs" />
     <Compile Include="Geometry\Point2DExtensions.cs" />
     <Compile Include="Diagramming\DiagramGraph.cs" />
     <Compile Include="Geometry\Point2D.cs" />
@@ -81,14 +101,13 @@
     <Compile Include="Graphs\Layout\IEdgeRoutingAlgorithm.cs" />
     <Compile Include="Graphs\Layout\ILayoutParameters.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IncrementalLayoutEngine.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\DiagramLayer.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\DiagramLayers.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutEdge.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutVertex.cs" />
+    <Compile Include="Diagramming\Layout\LayoutVertexLayer.cs" />
+    <Compile Include="Diagramming\Layout\LayoutVertexLayers.cs" />
+    <Compile Include="Diagramming\Layout\LayoutEdge.cs" />
+    <Compile Include="Diagramming\Layout\LayoutGraph.cs" />
+    <Compile Include="Diagramming\Layout\LayoutVertexBase.cs" />
     <Compile Include="Geometry\IRectExtensions.cs" />
     <Compile Include="Geometry\RectMove.cs" />
-    <Compile Include="Diagramming\Layout\TranslateDirection.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Graphs\Layout\LayoutType.cs" />
     <Compile Include="Geometry\ISized.cs" />

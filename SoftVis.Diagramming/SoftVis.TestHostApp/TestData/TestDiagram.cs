@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Layout;
 using Codartis.SoftVis.Modeling;
@@ -18,13 +19,16 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             ModelItems = model.Items.ToList();
         }
 
+        public IVertexMoveAction[] LastLayoutActionVertexMoves 
+            => LastLayoutActionGraph?.Vertices.OfType<IVertexMoveAction>().ToArray() ?? new IVertexMoveAction[0];
+
         protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
         {
             var height = 30;
             int nameAsInt;
             if (int.TryParse(modelEntity.Name, out nameAsInt))
                 height = (int.Parse(modelEntity.Name) % 4) * 5 + 25;
-            
+
             var size = new Size2D(((TestModelEntity)modelEntity).Size, height);
             return new DiagramNodeViewModel(modelEntity, Point2D.Zero, size);
         }

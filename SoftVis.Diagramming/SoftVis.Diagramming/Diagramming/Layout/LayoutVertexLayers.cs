@@ -1,48 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Codartis.SoftVis.Diagramming.Layout.Incremental
+namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
     /// Tracks vertex layering and calculates vertical positions.
     /// </summary>
-    internal class DiagramLayers : IEnumerable<DiagramLayer>
+    internal class LayoutVertexLayers : IEnumerable<LayoutVertexLayer>
     {
         private readonly double _verticalGap;
-        private readonly List<DiagramLayer> _layers;
-        private readonly Dictionary<LayoutVertex, int> _vertexToLayerIndexMap;
+        private readonly List<LayoutVertexLayer> _layers;
+        private readonly Dictionary<LayoutVertexBase, int> _vertexToLayerIndexMap;
 
-        public DiagramLayers(double verticalGap)
+        public LayoutVertexLayers(double verticalGap)
         {
             _verticalGap = verticalGap;
 
-            _layers = new List<DiagramLayer>();
-            _vertexToLayerIndexMap = new Dictionary<LayoutVertex, int>();
+            _layers = new List<LayoutVertexLayer>();
+            _vertexToLayerIndexMap = new Dictionary<LayoutVertexBase, int>();
         }
 
-        public IEnumerator<DiagramLayer> GetEnumerator() => _layers.GetEnumerator();
+        public IEnumerator<LayoutVertexLayer> GetEnumerator() => _layers.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public int GetLayerIndex(LayoutVertex layoutVertex)
+        public int GetLayerIndex(LayoutVertexBase layoutVertex)
         {
             return _vertexToLayerIndexMap[layoutVertex];
         }
 
-        public DiagramLayer GetLayer(LayoutVertex layoutVertex)
+        public LayoutVertexLayer GetLayer(LayoutVertexBase layoutVertex)
         {
             var layerIndex = GetLayerIndex(layoutVertex);
             return _layers[layerIndex];
         }
 
-        public void AddVertex(LayoutVertex layoutVertex)
+        public void AddVertex(LayoutVertexBase layoutVertex)
         {
             AddVertexToLayer(layoutVertex, 0);
         }
 
-        public void RemoveVertex(LayoutVertex layoutVertex)
+        public void RemoveVertex(LayoutVertexBase layoutVertex)
         {
             var layerIndex = _vertexToLayerIndexMap[layoutVertex];
             RemoveVertexFromLayer(layoutVertex, layerIndex);
+        }
+
+        public void EnsureValidLayering(LayoutVertexBase childVertex, LayoutVertexBase parentVertex)
+        {
+            var childVertexLayerIndex = childVertex.GetLayerIndex();
+            var parentVertexLayerIndex = parentVertex.GetLayerIndex();
+
+            if (childVertexLayerIndex > parentVertexLayerIndex)
+                EnsureItemIndexIsValid(childVertex);
+            else
+                MoveVertexToLayer(childVertex, parentVertexLayerIndex + 1);
         }
 
         public void Clear()
@@ -51,7 +62,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _vertexToLayerIndexMap.Clear();
         }
 
-        private void AddVertexToLayer(LayoutVertex layoutVertex, int layerIndex)
+        private void AddVertexToLayer(LayoutVertexBase layoutVertex, int layerIndex)
         {
             var layer = EnsureLayerExists(layerIndex);
             _vertexToLayerIndexMap.Add(layoutVertex, layerIndex);
@@ -60,7 +71,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             UpdateLayerVerticalPositions(layerIndex);
         }
 
-        private void RemoveVertexFromLayer(LayoutVertex layoutVertex, int layerIndex)
+        private void RemoveVertexFromLayer(LayoutVertexBase layoutVertex, int layerIndex)
         {
             _layers[layerIndex].Remove(layoutVertex);
             _vertexToLayerIndexMap.Remove(layoutVertex);
@@ -68,17 +79,23 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             UpdateLayerVerticalPositions(layerIndex);
         }
 
-        public void MoveVertexBetweenLayers(LayoutVertex layoutVertex, int fromLayerIndex, int toLayerIndex)
+        private static void EnsureItemIndexIsValid(LayoutVertexBase layoutVertex)
         {
-            layoutVertex.IsFloating = true;
+            if (!layoutVertex.IsLayerItemIndexValid)
+                layoutVertex.RearrangeItemInLayer();
+        }
+
+        private void MoveVertexToLayer(LayoutVertexBase layoutVertex, int toLayerIndex)
+        {
+            var fromLayerIndex = layoutVertex.GetLayerIndex();
             RemoveVertexFromLayer(layoutVertex, fromLayerIndex);
             AddVertexToLayer(layoutVertex, toLayerIndex);
         }
 
-        private DiagramLayer EnsureLayerExists(int layerIndex)
+        private LayoutVertexLayer EnsureLayerExists(int layerIndex)
         {
             for (var i = _layers.Count; i <= layerIndex; i++)
-                _layers.Add(new DiagramLayer(i));
+                _layers.Add(new LayoutVertexLayer(i));
 
             UpdateLayerVerticalPositions(layerIndex);
 

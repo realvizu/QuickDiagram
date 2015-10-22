@@ -5,11 +5,11 @@
     /// </summary>
     public class RectMove
     {
-        public IRect Rect { get; }
+        public Rect2D Rect { get; }
         public Point2D FromCenter { get; }
         public Point2D ToCenter { get; }
 
-        public RectMove(IRect rect, Point2D fromCenter, Point2D toCenter)
+        public RectMove(Rect2D rect, Point2D fromCenter, Point2D toCenter)
         {
             Rect = rect;
             FromCenter = fromCenter;
