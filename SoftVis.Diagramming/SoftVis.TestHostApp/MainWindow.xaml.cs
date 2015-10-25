@@ -73,8 +73,8 @@ namespace Codartis.SoftVis.TestHostApp
 
             FitToView();
 
-            _testDiagram.ModelItems.TakeUntil(i => i is TestModelEntity && ((TestModelEntity)i).Name == "IntermediateInterface")
-                .ForEach(i => Add_OnClick(null, null));
+            //_testDiagram.ModelItems.TakeUntil(i => i is TestModelEntity && ((TestModelEntity)i).Name == "IntermediateInterface")
+            //    .ForEach(i => Add_OnClick(null, null));
         }
 
         private void FitToView()

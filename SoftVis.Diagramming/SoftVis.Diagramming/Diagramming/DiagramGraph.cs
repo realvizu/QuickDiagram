@@ -4,7 +4,6 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs;
 using QuickGraph;
 using QuickGraph.Algorithms;
 

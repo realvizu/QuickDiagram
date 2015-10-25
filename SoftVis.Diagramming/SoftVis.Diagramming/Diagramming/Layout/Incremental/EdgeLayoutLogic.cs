@@ -29,6 +29,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             foreach (var edgeInPath in layoutPath.Reverse())
                 _vertexLayoutLogic.PositionVertex(edgeInPath.Source, edgeInPath.Target, layoutAction);
 
+            // minden módosult path-ra
             LayoutPathChanged?.Invoke(this, layoutPath);
         }
 
@@ -36,7 +37,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layoutAction = RecordPathAction("RemovePath", layoutPath);
 
-            var dummyVerticesInPath = layoutPath.GetInterimVertices();
+            var dummyVerticesInPath = layoutPath.InterimVertices;
 
             // It would be too early to remove the edges now
             // because we'll need them at vertex removal to calculate siblings. 
@@ -49,32 +50,27 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 LayoutGraph.RemoveEdge(layoutPath[0]);
         }
 
-        public LayoutPath RemoveVertexFromPath(LayoutVertexBase layoutVertex, LayoutPath layoutPath)
+        public LayoutPath RemoveInterimVertexFromPath(LayoutPath layoutPath)
         {
+            if (!layoutPath.InterimVertices.Any())
+                throw new InvalidOperationException("Path has no interim vertex to remove.");
+
             var edgesInPath = layoutPath.ToList();
 
-            for (var i = 1; i < edgesInPath.Count; i++)
-            {
-                var currentEdge = edgesInPath[i];
-                if (currentEdge.Source == layoutVertex)
-                {
-                    var previousEdge = edgesInPath[i - 1];
+            var previousEdge = edgesInPath[0];
+            var currentEdge = edgesInPath[1];
 
-                    var mergedEdge = new LayoutEdge(LayoutGraph, previousEdge.Source, currentEdge.Target,
-                        currentEdge.DiagramConnector, currentEdge.IsReversed);
+            var mergedEdge = new LayoutEdge(LayoutGraph, previousEdge.Source, currentEdge.Target,
+                currentEdge.DiagramConnector, currentEdge.IsReversed);
 
-                    LayoutGraph.AddEdge(mergedEdge);
-                    edgesInPath.Insert(i, mergedEdge);
+            LayoutGraph.AddEdge(mergedEdge);
+            edgesInPath.Insert(0, mergedEdge);
 
-                    LayoutGraph.RemoveEdge(previousEdge);
-                    edgesInPath.Remove(previousEdge);
+            LayoutGraph.RemoveEdge(previousEdge);
+            edgesInPath.Remove(previousEdge);
 
-                    LayoutGraph.RemoveEdge(currentEdge);
-                    edgesInPath.Remove(currentEdge);
-
-                    break;
-                }
-            }
+            LayoutGraph.RemoveEdge(currentEdge);
+            edgesInPath.Remove(currentEdge);
 
             return new LayoutPath(edgesInPath);
         }

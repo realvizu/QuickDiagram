@@ -102,6 +102,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 UpdateDiagramConnectorToLayoutPathMap(diagramConnector, newLayoutPath);
 
                 edgeLayoutLogic.AddPath(newLayoutPath);
+
+                AdjustChildPaths(newLayoutPath, edgeLayoutLogic);
             });
         }
 
@@ -112,11 +114,34 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 var layoutPath = GetLayoutPath(diagramConnector);
                 edgeLayoutLogic.RemovePath(layoutPath);
 
-                foreach (var dummyVertex in layoutPath.GetInterimVertices())
+                foreach (var dummyVertex in layoutPath.InterimVertices)
                     _dummyVertexToDiagramConnectorMap.Remove(dummyVertex);
 
                 _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
             });
+        }
+
+        private void AdjustChildPaths(LayoutPath layoutPath, EdgeLayoutLogic edgeLayoutLogic)
+        {
+            foreach (var inPath in layoutPath.Source.InPaths)
+            {
+                var adjustedPath = AdjustPathLength(edgeLayoutLogic, inPath);
+                UpdateDiagramConnectorToLayoutPathMap(adjustedPath.DiagramConnector, adjustedPath);
+
+                AdjustChildPaths(inPath, edgeLayoutLogic);
+            }
+        }
+
+        private static LayoutPath AdjustPathLength(EdgeLayoutLogic edgeLayoutLogic, LayoutPath layoutPath)
+        {
+            while (layoutPath.LayerSpan < layoutPath.Length)
+                layoutPath = edgeLayoutLogic.RemoveInterimVertexFromPath(layoutPath);
+
+            // TODO
+            //while (layoutPath.LayerSpan > layoutPath.Length)
+            //    layoutPath = edgeLayoutLogic.AddVertexToPath(layoutPath, 1, CreateDummyVertex());
+
+            return layoutPath;
         }
 
         private void RecordVertexLayoutActions(Action<LayoutActionGraph, VertexLayoutLogic> action)
@@ -205,8 +230,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layoutEdge = CreateLayoutEdge(diagramConnector);
 
-            var childLayerIndex = layoutEdge.Source.GetLayerIndex();
-            var parentLayerIndex = layoutEdge.Target.GetLayerIndex();
+            var childLayerIndex = layoutEdge.Source.LayerIndex;
+            var parentLayerIndex = layoutEdge.Target.LayerIndex;
             var intermediateLayers = Math.Max(childLayerIndex - parentLayerIndex - 1, 0);
 
             var dummyVertices = CreateDummyVertices(intermediateLayers).ToArray();

@@ -19,22 +19,22 @@ namespace Codartis.SoftVis.Diagramming.Layout
     /// </remarks>
     internal sealed class LayoutGraph : BidirectionalGraph<LayoutVertexBase, LayoutEdge>
     {
-        private readonly LayoutVertexLayers _diagramLayers;
+        private readonly LayoutVertexLayers _vertexLayers;
 
         public LayoutGraph(double verticalGap) : base(false)
         {
-            _diagramLayers = new LayoutVertexLayers(verticalGap);
+            _vertexLayers = new LayoutVertexLayers(verticalGap);
 
             Cleared += OnCleared;
         }
 
-        public IEnumerable<LayoutVertexLayer> Layers => _diagramLayers;
+        public IEnumerable<LayoutVertexLayer> Layers => _vertexLayers;
 
         public override bool AddVertex(LayoutVertexBase layoutVertex)
         {
             var isAdded = base.AddVertex(layoutVertex);
             if (isAdded)
-                _diagramLayers.AddVertex(layoutVertex);
+                _vertexLayers.AddVertex(layoutVertex);
 
             return isAdded;
         }
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
         {
             var isRemoved = base.RemoveVertex(layoutVertex);
             if (isRemoved)
-                _diagramLayers.RemoveVertex(layoutVertex);
+                _vertexLayers.RemoveVertex(layoutVertex);
 
             return isRemoved;
         }
@@ -52,7 +52,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
         {
             var isAdded = base.AddEdge(newEdge);
             if (isAdded)
-                newEdge.ExecuteOnDescendantEdges(i => _diagramLayers.EnsureValidLayering(i.Source, i.Target));
+                newEdge.ExecuteOnDescendantEdges(i => _vertexLayers.EnsureValidLayering(i.Source, i.Target));
 
             return isAdded;
         }
@@ -129,22 +129,22 @@ namespace Codartis.SoftVis.Diagramming.Layout
             this.TraverseEdges(edge, EdgeDirection.In, action);
         }
 
-        public LayoutVertexLayer GetLayer(LayoutVertexBase layoutVertex) => _diagramLayers.GetLayer(layoutVertex);
-        public int GetLayerIndex(LayoutVertexBase layoutVertex) => _diagramLayers.GetLayerIndex(layoutVertex);
+        public LayoutVertexLayer GetLayer(LayoutVertexBase layoutVertex) => _vertexLayers.GetLayer(layoutVertex);
+        public int GetLayerIndex(LayoutVertexBase layoutVertex) => _vertexLayers.GetLayerIndex(layoutVertex);
 
         private IEnumerable<LayoutVertexBase> GetOrderedParents(LayoutVertexBase layoutVertex)
         {
-            var layerIndex = layoutVertex.GetLayerIndex();
+            var layerIndex = layoutVertex.LayerIndex;
 
             return GetParents(layoutVertex)
                 .OrderByDescending(i => i.Priority)
-                .ThenBy(i => layerIndex - i.GetLayerIndex())
+                .ThenBy(i => layerIndex - i.LayerIndex)
                 .ThenBy(i => i.ToString());
         }
 
         private void OnCleared(object sender, EventArgs args)
         {
-            _diagramLayers.Clear();
+            _vertexLayers.Clear();
         }
     }
 }

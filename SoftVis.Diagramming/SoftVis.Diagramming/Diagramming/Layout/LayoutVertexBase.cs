@@ -55,7 +55,10 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
         public void RefreshVerticalPosition() => Center = new Point2D(_center.X, GetLayer().CenterY);
         public void FloatPrimaryTree() => ExecuteOnPrimaryDescendantVertices(i => i.IsFloating = true);
-
+        public IEnumerable<LayoutEdge> InEdges => _graph.InEdges(this);
+        public IEnumerable<LayoutPath> InPaths => InEdges.Select(LayoutPath.GetFromInEdge);
+        public IEnumerable<LayoutEdge> OutEdges => _graph.OutEdges(this);
+        public IEnumerable<LayoutPath> OutPaths => OutEdges.Select(LayoutPath.GetFromOutEdge);
         public IEnumerable<LayoutVertexBase> GetParents() => _graph.GetParents(this);
         public LayoutVertexBase GetPrimaryParent() => _graph.GetPrimaryParent(this);
         public IEnumerable<LayoutVertexBase> GetNonPrimaryParents() => _graph.GetNonPrimaryParents(this);
@@ -67,7 +70,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
         public bool HasPrimarySiblingsInSameLayer()
         {
-            return GetPrimarySiblings().Any(i => i.GetLayerIndex() == GetLayerIndex());
+            return GetPrimarySiblings().Any(i => i.LayerIndex == LayerIndex);
         }
 
         public bool IsPrimarySiblingOf(LayoutVertexBase layoutVertex)
@@ -76,12 +79,13 @@ namespace Codartis.SoftVis.Diagramming.Layout
         }
 
         public LayoutVertexLayer GetLayer() => _graph.GetLayer(this);
-        public int GetLayerIndex() => _graph.GetLayerIndex(this);
+        public int LayerIndex => _graph.GetLayerIndex(this);
         public LayoutVertexBase GetPreviousInLayer() => GetLayer().GetPrevious(this);
         public LayoutVertexBase GetNextInLayer() => GetLayer().GetNext(this);
         public int GetIndexInLayer() => GetLayer().IndexOf(this);
         public IEnumerable<LayoutVertexBase> GetOtherPositionedVerticesInLayer() => GetLayer().Where(i => i != this && !i.IsFloating);
         public bool IsLayerItemIndexValid => GetLayer().IsItemIndexValid(this);
+        public bool IsLayerIndexValid => LayerIndex > OutEdges.Select(i => i.Source.LayerIndex).Max();
 
         public void RearrangeItemInLayer()
         {

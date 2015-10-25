@@ -10,30 +10,28 @@ namespace Codartis.SoftVis.Diagramming.Layout
     /// A list of LayoutEdges that form a path,
     /// that is the target of an edge is the source of the next edge in the path.
     /// </summary>
+    /// <remarks>Interim vertices a dummies.</remarks>
     internal class LayoutPath : Path<LayoutVertexBase, LayoutEdge>
     {
-        public LayoutPath(LayoutEdge layoutEdge)
-            : base(layoutEdge)
-        {
-        }
-
         public LayoutPath(IEnumerable<LayoutEdge> layoutEdges)
             : base(layoutEdges)
         {
         }
 
-        public LayoutPath(LayoutEdge layoutEdge, IEnumerable<LayoutVertexBase> intermediateVertices)
+        public LayoutPath(LayoutEdge layoutEdge, IEnumerable<DummyLayoutVertex> intermediateVertices)
             :this(layoutEdge.Split(intermediateVertices))
         {
         }
 
-        public IEnumerable<LayoutVertexBase> GetVertices() => this.Select(i => i.Source).Concat(this.Last().Target);
-        public IEnumerable<DummyLayoutVertex> GetInterimVertices() => this.Skip(1).Select(i => i.Source).OfType<DummyLayoutVertex>();
+        public DiagramConnector DiagramConnector => this.FirstOrDefault()?.DiagramConnector;
+        public int LayerSpan => Source.LayerIndex - Target.LayerIndex;
+        public IEnumerable<LayoutVertexBase> Vertices => this.Select(i => i.Source).Concat(this.Last().Target);
+        public IEnumerable<DummyLayoutVertex> InterimVertices => this.Skip(1).Select(i => i.Source).OfType<DummyLayoutVertex>();
 
         public Route GetRoute()
         {
             var sourceRect = Source.Rect;
-            var interimRoutePoints = GetInterimVertices().Select(i => i.Center).ToArray();
+            var interimRoutePoints = InterimVertices.Select(i => i.Center).ToArray();
             var targetRect = Target.Rect;
 
             var secondPoint = interimRoutePoints.Any()
@@ -51,9 +49,45 @@ namespace Codartis.SoftVis.Diagramming.Layout
             };
         }
 
+        public static LayoutPath GetFromOutEdge(LayoutEdge layoutEdge)
+        {
+            return new LayoutPath(GetEdgesToNextNonDummyVertex(layoutEdge));
+        }
+
+        private static IEnumerable<LayoutEdge> GetEdgesToNextNonDummyVertex(LayoutEdge layoutEdge)
+        {
+            yield return layoutEdge;
+
+            if (layoutEdge.Target is DiagramNodeLayoutVertex)
+                yield break;
+
+            var nextEdge = layoutEdge.Target.OutEdges.First();
+
+            foreach (var edge in GetEdgesToNextNonDummyVertex(nextEdge))
+                yield return edge;
+        }
+
+        public static LayoutPath GetFromInEdge(LayoutEdge layoutEdge)
+        {
+            return new LayoutPath(GetEdgesFromNextNonDummyVertex(layoutEdge).Reverse());
+        }
+
+        private static IEnumerable<LayoutEdge> GetEdgesFromNextNonDummyVertex(LayoutEdge layoutEdge)
+        {
+            yield return layoutEdge;
+
+            if (layoutEdge.Source is DiagramNodeLayoutVertex)
+                yield break;
+
+            var previousEdge = layoutEdge.Source.InEdges.First();
+
+            foreach (var edge in GetEdgesFromNextNonDummyVertex(previousEdge))
+                yield return edge;
+        }
+
         public override string ToString()
         {
-            return GetVertices().ToDelimitedString("->");
+            return Vertices.ToDelimitedString("->");
         }
     }
 }

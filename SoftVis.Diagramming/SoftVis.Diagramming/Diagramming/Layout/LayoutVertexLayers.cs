@@ -47,8 +47,8 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
         public void EnsureValidLayering(LayoutVertexBase childVertex, LayoutVertexBase parentVertex)
         {
-            var childVertexLayerIndex = childVertex.GetLayerIndex();
-            var parentVertexLayerIndex = parentVertex.GetLayerIndex();
+            var childVertexLayerIndex = childVertex.LayerIndex;
+            var parentVertexLayerIndex = parentVertex.LayerIndex;
 
             if (childVertexLayerIndex > parentVertexLayerIndex)
                 EnsureItemIndexIsValid(childVertex);
@@ -87,8 +87,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
         private void MoveVertexToLayer(LayoutVertexBase layoutVertex, int toLayerIndex)
         {
-            var fromLayerIndex = layoutVertex.GetLayerIndex();
-            RemoveVertexFromLayer(layoutVertex, fromLayerIndex);
+            RemoveVertexFromLayer(layoutVertex, layoutVertex.LayerIndex);
             AddVertexToLayer(layoutVertex, toLayerIndex);
         }
 
