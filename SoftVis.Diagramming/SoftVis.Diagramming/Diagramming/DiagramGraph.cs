@@ -17,14 +17,14 @@ namespace Codartis.SoftVis.Diagramming
     {
         private const double HorizontalGap = 20;
         private const double VerticalGap = 40;
-        private readonly IncrementalLayoutEngine _layoutEngine;
+        private readonly IncrementalLayoutEngine2 _layoutEngine;
 
         public ILayoutActionGraph LastLayoutActionGraph => _layoutEngine.LastLayoutActionGraph;
         public int TotalVertexMoveCount => _layoutEngine.TotalVertexMoveCount;
 
         public DiagramGraph() : base(false)
         {
-            _layoutEngine = new IncrementalLayoutEngine(HorizontalGap, VerticalGap);
+            _layoutEngine = new IncrementalLayoutEngine2(HorizontalGap, VerticalGap);
             _layoutEngine.DiagramNodeCenterChanged += OnDiagramNodeCenterChanged;
             _layoutEngine.DiagramConnectorRouteChanged += OnDiagramConnectorRouteChanged;
             Cleared += OnCleared;

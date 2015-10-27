@@ -126,7 +126,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
         public void ExecuteOnDescendantEdges(LayoutEdge edge, Action<LayoutEdge> action)
         {
-            this.TraverseEdges(edge, EdgeDirection.In, action);
+            this.ExecuteOnEdgesRecursive(edge, EdgeDirection.In, action);
         }
 
         public LayoutVertexLayer GetLayer(LayoutVertexBase layoutVertex) => _vertexLayers.GetLayer(layoutVertex);

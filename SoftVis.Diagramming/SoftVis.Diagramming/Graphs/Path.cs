@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Graphs
         where TVertex: class
         where TEdge : IEdge<TVertex>
     {
-        private readonly TEdge[] _edges;
+        protected readonly List<TEdge> Edges;
 
         public Path(TEdge edge)
             : this(edge.ToEnumerable())
@@ -25,30 +25,22 @@ namespace Codartis.SoftVis.Graphs
 
         public Path(IEnumerable<TEdge> edges)
         {
-            _edges = edges as TEdge[] ?? edges.ToArray();
-
+            Edges = edges as List<TEdge> ?? edges.ToList();
             CheckInvariant();
         }
 
-        public int Length => _edges.Length;
-        public TVertex Source => _edges.FirstOrDefault()?.Source;
-        public TVertex Target => _edges.LastOrDefault()?.Target;
-        public TEdge this[int i] => _edges[i];
+        public int Length => Edges.Count;
+        public TVertex Source => Edges.FirstOrDefault()?.Source;
+        public TVertex Target => Edges.LastOrDefault()?.Target;
+        public TEdge this[int i] => Edges[i];
 
-        public IEnumerator<TEdge> GetEnumerator()
-        {
-            return _edges.AsEnumerable().GetEnumerator();
-        }
+        public IEnumerator<TEdge> GetEnumerator() => Edges.AsEnumerable().GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
+        protected void CheckInvariant()
         {
-            return GetEnumerator();
-        }
-
-        private void CheckInvariant()
-        {
-            for (var i = 0; i < _edges.Length - 1; i++)
-                if (_edges[i].Target != _edges[i + 1].Source)
+            for (var i = 0; i < Length - 1; i++)
+                if (Edges[i].Target != Edges[i + 1].Source)
                     throw new Exception("The edges don't form a path.");
         }
 
