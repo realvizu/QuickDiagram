@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
@@ -15,11 +15,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
     /// </summary>
     internal abstract class DiagramPanelBase : Panel
     {
-        protected readonly Dictionary<DiagramShape, DiagramShapeControlBase> DiagramShapeToControlMap =
-            new Dictionary<DiagramShape, DiagramShapeControlBase>();
+        protected readonly Map<DiagramShape, DiagramShapeControlBase> DiagramShapeToControlMap =
+            new Map<DiagramShape, DiagramShapeControlBase>();
 
-        protected readonly Dictionary<DiagramShapeControlBase, DiagramShape> ControlToDiagramShapeMap =
-            new Dictionary<DiagramShapeControlBase, DiagramShape>();
+        protected readonly Map<DiagramShapeControlBase, DiagramShape> ControlToDiagramShapeMap =
+            new Map<DiagramShapeControlBase, DiagramShape>();
 
         private Rect _contentRect;
 
@@ -105,22 +105,22 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             control.PreviewMouseDoubleClick += OnDiagramNodeDoubleClicked;
             control.PreviewMouseLeftButtonDown += OnDiagramNodeLeftButtonDown;
 
-            DiagramShapeToControlMap.Add(diagramNode, control);
-            ControlToDiagramShapeMap.Add(control, diagramNode);
+            DiagramShapeToControlMap.Set(diagramNode, control);
+            ControlToDiagramShapeMap.Set(control, diagramNode);
             Children.Add(control);
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
         {
             var control = new DiagramConnectorControl { DataContext = diagramConnector };
-            DiagramShapeToControlMap.Add(diagramConnector, control);
-            ControlToDiagramShapeMap.Add(control, diagramConnector);
+            DiagramShapeToControlMap.Set(diagramConnector, control);
+            ControlToDiagramShapeMap.Set(control, diagramConnector);
             Children.Add(control);
         }
 
         private void RemoveDiagramShapeControl(DiagramShape diagramShape)
         {
-            var control = DiagramShapeToControlMap[diagramShape];
+            var control = DiagramShapeToControlMap.Get(diagramShape);
             Children.Remove(control);
             DiagramShapeToControlMap.Remove(diagramShape);
             ControlToDiagramShapeMap.Remove(control);
@@ -132,7 +132,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             if (senderDiagramNode == null || !ControlToDiagramShapeMap.ContainsKey(senderDiagramNode))
                 return;
 
-            Diagram.OnShapeSelected(ControlToDiagramShapeMap[senderDiagramNode]);
+            Diagram.OnShapeSelected(ControlToDiagramShapeMap.Get(senderDiagramNode));
         }
 
         private void OnDiagramNodeDoubleClicked(object sender, MouseButtonEventArgs e)
@@ -141,7 +141,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             if (senderDiagramNode == null || !ControlToDiagramShapeMap.ContainsKey(senderDiagramNode))
                 return;
 
-            Diagram.OnShapeActivated(ControlToDiagramShapeMap[senderDiagramNode]);
+            Diagram.OnShapeActivated(ControlToDiagramShapeMap.Get(senderDiagramNode));
             e.Handled = true;
         }
     }

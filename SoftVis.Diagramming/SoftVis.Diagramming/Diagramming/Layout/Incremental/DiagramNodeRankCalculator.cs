@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
@@ -13,14 +13,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     internal sealed class DiagramNodeRankCalculator : IDiagramChangeConsumer, IDiagramNodeRankProvider
     {
         private readonly LayeringGraph _layeringGraph;
-        private readonly Dictionary<DiagramNode, LayeringVertex> _diagramNodeToLayeringVertexMap;
-        private readonly Dictionary<DiagramConnector, LayeringEdge> _diagramConnectorToLayeringEdgeMap;
+        private readonly Map<DiagramNode, LayeringVertex> _diagramNodeToLayeringVertexMap;
+        private readonly Map<DiagramConnector, LayeringEdge> _diagramConnectorToLayeringEdgeMap;
 
         public DiagramNodeRankCalculator()
         {
             _layeringGraph = new LayeringGraph();
-            _diagramNodeToLayeringVertexMap = new Dictionary<DiagramNode, LayeringVertex>();
-            _diagramConnectorToLayeringEdgeMap = new Dictionary<DiagramConnector, LayeringEdge>();
+            _diagramNodeToLayeringVertexMap = new Map<DiagramNode, LayeringVertex>();
+            _diagramConnectorToLayeringEdgeMap = new Map<DiagramConnector, LayeringEdge>();
         }
 
         public void Clear()
@@ -34,42 +34,42 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layeringVertex = new LayeringVertex(diagramNode);
             _layeringGraph.AddVertex(layeringVertex);
-            _diagramNodeToLayeringVertexMap.Add(diagramNode, layeringVertex);
+            _diagramNodeToLayeringVertexMap.Set(diagramNode, layeringVertex);
         }
 
         public void Remove(DiagramNode diagramNode)
         {
-            var layeringVertex = _diagramNodeToLayeringVertexMap[diagramNode];
+            var layeringVertex = _diagramNodeToLayeringVertexMap.Get(diagramNode);
             _layeringGraph.RemoveVertex(layeringVertex);
             _diagramNodeToLayeringVertexMap.Remove(diagramNode);
         }
 
         public void Add(DiagramConnector diagramConnector)
         {
-            var sourceLayeringVertex = _diagramNodeToLayeringVertexMap[diagramConnector.Source];
-            var targetLayeringVertex = _diagramNodeToLayeringVertexMap[diagramConnector.Target];
+            var sourceLayeringVertex = _diagramNodeToLayeringVertexMap.Get(diagramConnector.Source);
+            var targetLayeringVertex = _diagramNodeToLayeringVertexMap.Get(diagramConnector.Target);
             var layeringEdge = new LayeringEdge(sourceLayeringVertex, targetLayeringVertex);
             _layeringGraph.AddEdge(layeringEdge);
-            _diagramConnectorToLayeringEdgeMap.Add(diagramConnector, layeringEdge);
+            _diagramConnectorToLayeringEdgeMap.Set(diagramConnector, layeringEdge);
 
             UpdateLayerIndexesRecursive(sourceLayeringVertex);
         }
 
         public void Remove(DiagramConnector diagramConnector)
         {
-            var layeringEdge = _diagramConnectorToLayeringEdgeMap[diagramConnector];
+            var layeringEdge = _diagramConnectorToLayeringEdgeMap.Get(diagramConnector);
             _layeringGraph.RemoveEdge(layeringEdge);
             _diagramConnectorToLayeringEdgeMap.Remove(diagramConnector);
         }
 
         public int GetRank(DiagramNode diagramNode)
         {
-            return _diagramNodeToLayeringVertexMap[diagramNode].LayerIndex;
+            return _diagramNodeToLayeringVertexMap.Get(diagramNode).LayerIndex;
         }
 
         public int GetRankSpan(DiagramConnector diagramConnector)
         {
-            return _diagramConnectorToLayeringEdgeMap[diagramConnector].LayerSpan;
+            return _diagramConnectorToLayeringEdgeMap.Get(diagramConnector).LayerSpan;
         }
 
         private void UpdateLayerIndexesRecursive(LayeringVertex updateRootLayeringVertex)

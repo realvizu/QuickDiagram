@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 
         public override string ToString()
         {
-            return $"{Action} ({SubjectName}) to {NewRoute}";
+            return $"{Action} ({SubjectName}) from {OldRoute} to {NewRoute}";
         }
     }
 }

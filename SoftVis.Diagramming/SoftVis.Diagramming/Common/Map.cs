@@ -13,6 +13,8 @@ namespace Codartis.SoftVis.Common
     {
         private readonly Dictionary<TKey,TValue> _map = new Dictionary<TKey, TValue>();
 
+        public IEnumerable<TKey> Keys => _map.Keys;
+
         public void Set(TKey key, TValue value)
         {
             if (_map.ContainsKey(key))
@@ -23,9 +25,14 @@ namespace Codartis.SoftVis.Common
 
         public TValue Get(TKey key)
         {
-            return _map.ContainsKey(key)
+            return ContainsKey(key)
                 ? _map[key]
                 : default(TValue);
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            return _map.ContainsKey(key);
         }
 
         public void Remove(TKey key)

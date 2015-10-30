@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Codartis.SoftVis.Common;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -10,14 +11,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     {
         private readonly double _verticalGap;
         private readonly List<PositioningVertexLayer> _layers;
-        private readonly Dictionary<PositioningVertexBase, int> _vertexToLayerIndexMap;
+        private readonly Map<PositioningVertexBase, int> _vertexToLayerIndexMap;
 
         public PositioningVertexLayers(double verticalGap)
         {
             _verticalGap = verticalGap;
 
             _layers = new List<PositioningVertexLayer>();
-            _vertexToLayerIndexMap = new Dictionary<PositioningVertexBase, int>();
+            _vertexToLayerIndexMap = new Map<PositioningVertexBase, int>();
         }
 
         public IEnumerator<PositioningVertexLayer> GetEnumerator() => _layers.GetEnumerator();
@@ -33,7 +34,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public int GetLayerIndex(PositioningVertexBase vertex)
         {
-            return _vertexToLayerIndexMap[vertex];
+            return _vertexToLayerIndexMap.Get(vertex);
         }
 
         public PositioningVertexLayer GetLayer(PositioningVertexBase vertex)
@@ -49,16 +50,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public void RemoveVertex(PositioningVertexBase vertex)
         {
-            var layerIndex = _vertexToLayerIndexMap[vertex];
+            var layerIndex = GetLayerIndex(vertex);
             RemoveVertexFromLayer(vertex, layerIndex);
         }
 
         public void EnsureValidLayering(PositioningVertexBase childVertex, PositioningVertexBase parentVertex)
         {
-            if (GetLayerIndex(childVertex) > GetLayerIndex(parentVertex))
+            var childLayerIndex = GetLayerIndex(childVertex);
+            var parentLayerIndex = GetLayerIndex(parentVertex);
+
+            if (childLayerIndex > parentLayerIndex)
                 EnsureValidItemOrder(childVertex);
-            else
-                MoveVertex(childVertex, GetLayerIndex(parentVertex) + 1);
+            else if (childVertex is DummyPositioningVertex || parentVertex is DiagramNodePositioningVertex)
+                MoveVertex(childVertex, parentLayerIndex + 1);
         }
 
         private void MoveVertex(PositioningVertexBase vertex, int toLayerIndex)
@@ -80,7 +84,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private void AddVertexToLayer(PositioningVertexBase vertex, int layerIndex)
         {
             var layer = EnsureLayerExists(layerIndex);
-            _vertexToLayerIndexMap.Add(vertex, layerIndex);
+            _vertexToLayerIndexMap.Set(vertex, layerIndex);
             layer.Add(vertex);
 
             UpdateLayerVerticalPositions(layerIndex);

@@ -29,7 +29,8 @@ namespace Codartis.SoftVis.TestHostApp
         private TestDiagram _testDiagram;
         private int _totalNodeMoveCount;
 
-        private List<LayoutActionGraph> _layoutActionTreesForLastStep;
+        private readonly static ILayoutAction RootLayoutAction = new LayoutAction("Root");
+        private LayoutActionGraph _layoutActionGraphForLastStep;
         private List<ILayoutAction> _animatedLayoutActions;
         private int _frame;
         private string _frameLabel;
@@ -71,7 +72,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             base.OnApplyTemplate();
 
-            _layoutActionTreesForLastStep = new List<LayoutActionGraph>();
+            _layoutActionGraphForLastStep = CreateLayoutActionGraph();
             _animatedLayoutActions = new List<ILayoutAction>();
 
             _testModel = TestModel.Create();
@@ -87,18 +88,21 @@ namespace Codartis.SoftVis.TestHostApp
             //    .ForEach(i => Add_OnClick(null, null));
         }
 
+        private static LayoutActionGraph CreateLayoutActionGraph()
+        {
+            var layoutActionGraph = new LayoutActionGraph();
+            layoutActionGraph.AddVertex(RootLayoutAction);
+            return layoutActionGraph;
+        }
+
         private void RecordLayoutAction(object sender, ILayoutAction layoutAction)
         {
-            if (layoutAction.CausingLayoutAction == null)
-                _layoutActionTreesForLastStep.Add(new LayoutActionGraph());
+            var causingLayoutAction = layoutAction.CausingLayoutAction ?? RootLayoutAction;
 
-            _layoutActionTreesForLastStep.Last().AddVertex(layoutAction);
+            _layoutActionGraphForLastStep.AddVertex(layoutAction);
 
-            if (layoutAction.CausingLayoutAction != null)
-            {
-                var edge = new Edge<ILayoutAction>(layoutAction.CausingLayoutAction, layoutAction);
-                _layoutActionTreesForLastStep.Last().AddEdge(edge);
-            }
+            var edge = new Edge<ILayoutAction>(causingLayoutAction, layoutAction);
+            _layoutActionGraphForLastStep.AddEdge(edge);
 
             if (layoutAction is IMoveDiagramNodeAction ||
                 layoutAction is IRerouteDiagramConnectorAction)
@@ -119,7 +123,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _animatedLayoutActions.ForEach(PlayFrameForward);
             _animatedLayoutActions.Clear();
-            _layoutActionTreesForLastStep.Clear();
+            _layoutActionGraphForLastStep = CreateLayoutActionGraph();
 
             var modelItem = _testDiagram.ModelItems[_modelItemIndex];
 
@@ -131,7 +135,7 @@ namespace Codartis.SoftVis.TestHostApp
             if (modelRelationship != null)
                 _testDiagram.ShowConnector((IModelRelationship)modelItem);
 
-            DumpMoves(_layoutActionTreesForLastStep);
+            DumpMoves(_layoutActionGraphForLastStep);
 
             if (_modelItemIndex < _testDiagram.ModelItems.Count - 1)
                 _modelItemIndex++;
@@ -184,19 +188,16 @@ namespace Codartis.SoftVis.TestHostApp
                 rerouteDiagramConnectorAction.DiagramConnector.RoutePoints = connectorRouteAccessor(rerouteDiagramConnectorAction);
         }
 
-        private void DumpMoves(List<LayoutActionGraph> layoutActionTrees)
+        private void DumpMoves(LayoutActionGraph layoutActionGraph)
         {
             Debug.WriteLine("-----------------------");
-            foreach (var layoutActionTree in layoutActionTrees)
-            {
-                _depth = 0;
-                var searchAlgorithm = new DepthFirstSearchAlgorithm<ILayoutAction, IEdge<ILayoutAction>>(layoutActionTree);
-                searchAlgorithm.DiscoverVertex += OnDiscoverVertex;
-                searchAlgorithm.FinishVertex += OnFinishVertex;
-                searchAlgorithm.TreeEdge += OnTreeEdge;
-                searchAlgorithm.ForwardOrCrossEdge += OnForwardOrCrossEdge;
-                searchAlgorithm.Compute();
-            }
+            _depth = 0;
+            var searchAlgorithm = new DepthFirstSearchAlgorithm<ILayoutAction, IEdge<ILayoutAction>>(layoutActionGraph);
+            searchAlgorithm.DiscoverVertex += OnDiscoverVertex;
+            searchAlgorithm.FinishVertex += OnFinishVertex;
+            searchAlgorithm.TreeEdge += OnTreeEdge;
+            searchAlgorithm.ForwardOrCrossEdge += OnForwardOrCrossEdge;
+            searchAlgorithm.Compute();
         }
 
         private void OnForwardOrCrossEdge(IEdge<ILayoutAction> e)
@@ -228,7 +229,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _testDiagram.HideNode(_modelEntities[_nextToRemoveModelItemIndex]);
 
-            DumpMoves(_layoutActionTreesForLastStep);
+            DumpMoves(_layoutActionGraphForLastStep);
 
             _nextToRemoveModelItemIndex++;
         }
@@ -237,7 +238,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             var textWindow = new TextWindow();
             textWindow.DataContext = textWindow;
-            textWindow.Text = _layoutActionTreesForLastStep.Last().Serialize();
+            textWindow.Text = _layoutActionGraphForLastStep.Serialize();
             textWindow.Show();
         }
 

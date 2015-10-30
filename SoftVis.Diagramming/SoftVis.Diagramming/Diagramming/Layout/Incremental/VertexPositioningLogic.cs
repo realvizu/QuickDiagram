@@ -50,7 +50,26 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             layoutVertex.IsFloating = true;
             var siblings = layoutVertex.GetPrimarySiblings().ToArray();
+
             CompactSiblings(siblings, layoutVertex, layoutAction);
+        }
+
+        public void CenterParents(PositioningVertexBase layoutVertex, ILayoutAction causingAction)
+        {
+            var parentVertex = layoutVertex.GetPrimaryParent();
+            if (parentVertex == null)
+                return;
+
+            var parentTargetCenterX = parentVertex.GetPrimaryPositionedChildren().GetRect().Center.X;
+            if (parentTargetCenterX.IsEqualWithTolerance(parentVertex.Center.X))
+                return;
+
+            var layoutAction = RaiseVertexLayoutAction("CenterParent", layoutVertex, causingAction);
+
+            MoveVertexTo(parentVertex, parentTargetCenterX, layoutAction);
+            CenterParents(parentVertex, layoutAction);
+
+            // TODO: how to place non-primary parents?
         }
 
         public void Compact(ILayoutAction causingAction)
@@ -155,26 +174,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return layoutAction;
         }
 
-        private ILayoutAction CenterParents(PositioningVertexBase layoutVertex, ILayoutAction causingAction)
-        {
-            var parentVertex = layoutVertex.GetPrimaryParent();
-            if (parentVertex == null)
-                return null;
-
-            var parentTargetCenterX = parentVertex.GetPrimaryPositionedChildren().GetRect().Center.X;
-            if (parentTargetCenterX.IsEqualWithTolerance(parentVertex.Center.X))
-                return null;
-
-            var layoutAction = RaiseVertexLayoutAction("CenterParent", layoutVertex, causingAction);
-
-            MoveVertexTo(parentVertex, parentTargetCenterX, layoutAction);
-            CenterParents(parentVertex, layoutAction);
-
-            // TODO: how to place non-primary parents?
-
-            return layoutAction;
-        }
-
         private ILayoutAction MoveVertexBy(PositioningVertexBase movingVertex, double translateVectorX, ILayoutAction causingAction)
         {
             return movingVertex.Center == Point2D.Empty
@@ -204,7 +203,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 // TODO: find best empty place instead of push?
                 Debug.WriteLine("***** Move cycle detected, pushing omitted.");
             }
-            else if (!oldCenter.X.IsEqualWithTolerance(newCenter.X))
+            else
             {
                 PushOtherVerticesFromTheWay(movingVertex, layoutAction);
             }

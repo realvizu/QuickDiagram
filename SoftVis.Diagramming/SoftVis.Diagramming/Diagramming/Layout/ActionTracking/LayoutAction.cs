@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
     /// <summary>
     /// An action performed by the layout logic.
     /// </summary>
-    internal class LayoutAction : ILayoutAction
+    public class LayoutAction : ILayoutAction
     {
         public string Action { get; }
         public double? Amount { get; }

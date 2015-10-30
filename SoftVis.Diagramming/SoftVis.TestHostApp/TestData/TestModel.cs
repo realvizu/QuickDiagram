@@ -101,16 +101,40 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             return new TestModel()
 
+                // Single node
                 .AddClass("1", 40)
-                .AddClass("2", 30)
-                .AddClass("3", 20)
-                .AddBase("3", "2")
-                .AddBase("2", "1")
-                .AddInterface("4", 50)
-                .AddBase("3", "4")
-                .AddInterface("5", 50)
-                .AddBase("3", "5")
-                .AddBase("5", "4")
+
+                // Single connector
+                .AddClass("3", 30, "1")
+
+                // Siblings added (left, right, middle)
+                .AddClass("2", 45, "1")
+                .AddClass("5", 25, "1")
+                .AddClass("4", 20, "1")
+
+                // Tree moves under parent
+                .AddClass("0", 20)
+                .AddBase("1", "0")
+
+                // Placing child with no siblings
+                .AddClass("10", 40)
+                .AddInterface("11", 50)
+                .AddInterface("12", 45, "11")
+                .AddClass("13", 40, "10")
+
+                // Dummy vertex added
+                .AddInterface("14", 55, "12")
+                .AddInterface("15")
+                .AddBase("14", "15")
+
+                // Dummy vertex removed
+                .AddInterface("16")
+                .AddBase("15", "16")
+
+                // Redundant edge removed
+                .AddInterface("20", 55)
+                .AddBase("12", "20")
+                .AddBase("20", "11")
 
                 .AddInterface("BaseInterface")
                 .AddInterface("MyInterface1", baseName: "BaseInterface")
