@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
-using MoreLinq;
 using QuickGraph;
 using QuickGraph.Algorithms.Search;
 
@@ -21,11 +22,15 @@ namespace Codartis.SoftVis.TestHostApp
         public event PropertyChangedEventHandler PropertyChanged;
 
         private TestModel _testModel;
-        private TestDiagram _testDiagram;
-        private int _modelItemIndex;
         private IModelEntity[] _modelEntities;
+        private int _modelItemIndex;
         private int _nextToRemoveModelItemIndex;
+
+        private TestDiagram _testDiagram;
         private int _totalNodeMoveCount;
+
+        private List<LayoutActionGraph> _layoutActionTreesForLastStep;
+        private List<ILayoutAction> _animatedLayoutActions;
         private int _frame;
         private string _frameLabel;
         private int _depth;
@@ -66,8 +71,13 @@ namespace Codartis.SoftVis.TestHostApp
         {
             base.OnApplyTemplate();
 
+            _layoutActionTreesForLastStep = new List<LayoutActionGraph>();
+            _animatedLayoutActions = new List<ILayoutAction>();
+
             _testModel = TestModel.Create();
             _testDiagram = new TestDiagram(_testModel);
+            _testDiagram.LayoutActionExecuted += RecordLayoutAction;
+
             DiagramViewerControl.DataContext = _testDiagram;
             _modelEntities = _testDiagram.ModelItems.OfType<IModelEntity>().ToArray();
 
@@ -77,6 +87,29 @@ namespace Codartis.SoftVis.TestHostApp
             //    .ForEach(i => Add_OnClick(null, null));
         }
 
+        private void RecordLayoutAction(object sender, ILayoutAction layoutAction)
+        {
+            if (layoutAction.CausingLayoutAction == null)
+                _layoutActionTreesForLastStep.Add(new LayoutActionGraph());
+
+            _layoutActionTreesForLastStep.Last().AddVertex(layoutAction);
+
+            if (layoutAction.CausingLayoutAction != null)
+            {
+                var edge = new Edge<ILayoutAction>(layoutAction.CausingLayoutAction, layoutAction);
+                _layoutActionTreesForLastStep.Last().AddEdge(edge);
+            }
+
+            if (layoutAction is IMoveDiagramNodeAction ||
+                layoutAction is IRerouteDiagramConnectorAction)
+            {
+                _animatedLayoutActions.Add(layoutAction);
+
+                if (layoutAction is IMoveDiagramNodeAction)
+                    TotalNodeMoveCount++;
+            }
+        }
+
         private void FitToView()
         {
             Dispatcher.BeginInvoke(new Action(() => DiagramViewerControl.FitDiagramToView()));
@@ -84,7 +117,9 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void Add_OnClick(object sender, RoutedEventArgs e)
         {
-            _testDiagram.LastLayoutActionVertexMoves.ForEach(PlayFrameForward);
+            _animatedLayoutActions.ForEach(PlayFrameForward);
+            _animatedLayoutActions.Clear();
+            _layoutActionTreesForLastStep.Clear();
 
             var modelItem = _testDiagram.ModelItems[_modelItemIndex];
 
@@ -96,65 +131,77 @@ namespace Codartis.SoftVis.TestHostApp
             if (modelRelationship != null)
                 _testDiagram.ShowConnector((IModelRelationship)modelItem);
 
-            DumpMoves(_testDiagram.LastLayoutActionGraph);
+            DumpMoves(_layoutActionTreesForLastStep);
 
             if (_modelItemIndex < _testDiagram.ModelItems.Count - 1)
                 _modelItemIndex++;
 
             FitToView();
-            TotalNodeMoveCount = _testDiagram.TotalVertexMoveCount;
-            _frame = _testDiagram.LastLayoutActionVertexMoves.Length - 1;
+            _frame = _animatedLayoutActions.Count - 1;
             FrameLabel = _frame + " (To)";
         }
 
         private void Forward_OnClick(object sender, RoutedEventArgs e)
         {
-            PlayFrameForward(_testDiagram.LastLayoutActionVertexMoves[_frame]);
+            PlayFrameForward(_animatedLayoutActions[_frame]);
 
-            if (_frame < _testDiagram.LastLayoutActionVertexMoves.Length - 1)
+            if (_frame < _animatedLayoutActions.Count - 1)
                 _frame++;
         }
 
         private void Back_OnClick(object sender, RoutedEventArgs e)
         {
-            PlayFrameBackward(_testDiagram.LastLayoutActionVertexMoves[_frame]);
+            PlayFrameBackward(_animatedLayoutActions[_frame]);
 
             if (_frame > 0)
                 _frame--;
         }
 
-        private void PlayFrameForward(IVertexMoveAction vertexMove)
+        private void PlayFrameForward(ILayoutAction layoutAction)
         {
-            if (vertexMove.DiagramNode != null)
-                vertexMove.DiagramNode.Center = vertexMove.To;
+            ApplyFrame(layoutAction, i => i.To, i => i.NewRoute);
 
             FrameLabel = _frame + " (To)";
         }
 
-        private void PlayFrameBackward(IVertexMoveAction vertexMove)
+        private void PlayFrameBackward(ILayoutAction layoutAction)
         {
-            if (vertexMove.DiagramNode != null)
-                vertexMove.DiagramNode.Center = vertexMove.From;
+            ApplyFrame(layoutAction, i => i.From, i => i.OldRoute);
 
             FrameLabel = _frame + " (From)";
         }
 
-        private void DumpMoves(ILayoutActionGraph layoutActionGraph)
+        private static void ApplyFrame(ILayoutAction layoutAction,
+            Func<IMoveDiagramNodeAction, Point2D> vertexCenterAccessor,
+            Func<IRerouteDiagramConnectorAction, Route> connectorRouteAccessor)
+        {
+            var moveDiagramNodeAction = layoutAction as IMoveDiagramNodeAction;
+            if (moveDiagramNodeAction != null)
+                moveDiagramNodeAction.DiagramNode.Center = vertexCenterAccessor(moveDiagramNodeAction);
+
+            var rerouteDiagramConnectorAction = layoutAction as IRerouteDiagramConnectorAction;
+            if (rerouteDiagramConnectorAction != null)
+                rerouteDiagramConnectorAction.DiagramConnector.RoutePoints = connectorRouteAccessor(rerouteDiagramConnectorAction);
+        }
+
+        private void DumpMoves(List<LayoutActionGraph> layoutActionTrees)
         {
             Debug.WriteLine("-----------------------");
-
-            _depth = 0;
-            var searchAlgorithm = new DepthFirstSearchAlgorithm<ILayoutAction, ILayoutActionEdge>(layoutActionGraph);
-            searchAlgorithm.DiscoverVertex += OnDiscoverVertex;
-            searchAlgorithm.FinishVertex += OnFinishVertex;
-            searchAlgorithm.TreeEdge += OnTreeEdge;
-            searchAlgorithm.ForwardOrCrossEdge += OnForwardOrCrossEdge;
-            searchAlgorithm.Compute();
+            foreach (var layoutActionTree in layoutActionTrees)
+            {
+                _depth = 0;
+                var searchAlgorithm = new DepthFirstSearchAlgorithm<ILayoutAction, IEdge<ILayoutAction>>(layoutActionTree);
+                searchAlgorithm.DiscoverVertex += OnDiscoverVertex;
+                searchAlgorithm.FinishVertex += OnFinishVertex;
+                searchAlgorithm.TreeEdge += OnTreeEdge;
+                searchAlgorithm.ForwardOrCrossEdge += OnForwardOrCrossEdge;
+                searchAlgorithm.Compute();
+            }
         }
 
         private void OnForwardOrCrossEdge(IEdge<ILayoutAction> e)
         {
-            Debug.WriteLine($"{GetIndent()}ForwardOrCrossEdge to {e.Target}");
+            Debug.WriteLine($"{GetIndent()}--> {e.Target}");
         }
 
         private void OnTreeEdge(IEdge<ILayoutAction> edge)
@@ -181,7 +228,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _testDiagram.HideNode(_modelEntities[_nextToRemoveModelItemIndex]);
 
-            DumpMoves(_testDiagram.LastLayoutActionGraph);
+            DumpMoves(_layoutActionTreesForLastStep);
 
             _nextToRemoveModelItemIndex++;
         }
@@ -190,7 +237,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             var textWindow = new TextWindow();
             textWindow.DataContext = textWindow;
-            textWindow.Text = _testDiagram.LastLayoutActionGraph.Serialize();
+            textWindow.Text = _layoutActionTreesForLastStep.Last().Serialize();
             textWindow.Show();
         }
 

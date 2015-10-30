@@ -1,11 +1,8 @@
-﻿using System.Diagnostics;
-
-namespace Codartis.SoftVis.Geometry
+﻿namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// Represents a width + height pair.
     /// </summary>
-    [DebuggerDisplay("( {Width} x {Height} )")]
     public struct Size2D
     {
         public static readonly Size2D Empty = new Size2D(0, 0);
@@ -54,6 +51,11 @@ namespace Codartis.SoftVis.Geometry
         public static bool operator !=(Size2D left, Size2D right)
         {
             return !left.Equals(right);
+        }
+
+        public override string ToString()
+        {
+            return $"({Width:0.##}x{Height:0.##})";
         }
     }
 }

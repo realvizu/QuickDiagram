@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Codartis.SoftVis.Geometry
@@ -7,7 +6,6 @@ namespace Codartis.SoftVis.Geometry
     /// <summary>
     /// Represents a rectangle with a given position and size in 2D space.
     /// </summary>
-    [DebuggerDisplay("( {TopLeft.X}, {TopLeft.Y} )  ( {Size.Width}, {Size.Height} )")]
     public struct Rect2D
     {
         public static readonly Rect2D Empty = new Rect2D(0, 0, 0, 0);
@@ -158,5 +156,10 @@ namespace Codartis.SoftVis.Geometry
 
         public Rect2D WithMarginX(double horizontalMargin) => WithMargin(horizontalMargin, 0);
         public Rect2D WithMarginY(double verticalMargin) => WithMargin(0, verticalMargin);
+
+        public override string ToString()
+        {
+            return $"[TopLeft:{TopLeft}|Size:{Size}]";
+        }
     }
 }

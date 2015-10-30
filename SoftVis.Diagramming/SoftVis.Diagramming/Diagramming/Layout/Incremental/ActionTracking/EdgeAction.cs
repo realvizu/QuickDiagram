@@ -1,16 +1,17 @@
 using System;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 
-namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run that effects a LayoutEdge.
+    /// A layout action that affects a PositioningEdge.
     /// </summary>
-    internal class EdgeAction : LayoutAction, IEdgeAction
+    internal class EdgeAction : LayoutAction, IDiagramConnectorAction
     {
-        public LayoutEdge Edge { get; }
+        public PositioningEdge Edge { get; }
 
-        public EdgeAction(string action, LayoutEdge edge, double? amount = null)
-            :base(action, amount)
+        public EdgeAction(string action, PositioningEdge edge, double? amount = null, ILayoutAction causingLayoutAction = null)
+            :base(action, amount, causingLayoutAction)
         {
             if (edge == null) throw new ArgumentNullException(nameof(edge));
 

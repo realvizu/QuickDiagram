@@ -1,4 +1,6 @@
-﻿namespace Codartis.SoftVis.Geometry
+﻿using Codartis.SoftVis.Common;
+
+namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// Represents a point in 2D space.
@@ -8,8 +10,7 @@
         public double X { get; }
         public double Y { get; }
 
-        public static Point2D Zero = new Point2D(0, 0);
-        public static Point2D Extreme = new Point2D(double.NaN, double.NaN);
+        public static Point2D Empty = new Point2D(double.NaN, double.NaN);
 
         public Point2D(double x, double y)
         {
@@ -46,7 +47,7 @@
 
         public override string ToString()
         {
-            return $"( {X} , {Y} )";
+            return $"({X:0.##};{Y:0.##})";
         }
 
         public static bool operator ==(Point2D left, Point2D right)
@@ -77,6 +78,11 @@
         public static Point2D operator *(double multiplier, Point2D point)
         {
             return point * multiplier;
+        }
+
+        public bool IsEqualWithTolerance(Point2D point)
+        {
+            return X.IsEqualWithTolerance(point.X) && Y.IsEqualWithTolerance(point.Y);
         }
     }
 }

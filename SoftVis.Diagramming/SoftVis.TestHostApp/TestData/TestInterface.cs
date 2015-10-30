@@ -9,6 +9,6 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
         }
 
-        public override int Priority => 0;
+        public override int Priority => 1;
     }
 }

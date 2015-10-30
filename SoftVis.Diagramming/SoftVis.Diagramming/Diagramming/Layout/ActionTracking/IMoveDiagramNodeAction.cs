@@ -3,9 +3,9 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run that moves a vertex.
+    /// A layout action that moves a diagram node.
     /// </summary>
-    public interface IVertexMoveAction : IVertexAction
+    public interface IMoveDiagramNodeAction : IDiagramNodeAction
     {
         Point2D From { get; }
         Point2D To { get; }

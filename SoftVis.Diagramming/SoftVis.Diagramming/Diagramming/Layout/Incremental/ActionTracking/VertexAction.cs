@@ -1,16 +1,17 @@
 using System;
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 
-namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run that effects a LayoutVertex.
+    /// A layout action that affects a LayoutVertex.
     /// </summary>
-    internal class VertexAction : LayoutAction, IVertexAction
+    internal class VertexAction : LayoutAction
     {
-        public LayoutVertexBase Vertex { get; }
+        public PositioningVertexBase Vertex { get; }
 
-        public VertexAction(string action, LayoutVertexBase vertex, double? amount = null)
-            :base(action, amount)
+        public VertexAction(string action, PositioningVertexBase vertex, double? amount = null, ILayoutAction causingLayoutAction = null)
+            :base(action, amount, causingLayoutAction)
         {
             if (vertex == null) throw new ArgumentNullException(nameof(vertex));
 
@@ -18,7 +19,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
         }
 
         public override string SubjectName => Vertex.ToString();
-        public DiagramNode DiagramNode => (Vertex as DiagramNodeLayoutVertex)?.DiagramNode;
 
         private bool Equals(VertexAction other)
         {

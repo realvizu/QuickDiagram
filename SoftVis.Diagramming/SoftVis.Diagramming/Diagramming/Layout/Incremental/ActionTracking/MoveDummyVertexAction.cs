@@ -1,25 +1,26 @@
+using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Geometry;
 
-namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run that moves a LayoutVertex.
+    /// A layout action that moves a DummyPositioningVertex.
     /// </summary>
-    internal class VertexMoveAction : VertexAction, IVertexMoveAction
+    internal class MoveDummyVertexAction : VertexAction, IMoveVertexAction
     {
         public Point2D From { get; }
         public Point2D To { get; }
         public Point2D By { get; }
 
-        public VertexMoveAction(LayoutVertexBase vertex, Point2D @from, Point2D to)
-            : base("MoveVertex", vertex, to.X - @from.X)
+        public MoveDummyVertexAction(DummyPositioningVertex vertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
+            : base("MoveDummyVertex", vertex, to.X - @from.X, causingLayoutAction)
         {
             From = @from;
             To = to;
             By = To - From;
         }
 
-        private bool Equals(VertexMoveAction other)
+        private bool Equals(MoveDummyVertexAction other)
         {
             return base.Equals(other) && By.Equals(other.By);
         }
@@ -29,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((VertexMoveAction) obj);
+            return Equals((MoveDummyVertexAction) obj);
         }
 
         public override int GetHashCode()
@@ -40,14 +41,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
             }
         }
 
-        public static bool operator ==(VertexMoveAction left, VertexMoveAction right)
+        public static bool operator ==(MoveDummyVertexAction left, MoveDummyVertexAction right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(VertexMoveAction left, VertexMoveAction right)
+        public static bool operator !=(MoveDummyVertexAction left, MoveDummyVertexAction right)
         {
             return !Equals(left, right);
+        }
+
+        public override string ToString()
+        {
+            return $"{Action} ({SubjectName}) to {To}";
         }
     }
 }

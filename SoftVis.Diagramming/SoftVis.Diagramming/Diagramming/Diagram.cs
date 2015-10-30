@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
+using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Layout;
@@ -17,29 +18,14 @@ namespace Codartis.SoftVis.Diagramming
     /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
     /// A diagram consists of shapes that represent model elements.
     /// The shapes form a directed graph: some shapes are nodes in the graph and others are connectors between nodes.
-    /// The layout of the shapes (relative positions and size) also conveys meaning.
+    /// A diagram has a layout engine that calculates how to arrange nodes and connectors.
+    /// The layout (relative positions and size) also conveys meaning.
     /// </summary>
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
-    public abstract class Diagram
+    public abstract class Diagram : LayoutActionEventSource
     {
-        protected static readonly Point2D DefaultNodePosition = Point2D.Zero;
-
-        protected static readonly double MinimumNodeWidth = 40;
-        protected static readonly double DefaultNodeWidth = 100;
-        protected static readonly double MaximumNodeWidth = 250;
-        protected static readonly double MinimumNodeHeight = 20;
-        protected static readonly double DefaultNodeHeight = 38;
-        protected static readonly double MaximumNodeHeight = 50;
-
-        protected static readonly Size2D DefaultNodeSize = new Size2D(DefaultNodeWidth, DefaultNodeHeight);
-
-        private readonly DiagramGraph _graph = new DiagramGraph();
-
-        public ILayoutActionGraph LastLayoutActionGraph => _graph.LastLayoutActionGraph;
-        public int TotalVertexMoveCount => _graph.TotalVertexMoveCount;
-
-        public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
-        public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
+        private readonly DiagramGraph _graph;
+        private readonly IncrementalLayoutEngine _layoutEngine;
 
         public event EventHandler<DiagramShape> ShapeAdded;
         public event EventHandler<DiagramShape> ShapeModified;
@@ -47,7 +33,31 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeSelected;
         public event EventHandler<DiagramShape> ShapeActivated;
         public event EventHandler Cleared;
-         
+
+        protected Diagram()
+        {
+            _graph = new DiagramGraph();
+
+            _layoutEngine = new IncrementalLayoutEngine(_graph);
+            _layoutEngine.LayoutActionExecuted += OnLayoutActionExecuted;
+        }
+
+        private void OnLayoutActionExecuted(object sender, ILayoutAction layoutAction)
+        {
+            var diagramNodeMoveAction = layoutAction as IMoveDiagramNodeAction;
+            if (diagramNodeMoveAction?.DiagramNode != null)
+                diagramNodeMoveAction.DiagramNode.Center = diagramNodeMoveAction.To;
+
+            var diagramConnectorRerouteAction = layoutAction as IRerouteDiagramConnectorAction;
+            if (diagramConnectorRerouteAction?.DiagramConnector != null)
+                diagramConnectorRerouteAction.DiagramConnector.RoutePoints = diagramConnectorRerouteAction.NewRoute;
+
+            RaiseLayoutAction(sender, layoutAction);
+        }
+
+        public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
+        public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
+
         /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
@@ -57,9 +67,10 @@ namespace Codartis.SoftVis.Diagramming
             if (NodeExists(modelEntity))
                 return;
 
-            var node = CreateDiagramNode(modelEntity);
-            _graph.AddVertex(node);
-            OnShapeAdded(node);
+            var diagramNode = CreateDiagramNode(modelEntity);
+            _graph.AddVertex(diagramNode);
+
+            OnShapeAdded(diagramNode);
         }
 
         /// <summary>
@@ -73,9 +84,10 @@ namespace Codartis.SoftVis.Diagramming
                 !NodeExists(modelRelationship.Target))
                 return;
 
-            var connector = CreateDiagramConnector(modelRelationship);
-            _graph.AddEdge(connector);
-            OnShapeAdded(connector);
+            var diagramConnector = CreateDiagramConnector(modelRelationship);
+            _graph.AddEdge(diagramConnector);
+
+            OnShapeAdded(diagramConnector);
 
             HideRedundantDirectEdges();
         }
@@ -95,6 +107,7 @@ namespace Codartis.SoftVis.Diagramming
                 HideConnector(connector.ModelRelationship);
 
             _graph.RemoveVertex(diagramNode);
+
             OnShapeRemoved(diagramNode);
         }
 
@@ -107,9 +120,10 @@ namespace Codartis.SoftVis.Diagramming
             if (!ConnectorExists(modelRelationship))
                 return;
 
-            var connector = FindConnector(modelRelationship);
-            _graph.RemoveEdge(connector);
-            OnShapeRemoved(connector);
+            var diagramConnector = FindConnector(modelRelationship);
+            _graph.RemoveEdge(diagramConnector);
+
+            OnShapeRemoved(diagramConnector);
         }
 
         /// <summary>
@@ -137,9 +151,7 @@ namespace Codartis.SoftVis.Diagramming
         }
 
         protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
-
         protected abstract DiagramConnector CreateDiagramConnector(IModelRelationship relationship);
-
 
         private void HideRedundantDirectEdges()
         {

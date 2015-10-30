@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -12,16 +15,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </remarks>
     internal abstract class PositioningVertexBase : IRect, IComparable<PositioningVertexBase>
     {
-        public Point2D Center { get; set; }
-        public int LayerIndex { get; set; }
+        private readonly PositioningGraph _graph;
         public bool IsFloating { get; set; }
+        public Point2D Center { get; set; }
 
-        protected PositioningVertexBase(int layerIndex, bool isFloating)
+        protected PositioningVertexBase(PositioningGraph graph, bool isFloating)
         {
-            LayerIndex = layerIndex;
+            _graph = graph;
             IsFloating = isFloating;
+            Center = Point2D.Empty;
         }
 
+        public abstract string Name { get; }
         public abstract int Priority { get; }
         public abstract double Width { get; }
         public abstract double Height { get; }
@@ -33,7 +38,53 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public double Bottom => Rect.Bottom;
 
         public abstract int CompareTo(PositioningVertexBase other);
-
         public bool Precedes(PositioningVertexBase otherVertex) => otherVertex != null && CompareTo(otherVertex) < 0;
+
+        public void FloatPrimaryTree() => ExecuteOnPrimaryDescendantVertices(i => i.IsFloating = true);
+
+        public IEnumerable<PositioningEdge> InEdges => _graph.InEdges(this);
+        public IEnumerable<PositioningEdge> OutEdges => _graph.OutEdges(this);
+        public IEnumerable<PositioningEdge> AllEdges => _graph.GetAllEdges(this);
+
+        public IEnumerable<PositioningVertexBase> GetParents() => _graph.GetParents(this);
+        public PositioningVertexBase GetPrimaryParent() => _graph.GetPrimaryParent(this);
+        public IEnumerable<PositioningVertexBase> GetNonPrimaryParents() => _graph.GetNonPrimaryParents(this);
+        public IEnumerable<PositioningVertexBase> GetChildren() => _graph.GetChildren(this);
+        public IEnumerable<PositioningVertexBase> GetPrimaryChildren() => _graph.GetPrimaryChildren(this);
+        public IEnumerable<PositioningVertexBase> GetPrimaryPositionedChildren() => _graph.GetPrimaryPositionedChildren(this);
+        public IEnumerable<PositioningVertexBase> GetPrimarySiblings() => _graph.GetPrimarySiblings(this);
+        public void ExecuteOnPrimaryDescendantVertices(Action<PositioningVertexBase> action) => _graph.ExecuteOnPrimaryDescendantVertices(this, action);
+
+        public bool HasPrimarySiblingsInSameLayer()
+        {
+            return GetPrimarySiblings().Any(i => i.LayerIndex == LayerIndex);
+        }
+
+        public bool IsPrimarySiblingOf(PositioningVertexBase layoutVertex)
+        {
+            return layoutVertex != null && GetPrimaryParent() == layoutVertex.GetPrimaryParent();
+        }
+
+        public PositioningVertexLayer GetLayer() => _graph.GetLayer(this);
+        public int LayerIndex => _graph.GetLayerIndex(this);
+        public virtual int NonDummyLayerIndex => LayerIndex;
+        public PositioningVertexBase GetPreviousInLayer() => GetLayer().GetPrevious(this);
+        public PositioningVertexBase GetNextInLayer() => GetLayer().GetNext(this);
+        public int GetIndexInLayer() => GetLayer().IndexOf(this);
+        public IEnumerable<PositioningVertexBase> GetOtherPositionedVerticesInLayer() => GetLayer().Where(i => i != this && !i.IsFloating);
+        public bool IsLayerItemIndexValid => GetLayer().IsItemIndexValid(this);
+        public bool IsLayerIndexValid => LayerIndex > OutEdges.Select(i => i.Source.LayerIndex).Max();
+
+        public PositioningVertexBase GetPreviousSiblingInLayer()
+        {
+            var previousVertex = GetPreviousInLayer();
+            return IsPrimarySiblingOf(previousVertex) ? previousVertex : null;
+        }
+
+        public PositioningVertexBase GetNextSiblingInLayer()
+        {
+            var nextVertex = GetNextInLayer();
+            return IsPrimarySiblingOf(nextVertex) ? nextVertex : null;
+        }
     }
 }

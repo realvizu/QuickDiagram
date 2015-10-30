@@ -1,9 +1,9 @@
 namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run that effects a vertex.
+    /// A layout action that affects a diagram node.
     /// </summary>
-    public interface IVertexAction : ILayoutAction
+    public interface IDiagramNodeAction : ILayoutAction
     {
         DiagramNode DiagramNode { get; }
     }

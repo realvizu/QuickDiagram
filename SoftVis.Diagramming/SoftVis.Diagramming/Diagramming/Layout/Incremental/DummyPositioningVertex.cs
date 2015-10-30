@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
@@ -12,8 +13,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private static int _nextId = 1;
         private readonly int _id;
 
-        public DummyPositioningVertex(int layerIndex, bool isFloating)
-            :base(layerIndex, isFloating)
+        public DummyPositioningVertex(PositioningGraph graph, bool isFloating)
+            :base(graph, isFloating)
         {
             lock (typeof (DummyPositioningVertex))
             {
@@ -22,10 +23,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
-        public override int Priority => 0;
+        public override string Name => ToString();
+        public override int Priority => OutEdges.FirstOrDefault()?.Target.Priority ?? 0;
         public override double Width => 0d;
         public override double Height => 0d;
         public override Size2D Size => Size2D.Empty;
+        public override int NonDummyLayerIndex => OutEdges.FirstOrDefault()?.Target.LayerIndex ?? LayerIndex;
 
         public override int CompareTo(PositioningVertexBase other)
         {
@@ -37,7 +40,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public override string ToString()
         {
-            return $"(dummy #{_id})";
+            return $"Dummy#{_id}";
         }
     }
 }

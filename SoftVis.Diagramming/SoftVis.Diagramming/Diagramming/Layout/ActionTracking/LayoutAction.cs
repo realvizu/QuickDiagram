@@ -1,21 +1,23 @@
 using System;
 
-namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking.Implementation
+namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run.
+    /// An action performed by the layout logic.
     /// </summary>
     internal class LayoutAction : ILayoutAction
     {
         public string Action { get; }
         public double? Amount { get; }
+        public ILayoutAction CausingLayoutAction { get; }
 
-        public LayoutAction(string action, double? amount = null)
+        public LayoutAction(string action, double? amount = null, ILayoutAction causingLayoutAction = null)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
 
             Action = action;
             Amount = amount;
+            CausingLayoutAction = causingLayoutAction;
         }
 
         public virtual string SubjectName => string.Empty;

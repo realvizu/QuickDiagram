@@ -13,9 +13,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
     {
         protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
         {
-            var width = Math.Min(Math.Max(modelEntity.Name.Length * 10, MinimumNodeWidth), MaximumNodeWidth);
-            var size = new Size2D(width, DefaultNodeHeight);
-            return new DiagramNodeViewModel(modelEntity, DefaultNodePosition, size);
+            var atLeastMinimalWidth = Math.Max(modelEntity.Name.Length * 10, DiagramDefaults.MinimumNodeWidth);
+            var width = Math.Min(atLeastMinimalWidth, DiagramDefaults.MaximumNodeWidth);
+            var size = new Size2D(width, DiagramDefaults.DefaultNodeHeight);
+            return new DiagramNodeViewModel(modelEntity, DiagramDefaults.DefaultNodePosition, size);
         }
 
         protected override DiagramConnector CreateDiagramConnector(IModelRelationship relationship)

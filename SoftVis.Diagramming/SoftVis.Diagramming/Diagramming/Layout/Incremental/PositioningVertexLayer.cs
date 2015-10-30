@@ -4,30 +4,30 @@ using System.Linq;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
 
-namespace Codartis.SoftVis.Diagramming.Layout
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// An ordered list of layout vertices that belong to the same horizontal layer.
+    /// An ordered list of positioning vertices that belong to the same horizontal layer.
     /// </summary>
     /// <remarks>
-    /// Ordering is based on LayoutVertex' CompareTo implementation (node name).
+    /// Ordering is based on the vertices' CompareTo implementation (node name).
     /// </remarks>
-    internal class LayoutVertexLayer : IEnumerable<LayoutVertexBase>
+    internal class PositioningVertexLayer : IReadOnlyPositioningVertexLayer
     {
+        private readonly List<PositioningVertexBase> _items;
         public int LayerIndex { get; }
         public double Top { get; set; }
-        private readonly List<LayoutVertexBase> _items;
 
-        internal LayoutVertexLayer(int layerIndex)
+        internal PositioningVertexLayer(int layerIndex)
         {
             LayerIndex = layerIndex;
-            _items = new List<LayoutVertexBase>();
+            _items = new List<PositioningVertexBase>();
         }
 
-        public LayoutVertexBase this[int i] => _items[i];
+        public PositioningVertexBase this[int i] => _items[i];
         public int Count => _items.Count;
-        public int IndexOf(LayoutVertexBase layoutVertex) => _items.IndexOf(layoutVertex);
-        public IEnumerator<LayoutVertexBase> GetEnumerator() => _items.GetEnumerator();
+        public int IndexOf(PositioningVertexBase vertex) => _items.IndexOf(vertex);
+        public IEnumerator<PositioningVertexBase> GetEnumerator() => _items.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 
         public double Height => _items.Count == 0 ? 0 : _items.Max(i => i.Height);
@@ -35,46 +35,46 @@ namespace Codartis.SoftVis.Diagramming.Layout
         public double CenterY => Top + Height / 2;
         public Rect2D Rect => _items.Where(i => !i.IsFloating).Select(i => i.Rect).Union();
 
-        public void Add(LayoutVertexBase layoutVertex)
+        public void Add(PositioningVertexBase vertex)
         {
-            var itemIndex = DetermineItemIndex(layoutVertex);
-            _items.Insert(itemIndex, layoutVertex);
+            var itemIndex = DetermineItemIndex(vertex);
+            _items.Insert(itemIndex, vertex);
         }
 
-        public void Remove(LayoutVertexBase layoutVertex)
+        public void Remove(PositioningVertexBase vertex)
         {
-            _items.Remove(layoutVertex);
+            _items.Remove(vertex);
         }
 
-        public LayoutVertexBase GetPrevious(LayoutVertexBase layoutVertex)
+        public PositioningVertexBase GetPrevious(PositioningVertexBase vertex)
         {
-            var index = _items.IndexOf(layoutVertex);
+            var index = _items.IndexOf(vertex);
             return index == 0 ? null : _items[index - 1];
         }
 
-        public LayoutVertexBase GetNext(LayoutVertexBase layoutVertex)
+        public PositioningVertexBase GetNext(PositioningVertexBase vertex)
         {
-            var index = _items.IndexOf(layoutVertex);
+            var index = _items.IndexOf(vertex);
             return index == Count - 1 ? null : _items[index + 1];
         }
 
-        public bool IsItemIndexValid(LayoutVertexBase layoutVertex)
+        public bool IsItemIndexValid(PositioningVertexBase vertex)
         {
-            return IndexOf(layoutVertex) == DetermineItemIndex(layoutVertex);
+            return IndexOf(vertex) == DetermineItemIndex(vertex);
         }
 
-        private int DetermineItemIndex(LayoutVertexBase insertedVertex)
+        private int DetermineItemIndex(PositioningVertexBase vertex)
         {
-            var insertedVertexParent = insertedVertex.GetPrimaryParent();
+            var insertedVertexParent = vertex.GetPrimaryParent();
             var insertedVertexParentIndexInLayer = insertedVertexParent?.GetIndexInLayer();
 
             var index = 0;
-            foreach (var existingVertex in _items.Except(insertedVertex.ToEnumerable()))
+            foreach (var existingVertex in _items.Except(vertex.ToEnumerable()))
             {
                 var existingVertexParent = existingVertex.GetPrimaryParent();
 
                 var noParentOrSameParent = insertedVertexParent == null || existingVertexParent == insertedVertexParent;
-                if (noParentOrSameParent && insertedVertex.Precedes(existingVertex))
+                if (noParentOrSameParent && vertex.Precedes(existingVertex))
                     break;
 
                 var differentParents = insertedVertexParent != null && existingVertexParent != insertedVertexParent;

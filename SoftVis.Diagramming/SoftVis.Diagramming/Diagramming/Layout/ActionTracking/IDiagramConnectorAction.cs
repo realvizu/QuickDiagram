@@ -1,9 +1,9 @@
 namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
 {
     /// <summary>
-    /// An action of a layout logic run that effects an edge.
+    /// A layout action that affects a diagram connector.
     /// </summary>
-    public interface IEdgeAction : ILayoutAction
+    public interface IDiagramConnectorAction : ILayoutAction
     {
         DiagramConnector DiagramConnector { get; }
     }

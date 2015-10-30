@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 
 namespace Codartis.SoftVis.Geometry
 {
@@ -77,6 +78,11 @@ namespace Codartis.SoftVis.Geometry
         public static bool operator !=(Route left, Route right)
         {
             return !Equals(left, right);
+        }
+
+        public override string ToString()
+        {
+            return $"[{_routePoints.ToDelimitedString("->")}]";
         }
     }
 }

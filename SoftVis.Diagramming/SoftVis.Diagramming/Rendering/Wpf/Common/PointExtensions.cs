@@ -23,10 +23,5 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common
 
             return new Rect(new Point(left, top), new Point(right, bottom));
         }
-
-        public static string ToOneString(this IEnumerable<Point> points)
-        {
-            return points.Aggregate("", (s, p) => s += p.ToString() + " | ");
-        }
     }
 }

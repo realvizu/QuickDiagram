@@ -8,14 +8,61 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// A graph created for vertex position calculation.
-    /// It has two types of vertices: some represent diagram nodes, others are dummies introduced to 
-    /// break long edges so all edges span only 2 layers.
     /// </summary>
-    internal sealed class PositioningGraph : BidirectionalGraph<PositioningVertexBase, PositioningEdge>
+    /// <remarks>
+    /// It has two types of vertices: some represent diagram nodes, others are dummies introduced to 
+    /// break long edges so all edges span exactly 2 layers.
+    /// </remarks>
+    internal sealed class PositioningGraph : BidirectionalGraph<PositioningVertexBase, PositioningEdge>,
+        IReadOnlyPositioningGraph
     {
-        public PositioningGraph() 
+        private readonly PositioningVertexLayers _vertexLayers;
+
+        public PositioningGraph(double horizontalGap, double verticalGap) 
             : base(allowParallelEdges: false)
         {
+            _vertexLayers = new PositioningVertexLayers(verticalGap);
+
+            Cleared += OnCleared;
+        }
+
+        public IEnumerable<IReadOnlyPositioningVertexLayer> Layers => _vertexLayers;
+
+        private void OnCleared(object sender, EventArgs args)
+        {
+            _vertexLayers.Clear();
+        }
+
+        public override bool AddVertex(PositioningVertexBase vertex)
+        {
+            var isAdded = base.AddVertex(vertex);
+            if (isAdded)
+                _vertexLayers.AddVertex(vertex);
+            
+            return isAdded;
+        }
+
+        public override bool RemoveVertex(PositioningVertexBase vertex)
+        {
+            var isRemoved = base.RemoveVertex(vertex);
+            if (isRemoved)
+                _vertexLayers.RemoveVertex(vertex);
+            
+            return isRemoved;
+        }
+
+        public override bool AddEdge(PositioningEdge edge)
+        {
+            var isAdded = base.AddEdge(edge);
+            if (isAdded)
+                edge.ExecuteOnDescendantEdges(i => _vertexLayers.EnsureValidLayering(i.Source, i.Target));
+            
+            return isAdded;
+        }
+
+        public override bool RemoveEdge(PositioningEdge edge)
+        {
+            return base.RemoveEdge(edge);
         }
 
         public void AddPath(PositioningEdgePath path)
@@ -25,45 +72,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             foreach (var edge in path)
                 AddEdge(edge);
-
-            path.EdgeAdded += OnPathEdgeAdded;
-            path.EdgeRemoved += OnPathEdgeRemoved;
-            path.InterimVertexAdded += OnPathInterimVertexAdded;
-            path.InterimVertexRemoved += OnPathInterimVertexRemoved;
         }
 
         public void RemovePath(PositioningEdgePath path)
         {
-            path.EdgeAdded -= OnPathEdgeAdded;
-            path.EdgeRemoved -= OnPathEdgeRemoved;
-            path.InterimVertexAdded -= OnPathInterimVertexAdded;
-            path.InterimVertexRemoved -= OnPathInterimVertexRemoved;
-
             foreach (var edge in path)
                 RemoveEdge(edge);
 
             foreach (var interimVertex in path.InterimVertices)
                 RemoveVertex(interimVertex);
-        }
-
-        private void OnPathEdgeAdded(object sender, PositioningEdge edge)
-        {
-            AddEdge(edge);
-        }
-
-        private void OnPathEdgeRemoved(object sender, PositioningEdge edge)
-        {
-            RemoveEdge(edge);
-        }
-
-        private void OnPathInterimVertexAdded(object sender, DummyPositioningVertex vertex)
-        {
-            AddVertex(vertex);
-        }
-
-        private void OnPathInterimVertexRemoved(object sender, DummyPositioningVertex vertex)
-        {
-            RemoveVertex(vertex);
         }
 
         public IEnumerable<PositioningVertexBase> GetParents(PositioningVertexBase vertex)
@@ -127,12 +144,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private IEnumerable<PositioningVertexBase> GetOrderedParents(PositioningVertexBase vertex)
         {
-            var layerIndex = vertex.LayerIndex;
+            var nonDummyLayerIndex = vertex.NonDummyLayerIndex;
 
             return GetParents(vertex)
                 .OrderByDescending(i => i.Priority)
-                .ThenBy(i => layerIndex - i.LayerIndex)
+                .ThenBy(i => nonDummyLayerIndex - i.NonDummyLayerIndex)
                 .ThenBy(i => i.ToString());
         }
+
+        public PositioningVertexLayer GetLayer(PositioningVertexBase vertex) => _vertexLayers.GetLayer(vertex);
+        public int GetLayerIndex(PositioningVertexBase vertex) => _vertexLayers.GetLayerIndex(vertex);
     }
 }
