@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Common;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
@@ -54,15 +55,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             RemoveVertexFromLayer(vertex, layerIndex);
         }
 
-        public void EnsureValidLayering(PositioningVertexBase childVertex, PositioningVertexBase parentVertex)
+        public void EnsureValidLayering(PositioningVertexBase vertex)
         {
-            var childLayerIndex = GetLayerIndex(childVertex);
-            var parentLayerIndex = GetLayerIndex(parentVertex);
+            var targetLayerIndex = vertex.GetParents().Select(i => i.LayerIndex).DefaultIfEmpty(-1).Max() + 1;
 
-            if (childLayerIndex > parentLayerIndex)
-                EnsureValidItemOrder(childVertex);
-            else if (childVertex is DummyPositioningVertex || parentVertex is DiagramNodePositioningVertex)
-                MoveVertex(childVertex, parentLayerIndex + 1);
+            if (vertex.LayerIndex != targetLayerIndex)
+                MoveVertex(vertex, targetLayerIndex);
+            else
+                EnsureValidItemOrder(vertex);
         }
 
         private void MoveVertex(PositioningVertexBase vertex, int toLayerIndex)
@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             if (vertex.IsLayerItemIndexValid)
                 return;
-            
+
             var layer = GetLayer(vertex);
             layer.Remove(vertex);
             layer.Add(vertex);

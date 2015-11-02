@@ -136,21 +136,36 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddBase("12", "20")
                 .AddBase("20", "11")
 
-                .AddInterface("BaseInterface")
-                .AddInterface("MyInterface1", baseName: "BaseInterface")
-                .AddInterface("MyInterface2", baseName: "BaseInterface")
-                .AddInterface("MyInterface3", baseName: "BaseInterface")
-                .AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
+                // Regression test: layer-assignment of dummy vertices should be finished before positioning, 
+                // otherwise it causes an infinite cycle in the layout logic
+                .AddInterface("A1")
+                .AddInterface("A2", 50, "A1")
+                .AddInterface("A3", 50, "A2")
+                .AddInterface("A4", 50, "A2")
+                .AddInterface("A5", 50, "A2")
+                .AddInterface("A6", 50, "A5")
+                .AddClass("C1")
+                .AddClass("C2", 50, "C1")
+                .AddClass("C3", 50, "C1")
+                .AddImplements("C1", "A3")
+                .AddClass("C0")
+                .AddBase("C1", "C0")
 
-                .AddClass("BaseClass")
-                .AddClass("MyClass", baseName: "BaseClass")
-                .AddClass("Child1", baseName: "MyClass")
-                .AddClass("Child2", baseName: "MyClass")
-                .AddClass("Child3", baseName: "BaseClass")
-                .AddClass("Child1OfChild1WithLongName", baseName: "Child1")
+                //.AddInterface("BaseInterface")
+                //.AddInterface("MyInterface1", baseName: "BaseInterface")
+                //.AddInterface("MyInterface2", baseName: "BaseInterface")
+                //.AddInterface("MyInterface3", baseName: "BaseInterface")
+                //.AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
 
-                .AddClass("ForeverAlone")
-                .AddClass("ForeverAlone2")
+                //.AddClass("BaseClass")
+                //.AddClass("MyClass", baseName: "BaseClass")
+                //.AddClass("Child1", baseName: "MyClass")
+                //.AddClass("Child2", baseName: "MyClass")
+                //.AddClass("Child3", baseName: "BaseClass")
+                //.AddClass("Child1OfChild1WithLongName", baseName: "Child1")
+
+                //.AddClass("ForeverAlone")
+                //.AddClass("ForeverAlone2")
 
                 //// Loop
                 //.AddInterface("Loop")
@@ -173,14 +188,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 //.AddInterface("Circle4", baseName: "Circle1")
 
                 // Edge-crossings
-                .AddClass("Child1", baseName: "BaseInterface")
-                .AddClass("Child3", baseName: "BaseInterface")
-                .AddClass("Child1", baseName: "MyInterface3")
+                //.AddClass("Child1", baseName: "BaseInterface")
+                //.AddClass("Child3", baseName: "BaseInterface")
+                //.AddClass("Child1", baseName: "MyInterface3")
                 //.AddClass("Child3", baseName: "Circle4")
                 //.AddClass("MyInterface3", baseName: "Circle2")
 
-                .AddInterface("IntermediateInterface", baseName: "BaseInterface")
-                .AddBase("MyInterface1", "IntermediateInterface")
+                //.AddInterface("IntermediateInterface", baseName: "BaseInterface")
+                //.AddBase("MyInterface1", "IntermediateInterface")
 
                 ;
         }

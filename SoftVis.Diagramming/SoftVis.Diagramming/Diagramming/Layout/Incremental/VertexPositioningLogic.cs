@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             CompactSiblings(siblings, layoutVertex, layoutAction);
         }
 
-        public void CenterParents(PositioningVertexBase layoutVertex, ILayoutAction causingAction)
+        public void CenterPrimaryParent(PositioningVertexBase layoutVertex, ILayoutAction causingAction)
         {
             var parentVertex = layoutVertex.GetPrimaryParent();
             if (parentVertex == null)
@@ -64,10 +64,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             if (parentTargetCenterX.IsEqualWithTolerance(parentVertex.Center.X))
                 return;
 
-            var layoutAction = RaiseVertexLayoutAction("CenterParent", layoutVertex, causingAction);
+            var layoutAction = RaiseVertexLayoutAction("CenterPrimaryParent", layoutVertex, causingAction);
 
             MoveVertexTo(parentVertex, parentTargetCenterX, layoutAction);
-            CenterParents(parentVertex, layoutAction);
+            CenterPrimaryParent(parentVertex, layoutAction);
 
             // TODO: how to place non-primary parents?
         }
@@ -128,13 +128,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private double GetNonRootVertexInsertionCenterX(PositioningVertexBase childVertex, PositioningVertexBase parentVertex)
         {
-            if (!childVertex.HasPrimarySiblingsInSameLayer())
+            if (!childVertex.HasPlacedPrimarySiblingsInSameLayer())
                 return parentVertex.Center.X;
 
-            var previousSibling = childVertex.GetPreviousSiblingInLayer();
-            var nextSibling = childVertex.GetNextSiblingInLayer();
+            var previousPlacedSibling = childVertex.GetPreviousPlacedSiblingInLayer();
+            var nextPlacedSibling = childVertex.GetNextPlacedSiblingInLayer();
 
-            return CalculateInsertionCenterXFromNeighbours(childVertex, previousSibling, nextSibling);
+            return CalculateInsertionCenterXFromNeighbours(childVertex, previousPlacedSibling, nextPlacedSibling);
         }
 
         private double CalculateInsertionCenterXFromNeighbours(PositioningVertexBase insertedVertex,
@@ -148,52 +148,61 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 : previousSibling.Right + _horizontalGap + insertedVertex.Width / 2;
         }
 
-        private ILayoutAction MoveTreeTo(PositioningVertexBase rootVertex, double targetCenterX,
-            ILayoutAction causingAction)
-        {
-            if (rootVertex.Center == Point2D.Empty)
-            {
-                rootVertex.ExecuteOnPrimaryDescendantVertices(i => MoveVertexTo(i, targetCenterX, causingAction));
-                return causingAction;
-            }
-
-            return MoveTreeBy(rootVertex, targetCenterX - rootVertex.Center.X, causingAction);
-        }
-
-        private ILayoutAction MoveTreeBy(PositioningVertexBase rootVertex, double translateVectorX,
+        private void MoveTreeTo(PositioningVertexBase rootVertex, double targetCenterX,
             ILayoutAction causingAction)
         {
             rootVertex.FloatPrimaryTree();
 
-            var layoutAction = RaiseVertexLayoutAction("MoveTree", rootVertex, translateVectorX, causingAction);
+            var layoutAction = RaiseVertexLayoutAction("MoveTreeTo", rootVertex, targetCenterX, causingAction);
+
+            if (rootVertex.Center != Point2D.Empty)
+            {
+                MoveTreeBy(rootVertex, targetCenterX - rootVertex.Center.X, layoutAction);
+            }
+            else
+            {
+                MoveVertexTo(rootVertex, targetCenterX, layoutAction);
+                foreach (var primaryChild in rootVertex.GetPrimaryChildren())
+                    MoveTreeTo(primaryChild, targetCenterX, layoutAction);
+            }
+        }
+
+        private void MoveTreeBy(PositioningVertexBase rootVertex, double translateVectorX,
+            ILayoutAction causingAction)
+        {
+            if (rootVertex.Center == Point2D.Empty)
+                throw new InvalidOperationException("Tree cannot be moved relatively when the root's center is not yet calculated.");
+
+            rootVertex.FloatPrimaryTree();
+
+            var layoutAction = RaiseVertexLayoutAction("MoveTreeBy", rootVertex, translateVectorX, causingAction);
 
             rootVertex.ExecuteOnPrimaryDescendantVertices(i => MoveVertexBy(i, translateVectorX, layoutAction));
 
-            CenterParents(rootVertex, layoutAction);
-
-            return layoutAction;
+            CenterPrimaryParent(rootVertex, layoutAction);
         }
 
-        private ILayoutAction MoveVertexBy(PositioningVertexBase movingVertex, double translateVectorX, ILayoutAction causingAction)
+        private void MoveVertexBy(PositioningVertexBase movingVertex, double translateVectorX, ILayoutAction causingAction)
         {
-            return movingVertex.Center == Point2D.Empty
-                ? MoveVertexTo(movingVertex, translateVectorX, causingAction)
-                : MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, causingAction);
+            if (movingVertex.Center == Point2D.Empty)
+                return;
+
+            MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, causingAction);
         }
 
-        private ILayoutAction MoveVertexTo(PositioningVertexBase movingVertex, double newCenterX, ILayoutAction causingAction)
+        private void MoveVertexTo(PositioningVertexBase movingVertex, double newCenterX, ILayoutAction causingAction)
         {
             var newCenter = new Point2D(newCenterX, movingVertex.GetLayer().CenterY);
-            return MoveVertexTo(movingVertex, newCenter, causingAction);
+            MoveVertexTo(movingVertex, newCenter, causingAction);
         }
 
-        private ILayoutAction MoveVertexTo(PositioningVertexBase movingVertex, Point2D newCenter, ILayoutAction causingAction)
+        private void MoveVertexTo(PositioningVertexBase movingVertex, Point2D newCenter, ILayoutAction causingAction)
         {
             movingVertex.IsFloating = false;
 
             var oldCenter = movingVertex.Center;
             if (oldCenter.IsEqualWithTolerance(newCenter))
-                return null;
+                return;
 
             movingVertex.Center = newCenter;
             var layoutAction = RaiseVertexMoveLayoutAction(movingVertex, oldCenter, newCenter, causingAction);
@@ -202,13 +211,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             {
                 // TODO: find best empty place instead of push?
                 Debug.WriteLine("***** Move cycle detected, pushing omitted.");
+                Debugger.Break();
             }
             else
             {
                 PushOtherVerticesFromTheWay(movingVertex, layoutAction);
             }
-
-            return layoutAction;
         }
 
         private void PushOtherVerticesFromTheWay(PositioningVertexBase pushyVertex, ILayoutAction causingAction)

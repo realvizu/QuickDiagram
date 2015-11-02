@@ -53,16 +53,17 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public IEnumerable<PositioningVertexBase> GetPrimaryChildren() => _graph.GetPrimaryChildren(this);
         public IEnumerable<PositioningVertexBase> GetPrimaryPositionedChildren() => _graph.GetPrimaryPositionedChildren(this);
         public IEnumerable<PositioningVertexBase> GetPrimarySiblings() => _graph.GetPrimarySiblings(this);
+        public IEnumerable<PositioningVertexBase> GetPlacedPrimarySiblings() => GetPrimarySiblings().Where(i => !i.IsFloating);
         public void ExecuteOnPrimaryDescendantVertices(Action<PositioningVertexBase> action) => _graph.ExecuteOnPrimaryDescendantVertices(this, action);
 
-        public bool HasPrimarySiblingsInSameLayer()
+        public bool HasPlacedPrimarySiblingsInSameLayer()
         {
-            return GetPrimarySiblings().Any(i => i.LayerIndex == LayerIndex);
+            return GetPlacedPrimarySiblings().Any(i => i.LayerIndex == LayerIndex);
         }
 
-        public bool IsPrimarySiblingOf(PositioningVertexBase layoutVertex)
+        public bool IsPlacedPrimarySiblingOf(PositioningVertexBase layoutVertex)
         {
-            return layoutVertex != null && GetPrimaryParent() == layoutVertex.GetPrimaryParent();
+            return layoutVertex != null && !layoutVertex.IsFloating && GetPrimaryParent() == layoutVertex.GetPrimaryParent();
         }
 
         public PositioningVertexLayer GetLayer() => _graph.GetLayer(this);
@@ -75,16 +76,16 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public bool IsLayerItemIndexValid => GetLayer().IsItemIndexValid(this);
         public bool IsLayerIndexValid => LayerIndex > OutEdges.Select(i => i.Source.LayerIndex).Max();
 
-        public PositioningVertexBase GetPreviousSiblingInLayer()
+        public PositioningVertexBase GetPreviousPlacedSiblingInLayer()
         {
             var previousVertex = GetPreviousInLayer();
-            return IsPrimarySiblingOf(previousVertex) ? previousVertex : null;
+            return IsPlacedPrimarySiblingOf(previousVertex) ? previousVertex : null;
         }
 
-        public PositioningVertexBase GetNextSiblingInLayer()
+        public PositioningVertexBase GetNextPlacedSiblingInLayer()
         {
             var nextVertex = GetNextInLayer();
-            return IsPrimarySiblingOf(nextVertex) ? nextVertex : null;
+            return IsPlacedPrimarySiblingOf(nextVertex) ? nextVertex : null;
         }
     }
 }

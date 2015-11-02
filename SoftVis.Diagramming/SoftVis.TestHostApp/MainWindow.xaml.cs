@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
 using QuickGraph;

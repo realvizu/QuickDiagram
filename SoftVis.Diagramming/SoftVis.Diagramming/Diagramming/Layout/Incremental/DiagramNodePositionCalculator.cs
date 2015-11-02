@@ -84,10 +84,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _diagramConnectorToPositioningEdgePathMap.Set(diagramConnector, newPath);
 
             _positioningGraph.AddPath(newPath);
-            UpdatePositioningEdgePathsRecursive(diagramConnector.Source, layoutAction);
+            AdjustPathsToLayerSpansRecursive(diagramConnector.Source, layoutAction);
 
-            var lastPathSegment = newPath.Last();
-            _vertexPositioningLogic.PositionVertex(lastPathSegment.Source, layoutAction, lastPathSegment.Target);
+            PositionVerticesOnModifiedPathsRecursive(diagramConnector.Source, layoutAction);
             _vertexPositioningLogic.Compact(layoutAction);
 
             ReroutePath(newPath, layoutAction);
@@ -102,7 +101,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             foreach (var interimVertex in positioningEdgePath.InterimVertices)
                 _vertexPositioningLogic.CoverUpVertex(interimVertex, layoutAction);
 
-            _vertexPositioningLogic.CenterParents(positioningEdgePath.Source, layoutAction);
+            _vertexPositioningLogic.CenterPrimaryParent(positioningEdgePath.Source, layoutAction);
 
             _positioningGraph.RemovePath(positioningEdgePath);
             _diagramConnectorToPositioningEdgePathMap.Remove(diagramConnector);
@@ -110,13 +109,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _vertexPositioningLogic.Compact(layoutAction);
         }
 
-        private void UpdatePositioningEdgePathsRecursive(DiagramNode updateRootNode, ILayoutAction causingAction)
+        private void AdjustPathsToLayerSpansRecursive(DiagramNode updateRootNode, ILayoutAction causingAction)
         {
             _diagramGraph.ExecuteOnVerticesRecursive(updateRootNode, EdgeDirection.In,
-                i => UpdatePositioningEdgePaths(i, causingAction));
+                i => AdjustPathsToLayerSpans(i, causingAction));
         }
 
-        private void UpdatePositioningEdgePaths(DiagramNode diagramNode, ILayoutAction causingAction)
+        private void PositionVerticesOnModifiedPathsRecursive(DiagramNode updateRootNode, ILayoutAction causingAction)
+        {
+            _diagramGraph.ExecuteOnVerticesRecursive(updateRootNode, EdgeDirection.In,
+                i => PositionVerticesOnModifiedPaths(i, causingAction));
+        }
+
+        private void AdjustPathsToLayerSpans(DiagramNode diagramNode, ILayoutAction causingAction)
         {
             var outConnectors = _diagramGraph.OutEdges(diagramNode);
             foreach (var outConnector in outConnectors)
@@ -130,6 +135,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                     SplitEdge(positioningEdgePath, 0, pathLengthDifference, causingAction);
                 else if (pathLengthDifference < 0)
                     MergeEdgeWithNext(positioningEdgePath, 0, -pathLengthDifference, causingAction);
+            }
+        }
+
+        private void PositionVerticesOnModifiedPaths(DiagramNode diagramNode, ILayoutAction causingAction)
+        {
+            var outConnectors = _diagramGraph.OutEdges(diagramNode);
+            foreach (var outConnector in outConnectors)
+            {
+                var positioningEdgePath = _diagramConnectorToPositioningEdgePathMap.Get(outConnector);
+                foreach (var edge in positioningEdgePath.Reverse())
+                {
+                    _vertexPositioningLogic.PositionVertex(edge.Source, causingAction, edge.Target);
+                }
             }
         }
 
@@ -153,8 +171,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _positioningGraph.AddEdge(newEdge1);
             _positioningGraph.AddEdge(newEdge2);
 
-            var layoutAction = RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
-            _vertexPositioningLogic.PositionVertex(interimVertex, layoutAction, newEdge2.Target);
+            RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
         }
 
         private void MergeEdgeWithNext(PositioningEdgePath path, int atIndex, int times, ILayoutAction causingAction)

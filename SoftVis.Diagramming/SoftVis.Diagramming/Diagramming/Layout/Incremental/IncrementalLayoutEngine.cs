@@ -61,6 +61,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private void OnDiagramGraphCleared(object sender, EventArgs e)
         {
             _diagramNodeRankCalculator.Clear();
+            _diagramNodePositionCalculator.Clear();
         }
 
         private void OnDiagramNodeAdded(DiagramNode diagramNode)

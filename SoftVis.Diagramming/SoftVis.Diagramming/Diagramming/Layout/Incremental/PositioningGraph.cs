@@ -55,14 +55,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var isAdded = base.AddEdge(edge);
             if (isAdded)
-                edge.ExecuteOnDescendantEdges(i => _vertexLayers.EnsureValidLayering(i.Source, i.Target));
+                edge.ExecuteOnDescendantEdges(i => _vertexLayers.EnsureValidLayering(i.Source));
             
             return isAdded;
         }
 
         public override bool RemoveEdge(PositioningEdge edge)
         {
-            return base.RemoveEdge(edge);
+            var isRemoved = base.RemoveEdge(edge);
+            if (isRemoved)
+                edge.ExecuteOnDescendantEdges(i => _vertexLayers.EnsureValidLayering(i.Source));
+
+            return isRemoved;
         }
 
         public void AddPath(PositioningEdgePath path)

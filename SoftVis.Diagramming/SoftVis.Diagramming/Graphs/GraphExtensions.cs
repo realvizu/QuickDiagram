@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using QuickGraph;
 using QuickGraph.Algorithms.Search;
+using QuickGraph.Serialization;
 
 namespace Codartis.SoftVis.Graphs
 {
@@ -125,6 +129,33 @@ namespace Codartis.SoftVis.Graphs
             where TEdge : IEdge<TVertex>
         {
             return FindCycleEdges(graph).Any();
+        }
+
+        public static string Serialize<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                var xmlWriterSettings = new XmlWriterSettings { Encoding = Encoding.UTF8 };
+
+                using (var xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings))
+                {
+                    var serializer = new GraphMLSerializer<TVertex, TEdge, IEdgeListGraph<TVertex, TEdge>>();
+                    serializer.Serialize(xmlWriter, graph, v => v.ToString(), e => e.ToString());
+                    xmlWriter.Flush();
+                }
+
+                return Encoding.UTF8.GetString(memoryStream.ToArray());
+            }
+        }
+
+        public static void Save<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, string filename)
+            where TEdge : IEdge<TVertex>
+        {
+            using (var writer = new StreamWriter(filename))
+            {
+                writer.Write(Serialize(graph));
+            }
         }
     }
 }

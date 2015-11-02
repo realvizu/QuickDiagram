@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 
         protected bool Equals(MoveDiagramNodeAction other)
         {
-            return base.Equals(other) && From.Equals(other.From) && To.Equals(other.To);
+            return base.Equals(other) && From.Equals(other.By);
         }
 
         public override bool Equals(object obj)
@@ -40,8 +40,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
             unchecked
             {
                 int hashCode = base.GetHashCode();
-                hashCode = (hashCode*397) ^ From.GetHashCode();
-                hashCode = (hashCode*397) ^ To.GetHashCode();
+                hashCode = (hashCode*397) ^ By.GetHashCode();
                 return hashCode;
             }
         }
