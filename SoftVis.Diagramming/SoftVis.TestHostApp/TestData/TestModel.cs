@@ -136,6 +136,10 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddBase("12", "20")
                 .AddBase("20", "11")
 
+                // Path with 2 new dummy vertices
+                .AddInterface("17")
+                .AddBase("14", "17")
+
                 // Regression test: layer-assignment of dummy vertices should be finished before positioning, 
                 // otherwise it causes an infinite cycle in the layout logic
                 .AddInterface("A1")

@@ -1,5 +1,4 @@
 ﻿using System;
-using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -23,17 +22,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public override int Priority => DiagramNode.Priority;
         public override double Width => DiagramNode.Width;
         public override double Height => DiagramNode.Height;
-        public override Size2D Size => DiagramNode.Size;
-
-        public override int CompareTo(PositioningVertexBase other)
-        {
-            if (other == null)
-                throw new ArgumentNullException(nameof(other));
-
-            return (other is DiagramNodePositioningVertex)
-                ? DiagramNode.CompareTo(((DiagramNodePositioningVertex) other).DiagramNode)
-                : -1;
-        }
 
         public override string ToString()
         {

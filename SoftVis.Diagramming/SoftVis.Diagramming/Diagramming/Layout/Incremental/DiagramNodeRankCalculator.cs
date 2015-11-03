@@ -12,79 +12,79 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </remarks>
     internal sealed class DiagramNodeRankCalculator : IDiagramChangeConsumer, IDiagramNodeRankProvider
     {
-        private readonly LayeringGraph _layeringGraph;
-        private readonly Map<DiagramNode, LayeringVertex> _diagramNodeToLayeringVertexMap;
-        private readonly Map<DiagramConnector, LayeringEdge> _diagramConnectorToLayeringEdgeMap;
+        private readonly RankingGraph _rankingGraph;
+        private readonly Map<DiagramNode, RankingVertex> _diagramNodeToRankingVertexMap;
+        private readonly Map<DiagramConnector, RankingEdge> _diagramConnectorToRankingEdgeMap;
 
         public DiagramNodeRankCalculator()
         {
-            _layeringGraph = new LayeringGraph();
-            _diagramNodeToLayeringVertexMap = new Map<DiagramNode, LayeringVertex>();
-            _diagramConnectorToLayeringEdgeMap = new Map<DiagramConnector, LayeringEdge>();
+            _rankingGraph = new RankingGraph();
+            _diagramNodeToRankingVertexMap = new Map<DiagramNode, RankingVertex>();
+            _diagramConnectorToRankingEdgeMap = new Map<DiagramConnector, RankingEdge>();
         }
 
         public void Clear()
         {
-            _layeringGraph.Clear();
-            _diagramNodeToLayeringVertexMap.Clear();
-            _diagramConnectorToLayeringEdgeMap.Clear();
+            _rankingGraph.Clear();
+            _diagramNodeToRankingVertexMap.Clear();
+            _diagramConnectorToRankingEdgeMap.Clear();
         }
 
         public void Add(DiagramNode diagramNode)
         {
-            var layeringVertex = new LayeringVertex(diagramNode);
-            _layeringGraph.AddVertex(layeringVertex);
-            _diagramNodeToLayeringVertexMap.Set(diagramNode, layeringVertex);
+            var rankingVertex = new RankingVertex(diagramNode);
+            _rankingGraph.AddVertex(rankingVertex);
+            _diagramNodeToRankingVertexMap.Set(diagramNode, rankingVertex);
         }
 
         public void Remove(DiagramNode diagramNode)
         {
-            var layeringVertex = _diagramNodeToLayeringVertexMap.Get(diagramNode);
-            _layeringGraph.RemoveVertex(layeringVertex);
-            _diagramNodeToLayeringVertexMap.Remove(diagramNode);
+            var rankingVertex = _diagramNodeToRankingVertexMap.Get(diagramNode);
+            _rankingGraph.RemoveVertex(rankingVertex);
+            _diagramNodeToRankingVertexMap.Remove(diagramNode);
         }
 
         public void Add(DiagramConnector diagramConnector)
         {
-            var sourceLayeringVertex = _diagramNodeToLayeringVertexMap.Get(diagramConnector.Source);
-            var targetLayeringVertex = _diagramNodeToLayeringVertexMap.Get(diagramConnector.Target);
-            var layeringEdge = new LayeringEdge(sourceLayeringVertex, targetLayeringVertex);
-            _layeringGraph.AddEdge(layeringEdge);
-            _diagramConnectorToLayeringEdgeMap.Set(diagramConnector, layeringEdge);
+            var sourceRankingVertex = _diagramNodeToRankingVertexMap.Get(diagramConnector.Source);
+            var targetRankingVertex = _diagramNodeToRankingVertexMap.Get(diagramConnector.Target);
+            var rankingEdge = new RankingEdge(sourceRankingVertex, targetRankingVertex);
+            _rankingGraph.AddEdge(rankingEdge);
+            _diagramConnectorToRankingEdgeMap.Set(diagramConnector, rankingEdge);
 
-            UpdateLayerIndexesRecursive(sourceLayeringVertex);
+            UpdateRanksRecursive(sourceRankingVertex);
         }
 
         public void Remove(DiagramConnector diagramConnector)
         {
-            var layeringEdge = _diagramConnectorToLayeringEdgeMap.Get(diagramConnector);
-            _layeringGraph.RemoveEdge(layeringEdge);
-            _diagramConnectorToLayeringEdgeMap.Remove(diagramConnector);
+            var rankingEdge = _diagramConnectorToRankingEdgeMap.Get(diagramConnector);
+            _rankingGraph.RemoveEdge(rankingEdge);
+            _diagramConnectorToRankingEdgeMap.Remove(diagramConnector);
         }
 
         public int GetRank(DiagramNode diagramNode)
         {
-            return _diagramNodeToLayeringVertexMap.Get(diagramNode).LayerIndex;
+            return _diagramNodeToRankingVertexMap.Get(diagramNode).Rank;
         }
 
         public int GetRankSpan(DiagramConnector diagramConnector)
         {
-            return _diagramConnectorToLayeringEdgeMap.Get(diagramConnector).LayerSpan;
+            return _diagramConnectorToRankingEdgeMap.Get(diagramConnector).RankSpan;
         }
 
-        private void UpdateLayerIndexesRecursive(LayeringVertex updateRootLayeringVertex)
+        private void UpdateRanksRecursive(RankingVertex updateRootRankingVertex)
         {
-            _layeringGraph.ExecuteOnVerticesRecursive(updateRootLayeringVertex, EdgeDirection.In, UpdateLayerIndex);
+            _rankingGraph.ExecuteOnVerticesRecursive(updateRootRankingVertex, EdgeDirection.In, UpdateRank);
         }
 
-        private void UpdateLayerIndex(LayeringVertex layeringVertex)
+        private void UpdateRank(RankingVertex rankingVertex)
         {
-            layeringVertex.LayerIndex = CalculateLayerIndex(layeringVertex);
+            rankingVertex.Rank = CalculateRank(rankingVertex);
         }
 
-        private int CalculateLayerIndex(LayeringVertex layeringVertex)
+        private int CalculateRank(RankingVertex rankingVertex)
         {
-            return _layeringGraph.OutEdges(layeringVertex).Select(i => i.Target.LayerIndex).DefaultIfEmpty(-1).Max() + 1;
+            return _rankingGraph.OutEdges(rankingVertex).Select(i => i.Target.Rank).DefaultIfEmpty(-1).Max() + 1;
         }
     }
 }

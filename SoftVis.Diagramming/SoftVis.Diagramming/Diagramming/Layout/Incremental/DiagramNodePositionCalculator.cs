@@ -82,11 +82,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var newEdge = new PositioningEdge(_positioningGraph, positioningSource, positioningTarget, diagramConnector);
             var newPath = new PositioningEdgePath(newEdge);
             _diagramConnectorToPositioningEdgePathMap.Set(diagramConnector, newPath);
-
             _positioningGraph.AddPath(newPath);
-            AdjustPathsToLayerSpansRecursive(diagramConnector.Source, layoutAction);
 
+            AdjustPathsToLayerSpansRecursive(diagramConnector.Source, layoutAction);
             PositionVerticesOnModifiedPathsRecursive(diagramConnector.Source, layoutAction);
+
             _vertexPositioningLogic.Compact(layoutAction);
 
             ReroutePath(newPath, layoutAction);
@@ -101,10 +101,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             foreach (var interimVertex in positioningEdgePath.InterimVertices)
                 _vertexPositioningLogic.CoverUpVertex(interimVertex, layoutAction);
 
-            _vertexPositioningLogic.CenterPrimaryParent(positioningEdgePath.Source, layoutAction);
+            // TODO: needs test case: when is this necessary?
+            //_vertexPositioningLogic.CenterPrimaryParent(positioningEdgePath.Source, layoutAction);
 
             _positioningGraph.RemovePath(positioningEdgePath);
             _diagramConnectorToPositioningEdgePathMap.Remove(diagramConnector);
+
+            AdjustPathsToLayerSpansRecursive(diagramConnector.Source, layoutAction);
+            // TODO: needs test cases
+            PositionVerticesOnModifiedPathsRecursive(diagramConnector.Source, layoutAction);
 
             _vertexPositioningLogic.Compact(layoutAction);
         }

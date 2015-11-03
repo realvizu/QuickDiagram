@@ -8,6 +8,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// A graph created for vertex position calculation.
+    /// Besides storing vertices and edges it also computes and stores a layering of vertices
+    /// where for each layer vertices are sorted by their horizontal subsequence.
     /// </summary>
     /// <remarks>
     /// It has two types of vertices: some represent diagram nodes, others are dummies introduced to 
@@ -148,11 +150,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private IEnumerable<PositioningVertexBase> GetOrderedParents(PositioningVertexBase vertex)
         {
-            var nonDummyLayerIndex = vertex.NonDummyLayerIndex;
+            var nonDummyLayerIndex = vertex.GetNonDummyLayerIndex();
 
             return GetParents(vertex)
                 .OrderByDescending(i => i.Priority)
-                .ThenBy(i => nonDummyLayerIndex - i.NonDummyLayerIndex)
+                .ThenBy(i => nonDummyLayerIndex - i.GetNonDummyLayerIndex())
                 .ThenBy(i => i.ToString());
         }
 

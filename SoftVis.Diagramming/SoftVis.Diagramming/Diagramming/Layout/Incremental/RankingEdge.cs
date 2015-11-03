@@ -3,19 +3,19 @@
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// An edge in the layering graph.
-    /// Corresponds to a DiagramConnector but can be reversed to avoid cycles in the layering graph.
+    /// An edge in the ranking graph.
+    /// Corresponds to a DiagramConnector but can be reversed to avoid cycles in the ranking graph.
     /// </summary>
-    internal class LayeringEdge : Edge<LayeringVertex>
+    internal class RankingEdge : Edge<RankingVertex>
     {
         public bool IsReversed { get; set; }
 
-        public LayeringEdge(LayeringVertex source, LayeringVertex target) 
+        public RankingEdge(RankingVertex source, RankingVertex target) 
             : base(source, target)
         {
         }
 
-        public int LayerSpan => Source.LayerIndex - Target.LayerIndex;
+        public int RankSpan => Source.Rank - Target.Rank;
 
         public override string ToString()
         {

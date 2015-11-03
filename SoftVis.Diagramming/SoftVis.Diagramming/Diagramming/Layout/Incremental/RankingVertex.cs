@@ -1,15 +1,15 @@
 ﻿namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A vertex in the layering graph.
+    /// A vertex in the ranking graph.
     /// Corresponds to a DiagramNode. 
     /// </summary>
-    internal class LayeringVertex
+    internal class RankingVertex
     {
         public DiagramNode DiagramNode { get; }
-        public int LayerIndex { get; set; }
+        public int Rank { get; set; }
 
-        public LayeringVertex(DiagramNode diagramNode)
+        public RankingVertex(DiagramNode diagramNode)
         {
             DiagramNode = diagramNode;
         }

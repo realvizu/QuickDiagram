@@ -30,14 +30,22 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public abstract int Priority { get; }
         public abstract double Width { get; }
         public abstract double Height { get; }
-        public abstract Size2D Size { get; }
+        public Size2D Size => new Size2D(Width, Height);
         public Rect2D Rect => new Rect2D(Center.X - Width / 2, Center.Y - Height / 2, Center.X + Width / 2, Center.Y + Height / 2);
         public double Left => Rect.Left;
         public double Right => Rect.Right;
         public double Top => Rect.Top;
         public double Bottom => Rect.Bottom;
 
-        public abstract int CompareTo(PositioningVertexBase other);
+        public virtual string NameForComparison => Name;
+        public int CompareTo(PositioningVertexBase other)
+        {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            return string.Compare(NameForComparison, other.NameForComparison, StringComparison.InvariantCultureIgnoreCase);
+        }
+
         public bool Precedes(PositioningVertexBase otherVertex) => otherVertex != null && CompareTo(otherVertex) < 0;
 
         public void FloatPrimaryTree() => ExecuteOnPrimaryDescendantVertices(i => i.IsFloating = true);
@@ -56,9 +64,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public IEnumerable<PositioningVertexBase> GetPlacedPrimarySiblings() => GetPrimarySiblings().Where(i => !i.IsFloating);
         public void ExecuteOnPrimaryDescendantVertices(Action<PositioningVertexBase> action) => _graph.ExecuteOnPrimaryDescendantVertices(this, action);
 
+        public IEnumerable<PositioningVertexBase> GetPrimarySiblingsInSameLayer()
+        {
+            var layerIndex = GetLayerIndex();
+            return GetPrimarySiblings().Where(i => i.GetLayerIndex() == layerIndex);
+        }
+
         public bool HasPlacedPrimarySiblingsInSameLayer()
         {
-            return GetPlacedPrimarySiblings().Any(i => i.LayerIndex == LayerIndex);
+            return GetPrimarySiblingsInSameLayer().Any(i => !i.IsFloating);
         }
 
         public bool IsPlacedPrimarySiblingOf(PositioningVertexBase layoutVertex)
@@ -67,14 +81,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         }
 
         public PositioningVertexLayer GetLayer() => _graph.GetLayer(this);
-        public int LayerIndex => _graph.GetLayerIndex(this);
-        public virtual int NonDummyLayerIndex => LayerIndex;
+        public int GetLayerIndex() => _graph.GetLayerIndex(this);
+        public virtual int GetNonDummyLayerIndex() => GetLayerIndex();
         public PositioningVertexBase GetPreviousInLayer() => GetLayer().GetPrevious(this);
         public PositioningVertexBase GetNextInLayer() => GetLayer().GetNext(this);
         public int GetIndexInLayer() => GetLayer().IndexOf(this);
         public IEnumerable<PositioningVertexBase> GetOtherPositionedVerticesInLayer() => GetLayer().Where(i => i != this && !i.IsFloating);
-        public bool IsLayerItemIndexValid => GetLayer().IsItemIndexValid(this);
-        public bool IsLayerIndexValid => LayerIndex > OutEdges.Select(i => i.Source.LayerIndex).Max();
+        public bool IsLayerItemIndexValid() => GetLayer().IsItemIndexValid(this);
+        public bool IsLayerIndexValid() => GetLayerIndex() > OutEdges.Select(i => i.Source.GetLayerIndex()).Max();
 
         public PositioningVertexBase GetPreviousPlacedSiblingInLayer()
         {

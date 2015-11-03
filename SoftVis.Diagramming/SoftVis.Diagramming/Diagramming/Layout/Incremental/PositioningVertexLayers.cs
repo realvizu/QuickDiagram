@@ -57,23 +57,23 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public void EnsureValidLayering(PositioningVertexBase vertex)
         {
-            var targetLayerIndex = vertex.GetParents().Select(i => i.LayerIndex).DefaultIfEmpty(-1).Max() + 1;
+            var minimumLayerIndex = vertex.GetParents().Select(i => i.GetLayerIndex()).DefaultIfEmpty(-1).Max() + 1;
 
-            if (vertex.LayerIndex != targetLayerIndex)
-                MoveVertex(vertex, targetLayerIndex);
+            if (vertex.GetLayerIndex() < minimumLayerIndex)
+                MoveVertex(vertex, minimumLayerIndex);
             else
                 EnsureValidItemOrder(vertex);
         }
 
         private void MoveVertex(PositioningVertexBase vertex, int toLayerIndex)
         {
-            RemoveVertexFromLayer(vertex, vertex.LayerIndex);
+            RemoveVertexFromLayer(vertex, vertex.GetLayerIndex());
             AddVertexToLayer(vertex, toLayerIndex);
         }
 
         private void EnsureValidItemOrder(PositioningVertexBase vertex)
         {
-            if (vertex.IsLayerItemIndexValid)
+            if (vertex.IsLayerItemIndexValid())
                 return;
 
             var layer = GetLayer(vertex);

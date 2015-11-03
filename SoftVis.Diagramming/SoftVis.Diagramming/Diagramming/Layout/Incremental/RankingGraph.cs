@@ -7,9 +7,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// That is, all edges point "upwards".
     /// TODO: Also ensures that the graph is acyclic by reversing edges that cause a cycle.
     /// </summary>
-    internal class LayeringGraph : BidirectionalGraph<LayeringVertex, LayeringEdge>
+    internal class RankingGraph : BidirectionalGraph<RankingVertex, RankingEdge>
     {
-        public LayeringGraph()
+        public RankingGraph()
             : base(allowParallelEdges: false)
         {
         }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
@@ -65,26 +64,21 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private int DetermineItemIndex(PositioningVertexBase vertex)
         {
-            var insertedVertexParent = vertex.GetPrimaryParent();
-            var insertedVertexParentIndexInLayer = insertedVertexParent?.GetIndexInLayer();
+            // TODO: handle the case of different parents
 
-            var index = 0;
-            foreach (var existingVertex in _items.Except(vertex.ToEnumerable()))
-            {
-                var existingVertexParent = existingVertex.GetPrimaryParent();
+            var vertexParent = vertex.GetPrimaryParent();
 
-                var noParentOrSameParent = insertedVertexParent == null || existingVertexParent == insertedVertexParent;
-                if (noParentOrSameParent && vertex.Precedes(existingVertex))
-                    break;
+            if (vertexParent == null)
+                return _items.Count;
 
-                var differentParents = insertedVertexParent != null && existingVertexParent != insertedVertexParent;
-                if (differentParents && existingVertexParent.GetIndexInLayer() > insertedVertexParentIndexInLayer.Value)
-                    break;
+            var siblingsInLayer = vertex.GetPrimarySiblingsInSameLayer().OrderBy(IndexOf).ToArray();
+            if (!siblingsInLayer.Any())
+                return _items.Count;
 
-                index++;
-            }
-
-            return index;
+            var nextSiblingInLayer = siblingsInLayer.FirstOrDefault(vertex.Precedes);
+            return nextSiblingInLayer != null
+                ? _items.IndexOf(nextSiblingInLayer)
+                : _items.IndexOf(siblingsInLayer.Last()) + 1;
         }
     }
 }

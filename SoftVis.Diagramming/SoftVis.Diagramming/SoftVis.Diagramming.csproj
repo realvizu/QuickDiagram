@@ -88,9 +88,9 @@
     <Compile Include="Diagramming\Layout\Incremental\DummyPositioningVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IncrementalLayoutEngine.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IReadOnlyPositioningGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayeringGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayeringEdge.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayeringVertex.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\RankingGraph.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\RankingEdge.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\RankingVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\PositioningEdgePath.cs" />
     <Compile Include="Diagramming\Layout\Incremental\PositioningEdge.cs" />
     <Compile Include="Diagramming\Layout\Incremental\PositioningVertexBase.cs" />
