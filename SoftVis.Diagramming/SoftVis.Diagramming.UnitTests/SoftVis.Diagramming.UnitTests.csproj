@@ -74,9 +74,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diagramming\Layout\Incremental\BuilderHelper.cs" />
     <Compile Include="Diagramming\Layout\Incremental\EdgeSpecification.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\LayoutGraphTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutVertexLayersTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestDummyLayoutVertex.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\TestLayoutGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestLayoutVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

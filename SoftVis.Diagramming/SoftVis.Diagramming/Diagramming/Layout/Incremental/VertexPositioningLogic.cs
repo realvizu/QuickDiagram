@@ -63,7 +63,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             if (parentVertex == null)
                 return;
 
-            var parentTargetCenterX = _layoutGraph.GetPrimaryPositionedChildren(parentVertex).GetRect().Center.X;
+            var parentTargetCenterX = _layoutGraph.GetPlacedPrimaryChildren(parentVertex).GetRect().Center.X;
             if (parentTargetCenterX.IsEqualWithTolerance(parentVertex.Center.X))
                 return;
 

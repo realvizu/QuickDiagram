@@ -7,15 +7,16 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
     internal class TestLayoutVertex : LayoutVertexBase
     {
         public override string Name { get; }
+        public override int Priority { get; }
 
-        public TestLayoutVertex(string name, bool isFloating) 
+        public TestLayoutVertex(string name, bool isFloating, int priority = 1) 
             : base(isFloating)
         {
             Name = name;
+            Priority = priority;
         }
 
         public override bool IsDummy => false;
-        public override int Priority => 1;
         public override Size2D Size => new Size2D(20,10);
         
         protected bool Equals(TestLayoutVertex other)

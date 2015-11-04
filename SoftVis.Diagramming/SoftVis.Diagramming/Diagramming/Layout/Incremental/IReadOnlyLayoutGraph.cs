@@ -15,8 +15,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         IEnumerable<LayoutVertexBase> GetParents(LayoutVertexBase vertex);
         LayoutVertexBase GetPrimaryParent(LayoutVertexBase vertex);
 
+        bool HasPrimaryChildren(LayoutVertexBase vertex);
         IEnumerable<LayoutVertexBase> GetPrimaryChildren(LayoutVertexBase vertex);
-        IEnumerable<LayoutVertexBase> GetPrimaryPositionedChildren(LayoutVertexBase vertex);
+        IEnumerable<LayoutVertexBase> GetPlacedPrimaryChildren(LayoutVertexBase vertex);
 
         IEnumerable<LayoutVertexBase> GetPrimarySiblings(LayoutVertexBase vertex);
         bool IsPlacedPrimarySiblingOf(LayoutVertexBase vertex1, LayoutVertexBase vertex2);

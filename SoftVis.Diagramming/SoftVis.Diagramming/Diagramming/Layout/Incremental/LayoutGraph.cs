@@ -7,10 +7,13 @@ using QuickGraph;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A graph created for layout calculation.
+    /// A graph created for layout calculation. 
     /// </summary>
     /// <remarks>
-    /// It has two types of vertices: normals represent diagram nodes, dummies are introduced to break long edges.
+    /// Understands parent/child/sibling and primary parent/children/sibling relationships.
+    /// Understands that vertices can be placed or floating.
+    /// There are two types of vertices: normals represent diagram nodes, dummies are introduced to break long edges.
+    /// Dummy vertices cannot have more than 1 in and out edges.
     /// </remarks>
     internal sealed class LayoutGraph : BidirectionalGraph<LayoutVertexBase, LayoutEdge>,
         IReadOnlyLayoutGraph
@@ -47,7 +50,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 RemoveVertex(interimVertex);
         }
 
-
         public IEnumerable<LayoutVertexBase> GetParents(LayoutVertexBase vertex)
         {
             return this.GetOutNeighbours(vertex);
@@ -58,14 +60,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return GetOrderedParents(vertex).FirstOrDefault();
         }
 
-        public IEnumerable<LayoutVertexBase> GetNonPrimaryParents(LayoutVertexBase vertex)
-        {
-            return GetOrderedParents(vertex).Skip(1);
-        }
-
         public IEnumerable<LayoutVertexBase> GetChildren(LayoutVertexBase vertex)
         {
             return this.GetInNeighbours(vertex);
+        }
+
+        public bool HasPrimaryChildren(LayoutVertexBase vertex)
+        {
+            return GetPrimaryChildren(vertex).Any();
         }
 
         public IEnumerable<LayoutVertexBase> GetPrimaryChildren(LayoutVertexBase vertex)
@@ -73,7 +75,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return GetChildren(vertex).Where(i => GetPrimaryParent(i) == vertex);
         }
 
-        public IEnumerable<LayoutVertexBase> GetPrimaryPositionedChildren(LayoutVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetPlacedPrimaryChildren(LayoutVertexBase vertex)
         {
             return GetPrimaryChildren(vertex).Where(i => !i.IsFloating);
         }

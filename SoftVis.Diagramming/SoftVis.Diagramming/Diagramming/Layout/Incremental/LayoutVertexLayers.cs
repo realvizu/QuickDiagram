@@ -7,12 +7,20 @@ using Codartis.SoftVis.Common;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// Tracks vertex layering and calculates vertical positions.
+    /// Arranges vertices into layers so that all edges point "upward" (to a layer with lower index),
+    /// and orders vertices in layers so that primary edges never cross.
     /// </summary>
-    internal class LayoutVertexLayers :  IReadOnlyLayoutVertexLayers
+    /// <remarks>
+    /// No primary edge crossing is achieved by:
+    /// <para>dummy vertices ensure that parent and children are always on adjacent layers,</para>
+    /// <para>if a vertex has primary siblings than it is placed next to them so primary siblings always form a block,</para>
+    /// <para>if a vertex has no primary siblings but has primary parent then it is ordered based on parent ordering.</para>
+    /// </remarks>
+    internal class LayoutVertexLayers : IReadOnlyLayoutVertexLayers
     {
         private readonly IReadOnlyLayoutGraph _layoutGraph;
         private readonly double _verticalGap;
+        private readonly IComparer<LayoutVertexBase> _vertexComparer;
         private readonly List<LayoutVertexLayer> _layers;
         private readonly Map<LayoutVertexBase, int> _vertexToLayerIndexMap;
 
@@ -20,6 +28,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             _layoutGraph = layoutGraph;
             _verticalGap = verticalGap;
+            _vertexComparer = new VerticesInLayerComparer(layoutGraph);
             _layers = new List<LayoutVertexLayer>();
             _vertexToLayerIndexMap = new Map<LayoutVertexBase, int>();
         }
@@ -36,34 +45,25 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public void AddVertex(LayoutVertexBase vertex)
         {
             AddVertexToLayer(vertex, 0);
+            UpdateLayerVerticalPositions(0);
         }
 
         public void RemoveVertex(LayoutVertexBase vertex)
         {
             var layerIndex = GetLayerIndex(vertex);
-            RemoveVertexFromLayer(vertex, layerIndex);
+            RemoveVertexFromLayer(vertex);
+            UpdateLayerVerticalPositions(layerIndex);
         }
 
         public void AddEdge(LayoutEdge edge)
         {
-            EnsureValidLayering(edge.Target);
             EnsureValidLayering(edge.Source);
+            var layerIndex = GetLayerIndex(edge.Source);
+            UpdateLayerVerticalPositions(layerIndex);
         }
 
         public void RemoveEdge(LayoutEdge edge)
         {
-            throw new NotImplementedException();
-        }
-
-        private void EnsureValidLayering(LayoutVertexBase vertex)
-        {
-            var minimumLayerIndex = _layoutGraph.GetParents(vertex)
-                .Select(GetLayerIndex).DefaultIfEmpty(-1).Max() + 1;
-
-            if (GetLayerIndex(vertex) < minimumLayerIndex)
-                MoveVertex(vertex, minimumLayerIndex);
-            else
-                EnsureValidItemOrder(vertex);
         }
 
         public IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex)
@@ -130,45 +130,55 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return _layers[layerIndex];
         }
 
+        private void EnsureValidLayering(LayoutVertexBase vertex)
+        {
+            var minimumLayerIndex = _layoutGraph.GetParents(vertex)
+                .Select(GetLayerIndex).DefaultIfEmpty(-1).Max() + 1;
+
+            if (GetLayerIndex(vertex) < minimumLayerIndex)
+                MoveVertex(vertex, minimumLayerIndex);
+            else
+                EnsureValidItemOrder(vertex);
+        }
+
         private void MoveVertex(LayoutVertexBase vertex, int toLayerIndex)
         {
-            RemoveVertexFromLayer(vertex, GetLayerIndex(vertex));
+            RemoveVertexFromLayer(vertex);
             AddVertexToLayer(vertex, toLayerIndex);
         }
 
         private void EnsureValidItemOrder(LayoutVertexBase vertex)
         {
-            var layer = GetMutableLayer(vertex);
-            if (layer.IsItemIndexValid(vertex))
+            var indexInLayer = DetermineIndexInLayer(vertex);
+            if (indexInLayer == GetIndexInLayer(vertex))
                 return;
 
-            layer.Remove(vertex);
-            layer.Add(vertex);
+            var layerIndex = GetLayerIndex(vertex);
+            RemoveVertexFromLayer(vertex);
+            AddVertexToLayer(vertex, layerIndex);
         }
 
         private void AddVertexToLayer(LayoutVertexBase vertex, int layerIndex)
         {
             var layer = EnsureLayerExists(layerIndex);
             _vertexToLayerIndexMap.Set(vertex, layerIndex);
-            layer.Add(vertex);
 
-            UpdateLayerVerticalPositions(layerIndex);
+            var indexInLayer = DetermineIndexInLayer(vertex);
+            layer.Add(vertex, indexInLayer);
         }
 
-        private void RemoveVertexFromLayer(LayoutVertexBase vertex, int layerIndex)
+        private void RemoveVertexFromLayer(LayoutVertexBase vertex)
         {
+            var layerIndex = GetLayerIndex(vertex);
+
             _layers[layerIndex].Remove(vertex);
             _vertexToLayerIndexMap.Remove(vertex);
-
-            UpdateLayerVerticalPositions(layerIndex);
         }
 
         private LayoutVertexLayer EnsureLayerExists(int layerIndex)
         {
             for (var i = _layers.Count; i <= layerIndex; i++)
                 _layers.Add(new LayoutVertexLayer(_layoutGraph, i));
-
-            UpdateLayerVerticalPositions(layerIndex);
 
             return _layers[layerIndex];
         }
@@ -181,6 +191,73 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                     ? 0
                     : _layers[i - 1].Bottom + _verticalGap;
             }
+        }
+
+        private int DetermineIndexInLayer(LayoutVertexBase vertex)
+        {
+            var layer = GetMutableLayer(vertex);
+
+            var parentVertex = _layoutGraph.GetPrimaryParent(vertex);
+            if (parentVertex == null)
+                return layer.Count;
+
+            var siblingsInLayer = GetPrimarySiblingsInSameLayer(vertex).OrderBy(layer.IndexOf).ToArray();
+            if (siblingsInLayer.Any())
+                return CalculateInsertionIndexBasedOnSiblings(vertex, siblingsInLayer);
+
+            return CalculateInsertionIndexBasedOnParents(vertex, parentVertex);
+        }
+
+        private int CalculateInsertionIndexBasedOnSiblings(LayoutVertexBase vertex, LayoutVertexBase[] siblingsInLayer)
+        {
+            var followingSiblingInLayer = siblingsInLayer.FirstOrDefault(i => Precedes(vertex, i));
+            return followingSiblingInLayer != null
+                ? GetIndexInLayer(followingSiblingInLayer)
+                : GetIndexInLayer(siblingsInLayer.Last()) + 1;
+        }
+
+        private int CalculateInsertionIndexBasedOnParents(LayoutVertexBase vertex, LayoutVertexBase parentVertex)
+        {
+            CheckThatParentIsAtOneLayerHigherThanVertex(vertex, parentVertex);
+
+            var parentLayer = GetLayer(parentVertex);
+            var parentIndexInLayer = GetIndexInLayer(parentVertex);
+
+            var followingParent = GetFollowingVerticesWithPrimaryChildren(parentLayer, parentIndexInLayer).FirstOrDefault();
+            if (followingParent == null)
+                return GetLayer(vertex).Count;
+
+            var firstChildOfFollowingParent = _layoutGraph.GetPrimaryChildren(followingParent).OrderBy(GetIndexInLayer).First();
+            CheckThatVerticesAreOnTheSameLayer(vertex, firstChildOfFollowingParent);
+            return GetIndexInLayer(firstChildOfFollowingParent);
+        }
+
+        private IEnumerable<LayoutVertexBase> GetFollowingVerticesWithPrimaryChildren(IReadOnlyLayoutVertexLayer layer, 
+            int index)
+        {
+            return layer.OrderBy(GetIndexInLayer)
+                .Where(i => GetIndexInLayer(i) > index && _layoutGraph.HasPrimaryChildren(i));
+        }
+
+        private void CheckThatParentIsAtOneLayerHigherThanVertex(LayoutVertexBase vertex, LayoutVertexBase parentVertex)
+        {
+            var layerIndex = GetLayerIndex(vertex);
+            var parentLayerIndex = GetLayerIndex(parentVertex);
+            if (layerIndex != parentLayerIndex + 1)
+                throw new Exception($"Child was expected to be 1 layer lower than parent, but vertex {vertex} is on layer {layerIndex} and parent {parentVertex} is on layer {parentLayerIndex}.");
+        }
+
+        private void CheckThatVerticesAreOnTheSameLayer(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
+        {
+            var layerIndex1 = GetLayerIndex(vertex1);
+            var layerIndex2 = GetLayerIndex(vertex2);
+            if (layerIndex1 != layerIndex2)
+                throw new Exception($"Vertices were expected to be on the same layer, but vertex {vertex1} is on layer {layerIndex1} and vertex {vertex2} is on layer {layerIndex2}.");
+        }
+
+        private bool Precedes(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
+        {
+            return _vertexComparer.Compare(vertex1, vertex2) < 0;
         }
     }
 }
