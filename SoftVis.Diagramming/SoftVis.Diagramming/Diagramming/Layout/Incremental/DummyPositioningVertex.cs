@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -11,8 +12,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private static int _nextId = 1;
         protected int Id;
 
-        public DummyPositioningVertex(PositioningGraph graph, bool isFloating)
-            :base(graph, isFloating)
+        public DummyPositioningVertex(bool isFloating)
+            :base(isFloating)
         {
             lock (typeof (DummyPositioningVertex))
             {
@@ -21,12 +22,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
+        public override bool IsDummy => true;
         public override string Name => ToString();
-        public override string NameForComparison => InEdges.FirstOrDefault()?.Source.NameForComparison ?? string.Empty;
-        public override int Priority => OutEdges.FirstOrDefault()?.Target.Priority ?? 0;
-        public override double Width => 0d;
-        public override double Height => 0d;
-        public override int GetNonDummyLayerIndex() => OutEdges.FirstOrDefault()?.Target.GetLayerIndex() ?? GetLayerIndex();
+
+        public override int Priority
+        {
+            get { throw new InvalidOperationException("Dummy vertex has no priority."); }
+        }
+
+        public override Size2D Size => Size2D.Zero;
 
         public override string ToString()
         {

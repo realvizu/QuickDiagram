@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagramming\Layout\Incremental\EdgeSpecification.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\PositioningGraphTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\PositioningVertexLayersTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestDummyPositioningVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestPositioningVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,10 +87,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-      <None Include="..\Key.snk">
-          <Link>Key.snk</Link>
-      </None>
-      <None Include="packages.config" />
+    <None Include="..\Key.snk">
+      <Link>Key.snk</Link>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

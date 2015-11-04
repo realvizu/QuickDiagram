@@ -7,15 +7,17 @@ using Xunit;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 {
-    public class PositioningGraphTests
+    public class PositioningVertexLayersTests
     {
         private const int HorizontalGap = 10;
         private const int VerticalGap = 10;
         private readonly PositioningGraph _positioningGraph;
+        private readonly PositioningVertexLayers _layers;
 
-        public PositioningGraphTests()
+        public PositioningVertexLayersTests()
         {
-            _positioningGraph = new PositioningGraph(HorizontalGap, VerticalGap);
+            _positioningGraph = new PositioningGraph();
+            _layers = new PositioningVertexLayers(_positioningGraph, VerticalGap);
         }
 
         [Fact]
@@ -23,8 +25,10 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         {
             var vertex = CreateVertex("A");
             _positioningGraph.AddVertex(vertex);
-            vertex.GetLayerIndex().Should().Be(0);
-            vertex.GetIndexInLayer().Should().Be(0);
+            _layers.AddVertex(vertex);
+
+            _layers.GetLayerIndex(vertex).Should().Be(0);
+            _layers.GetIndexInLayer(vertex).Should().Be(0);
         }
 
         [Fact]
@@ -34,10 +38,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             var vertexB = CreateVertex("B");
 
             _positioningGraph.AddVertex(vertexA);
+            _layers.AddVertex(vertexA);
             _positioningGraph.AddVertex(vertexB);
+            _layers.AddVertex(vertexB);
 
-            vertexB.GetLayerIndex().Should().Be(0);
-            vertexB.GetIndexInLayer().Should().Be(1);
+            _layers.GetLayerIndex(vertexB).Should().Be(0);
+            _layers.GetIndexInLayer(vertexB).Should().Be(1);
         }
 
         [Fact]
@@ -52,14 +58,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             {
                 _positioningGraph.AddEdge(CreateEdge("A", "O"));
                 var vertex = GetVertex("A");
-                vertex.GetLayerIndex().Should().Be(1);
-                vertex.GetIndexInLayer().Should().Be(0);
+                _layers.GetLayerIndex(vertex).Should().Be(1);
+                _layers.GetIndexInLayer(vertex).Should().Be(0);
             }
             {
                 _positioningGraph.AddEdge(CreateEdge("C", "O"));
                 var vertex = GetVertex("C");
-                vertex.GetLayerIndex().Should().Be(1);
-                vertex.GetIndexInLayer().Should().Be(2);
+                _layers.GetLayerIndex(vertex).Should().Be(1);
+                _layers.GetIndexInLayer(vertex).Should().Be(2);
             }
         }
 
@@ -72,10 +78,13 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
                 "B"
             );
 
-            _positioningGraph.AddEdge(CreateEdge("B", "O"));
+            var edge = CreateEdge("B", "O");
+            _positioningGraph.AddEdge(edge);
+            _layers.AddEdge(edge);
+
             var vertex = GetVertex("B");
-            vertex.GetLayerIndex().Should().Be(1);
-            vertex.GetIndexInLayer().Should().Be(1);
+            _layers.GetLayerIndex(vertex).Should().Be(1);
+            _layers.GetIndexInLayer(vertex).Should().Be(1);
         }
 
         [Fact]
@@ -90,8 +99,8 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 
             _positioningGraph.AddEdge(CreateEdge("C", "O1"));
             var vertex = GetVertex("C");
-            vertex.GetLayerIndex().Should().Be(1);
-            vertex.GetIndexInLayer().Should().Be(0);
+            _layers.GetLayerIndex(vertex).Should().Be(1);
+            _layers.GetIndexInLayer(vertex).Should().Be(0);
         }
 
         private void SetUpPositioningGraph(params string[] pathSpecifications)
@@ -99,10 +108,18 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             foreach (var pathSpecification in pathSpecifications)
             {
                 foreach (var vertexName in GetVertexNames(pathSpecification))
-                    _positioningGraph.AddVertex(CreateVertex(vertexName));
+                {
+                    var vertex = CreateVertex(vertexName);
+                    _positioningGraph.AddVertex(vertex);
+                    _layers.AddVertex(vertex);
+                }
 
                 foreach (var edgeSpecification in GetEdgeSpecifications(pathSpecification))
-                    _positioningGraph.AddEdge(CreateEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName));
+                {
+                    var edge = CreateEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
+                    _positioningGraph.AddEdge(edge);
+                    _layers.AddEdge(edge);
+                }
             }
         }
 
@@ -113,17 +130,17 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 
         private static IEnumerable<EdgeSpecification> GetEdgeSpecifications(string pathSpecification)
         {
-            var vertexNames = pathSpecification.Split(new[] { "<-" }, StringSplitOptions.None).Reverse().ToArray();
+            var vertexNames = pathSpecification.Split(new[] { "<-" }, StringSplitOptions.None).ToArray();
 
             for (var i = 0; i < vertexNames.Length - 1; i++)
-                yield return new EdgeSpecification(vertexNames[i], vertexNames[i+1]);
+                yield return new EdgeSpecification(vertexNames[i+1], vertexNames[i]);
         }
 
-        private PositioningVertexBase CreateVertex(string name)
+        private static PositioningVertexBase CreateVertex(string name)
         {
             return name.StartsWith("*")
-                ? (PositioningVertexBase)new TestDummyPositioningVertex(_positioningGraph, int.Parse(name.Substring(1)), true)
-                : new TestPositioningVertex(_positioningGraph, name, true);
+                ? (PositioningVertexBase)new TestDummyPositioningVertex(int.Parse(name.Substring(1)), true)
+                : new TestPositioningVertex(name, true);
         }
 
         private PositioningVertexBase GetVertex(string vertexName)
@@ -135,7 +152,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         {
             var source = GetVertex(sourceVertexName);
             var target = GetVertex(targetVertexName);
-            return new PositioningEdge(_positioningGraph, source, target, null);
+            return new PositioningEdge(source, target, null);
         }
     }
 }

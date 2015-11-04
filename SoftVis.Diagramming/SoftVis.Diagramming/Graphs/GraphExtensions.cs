@@ -12,6 +12,13 @@ namespace Codartis.SoftVis.Graphs
 {
     public static class GraphExtensions
     {
+        public static int Degree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
+            TVertex vertex, EdgeDirection direction)
+            where TEdge : IEdge<TVertex>
+        {
+            return direction == EdgeDirection.In ? graph.InDegree(vertex) : graph.OutDegree(vertex);
+        }
+
         public static IEnumerable<TEdge> GetAllEdges<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
             TVertex vertex)
             where TEdge : IEdge<TVertex>

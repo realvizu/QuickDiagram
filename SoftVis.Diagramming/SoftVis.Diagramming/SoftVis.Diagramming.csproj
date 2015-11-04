@@ -104,6 +104,7 @@
     <Compile Include="Diagramming\Layout\Incremental\VertexPositioningLogic.cs" />
     <Compile Include="Diagramming\Layout\Incremental\ActionTracking\MoveDummyVertexAction.cs" />
     <Compile Include="Diagramming\DiagramGraph.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\VerticesInLayerComparer.cs" />
     <Compile Include="Geometry\Point2D.cs" />
     <Compile Include="Geometry\Rect2D.cs" />
     <Compile Include="Geometry\Rect2DExtensions.cs" />

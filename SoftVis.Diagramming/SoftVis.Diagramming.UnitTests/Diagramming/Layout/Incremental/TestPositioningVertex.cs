@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
+using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 {
@@ -7,16 +8,16 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
     {
         public override string Name { get; }
 
-        public TestPositioningVertex(PositioningGraph graph, string name, bool isFloating) 
-            : base(graph, isFloating)
+        public TestPositioningVertex(string name, bool isFloating) 
+            : base(isFloating)
         {
             Name = name;
         }
 
+        public override bool IsDummy => false;
         public override int Priority => 1;
-        public override double Width => 20;
-        public override double Height => 10;
-
+        public override Size2D Size => new Size2D(20,10);
+        
         protected bool Equals(TestPositioningVertex other)
         {
             return string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);

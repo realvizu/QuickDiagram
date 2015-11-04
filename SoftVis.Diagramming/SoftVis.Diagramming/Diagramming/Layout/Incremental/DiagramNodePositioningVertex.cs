@@ -1,4 +1,5 @@
 ﻿using System;
+using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -9,8 +10,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     {
         public DiagramNode DiagramNode { get; }
 
-        public DiagramNodePositioningVertex(PositioningGraph graph, DiagramNode diagramNode, bool isFloating = true)
-            :base(graph, isFloating)
+        public DiagramNodePositioningVertex(DiagramNode diagramNode, bool isFloating = true)
+            :base(isFloating)
         {
             if (diagramNode == null)
                 throw new ArgumentNullException(nameof(diagramNode));
@@ -18,10 +19,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             DiagramNode = diagramNode;
         }
 
+        public override bool IsDummy => false;
         public override string Name => DiagramNode.Name;
         public override int Priority => DiagramNode.Priority;
-        public override double Width => DiagramNode.Width;
-        public override double Height => DiagramNode.Height;
+        public override Size2D Size => DiagramNode.Size;
 
         public override string ToString()
         {

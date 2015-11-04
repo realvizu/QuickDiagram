@@ -8,31 +8,34 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// An ordered list of positioning vertices that belong to the same horizontal layer.
     /// </summary>
-    /// <remarks>
-    /// Ordering is based on the vertices' CompareTo implementation (node name).
-    /// </remarks>
     internal class PositioningVertexLayer : IReadOnlyPositioningVertexLayer
     {
+        private readonly IReadOnlyPositioningGraph _positioningGraph;
+        private readonly IComparer<PositioningVertexBase> _vertexComparer;
         private readonly List<PositioningVertexBase> _items;
         public int LayerIndex { get; }
         public double Top { get; set; }
 
-        internal PositioningVertexLayer(int layerIndex)
+        internal PositioningVertexLayer(IReadOnlyPositioningGraph positioningGraph, int layerIndex)
         {
-            LayerIndex = layerIndex;
+            _positioningGraph = positioningGraph;
+            _vertexComparer = new VerticesInLayerComparer(positioningGraph);
             _items = new List<PositioningVertexBase>();
+
+            LayerIndex = layerIndex;
+            Top = double.MinValue;
         }
+
+        public double Height => _items.Count == 0 ? 0 : _items.Max(i => i.Height);
+        public double Bottom => Top + Height;
+        public double CenterY => Top + Height / 2;
+        public Rect2D Rect => _items.Where(i => !i.IsFloating).Select(i => i.Rect).Union();
 
         public PositioningVertexBase this[int i] => _items[i];
         public int Count => _items.Count;
         public int IndexOf(PositioningVertexBase vertex) => _items.IndexOf(vertex);
         public IEnumerator<PositioningVertexBase> GetEnumerator() => _items.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
-
-        public double Height => _items.Count == 0 ? 0 : _items.Max(i => i.Height);
-        public double Bottom => Top + Height;
-        public double CenterY => Top + Height / 2;
-        public Rect2D Rect => _items.Where(i => !i.IsFloating).Select(i => i.Rect).Union();
 
         public void Add(PositioningVertexBase vertex)
         {
@@ -66,19 +69,29 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             // TODO: handle the case of different parents
 
-            var vertexParent = vertex.GetPrimaryParent();
+            var vertexParent = _positioningGraph.GetPrimaryParent(vertex);
 
             if (vertexParent == null)
                 return _items.Count;
 
-            var siblingsInLayer = vertex.GetPrimarySiblingsInSameLayer().OrderBy(IndexOf).ToArray();
+            var siblingsInLayer = GetPrimarySiblingsInSameLayer(vertex).OrderBy(IndexOf).ToArray();
             if (!siblingsInLayer.Any())
                 return _items.Count;
 
-            var nextSiblingInLayer = siblingsInLayer.FirstOrDefault(vertex.Precedes);
+            var nextSiblingInLayer = siblingsInLayer.FirstOrDefault(i => Precedes(vertex, i));
             return nextSiblingInLayer != null
                 ? _items.IndexOf(nextSiblingInLayer)
                 : _items.IndexOf(siblingsInLayer.Last()) + 1;
+        }
+
+        private IEnumerable<PositioningVertexBase> GetPrimarySiblingsInSameLayer(PositioningVertexBase vertex)
+        {
+            return _positioningGraph.GetPrimarySiblings(vertex).Where(_items.Contains);
+        }
+
+        private bool Precedes(PositioningVertexBase vertex1, PositioningVertexBase vertex2)
+        {
+            return _vertexComparer.Compare(vertex1, vertex2) < 0;
         }
     }
 }

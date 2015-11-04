@@ -5,7 +5,7 @@
     /// </summary>
     public struct Size2D
     {
-        public static readonly Size2D Empty = new Size2D(0, 0);
+        public static readonly Size2D Zero = new Size2D(0, 0);
 
         public double Width { get; }
         public double Height { get; }
