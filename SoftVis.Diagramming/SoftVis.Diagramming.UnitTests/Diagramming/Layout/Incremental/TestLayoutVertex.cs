@@ -4,11 +4,11 @@ using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 {
-    internal class TestPositioningVertex : PositioningVertexBase
+    internal class TestLayoutVertex : LayoutVertexBase
     {
         public override string Name { get; }
 
-        public TestPositioningVertex(string name, bool isFloating) 
+        public TestLayoutVertex(string name, bool isFloating) 
             : base(isFloating)
         {
             Name = name;
@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         public override int Priority => 1;
         public override Size2D Size => new Size2D(20,10);
         
-        protected bool Equals(TestPositioningVertex other)
+        protected bool Equals(TestLayoutVertex other)
         {
             return string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((TestPositioningVertex) obj);
+            return Equals((TestLayoutVertex) obj);
         }
 
         public override int GetHashCode()
@@ -36,12 +36,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             return (Name != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(Name) : 0);
         }
 
-        public static bool operator ==(TestPositioningVertex left, TestPositioningVertex right)
+        public static bool operator ==(TestLayoutVertex left, TestLayoutVertex right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(TestPositioningVertex left, TestPositioningVertex right)
+        public static bool operator !=(TestLayoutVertex left, TestLayoutVertex right)
         {
             return !Equals(left, right);
         }

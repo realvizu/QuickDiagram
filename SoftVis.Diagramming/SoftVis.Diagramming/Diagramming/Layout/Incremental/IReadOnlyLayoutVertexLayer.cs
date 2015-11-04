@@ -4,9 +4,9 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// Provides a read-only view of a positioning vertex layer.
+    /// Provides a read-only view of a layout vertex layer.
     /// </summary>
-    internal interface IReadOnlyPositioningVertexLayer : IEnumerable<PositioningVertexBase>
+    internal interface IReadOnlyLayoutVertexLayer : IEnumerable<LayoutVertexBase>
     {
         int LayerIndex { get; }
 
@@ -17,9 +17,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         Rect2D Rect { get; }
 
         int Count { get; }
-        PositioningVertexBase this[int i] { get; }
-        int IndexOf(PositioningVertexBase vertex);
-        PositioningVertexBase GetPrevious(PositioningVertexBase vertex);
-        PositioningVertexBase GetNext(PositioningVertexBase vertex);
+        LayoutVertexBase this[int i] { get; }
+        int IndexOf(LayoutVertexBase vertex);
+        LayoutVertexBase GetPrevious(LayoutVertexBase vertex);
+        LayoutVertexBase GetNext(LayoutVertexBase vertex);
     }
 }

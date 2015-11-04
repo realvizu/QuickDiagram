@@ -5,17 +5,17 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// Dummy vertices are used to break long edges spanning more than two layers.
-    /// They ensure that adjacent vertices in the positioning graph are always on adjacent layers.
+    /// They ensure that adjacent vertices in the layout graph are always on adjacent layers.
     /// </summary>
-    internal class DummyPositioningVertex : PositioningVertexBase
+    internal class DummyLayoutVertex : LayoutVertexBase
     {
         private static int _nextId = 1;
         protected int Id;
 
-        public DummyPositioningVertex(bool isFloating)
+        public DummyLayoutVertex(bool isFloating)
             :base(isFloating)
         {
-            lock (typeof (DummyPositioningVertex))
+            lock (typeof (DummyLayoutVertex))
             {
                 Id = _nextId;
                 _nextId++;

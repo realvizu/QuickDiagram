@@ -7,21 +7,20 @@ using QuickGraph;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A graph created for vertex position calculation.
+    /// A graph created for layout calculation.
     /// </summary>
     /// <remarks>
-    /// It has two types of vertices: some represent diagram nodes, others are dummies introduced to 
-    /// break long edges so all edges span exactly 2 layers.
+    /// It has two types of vertices: normals represent diagram nodes, dummies are introduced to break long edges.
     /// </remarks>
-    internal sealed class PositioningGraph : BidirectionalGraph<PositioningVertexBase, PositioningEdge>,
-        IReadOnlyPositioningGraph
+    internal sealed class LayoutGraph : BidirectionalGraph<LayoutVertexBase, LayoutEdge>,
+        IReadOnlyLayoutGraph
     {
-        public PositioningGraph() 
+        public LayoutGraph() 
             : base(allowParallelEdges: false)
         {
         }
 
-        public override bool AddEdge(PositioningEdge edge)
+        public override bool AddEdge(LayoutEdge edge)
         {
             var isAdded = base.AddEdge(edge);
             if (isAdded)
@@ -30,7 +29,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return isAdded;
         }
 
-        public void AddPath(PositioningEdgePath path)
+        public void AddPath(LayoutPath path)
         {
             foreach (var interimVertex in path.InterimVertices)
                 AddVertex(interimVertex);
@@ -39,7 +38,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 AddEdge(edge);
         }
 
-        public void RemovePath(PositioningEdgePath path)
+        public void RemovePath(LayoutPath path)
         {
             foreach (var edge in path)
                 RemoveEdge(edge);
@@ -49,58 +48,58 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         }
 
 
-        public IEnumerable<PositioningVertexBase> GetParents(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetParents(LayoutVertexBase vertex)
         {
             return this.GetOutNeighbours(vertex);
         }
 
-        public PositioningVertexBase GetPrimaryParent(PositioningVertexBase vertex)
+        public LayoutVertexBase GetPrimaryParent(LayoutVertexBase vertex)
         {
             return GetOrderedParents(vertex).FirstOrDefault();
         }
 
-        public IEnumerable<PositioningVertexBase> GetNonPrimaryParents(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetNonPrimaryParents(LayoutVertexBase vertex)
         {
             return GetOrderedParents(vertex).Skip(1);
         }
 
-        public IEnumerable<PositioningVertexBase> GetChildren(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetChildren(LayoutVertexBase vertex)
         {
             return this.GetInNeighbours(vertex);
         }
 
-        public IEnumerable<PositioningVertexBase> GetPrimaryChildren(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetPrimaryChildren(LayoutVertexBase vertex)
         {
             return GetChildren(vertex).Where(i => GetPrimaryParent(i) == vertex);
         }
 
-        public IEnumerable<PositioningVertexBase> GetPrimaryPositionedChildren(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetPrimaryPositionedChildren(LayoutVertexBase vertex)
         {
             return GetPrimaryChildren(vertex).Where(i => !i.IsFloating);
         }
 
-        public IEnumerable<PositioningVertexBase> GetPrimarySiblings(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetPrimarySiblings(LayoutVertexBase vertex)
         {
             var primaryParent = GetPrimaryParent(vertex);
             if (primaryParent == null)
-                return Enumerable.Empty<PositioningVertexBase>();
+                return Enumerable.Empty<LayoutVertexBase>();
 
             return GetPrimaryChildren(primaryParent).Where(i => i != vertex);
         }
 
-        public bool IsPlacedPrimarySiblingOf(PositioningVertexBase vertex1, PositioningVertexBase vertex2)
+        public bool IsPlacedPrimarySiblingOf(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
         {
             return vertex2 != null 
                 && !vertex2.IsFloating 
                 && GetPrimaryParent(vertex1) == GetPrimaryParent(vertex2);
         }
 
-        public IEnumerable<PositioningEdge> GetPrimaryEdges(PositioningVertexBase vertex)
+        public IEnumerable<LayoutEdge> GetPrimaryEdges(LayoutVertexBase vertex)
         {
             return InEdges(vertex).Where(i => GetPrimaryParent(i.Source) == vertex);
         }
 
-        public void ExecuteOnPrimaryDescendantVertices(PositioningVertexBase rootVertex, Action<PositioningVertexBase> actionOnVertex)
+        public void ExecuteOnPrimaryDescendantVertices(LayoutVertexBase rootVertex, Action<LayoutVertexBase> actionOnVertex)
         {
             actionOnVertex(rootVertex);
             foreach (var layoutEdge in GetPrimaryEdges(rootVertex))
@@ -110,10 +109,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
-        public PositioningEdge GetInEdge(DummyPositioningVertex dummyVertex) => InEdges(dummyVertex).FirstOrDefault();
-        public PositioningEdge GetOutEdge(DummyPositioningVertex dummyVertex) => OutEdges(dummyVertex).FirstOrDefault();
+        public LayoutEdge GetInEdge(DummyLayoutVertex dummyVertex) => InEdges(dummyVertex).FirstOrDefault();
+        public LayoutEdge GetOutEdge(DummyLayoutVertex dummyVertex) => OutEdges(dummyVertex).FirstOrDefault();
 
-        private IEnumerable<PositioningVertexBase> GetOrderedParents(PositioningVertexBase vertex)
+        private IEnumerable<LayoutVertexBase> GetOrderedParents(LayoutVertexBase vertex)
         {
             return GetParents(vertex)
                 .OrderByDescending(GetVertexPriority)
@@ -121,31 +120,31 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 .ThenBy(i => i.ToString());
         }
 
-        private int GetVertexPriority(PositioningVertexBase vertex)
+        private int GetVertexPriority(LayoutVertexBase vertex)
         {
-            var dummyPositioningVertex = vertex as DummyPositioningVertex;
-            if (dummyPositioningVertex == null)
+            var dummyVertex = vertex as DummyLayoutVertex;
+            if (dummyVertex == null)
                 return vertex.Priority;
 
-            var outEdge = GetOutEdge(dummyPositioningVertex);
+            var outEdge = GetOutEdge(dummyVertex);
             if (outEdge == null)
                 throw new InvalidOperationException("Dummy vertex with no out-edge does not have priority.");
             return GetVertexPriority(outEdge.Target);
         }
 
-        private int GetDistanceToNonDummy(PositioningVertexBase vertex)
+        private int GetDistanceToNonDummy(LayoutVertexBase vertex)
         {
-            var dummyPositioningVertex = vertex as DummyPositioningVertex;
-            if (dummyPositioningVertex == null)
+            var dummyVertex = vertex as DummyLayoutVertex;
+            if (dummyVertex == null)
                 return 1;
 
-            var outEdge = GetOutEdge(dummyPositioningVertex);
+            var outEdge = GetOutEdge(dummyVertex);
             if (outEdge == null)
                 throw new InvalidOperationException("Dummy vertex with no out-edge does not have distance to non-dummy.");
             return GetDistanceToNonDummy(outEdge.Target) + 1;
         }
 
-        private void CheckDegreeLimits(PositioningEdge edge)
+        private void CheckDegreeLimits(LayoutEdge edge)
         {
             CheckDegree(edge.Source, EdgeDirection.In);
             CheckDegree(edge.Source, EdgeDirection.Out);
@@ -153,7 +152,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             CheckDegree(edge.Target, EdgeDirection.Out);
         }
 
-        private void CheckDegree(PositioningVertexBase vertex, EdgeDirection direction)
+        private void CheckDegree(LayoutVertexBase vertex, EdgeDirection direction)
         {
             if (vertex.IsDummy && this.Degree(vertex, direction) > 1)
                 throw new InvalidOperationException($"Dummy vertex {vertex} cannot have more than 1 {direction}-edges.");

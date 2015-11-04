@@ -4,13 +4,13 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A positioning vertex that represents a normal diagram node. 
+    /// A layout vertex that represents a normal diagram node. 
     /// </summary>
-    internal class DiagramNodePositioningVertex : PositioningVertexBase
+    internal class DiagramNodeLayoutVertex : LayoutVertexBase
     {
         public DiagramNode DiagramNode { get; }
 
-        public DiagramNodePositioningVertex(DiagramNode diagramNode, bool isFloating = true)
+        public DiagramNodeLayoutVertex(DiagramNode diagramNode, bool isFloating = true)
             :base(isFloating)
         {
             if (diagramNode == null)

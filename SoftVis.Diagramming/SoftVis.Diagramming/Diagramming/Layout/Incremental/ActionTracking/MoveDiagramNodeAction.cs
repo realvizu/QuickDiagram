@@ -4,19 +4,19 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// A layout action that moves a DiagramNodePositioningVertex.
+    /// A layout action that moves a DiagramNodeLayoutVertex.
     /// </summary>
     internal class MoveDiagramNodeAction : DiagramNodeAction, IMoveDiagramNodeAction, IMoveVertexAction
     {
-        public PositioningVertexBase Vertex { get; }
+        public LayoutVertexBase Vertex { get; }
         public Point2D From { get; }
         public Point2D To { get; }
         public Point2D By { get; }
 
-        public MoveDiagramNodeAction(DiagramNodePositioningVertex diagramNodePositioningVertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
-            : base("MoveDiagramNode", diagramNodePositioningVertex.DiagramNode, causingLayoutAction)
+        public MoveDiagramNodeAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
+            : base("MoveDiagramNode", diagramNodeLayoutVertex.DiagramNode, causingLayoutAction)
         {
-            Vertex = diagramNodePositioningVertex;
+            Vertex = diagramNodeLayoutVertex;
             From = @from;
             To = to;
             By = To - From;

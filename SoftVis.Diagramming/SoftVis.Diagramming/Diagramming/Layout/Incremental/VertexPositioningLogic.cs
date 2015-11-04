@@ -15,55 +15,55 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     {
         private readonly double _horizontalGap;
         private readonly double _verticalGap;
-        private readonly IReadOnlyPositioningGraph _positioningGraph;
-        private readonly IReadOnlyPositioningVertexLayers _layers;
+        private readonly IReadOnlyLayoutGraph _layoutGraph;
+        private readonly IReadOnlyLayoutVertexLayers _layers;
         private readonly LayoutActionGraph _layoutActionGraph;
 
-        public VertexPositioningLogic(double horizontalGap, double verticalGap, IReadOnlyPositioningGraph positioningGraph,
-            IReadOnlyPositioningVertexLayers layers)
+        public VertexPositioningLogic(double horizontalGap, double verticalGap, IReadOnlyLayoutGraph layoutGraph,
+            IReadOnlyLayoutVertexLayers layers)
         {
             _horizontalGap = horizontalGap;
             _verticalGap = verticalGap;
-            _positioningGraph = positioningGraph;
+            _layoutGraph = layoutGraph;
             _layers = layers;
 
             _layoutActionGraph = new LayoutActionGraph();
             LayoutActionExecuted += RecordLayoutActionIntoGraph;
         }
 
-        public void PositionVertex(PositioningVertexBase layoutVertex, ILayoutAction causingAction,
-            PositioningVertexBase parentVertex = null)
+        public void PositionVertex(LayoutVertexBase layoutVertex, ILayoutAction causingAction,
+            LayoutVertexBase parentVertex = null)
         {
             _layoutActionGraph.Clear();
 
             var layoutAction = RaiseVertexLayoutAction("PositionVertex", layoutVertex, causingAction);
 
-            var primaryParent = _positioningGraph.GetPrimaryParent(layoutVertex);
+            var primaryParent = _layoutGraph.GetPrimaryParent(layoutVertex);
             if (primaryParent == null)
                 PositionRootVertex(layoutVertex, layoutAction);
             else if (primaryParent == parentVertex)
                 PositionVertexUnderParent(layoutVertex, primaryParent, layoutAction);
         }
 
-        public void CoverUpVertex(PositioningVertexBase layoutVertex, ILayoutAction causingAction)
+        public void CoverUpVertex(LayoutVertexBase layoutVertex, ILayoutAction causingAction)
         {
             _layoutActionGraph.Clear();
 
             var layoutAction = RaiseVertexLayoutAction("CoverUpVertex", layoutVertex, causingAction);
 
             layoutVertex.IsFloating = true;
-            var siblings = _positioningGraph.GetPrimarySiblings(layoutVertex).ToArray();
+            var siblings = _layoutGraph.GetPrimarySiblings(layoutVertex).ToArray();
 
             CompactSiblings(siblings, layoutVertex, layoutAction);
         }
 
-        public void CenterPrimaryParent(PositioningVertexBase layoutVertex, ILayoutAction causingAction)
+        public void CenterPrimaryParent(LayoutVertexBase layoutVertex, ILayoutAction causingAction)
         {
-            var parentVertex = _positioningGraph.GetPrimaryParent(layoutVertex);
+            var parentVertex = _layoutGraph.GetPrimaryParent(layoutVertex);
             if (parentVertex == null)
                 return;
 
-            var parentTargetCenterX = _positioningGraph.GetPrimaryPositionedChildren(parentVertex).GetRect().Center.X;
+            var parentTargetCenterX = _layoutGraph.GetPrimaryPositionedChildren(parentVertex).GetRect().Center.X;
             if (parentTargetCenterX.IsEqualWithTolerance(parentVertex.Center.X))
                 return;
 
@@ -86,7 +86,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             AdjustVerticalPositions(layoutAction);
         }
 
-        private void CompactSiblings(PositioningVertexBase[] siblings, PositioningVertexBase removedVertex,
+        private void CompactSiblings(LayoutVertexBase[] siblings, LayoutVertexBase removedVertex,
             ILayoutAction causingAction)
         {
             if (!siblings.Any())
@@ -106,20 +106,20 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
-        private void PositionRootVertex(PositioningVertexBase rootVertex, ILayoutAction causingAction)
+        private void PositionRootVertex(LayoutVertexBase rootVertex, ILayoutAction causingAction)
         {
             var targetCenterX = GetRootVertexInsertionCenterX(rootVertex);
             MoveTreeTo(rootVertex, targetCenterX, causingAction);
         }
 
-        private void PositionVertexUnderParent(PositioningVertexBase childVertex, PositioningVertexBase parentVertex,
+        private void PositionVertexUnderParent(LayoutVertexBase childVertex, LayoutVertexBase parentVertex,
             ILayoutAction causingAction)
         {
             var targetCenterX = GetNonRootVertexInsertionCenterX(childVertex, parentVertex);
             MoveTreeTo(childVertex, targetCenterX, causingAction);
         }
 
-        private double GetRootVertexInsertionCenterX(PositioningVertexBase rootVertex)
+        private double GetRootVertexInsertionCenterX(LayoutVertexBase rootVertex)
         {
             var previousVertex = _layers.GetPreviousInLayer(rootVertex);
             var nextVertex = _layers.GetNextInLayer(rootVertex);
@@ -129,7 +129,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 : CalculateInsertionCenterXFromNeighbours(rootVertex, previousVertex, nextVertex);
         }
 
-        private double GetNonRootVertexInsertionCenterX(PositioningVertexBase childVertex, PositioningVertexBase parentVertex)
+        private double GetNonRootVertexInsertionCenterX(LayoutVertexBase childVertex, LayoutVertexBase parentVertex)
         {
             if (!_layers.HasPlacedPrimarySiblingsInSameLayer(childVertex))
                 return parentVertex.Center.X;
@@ -140,8 +140,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return CalculateInsertionCenterXFromNeighbours(childVertex, previousPlacedSibling, nextPlacedSibling);
         }
 
-        private double CalculateInsertionCenterXFromNeighbours(PositioningVertexBase insertedVertex,
-            PositioningVertexBase previousSibling, PositioningVertexBase nextSibling)
+        private double CalculateInsertionCenterXFromNeighbours(LayoutVertexBase insertedVertex,
+            LayoutVertexBase previousSibling, LayoutVertexBase nextSibling)
         {
             if (previousSibling == null && nextSibling == null)
                 throw new ArgumentNullException(nameof(nextSibling) + " and " + nameof(previousSibling));
@@ -151,7 +151,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 : previousSibling.Right + _horizontalGap + insertedVertex.Width / 2;
         }
 
-        private void MoveTreeTo(PositioningVertexBase rootVertex, double targetCenterX,
+        private void MoveTreeTo(LayoutVertexBase rootVertex, double targetCenterX,
             ILayoutAction causingAction)
         {
             FloatPrimaryTree(rootVertex);
@@ -165,12 +165,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             else
             {
                 MoveVertexTo(rootVertex, targetCenterX, layoutAction);
-                foreach (var primaryChild in _positioningGraph.GetPrimaryChildren(rootVertex))
+                foreach (var primaryChild in _layoutGraph.GetPrimaryChildren(rootVertex))
                     MoveTreeTo(primaryChild, targetCenterX, layoutAction);
             }
         }
 
-        private void MoveTreeBy(PositioningVertexBase rootVertex, double translateVectorX,
+        private void MoveTreeBy(LayoutVertexBase rootVertex, double translateVectorX,
             ILayoutAction causingAction)
         {
             if (rootVertex.Center == Point2D.Empty)
@@ -180,18 +180,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             var layoutAction = RaiseVertexLayoutAction("MoveTreeBy", rootVertex, translateVectorX, causingAction);
 
-            _positioningGraph.ExecuteOnPrimaryDescendantVertices(rootVertex,
+            _layoutGraph.ExecuteOnPrimaryDescendantVertices(rootVertex,
                 i => MoveVertexBy(i, translateVectorX, layoutAction));
 
             CenterPrimaryParent(rootVertex, layoutAction);
         }
 
-        private void FloatPrimaryTree(PositioningVertexBase vertex)
+        private void FloatPrimaryTree(LayoutVertexBase vertex)
         {
-            _positioningGraph.ExecuteOnPrimaryDescendantVertices(vertex, i => i.IsFloating = true);
+            _layoutGraph.ExecuteOnPrimaryDescendantVertices(vertex, i => i.IsFloating = true);
         }
 
-        private void MoveVertexBy(PositioningVertexBase movingVertex, double translateVectorX, ILayoutAction causingAction)
+        private void MoveVertexBy(LayoutVertexBase movingVertex, double translateVectorX, ILayoutAction causingAction)
         {
             if (movingVertex.Center == Point2D.Empty)
                 return;
@@ -199,13 +199,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             MoveVertexTo(movingVertex, movingVertex.Center.X + translateVectorX, causingAction);
         }
 
-        private void MoveVertexTo(PositioningVertexBase movingVertex, double newCenterX, ILayoutAction causingAction)
+        private void MoveVertexTo(LayoutVertexBase movingVertex, double newCenterX, ILayoutAction causingAction)
         {
             var newCenter = new Point2D(newCenterX, _layers.GetLayer(movingVertex).CenterY);
             MoveVertexTo(movingVertex, newCenter, causingAction);
         }
 
-        private void MoveVertexTo(PositioningVertexBase movingVertex, Point2D newCenter, ILayoutAction causingAction)
+        private void MoveVertexTo(LayoutVertexBase movingVertex, Point2D newCenter, ILayoutAction causingAction)
         {
             movingVertex.IsFloating = false;
 
@@ -228,7 +228,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
-        private void PushOtherVerticesFromTheWay(PositioningVertexBase pushyVertex, ILayoutAction causingAction)
+        private void PushOtherVerticesFromTheWay(LayoutVertexBase pushyVertex, ILayoutAction causingAction)
         {
             var pushyVertexIndex = _layers.GetIndexInLayer(pushyVertex);
             foreach (var existingVertex in _layers.GetOtherPlacedVerticesInLayer(pushyVertex))
@@ -242,7 +242,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
-        private void EnsureVertexIsToTheRight(PositioningVertexBase rightVertex, PositioningVertexBase leftVertex, ILayoutAction causingAction)
+        private void EnsureVertexIsToTheRight(LayoutVertexBase rightVertex, LayoutVertexBase leftVertex, ILayoutAction causingAction)
         {
             var vertexDistance = rightVertex.Left - leftVertex.Right;
             if (vertexDistance >= _horizontalGap)
@@ -255,7 +255,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             MoveTreeBy(rightVertex, translateVectorX, layoutAction);
         }
 
-        private void EnsureVertexIsToTheLeft(PositioningVertexBase leftVertex, PositioningVertexBase rightVertex, ILayoutAction causingAction)
+        private void EnsureVertexIsToTheLeft(LayoutVertexBase leftVertex, LayoutVertexBase rightVertex, ILayoutAction causingAction)
         {
             var vertexDistance = rightVertex.Left - leftVertex.Right;
             if (vertexDistance >= _horizontalGap)
@@ -286,7 +286,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
-        private bool CompactLayer(IReadOnlyPositioningVertexLayer layer, ILayoutAction causingAction)
+        private bool CompactLayer(IReadOnlyLayoutVertexLayer layer, ILayoutAction causingAction)
         {
             var gapFound = false;
             for (var i = 1; i < layer.Count; i++)
@@ -294,8 +294,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 var leftVertex = layer[i - 1];
                 var rightVertex = layer[i];
 
-                var leftVertexParent = _positioningGraph.GetPrimaryParent(leftVertex);
-                var rightVertexParent = _positioningGraph.GetPrimaryParent(rightVertex);
+                var leftVertexParent = _layoutGraph.GetPrimaryParent(leftVertex);
+                var rightVertexParent = _layoutGraph.GetPrimaryParent(rightVertex);
 
                 if (leftVertexParent != rightVertexParent)
                     continue;
@@ -313,13 +313,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return gapFound;
         }
 
-        private double DetermineGap(PositioningVertexBase leftVertex, PositioningVertexBase rightVertex)
+        private double DetermineGap(LayoutVertexBase leftVertex, LayoutVertexBase rightVertex)
         {
             var gap = rightVertex.Left - leftVertex.Right;
             if (gap <= _horizontalGap)
                 return gap;
 
-            var rightVertexLeftmostChild = _positioningGraph.GetPrimaryChildren(rightVertex)
+            var rightVertexLeftmostChild = _layoutGraph.GetPrimaryChildren(rightVertex)
                 .OrderBy(i => i.Right).FirstOrDefault();
             if (rightVertexLeftmostChild == null)
                 return gap;
@@ -333,7 +333,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return result;
         }
 
-        private void RemoveGap(PositioningVertexBase rightVertex, double gap, ILayoutAction causingAction)
+        private void RemoveGap(LayoutVertexBase rightVertex, double gap, ILayoutAction causingAction)
         {
             var layoutAction = RaiseVertexLayoutAction("RemoveGap", rightVertex, gap, causingAction);
 
@@ -345,7 +345,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layoutAction = RaiseLayoutAction("AdjustVerticalPositions", null, causingAction);
 
-            foreach (var layoutVertex in _positioningGraph.Vertices)
+            foreach (var layoutVertex in _layoutGraph.Vertices)
             {
                 var newCenter = new Point2D(layoutVertex.Center.X, _layers.GetLayer(layoutVertex).CenterY);
                 MoveVertexTo(layoutVertex, newCenter, layoutAction);

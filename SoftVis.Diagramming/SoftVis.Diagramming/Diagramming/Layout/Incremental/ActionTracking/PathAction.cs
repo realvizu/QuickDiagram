@@ -6,15 +6,15 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// A layout action that affects a PositioningEdgePath.
+    /// A layout action that affects a LayoutPath.
     /// </summary>
     internal class PathAction : LayoutAction, IRerouteDiagramConnectorAction
     {
-        public PositioningEdgePath Path { get; }
+        public LayoutPath Path { get; }
         public Route OldRoute { get; }
         public Route NewRoute { get; }
 
-        public PathAction(string action, PositioningEdgePath path, Route oldRoute, Route newRoute, 
+        public PathAction(string action, LayoutPath path, Route oldRoute, Route newRoute, 
             ILayoutAction causingLayoutAction = null)
             :base(action, null, causingLayoutAction)
         {

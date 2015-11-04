@@ -6,16 +6,16 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// Comparer used to sort sibling vertices in layers.
     /// </summary>
-    internal class VerticesInLayerComparer : IComparer<PositioningVertexBase>
+    internal class VerticesInLayerComparer : IComparer<LayoutVertexBase>
     {
-        private readonly IReadOnlyPositioningGraph _positioningGraph;
+        private readonly IReadOnlyLayoutGraph _layoutGraph;
 
-        public VerticesInLayerComparer(IReadOnlyPositioningGraph positioningGraph)
+        public VerticesInLayerComparer(IReadOnlyLayoutGraph layoutGraph)
         {
-            _positioningGraph = positioningGraph;
+            _layoutGraph = layoutGraph;
         }
 
-        public int Compare(PositioningVertexBase vertex1, PositioningVertexBase vertex2)
+        public int Compare(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
         {
             if (vertex1 == null) throw new ArgumentNullException(nameof(vertex1));
             if (vertex2 == null) throw new ArgumentNullException(nameof(vertex2));
@@ -24,12 +24,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private string GetNameForComparison(PositioningVertexBase vertex)
+        private string GetNameForComparison(LayoutVertexBase vertex)
         {
-            var dummyPositioningVertex = vertex as DummyPositioningVertex;
-            if (dummyPositioningVertex != null)
+            var dummyVertex = vertex as DummyLayoutVertex;
+            if (dummyVertex != null)
             {
-                var inEdge = _positioningGraph.GetInEdge(dummyPositioningVertex);
+                var inEdge = _layoutGraph.GetInEdge(dummyVertex);
                 if (inEdge == null)
                     throw new InvalidOperationException("Dummy vertex with no in-edge cannot be compared.");
                 return GetNameForComparison(inEdge.Source);

@@ -6,21 +6,21 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// An ordered list of positioning vertices that belong to the same horizontal layer.
+    /// An ordered list of vertices that belong to the same horizontal layer.
     /// </summary>
-    internal class PositioningVertexLayer : IReadOnlyPositioningVertexLayer
+    internal class LayoutVertexLayer : IReadOnlyLayoutVertexLayer
     {
-        private readonly IReadOnlyPositioningGraph _positioningGraph;
-        private readonly IComparer<PositioningVertexBase> _vertexComparer;
-        private readonly List<PositioningVertexBase> _items;
+        private readonly IReadOnlyLayoutGraph _layoutGraph;
+        private readonly IComparer<LayoutVertexBase> _vertexComparer;
+        private readonly List<LayoutVertexBase> _items;
         public int LayerIndex { get; }
         public double Top { get; set; }
 
-        internal PositioningVertexLayer(IReadOnlyPositioningGraph positioningGraph, int layerIndex)
+        internal LayoutVertexLayer(IReadOnlyLayoutGraph layoutGraph, int layerIndex)
         {
-            _positioningGraph = positioningGraph;
-            _vertexComparer = new VerticesInLayerComparer(positioningGraph);
-            _items = new List<PositioningVertexBase>();
+            _layoutGraph = layoutGraph;
+            _vertexComparer = new VerticesInLayerComparer(layoutGraph);
+            _items = new List<LayoutVertexBase>();
 
             LayerIndex = layerIndex;
             Top = double.MinValue;
@@ -31,45 +31,45 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public double CenterY => Top + Height / 2;
         public Rect2D Rect => _items.Where(i => !i.IsFloating).Select(i => i.Rect).Union();
 
-        public PositioningVertexBase this[int i] => _items[i];
+        public LayoutVertexBase this[int i] => _items[i];
         public int Count => _items.Count;
-        public int IndexOf(PositioningVertexBase vertex) => _items.IndexOf(vertex);
-        public IEnumerator<PositioningVertexBase> GetEnumerator() => _items.GetEnumerator();
+        public int IndexOf(LayoutVertexBase vertex) => _items.IndexOf(vertex);
+        public IEnumerator<LayoutVertexBase> GetEnumerator() => _items.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 
-        public void Add(PositioningVertexBase vertex)
+        public void Add(LayoutVertexBase vertex)
         {
             var itemIndex = DetermineItemIndex(vertex);
             _items.Insert(itemIndex, vertex);
         }
 
-        public void Remove(PositioningVertexBase vertex)
+        public void Remove(LayoutVertexBase vertex)
         {
             _items.Remove(vertex);
         }
 
-        public PositioningVertexBase GetPrevious(PositioningVertexBase vertex)
+        public LayoutVertexBase GetPrevious(LayoutVertexBase vertex)
         {
             var index = _items.IndexOf(vertex);
             return index == 0 ? null : _items[index - 1];
         }
 
-        public PositioningVertexBase GetNext(PositioningVertexBase vertex)
+        public LayoutVertexBase GetNext(LayoutVertexBase vertex)
         {
             var index = _items.IndexOf(vertex);
             return index == Count - 1 ? null : _items[index + 1];
         }
 
-        public bool IsItemIndexValid(PositioningVertexBase vertex)
+        public bool IsItemIndexValid(LayoutVertexBase vertex)
         {
             return IndexOf(vertex) == DetermineItemIndex(vertex);
         }
 
-        private int DetermineItemIndex(PositioningVertexBase vertex)
+        private int DetermineItemIndex(LayoutVertexBase vertex)
         {
             // TODO: handle the case of different parents
 
-            var vertexParent = _positioningGraph.GetPrimaryParent(vertex);
+            var vertexParent = _layoutGraph.GetPrimaryParent(vertex);
 
             if (vertexParent == null)
                 return _items.Count;
@@ -84,12 +84,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 : _items.IndexOf(siblingsInLayer.Last()) + 1;
         }
 
-        private IEnumerable<PositioningVertexBase> GetPrimarySiblingsInSameLayer(PositioningVertexBase vertex)
+        private IEnumerable<LayoutVertexBase> GetPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
         {
-            return _positioningGraph.GetPrimarySiblings(vertex).Where(_items.Contains);
+            return _layoutGraph.GetPrimarySiblings(vertex).Where(_items.Contains);
         }
 
-        private bool Precedes(PositioningVertexBase vertex1, PositioningVertexBase vertex2)
+        private bool Precedes(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
         {
             return _vertexComparer.Compare(vertex1, vertex2) < 0;
         }

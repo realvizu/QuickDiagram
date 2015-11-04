@@ -8,9 +8,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
     /// </summary>
     internal class VertexAction : LayoutAction
     {
-        public PositioningVertexBase Vertex { get; }
+        public LayoutVertexBase Vertex { get; }
 
-        public VertexAction(string action, PositioningVertexBase vertex, double? amount = null, ILayoutAction causingLayoutAction = null)
+        public VertexAction(string action, LayoutVertexBase vertex, double? amount = null, ILayoutAction causingLayoutAction = null)
             :base(action, amount, causingLayoutAction)
         {
             if (vertex == null) throw new ArgumentNullException(nameof(vertex));

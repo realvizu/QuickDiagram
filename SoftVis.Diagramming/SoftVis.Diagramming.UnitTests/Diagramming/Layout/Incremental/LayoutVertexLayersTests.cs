@@ -7,24 +7,24 @@ using Xunit;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 {
-    public class PositioningVertexLayersTests
+    public class LayoutVertexLayersTests
     {
         private const int HorizontalGap = 10;
         private const int VerticalGap = 10;
-        private readonly PositioningGraph _positioningGraph;
-        private readonly PositioningVertexLayers _layers;
+        private readonly LayoutGraph _layoutGraph;
+        private readonly LayoutVertexLayers _layers;
 
-        public PositioningVertexLayersTests()
+        public LayoutVertexLayersTests()
         {
-            _positioningGraph = new PositioningGraph();
-            _layers = new PositioningVertexLayers(_positioningGraph, VerticalGap);
+            _layoutGraph = new LayoutGraph();
+            _layers = new LayoutVertexLayers(_layoutGraph, VerticalGap);
         }
 
         [Fact]
         public void AddFirstVertex_AddedAsFirstLayerFirstItem()
         {
             var vertex = CreateVertex("A");
-            _positioningGraph.AddVertex(vertex);
+            _layoutGraph.AddVertex(vertex);
             _layers.AddVertex(vertex);
 
             _layers.GetLayerIndex(vertex).Should().Be(0);
@@ -37,9 +37,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             var vertexA = CreateVertex("A");
             var vertexB = CreateVertex("B");
 
-            _positioningGraph.AddVertex(vertexA);
+            _layoutGraph.AddVertex(vertexA);
             _layers.AddVertex(vertexA);
-            _positioningGraph.AddVertex(vertexB);
+            _layoutGraph.AddVertex(vertexB);
             _layers.AddVertex(vertexB);
 
             _layers.GetLayerIndex(vertexB).Should().Be(0);
@@ -49,20 +49,20 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         [Fact]
         public void AddChildVertices_AddedNextToSiblingBasedOnNameOrder()
         {
-            SetUpPositioningGraph(
+            SetUpLayoutGraphAndLayers(
                 "A",
                 "O<-B",
                 "C"
             );
 
             {
-                _positioningGraph.AddEdge(CreateEdge("A", "O"));
+                _layoutGraph.AddEdge(CreateEdge("A", "O"));
                 var vertex = GetVertex("A");
                 _layers.GetLayerIndex(vertex).Should().Be(1);
                 _layers.GetIndexInLayer(vertex).Should().Be(0);
             }
             {
-                _positioningGraph.AddEdge(CreateEdge("C", "O"));
+                _layoutGraph.AddEdge(CreateEdge("C", "O"));
                 var vertex = GetVertex("C");
                 _layers.GetLayerIndex(vertex).Should().Be(1);
                 _layers.GetIndexInLayer(vertex).Should().Be(2);
@@ -72,14 +72,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         [Fact]
         public void AddChildVertices_AddedNextToSiblingBasedOnNameOrder_EvenIfSomeSiblingsAreDummy()
         {
-            SetUpPositioningGraph(
+            SetUpLayoutGraphAndLayers(
                 "O<-*1<-A",
                 "O<-*2<-C",
                 "B"
             );
 
             var edge = CreateEdge("B", "O");
-            _positioningGraph.AddEdge(edge);
+            _layoutGraph.AddEdge(edge);
             _layers.AddEdge(edge);
 
             var vertex = GetVertex("B");
@@ -91,33 +91,33 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         // TODO: fix this
         public void AddChildVertices_NoSiblings_AddedBasedOnParentOrder()
         {
-            SetUpPositioningGraph(
+            SetUpLayoutGraphAndLayers(
                 "O2<-A",
                 "O1",
                 "C"
             );
 
-            _positioningGraph.AddEdge(CreateEdge("C", "O1"));
+            _layoutGraph.AddEdge(CreateEdge("C", "O1"));
             var vertex = GetVertex("C");
             _layers.GetLayerIndex(vertex).Should().Be(1);
             _layers.GetIndexInLayer(vertex).Should().Be(0);
         }
 
-        private void SetUpPositioningGraph(params string[] pathSpecifications)
+        private void SetUpLayoutGraphAndLayers(params string[] pathSpecifications)
         {
             foreach (var pathSpecification in pathSpecifications)
             {
                 foreach (var vertexName in GetVertexNames(pathSpecification))
                 {
                     var vertex = CreateVertex(vertexName);
-                    _positioningGraph.AddVertex(vertex);
+                    _layoutGraph.AddVertex(vertex);
                     _layers.AddVertex(vertex);
                 }
 
                 foreach (var edgeSpecification in GetEdgeSpecifications(pathSpecification))
                 {
                     var edge = CreateEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
-                    _positioningGraph.AddEdge(edge);
+                    _layoutGraph.AddEdge(edge);
                     _layers.AddEdge(edge);
                 }
             }
@@ -136,23 +136,23 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
                 yield return new EdgeSpecification(vertexNames[i+1], vertexNames[i]);
         }
 
-        private static PositioningVertexBase CreateVertex(string name)
+        private static LayoutVertexBase CreateVertex(string name)
         {
             return name.StartsWith("*")
-                ? (PositioningVertexBase)new TestDummyPositioningVertex(int.Parse(name.Substring(1)), true)
-                : new TestPositioningVertex(name, true);
+                ? (LayoutVertexBase)new TestDummyLayoutVertex(int.Parse(name.Substring(1)), true)
+                : new TestLayoutVertex(name, true);
         }
 
-        private PositioningVertexBase GetVertex(string vertexName)
+        private LayoutVertexBase GetVertex(string vertexName)
         {
-            return _positioningGraph.Vertices.FirstOrDefault(i => i.Name == vertexName);
+            return _layoutGraph.Vertices.FirstOrDefault(i => i.Name == vertexName);
         }
 
-        private PositioningEdge CreateEdge(string sourceVertexName, string targetVertexName)
+        private LayoutEdge CreateEdge(string sourceVertexName, string targetVertexName)
         {
             var source = GetVertex(sourceVertexName);
             var target = GetVertex(targetVertexName);
-            return new PositioningEdge(source, target, null);
+            return new LayoutEdge(source, target, null);
         }
     }
 }

@@ -4,13 +4,13 @@ using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// A layout action that affects a PositioningEdge.
+    /// A layout action that affects a LayoutEdge.
     /// </summary>
     internal class EdgeAction : LayoutAction, IDiagramConnectorAction
     {
-        public PositioningEdge Edge { get; }
+        public LayoutEdge Edge { get; }
 
-        public EdgeAction(string action, PositioningEdge edge, double? amount = null, ILayoutAction causingLayoutAction = null)
+        public EdgeAction(string action, LayoutEdge edge, double? amount = null, ILayoutAction causingLayoutAction = null)
             :base(action, amount, causingLayoutAction)
         {
             if (edge == null) throw new ArgumentNullException(nameof(edge));

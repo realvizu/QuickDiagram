@@ -4,7 +4,7 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
 {
     /// <summary>
-    /// A layout action that moves a DummyPositioningVertex.
+    /// A layout action that moves a DummyLayoutVertex.
     /// </summary>
     internal class MoveDummyVertexAction : VertexAction, IMoveVertexAction
     {
@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
         public Point2D To { get; }
         public Point2D By { get; }
 
-        public MoveDummyVertexAction(DummyPositioningVertex vertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
+        public MoveDummyVertexAction(DummyLayoutVertex vertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
             : base("MoveDummyVertex", vertex, to.X - @from.X, causingLayoutAction)
         {
             From = @from;

@@ -3,17 +3,17 @@
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// Abstract base class for vertices used in a positioning graph. 
+    /// Abstract base class for vertices used in a layout graph. 
     /// </summary>
     /// <remarks>
     /// <para>LayoutVertices can float which indicates that the edge does not take part in layout calculations.</para>
     /// </remarks>
-    internal abstract class PositioningVertexBase : IRect
+    internal abstract class LayoutVertexBase : IRect
     {
         public bool IsFloating { get; set; }
         public Point2D Center { get; set; }
 
-        protected PositioningVertexBase(bool isFloating)
+        protected LayoutVertexBase(bool isFloating)
         {
             IsFloating = isFloating;
             Center = Point2D.Empty;

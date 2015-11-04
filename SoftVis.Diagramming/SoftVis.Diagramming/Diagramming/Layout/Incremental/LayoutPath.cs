@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
@@ -8,27 +7,27 @@ using MoreLinq;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A list of PositioningEdges that form a path.
+    /// A list of layout edges that form a path.
     /// That is, the target of an edge is the source of the next edge in the path.
     /// </summary>
     /// <remarks>Interim vertices are dummies.</remarks>
-    internal class PositioningEdgePath : Path<PositioningVertexBase, PositioningEdge>
+    internal class LayoutPath : Path<LayoutVertexBase, LayoutEdge>
     {
-        public PositioningEdgePath(PositioningEdge positioningEdge)
-            : this(new List<PositioningEdge> { positioningEdge })
+        public LayoutPath(LayoutEdge layoutEdge)
+            : this(new List<LayoutEdge> { layoutEdge })
         {
         }
 
-        private PositioningEdgePath(IEnumerable<PositioningEdge> edges)
+        private LayoutPath(IEnumerable<LayoutEdge> edges)
             : base(edges)
         {
         }
 
-        public IEnumerable<PositioningVertexBase> Vertices => this.Select(i => i.Source).Concat(this.Last().Target);
-        public IEnumerable<DummyPositioningVertex> InterimVertices => this.Skip(1).Select(i => i.Source).OfType<DummyPositioningVertex>();
+        public IEnumerable<LayoutVertexBase> Vertices => this.Select(i => i.Source).Concat(this.Last().Target);
+        public IEnumerable<DummyLayoutVertex> InterimVertices => this.Skip(1).Select(i => i.Source).OfType<DummyLayoutVertex>();
         public bool IsFloating => Vertices.Any(i => i.IsFloating);
 
-        public void Substitute(int atIndex, int removeEdgeCount, params PositioningEdge[] newEdges)
+        public void Substitute(int atIndex, int removeEdgeCount, params LayoutEdge[] newEdges)
         {
             for (var i = 0; i < removeEdgeCount; i++)
                 Edges.RemoveAt(atIndex);

@@ -16,11 +16,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private readonly IReadOnlyDiagramGraph _diagramGraph;
         private readonly IDiagramNodeRankProvider _diagramNodeRankProvider;
 
-        private readonly PositioningGraph _positioningGraph;
-        private readonly PositioningVertexLayers _layers;
-        private readonly Map<DiagramNode, DiagramNodePositioningVertex> _diagramNodeToPositioningVertexMap;
-        private readonly Map<DiagramConnector, PositioningEdgePath> _diagramConnectorToPositioningEdgePathMap;
-        private readonly Map<PositioningEdgePath, Route> _positioningEdgePathToPreviousRouteMap;
+        private readonly LayoutGraph _layoutGraph;
+        private readonly LayoutVertexLayers _layers;
+        private readonly Map<DiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
+        private readonly Map<DiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
+        private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
 
         private readonly VertexPositioningLogic _vertexPositioningLogic;
 
@@ -30,37 +30,37 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _diagramGraph = diagramGraph;
             _diagramNodeRankProvider = diagramNodeRankProvider;
 
-            _positioningGraph = new PositioningGraph();
-            _layers = new PositioningVertexLayers(_positioningGraph, verticalGap);
-            _diagramNodeToPositioningVertexMap = new Map<DiagramNode, DiagramNodePositioningVertex>();
-            _diagramConnectorToPositioningEdgePathMap = new Map<DiagramConnector, PositioningEdgePath>();
-            _positioningEdgePathToPreviousRouteMap = new Map<PositioningEdgePath, Route>();
+            _layoutGraph = new LayoutGraph();
+            _layers = new LayoutVertexLayers(_layoutGraph, verticalGap);
+            _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
+            _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
+            _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
 
             _vertexPositioningLogic = new VertexPositioningLogic(horizontalGap, verticalGap, 
-                _positioningGraph, _layers);
+                _layoutGraph, _layers);
             _vertexPositioningLogic.LayoutActionExecuted += OnLayoutActionExecuted;
         }
 
         public void Clear()
         {
             _layers.Clear();
-            _positioningGraph.Clear();
-            _diagramNodeToPositioningVertexMap.Clear();
-            _diagramConnectorToPositioningEdgePathMap.Clear();
-            _positioningEdgePathToPreviousRouteMap.Clear();
+            _layoutGraph.Clear();
+            _diagramNodeToLayoutVertexMap.Clear();
+            _diagramConnectorToLayoutPathMap.Clear();
+            _layoutPathToPreviousRouteMap.Clear();
         }
 
         public void Add(DiagramNode diagramNode)
         {
             var layoutAction = RaiseDiagramNodeLayoutAction("AddNode", diagramNode);
 
-            var diagramNodePositioningVertex = new DiagramNodePositioningVertex(diagramNode);
-            _diagramNodeToPositioningVertexMap.Set(diagramNode, diagramNodePositioningVertex);
+            var diagramNodeVertex = new DiagramNodeLayoutVertex(diagramNode);
+            _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeVertex);
 
-            _positioningGraph.AddVertex(diagramNodePositioningVertex);
-            _layers.AddVertex(diagramNodePositioningVertex);
+            _layoutGraph.AddVertex(diagramNodeVertex);
+            _layers.AddVertex(diagramNodeVertex);
 
-            _vertexPositioningLogic.PositionVertex(diagramNodePositioningVertex, layoutAction);
+            _vertexPositioningLogic.PositionVertex(diagramNodeVertex, layoutAction);
             _vertexPositioningLogic.Compact(layoutAction);
         }
 
@@ -68,14 +68,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layoutAction = RaiseDiagramNodeLayoutAction("RemoveNode", diagramNode);
 
-            var positioningVertex = _diagramNodeToPositioningVertexMap.Get(diagramNode);
+            var layoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
 
-            _vertexPositioningLogic.CoverUpVertex(positioningVertex, layoutAction);
+            _vertexPositioningLogic.CoverUpVertex(layoutVertex, layoutAction);
 
-            _layers.RemoveVertex(positioningVertex);
-            _positioningGraph.RemoveVertex(positioningVertex);
+            _layers.RemoveVertex(layoutVertex);
+            _layoutGraph.RemoveVertex(layoutVertex);
 
-            _diagramNodeToPositioningVertexMap.Remove(diagramNode);
+            _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
             _vertexPositioningLogic.Compact(layoutAction);
         }
@@ -84,12 +84,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layoutAction = RaiseDiagramConnectorLayoutAction("AddConnector", diagramConnector);
 
-            var positioningSource = _diagramNodeToPositioningVertexMap.Get(diagramConnector.Source);
-            var positioningTarget = _diagramNodeToPositioningVertexMap.Get(diagramConnector.Target);
-            var newEdge = new PositioningEdge(positioningSource, positioningTarget, diagramConnector);
-            var newPath = new PositioningEdgePath(newEdge);
-            _diagramConnectorToPositioningEdgePathMap.Set(diagramConnector, newPath);
-            _positioningGraph.AddPath(newPath);
+            var sourceVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
+            var targetVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
+            var newEdge = new LayoutEdge(sourceVertex, targetVertex, diagramConnector);
+            var newPath = new LayoutPath(newEdge);
+            _diagramConnectorToLayoutPathMap.Set(diagramConnector, newPath);
+            _layoutGraph.AddPath(newPath);
             //TODO: add to layers
 
             AdjustPathsToLayerSpansRecursive(diagramConnector.Source, layoutAction);
@@ -104,17 +104,17 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             var layoutAction = RaiseDiagramConnectorLayoutAction("RemoveConnector", diagramConnector);
 
-            var positioningEdgePath = _diagramConnectorToPositioningEdgePathMap.Get(diagramConnector);
+            var layoutPath = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
 
-            foreach (var interimVertex in positioningEdgePath.InterimVertices)
+            foreach (var interimVertex in layoutPath.InterimVertices)
                 _vertexPositioningLogic.CoverUpVertex(interimVertex, layoutAction);
 
             // TODO: needs test case: when is this necessary?
             //_vertexPositioningLogic.CenterPrimaryParent(positioningEdgePath.Source, layoutAction);
 
             //TODO: remove from layers
-            _positioningGraph.RemovePath(positioningEdgePath);
-            _diagramConnectorToPositioningEdgePathMap.Remove(diagramConnector);
+            _layoutGraph.RemovePath(layoutPath);
+            _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
 
             AdjustPathsToLayerSpansRecursive(diagramConnector.Source, layoutAction);
             // TODO: needs test cases
@@ -140,15 +140,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var outConnectors = _diagramGraph.OutEdges(diagramNode);
             foreach (var outConnector in outConnectors)
             {
-                var positioningEdgePath = _diagramConnectorToPositioningEdgePathMap.Get(outConnector);
+                var layoutPath = _diagramConnectorToLayoutPathMap.Get(outConnector);
                 var diagramConnectorRankSpan = _diagramNodeRankProvider.GetRankSpan(outConnector);
 
-                var pathLengthDifference = diagramConnectorRankSpan - positioningEdgePath.Length;
+                var pathLengthDifference = diagramConnectorRankSpan - layoutPath.Length;
 
                 if (pathLengthDifference > 0)
-                    SplitEdge(positioningEdgePath, 0, pathLengthDifference, causingAction);
+                    SplitEdge(layoutPath, 0, pathLengthDifference, causingAction);
                 else if (pathLengthDifference < 0)
-                    MergeEdgeWithNext(positioningEdgePath, 0, -pathLengthDifference, causingAction);
+                    MergeEdgeWithNext(layoutPath, 0, -pathLengthDifference, causingAction);
             }
         }
 
@@ -157,51 +157,51 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var outConnectors = _diagramGraph.OutEdges(diagramNode);
             foreach (var outConnector in outConnectors)
             {
-                var positioningEdgePath = _diagramConnectorToPositioningEdgePathMap.Get(outConnector);
-                foreach (var edge in positioningEdgePath.Reverse())
+                var layoutPath = _diagramConnectorToLayoutPathMap.Get(outConnector);
+                foreach (var edge in layoutPath.Reverse())
                 {
                     _vertexPositioningLogic.PositionVertex(edge.Source, causingAction, edge.Target);
                 }
             }
         }
 
-        private void SplitEdge(PositioningEdgePath path, int atIndex, int times, ILayoutAction causingAction)
+        private void SplitEdge(LayoutPath path, int atIndex, int times, ILayoutAction causingAction)
         {
             for (var i = 0; i < times; i++)
                 SplitEdge(path, atIndex, causingAction);
         }
 
-        private void SplitEdge(PositioningEdgePath path, int atIndex, ILayoutAction causingAction)
+        private void SplitEdge(LayoutPath path, int atIndex, ILayoutAction causingAction)
         {
             var edgeToSplit = path[atIndex];
-            var interimVertex = new DummyPositioningVertex(true);
-            var newEdge1 = new PositioningEdge(edgeToSplit.Source, interimVertex, edgeToSplit.DiagramConnector);
-            var newEdge2 = new PositioningEdge(interimVertex, edgeToSplit.Target, edgeToSplit.DiagramConnector);
+            var interimVertex = new DummyLayoutVertex(true);
+            var newEdge1 = new LayoutEdge(edgeToSplit.Source, interimVertex, edgeToSplit.DiagramConnector);
+            var newEdge2 = new LayoutEdge(interimVertex, edgeToSplit.Target, edgeToSplit.DiagramConnector);
 
             path.Substitute(atIndex, 1, newEdge1, newEdge2);
 
             // TODO: remove from layers
-            _positioningGraph.RemoveEdge(edgeToSplit);
-            _positioningGraph.AddVertex(interimVertex);
-            _positioningGraph.AddEdge(newEdge1);
-            _positioningGraph.AddEdge(newEdge2);
+            _layoutGraph.RemoveEdge(edgeToSplit);
+            _layoutGraph.AddVertex(interimVertex);
+            _layoutGraph.AddEdge(newEdge1);
+            _layoutGraph.AddEdge(newEdge2);
             // TODO: add to layers
 
             RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
         }
 
-        private void MergeEdgeWithNext(PositioningEdgePath path, int atIndex, int times, ILayoutAction causingAction)
+        private void MergeEdgeWithNext(LayoutPath path, int atIndex, int times, ILayoutAction causingAction)
         {
             for (var i = 0; i < times; i++)
                 MergeEdgeWithNext(path, atIndex, causingAction);
         }
 
-        private void MergeEdgeWithNext(PositioningEdgePath path, int atIndex, ILayoutAction causingAction)
+        private void MergeEdgeWithNext(LayoutPath path, int atIndex, ILayoutAction causingAction)
         {
             var firstEdge = path[atIndex];
             var nextEdge = path[atIndex + 1];
-            var vertexToRemove = firstEdge.Target as DummyPositioningVertex;
-            var mergedEdge = new PositioningEdge(firstEdge.Source, nextEdge.Target, firstEdge.DiagramConnector);
+            var vertexToRemove = firstEdge.Target as DummyLayoutVertex;
+            var mergedEdge = new LayoutEdge(firstEdge.Source, nextEdge.Target, firstEdge.DiagramConnector);
 
             if (vertexToRemove == null)
                 throw new Exception("FirstEdge.Target is null or not dummy!");
@@ -212,10 +212,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             path.Substitute(atIndex, 2, mergedEdge);
 
             // TODO: remove from layers
-            _positioningGraph.RemoveEdge(firstEdge);
-            _positioningGraph.RemoveEdge(nextEdge);
-            _positioningGraph.RemoveVertex(vertexToRemove);
-            _positioningGraph.AddEdge(mergedEdge);
+            _layoutGraph.RemoveEdge(firstEdge);
+            _layoutGraph.RemoveEdge(nextEdge);
+            _layoutGraph.RemoveVertex(vertexToRemove);
+            _layoutGraph.AddEdge(mergedEdge);
             // TODO: add to layers
         }
 
@@ -227,24 +227,24 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             if (vertexMoveAction == null)
                 return;
 
-            foreach (var edge in _positioningGraph.GetAllEdges(vertexMoveAction.Vertex))
+            foreach (var edge in _layoutGraph.GetAllEdges(vertexMoveAction.Vertex))
             {
-                var path = _diagramConnectorToPositioningEdgePathMap.Get(edge.DiagramConnector);
+                var path = _diagramConnectorToLayoutPathMap.Get(edge.DiagramConnector);
                 ReroutePath(path, layoutAction);
             }
         }
 
-        private void ReroutePath(PositioningEdgePath path, ILayoutAction causingAction)
+        private void ReroutePath(LayoutPath path, ILayoutAction causingAction)
         {
             if (path.IsFloating)
                 return;
 
-            var oldRoute = _positioningEdgePathToPreviousRouteMap.Get(path);
+            var oldRoute = _layoutPathToPreviousRouteMap.Get(path);
             var newRoute = path.GetRoute();
             if (oldRoute == newRoute)
                 return;
 
-            _positioningEdgePathToPreviousRouteMap.Set(path, newRoute);
+            _layoutPathToPreviousRouteMap.Set(path, newRoute);
             RaisePathLayoutAction("Reroute", path, oldRoute, newRoute, causingAction);
         }
     }

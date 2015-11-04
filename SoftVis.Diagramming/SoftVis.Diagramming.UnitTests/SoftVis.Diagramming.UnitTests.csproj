@@ -75,9 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagramming\Layout\Incremental\EdgeSpecification.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\PositioningVertexLayersTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestDummyPositioningVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestPositioningVertex.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\LayoutVertexLayersTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\TestDummyLayoutVertex.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\TestLayoutVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

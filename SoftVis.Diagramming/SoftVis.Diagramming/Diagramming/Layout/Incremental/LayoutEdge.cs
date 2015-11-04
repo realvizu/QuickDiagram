@@ -3,22 +3,22 @@
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// An edge in the positioning graph.
+    /// An edge in the layout graph.
     /// </summary>
-    internal class PositioningEdge : Edge<PositioningVertexBase>
+    internal class LayoutEdge : Edge<LayoutVertexBase>
     {
         public DiagramConnector DiagramConnector { get; }
 
-        public PositioningEdge(PositioningVertexBase source, PositioningVertexBase target,
+        public LayoutEdge(LayoutVertexBase source, LayoutVertexBase target,
             DiagramConnector diagramConnector)
             : base(source, target)
         {
             DiagramConnector = diagramConnector;
         }
 
-        public PositioningEdge Reverse()
+        public LayoutEdge Reverse()
         {
-            return new PositioningEdge(Target, Source, DiagramConnector);
+            return new LayoutEdge(Target, Source, DiagramConnector);
         }
 
         public override string ToString()

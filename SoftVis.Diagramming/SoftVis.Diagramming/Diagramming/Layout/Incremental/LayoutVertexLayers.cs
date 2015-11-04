@@ -7,24 +7,24 @@ using Codartis.SoftVis.Common;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// Tracks positioning vertex layering and calculates vertical positions.
+    /// Tracks vertex layering and calculates vertical positions.
     /// </summary>
-    internal class PositioningVertexLayers :  IReadOnlyPositioningVertexLayers
+    internal class LayoutVertexLayers :  IReadOnlyLayoutVertexLayers
     {
-        private readonly IReadOnlyPositioningGraph _positioningGraph;
+        private readonly IReadOnlyLayoutGraph _layoutGraph;
         private readonly double _verticalGap;
-        private readonly List<PositioningVertexLayer> _layers;
-        private readonly Map<PositioningVertexBase, int> _vertexToLayerIndexMap;
+        private readonly List<LayoutVertexLayer> _layers;
+        private readonly Map<LayoutVertexBase, int> _vertexToLayerIndexMap;
 
-        public PositioningVertexLayers(IReadOnlyPositioningGraph positioningGraph, double verticalGap)
+        public LayoutVertexLayers(IReadOnlyLayoutGraph layoutGraph, double verticalGap)
         {
-            _positioningGraph = positioningGraph;
+            _layoutGraph = layoutGraph;
             _verticalGap = verticalGap;
-            _layers = new List<PositioningVertexLayer>();
-            _vertexToLayerIndexMap = new Map<PositioningVertexBase, int>();
+            _layers = new List<LayoutVertexLayer>();
+            _vertexToLayerIndexMap = new Map<LayoutVertexBase, int>();
         }
 
-        public IEnumerator<IReadOnlyPositioningVertexLayer> GetEnumerator() => _layers.GetEnumerator();
+        public IEnumerator<IReadOnlyLayoutVertexLayer> GetEnumerator() => _layers.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void Clear()
@@ -33,31 +33,31 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _vertexToLayerIndexMap.Clear();
         }
 
-        public void AddVertex(PositioningVertexBase vertex)
+        public void AddVertex(LayoutVertexBase vertex)
         {
             AddVertexToLayer(vertex, 0);
         }
 
-        public void RemoveVertex(PositioningVertexBase vertex)
+        public void RemoveVertex(LayoutVertexBase vertex)
         {
             var layerIndex = GetLayerIndex(vertex);
             RemoveVertexFromLayer(vertex, layerIndex);
         }
 
-        public void AddEdge(PositioningEdge edge)
+        public void AddEdge(LayoutEdge edge)
         {
             EnsureValidLayering(edge.Target);
             EnsureValidLayering(edge.Source);
         }
 
-        public void RemoveEdge(PositioningEdge edge)
+        public void RemoveEdge(LayoutEdge edge)
         {
             throw new NotImplementedException();
         }
 
-        private void EnsureValidLayering(PositioningVertexBase vertex)
+        private void EnsureValidLayering(LayoutVertexBase vertex)
         {
-            var minimumLayerIndex = _positioningGraph.GetParents(vertex)
+            var minimumLayerIndex = _layoutGraph.GetParents(vertex)
                 .Select(GetLayerIndex).DefaultIfEmpty(-1).Max() + 1;
 
             if (GetLayerIndex(vertex) < minimumLayerIndex)
@@ -66,77 +66,77 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 EnsureValidItemOrder(vertex);
         }
 
-        public IReadOnlyPositioningVertexLayer GetLayer(PositioningVertexBase vertex)
+        public IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex)
         {
             return GetMutableLayer(vertex);
         }
 
-        public int GetLayerIndex(PositioningVertexBase vertex)
+        public int GetLayerIndex(LayoutVertexBase vertex)
         {
             return _vertexToLayerIndexMap.Get(vertex);
         }
 
-        public int GetIndexInLayer(PositioningVertexBase vertex)
+        public int GetIndexInLayer(LayoutVertexBase vertex)
         {
             return GetLayer(vertex).IndexOf(vertex);
         }
 
-        public PositioningVertexBase GetPreviousInLayer(PositioningVertexBase vertex)
+        public LayoutVertexBase GetPreviousInLayer(LayoutVertexBase vertex)
         {
             return GetLayer(vertex).GetPrevious(vertex);
         }
 
-        public PositioningVertexBase GetNextInLayer(PositioningVertexBase vertex)
+        public LayoutVertexBase GetNextInLayer(LayoutVertexBase vertex)
         {
             return GetLayer(vertex).GetNext(vertex);
         }
 
-        public IEnumerable<PositioningVertexBase> GetOtherPlacedVerticesInLayer(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetOtherPlacedVerticesInLayer(LayoutVertexBase vertex)
         {
             return GetLayer(vertex).Where(i => i != vertex && !i.IsFloating);
         }
 
-        public bool HasPlacedPrimarySiblingsInSameLayer(PositioningVertexBase vertex)
+        public bool HasPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
         {
             return GetPlacedPrimarySiblingsInSameLayer(vertex).Any();
         }
 
-        public IEnumerable<PositioningVertexBase> GetPlacedPrimarySiblingsInSameLayer(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
         {
             return GetPrimarySiblingsInSameLayer(vertex).Where(i => !i.IsFloating);
         }
 
-        public PositioningVertexBase GetNextPlacedPrimarySiblingInSameLayer(PositioningVertexBase vertex)
+        public LayoutVertexBase GetNextPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex)
         {
             var nextVertex = GetNextInLayer(vertex);
-            return _positioningGraph.IsPlacedPrimarySiblingOf(vertex, nextVertex) ? nextVertex : null;
+            return _layoutGraph.IsPlacedPrimarySiblingOf(vertex, nextVertex) ? nextVertex : null;
         }
 
-        public PositioningVertexBase GetPreviousPlacedPrimarySiblingInSameLayer(PositioningVertexBase vertex)
+        public LayoutVertexBase GetPreviousPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex)
         {
             var previousVertex = GetPreviousInLayer(vertex);
-            return _positioningGraph.IsPlacedPrimarySiblingOf(vertex, previousVertex) ? previousVertex : null;
+            return _layoutGraph.IsPlacedPrimarySiblingOf(vertex, previousVertex) ? previousVertex : null;
         }
 
-        public IEnumerable<PositioningVertexBase> GetPrimarySiblingsInSameLayer(PositioningVertexBase vertex)
+        public IEnumerable<LayoutVertexBase> GetPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
         {
             var layerIndex = GetLayerIndex(vertex);
-            return _positioningGraph.GetPrimarySiblings(vertex).Where(i => GetLayerIndex(i) == layerIndex);
+            return _layoutGraph.GetPrimarySiblings(vertex).Where(i => GetLayerIndex(i) == layerIndex);
         }
 
-        private PositioningVertexLayer GetMutableLayer(PositioningVertexBase vertex)
+        private LayoutVertexLayer GetMutableLayer(LayoutVertexBase vertex)
         {
             var layerIndex = GetLayerIndex(vertex);
             return _layers[layerIndex];
         }
 
-        private void MoveVertex(PositioningVertexBase vertex, int toLayerIndex)
+        private void MoveVertex(LayoutVertexBase vertex, int toLayerIndex)
         {
             RemoveVertexFromLayer(vertex, GetLayerIndex(vertex));
             AddVertexToLayer(vertex, toLayerIndex);
         }
 
-        private void EnsureValidItemOrder(PositioningVertexBase vertex)
+        private void EnsureValidItemOrder(LayoutVertexBase vertex)
         {
             var layer = GetMutableLayer(vertex);
             if (layer.IsItemIndexValid(vertex))
@@ -146,7 +146,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             layer.Add(vertex);
         }
 
-        private void AddVertexToLayer(PositioningVertexBase vertex, int layerIndex)
+        private void AddVertexToLayer(LayoutVertexBase vertex, int layerIndex)
         {
             var layer = EnsureLayerExists(layerIndex);
             _vertexToLayerIndexMap.Set(vertex, layerIndex);
@@ -155,7 +155,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             UpdateLayerVerticalPositions(layerIndex);
         }
 
-        private void RemoveVertexFromLayer(PositioningVertexBase vertex, int layerIndex)
+        private void RemoveVertexFromLayer(LayoutVertexBase vertex, int layerIndex)
         {
             _layers[layerIndex].Remove(vertex);
             _vertexToLayerIndexMap.Remove(vertex);
@@ -163,10 +163,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             UpdateLayerVerticalPositions(layerIndex);
         }
 
-        private PositioningVertexLayer EnsureLayerExists(int layerIndex)
+        private LayoutVertexLayer EnsureLayerExists(int layerIndex)
         {
             for (var i = _layers.Count; i <= layerIndex; i++)
-                _layers.Add(new PositioningVertexLayer(_positioningGraph, i));
+                _layers.Add(new LayoutVertexLayer(_layoutGraph, i));
 
             UpdateLayerVerticalPositions(layerIndex);
 
