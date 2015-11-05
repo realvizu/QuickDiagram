@@ -32,24 +32,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return isAdded;
         }
 
-        public void AddPath(LayoutPath path)
-        {
-            foreach (var interimVertex in path.InterimVertices)
-                AddVertex(interimVertex);
-
-            foreach (var edge in path)
-                AddEdge(edge);
-        }
-
-        public void RemovePath(LayoutPath path)
-        {
-            foreach (var edge in path)
-                RemoveEdge(edge);
-
-            foreach (var interimVertex in path.InterimVertices)
-                RemoveVertex(interimVertex);
-        }
-
         public IEnumerable<LayoutVertexBase> GetParents(LayoutVertexBase vertex)
         {
             return this.GetOutNeighbours(vertex);
@@ -96,19 +78,20 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 && GetPrimaryParent(vertex1) == GetPrimaryParent(vertex2);
         }
 
-        public IEnumerable<LayoutEdge> GetPrimaryEdges(LayoutVertexBase vertex)
+        public void ExecuteOnDescendantVertices(LayoutVertexBase rootVertex, Action<LayoutVertexBase> actionOnVertex)
         {
-            return InEdges(vertex).Where(i => GetPrimaryParent(i.Source) == vertex);
+            actionOnVertex(rootVertex);
+
+            foreach (var child in GetChildren(rootVertex))
+                ExecuteOnDescendantVertices(child, actionOnVertex);
         }
 
         public void ExecuteOnPrimaryDescendantVertices(LayoutVertexBase rootVertex, Action<LayoutVertexBase> actionOnVertex)
         {
             actionOnVertex(rootVertex);
-            foreach (var layoutEdge in GetPrimaryEdges(rootVertex))
-            {
-                var nextVertex = layoutEdge.Source;
-                ExecuteOnPrimaryDescendantVertices(nextVertex, actionOnVertex);
-            }
+
+            foreach (var child in GetPrimaryChildren(rootVertex))
+                ExecuteOnPrimaryDescendantVertices(child, actionOnVertex);
         }
 
         public LayoutEdge GetInEdge(DummyLayoutVertex dummyVertex) => InEdges(dummyVertex).FirstOrDefault();

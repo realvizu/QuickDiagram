@@ -74,7 +74,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         protected LayoutAction RaisePathLayoutAction(string action, LayoutPath path,
             Route oldRoute, Route newRoute, ILayoutAction causingAction = null)
         {
-            var layoutAction = new PathAction(action, path, oldRoute, newRoute, causingAction);
+            var layoutAction = new ReroutePathAction(action, path, oldRoute, newRoute, causingAction);
+            RaiseLayoutAction(layoutAction);
+            return layoutAction;
+        }
+
+        protected LayoutAction RaisePathLayoutAction(string action, LayoutPath path,
+            ILayoutAction causingAction = null)
+        {
+            var layoutAction = new PathAction(action, path, causingAction);
             RaiseLayoutAction(layoutAction);
             return layoutAction;
         }

@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         public LayoutVertexLayersTests()
         {
             _testLayoutGraphBuilder = new TestLayoutGraphBuilder();
-            _layers = new LayoutVertexLayers(LayoutGraph, VerticalGap);
+            _layers = new LayoutVertexLayers(LayoutGraph);
         }
 
         [Fact]

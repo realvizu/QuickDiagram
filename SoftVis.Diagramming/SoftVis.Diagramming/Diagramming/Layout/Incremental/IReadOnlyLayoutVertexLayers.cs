@@ -19,5 +19,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex);
         LayoutVertexBase GetPreviousPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex);
         LayoutVertexBase GetNextPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex);
+
+        // TODO: ???
+        void UpdateLayerVerticalPositions(double verticalGap);
     }
 }

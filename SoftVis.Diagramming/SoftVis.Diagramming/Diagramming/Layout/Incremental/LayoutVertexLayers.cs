@@ -19,15 +19,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     internal class LayoutVertexLayers : IReadOnlyLayoutVertexLayers
     {
         private readonly IReadOnlyLayoutGraph _layoutGraph;
-        private readonly double _verticalGap;
         private readonly IComparer<LayoutVertexBase> _vertexComparer;
         private readonly List<LayoutVertexLayer> _layers;
         private readonly Map<LayoutVertexBase, int> _vertexToLayerIndexMap;
 
-        public LayoutVertexLayers(IReadOnlyLayoutGraph layoutGraph, double verticalGap)
+        public LayoutVertexLayers(IReadOnlyLayoutGraph layoutGraph)
         {
             _layoutGraph = layoutGraph;
-            _verticalGap = verticalGap;
             _vertexComparer = new VerticesInLayerComparer(layoutGraph);
             _layers = new List<LayoutVertexLayer>();
             _vertexToLayerIndexMap = new Map<LayoutVertexBase, int>();
@@ -45,25 +43,30 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public void AddVertex(LayoutVertexBase vertex)
         {
             AddVertexToLayer(vertex, 0);
-            UpdateLayerVerticalPositions(0);
         }
 
         public void RemoveVertex(LayoutVertexBase vertex)
         {
-            var layerIndex = GetLayerIndex(vertex);
             RemoveVertexFromLayer(vertex);
-            UpdateLayerVerticalPositions(layerIndex);
         }
 
         public void AddEdge(LayoutEdge edge)
         {
-            EnsureValidLayering(edge.Source);
-            var layerIndex = GetLayerIndex(edge.Source);
-            UpdateLayerVerticalPositions(layerIndex);
+            _layoutGraph.ExecuteOnDescendantVertices(edge.Source, EnsureValidLayering);
         }
 
         public void RemoveEdge(LayoutEdge edge)
         {
+        }
+
+        public void UpdateLayerVerticalPositions(double verticalGap)
+        {
+            for (var i = 0; i < _layers.Count; i++)
+            {
+                _layers[i].Top = (i == 0)
+                    ? 0
+                    : _layers[i - 1].Bottom + verticalGap;
+            }
         }
 
         public IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex)
@@ -181,16 +184,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 _layers.Add(new LayoutVertexLayer(_layoutGraph, i));
 
             return _layers[layerIndex];
-        }
-
-        private void UpdateLayerVerticalPositions(int fromLayerIndex)
-        {
-            for (var i = fromLayerIndex; i < _layers.Count; i++)
-            {
-                _layers[i].Top = (i == 0)
-                    ? 0
-                    : _layers[i - 1].Bottom + _verticalGap;
-            }
         }
 
         private int DetermineIndexInLayer(LayoutVertexBase vertex)

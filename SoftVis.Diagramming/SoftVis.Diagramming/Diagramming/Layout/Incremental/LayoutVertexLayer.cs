@@ -56,5 +56,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var index = _items.IndexOf(vertex);
             return index == Count - 1 ? null : _items[index + 1];
         }
+
+        public override string ToString()
+        {
+            var itemsAsString = string.Join(",", _items.Select(i => i.ToString()));
+            return $"[{itemsAsString}]";
+        }
     }
 }
