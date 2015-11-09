@@ -1,4 +1,5 @@
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
@@ -17,6 +18,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
         {
             OldRoute = oldRoute;
             NewRoute = newRoute;
+        }
+
+        public override void AcceptVisitor(LayoutActionVisitorBase visitor)
+        {
+            base.AcceptVisitor(visitor);
+            visitor.Visit(this);
         }
 
         protected bool Equals(ReroutePathAction other)

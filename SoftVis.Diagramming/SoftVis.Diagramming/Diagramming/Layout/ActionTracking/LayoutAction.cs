@@ -22,6 +22,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
 
         public virtual string SubjectName => string.Empty;
 
+        public virtual void AcceptVisitor(LayoutActionVisitorBase visitor)
+        {
+            visitor.DefaultVisit(this);
+        }
+
         private bool Equals(LayoutAction other)
         {
             return string.Equals(Action, other.Action) && Amount.Equals(other.Amount);

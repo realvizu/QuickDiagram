@@ -1,5 +1,6 @@
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental

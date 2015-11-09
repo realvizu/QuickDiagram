@@ -66,6 +66,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TestData\SequenceRecorderLayoutActionVisitor.cs" />
+    <Compile Include="TestData\GraphBuilderLayoutActionVisitor.cs" />
+    <Compile Include="TestData\DiagramBackwardsMutatorLayoutActionVisitor.cs" />
     <Compile Include="LayoutActionGraph.cs" />
     <Compile Include="TestData\TestModelRelationshipStereotype.cs" />
     <Compile Include="TestData\TestDiagram.cs" />

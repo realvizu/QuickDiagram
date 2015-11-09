@@ -24,8 +24,7 @@
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.*" To="Codartis.SoftVis.Diagramming.Layout.ActionTracking" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Diagramming.Layout.*" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Rendering.Wpf.*" />

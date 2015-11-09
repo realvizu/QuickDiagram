@@ -1,4 +1,5 @@
 using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
@@ -8,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
     /// </summary>
     internal class MoveDiagramNodeAction : DiagramNodeAction, IMoveDiagramNodeAction, IMoveVertexAction
     {
-        public LayoutVertexBase Vertex { get; }
+        public DiagramNodeLayoutVertex Vertex { get; }
         public Point2D From { get; }
         public Point2D To { get; }
         public Point2D By { get; }
@@ -20,6 +21,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.ActionTracking
             From = @from;
             To = to;
             By = To - From;
+        }
+
+        LayoutVertexBase IMoveVertexAction.Vertex => Vertex;
+
+        public override void AcceptVisitor(LayoutActionVisitorBase visitor)
+        {
+            base.AcceptVisitor(visitor);
+            visitor.Visit(this);
         }
 
         protected bool Equals(MoveDiagramNodeAction other)

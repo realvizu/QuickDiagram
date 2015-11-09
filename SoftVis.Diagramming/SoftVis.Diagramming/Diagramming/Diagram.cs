@@ -26,6 +26,7 @@ namespace Codartis.SoftVis.Diagramming
     {
         private readonly DiagramGraph _graph;
         private readonly IncrementalLayoutEngine _layoutEngine;
+        private readonly DiagramMutatorLayoutActionVisitor _diagramMutatorForLayoutActions;
 
         public event EventHandler<DiagramShape> ShapeAdded;
         public event EventHandler<DiagramShape> ShapeModified;
@@ -39,18 +40,14 @@ namespace Codartis.SoftVis.Diagramming
             _graph = new DiagramGraph();
 
             _layoutEngine = new IncrementalLayoutEngine(_graph);
+            _diagramMutatorForLayoutActions = new DiagramMutatorLayoutActionVisitor(this);
+
             _layoutEngine.LayoutActionExecuted += OnLayoutActionExecuted;
         }
 
         private void OnLayoutActionExecuted(object sender, ILayoutAction layoutAction)
         {
-            var diagramNodeMoveAction = layoutAction as IMoveDiagramNodeAction;
-            if (diagramNodeMoveAction?.DiagramNode != null)
-                diagramNodeMoveAction.DiagramNode.Center = diagramNodeMoveAction.To;
-
-            var diagramConnectorRerouteAction = layoutAction as IRerouteDiagramConnectorAction;
-            if (diagramConnectorRerouteAction?.DiagramConnector != null)
-                diagramConnectorRerouteAction.DiagramConnector.RoutePoints = diagramConnectorRerouteAction.NewRoute;
+            layoutAction.AcceptVisitor(_diagramMutatorForLayoutActions);
 
             RaiseLayoutAction(sender, layoutAction);
         }

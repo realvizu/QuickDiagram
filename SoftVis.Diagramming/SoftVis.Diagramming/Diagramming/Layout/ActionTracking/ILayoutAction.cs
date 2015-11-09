@@ -5,9 +5,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.ActionTracking
     /// </summary>
     public interface ILayoutAction
     {
-        string Action { get; }
-        double? Amount { get; }
         ILayoutAction CausingLayoutAction { get; }
-        string SubjectName { get; }
+
+        void AcceptVisitor(LayoutActionVisitorBase visitor);
     }
 }
