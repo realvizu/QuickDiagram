@@ -6,19 +6,21 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class TestLayoutVertex : DiagramNodeLayoutVertex
     {
+        private int _priority;
         public override string Name { get; }
-        public override int Priority { get; }
 
         public TestLayoutVertex(string name, bool isFloating = true, int priority = 1) 
             : base(new TestDiagramNode(), isFloating)
         {
             Name = name;
-            Priority = priority;
+            _priority = priority;
         }
 
         public override bool IsDummy => false;
         public override Size2D Size => new Size2D(20,10);
-        
+        public override int Priority => _priority;
+        public void SetPriority(int priority) => _priority = priority;
+
         protected bool Equals(TestLayoutVertex other)
         {
             return string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);
@@ -45,11 +47,6 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         public static bool operator !=(TestLayoutVertex left, TestLayoutVertex right)
         {
             return !Equals(left, right);
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

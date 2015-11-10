@@ -3,6 +3,7 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
+using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.TestSubjects;
 using FluentAssertions;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
     public class LowLevelLayoutGraphTests
     {
         private readonly LowLevelLayoutGraphBuilder _testLayoutGraphBuilder;
-        private LowLevelLayoutGraph LowLevelLayoutGraph => _testLayoutGraphBuilder.LowLevelLayoutGraph;
+        private LowLevelLayoutGraph LowLevelLayoutGraph => _testLayoutGraphBuilder.Graph;
 
         public LowLevelLayoutGraphTests()
         {
@@ -87,7 +88,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void GetPrimaryParents_ChoosesHigherPriority()
         {
-            _testLayoutGraphBuilder.AddVertex("P2", 2);
+            ((TestLayoutVertex)_testLayoutGraphBuilder.AddVertex("P2")).SetPriority(2);
             _testLayoutGraphBuilder.SetUp(
                 "P1<-C",
                 "P2<-C"
@@ -114,7 +115,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void GetPrimaryChildren_Works()
         {
-            _testLayoutGraphBuilder.AddVertex("P2", 2);
+            ((TestLayoutVertex)_testLayoutGraphBuilder.AddVertex("P2")).SetPriority(2);
             _testLayoutGraphBuilder.SetUp(
                 "P1<-C1",
                 "P1<-*1",
@@ -132,7 +133,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void GetPrimarySiblings_Works()
         {
-            _testLayoutGraphBuilder.AddVertex("P1", 2);
+            ((TestLayoutVertex)_testLayoutGraphBuilder.AddVertex("P1")).SetPriority(2);
             _testLayoutGraphBuilder.SetUp(
                 "P1<-C1",
                 "P1<-*1",

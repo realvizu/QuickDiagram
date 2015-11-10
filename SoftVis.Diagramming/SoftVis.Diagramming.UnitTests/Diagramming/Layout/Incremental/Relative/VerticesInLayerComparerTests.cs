@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
     public class VerticesInLayerComparerTests
     {
         private readonly LowLevelLayoutGraphBuilder _testGraph;
-        private LowLevelLayoutGraph LowLevelLayoutGraph => _testGraph.LowLevelLayoutGraph;
+        private LowLevelLayoutGraph LowLevelLayoutGraph => _testGraph.Graph;
 
         public VerticesInLayerComparerTests()
         {

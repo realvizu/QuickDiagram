@@ -23,10 +23,5 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public override string Name => DiagramNode.Name;
         public override int Priority => DiagramNode.Priority;
         public override Size2D Size => DiagramNode.Size;
-
-        public override string ToString()
-        {
-            return DiagramNode.ToString();
-        }
     }
 }

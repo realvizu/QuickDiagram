@@ -32,5 +32,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public double Right => Rect.Right;
         public double Top => Rect.Top;
         public double Bottom => Rect.Bottom;
+
+        public override string ToString() => Name;
     }
 }

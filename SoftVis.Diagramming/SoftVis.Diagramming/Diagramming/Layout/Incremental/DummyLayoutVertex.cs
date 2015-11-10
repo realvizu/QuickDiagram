@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         }
 
         public override bool IsDummy => true;
-        public override string Name => ToString();
+        public override string Name => $"Dummy#{Id}";
 
         public override int Priority
         {
@@ -38,11 +38,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         }
 
         public override Size2D Size => Size2D.Zero;
-
-        public override string ToString()
-        {
-            return $"Dummy#{Id}";
-        }
 
         public override bool Equals(object obj)
         {

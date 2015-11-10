@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
     public class RelativeLayoutCalculatorTests
     {
         private readonly DiagramGraphBuilder _diagramGraphBuilder;
-        private DiagramGraph DiagramGraph => _diagramGraphBuilder.DiagramGraph;
+        private DiagramGraph DiagramGraph => _diagramGraphBuilder.Graph;
 
         public RelativeLayoutCalculatorTests()
         {
