@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
 {
-    internal class LayoutPathTests
+    public class LayoutPathTests
     {
         [Fact]
         public void CheckInvariant_Fine()

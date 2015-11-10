@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Relative
 {
-    internal class LowLevelLayoutGraphTests
+    public class LowLevelLayoutGraphTests
     {
         private readonly LowLevelLayoutGraphBuilder _testLayoutGraphBuilder;
         private LowLevelLayoutGraph LowLevelLayoutGraph => _testLayoutGraphBuilder.LowLevelLayoutGraph;
