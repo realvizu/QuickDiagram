@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
+﻿namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
     /// The implementer performs some action for each diagram change.

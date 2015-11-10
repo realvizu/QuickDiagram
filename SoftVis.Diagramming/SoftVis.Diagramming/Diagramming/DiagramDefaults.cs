@@ -2,6 +2,9 @@ using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming
 {
+    /// <summary>
+    /// Default values fro diagram layout.
+    /// </summary>
     public static class DiagramDefaults
     {
         public const double MinimumNodeWidth = 40;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Layout;
 
-namespace Codartis.SoftVis.Diagramming
+namespace Codartis.SoftVis.Diagramming.Layout
 {
+    /// <summary>
+    /// Applies layout actions to a diagram (move node, reroute connector).
+    /// </summary>
     public sealed class DiagramMutatorLayoutActionVisitor : LayoutActionVisitorBase
     {
         private readonly Diagram _diagram;
@@ -13,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming
             _diagram = diagram;
         }
 
-        public override void Visit(IMoveDiagramNodeAction layoutAction)
+        public override void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
             var diagramNode = _diagram.Nodes.FirstOrDefault(i => i == layoutAction.DiagramNode);
             if (diagramNode == null)
@@ -22,7 +24,7 @@ namespace Codartis.SoftVis.Diagramming
             diagramNode.Center = layoutAction.To;
         }
 
-        public override void Visit(IRerouteDiagramConnectorAction layoutAction)
+        public override void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
             var diagramConnector = _diagram.Connectors.FirstOrDefault(i => i == layoutAction.DiagramConnector);
             if (diagramConnector == null)

@@ -5,11 +5,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
     /// <summary>
     /// A layout action that affects a diagram node.
     /// </summary>
-    internal class DiagramNodeAction : LayoutAction, IDiagramNodeAction
+    internal class DiagramNodeLayoutAction : LayoutAction, IDiagramNodeLayoutAction
     {
         public DiagramNode DiagramNode { get; }
 
-        public DiagramNodeAction(string action, DiagramNode diagramNode, ILayoutAction causingLayoutAction = null)
+        public DiagramNodeLayoutAction(string action, DiagramNode diagramNode, ILayoutAction causingLayoutAction = null)
             :base(action, null, causingLayoutAction)
         {
             if (diagramNode == null) throw new ArgumentNullException(nameof(diagramNode));
@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
 
         public override string SubjectName => DiagramNode.ToString();
 
-        protected bool Equals(DiagramNodeAction other)
+        protected bool Equals(DiagramNodeLayoutAction other)
         {
             return base.Equals(other) && Equals(DiagramNode, other.DiagramNode);
         }
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((DiagramNodeAction) obj);
+            return Equals((DiagramNodeLayoutAction) obj);
         }
 
         public override int GetHashCode()
@@ -40,12 +40,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
             }
         }
 
-        public static bool operator ==(DiagramNodeAction left, DiagramNodeAction right)
+        public static bool operator ==(DiagramNodeLayoutAction left, DiagramNodeLayoutAction right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(DiagramNodeAction left, DiagramNodeAction right)
+        public static bool operator !=(DiagramNodeLayoutAction left, DiagramNodeLayoutAction right)
         {
             return !Equals(left, right);
         }

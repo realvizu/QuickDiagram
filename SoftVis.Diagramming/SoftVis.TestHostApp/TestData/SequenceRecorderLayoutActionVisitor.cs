@@ -18,13 +18,13 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             LayoutActions.Clear();
         }
 
-        public override void Visit(IMoveDiagramNodeAction layoutAction)
+        public override void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
             RecordLayoutAction(layoutAction);
             TotalNodeMoveCount++;
         }
 
-        public override void Visit(IRerouteDiagramConnectorAction layoutAction)
+        public override void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
             RecordLayoutAction(layoutAction);
         }

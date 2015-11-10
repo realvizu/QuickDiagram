@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// A layout action that affects a LayoutEdge.
     /// </summary>
-    internal class LayoutEdgeAction : LayoutAction, IDiagramConnectorAction
+    internal class LayoutEdgeAction : LayoutAction, IDiagramConnectorLayoutAction
     {
         public LayoutEdge Edge { get; }
 

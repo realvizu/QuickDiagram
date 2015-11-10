@@ -11,12 +11,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
             _relativeLayoutChangeConsumer = relativeLayoutChangeConsumer;
         }
 
-        public override void Visit(RelativeVertexAddLayoutAction layoutAction)
+        public override void Visit(RelativeLocationAssignedLayoutAction layoutAction)
         {
             _relativeLayoutChangeConsumer.OnVertexAdded(layoutAction.Vertex, layoutAction.To, layoutAction.CausingLayoutAction);
         }
 
-        public override void Visit(RelativeVertexMoveLayoutAction layoutAction)
+        public override void Visit(RelativeLocationChangedLayoutAction layoutAction)
         {
             _relativeLayoutChangeConsumer.OnVertexMoved(layoutAction.Vertex, layoutAction.From, layoutAction.To, layoutAction.CausingLayoutAction);
         }

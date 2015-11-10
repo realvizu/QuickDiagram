@@ -4,8 +4,8 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal sealed class TestDiagramNode : DiagramNode
     {
-        public TestDiagramNode() 
-            : base(new TestModelEntity(), Point2D.Empty, Size2D.Zero)
+        public TestDiagramNode(string name = null) 
+            : base(new TestModelEntity(name), Point2D.Empty, Size2D.Zero)
         {
         }
     }

@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </summary>
     /// <remarks>
     /// Responsibilities:
-    /// <para>Understands parent/child/sibling and primary parent/children/sibling relationships.</para>
+    /// <para>Understands primary parent/children/sibling relationships.</para>
     /// <para>Understands that vertices can be placed or floating.</para>
     /// Invariants:
     /// <para>Dummy vertices' in/out degree (number of in/out edges) must be at most 1.</para>

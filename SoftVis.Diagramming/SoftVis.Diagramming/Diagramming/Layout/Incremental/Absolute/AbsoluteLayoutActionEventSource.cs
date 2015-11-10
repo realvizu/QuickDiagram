@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
         private ILayoutAction RaiseMoveDiagramNodeAction(DiagramNodeLayoutVertex vertex, 
             Point2D oldCenter, Point2D newCenter, ILayoutAction causingAction)
         {
-            var layoutAction = new MoveDiagramNodeAction(vertex, oldCenter, newCenter, causingAction);
+            var layoutAction = new MoveDiagramNodeLayoutAction(vertex, oldCenter, newCenter, causingAction);
             RaiseLayoutAction(layoutAction);
             return layoutAction;
         }

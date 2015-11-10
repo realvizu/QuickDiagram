@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Codartis.SoftVis.Common;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
@@ -19,38 +17,36 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// <para>if a vertex has no primary siblings on its layer but has a primary parent 
     /// then it is ordered according to parent ordering.</para>
     /// </remarks>
-    internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource,
-        IDiagramChangeConsumer, IReadOnlyRelativeLayout
+    internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource, IDiagramChangeConsumer
     {
         private readonly HighLevelLayoutGraph _highLevelLayoutGraph;
         private readonly LowLevelLayoutGraph _lowLevelLayoutGraph;
         private readonly LayoutVertexLayers _layers;
-        private readonly IComparer<LayoutVertexBase> _vertexComparer;
+        private readonly RelativeLayout _relativeLayout;
 
         private readonly Map<DiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
         private readonly Map<DiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
+        private readonly RelativeLocationCalculator _locationCalculator;
 
         public RelativeLayoutCalculator()
         {
             _highLevelLayoutGraph = new HighLevelLayoutGraph();
             _lowLevelLayoutGraph = new LowLevelLayoutGraph();
             _layers = new LayoutVertexLayers();
-            _vertexComparer = new VerticesInLayerComparer(_lowLevelLayoutGraph);
+            _relativeLayout = new RelativeLayout(_highLevelLayoutGraph, _lowLevelLayoutGraph, _layers);
 
             _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
+            _locationCalculator = new RelativeLocationCalculator(_relativeLayout);
         }
 
-        public IReadOnlyHighLevelLayoutGraph HighLevelLayoutGraph => _highLevelLayoutGraph;
-        public IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _lowLevelLayoutGraph;
-        public IReadOnlyLayoutVertexLayers LayoutVertexLayers => _layers;
+        public IReadOnlyRelativeLayout RelativeLayout => _relativeLayout;
 
         public void OnDiagramCleared()
         {
             _layers.Clear();
             _lowLevelLayoutGraph.Clear();
             _highLevelLayoutGraph.Clear();
-
             _diagramNodeToLayoutVertexMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
         }
@@ -61,9 +57,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
             AddVertex(diagramNodeLayoutVertex);
-            var to = GetRelativeLocation(diagramNodeLayoutVertex);
 
-            RaiseVertexAddLayoutAction(diagramNodeLayoutVertex, to, causingAction);
+            var location = _layers.GetLocation(diagramNodeLayoutVertex);
+            RaiseRelativeLocationAssignedLayoutAction(diagramNodeLayoutVertex, location, causingAction);
         }
 
         public void OnDiagramNodeRemoved(DiagramNode diagramNode, ILayoutAction causingAction)
@@ -103,9 +99,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             _lowLevelLayoutGraph.AddVertex(vertex);
 
-            var targetLayerIndex = CalculateRankInLowLevelLayoutGraph(vertex);
-            var indexInLayer = DetermineIndexInLayer(vertex, targetLayerIndex);
-            _layers.AddVertex(vertex, targetLayerIndex, indexInLayer);
+            var targetLocation = _locationCalculator.GetTargetLocation(vertex);
+            _layers.AddVertex(vertex, targetLocation);
         }
 
         private void RemoveVertex(LayoutVertexBase vertex)
@@ -140,114 +135,26 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         private void EnsureCorrectLocationForVertex(LayoutVertexBase vertex, ILayoutAction causingAction)
         {
-            var isDiagramNodeLayoutVertex = vertex is DiagramNodeLayoutVertex;
-            var currentLayerIndex = _layers.GetLayerIndex(vertex);
-            var currentIndexInLayer = _layers.GetIndexInLayer(vertex);
+            var currentLocation = _layers.GetLocation(vertex);
+            var targetLocation = _locationCalculator.GetTargetLocation(vertex);
 
-            var minimumLayerIndex = isDiagramNodeLayoutVertex
-                ? CalculateRankInHighLevelLayoutGraph(vertex)
-                : CalculateRankInLowLevelLayoutGraph(vertex);
-
-            var toLayerIndex = Math.Max(currentLayerIndex, minimumLayerIndex);
-            var toIndexInLayer = DetermineIndexInLayer(vertex, minimumLayerIndex);
-
-            if (currentLayerIndex != toLayerIndex || currentIndexInLayer != toIndexInLayer)
+            if (currentLocation != targetLocation)
             {
-                MoveVertex(vertex, toLayerIndex, toIndexInLayer, causingAction);
+                MoveVertex(vertex, targetLocation, causingAction);
 
-                if (isDiagramNodeLayoutVertex)
+                if (vertex is DiagramNodeLayoutVertex)
                     AdjustPaths((DiagramNodeLayoutVertex)vertex, causingAction);
             }
         }
 
-        private int CalculateRankInLowLevelLayoutGraph(LayoutVertexBase vertex)
+        private void MoveVertex(LayoutVertexBase vertex, RelativeLocation targetLocation, ILayoutAction causingAction)
         {
-            return _lowLevelLayoutGraph.GetRank(vertex, i => _layers.GetLayerIndex(i));
-        }
-
-        private int CalculateRankInHighLevelLayoutGraph(LayoutVertexBase vertex)
-        {
-            return _highLevelLayoutGraph.GetRank((DiagramNodeLayoutVertex)vertex, i => _layers.GetLayerIndex(i));
-        }
-
-        private int DetermineIndexInLayer(LayoutVertexBase vertex, int layerIndex)
-        {
-            var layer = _layers.GetLayer(layerIndex);
-
-            var parentVertex = _lowLevelLayoutGraph.GetPrimaryParent(vertex);
-            if (parentVertex == null)
-                return layer.Count;
-
-            var siblingsInLayer = GetPrimarySiblingsInSameLayer(vertex).OrderBy(layer.IndexOf).ToArray();
-            if (siblingsInLayer.Any())
-                return CalculateInsertionIndexBasedOnSiblings(vertex, siblingsInLayer);
-
-            return CalculateInsertionIndexBasedOnParents(vertex, parentVertex);
-        }
-
-        private int CalculateInsertionIndexBasedOnSiblings(LayoutVertexBase vertex, LayoutVertexBase[] siblingsInLayer)
-        {
-            var followingSiblingInLayer = siblingsInLayer.FirstOrDefault(i => Precedes(vertex, i));
-            return followingSiblingInLayer != null
-                ? _layers.GetIndexInLayer(followingSiblingInLayer)
-                : _layers.GetIndexInLayer(siblingsInLayer.Last()) + 1;
-        }
-
-        private int CalculateInsertionIndexBasedOnParents(LayoutVertexBase vertex, LayoutVertexBase parentVertex)
-        {
-            CheckThatParentIsAtOneLayerHigherThanVertex(vertex, parentVertex);
-
-            var parentLayer = _layers.GetLayer(parentVertex);
-            var parentIndexInLayer = _layers.GetIndexInLayer(parentVertex);
-
-            var followingParent = GetFollowingVerticesWithPrimaryChildren(parentLayer, parentIndexInLayer).FirstOrDefault();
-            if (followingParent == null)
-                return _layers.GetLayer(vertex).Count;
-
-            var firstChildOfFollowingParent = _lowLevelLayoutGraph.GetPrimaryChildren(followingParent)
-                .OrderBy(_layers.GetIndexInLayer).First();
-            CheckThatVerticesAreOnTheSameLayer(vertex, firstChildOfFollowingParent);
-            return _layers.GetIndexInLayer(firstChildOfFollowingParent);
-        }
-
-        private IEnumerable<LayoutVertexBase> GetFollowingVerticesWithPrimaryChildren(
-            IReadOnlyLayoutVertexLayer layer, int index)
-        {
-            return layer.OrderBy(_layers.GetIndexInLayer)
-                .Where(i => _layers.GetIndexInLayer(i) > index && _lowLevelLayoutGraph.HasPrimaryChildren(i));
-        }
-
-        private void CheckThatParentIsAtOneLayerHigherThanVertex(LayoutVertexBase vertex, LayoutVertexBase parentVertex)
-        {
-            var layerIndex = _layers.GetLayerIndex(vertex);
-            var parentLayerIndex = _layers.GetLayerIndex(parentVertex);
-            if (layerIndex != parentLayerIndex + 1)
-                throw new Exception($"Child was expected to be 1 layer lower than parent, but vertex {vertex} is on layer {layerIndex} and parent {parentVertex} is on layer {parentLayerIndex}.");
-        }
-
-        private void CheckThatVerticesAreOnTheSameLayer(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
-        {
-            var layerIndex1 = _layers.GetLayerIndex(vertex1);
-            var layerIndex2 = _layers.GetLayerIndex(vertex2);
-            if (layerIndex1 != layerIndex2)
-                throw new Exception($"Vertices were expected to be on the same layer, but vertex {vertex1} is on layer {layerIndex1} and vertex {vertex2} is on layer {layerIndex2}.");
-        }
-
-        private bool Precedes(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
-        {
-            return _vertexComparer.Compare(vertex1, vertex2) < 0;
-        }
-
-        private void MoveVertex(LayoutVertexBase vertex, int toLayerIndex, int toIndexInLayer,
-            ILayoutAction causingAction)
-        {
-            var from = new RelativeLocation(_layers.GetLayerIndex(vertex), _layers.GetIndexInLayer(vertex));
-            var to = new RelativeLocation(toLayerIndex, toIndexInLayer);
+            var currentLocation = _layers.GetLocation(vertex);
 
             _layers.RemoveVertex(vertex);
-            _layers.AddVertex(vertex, toLayerIndex, toIndexInLayer);
+            _layers.AddVertex(vertex, targetLocation);
 
-            RaiseVertexMoveLayoutAction(vertex, from, to, causingAction);
+            RaiseRelativeLocationChangedLayoutAction(vertex, currentLocation, targetLocation, causingAction);
         }
 
         private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
@@ -327,41 +234,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _lowLevelLayoutGraph.RemoveEdge(nextEdge);
             RemoveVertex(vertexToRemove);
             _lowLevelLayoutGraph.AddEdge(mergedEdge);
-        }
-
-        private IEnumerable<LayoutVertexBase> GetPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
-        {
-            var layerIndex = _layers.GetLayerIndex(vertex);
-            return _lowLevelLayoutGraph.GetPrimarySiblings(vertex).Where(i => _layers.GetLayerIndex(i) == layerIndex);
-        }
-
-        private IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
-        {
-            return GetPrimarySiblingsInSameLayer(vertex).Where(i => !i.IsFloating);
-        }
-
-        public bool HasPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
-        {
-            return GetPlacedPrimarySiblingsInSameLayer(vertex).Any();
-        }
-
-        public LayoutVertexBase GetPreviousPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex)
-        {
-            var previousVertex = _layers.GetPreviousInLayer(vertex);
-            return _lowLevelLayoutGraph.IsPlacedPrimarySiblingOf(vertex, previousVertex) ? previousVertex : null;
-        }
-
-        public LayoutVertexBase GetNextPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex)
-        {
-            var nextVertex = _layers.GetNextInLayer(vertex);
-            return _lowLevelLayoutGraph.IsPlacedPrimarySiblingOf(vertex, nextVertex) ? nextVertex : null;
-        }
-
-        private RelativeLocation GetRelativeLocation(DiagramNodeLayoutVertex diagramNodeLayoutVertex)
-        {
-            return new RelativeLocation(
-                _layers.GetLayerIndex(diagramNodeLayoutVertex),
-                _layers.GetIndexInLayer(diagramNodeLayoutVertex));
         }
     }
 }

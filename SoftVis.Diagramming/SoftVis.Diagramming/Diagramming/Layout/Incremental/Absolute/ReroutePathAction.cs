@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
     /// <summary>
     /// A layout action that reroutes a LayoutPath.
     /// </summary>
-    internal class ReroutePathAction : LayoutPathAction, IRerouteDiagramConnectorAction
+    internal class ReroutePathAction : LayoutPathAction, IRerouteDiagramConnectorLayoutAction
     {
         public Route OldRoute { get; }
         public Route NewRoute { get; }

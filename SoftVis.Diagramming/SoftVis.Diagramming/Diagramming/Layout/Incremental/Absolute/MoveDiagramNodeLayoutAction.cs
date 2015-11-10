@@ -6,14 +6,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
     /// <summary>
     /// A layout action that moves a DiagramNodeLayoutVertex.
     /// </summary>
-    internal class MoveDiagramNodeAction : DiagramNodeAction, IMoveDiagramNodeAction, IMoveVertexAction
+    internal class MoveDiagramNodeLayoutAction : DiagramNodeLayoutAction, IMoveDiagramNodeLayoutAction, IMoveVertexAction
     {
         public DiagramNodeLayoutVertex Vertex { get; }
         public Point2D From { get; }
         public Point2D To { get; }
         public Point2D By { get; }
 
-        public MoveDiagramNodeAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
+        public MoveDiagramNodeLayoutAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
             : base("MoveDiagramNode", diagramNodeLayoutVertex.DiagramNode, causingLayoutAction)
         {
             Vertex = diagramNodeLayoutVertex;
@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             visitor.Visit(this);
         }
 
-        protected bool Equals(MoveDiagramNodeAction other)
+        protected bool Equals(MoveDiagramNodeLayoutAction other)
         {
             return base.Equals(other) && From.Equals(other.By);
         }
@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((MoveDiagramNodeAction) obj);
+            return Equals((MoveDiagramNodeLayoutAction) obj);
         }
 
         public override int GetHashCode()
@@ -53,12 +53,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             }
         }
 
-        public static bool operator ==(MoveDiagramNodeAction left, MoveDiagramNodeAction right)
+        public static bool operator ==(MoveDiagramNodeLayoutAction left, MoveDiagramNodeLayoutAction right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(MoveDiagramNodeAction left, MoveDiagramNodeAction right)
+        public static bool operator !=(MoveDiagramNodeLayoutAction left, MoveDiagramNodeLayoutAction right)
         {
             return !Equals(left, right);
         }

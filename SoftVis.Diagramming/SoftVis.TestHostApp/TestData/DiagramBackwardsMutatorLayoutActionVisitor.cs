@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             _diagram = diagram;
         }
 
-        public override void Visit(IMoveDiagramNodeAction layoutAction)
+        public override void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
             var diagramNode = _diagram.Nodes.FirstOrDefault(i => i == layoutAction.DiagramNode);
             if (diagramNode == null)
@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             diagramNode.Center = layoutAction.From;
         }
 
-        public override void Visit(IRerouteDiagramConnectorAction layoutAction)
+        public override void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
             var diagramConnector = _diagram.Connectors.FirstOrDefault(i => i == layoutAction.DiagramConnector);
             if (diagramConnector == null)

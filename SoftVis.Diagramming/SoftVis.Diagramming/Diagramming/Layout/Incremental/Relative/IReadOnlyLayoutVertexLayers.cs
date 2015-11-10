@@ -9,7 +9,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     {
         int GetLayerIndex(LayoutVertexBase vertex);
         IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex);
+        IReadOnlyLayoutVertexLayer GetLayer(int layerIndex);
         int GetIndexInLayer(LayoutVertexBase vertex);
+        RelativeLocation GetLocation(LayoutVertexBase vertex);
 
         LayoutVertexBase GetPreviousInLayer(LayoutVertexBase vertex);
         LayoutVertexBase GetNextInLayer(LayoutVertexBase vertex);

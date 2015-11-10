@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
     /// <summary>
     /// An action performed by the layout logic.
     /// </summary>
-    public class LayoutAction : ILayoutAction
+    public class LayoutAction : EventArgs, ILayoutAction
     {
         public string Action { get; }
         public double? Amount { get; }

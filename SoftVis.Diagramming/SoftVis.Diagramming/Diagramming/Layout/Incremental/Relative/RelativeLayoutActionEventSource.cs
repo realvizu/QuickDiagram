@@ -5,17 +5,17 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// </summary>
     internal abstract class RelativeLayoutActionEventSource : IncrementalLayoutActionEventSource
     {
-        protected void RaiseVertexAddLayoutAction(LayoutVertexBase vertex,
+        protected void RaiseRelativeLocationAssignedLayoutAction(LayoutVertexBase vertex,
             RelativeLocation to, ILayoutAction causingAction)
         {
-            var layoutAction = new RelativeVertexAddLayoutAction(vertex, to, causingAction);
+            var layoutAction = new RelativeLocationAssignedLayoutAction(vertex, to, causingAction);
             RaiseLayoutAction(this, layoutAction);
         }
 
-        protected void RaiseVertexMoveLayoutAction(LayoutVertexBase vertex, 
+        protected void RaiseRelativeLocationChangedLayoutAction(LayoutVertexBase vertex, 
             RelativeLocation from, RelativeLocation to, ILayoutAction causingAction)
         {
-            var layoutAction = new RelativeVertexMoveLayoutAction(vertex, from, to, causingAction);
+            var layoutAction = new RelativeLocationChangedLayoutAction(vertex, from, to, causingAction);
             RaiseLayoutAction(this, layoutAction);
         }
 

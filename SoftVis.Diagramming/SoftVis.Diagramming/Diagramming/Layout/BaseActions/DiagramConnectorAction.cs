@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
     /// <summary>
     /// A layout action that affects a diagram connector.
     /// </summary>
-    internal class DiagramConnectorAction : LayoutAction, IDiagramConnectorAction
+    internal class DiagramConnectorAction : LayoutAction, IDiagramConnectorLayoutAction
     {
         public DiagramConnector DiagramConnector { get; }
 

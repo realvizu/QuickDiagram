@@ -3,7 +3,7 @@ using Codartis.SoftVis.Diagramming.Layout.BaseActions;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// Abstract base class for those classes that publish base layout action events.
+    /// Abstract base class for those classes that publish layout action events about LayoutVertex/Edge/Path objects.
     /// </summary>
     internal abstract class IncrementalLayoutActionEventSource : BaseLayoutActionEventSource
     {

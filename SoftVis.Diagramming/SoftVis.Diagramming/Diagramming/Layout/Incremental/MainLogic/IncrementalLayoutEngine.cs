@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
             _relativeLayoutCalculator = new RelativeLayoutCalculator();
             _relativeLayoutCalculator.LayoutActionExecuted += OnLayoutActionExecuted;
 
-            _absoluteLayoutCalculator = new AbsoluteLayoutCalculator(_relativeLayoutCalculator, horizontalGap, verticalGap);
+            _absoluteLayoutCalculator = new AbsoluteLayoutCalculator(_relativeLayoutCalculator.RelativeLayout, horizontalGap, verticalGap);
             _absoluteLayoutCalculator.LayoutActionExecuted += OnLayoutActionExecuted;
 
             _relativeLayoutActionDispatcher = new RelativeLayoutActionDispatcherVisitor(_absoluteLayoutCalculator);

@@ -29,12 +29,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _vertexToLayerIndexMap.Clear();
         }
 
-        public void AddVertex(LayoutVertexBase vertex, int layerIndex, int indexInLayer)
+        public void AddVertex(LayoutVertexBase vertex, RelativeLocation targetLocation)
         {
-            var layer = EnsureLayerExists(layerIndex);
-            _vertexToLayerIndexMap.Set(vertex, layerIndex);
+            var layer = EnsureLayerExists(targetLocation.LayerIndex);
+            _vertexToLayerIndexMap.Set(vertex, targetLocation.LayerIndex);
 
-            layer.Add(vertex, indexInLayer);
+            layer.Add(vertex, targetLocation.IndexInLayer);
 
             vertex.IsFloating = false;
         }
@@ -78,6 +78,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         public int GetIndexInLayer(LayoutVertexBase vertex)
         {
             return GetLayer(vertex).IndexOf(vertex);
+        }
+
+        public RelativeLocation GetLocation(LayoutVertexBase vertex)
+        {
+            return new RelativeLocation(GetLayerIndex(vertex), GetIndexInLayer(vertex));
         }
 
         public LayoutVertexBase GetPreviousInLayer(LayoutVertexBase vertex)

@@ -1,10 +1,13 @@
 ﻿namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
 {
-    internal class RelativeVertexAddLayoutAction : LayoutVertexAction, IRelativeLayoutAction
+    /// <summary>
+    /// A layout action that assigns a relative location to a vertex.
+    /// </summary>
+    internal class RelativeLocationAssignedLayoutAction : LayoutVertexAction, IRelativeLayoutAction
     {
         public RelativeLocation To { get; }
 
-        public RelativeVertexAddLayoutAction(LayoutVertexBase vertex, RelativeLocation to,
+        public RelativeLocationAssignedLayoutAction(LayoutVertexBase vertex, RelativeLocation to,
             ILayoutAction causingLayoutAction = null)
             : base("RelativeVertexAdd", vertex, null, causingLayoutAction)
         {

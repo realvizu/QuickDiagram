@@ -13,5 +13,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
         IEnumerable<TVertex> GetParents(TVertex vertex);
         IEnumerable<TVertex> GetChildren(TVertex vertex);
         void ExecuteOnDescendantVertices(TVertex rootVertex, Action<TVertex> actionOnVertex);
+        int GetRank(TVertex vertex, Func<TVertex, int> rankFunc);
     }
 }

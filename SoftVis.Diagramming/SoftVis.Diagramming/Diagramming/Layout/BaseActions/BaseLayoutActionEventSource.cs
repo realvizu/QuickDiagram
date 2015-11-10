@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.BaseActions
         protected ILayoutAction RaiseDiagramNodeLayoutAction(string action, DiagramNode diagramNode,
             ILayoutAction causingAction = null)
         {
-            var layoutAction = new DiagramNodeAction(action, diagramNode, causingAction);
+            var layoutAction = new DiagramNodeLayoutAction(action, diagramNode, causingAction);
             RaiseLayoutAction(layoutAction);
             return layoutAction;
         }
