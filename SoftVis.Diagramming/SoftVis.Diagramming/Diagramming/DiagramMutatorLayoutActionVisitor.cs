@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout;
 
-namespace Codartis.SoftVis.TestHostApp.TestData
+namespace Codartis.SoftVis.Diagramming
 {
-    internal sealed class DiagramBackwardsMutatorLayoutActionVisitor : LayoutActionVisitorBase
+    public sealed class DiagramMutatorLayoutActionVisitor : LayoutActionVisitorBase
     {
         private readonly Diagram _diagram;
 
-        public DiagramBackwardsMutatorLayoutActionVisitor(Diagram diagram)
+        public DiagramMutatorLayoutActionVisitor(Diagram diagram)
         {
             _diagram = diagram;
         }
@@ -20,7 +19,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             if (diagramNode == null)
                 throw new InvalidOperationException($"Applying layout action, but DiagramNode {layoutAction.DiagramNode} not found.");
 
-            diagramNode.Center = layoutAction.From;
+            diagramNode.Center = layoutAction.To;
         }
 
         public override void Visit(IRerouteDiagramConnectorAction layoutAction)
@@ -29,7 +28,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             if (diagramConnector == null)
                 throw new InvalidOperationException($"Applying layout action, but DiagramConnector {layoutAction.DiagramConnector} not found.");
 
-            diagramConnector.RoutePoints = layoutAction.OldRoute;
+            diagramConnector.RoutePoints = layoutAction.NewRoute;
         }
 
     }

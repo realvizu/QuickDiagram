@@ -1,5 +1,6 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
-using QuickGraph;
+﻿using Codartis.SoftVis.Diagramming.Layout;
+using Codartis.SoftVis.Diagramming.Layout.ActionGraph;
+using Codartis.SoftVis.Diagramming.Layout.BaseActions;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
@@ -25,7 +26,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             LayoutActionGraph.AddVertex(layoutAction);
 
             var causingLayoutAction = layoutAction.CausingLayoutAction ?? RootLayoutAction;
-            var edge = new Edge<ILayoutAction>(causingLayoutAction, layoutAction);
+            var edge = new LayoutActionEdge(causingLayoutAction, layoutAction);
             LayoutActionGraph.AddEdge(edge);
         }
     }

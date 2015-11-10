@@ -78,11 +78,11 @@
     <Compile Include="Diagramming\Layout\Incremental\Helpers\EdgeSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\LayoutGraphFixtureHelper.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LowLevelLayoutGraphTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutVertexLayersTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\LowLevelLayoutGraphTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\LayoutVertexLayersTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDiagramNode.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDummyLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Helpers\TestLayoutGraphBuilder.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\LowLevelLayoutGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using Codartis.SoftVis.Diagramming.Layout.ActionTracking;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Layout;
+using Codartis.SoftVis.Diagramming.Layout.ActionGraph;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
@@ -167,7 +169,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             Debug.WriteLine("-----------------------");
             _depth = 0;
-            var searchAlgorithm = new DepthFirstSearchAlgorithm<ILayoutAction, IEdge<ILayoutAction>>(layoutActionGraph);
+            var searchAlgorithm = new DepthFirstSearchAlgorithm<ILayoutAction, LayoutActionEdge>(layoutActionGraph);
             searchAlgorithm.DiscoverVertex += OnDiscoverVertex;
             searchAlgorithm.FinishVertex += OnFinishVertex;
             searchAlgorithm.TreeEdge += OnTreeEdge;
