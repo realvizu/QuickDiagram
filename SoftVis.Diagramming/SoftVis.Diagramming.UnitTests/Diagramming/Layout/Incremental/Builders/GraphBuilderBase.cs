@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using QuickGraph;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers
+namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {
-    internal abstract class GraphBuilder<TVertex, TEdge, TGraph>
+    internal abstract class GraphBuilderBase<TVertex, TEdge, TGraph> : BuilderBase
         where TVertex : class
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableBidirectionalGraph<TVertex, TEdge>, new()
     {
         public TGraph Graph { get; }
 
-        protected GraphBuilder()
+        protected GraphBuilderBase()
         {
             Graph = new TGraph();
         }
@@ -19,10 +19,10 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             foreach (var pathSpecification in pathSpecifications)
             {
-                foreach (var vertexName in BuilderHelper.PathSpecificationToVertexNames(pathSpecification))
+                foreach (var vertexName in PathSpecificationToVertexNames(pathSpecification))
                     AddVertex(vertexName);
 
-                foreach (var edgeSpecification in BuilderHelper.StringToEdgeSpecifications(pathSpecification))
+                foreach (var edgeSpecification in StringToEdgeSpecifications(pathSpecification))
                     AddEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
             }
         }
@@ -39,51 +39,57 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
         public TVertex AddVertex(string name)
         {
-            var vertex = CreateVertex(name);
-            Graph.AddVertex(vertex);
+            var vertex = GetOrCreateVertex(name);
+            if (vertex != null)
+                Graph.AddVertex(vertex);
             return vertex;
         }
 
         public TEdge AddEdge(string sourceName, string targetName)
         {
-            var edge = CreateEdge(sourceName, targetName);
-            Graph.AddVertex(edge.Source);
-            Graph.AddVertex(edge.Target);
-            Graph.AddEdge(edge);
+            var edge = GetOrCreateEdge(sourceName, targetName);
+            if (edge != null)
+            {
+                Graph.AddVertex(edge.Source);
+                Graph.AddVertex(edge.Target);
+                Graph.AddEdge(edge);
+            }
             return edge;
         }
 
         public TVertex RemoveVertex(string name)
         {
             var vertex = GetVertex(name);
-            Graph.RemoveVertex(vertex);
+            if (vertex != null)
+                Graph.RemoveVertex(vertex);
             return vertex;
         }
 
         public TEdge RemoveEdge(string sourceName, string targetName)
         {
             var edge = GetEdge(sourceName, targetName);
-            Graph.RemoveEdge(edge);
+            if (edge != null)
+                Graph.RemoveEdge(edge);
             return edge;
         }
 
-        protected abstract TVertex CreateNewVertex(string name);
-        protected abstract TEdge CreateNewEdge(TVertex source, TVertex target);
+        protected abstract TVertex CreateGraphVertex(string name);
+        protected abstract TEdge CreateGraphEdge(TVertex source, TVertex target);
 
-        private TVertex CreateVertex(string name)
+        private TVertex GetOrCreateVertex(string name)
         {
-            return GetVertex(name) ?? CreateNewVertex(name);
+            return GetVertex(name) ?? CreateGraphVertex(name);
         }
 
-        private TEdge CreateEdge(string sourceName, string targetName)
+        private TEdge GetOrCreateEdge(string sourceName, string targetName)
         {
             var edge = GetEdge(sourceName, targetName);
             if (edge != null)
                 return edge;
 
-            var source = CreateVertex(sourceName);
-            var target = CreateVertex(targetName);
-            return CreateNewEdge(source, target);
+            var source = GetOrCreateVertex(sourceName);
+            var target = GetOrCreateVertex(targetName);
+            return CreateGraphEdge(source, target);
         }
     }
 }

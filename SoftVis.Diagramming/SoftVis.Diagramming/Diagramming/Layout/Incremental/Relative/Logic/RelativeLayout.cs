@@ -24,10 +24,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         public IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _lowLevelLayoutGraph;
         public IReadOnlyLayoutVertexLayers LayoutVertexLayers => _layers;
 
+        public IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex)
+        {
+            return _lowLevelLayoutGraph.GetPrimarySiblings(vertex).Where(i => _layers.GetLayerIndex(i) == layerIndex);
+        }
+
         public IEnumerable<LayoutVertexBase> GetPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
         {
-            var layerIndex = _layers.GetLayerIndex(vertex);
-            return _lowLevelLayoutGraph.GetPrimarySiblings(vertex).Where(i => _layers.GetLayerIndex(i) == layerIndex);
+            var layerIndex = _layers.GetLayerIndexOrThrow(vertex);
+            return GetPrimarySiblingsInLayer(vertex, layerIndex);
         }
 
         public IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex)

@@ -1,5 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
-using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
+using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
 using FluentAssertions;
 using Xunit;
 

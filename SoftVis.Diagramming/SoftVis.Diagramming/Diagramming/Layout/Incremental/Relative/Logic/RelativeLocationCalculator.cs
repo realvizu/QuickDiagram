@@ -24,26 +24,26 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public RelativeLocation GetTargetLocation(LayoutVertexBase vertex)
         {
-            var isDiagramNodeLayoutVertex = vertex is DiagramNodeLayoutVertex;
-            var currentLocation = Layers.GetLocation(vertex);
+            var currentLayerIndex = Layers.GetLayerIndex(vertex) ?? -1;
 
-            var minimumLayerIndex = isDiagramNodeLayoutVertex
+            var minimumLayerIndex = vertex is DiagramNodeLayoutVertex
                 ? CalculateRankInHighLevelLayoutGraph(vertex)
                 : CalculateRankInLowLevelLayoutGraph(vertex);
 
-            var toLayerIndex = Math.Max(currentLocation.LayerIndex, minimumLayerIndex);
+            var toLayerIndex = Math.Max(currentLayerIndex, minimumLayerIndex);
             var toIndexInLayer = DetermineIndexInLayer(vertex, minimumLayerIndex);
+
             return new RelativeLocation(toLayerIndex, toIndexInLayer);
         }
 
         private int CalculateRankInLowLevelLayoutGraph(LayoutVertexBase vertex)
         {
-            return LowLevelLayoutGraph.GetRank(vertex, i => Layers.GetLayerIndex(i));
+            return LowLevelLayoutGraph.GetRank(vertex, i => Layers.GetLayerIndexOrThrow(i));
         }
 
         private int CalculateRankInHighLevelLayoutGraph(LayoutVertexBase vertex)
         {
-            return HighLevelLayoutGraph.GetRank((DiagramNodeLayoutVertex)vertex, i => Layers.GetLayerIndex(i));
+            return HighLevelLayoutGraph.GetRank((DiagramNodeLayoutVertex)vertex, i => Layers.GetLayerIndexOrThrow(i));
         }
 
         private int DetermineIndexInLayer(LayoutVertexBase vertex, int layerIndex)
@@ -54,11 +54,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             if (parentVertex == null)
                 return layer.Count;
 
-            var siblingsInLayer = _relativeLayout.GetPrimarySiblingsInSameLayer(vertex).OrderBy(layer.IndexOf).ToArray();
+            var siblingsInLayer = _relativeLayout.GetPrimarySiblingsInLayer(vertex, layerIndex).OrderBy(layer.IndexOf).ToArray();
             if (siblingsInLayer.Any())
                 return CalculateInsertionIndexBasedOnSiblings(vertex, siblingsInLayer);
 
-            return CalculateInsertionIndexBasedOnParents(vertex, parentVertex);
+            return CalculateInsertionIndexBasedOnParent(layerIndex, parentVertex);
         }
 
         private int CalculateInsertionIndexBasedOnSiblings(LayoutVertexBase vertex, LayoutVertexBase[] siblingsInLayer)
@@ -69,20 +69,20 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 : Layers.GetIndexInLayer(siblingsInLayer.Last()) + 1;
         }
 
-        private int CalculateInsertionIndexBasedOnParents(LayoutVertexBase vertex, LayoutVertexBase parentVertex)
+        private int CalculateInsertionIndexBasedOnParent(int targetLayer, LayoutVertexBase parentVertex)
         {
-            CheckThatParentIsAtOneLayerHigherThanVertex(vertex, parentVertex);
+            CheckThatParentIsAtOneLayerHigherThanVertex(targetLayer, parentVertex);
 
             var parentLayer = Layers.GetLayer(parentVertex);
             var parentIndexInLayer = Layers.GetIndexInLayer(parentVertex);
 
             var followingParent = GetFollowingVerticesWithPrimaryChildren(parentLayer, parentIndexInLayer).FirstOrDefault();
             if (followingParent == null)
-                return Layers.GetLayer(vertex).Count;
+                return Layers.GetLayer(targetLayer).Count;
 
             var firstChildOfFollowingParent = LowLevelLayoutGraph.GetPrimaryChildren(followingParent)
                 .OrderBy(Layers.GetIndexInLayer).First();
-            CheckThatVerticesAreOnTheSameLayer(vertex, firstChildOfFollowingParent);
+            CheckThatVerticesAreOnTheSameLayer(targetLayer, firstChildOfFollowingParent);
             return Layers.GetIndexInLayer(firstChildOfFollowingParent);
         }
 
@@ -93,20 +93,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 .Where(i => Layers.GetIndexInLayer(i) > index && LowLevelLayoutGraph.HasPrimaryChildren(i));
         }
 
-        private void CheckThatParentIsAtOneLayerHigherThanVertex(LayoutVertexBase vertex, LayoutVertexBase parentVertex)
+        private void CheckThatParentIsAtOneLayerHigherThanVertex(int layerIndex, LayoutVertexBase parentVertex)
         {
-            var layerIndex = Layers.GetLayerIndex(vertex);
             var parentLayerIndex = Layers.GetLayerIndex(parentVertex);
-            if (layerIndex != parentLayerIndex + 1)
-                throw new Exception($"Child was expected to be 1 layer lower than parent, but vertex {vertex} is on layer {layerIndex} and parent {parentVertex} is on layer {parentLayerIndex}.");
+            if (parentLayerIndex != layerIndex - 1)
+                throw new Exception($"Parent {parentVertex} was expected to be on layer {layerIndex - 1} but was on layer {parentLayerIndex}.");
         }
 
-        private void CheckThatVerticesAreOnTheSameLayer(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
+        private void CheckThatVerticesAreOnTheSameLayer(int layerIndex, LayoutVertexBase otherVertex)
         {
-            var layerIndex1 = Layers.GetLayerIndex(vertex1);
-            var layerIndex2 = Layers.GetLayerIndex(vertex2);
-            if (layerIndex1 != layerIndex2)
-                throw new Exception($"Vertices were expected to be on the same layer, but vertex {vertex1} is on layer {layerIndex1} and vertex {vertex2} is on layer {layerIndex2}.");
+            var otherLayerIndex = Layers.GetLayerIndex(otherVertex);
+            if (otherLayerIndex != layerIndex)
+                throw new Exception($"Vertex {otherVertex} was expected to be on layer {layerIndex} but was on layer {otherLayerIndex}.");
         }
 
         private bool Precedes(LayoutVertexBase vertex1, LayoutVertexBase vertex2)

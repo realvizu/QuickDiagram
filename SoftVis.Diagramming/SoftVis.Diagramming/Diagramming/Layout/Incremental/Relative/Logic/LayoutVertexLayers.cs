@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Common;
@@ -11,12 +12,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     internal class LayoutVertexLayers : IReadOnlyLayoutVertexLayers
     {
         private readonly List<LayoutVertexLayer> _layers;
-        private readonly Map<LayoutVertexBase, int> _vertexToLayerIndexMap;
+        private readonly Map<LayoutVertexBase, int?> _vertexToLayerIndexMap;
 
         public LayoutVertexLayers()
         {
             _layers = new List<LayoutVertexLayer>();
-            _vertexToLayerIndexMap = new Map<LayoutVertexBase, int>();
+            _vertexToLayerIndexMap = new Map<LayoutVertexBase, int?>();
         }
 
         public int Count => _layers.Count;
@@ -41,8 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public void RemoveVertex(LayoutVertexBase vertex)
         {
-            var layerIndex = GetLayerIndex(vertex);
-
+            var layerIndex = GetLayerIndexOrThrow(vertex);
             _layers[layerIndex].Remove(vertex);
             _vertexToLayerIndexMap.Remove(vertex);
         }
@@ -58,31 +58,51 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             }
         }
 
+        public int? GetLayerIndex(LayoutVertexBase vertex)
+        {
+            return _vertexToLayerIndexMap.Get(vertex);
+        }
+
+        public int GetLayerIndexOrThrow(LayoutVertexBase vertex)
+        {
+            var layerIndex = GetLayerIndex(vertex);
+            if (layerIndex == null)
+                throw new InvalidOperationException($"Vertex {vertex} has no layer index.");
+            return layerIndex.Value;
+        }
+
+        public RelativeLocation? GetLocation(LayoutVertexBase vertex)
+        {
+            var layerIndex = GetLayerIndex(vertex);
+
+            return layerIndex == null
+                ? (RelativeLocation?)null
+                : new RelativeLocation(layerIndex.Value, GetIndexInLayer(vertex));
+        }
+
+        public RelativeLocation GetLocationOrThrow(LayoutVertexBase vertex)
+        {
+            var location = GetLocation(vertex);
+            if (location == null)
+                throw new InvalidOperationException($"Vertex {vertex} has no relative location.");
+            return location.Value;
+        }
+
         public IReadOnlyLayoutVertexLayer GetLayer(int index)
         {
             EnsureLayerExists(index);
             return _layers[index];
         }
 
-        public int GetLayerIndex(LayoutVertexBase vertex)
-        {
-            return _vertexToLayerIndexMap.Get(vertex);
-        }
-
         public IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex)
         {
-            var layerIndex = GetLayerIndex(vertex);
+            var layerIndex = GetLayerIndexOrThrow(vertex);
             return _layers[layerIndex];
         }
 
         public int GetIndexInLayer(LayoutVertexBase vertex)
         {
             return GetLayer(vertex).IndexOf(vertex);
-        }
-
-        public RelativeLocation GetLocation(LayoutVertexBase vertex)
-        {
-            return new RelativeLocation(GetLayerIndex(vertex), GetIndexInLayer(vertex));
         }
 
         public LayoutVertexBase GetPreviousInLayer(LayoutVertexBase vertex)

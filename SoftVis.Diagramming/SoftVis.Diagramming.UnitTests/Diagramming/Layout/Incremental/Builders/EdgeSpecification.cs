@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers
+﻿namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal struct EdgeSpecification
     {
