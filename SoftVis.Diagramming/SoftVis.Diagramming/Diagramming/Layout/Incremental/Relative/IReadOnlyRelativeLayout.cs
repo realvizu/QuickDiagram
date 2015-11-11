@@ -13,6 +13,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
 
         IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex);
         IEnumerable<LayoutVertexBase> GetPrimarySiblingsInSameLayer(LayoutVertexBase vertex);
+        IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex);
         IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex);
         bool HasPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex);
         LayoutVertexBase GetPreviousPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex);

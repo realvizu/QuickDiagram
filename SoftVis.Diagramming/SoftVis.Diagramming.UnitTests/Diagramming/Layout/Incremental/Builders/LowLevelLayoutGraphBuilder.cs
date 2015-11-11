@@ -5,9 +5,16 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class LowLevelLayoutGraphBuilder : GraphBuilderBase<LayoutVertexBase, LayoutEdge, LowLevelLayoutGraph>
     {
+        private readonly HighLevelLayoutGraphBuilder _highLevelLayoutGraphBuilder;
+
+        public LowLevelLayoutGraphBuilder(HighLevelLayoutGraphBuilder highLevelLayoutGraphBuilder = null)
+        {
+            _highLevelLayoutGraphBuilder = highLevelLayoutGraphBuilder;
+        }
+
         protected override LayoutVertexBase CreateGraphVertex(string name)
         {
-            return CreateLayoutVertex(name);
+            return _highLevelLayoutGraphBuilder?.GetVertex(name) ?? CreateLayoutVertex(name);
         }
 
         protected override LayoutEdge CreateGraphEdge(LayoutVertexBase source, LayoutVertexBase target)

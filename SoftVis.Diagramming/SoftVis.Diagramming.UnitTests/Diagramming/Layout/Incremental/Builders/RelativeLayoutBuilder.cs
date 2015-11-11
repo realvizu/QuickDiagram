@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
+﻿using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
@@ -14,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         public RelativeLayoutBuilder()
         {
             HighLevelLayoutGraphBuilder = new HighLevelLayoutGraphBuilder();
-            LowLevelLayoutGraphBuilder = new LowLevelLayoutGraphBuilder();
+            LowLevelLayoutGraphBuilder = new LowLevelLayoutGraphBuilder(HighLevelLayoutGraphBuilder);
             _layers = new LayoutVertexLayers();
             RelativeLayout = new RelativeLayout(HighLevelLayoutGraphBuilder.Graph, LowLevelLayoutGraphBuilder.Graph, _layers);
         }

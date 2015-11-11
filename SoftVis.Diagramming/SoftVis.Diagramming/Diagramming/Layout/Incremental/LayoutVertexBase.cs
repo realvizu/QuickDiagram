@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <remarks>
     /// <para>LayoutVertices can float which indicates that the edge does not take part in layout calculations.</para>
     /// </remarks>
-    internal abstract class LayoutVertexBase : IRect
+    internal abstract class LayoutVertexBase : IRect, IFloatable
     {
         public bool IsFloating { get; set; }
         public Point2D Center { get; set; }

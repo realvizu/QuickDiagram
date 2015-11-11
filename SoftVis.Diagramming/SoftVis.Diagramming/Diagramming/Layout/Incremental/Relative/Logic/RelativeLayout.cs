@@ -35,6 +35,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return GetPrimarySiblingsInLayer(vertex, layerIndex);
         }
 
+        public IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex)
+        {
+            return GetPrimarySiblingsInLayer(vertex, layerIndex).Where(i => !i.IsFloating); ;
+        }
+
         public IEnumerable<LayoutVertexBase> GetPlacedPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
         {
             return GetPrimarySiblingsInSameLayer(vertex).Where(i => !i.IsFloating);

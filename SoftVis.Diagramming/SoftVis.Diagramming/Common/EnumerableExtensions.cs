@@ -28,5 +28,21 @@ namespace Codartis.SoftVis.Common
             if (item != null)
                 yield return item;
         }
+
+        public static int IndexOf<T>(this IEnumerable<T> source, T value)
+        {
+            var sourceAsList = source as IList<T>;
+            if (sourceAsList != null)
+                return sourceAsList.IndexOf(value);
+
+            var index = 0;
+            var comparer = EqualityComparer<T>.Default;
+            foreach (var item in source)
+            {
+                if (comparer.Equals(item, value)) return index;
+                index++;
+            }
+            return -1;
+        }
     }
 }

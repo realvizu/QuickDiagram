@@ -5,7 +5,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// <summary>
     /// A read-only view of the layout vertex layers.
     /// </summary>
-    internal interface IReadOnlyLayoutVertexLayers : IEnumerable<IReadOnlyLayoutVertexLayer>
+    internal interface IReadOnlyLayoutVertexLayers : IEnumerable<IReadOnlyLayoutVertexLayer>,
+        IFilterableToNonFloating<IReadOnlyLayoutVertexLayers, LayoutVertexBase>
     {
         int? GetLayerIndex(LayoutVertexBase vertex);
         int GetLayerIndexOrThrow(LayoutVertexBase vertex);

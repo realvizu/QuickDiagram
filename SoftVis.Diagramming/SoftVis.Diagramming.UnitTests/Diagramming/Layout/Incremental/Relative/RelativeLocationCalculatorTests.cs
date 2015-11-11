@@ -84,7 +84,13 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             _relativeLocationCalculator.GetTargetLocation(GetVertex("C2")).Should().Be(new RelativeLocation(1, 1));
         }
 
-        // floating?
+        [Fact]
+        public void GetTargetLocation_SubjectVertexDoesNotInterfereWithCalculation()
+        {
+            _relativeLayoutBuilder.SetUpGraphs("A<-B");
+            _relativeLayoutBuilder.SetUpLayers("A","B");
+            _relativeLocationCalculator.GetTargetLocation(GetVertex("B")).Should().Be(new RelativeLocation(1, 0));
+        }
 
         private LayoutVertexBase GetVertex(string vertexName)
         {
