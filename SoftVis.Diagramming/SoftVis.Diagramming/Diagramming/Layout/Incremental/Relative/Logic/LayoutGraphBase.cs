@@ -32,6 +32,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return this.GetInNeighbours(vertex);
         }
 
+        public IEnumerable<TVertex> GetSiblings(TVertex vertex)
+        {
+            var parentVertices = GetParents(vertex).ToList();
+            return Vertices.Where(i => !vertex.Equals(i) && parentVertices.Intersect(GetParents(i)).Any());
+        }
+
         public void ExecuteOnDescendantVertices(TVertex rootVertex, Action<TVertex> actionOnVertex)
         {
             actionOnVertex(rootVertex);

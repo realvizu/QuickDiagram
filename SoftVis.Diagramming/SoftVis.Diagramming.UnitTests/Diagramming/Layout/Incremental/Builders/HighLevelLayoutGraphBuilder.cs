@@ -1,15 +1,17 @@
-using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
+using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal class HighLevelLayoutGraphBuilder : GraphBuilderBase<DiagramNodeLayoutVertex, LayoutPath, HighLevelLayoutGraph>
     {
-        protected override IEnumerable<string> PathSpecificationToVertexNames(string pathSpecification)
+        protected override PathSpecification GetPathSpecification(string pathString)
         {
-            return base.PathSpecificationToVertexNames(pathSpecification).Where(i => !i.StartsWith("*"));
+            var originalPathSpecification = base.GetPathSpecification(pathString);
+            var nonDummyVertices = originalPathSpecification.Where(i => !i.StartsWith("*"));
+            return new PathSpecification(nonDummyVertices);
         }
 
         protected override DiagramNodeLayoutVertex CreateGraphVertex(string name)

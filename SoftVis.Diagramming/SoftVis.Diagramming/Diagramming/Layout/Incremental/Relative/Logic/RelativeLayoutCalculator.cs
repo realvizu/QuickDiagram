@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Common;
+using MoreLinq;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 {
@@ -53,15 +55,23 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public void OnDiagramNodeAdded(DiagramNode diagramNode, ILayoutAction causingAction)
         {
+            if (_diagramNodeToLayoutVertexMap.ContainsKey(diagramNode))
+                throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
+
             var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
             var location = AddVertex(diagramNodeLayoutVertex);
             RaiseRelativeLocationAssignedLayoutAction(diagramNodeLayoutVertex, location, causingAction);
+
+            CheckInvariants(diagramNodeLayoutVertex);
         }
 
         public void OnDiagramNodeRemoved(DiagramNode diagramNode, ILayoutAction causingAction)
         {
+            if (!_diagramNodeToLayoutVertexMap.ContainsKey(diagramNode))
+                throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
+
             var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
             _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
@@ -70,14 +80,22 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public void OnDiagramConnectorAdded(DiagramConnector diagramConnector, ILayoutAction causingAction)
         {
+            if (_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
+                throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
+
             var layoutPath = CreateLayoutPath(diagramConnector);
             _diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
 
             AddLayoutPath(layoutPath, causingAction);
+
+            CheckInvariants(layoutPath.Vertices);
         }
 
         public void OnDiagramConnectorRemoved(DiagramConnector diagramConnector, ILayoutAction causingAction)
         {
+            if (!_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
+                throw new InvalidOperationException($"Diagram connector {diagramConnector} not found.");
+
             var layoutPath = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
             _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
 
@@ -111,7 +129,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _layers.RemoveVertex(vertex);
             _lowLevelLayoutGraph.RemoveVertex(vertex);
             if (vertex is DiagramNodeLayoutVertex)
-                _highLevelLayoutGraph.RemoveVertex((DiagramNodeLayoutVertex) vertex);
+                _highLevelLayoutGraph.RemoveVertex((DiagramNodeLayoutVertex)vertex);
         }
 
         private void AddLayoutPath(LayoutPath layoutPath, ILayoutAction causingAction)
@@ -135,7 +153,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private void EnsureCorrectLocationForPathSourceAndItsDescendants(LayoutPath layoutPath, ILayoutAction causingAction)
         {
             var movingVertex = layoutPath.PathSource;
-            _lowLevelLayoutGraph.FloatTree(movingVertex);
+
+            // Can't float tree here because floating parent's layer is undefined.
+            //_lowLevelLayoutGraph.FloatTree(movingVertex);
 
             _highLevelLayoutGraph.ExecuteOnDescendantVertices(movingVertex,
                 i => EnsureCorrectLocationForVertex(i, causingAction));
@@ -245,6 +265,32 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _lowLevelLayoutGraph.RemoveEdge(nextEdge);
             RemoveVertex(vertexToRemove);
             _lowLevelLayoutGraph.AddEdge(mergedEdge);
+        }
+
+        private void CheckInvariants(IEnumerable<LayoutVertexBase> vertices)
+        {
+            vertices.ForEach(CheckInvariants);
+        }
+
+        private void CheckInvariants(LayoutVertexBase vertex)
+        {
+            var layerIndex = _layers.GetLayerIndexOrThrow(vertex);
+
+            foreach (var parentVertex in _lowLevelLayoutGraph.GetParents(vertex))
+                CheckLayerIndex(parentVertex, layerIndex - 1);
+
+            foreach (var childVertex in _lowLevelLayoutGraph.GetChildren(vertex))
+                CheckLayerIndex(childVertex, layerIndex + 1);
+
+            foreach (var childVertex in _lowLevelLayoutGraph.GetSiblings(vertex))
+                CheckLayerIndex(childVertex, layerIndex);
+        }
+
+        private void CheckLayerIndex(LayoutVertexBase vertex,int expectedLayerIndex )
+        {
+            var layerIndex = _layers.GetLayerIndex(vertex);
+            if (layerIndex != expectedLayerIndex)
+                throw new Exception($"Vertex {vertex} was expected to be on layer {expectedLayerIndex} but was on layer {layerIndex}.");
         }
     }
 }

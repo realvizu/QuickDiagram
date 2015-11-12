@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
@@ -15,16 +16,23 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             Graph = new TGraph();
         }
 
-        public void SetUp(params string[] pathSpecifications)
+        public void SetUp(params string[] pathStrings)
         {
-            foreach (var pathSpecification in pathSpecifications)
+            foreach (var pathString in pathStrings)
             {
-                foreach (var vertexName in PathSpecificationToVertexNames(pathSpecification))
+                var pathSpecification = GetPathSpecification(pathString);
+
+                foreach (var vertexName in pathSpecification)
                     AddVertex(vertexName);
 
-                foreach (var edgeSpecification in StringToEdgeSpecifications(pathSpecification))
+                foreach (var edgeSpecification in pathSpecification.ToEdgeSpecifications())
                     AddEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
             }
+        }
+
+        protected virtual PathSpecification GetPathSpecification(string pathString)
+        {
+            return PathSpecification.Parse(pathString);
         }
 
         public TVertex GetVertex(string name)
