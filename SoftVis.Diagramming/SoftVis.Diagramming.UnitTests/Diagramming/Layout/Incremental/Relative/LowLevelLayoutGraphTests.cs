@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.TestSubjects;
@@ -158,22 +157,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P1<-C2"
                 );
 
-            LowLevelLayoutGraph.GetRank(_testLayoutGraphBuilder.GetVertex("P1"), GetRank).ShouldBeEquivalentTo(0);
-            LowLevelLayoutGraph.GetRank(_testLayoutGraphBuilder.GetVertex("C1"), GetRank).ShouldBeEquivalentTo(2);
-            LowLevelLayoutGraph.GetRank(_testLayoutGraphBuilder.GetVertex("C2"), GetRank).ShouldBeEquivalentTo(1);
-        }
-
-        private static int GetRank(LayoutVertexBase vertex)
-        {
-            switch (vertex.Name)
-            {
-                case "P1":
-                    return 0;
-                case "*1":
-                    return 1;
-                default:
-                    return 0;
-            }
+            LowLevelLayoutGraph.GetRank(_testLayoutGraphBuilder.GetVertex("P1")).ShouldBeEquivalentTo(0);
+            LowLevelLayoutGraph.GetRank(_testLayoutGraphBuilder.GetVertex("C1")).ShouldBeEquivalentTo(2);
+            LowLevelLayoutGraph.GetRank(_testLayoutGraphBuilder.GetVertex("C2")).ShouldBeEquivalentTo(1);
         }
     }
 }

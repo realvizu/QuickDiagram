@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             Graph = new TGraph();
         }
 
-        public void SetUp(params string[] pathStrings)
+        public GraphBuilderBase<TVertex, TEdge, TGraph> SetUp(params string[] pathStrings)
         {
             foreach (var pathString in pathStrings)
             {
@@ -28,11 +28,8 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 foreach (var edgeSpecification in pathSpecification.ToEdgeSpecifications())
                     AddEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
             }
-        }
 
-        protected virtual PathSpecification GetPathSpecification(string pathString)
-        {
-            return PathSpecification.Parse(pathString);
+            return this;
         }
 
         public TVertex GetVertex(string name)
@@ -83,6 +80,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
         protected abstract TVertex CreateGraphVertex(string name);
         protected abstract TEdge CreateGraphEdge(TVertex source, TVertex target);
+        protected virtual PathSpecification GetPathSpecification(string pathString) => PathSpecification.Parse(pathString);
 
         private TVertex GetOrCreateVertex(string name)
         {

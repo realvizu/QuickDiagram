@@ -30,8 +30,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var currentLayerIndex = Layers.GetLayerIndex(vertex) ?? -1;
 
             var minimumLayerIndex = vertex is DiagramNodeLayoutVertex
-                ? CalculateRankInHighLevelLayoutGraph((DiagramNodeLayoutVertex) vertex)
-                : CalculateRankInLowLevelLayoutGraph(vertex);
+                ? HighLevelLayoutGraph.GetRank((DiagramNodeLayoutVertex)vertex)
+                : LowLevelLayoutGraph.GetRank(vertex);
 
             var toLayerIndex = Math.Max(currentLayerIndex, minimumLayerIndex);
             var toIndexInLayer = DetermineIndexInLayer(vertex, minimumLayerIndex);
@@ -39,16 +39,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             vertex.IsFloating = false;
 
             return new RelativeLocation(toLayerIndex, toIndexInLayer);
-        }
-
-        private int CalculateRankInLowLevelLayoutGraph(LayoutVertexBase vertex)
-        {
-            return LowLevelLayoutGraph.GetRank(vertex, i => Layers.GetLayerIndexOrThrow(i));
-        }
-
-        private int CalculateRankInHighLevelLayoutGraph(DiagramNodeLayoutVertex vertex)
-        {
-            return HighLevelLayoutGraph.GetRank(vertex, i => Layers.GetLayerIndexOrThrow(i));
         }
 
         private int DetermineIndexInLayer(LayoutVertexBase vertex, int layerIndex)

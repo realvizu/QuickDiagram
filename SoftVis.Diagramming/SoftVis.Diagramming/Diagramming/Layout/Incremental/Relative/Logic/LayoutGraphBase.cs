@@ -50,11 +50,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         /// Returns a value that is one higher than the rank of all parent vertices, or zero if there's no parent vertex.
         /// </summary>
         /// <param name="vertex">A vertex.</param>
-        /// <param name="rankFunc">A function that returns the rank of a vertex.</param>
         /// <returns>The rank of the given vertex.</returns>
-        public int GetRank(TVertex vertex, Func<TVertex, int> rankFunc)
+        public int GetRank(TVertex vertex)
         {
-            return GetParents(vertex).Select(rankFunc).DefaultIfEmpty(-1).Max() + 1;
+            return GetParents(vertex).Select(GetRank).DefaultIfEmpty(-1).Max() + 1;
         }
     }
 }

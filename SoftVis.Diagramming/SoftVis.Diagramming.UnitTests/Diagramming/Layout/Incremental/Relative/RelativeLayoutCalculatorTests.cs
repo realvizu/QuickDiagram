@@ -19,8 +19,6 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             _calculator = new RelativeLayoutCalculator();
         }
 
-        private DiagramGraph DiagramGraph => _diagramGraphBuilder.Graph;
-
         [Fact]
         public void OnDiagramNodeAdded_FirstNodeAdded()
         {
@@ -53,7 +51,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
             _calculator.MonitorEvents();
             _calculator.OnDiagramConnectorAdded(GetEdge("A<-B"), null);
-            AssertChangeEvent("B", new RelativeLocation(0, 1), new RelativeLocation(1, 0));
+            AssertChangeEvent("B", new RelativeLocation(1, 0));
         }
 
         [Fact]
@@ -64,7 +62,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
             _calculator.MonitorEvents();
             _calculator.OnDiagramConnectorAdded(GetEdge("B<-C"), null);
-            AssertChangeEvent("C", new RelativeLocation(0, 1), new RelativeLocation(2, 0));
+            AssertChangeEvent("C", new RelativeLocation(2, 0));
         }
 
         [Fact]
@@ -75,9 +73,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
             _calculator.MonitorEvents();
             _calculator.OnDiagramConnectorAdded(GetEdge("P<-A"), null);
-            AssertChangeEvent("A", new RelativeLocation(0, 0), new RelativeLocation(1, 2));
-            AssertChangeEvent("B", new RelativeLocation(1, 0), new RelativeLocation(2, 0));
-            AssertChangeEvent("C", new RelativeLocation(1, 0), new RelativeLocation(2, 1));
+            AssertChangeEvent("A", new RelativeLocation(1, 2));
+            AssertChangeEvent("B", new RelativeLocation(2, 0));
+            AssertChangeEvent("C", new RelativeLocation(2, 1));
         }
 
         [Fact]
@@ -88,27 +86,26 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
             _calculator.MonitorEvents();
             _calculator.OnDiagramConnectorAdded(GetEdge("A<-B"), null);
-            AssertChangeEvent("B", new RelativeLocation(0, 1), new RelativeLocation(1, 0));
+            AssertChangeEvent("B", new RelativeLocation(1, 0));
         }
 
         [Fact]
         public void OnDiagramConnectorAdded_ChildIsAlsoSibling()
         {
-            _diagramGraphBuilder.SetUp("P<-A<-B", "A<-C<-B");
-            SetUpCalculator("A<-B", "A<-C<-B", "P");
+            _diagramGraphBuilder.SetUp("P<-A<-C", "A<-B<-C");
+            SetUpCalculator("A<-C", "A<-B<-C", "P");
 
             _calculator.MonitorEvents();
             _calculator.OnDiagramConnectorAdded(GetEdge("P<-A"), null);
-            AssertChangeEvent("A", new RelativeLocation(0, 0), new RelativeLocation(1, 2));
-            AssertChangeEvent("C", new RelativeLocation(1, 1), new RelativeLocation(2, 1));
-            AssertChangeEvent("B", new RelativeLocation(2, 0), new RelativeLocation(3, 0));
+            AssertChangeEvent("A", new RelativeLocation(1, 2));
+            AssertChangeEvent("B", new RelativeLocation(2, 0));
+            AssertChangeEvent("C", new RelativeLocation(3, 0));
         }
 
-        private void AssertChangeEvent(string vertexName, RelativeLocation @from, RelativeLocation to)
+        private void AssertChangeEvent(string vertexName, RelativeLocation to)
         {
             _calculator.ShouldRaise(nameof(RelativeLayoutCalculator.LayoutActionExecuted))
                 .WithArgs<RelativeLocationChangedLayoutAction>(i => i.Vertex.Name == vertexName)
-                .WithArgs<RelativeLocationChangedLayoutAction>(i => i.From == @from)
                 .WithArgs<RelativeLocationChangedLayoutAction>(i => i.To == to);
         }
 

@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
-            var location = AddVertex(diagramNodeLayoutVertex);
+            var location = AddDiagramNodeVertex(diagramNodeLayoutVertex);
             RaiseRelativeLocationAssignedLayoutAction(diagramNodeLayoutVertex, location, causingAction);
 
             CheckInvariants(diagramNodeLayoutVertex);
@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
             _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
-            RemoveVertex(diagramNodeLayoutVertex);
+            RemoveDiagramNodeVertex(diagramNodeLayoutVertex);
         }
 
         public void OnDiagramConnectorAdded(DiagramConnector diagramConnector, ILayoutAction causingAction)
@@ -111,11 +111,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return layoutPath;
         }
 
-        private RelativeLocation AddVertex(LayoutVertexBase vertex)
+        private RelativeLocation AddDiagramNodeVertex(DiagramNodeLayoutVertex vertex)
         {
-            if (vertex is DiagramNodeLayoutVertex)
-                _highLevelLayoutGraph.AddVertex((DiagramNodeLayoutVertex)vertex);
-
+            _highLevelLayoutGraph.AddVertex(vertex);
             _lowLevelLayoutGraph.AddVertex(vertex);
 
             var targetLocation = _locationCalculator.GetTargetLocation(vertex);
@@ -124,12 +122,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return targetLocation;
         }
 
-        private void RemoveVertex(LayoutVertexBase vertex)
+        private void RemoveDiagramNodeVertex(DiagramNodeLayoutVertex vertex)
         {
             _layers.RemoveVertex(vertex);
             _lowLevelLayoutGraph.RemoveVertex(vertex);
-            if (vertex is DiagramNodeLayoutVertex)
-                _highLevelLayoutGraph.RemoveVertex((DiagramNodeLayoutVertex)vertex);
+            _highLevelLayoutGraph.RemoveVertex(vertex);
         }
 
         private void AddLayoutPath(LayoutPath layoutPath, ILayoutAction causingAction)
@@ -154,25 +151,20 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             var movingVertex = layoutPath.PathSource;
 
-            // Can't float tree here because floating parent's layer is undefined.
+            // Can't float tree here because floating parents' layer is undefined.
             //_lowLevelLayoutGraph.FloatTree(movingVertex);
 
-            _highLevelLayoutGraph.ExecuteOnDescendantVertices(movingVertex,
-                i => EnsureCorrectLocationForVertex(i, causingAction));
+            _highLevelLayoutGraph.ExecuteOnDescendantVertices(movingVertex, i => EnsureCorrectLocation(i, causingAction));
+            _highLevelLayoutGraph.ExecuteOnDescendantVertices(movingVertex, i => AdjustPaths(i, causingAction));
         }
 
-        private void EnsureCorrectLocationForVertex(LayoutVertexBase vertex, ILayoutAction causingAction)
+        private void EnsureCorrectLocation(LayoutVertexBase vertex, ILayoutAction causingAction)
         {
             var currentLocation = _layers.GetLocation(vertex);
             var targetLocation = _locationCalculator.GetTargetLocation(vertex);
 
             if (currentLocation != targetLocation)
-            {
                 MoveVertex(vertex, targetLocation, causingAction);
-
-                if (vertex is DiagramNodeLayoutVertex)
-                    AdjustPaths((DiagramNodeLayoutVertex)vertex, causingAction);
-            }
         }
 
         private void MoveVertex(LayoutVertexBase vertex, RelativeLocation targetLocation, ILayoutAction causingAction)
@@ -201,7 +193,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private void EnsureCorrectLocationForInterimVertices(LayoutPath layoutPath, ILayoutAction causingAction)
         {
             foreach (var dummyLayoutVertex in layoutPath.InterimVertices)
-                EnsureCorrectLocationForVertex(dummyLayoutVertex, causingAction);
+                EnsureCorrectLocation(dummyLayoutVertex, causingAction);
         }
 
         private void AdjustPathLength(LayoutPath layoutPath, ILayoutAction causingAction)
@@ -234,9 +226,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             layoutPath.Substitute(atIndex, 1, newEdge1, newEdge2);
 
             _lowLevelLayoutGraph.RemoveEdge(edgeToSplit);
-            AddVertex(interimVertex);
+            _lowLevelLayoutGraph.AddVertex(interimVertex);
             _lowLevelLayoutGraph.AddEdge(newEdge1);
             _lowLevelLayoutGraph.AddEdge(newEdge2);
+
+            var targetLocation = _locationCalculator.GetTargetLocation(interimVertex);
+            _layers.AddVertex(interimVertex, targetLocation);
 
             RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
         }
@@ -261,9 +256,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
             layoutPath.Substitute(atIndex, 2, mergedEdge);
 
+            _layers.RemoveVertex(vertexToRemove);
+
             _lowLevelLayoutGraph.RemoveEdge(firstEdge);
             _lowLevelLayoutGraph.RemoveEdge(nextEdge);
-            RemoveVertex(vertexToRemove);
+            _lowLevelLayoutGraph.RemoveVertex(vertexToRemove);
             _lowLevelLayoutGraph.AddEdge(mergedEdge);
         }
 
@@ -286,7 +283,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 CheckLayerIndex(childVertex, layerIndex);
         }
 
-        private void CheckLayerIndex(LayoutVertexBase vertex,int expectedLayerIndex )
+        private void CheckLayerIndex(LayoutVertexBase vertex, int expectedLayerIndex)
         {
             var layerIndex = _layers.GetLayerIndex(vertex);
             if (layerIndex != expectedLayerIndex)
