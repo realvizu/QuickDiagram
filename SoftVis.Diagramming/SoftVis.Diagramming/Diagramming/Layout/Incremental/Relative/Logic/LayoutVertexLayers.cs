@@ -61,8 +61,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _vertexToLayerIndexMap.Set(vertex, targetLocation.LayerIndex);
 
             layer.Add(vertex, targetLocation.IndexInLayer);
-
-            vertex.IsFloating = false;
         }
 
         public void RemoveVertex(LayoutVertexBase vertex)

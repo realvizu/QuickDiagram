@@ -4,8 +4,8 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class TestDummyLayoutVertex : DummyLayoutVertex
     {
-        public TestDummyLayoutVertex(int id, bool isFloating)
-            : base(isFloating, id)
+        public TestDummyLayoutVertex(int id)
+            : base(id)
         {
         }
 

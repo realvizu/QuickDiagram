@@ -32,12 +32,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
         protected static TestLayoutVertex CreateTestLayoutVertex(string name, int priority = 1)
         {
-            return new TestLayoutVertex(name, true, priority);
+            return new TestLayoutVertex(name, priority);
         }
 
         protected static TestDummyLayoutVertex CreateDummyLayoutVertex(string name)
         {
-            return new TestDummyLayoutVertex(int.Parse(name.Substring(1)), true);
+            return new TestDummyLayoutVertex(int.Parse(name.Substring(1)));
         }
     }
 }

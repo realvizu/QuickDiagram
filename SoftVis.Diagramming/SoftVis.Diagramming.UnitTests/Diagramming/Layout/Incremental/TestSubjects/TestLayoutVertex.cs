@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         private int _priority;
         public override string Name { get; }
 
-        public TestLayoutVertex(string name, bool isFloating = true, int priority = 1) 
-            : base(new TestDiagramNode(), isFloating)
+        public TestLayoutVertex(string name, int priority = 1) 
+            : base(new TestDiagramNode())
         {
             Name = name;
             _priority = priority;

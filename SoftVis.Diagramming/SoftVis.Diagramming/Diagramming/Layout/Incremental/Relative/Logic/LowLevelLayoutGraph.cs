@@ -82,16 +82,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 && GetPrimaryParent(vertex1) == GetPrimaryParent(vertex2);
         }
 
-        public void FloatTree(LayoutVertexBase vertex)
-        {
-            ExecuteOnDescendantVertices(vertex, i=>i.IsFloating = true);
-        }
-
-        public void FloatPrimaryTree(LayoutVertexBase vertex)
-        {
-            ExecuteOnPrimaryDescendantVertices(vertex, i => i.IsFloating = true);
-        }
-
         public void ExecuteOnPrimaryDescendantVertices(LayoutVertexBase rootVertex, Action<LayoutVertexBase> actionOnVertex)
         {
             actionOnVertex(rootVertex);

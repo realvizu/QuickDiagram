@@ -12,20 +12,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private static int _nextId = 1;
         protected readonly int Id;
 
-        public DummyLayoutVertex(bool isFloating, int? id = null)
-            :base(isFloating)
+        public DummyLayoutVertex(int? id = null)
         {
-            if (id.HasValue)
+            Id = id ?? SetNextUniqueId();
+        }
+
+        private static int SetNextUniqueId()
+        {
+            lock (typeof (DummyLayoutVertex))
             {
-                Id = id.Value;
-            }
-            else
-            {
-                lock (typeof (DummyLayoutVertex))
-                {
-                    Id = _nextId;
-                    _nextId++;
-                }
+                var id = _nextId;
+                _nextId++;
+                return id;
             }
         }
 

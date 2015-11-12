@@ -13,9 +13,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public bool IsFloating { get; set; }
         public Point2D Center { get; set; }
 
-        protected LayoutVertexBase(bool isFloating)
+        protected LayoutVertexBase()
         {
-            IsFloating = isFloating;
+            IsFloating = false;
             Center = Point2D.Empty;
         }
 

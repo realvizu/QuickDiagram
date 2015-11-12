@@ -18,9 +18,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
         IEnumerable<LayoutVertexBase> GetPrimarySiblings(LayoutVertexBase vertex);
         bool IsPlacedPrimarySiblingOf(LayoutVertexBase vertex1, LayoutVertexBase vertex2);
 
-        void FloatTree(LayoutVertexBase vertex);
-        void FloatPrimaryTree(LayoutVertexBase vertex);
-
         void ExecuteOnPrimaryDescendantVertices(LayoutVertexBase vertex, Action<LayoutVertexBase> actionOnVertex);
     }
 }

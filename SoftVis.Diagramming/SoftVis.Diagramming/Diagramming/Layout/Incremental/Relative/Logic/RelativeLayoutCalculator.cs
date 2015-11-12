@@ -219,7 +219,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private void SplitEdge(LayoutPath layoutPath, int atIndex, ILayoutAction causingAction)
         {
             var edgeToSplit = layoutPath[atIndex];
-            var interimVertex = new DummyLayoutVertex(true);
+            var interimVertex = new DummyLayoutVertex();
             var newEdge1 = new LayoutEdge(edgeToSplit.Source, interimVertex, edgeToSplit.DiagramConnector);
             var newEdge2 = new LayoutEdge(interimVertex, edgeToSplit.Target, edgeToSplit.DiagramConnector);
 

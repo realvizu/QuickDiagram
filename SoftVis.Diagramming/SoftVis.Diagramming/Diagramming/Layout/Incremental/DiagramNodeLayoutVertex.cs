@@ -10,8 +10,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     {
         public DiagramNode DiagramNode { get; }
 
-        public DiagramNodeLayoutVertex(DiagramNode diagramNode, bool isFloating = true)
-            :base(isFloating)
+        public DiagramNodeLayoutVertex(DiagramNode diagramNode)
         {
             if (diagramNode == null)
                 throw new ArgumentNullException(nameof(diagramNode));
