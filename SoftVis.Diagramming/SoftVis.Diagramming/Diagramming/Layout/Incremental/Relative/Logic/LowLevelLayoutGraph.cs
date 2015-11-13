@@ -93,6 +93,37 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         public LayoutEdge GetInEdge(DummyLayoutVertex dummyVertex) => InEdges(dummyVertex).FirstOrDefault();
         public LayoutEdge GetOutEdge(DummyLayoutVertex dummyVertex) => OutEdges(dummyVertex).FirstOrDefault();
 
+        public LayoutEdge[] SplitEdge(LayoutEdge edgeToSplit, LayoutVertexBase interimVertex)
+        {
+            var newEdge1 = new LayoutEdge(edgeToSplit.Source, interimVertex, edgeToSplit.DiagramConnector);
+            var newEdge2 = new LayoutEdge(interimVertex, edgeToSplit.Target, edgeToSplit.DiagramConnector);
+
+            RemoveEdge(edgeToSplit);
+            AddVertex(interimVertex);
+            AddEdge(newEdge1);
+            AddEdge(newEdge2);
+
+            return new[] { newEdge1, newEdge2 };
+        }
+
+        public LayoutEdge MergeEdges(LayoutEdge firstEdge, LayoutEdge nextEdge)
+        {
+            if (firstEdge.Target != nextEdge.Source)
+                throw new InvalidOperationException("Only consecutive edges can be merged.");
+
+            if (firstEdge.DiagramConnector != nextEdge.DiagramConnector)
+                throw new InvalidOperationException("Only edges of the same DiagramConnector can be merged.");
+
+            var mergedEdge = new LayoutEdge(firstEdge.Source, nextEdge.Target, firstEdge.DiagramConnector);
+
+            RemoveEdge(firstEdge);
+            RemoveEdge(nextEdge);
+            RemoveVertex(firstEdge.Target);
+            AddEdge(mergedEdge);
+
+            return mergedEdge;
+        }
+
         private IEnumerable<LayoutVertexBase> GetOrderedParents(LayoutVertexBase vertex)
         {
             return GetParents(vertex)

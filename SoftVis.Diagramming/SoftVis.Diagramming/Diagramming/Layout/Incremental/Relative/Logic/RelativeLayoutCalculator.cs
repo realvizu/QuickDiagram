@@ -61,8 +61,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
-            var location = AddDiagramNodeVertex(diagramNodeLayoutVertex);
-            RaiseRelativeLocationAssignedLayoutAction(diagramNodeLayoutVertex, location, causingAction);
+            AddVertex(diagramNodeLayoutVertex, causingAction);
 
             CheckInvariants(diagramNodeLayoutVertex);
         }
@@ -107,19 +106,20 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var sourceVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
             var targetVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
             var newEdge = new LayoutEdge(sourceVertex, targetVertex, diagramConnector);
-            var layoutPath = new LayoutPath(newEdge);
-            return layoutPath;
+            return new LayoutPath(newEdge);
         }
 
-        private RelativeLocation AddDiagramNodeVertex(DiagramNodeLayoutVertex vertex)
+        private void AddVertex(LayoutVertexBase vertex, ILayoutAction causingAction)
         {
-            _highLevelLayoutGraph.AddVertex(vertex);
+            if (vertex is DiagramNodeLayoutVertex)
+                _highLevelLayoutGraph.AddVertex((DiagramNodeLayoutVertex)vertex);
+
             _lowLevelLayoutGraph.AddVertex(vertex);
 
             var targetLocation = _locationCalculator.GetTargetLocation(vertex);
             _layers.AddVertex(vertex, targetLocation);
 
-            return targetLocation;
+            RaiseRelativeLocationAssignedLayoutAction(vertex, targetLocation, causingAction);
         }
 
         private void RemoveDiagramNodeVertex(DiagramNodeLayoutVertex vertex)
@@ -139,23 +139,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         private void RemoveLayoutPath(LayoutPath layoutPath)
         {
+            layoutPath.InterimVertices.ForEach(_layers.RemoveVertex);
+
             _lowLevelLayoutGraph.RemovePath(layoutPath);
-
-            foreach (var interimVertex in layoutPath.InterimVertices)
-                _layers.RemoveVertex(interimVertex);
-
             _highLevelLayoutGraph.RemoveEdge(layoutPath);
         }
 
         private void EnsureCorrectLocationForPathSourceAndItsDescendants(LayoutPath layoutPath, ILayoutAction causingAction)
         {
-            var movingVertex = layoutPath.PathSource;
+            var vertex = layoutPath.PathSource;
 
-            // Can't float tree here because floating parents' layer is undefined.
-            //_lowLevelLayoutGraph.FloatTree(movingVertex);
-
-            _highLevelLayoutGraph.ExecuteOnDescendantVertices(movingVertex, i => EnsureCorrectLocation(i, causingAction));
-            _highLevelLayoutGraph.ExecuteOnDescendantVertices(movingVertex, i => AdjustPaths(i, causingAction));
+            _highLevelLayoutGraph.ExecuteOnDescendantVertices(vertex, i => EnsureCorrectLocation(i, causingAction));
+            _highLevelLayoutGraph.ExecuteOnDescendantVertices(vertex, i => AdjustPaths(i, causingAction));
         }
 
         private void EnsureCorrectLocation(LayoutVertexBase vertex, ILayoutAction causingAction)
@@ -179,21 +174,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
         {
-            var outPaths = _highLevelLayoutGraph.OutEdges(diagramNodeLayoutVertex);
-            foreach (var outPath in outPaths)
+            foreach (var outPath in _highLevelLayoutGraph.OutEdges(diagramNodeLayoutVertex))
                 AdjustPath(outPath, causingAction);
         }
 
         private void AdjustPath(LayoutPath layoutPath, ILayoutAction causingAction)
         {
             AdjustPathLength(layoutPath, causingAction);
-            EnsureCorrectLocationForInterimVertices(layoutPath, causingAction);
-        }
 
-        private void EnsureCorrectLocationForInterimVertices(LayoutPath layoutPath, ILayoutAction causingAction)
-        {
-            foreach (var dummyLayoutVertex in layoutPath.InterimVertices)
-                EnsureCorrectLocation(dummyLayoutVertex, causingAction);
+            layoutPath.InterimVertices.ForEach(i => EnsureCorrectLocation(i, causingAction));
         }
 
         private void AdjustPathLength(LayoutPath layoutPath, ILayoutAction causingAction)
@@ -220,20 +209,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             var edgeToSplit = layoutPath[atIndex];
             var interimVertex = new DummyLayoutVertex();
-            var newEdge1 = new LayoutEdge(edgeToSplit.Source, interimVertex, edgeToSplit.DiagramConnector);
-            var newEdge2 = new LayoutEdge(interimVertex, edgeToSplit.Target, edgeToSplit.DiagramConnector);
 
-            layoutPath.Substitute(atIndex, 1, newEdge1, newEdge2);
-
-            _lowLevelLayoutGraph.RemoveEdge(edgeToSplit);
-            _lowLevelLayoutGraph.AddVertex(interimVertex);
-            _lowLevelLayoutGraph.AddEdge(newEdge1);
-            _lowLevelLayoutGraph.AddEdge(newEdge2);
-
-            var targetLocation = _locationCalculator.GetTargetLocation(interimVertex);
-            _layers.AddVertex(interimVertex, targetLocation);
+            var newEdges = _lowLevelLayoutGraph.SplitEdge(edgeToSplit, interimVertex);
+            layoutPath.Substitute(atIndex, 1, newEdges[0], newEdges[1]);
 
             RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
+
+            AddVertex(interimVertex, causingAction);
         }
 
         private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex, int times, ILayoutAction causingAction)
@@ -246,22 +228,16 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             var firstEdge = layoutPath[atIndex];
             var nextEdge = layoutPath[atIndex + 1];
-            var vertexToRemove = firstEdge.Target as DummyLayoutVertex;
-            var mergedEdge = new LayoutEdge(firstEdge.Source, nextEdge.Target, firstEdge.DiagramConnector);
 
+            var vertexToRemove = firstEdge.Target as DummyLayoutVertex;
             if (vertexToRemove == null)
                 throw new Exception("FirstEdge.Target is null or not dummy!");
-
             RaiseVertexLayoutAction("DummyVertexRemoved", vertexToRemove, causingAction);
 
+            var mergedEdge = _lowLevelLayoutGraph.MergeEdges(firstEdge, nextEdge);
             layoutPath.Substitute(atIndex, 2, mergedEdge);
 
             _layers.RemoveVertex(vertexToRemove);
-
-            _lowLevelLayoutGraph.RemoveEdge(firstEdge);
-            _lowLevelLayoutGraph.RemoveEdge(nextEdge);
-            _lowLevelLayoutGraph.RemoveVertex(vertexToRemove);
-            _lowLevelLayoutGraph.AddEdge(mergedEdge);
         }
 
         private void CheckInvariants(IEnumerable<LayoutVertexBase> vertices)

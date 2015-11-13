@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
@@ -102,18 +103,60 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             AssertChangeEvent("C", new RelativeLocation(3, 0));
         }
 
+        [Fact]
+        public void OnDiagramConnectorAdded_SplitEdge()
+        {
+            _diagramGraphBuilder.SetUp("A<-B<-C", "A<-C");
+            SetUpCalculator("A<-B<-C");
+
+            _calculator.MonitorEvents();
+            _calculator.OnDiagramConnectorAdded(GetEdge("A<-C"), null);
+            AssertDummyCreatedEvent();
+            AssertDummyAssignEvent(new RelativeLocation(1, 1));
+        }
+
+        [Fact]
+        public void OnDiagramConnectorAdded_MergeEdge()
+        {
+            _diagramGraphBuilder.SetUp("A<-B<-C", "E<-D<-C");
+            SetUpCalculator("A<-B<-C", "D<-C", "E");
+
+            _calculator.MonitorEvents();
+            _calculator.OnDiagramConnectorAdded(GetEdge("E<-D"), null);
+            AssertDummyRemovedEvent();
+        }
+
+        private void AssertDummyCreatedEvent()
+        {
+            _calculator.ShouldRaise(nameof(RelativeLayoutCalculator.LayoutActionExecuted))
+                .WithArgs<LayoutVertexAction>(i => i.Vertex.IsDummy && i.Action == "DummyVertexCreated");
+        }
+
+        private void AssertDummyRemovedEvent()
+        {
+            _calculator.ShouldRaise(nameof(RelativeLayoutCalculator.LayoutActionExecuted))
+                .WithArgs<LayoutVertexAction>(i => i.Vertex.IsDummy && i.Action == "DummyVertexRemoved");
+        }
+
         private void AssertChangeEvent(string vertexName, RelativeLocation to)
         {
             _calculator.ShouldRaise(nameof(RelativeLayoutCalculator.LayoutActionExecuted))
-                .WithArgs<RelativeLocationChangedLayoutAction>(i => i.Vertex.Name == vertexName)
-                .WithArgs<RelativeLocationChangedLayoutAction>(i => i.To == to);
+                .WithArgs<LayoutVertexAction>(i => i.Vertex.Name == vertexName &&
+                i is RelativeLocationChangedLayoutAction && ((RelativeLocationChangedLayoutAction)i).To == to);
         }
 
         private void AssertAssignEvent(string vertexName, RelativeLocation to)
         {
             _calculator.ShouldRaise(nameof(RelativeLayoutCalculator.LayoutActionExecuted))
-                .WithArgs<RelativeLocationAssignedLayoutAction>(i => i.Vertex.Name == vertexName)
-                .WithArgs<RelativeLocationAssignedLayoutAction>(i => i.To == to);
+                .WithArgs<LayoutVertexAction>(i => i.Vertex.Name == vertexName &&
+                i is RelativeLocationAssignedLayoutAction && ((RelativeLocationAssignedLayoutAction)i).To == to);
+        }
+
+        private void AssertDummyAssignEvent(RelativeLocation to)
+        {
+            _calculator.ShouldRaise(nameof(RelativeLayoutCalculator.LayoutActionExecuted))
+                .WithArgs<LayoutVertexAction>(i => i.Vertex.IsDummy &&
+                i is RelativeLocationAssignedLayoutAction && ((RelativeLocationAssignedLayoutAction)i).To == to);
         }
 
         private DiagramConnector GetEdge(string edgeString)
