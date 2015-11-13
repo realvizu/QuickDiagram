@@ -8,19 +8,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </summary>
     internal sealed class RelativeLayout : IReadOnlyRelativeLayout
     {
-        private readonly HighLevelLayoutGraph _highLevelLayoutGraph;
+        private readonly LayeredGraph _layeredGraph;
         private readonly LowLevelLayoutGraph _lowLevelLayoutGraph;
         private readonly LayoutVertexLayers _layers;
 
-        public RelativeLayout(HighLevelLayoutGraph highLevelLayoutGraph, LowLevelLayoutGraph lowLevelLayoutGraph, 
+        public RelativeLayout(LayeredGraph layeredGraph, LowLevelLayoutGraph lowLevelLayoutGraph, 
             LayoutVertexLayers layers)
         {
-            _highLevelLayoutGraph = highLevelLayoutGraph;
+            _layeredGraph = layeredGraph;
             _lowLevelLayoutGraph = lowLevelLayoutGraph;
             _layers = layers;
         }
 
-        public IReadOnlyHighLevelLayoutGraph HighLevelLayoutGraph => _highLevelLayoutGraph;
+        public IReadOnlyLayeredGraph LayeredGraph => _layeredGraph;
         public IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _lowLevelLayoutGraph;
         public IReadOnlyLayoutVertexLayers LayoutVertexLayers => _layers;
 

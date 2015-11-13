@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </remarks>
     internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource, IDiagramChangeConsumer
     {
-        private readonly HighLevelLayoutGraph _highLevelLayoutGraph;
+        private readonly LayeredGraph _layeredGraph;
         private readonly LowLevelLayoutGraph _lowLevelLayoutGraph;
         private readonly LayoutVertexLayers _layers;
         private readonly RelativeLayout _relativeLayout;
@@ -32,10 +32,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public RelativeLayoutCalculator()
         {
-            _highLevelLayoutGraph = new HighLevelLayoutGraph();
+            _layeredGraph = new LayeredGraph();
             _lowLevelLayoutGraph = new LowLevelLayoutGraph();
             _layers = new LayoutVertexLayers();
-            _relativeLayout = new RelativeLayout(_highLevelLayoutGraph, _lowLevelLayoutGraph, _layers);
+            _relativeLayout = new RelativeLayout(_layeredGraph, _lowLevelLayoutGraph, _layers);
 
             _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             _layers.Clear();
             _lowLevelLayoutGraph.Clear();
-            _highLevelLayoutGraph.Clear();
+            _layeredGraph.Clear();
             _diagramNodeToLayoutVertexMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
         }
@@ -112,7 +112,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private void AddVertex(LayoutVertexBase vertex, ILayoutAction causingAction)
         {
             if (vertex is DiagramNodeLayoutVertex)
-                _highLevelLayoutGraph.AddVertex((DiagramNodeLayoutVertex)vertex);
+                _layeredGraph.AddVertex((DiagramNodeLayoutVertex)vertex);
 
             _lowLevelLayoutGraph.AddVertex(vertex);
 
@@ -126,12 +126,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             _layers.RemoveVertex(vertex);
             _lowLevelLayoutGraph.RemoveVertex(vertex);
-            _highLevelLayoutGraph.RemoveVertex(vertex);
+            _layeredGraph.RemoveVertex(vertex);
         }
 
         private void AddLayoutPath(LayoutPath layoutPath, ILayoutAction causingAction)
         {
-            _highLevelLayoutGraph.AddEdge(layoutPath);
+            _layeredGraph.AddEdge(layoutPath);
             _lowLevelLayoutGraph.AddPath(layoutPath);
 
             EnsureCorrectLocationForPathSourceAndItsDescendants(layoutPath, causingAction);
@@ -142,15 +142,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             layoutPath.InterimVertices.ForEach(_layers.RemoveVertex);
 
             _lowLevelLayoutGraph.RemovePath(layoutPath);
-            _highLevelLayoutGraph.RemoveEdge(layoutPath);
+            _layeredGraph.RemoveEdge(layoutPath);
         }
 
         private void EnsureCorrectLocationForPathSourceAndItsDescendants(LayoutPath layoutPath, ILayoutAction causingAction)
         {
             var vertex = layoutPath.PathSource;
 
-            _highLevelLayoutGraph.ExecuteOnDescendantVertices(vertex, i => EnsureCorrectLocation(i, causingAction));
-            _highLevelLayoutGraph.ExecuteOnDescendantVertices(vertex, i => AdjustPaths(i, causingAction));
+            _layeredGraph.ExecuteOnDescendantVertices(vertex, i => EnsureCorrectLocation(i, causingAction));
+            _layeredGraph.ExecuteOnDescendantVertices(vertex, i => AdjustPaths(i, causingAction));
         }
 
         private void EnsureCorrectLocation(LayoutVertexBase vertex, ILayoutAction causingAction)
@@ -174,7 +174,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
         {
-            foreach (var outPath in _highLevelLayoutGraph.OutEdges(diagramNodeLayoutVertex))
+            foreach (var outPath in _layeredGraph.OutEdges(diagramNodeLayoutVertex))
                 AdjustPath(outPath, causingAction);
         }
 

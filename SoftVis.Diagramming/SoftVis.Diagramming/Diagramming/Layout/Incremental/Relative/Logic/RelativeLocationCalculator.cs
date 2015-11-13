@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _vertexComparer = new VerticesInLayerComparer(_relativeLayout.LowLevelLayoutGraph);
         }
 
-        private IReadOnlyHighLevelLayoutGraph HighLevelLayoutGraph => _relativeLayout.HighLevelLayoutGraph;
+        private IReadOnlyLayeredGraph LayeredGraph => _relativeLayout.LayeredGraph;
         private IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _relativeLayout.LowLevelLayoutGraph;
         private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
         private IReadOnlyLayoutVertexLayers LayersWithoutFloatingItems => Layers.GetViewWithoutFloatingItems();
@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var currentLayerIndex = Layers.GetLayerIndex(vertex) ?? -1;
 
             var minimumLayerIndex = vertex is DiagramNodeLayoutVertex
-                ? HighLevelLayoutGraph.GetRank((DiagramNodeLayoutVertex)vertex)
+                ? LayeredGraph.GetRank((DiagramNodeLayoutVertex)vertex)
                 : LowLevelLayoutGraph.GetRank(vertex);
 
             var toLayerIndex = Math.Max(currentLayerIndex, minimumLayerIndex);

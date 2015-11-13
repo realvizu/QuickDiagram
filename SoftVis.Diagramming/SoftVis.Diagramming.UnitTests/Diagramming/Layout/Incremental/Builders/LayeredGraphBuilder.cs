@@ -5,7 +5,7 @@ using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Help
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {
-    internal class HighLevelLayoutGraphBuilder : GraphBuilderBase<DiagramNodeLayoutVertex, LayoutPath, HighLevelLayoutGraph>
+    internal class LayeredGraphBuilder : GraphBuilderBase<DiagramNodeLayoutVertex, LayoutPath, LayeredGraph>
     {
         protected override PathSpecification GetPathSpecification(string pathString)
         {

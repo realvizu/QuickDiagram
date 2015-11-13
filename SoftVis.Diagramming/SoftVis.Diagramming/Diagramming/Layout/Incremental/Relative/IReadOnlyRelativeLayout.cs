@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// </summary>
     internal interface IReadOnlyRelativeLayout
     {
-        IReadOnlyHighLevelLayoutGraph HighLevelLayoutGraph { get; }
+        IReadOnlyLayeredGraph LayeredGraph { get; }
         IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph { get; }
         IReadOnlyLayoutVertexLayers LayoutVertexLayers { get; }
 

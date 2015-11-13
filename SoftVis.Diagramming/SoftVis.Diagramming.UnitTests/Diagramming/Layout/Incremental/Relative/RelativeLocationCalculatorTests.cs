@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         }
 
         private LowLevelLayoutGraphBuilder LowLevelLayoutGraphBuilder => _relativeLayoutBuilder.LowLevelLayoutGraphBuilder;
-        private HighLevelLayoutGraphBuilder HighLevelLayoutGraphBuilder => _relativeLayoutBuilder.HighLevelLayoutGraphBuilder;
+        private LayeredGraphBuilder LayeredGraphBuilder => _relativeLayoutBuilder.LayeredGraphBuilder;
 
         [Fact]
         public void GetTargetLocation_FirstVertex()

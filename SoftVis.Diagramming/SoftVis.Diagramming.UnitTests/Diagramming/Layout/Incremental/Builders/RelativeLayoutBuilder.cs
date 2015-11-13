@@ -5,22 +5,22 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class RelativeLayoutBuilder : BuilderBase
     {
-        public HighLevelLayoutGraphBuilder HighLevelLayoutGraphBuilder { get; }
+        public LayeredGraphBuilder LayeredGraphBuilder { get; }
         public LowLevelLayoutGraphBuilder LowLevelLayoutGraphBuilder { get; }
         private readonly LayoutVertexLayers _layers;
         public RelativeLayout RelativeLayout { get; }
 
         public RelativeLayoutBuilder()
         {
-            HighLevelLayoutGraphBuilder = new HighLevelLayoutGraphBuilder();
-            LowLevelLayoutGraphBuilder = new LowLevelLayoutGraphBuilder(HighLevelLayoutGraphBuilder);
+            LayeredGraphBuilder = new LayeredGraphBuilder();
+            LowLevelLayoutGraphBuilder = new LowLevelLayoutGraphBuilder(LayeredGraphBuilder);
             _layers = new LayoutVertexLayers();
-            RelativeLayout = new RelativeLayout(HighLevelLayoutGraphBuilder.Graph, LowLevelLayoutGraphBuilder.Graph, _layers);
+            RelativeLayout = new RelativeLayout(LayeredGraphBuilder.Graph, LowLevelLayoutGraphBuilder.Graph, _layers);
         }
 
         public void SetUpGraphs(params string[] pathSpecification)
         {
-            HighLevelLayoutGraphBuilder.SetUp(pathSpecification);
+            LayeredGraphBuilder.SetUp(pathSpecification);
             LowLevelLayoutGraphBuilder.SetUp(pathSpecification);
         }
 

@@ -88,7 +88,7 @@
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationChangedLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IRelativeLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IRelativeLayoutChangeConsumer.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyHighLevelLayoutGraph.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayeredGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayoutGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyRelativeLayout.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\Logic\AbsoluteLayoutCalculator.cs" />
@@ -112,7 +112,7 @@
     <Compile Include="Diagramming\Layout\Incremental\MainLogic\IncrementalLayoutEngine.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLowLevelLayoutGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathException.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\HighLevelLayoutGraph.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LayeredGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LayoutGraphBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LowLevelLayoutGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayoutVertexLayer.cs" />

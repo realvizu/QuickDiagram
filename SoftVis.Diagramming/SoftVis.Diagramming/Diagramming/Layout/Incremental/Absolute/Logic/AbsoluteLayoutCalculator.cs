@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             _vertexPositioningLogic.LayoutActionExecuted += RaiseLayoutAction;
         }
 
-        private IReadOnlyHighLevelLayoutGraph HighLevelLayoutGraph => _relativeLayout.HighLevelLayoutGraph;
+        private IReadOnlyLayeredGraph LayeredGraph => _relativeLayout.LayeredGraph;
         private IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _relativeLayout.LowLevelLayoutGraph;
         private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
 
@@ -76,7 +76,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 
         private void RerouteAllAttachedPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
         {
-            foreach (var path in HighLevelLayoutGraph.GetAllEdges(diagramNodeLayoutVertex))
+            foreach (var path in LayeredGraph.GetAllEdges(diagramNodeLayoutVertex))
                 ReroutePath(path, causingAction);
         }
 

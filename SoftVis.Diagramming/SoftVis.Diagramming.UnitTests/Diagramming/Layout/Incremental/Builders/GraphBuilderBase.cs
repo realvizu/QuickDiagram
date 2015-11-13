@@ -37,6 +37,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return Graph.Vertices.FirstOrDefault(i => i.ToString() == name);
         }
 
+        public TEdge GetEdge(string edgeString)
+        {
+            var edgeSpecification = EdgeSpecification.Parse(edgeString);
+            return GetEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
+        }
+
         public TEdge GetEdge(string sourceName, string targetName)
         {
             return Graph.Edges.FirstOrDefault(i => i.Source.Equals(GetVertex(sourceName)) && i.Target.Equals(GetVertex(targetName)));

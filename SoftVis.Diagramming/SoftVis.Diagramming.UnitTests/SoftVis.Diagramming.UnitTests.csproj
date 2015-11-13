@@ -80,12 +80,13 @@
     <Compile Include="Diagramming\Layout\Incremental\Helpers\EdgeSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\GraphBuilderBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\DiagramGraphBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\HighLevelLayoutGraphBuilder.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Builders\LayeredGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutPathBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\PathSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\RelativeLayoutBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\VertexList.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\LayeredGraphTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\LowLevelLayoutGraphTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\LayoutVertexLayersTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutCalculatorTests.cs" />
