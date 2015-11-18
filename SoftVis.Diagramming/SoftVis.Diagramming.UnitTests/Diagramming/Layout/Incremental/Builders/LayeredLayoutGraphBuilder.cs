@@ -5,7 +5,7 @@ using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Help
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {
-    internal class LayeredGraphBuilder : GraphBuilderBase<DiagramNodeLayoutVertex, LayoutPath, LayeredGraph>
+    internal class LayeredLayoutGraphBuilder : GraphBuilderBase<DiagramNodeLayoutVertex, LayoutPath, LayeredLayoutGraph>
     {
         protected override PathSpecification GetPathSpecification(string pathString)
         {
@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
         protected override LayoutPath CreateGraphEdge(DiagramNodeLayoutVertex source, DiagramNodeLayoutVertex target)
         {
-            return new LayoutPath(new LayoutEdge(source, target, null));
+            return new LayoutPath(source, target, null);
         }
     }
 }

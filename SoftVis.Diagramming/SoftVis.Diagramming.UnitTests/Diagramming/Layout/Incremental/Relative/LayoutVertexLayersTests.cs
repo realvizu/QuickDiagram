@@ -9,13 +9,13 @@
 //    {
 //        private const int VerticalGap = 20;
 //        private readonly TestLayoutGraphBuilder _testLayoutGraphBuilder;
-//        private LowLevelLayoutGraph LowLevelLayoutGraph => _testLayoutGraphBuilder.LowLevelLayoutGraph;
+//        private QuasiProperLayoutGraph QuasiProperLayoutGraph => _testLayoutGraphBuilder.QuasiProperLayoutGraph;
 //        private readonly LayoutVertexLayers _layers;
 
 //        public LayoutVertexLayersTests()
 //        {
 //            _testLayoutGraphBuilder = new TestLayoutGraphBuilder();
-//            _layers = new LayoutVertexLayers(LowLevelLayoutGraph);
+//            _layers = new LayoutVertexLayers(QuasiProperLayoutGraph);
 //        }
 
 //        [Fact]

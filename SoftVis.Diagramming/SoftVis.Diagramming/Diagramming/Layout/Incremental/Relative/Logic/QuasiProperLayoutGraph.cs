@@ -2,48 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
+using MoreLinq;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 {
     /// <summary>
-    /// A detailed graph for layout calculation. 
+    /// A layered graph that can determine whether it's proper or not. 
     /// Contains normal vertices for diagram nodes and dummy vertices for connector routing.
     /// </summary>
     /// <remarks>
-    /// Responsibilities:
-    /// <para>Understands primary parent/children/sibling relationships.</para>
-    /// <para>Understands that vertices can be placed or floating.</para>
+    /// Terms:
+    /// <para>Proper layering: the source and target vertex of each edge is exactly 1 layer away.</para>
+    /// <para>Primary parent: the first in the ordering of the parent vertices.</para>
+    /// <para>Primary children: those children whose primary parent is this vertex.</para>
+    /// <para>Primary siblings: those vertices that have the same primary parent.</para>
     /// Invariants:
     /// <para>Dummy vertices' in/out degree (number of in/out edges) must be at most 1.</para>
     /// </remarks>
-    internal class LowLevelLayoutGraph : LayoutGraphBase<LayoutVertexBase, LayoutEdge>,
-        IReadOnlyLowLevelLayoutGraph
+    internal class QuasiProperLayoutGraph : LayeredGraph<LayoutVertexBase, GeneralLayoutEdge>,
+        IReadOnlyQuasiProperLayoutGraph
     {
-        public override bool AddEdge(LayoutEdge edge)
+        public bool IsProper() => Vertices.All(AreAllRelationshipsProper);
+
+        public override bool AddVertex(LayoutVertexBase vertex)
         {
-            var isAdded = base.AddEdge(edge);
-            if (isAdded)
-                CheckDegreeLimits(edge);
-            
-            return isAdded;
+            if (!base.AddVertex(vertex))
+                return false;
+
+            CheckInvariants();
+            return true;
         }
 
-        public void AddPath(LayoutPath layoutPath)
+        public override bool RemoveVertex(LayoutVertexBase vertex)
         {
-            foreach (var interimVertex in layoutPath.InterimVertices)
-                AddVertex(interimVertex);
+            if (!base.RemoveVertex(vertex))
+                return false;
 
-            foreach (var edge in layoutPath)
-                AddEdge(edge);
+            CheckInvariants();
+            return true;
         }
 
-        public void RemovePath(LayoutPath layoutPath)
+        public override bool AddEdge(GeneralLayoutEdge edge)
         {
-            foreach (var edge in layoutPath)
-                RemoveEdge(edge);
+            if (!base.AddEdge(edge))
+                return false;
 
-            foreach (var interimVertex in layoutPath.InterimVertices)
-                RemoveVertex(interimVertex);
+            CheckInvariants();
+            return true;
+        }
+
+        public override bool RemoveEdge(GeneralLayoutEdge edge)
+        {
+            if (!base.RemoveEdge(edge))
+                return false;
+
+            CheckInvariants();
+            return true;
         }
 
         public LayoutVertexBase GetPrimaryParent(LayoutVertexBase vertex)
@@ -77,8 +91,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public bool IsPlacedPrimarySiblingOf(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
         {
-            return vertex2 != null 
-                && !vertex2.IsFloating 
+            return vertex2 != null
+                && !vertex2.IsFloating
                 && GetPrimaryParent(vertex1) == GetPrimaryParent(vertex2);
         }
 
@@ -90,39 +104,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 ExecuteOnPrimaryDescendantVertices(child, actionOnVertex);
         }
 
-        public LayoutEdge GetInEdge(DummyLayoutVertex dummyVertex) => InEdges(dummyVertex).FirstOrDefault();
-        public LayoutEdge GetOutEdge(DummyLayoutVertex dummyVertex) => OutEdges(dummyVertex).FirstOrDefault();
-
-        public LayoutEdge[] SplitEdge(LayoutEdge edgeToSplit, LayoutVertexBase interimVertex)
-        {
-            var newEdge1 = new LayoutEdge(edgeToSplit.Source, interimVertex, edgeToSplit.DiagramConnector);
-            var newEdge2 = new LayoutEdge(interimVertex, edgeToSplit.Target, edgeToSplit.DiagramConnector);
-
-            RemoveEdge(edgeToSplit);
-            AddVertex(interimVertex);
-            AddEdge(newEdge1);
-            AddEdge(newEdge2);
-
-            return new[] { newEdge1, newEdge2 };
-        }
-
-        public LayoutEdge MergeEdges(LayoutEdge firstEdge, LayoutEdge nextEdge)
-        {
-            if (firstEdge.Target != nextEdge.Source)
-                throw new InvalidOperationException("Only consecutive edges can be merged.");
-
-            if (firstEdge.DiagramConnector != nextEdge.DiagramConnector)
-                throw new InvalidOperationException("Only edges of the same DiagramConnector can be merged.");
-
-            var mergedEdge = new LayoutEdge(firstEdge.Source, nextEdge.Target, firstEdge.DiagramConnector);
-
-            RemoveEdge(firstEdge);
-            RemoveEdge(nextEdge);
-            RemoveVertex(firstEdge.Target);
-            AddEdge(mergedEdge);
-
-            return mergedEdge;
-        }
+        public GeneralLayoutEdge GetInEdge(DummyLayoutVertex dummyVertex) => InEdges(dummyVertex).FirstOrDefault();
+        public GeneralLayoutEdge GetOutEdge(DummyLayoutVertex dummyVertex) => OutEdges(dummyVertex).FirstOrDefault();
 
         private IEnumerable<LayoutVertexBase> GetOrderedParents(LayoutVertexBase vertex)
         {
@@ -156,7 +139,21 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return GetDistanceToNonDummy(outEdge.Target) + 1;
         }
 
-        private void CheckDegreeLimits(LayoutEdge edge)
+        private bool AreAllRelationshipsProper(LayoutVertexBase vertex)
+        {
+            var layerIndex = GetLayerIndex(vertex);
+
+            return GetParents(vertex).All(i => GetLayerIndex(i) == layerIndex - 1)
+               && GetChildren(vertex).All(i => GetLayerIndex(i) == layerIndex + 1)
+               && GetSiblings(vertex).All(i => GetLayerIndex(i) == layerIndex);
+        }
+
+        private void CheckInvariants()
+        {
+            Edges.ForEach(CheckEdgeInvariants);
+        }
+
+        private void CheckEdgeInvariants(GeneralLayoutEdge edge)
         {
             CheckDegree(edge.Source, EdgeDirection.In);
             CheckDegree(edge.Source, EdgeDirection.Out);

@@ -8,25 +8,23 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </summary>
     internal sealed class RelativeLayout : IReadOnlyRelativeLayout
     {
-        private readonly LayeredGraph _layeredGraph;
-        private readonly LowLevelLayoutGraph _lowLevelLayoutGraph;
+        private readonly LayeredLayoutGraph _layeredLayoutGraph;
         private readonly LayoutVertexLayers _layers;
 
-        public RelativeLayout(LayeredGraph layeredGraph, LowLevelLayoutGraph lowLevelLayoutGraph, 
+        public RelativeLayout(LayeredLayoutGraph layeredLayoutGraph, 
             LayoutVertexLayers layers)
         {
-            _layeredGraph = layeredGraph;
-            _lowLevelLayoutGraph = lowLevelLayoutGraph;
+            _layeredLayoutGraph = layeredLayoutGraph;
             _layers = layers;
         }
 
-        public IReadOnlyLayeredGraph LayeredGraph => _layeredGraph;
-        public IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _lowLevelLayoutGraph;
+        public IReadOnlyLayeredLayoutGraph LayeredLayoutGraph => _layeredLayoutGraph;
+        public IReadOnlyQuasiProperLayoutGraph ProperLayeredLayoutGraph => _layeredLayoutGraph.ProperGraph;
         public IReadOnlyLayoutVertexLayers LayoutVertexLayers => _layers;
 
         public IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex)
         {
-            return _lowLevelLayoutGraph.GetPrimarySiblings(vertex).Where(i => _layers.GetLayerIndex(i) == layerIndex);
+            return ProperLayeredLayoutGraph.GetPrimarySiblings(vertex).Where(i => _layers.GetLayerIndex(i) == layerIndex);
         }
 
         public IEnumerable<LayoutVertexBase> GetPrimarySiblingsInSameLayer(LayoutVertexBase vertex)
@@ -53,13 +51,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         public LayoutVertexBase GetPreviousPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex)
         {
             var previousVertex = _layers.GetPreviousInLayer(vertex);
-            return _lowLevelLayoutGraph.IsPlacedPrimarySiblingOf(vertex, previousVertex) ? previousVertex : null;
+            return ProperLayeredLayoutGraph.IsPlacedPrimarySiblingOf(vertex, previousVertex) ? previousVertex : null;
         }
 
         public LayoutVertexBase GetNextPlacedPrimarySiblingInSameLayer(LayoutVertexBase vertex)
         {
             var nextVertex = _layers.GetNextInLayer(vertex);
-            return _lowLevelLayoutGraph.IsPlacedPrimarySiblingOf(vertex, nextVertex) ? nextVertex : null;
+            return ProperLayeredLayoutGraph.IsPlacedPrimarySiblingOf(vertex, nextVertex) ? nextVertex : null;
         }
     }
 }

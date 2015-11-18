@@ -8,21 +8,27 @@ using QuickGraph;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A list of layout edges that form a path.
+    /// A list of proper layout edges that form a path.
     /// </summary>
     /// <remarks>
     /// Invariants:
     /// <para>Source and Target are always of type DiagramNodeLayoutVertex.</para>
     /// <para>Interim vertices are always of type DummyLayoutVertex.</para>
     /// </remarks>
-    internal sealed class LayoutPath : Path<LayoutVertexBase, LayoutEdge>, IEdge<DiagramNodeLayoutVertex>
+    internal sealed class LayoutPath : Path<LayoutVertexBase, GeneralLayoutEdge>, IEdge<DiagramNodeLayoutVertex>
     {
-        public LayoutPath(LayoutEdge layoutEdge)
-            : this(layoutEdge.ToEnumerable())
+        public LayoutPath(DiagramNodeLayoutVertex sourceVertex, DiagramNodeLayoutVertex targetVertex,
+            DiagramConnector diagramConnector)
+            : this(new GeneralLayoutEdge(sourceVertex, targetVertex, diagramConnector))
         {
         }
 
-        public LayoutPath(IEnumerable<LayoutEdge> edges)
+        public LayoutPath(GeneralLayoutEdge generalLayoutEdge)
+            : this(generalLayoutEdge.ToEnumerable())
+        {
+        }
+
+        public LayoutPath(IEnumerable<GeneralLayoutEdge> edges)
             : base(edges)
         {
             CheckPrivateInvariants();
@@ -36,8 +42,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private IEnumerable<LayoutVertexBase> InterimVerticesPrivate => this.Skip(1).Select(i => i.Source);
         public IEnumerable<DummyLayoutVertex> InterimVertices => InterimVerticesPrivate.OfType<DummyLayoutVertex>();
         public bool IsFloating => Vertices.Any(i => i.IsFloating);
+        public DiagramConnector DiagramConnector => Edges.FirstOrDefault()?.DiagramConnector;
 
-        public void Substitute(int atIndex, int removeEdgeCount, params LayoutEdge[] newEdges)
+        public void Substitute(int atIndex, int removeEdgeCount, params GeneralLayoutEdge[] newEdges)
         {
             for (var i = 0; i < removeEdgeCount; i++)
                 Edges.RemoveAt(atIndex);
@@ -85,6 +92,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
             if (InterimVerticesPrivate.Any(i => !(i is DummyLayoutVertex)))
                 throw new LayoutPathException("All interim vertices must be DummyLayoutVertex.");
+
+            if (Edges.GroupBy(i => i.DiagramConnector).Count() != 1)
+                throw new LayoutPathException("All edges must reference the same diagram connector.");
         }
     }
 }

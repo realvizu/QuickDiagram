@@ -6,21 +6,21 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal abstract class BuilderBase
     {
-        protected LayoutEdge CreateLayoutEdge(EdgeSpecification edgeSpecification)
+        protected GeneralLayoutEdge CreateLayoutEdge(EdgeSpecification edgeSpecification)
         {
             return CreateLayoutEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
         }
 
-        protected LayoutEdge CreateLayoutEdge(string sourceVertexName, string targetVertexName)
+        protected GeneralLayoutEdge CreateLayoutEdge(string sourceVertexName, string targetVertexName)
         {
             var source = CreateLayoutVertex(sourceVertexName);
             var target = CreateLayoutVertex(targetVertexName);
             return CreateLayoutEdge(source, target);
         }
 
-        protected LayoutEdge CreateLayoutEdge(LayoutVertexBase source, LayoutVertexBase target)
+        protected GeneralLayoutEdge CreateLayoutEdge(LayoutVertexBase source, LayoutVertexBase target)
         {
-            return new LayoutEdge(source, target, null);
+            return new GeneralLayoutEdge(source, target, null);
         }
 
         protected static LayoutVertexBase CreateLayoutVertex(string name, int priority = 1)

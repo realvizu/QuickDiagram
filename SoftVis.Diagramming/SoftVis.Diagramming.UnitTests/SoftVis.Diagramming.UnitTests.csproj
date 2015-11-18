@@ -80,14 +80,14 @@
     <Compile Include="Diagramming\Layout\Incremental\Helpers\EdgeSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\GraphBuilderBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\DiagramGraphBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\LayeredGraphBuilder.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Builders\LayeredLayoutGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutPathBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\PathSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\RelativeLayoutBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\VertexList.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\LayeredGraphTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\LowLevelLayoutGraphTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\LayeredLayoutGraphTests.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Relative\QuasiProperLayoutGraphTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\LayoutVertexLayersTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationCalculatorTests.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestModelRelationship.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDiagramNode.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDummyLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\LowLevelLayoutGraphBuilder.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Builders\QuasiProperLayoutGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

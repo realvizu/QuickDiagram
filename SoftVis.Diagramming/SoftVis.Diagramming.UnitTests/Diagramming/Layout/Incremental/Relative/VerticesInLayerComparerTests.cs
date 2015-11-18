@@ -1,4 +1,6 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
+﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
 using FluentAssertions;
 using Xunit;
@@ -7,31 +9,34 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     public class VerticesInLayerComparerTests
     {
-        private readonly LowLevelLayoutGraphBuilder _testGraph;
-        private LowLevelLayoutGraph LowLevelLayoutGraph => _testGraph.Graph;
+        private readonly QuasiProperLayoutGraphBuilder _testGraphBuilder;
+        private IReadOnlyQuasiProperLayoutGraph TestGraph => _testGraphBuilder.Graph;
 
         public VerticesInLayerComparerTests()
         {
-            _testGraph = new LowLevelLayoutGraphBuilder();
+            _testGraphBuilder = new QuasiProperLayoutGraphBuilder();
         }
 
         [Fact]
         public void Compare_SimpleCases()
         {
-            _testGraph.SetUp("A", "B");
-            var comparer = new VerticesInLayerComparer(LowLevelLayoutGraph);
-            comparer.Compare(_testGraph.GetVertex("A"), _testGraph.GetVertex("B")).Should().BeLessThan(0);
-            comparer.Compare(_testGraph.GetVertex("B"), _testGraph.GetVertex("A")).Should().BeGreaterThan(0);
-            comparer.Compare(_testGraph.GetVertex("A"), _testGraph.GetVertex("A")).Should().Be(0);
+            _testGraphBuilder.SetUp("A", "B");
+            var comparer = new SiblingsComparer(TestGraph);
+            comparer.Compare(GetVertex("A"), GetVertex("B")).Should().BeLessThan(0);
+            comparer.Compare(GetVertex("B"), GetVertex("A")).Should().BeGreaterThan(0);
+            comparer.Compare(GetVertex("A"), GetVertex("A")).Should().Be(0);
         }
 
         [Fact]
         public void Compare_DummyVerticesInvolved()
         {
-            _testGraph.SetUp("*1<-A", "B", "*2<-C");
-            var comparer = new VerticesInLayerComparer(LowLevelLayoutGraph);
-            comparer.Compare(_testGraph.GetVertex("*1"), _testGraph.GetVertex("B")).Should().BeLessThan(0);
-            comparer.Compare(_testGraph.GetVertex("*2"), _testGraph.GetVertex("B")).Should().BeGreaterThan(0);
+            _testGraphBuilder.SetUp("P<-A<-B", "P<-*1<-B", "P<-C");
+            var comparer = new SiblingsComparer(TestGraph);
+            var dummyVertex = GetVertex("*1");
+            comparer.Compare(GetVertex("A"), dummyVertex).Should().BeLessThan(0);
+            comparer.Compare(dummyVertex, GetVertex("C")).Should().BeLessThan(0);
         }
+
+        private LayoutVertexBase GetVertex(string name) => _testGraphBuilder.GetVertex(name);
     }
 }

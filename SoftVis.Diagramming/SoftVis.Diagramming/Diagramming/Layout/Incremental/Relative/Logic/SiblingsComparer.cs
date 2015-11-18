@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 {
     /// <summary>
-    /// Comparer used to sort sibling vertices in layers.
+    /// Comparer used to sort sibling vertices.
     /// </summary>
-    internal class VerticesInLayerComparer : IComparer<LayoutVertexBase>
+    internal class SiblingsComparer : IComparer<LayoutVertexBase>
     {
-        private readonly IReadOnlyLowLevelLayoutGraph _lowLevelLayoutGraph;
+        private readonly IReadOnlyQuasiProperLayoutGraph _properLayeredLayoutGraph;
 
-        public VerticesInLayerComparer(IReadOnlyLowLevelLayoutGraph lowLevelLayoutGraph)
+        public SiblingsComparer(IReadOnlyQuasiProperLayoutGraph properLayeredLayoutGraph)
         {
-            _lowLevelLayoutGraph = lowLevelLayoutGraph;
+            _properLayeredLayoutGraph = properLayeredLayoutGraph;
         }
 
         public int Compare(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var dummyVertex = vertex as DummyLayoutVertex;
             if (dummyVertex != null)
             {
-                var inEdge = _lowLevelLayoutGraph.GetInEdge(dummyVertex);
+                var inEdge = _properLayeredLayoutGraph.GetInEdge(dummyVertex);
                 if (inEdge == null)
                     throw new InvalidOperationException("Dummy vertex with no in-edge cannot be compared.");
                 return GetNameForComparison(inEdge.Source);

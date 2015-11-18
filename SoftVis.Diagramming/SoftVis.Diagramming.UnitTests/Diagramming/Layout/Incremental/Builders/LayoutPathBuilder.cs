@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return new LayoutPath(edgeSpecifications.Select(CreateLayoutEdge));
         }
 
-        public LayoutEdge CreateLayoutEdge(string edgeString)
+        public GeneralLayoutEdge CreateLayoutEdge(string edgeString)
         {
             var edgeSpecification = EdgeSpecification.Parse(edgeString);
             return CreateLayoutEdge(edgeSpecification);

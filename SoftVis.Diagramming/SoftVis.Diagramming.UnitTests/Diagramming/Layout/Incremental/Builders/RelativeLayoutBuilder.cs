@@ -5,23 +5,20 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class RelativeLayoutBuilder : BuilderBase
     {
-        public LayeredGraphBuilder LayeredGraphBuilder { get; }
-        public LowLevelLayoutGraphBuilder LowLevelLayoutGraphBuilder { get; }
+        public LayeredLayoutGraphBuilder LayeredLayoutGraphBuilder { get; }
         private readonly LayoutVertexLayers _layers;
         public RelativeLayout RelativeLayout { get; }
 
         public RelativeLayoutBuilder()
         {
-            LayeredGraphBuilder = new LayeredGraphBuilder();
-            LowLevelLayoutGraphBuilder = new LowLevelLayoutGraphBuilder(LayeredGraphBuilder);
+            LayeredLayoutGraphBuilder = new LayeredLayoutGraphBuilder();
             _layers = new LayoutVertexLayers();
-            RelativeLayout = new RelativeLayout(LayeredGraphBuilder.Graph, LowLevelLayoutGraphBuilder.Graph, _layers);
+            RelativeLayout = new RelativeLayout(LayeredLayoutGraphBuilder.Graph, _layers);
         }
 
         public void SetUpGraphs(params string[] pathSpecification)
         {
-            LayeredGraphBuilder.SetUp(pathSpecification);
-            LowLevelLayoutGraphBuilder.SetUp(pathSpecification);
+            LayeredLayoutGraphBuilder.SetUp(pathSpecification);
         }
 
         public void SetUpLayers(params string[] layerSpecifications)
@@ -39,7 +36,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
         private void AddVertexToLayer(string vertexName, int i)
         {
-            var vertex = LowLevelLayoutGraphBuilder.GetVertex(vertexName);
+            var vertex = LayeredLayoutGraphBuilder.GetVertex(vertexName);
             var relativeLocation = new RelativeLocation(i, _layers.GetLayer(i).Count);
             _layers.AddVertex(vertex, relativeLocation);
         }

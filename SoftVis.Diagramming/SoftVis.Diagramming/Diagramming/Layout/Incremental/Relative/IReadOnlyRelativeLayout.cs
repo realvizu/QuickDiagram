@@ -7,8 +7,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// </summary>
     internal interface IReadOnlyRelativeLayout
     {
-        IReadOnlyLayeredGraph LayeredGraph { get; }
-        IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph { get; }
+        IReadOnlyLayeredLayoutGraph LayeredLayoutGraph { get; }
+        IReadOnlyQuasiProperLayoutGraph ProperLayeredLayoutGraph { get; }
         IReadOnlyLayoutVertexLayers LayoutVertexLayers { get; }
 
         IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex);

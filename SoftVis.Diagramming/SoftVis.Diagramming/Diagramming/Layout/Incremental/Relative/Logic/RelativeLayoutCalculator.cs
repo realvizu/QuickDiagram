@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using Codartis.SoftVis.Common;
-using MoreLinq;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 {
@@ -21,8 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </remarks>
     internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource, IDiagramChangeConsumer
     {
-        private readonly LayeredGraph _layeredGraph;
-        private readonly LowLevelLayoutGraph _lowLevelLayoutGraph;
+        private readonly LayeredLayoutGraph _layeredLayoutGraph;
         private readonly LayoutVertexLayers _layers;
         private readonly RelativeLayout _relativeLayout;
 
@@ -32,10 +29,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public RelativeLayoutCalculator()
         {
-            _layeredGraph = new LayeredGraph();
-            _lowLevelLayoutGraph = new LowLevelLayoutGraph();
+            _layeredLayoutGraph = new LayeredLayoutGraph();
             _layers = new LayoutVertexLayers();
-            _relativeLayout = new RelativeLayout(_layeredGraph, _lowLevelLayoutGraph, _layers);
+            _relativeLayout = new RelativeLayout(_layeredLayoutGraph, _layers);
 
             _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
@@ -47,8 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         public void OnDiagramCleared()
         {
             _layers.Clear();
-            _lowLevelLayoutGraph.Clear();
-            _layeredGraph.Clear();
+            _layeredLayoutGraph.Clear();
             _diagramNodeToLayoutVertexMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
         }
@@ -62,8 +57,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
             AddVertex(diagramNodeLayoutVertex, causingAction);
-
-            CheckInvariants(diagramNodeLayoutVertex);
         }
 
         public void OnDiagramNodeRemoved(DiagramNode diagramNode, ILayoutAction causingAction)
@@ -82,12 +75,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             if (_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
                 throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
 
-            var layoutPath = CreateLayoutPath(diagramConnector);
-            _diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
+            var diagramNodeLayoutEdge = CreateLayoutPath(diagramConnector);
+            _diagramConnectorToLayoutPathMap.Set(diagramConnector, diagramNodeLayoutEdge);
 
-            AddLayoutPath(layoutPath, causingAction);
-
-            CheckInvariants(layoutPath.Vertices);
+            _layeredLayoutGraph.AddEdge(diagramNodeLayoutEdge);
         }
 
         public void OnDiagramConnectorRemoved(DiagramConnector diagramConnector, ILayoutAction causingAction)
@@ -95,26 +86,22 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             if (!_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
                 throw new InvalidOperationException($"Diagram connector {diagramConnector} not found.");
 
-            var layoutPath = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
+            var diagramNodeLayoutEdge = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
             _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
 
-            RemoveLayoutPath(layoutPath);
+            _layeredLayoutGraph.RemoveEdge(diagramNodeLayoutEdge);
         }
 
         private LayoutPath CreateLayoutPath(DiagramConnector diagramConnector)
         {
             var sourceVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
             var targetVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
-            var newEdge = new LayoutEdge(sourceVertex, targetVertex, diagramConnector);
-            return new LayoutPath(newEdge);
+            return new LayoutPath(sourceVertex, targetVertex, diagramConnector);
         }
 
-        private void AddVertex(LayoutVertexBase vertex, ILayoutAction causingAction)
+        private void AddVertex(DiagramNodeLayoutVertex vertex, ILayoutAction causingAction)
         {
-            if (vertex is DiagramNodeLayoutVertex)
-                _layeredGraph.AddVertex((DiagramNodeLayoutVertex)vertex);
-
-            _lowLevelLayoutGraph.AddVertex(vertex);
+            _layeredLayoutGraph.AddVertex(vertex);
 
             var targetLocation = _locationCalculator.GetTargetLocation(vertex);
             _layers.AddVertex(vertex, targetLocation);
@@ -125,32 +112,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private void RemoveDiagramNodeVertex(DiagramNodeLayoutVertex vertex)
         {
             _layers.RemoveVertex(vertex);
-            _lowLevelLayoutGraph.RemoveVertex(vertex);
-            _layeredGraph.RemoveVertex(vertex);
-        }
-
-        private void AddLayoutPath(LayoutPath layoutPath, ILayoutAction causingAction)
-        {
-            _layeredGraph.AddEdge(layoutPath);
-            _lowLevelLayoutGraph.AddPath(layoutPath);
-
-            EnsureCorrectLocationForPathSourceAndItsDescendants(layoutPath, causingAction);
-        }
-
-        private void RemoveLayoutPath(LayoutPath layoutPath)
-        {
-            layoutPath.InterimVertices.ForEach(_layers.RemoveVertex);
-
-            _lowLevelLayoutGraph.RemovePath(layoutPath);
-            _layeredGraph.RemoveEdge(layoutPath);
-        }
-
-        private void EnsureCorrectLocationForPathSourceAndItsDescendants(LayoutPath layoutPath, ILayoutAction causingAction)
-        {
-            var vertex = layoutPath.PathSource;
-
-            _layeredGraph.ExecuteOnDescendantVertices(vertex, i => EnsureCorrectLocation(i, causingAction));
-            _layeredGraph.ExecuteOnDescendantVertices(vertex, i => AdjustPaths(i, causingAction));
+            _layeredLayoutGraph.RemoveVertex(vertex);
         }
 
         private void EnsureCorrectLocation(LayoutVertexBase vertex, ILayoutAction causingAction)
@@ -172,98 +134,5 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             RaiseRelativeLocationChangedLayoutAction(vertex, oldLocation, targetLocation, causingAction);
         }
 
-        private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
-        {
-            foreach (var outPath in _layeredGraph.OutEdges(diagramNodeLayoutVertex))
-                AdjustPath(outPath, causingAction);
-        }
-
-        private void AdjustPath(LayoutPath layoutPath, ILayoutAction causingAction)
-        {
-            AdjustPathLength(layoutPath, causingAction);
-
-            layoutPath.InterimVertices.ForEach(i => EnsureCorrectLocation(i, causingAction));
-        }
-
-        private void AdjustPathLength(LayoutPath layoutPath, ILayoutAction causingAction)
-        {
-            var sourceLayerIndex = _layers.GetLayerIndexOrThrow(layoutPath.Source);
-            var targetLayerIndex = _layers.GetLayerIndexOrThrow(layoutPath.Target);
-
-            var layerSpan = sourceLayerIndex - targetLayerIndex;
-            var pathLengthDifference = layerSpan - layoutPath.Length;
-
-            if (pathLengthDifference > 0)
-                SplitEdge(layoutPath, 0, pathLengthDifference, causingAction);
-            else if (pathLengthDifference < 0)
-                MergeEdgeWithNext(layoutPath, 0, -pathLengthDifference, causingAction);
-        }
-
-        private void SplitEdge(LayoutPath layoutPath, int atIndex, int times, ILayoutAction causingAction)
-        {
-            for (var i = 0; i < times; i++)
-                SplitEdge(layoutPath, atIndex, causingAction);
-        }
-
-        private void SplitEdge(LayoutPath layoutPath, int atIndex, ILayoutAction causingAction)
-        {
-            var edgeToSplit = layoutPath[atIndex];
-            var interimVertex = new DummyLayoutVertex();
-
-            var newEdges = _lowLevelLayoutGraph.SplitEdge(edgeToSplit, interimVertex);
-            layoutPath.Substitute(atIndex, 1, newEdges[0], newEdges[1]);
-
-            RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
-
-            AddVertex(interimVertex, causingAction);
-        }
-
-        private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex, int times, ILayoutAction causingAction)
-        {
-            for (var i = 0; i < times; i++)
-                MergeEdgeWithNext(layoutPath, atIndex, causingAction);
-        }
-
-        private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex, ILayoutAction causingAction)
-        {
-            var firstEdge = layoutPath[atIndex];
-            var nextEdge = layoutPath[atIndex + 1];
-
-            var vertexToRemove = firstEdge.Target as DummyLayoutVertex;
-            if (vertexToRemove == null)
-                throw new Exception("FirstEdge.Target is null or not dummy!");
-            RaiseVertexLayoutAction("DummyVertexRemoved", vertexToRemove, causingAction);
-
-            var mergedEdge = _lowLevelLayoutGraph.MergeEdges(firstEdge, nextEdge);
-            layoutPath.Substitute(atIndex, 2, mergedEdge);
-
-            _layers.RemoveVertex(vertexToRemove);
-        }
-
-        private void CheckInvariants(IEnumerable<LayoutVertexBase> vertices)
-        {
-            vertices.ForEach(CheckInvariants);
-        }
-
-        private void CheckInvariants(LayoutVertexBase vertex)
-        {
-            var layerIndex = _layers.GetLayerIndexOrThrow(vertex);
-
-            foreach (var parentVertex in _lowLevelLayoutGraph.GetParents(vertex))
-                CheckLayerIndex(parentVertex, layerIndex - 1);
-
-            foreach (var childVertex in _lowLevelLayoutGraph.GetChildren(vertex))
-                CheckLayerIndex(childVertex, layerIndex + 1);
-
-            foreach (var childVertex in _lowLevelLayoutGraph.GetSiblings(vertex))
-                CheckLayerIndex(childVertex, layerIndex);
-        }
-
-        private void CheckLayerIndex(LayoutVertexBase vertex, int expectedLayerIndex)
-        {
-            var layerIndex = _layers.GetLayerIndex(vertex);
-            if (layerIndex != expectedLayerIndex)
-                throw new Exception($"Vertex {vertex} was expected to be on layer {expectedLayerIndex} but was on layer {layerIndex}.");
-        }
     }
 }

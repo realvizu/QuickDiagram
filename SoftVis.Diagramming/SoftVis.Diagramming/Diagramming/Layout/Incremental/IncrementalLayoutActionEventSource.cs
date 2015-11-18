@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return layoutAction;
         }
 
-        protected LayoutAction RaiseEdgeLayoutAction(string action, LayoutEdge edge, ILayoutAction causingAction = null)
+        protected LayoutAction RaiseEdgeLayoutAction(string action, GeneralLayoutEdge edge, ILayoutAction causingAction = null)
         {
             var layoutAction = new LayoutEdgeAction(action, edge, null, causingAction);
             RaiseLayoutAction(layoutAction);

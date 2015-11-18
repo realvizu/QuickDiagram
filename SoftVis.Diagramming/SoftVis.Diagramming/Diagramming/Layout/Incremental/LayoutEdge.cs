@@ -5,20 +5,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// An edge in the layout graph.
     /// </summary>
-    internal class LayoutEdge : Edge<LayoutVertexBase>
+    internal abstract class LayoutEdge<TVertex> : Edge<TVertex>
     {
         public DiagramConnector DiagramConnector { get; }
 
-        public LayoutEdge(LayoutVertexBase source, LayoutVertexBase target,
-            DiagramConnector diagramConnector)
+        protected LayoutEdge(TVertex source, TVertex target, DiagramConnector diagramConnector)
             : base(source, target)
         {
             DiagramConnector = diagramConnector;
-        }
-
-        public LayoutEdge Reverse()
-        {
-            return new LayoutEdge(Target, Source, DiagramConnector);
         }
 
         public override string ToString()

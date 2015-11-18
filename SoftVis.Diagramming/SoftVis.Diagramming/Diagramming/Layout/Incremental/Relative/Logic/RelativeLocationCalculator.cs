@@ -10,16 +10,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     internal sealed class RelativeLocationCalculator : RelativeLayoutActionEventSource
     {
         private readonly IReadOnlyRelativeLayout _relativeLayout;
-        private readonly IComparer<LayoutVertexBase> _vertexComparer;
+        private readonly IComparer<LayoutVertexBase> _siblingsComparer;
 
         public RelativeLocationCalculator(IReadOnlyRelativeLayout relativeLayout)
         {
             _relativeLayout = relativeLayout;
-            _vertexComparer = new VerticesInLayerComparer(_relativeLayout.LowLevelLayoutGraph);
+            _siblingsComparer = new SiblingsComparer(_relativeLayout.ProperLayeredLayoutGraph);
         }
 
-        private IReadOnlyLayeredGraph LayeredGraph => _relativeLayout.LayeredGraph;
-        private IReadOnlyLowLevelLayoutGraph LowLevelLayoutGraph => _relativeLayout.LowLevelLayoutGraph;
+        private IReadOnlyQuasiProperLayoutGraph ProperLayeredLayoutGraph => _relativeLayout.ProperLayeredLayoutGraph;
         private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
         private IReadOnlyLayoutVertexLayers LayersWithoutFloatingItems => Layers.GetViewWithoutFloatingItems();
 
@@ -27,14 +26,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             vertex.IsFloating = true;
 
-            var currentLayerIndex = Layers.GetLayerIndex(vertex) ?? -1;
-
-            var minimumLayerIndex = vertex is DiagramNodeLayoutVertex
-                ? LayeredGraph.GetRank((DiagramNodeLayoutVertex)vertex)
-                : LowLevelLayoutGraph.GetRank(vertex);
-
-            var toLayerIndex = Math.Max(currentLayerIndex, minimumLayerIndex);
-            var toIndexInLayer = DetermineIndexInLayer(vertex, minimumLayerIndex);
+            var toLayerIndex = ProperLayeredLayoutGraph.GetLayerIndex(vertex);
+            var toIndexInLayer = DetermineIndexInLayer(vertex, toLayerIndex);
 
             vertex.IsFloating = false;
 
@@ -45,7 +38,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             var layer = LayersWithoutFloatingItems.GetLayer(layerIndex);
 
-            var parentVertex = LowLevelLayoutGraph.GetPrimaryParent(vertex);
+            var parentVertex = ProperLayeredLayoutGraph.GetPrimaryParent(vertex);
             if (parentVertex == null)
                 return layer.Count;
 
@@ -74,7 +67,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             if (followingParent == null)
                 return LayersWithoutFloatingItems.GetLayer(targetLayer).Count;
 
-            var firstChildOfFollowingParent = LowLevelLayoutGraph.GetPrimaryChildren(followingParent)
+            var firstChildOfFollowingParent = ProperLayeredLayoutGraph.GetPrimaryChildren(followingParent)
                 .OrderBy(LayersWithoutFloatingItems.GetIndexInLayer).First();
 
             return LayersWithoutFloatingItems.GetIndexInLayer(firstChildOfFollowingParent);
@@ -84,12 +77,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             IReadOnlyLayoutVertexLayer layer, int index)
         {
             return layer.OrderBy(LayersWithoutFloatingItems.GetIndexInLayer)
-                .Where(i => LayersWithoutFloatingItems.GetIndexInLayer(i) > index && LowLevelLayoutGraph.HasPrimaryChildren(i));
+                .Where(i => LayersWithoutFloatingItems.GetIndexInLayer(i) > index && ProperLayeredLayoutGraph.HasPrimaryChildren(i));
         }
 
         private bool Precedes(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
         {
-            return _vertexComparer.Compare(vertex1, vertex2) < 0;
+            return _siblingsComparer.Compare(vertex1, vertex2) < 0;
         }
     }
 }
