@@ -54,6 +54,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return vertex;
         }
 
+        public TEdge AddEdge(string edgeString)
+        {
+            var edgeSpec = EdgeSpecification.Parse(edgeString);
+            return AddEdge(edgeSpec.SourceVertexName, edgeSpec.TargetVertexName);
+        }
+
         public TEdge AddEdge(string sourceName, string targetName)
         {
             var edge = GetOrCreateEdge(sourceName, targetName);

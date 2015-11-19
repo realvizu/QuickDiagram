@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
@@ -8,7 +7,5 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// </summary>
     internal interface IReadOnlyLayeredLayoutGraph : IReadOnlyLayeredGraph<DiagramNodeLayoutVertex, LayoutPath>
     {
-        IEnumerable<LayoutPath> GetAllPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex);
-
     }
 }

@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         }
 
         [Fact]
-        public void IsProper_Works()
+        public void IsProper_WhenTrue()
         {
             _testGraphBuilder.SetUp(
                 "P1<-C1<-C2", 
@@ -113,7 +113,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         }
 
         [Fact]
-        public void IsProper_NotProper()
+        public void IsProper_WhenFalse()
         {
             _testGraphBuilder.SetUp(
                 "P1<-C1<-C2", 

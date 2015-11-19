@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
@@ -73,8 +72,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             CheckProperGraph();
             return true;
         }
-
-        public IEnumerable<LayoutPath> GetAllPaths(DiagramNodeLayoutVertex vertex) => this.GetAllEdges(vertex);
 
         private void AddEdgeToProperGraph(LayoutPath layoutPath)
         {

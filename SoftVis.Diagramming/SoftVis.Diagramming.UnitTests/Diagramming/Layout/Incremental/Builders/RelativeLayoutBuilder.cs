@@ -1,44 +1,37 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
+﻿using System.Linq;
+using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal class RelativeLayoutBuilder : BuilderBase
     {
-        public LayeredLayoutGraphBuilder LayeredLayoutGraphBuilder { get; }
-        private readonly LayoutVertexLayers _layers;
+        public LayeredLayoutGraphBuilder GraphBuilder { get; }
+        public LayoutVertexLayersBuilder LayersBuilder { get; }
         public RelativeLayout RelativeLayout { get; }
 
         public RelativeLayoutBuilder()
         {
-            LayeredLayoutGraphBuilder = new LayeredLayoutGraphBuilder();
-            _layers = new LayoutVertexLayers();
-            RelativeLayout = new RelativeLayout(LayeredLayoutGraphBuilder.Graph, _layers);
+            GraphBuilder = new LayeredLayoutGraphBuilder();
+            LayersBuilder = new LayoutVertexLayersBuilder(GraphBuilder.Graph.ProperGraph);
+            RelativeLayout = new RelativeLayout(GraphBuilder.Graph, LayersBuilder.Layers);
         }
 
-        public void SetUpGraphs(params string[] pathSpecification)
+        public void SetUpGraph(params string[] pathSpecification)
         {
-            LayeredLayoutGraphBuilder.SetUp(pathSpecification);
+            GraphBuilder.SetUp(pathSpecification);
+
         }
 
         public void SetUpLayers(params string[] layerSpecifications)
         {
-            var i = 0;
-            foreach (var layerSpecification in layerSpecifications)
-            {
-                foreach (var vertexName in layerSpecification.Split(','))
-                {
-                    AddVertexToLayer(vertexName, i);
-                }
-                i++;
-            }
+            LayersBuilder.SetUp(layerSpecifications);
         }
 
-        private void AddVertexToLayer(string vertexName, int i)
+        public LayoutVertexBase GetVertex(string name)
         {
-            var vertex = LayeredLayoutGraphBuilder.GetVertex(vertexName);
-            var relativeLocation = new RelativeLocation(i, _layers.GetLayer(i).Count);
-            _layers.AddVertex(vertex, relativeLocation);
+            return GraphBuilder.Graph
+                .ProperGraph.Vertices.FirstOrDefault(i => i.ToString() == name);
         }
     }
 }

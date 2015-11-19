@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </remarks>
     internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource, IDiagramChangeConsumer
     {
-        private readonly LayeredLayoutGraph _layeredLayoutGraph;
+        private readonly LayeredLayoutGraph _layoutGraph;
         private readonly LayoutVertexLayers _layers;
         private readonly RelativeLayout _relativeLayout;
 
@@ -29,21 +29,23 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public RelativeLayoutCalculator()
         {
-            _layeredLayoutGraph = new LayeredLayoutGraph();
+            _layoutGraph = new LayeredLayoutGraph();
             _layers = new LayoutVertexLayers();
-            _relativeLayout = new RelativeLayout(_layeredLayoutGraph, _layers);
+            _relativeLayout = new RelativeLayout(_layoutGraph, _layers);
 
             _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
-            _locationCalculator = new RelativeLocationCalculator(_relativeLayout);
+            _locationCalculator = new RelativeLocationCalculator(
+                _relativeLayout.ProperLayeredLayoutGraph, _relativeLayout.LayoutVertexLayers);
         }
 
+        public IReadOnlyQuasiProperLayoutGraph ProperLayoutGraph => _layoutGraph.ProperGraph;
         public IReadOnlyRelativeLayout RelativeLayout => _relativeLayout;
 
         public void OnDiagramCleared()
         {
             _layers.Clear();
-            _layeredLayoutGraph.Clear();
+            _layoutGraph.Clear();
             _diagramNodeToLayoutVertexMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
         }
@@ -67,7 +69,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
             _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
-            RemoveDiagramNodeVertex(diagramNodeLayoutVertex);
+            RemoveVertex(diagramNodeLayoutVertex);
         }
 
         public void OnDiagramConnectorAdded(DiagramConnector diagramConnector, ILayoutAction causingAction)
@@ -78,7 +80,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutEdge = CreateLayoutPath(diagramConnector);
             _diagramConnectorToLayoutPathMap.Set(diagramConnector, diagramNodeLayoutEdge);
 
-            _layeredLayoutGraph.AddEdge(diagramNodeLayoutEdge);
+            _layoutGraph.AddEdge(diagramNodeLayoutEdge);
         }
 
         public void OnDiagramConnectorRemoved(DiagramConnector diagramConnector, ILayoutAction causingAction)
@@ -89,7 +91,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutEdge = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
             _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
 
-            _layeredLayoutGraph.RemoveEdge(diagramNodeLayoutEdge);
+            _layoutGraph.RemoveEdge(diagramNodeLayoutEdge);
         }
 
         private LayoutPath CreateLayoutPath(DiagramConnector diagramConnector)
@@ -101,7 +103,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         private void AddVertex(DiagramNodeLayoutVertex vertex, ILayoutAction causingAction)
         {
-            _layeredLayoutGraph.AddVertex(vertex);
+            _layoutGraph.AddVertex(vertex);
 
             var targetLocation = _locationCalculator.GetTargetLocation(vertex);
             _layers.AddVertex(vertex, targetLocation);
@@ -109,10 +111,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             RaiseRelativeLocationAssignedLayoutAction(vertex, targetLocation, causingAction);
         }
 
-        private void RemoveDiagramNodeVertex(DiagramNodeLayoutVertex vertex)
+        private void RemoveVertex(DiagramNodeLayoutVertex vertex)
         {
             _layers.RemoveVertex(vertex);
-            _layeredLayoutGraph.RemoveVertex(vertex);
+            _layoutGraph.RemoveVertex(vertex);
         }
 
         private void EnsureCorrectLocation(LayoutVertexBase vertex, ILayoutAction causingAction)
@@ -133,6 +135,5 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
             RaiseRelativeLocationChangedLayoutAction(vertex, oldLocation, targetLocation, causingAction);
         }
-
     }
 }

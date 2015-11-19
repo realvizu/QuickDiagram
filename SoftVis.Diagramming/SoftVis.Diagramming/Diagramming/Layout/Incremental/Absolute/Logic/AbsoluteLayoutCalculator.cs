@@ -1,6 +1,7 @@
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 {
@@ -75,7 +76,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 
         private void RerouteAllAttachedPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
         {
-            foreach (var path in LayeredLayoutGraph.GetAllPaths(diagramNodeLayoutVertex))
+            foreach (var path in LayeredLayoutGraph.GetAllEdges(diagramNodeLayoutVertex))
                 ReroutePath(path, causingAction);
         }
 

@@ -38,11 +38,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             : (IEnumerable<IReadOnlyLayoutVertexLayer>)_layers;
 
         public IReadOnlyLayoutVertexLayers GetFilteredView(Predicate<LayoutVertexBase> predicate)
-        {
-            return new LayoutVertexLayers(this, predicate);
-        }
+            => new LayoutVertexLayers(this, predicate);
 
-        public IReadOnlyLayoutVertexLayers GetViewWithoutFloatingItems() => GetFilteredView(i => !i.IsFloating);
+        public IReadOnlyLayoutVertexLayers GetViewWithoutFloatingItems()
+            => GetFilteredView(i => !i.IsFloating);
 
         public int Count => Layers.Count();
         public IEnumerator<IReadOnlyLayoutVertexLayer> GetEnumerator() => Layers.GetEnumerator();

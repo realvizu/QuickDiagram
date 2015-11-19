@@ -53,7 +53,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             _testGraphBuilder.SetUp("A<-B");
             TestGraph.GetLayerIndex(GetVertex("B")).Should().Be(1);
 
-            _testGraphBuilder.Graph.RemoveEdge(GetEdge("A<-B"));
+            TestGraph.RemoveEdge(GetEdge("A<-B"));
             TestGraph.GetLayerIndex(GetVertex("B")).Should().Be(0);
         }
 
@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         public void RemoveEdge_ThenAddEdge_PushingTheSourceToHigherLayer()
         {
             _testGraphBuilder.SetUp("A<-B");
-            _testGraphBuilder.Graph.RemoveEdge(GetEdge("A<-B"));
+            TestGraph.RemoveEdge(GetEdge("A<-B"));
             _testGraphBuilder.SetUp("A<-C<-B");
             TestGraph.GetLayerIndex(GetVertex("B")).Should().Be(2);
         }
@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         public void RemoveEdge_ThenAddEdge_SourceComesBackToLowerLayer()
         {
             _testGraphBuilder.SetUp("A<-B<-C");
-            _testGraphBuilder.Graph.RemoveEdge(GetEdge("B<-C"));
+            TestGraph.RemoveEdge(GetEdge("B<-C"));
             _testGraphBuilder.SetUp("A<-C");
             TestGraph.GetLayerIndex(GetVertex("C")).Should().Be(1);
         }
@@ -106,7 +106,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P<-C",
                 "P<-I1<-I2<-C"
                 );
-            _testGraphBuilder.GetEdge("P<-C").Length.Should().Be(3);
+            GetEdge("P<-C").Length.Should().Be(3);
         }
 
         [Fact]
@@ -116,10 +116,26 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P1<-C",
                 "P2<-I1<-I2<-C"
                 );
-            _testGraphBuilder.GetEdge("P1<-C").Length.Should().Be(3);
+            GetEdge("P1<-C").Length.Should().Be(3);
 
-            _testGraphBuilder.SetUp("I1<-P1");
-            _testGraphBuilder.GetEdge("P1<-C").Length.Should().Be(1);
+            _testGraphBuilder.SetUp("I2<-P1");
+            GetEdge("P1<-C").Length.Should().Be(1);
+            GetEdge("I2<-C").Length.Should().Be(2);
+        }
+
+        [Fact]
+        public void AddEdge_DescendantsAlsoGetNewLayerIndex()
+        {
+            _testGraphBuilder.SetUp(
+                "A<-B<-C",
+                "A<-C",
+                "D"
+                );
+            _testGraphBuilder.AddEdge("D<-A");
+
+            TestGraph.GetLayerIndex(GetVertex("A")).Should().Be(1);
+            TestGraph.GetLayerIndex(GetVertex("B")).Should().Be(2);
+            TestGraph.GetLayerIndex(GetVertex("C")).Should().Be(3);
         }
 
         private LayoutPath GetEdge(string edgeString)
