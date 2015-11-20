@@ -107,8 +107,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
 
         private void OnLayoutActionExecuted(object sender, ILayoutAction layoutAction)
         {
-            var relativeLayoutAction = layoutAction as IRelativeLayoutAction;
-            relativeLayoutAction?.AcceptVisitor(_relativeLayoutActionDispatcher);
+            //var relativeLayoutAction = layoutAction as IRelativeLayoutAction;
+            //relativeLayoutAction?.AcceptVisitor(_relativeLayoutActionDispatcher);
 
             RaiseLayoutAction(sender, layoutAction);
         }

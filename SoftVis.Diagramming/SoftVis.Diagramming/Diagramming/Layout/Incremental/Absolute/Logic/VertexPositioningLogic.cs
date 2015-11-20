@@ -71,24 +71,24 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 
         //private void CompactSiblings(LayoutVertexBase[] siblings, LayoutVertexBase removedVertex, ILayoutAction causingAction)
         //{
-            // TODO: instead of this: skim through layers, find siblings with gap, compact as necessary
-            // is it already done by compact?
+        // TODO: instead of this: skim through layers, find siblings with gap, compact as necessary
+        // is it already done by compact?
 
-            //if (!siblings.Any())
-            //    return;
+        //if (!siblings.Any())
+        //    return;
 
-            //var layoutAction = RaiseVertexLayoutAction("CompactSiblings", removedVertex, causingAction);
+        //var layoutAction = RaiseVertexLayoutAction("CompactSiblings", removedVertex, causingAction);
 
-            //var translateXAbs = (removedVertex.Width + _horizontalGap) / 2;
+        //var translateXAbs = (removedVertex.Width + _horizontalGap) / 2;
 
-            //foreach (var sibling in siblings)
-            //{
-            //    var translateX = (sibling.Center.X < removedVertex.Center.X)
-            //        ? translateXAbs
-            //        : -translateXAbs;
+        //foreach (var sibling in siblings)
+        //{
+        //    var translateX = (sibling.Center.X < removedVertex.Center.X)
+        //        ? translateXAbs
+        //        : -translateXAbs;
 
-            //    MoveTreeBy(sibling, translateX, layoutAction);
-            //}
+        //    MoveTreeBy(sibling, translateX, layoutAction);
+        //}
         //}
 
         private void CenterPrimaryParent(LayoutVertexBase layoutVertex, ILayoutAction causingAction)
@@ -210,6 +210,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 
         private void MoveVertexTo(LayoutVertexBase movingVertex, Point2D newCenter, ILayoutAction causingAction)
         {
+            if (Point2D.IsNaN(newCenter))
+                Debugger.Break();
+
             movingVertex.IsFloating = false;
 
             var oldCenter = movingVertex.Center;
@@ -227,7 +230,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             }
             else
             {
-                PushOtherVerticesFromTheWay(movingVertex, layoutAction);
+                if (!oldCenter.X.IsEqualWithTolerance(newCenter.X))
+                    PushOtherVerticesFromTheWay(movingVertex, layoutAction);
             }
         }
 
@@ -350,7 +354,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 
             foreach (var layoutVertex in ProperLayeredLayoutGraph.Vertices)
             {
-                var newCenter = new Point2D(layoutVertex.Center.X, Layers.GetLayer(layoutVertex).CenterY);
+                var centerX = layoutVertex.Center.X;
+                if (double.IsNaN(centerX))
+                    continue;
+
+                var newCenterY = Layers.GetLayer(layoutVertex).CenterY;
+                if (newCenterY.IsEqualWithTolerance(layoutVertex.Center.Y))
+                    continue;
+
+                var newCenter = new Point2D(centerX, newCenterY);
                 MoveVertexTo(layoutVertex, newCenter, layoutAction);
             }
         }

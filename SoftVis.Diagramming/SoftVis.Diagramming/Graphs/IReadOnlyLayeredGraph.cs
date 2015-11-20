@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs
@@ -15,8 +14,8 @@ namespace Codartis.SoftVis.Graphs
         IEnumerable<TVertex> GetParents(TVertex vertex);
         IEnumerable<TVertex> GetChildren(TVertex vertex);
         IEnumerable<TVertex> GetSiblings(TVertex vertex);
-
-        void ExecuteOnDescendantVertices(TVertex rootVertex, Action<TVertex> actionOnVertex);
+        IEnumerable<TVertex> GetDescendants(TVertex vertex);
+        IEnumerable<TVertex> GetVertexAndDescendants(TVertex vertex);
 
         int GetRank(TVertex vertex);
         int GetLayerIndex(TVertex vertex);

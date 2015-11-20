@@ -81,7 +81,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             foreach (var layoutEdge in layoutPath)
                 _properGraph.AddEdge(layoutEdge);
 
-            ExecuteOnDescendantVertices(layoutPath.PathSource, i => AdjustPaths(i, null));
+            ExecuteOnVertexAndDescendants(layoutPath.PathSource, i => AdjustPaths(i, null));
         }
 
         private void RemoveEdgeFromProperGraph(LayoutPath layoutPath)
@@ -91,6 +91,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
             foreach (var interimVertex in layoutPath.InterimVertices)
                 _properGraph.RemoveVertex(interimVertex);
+
+            ExecuteOnVertexAndDescendants(layoutPath.PathSource, i => AdjustPaths(i, null));
         }
 
         private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)

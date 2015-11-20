@@ -80,6 +80,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return vertex;
         }
 
+        public TEdge RemoveEdge(string edgeString)
+        {
+            var edgeSpec = EdgeSpecification.Parse(edgeString);
+            return RemoveEdge(edgeSpec.SourceVertexName, edgeSpec.TargetVertexName);
+        }
+
         public TEdge RemoveEdge(string sourceName, string targetName)
         {
             var edge = GetEdge(sourceName, targetName);

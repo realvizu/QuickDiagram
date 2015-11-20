@@ -10,6 +10,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     {
         int? GetLayerIndex(LayoutVertexBase vertex);
         int GetLayerIndexOrThrow(LayoutVertexBase vertex);
+        bool HasLocation(LayoutVertexBase vertex);
         RelativeLocation? GetLocation(LayoutVertexBase vertex);
         RelativeLocation GetLocationOrThrow(LayoutVertexBase vertex);
 

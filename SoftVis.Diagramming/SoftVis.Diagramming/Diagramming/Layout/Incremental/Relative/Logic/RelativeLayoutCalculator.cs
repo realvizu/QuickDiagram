@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 {
@@ -8,14 +12,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// </summary>
     /// <remarks>
     /// Arranges vertices into layers so that:
-    /// <para>all edges point "upward" (to a layer with lower index),</para>
+    /// <para>all edges point "upward" (to a layer with lower index)</para>
     /// <para>all edges span exactly 2 layers (by using dummy vertices as necessary)</para>
     /// <para>vertices in all layers ar ordered so that primary edges never cross.</para>
-    /// No primary edge crossing is achieved by:
-    /// <para>dummy vertices are inserted to ensure that parent and children are always on adjacent layers,</para>
-    /// <para>primary siblings on a layer are always placed together to form a block,</para>
-    /// <para>if a vertex has no primary siblings on its layer but has a primary parent 
-    /// then it is ordered according to parent ordering.</para>
     /// </remarks>
     internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource, IDiagramChangeConsumer
     {
@@ -26,6 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private readonly Map<DiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
         private readonly Map<DiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
         private readonly RelativeLocationCalculator _locationCalculator;
+        private readonly AbsoluteLayoutCalculator _absoluteLayoutCalculator;
 
         public RelativeLayoutCalculator()
         {
@@ -37,6 +37,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
             _locationCalculator = new RelativeLocationCalculator(
                 _relativeLayout.ProperLayeredLayoutGraph, _relativeLayout.LayoutVertexLayers);
+
+            _absoluteLayoutCalculator = new AbsoluteLayoutCalculator(RelativeLayout, DiagramDefaults.HorizontalGap, DiagramDefaults.VerticalGap);
+            _absoluteLayoutCalculator.LayoutActionExecuted += RaiseLayoutAction;
         }
 
         public IReadOnlyQuasiProperLayoutGraph ProperLayoutGraph => _layoutGraph.ProperGraph;
@@ -48,6 +51,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _layoutGraph.Clear();
             _diagramNodeToLayoutVertexMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
+            _absoluteLayoutCalculator.OnLayoutCleared();
         }
 
         public void OnDiagramNodeAdded(DiagramNode diagramNode, ILayoutAction causingAction)
@@ -58,7 +62,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
-            AddVertex(diagramNodeLayoutVertex, causingAction);
+            _layoutGraph.AddVertex(diagramNodeLayoutVertex);
+            SetLocation(diagramNodeLayoutVertex, causingAction);
+
+            _absoluteLayoutCalculator.OnVertexAdded(diagramNodeLayoutVertex,
+                _layers.GetLocationOrThrow(diagramNodeLayoutVertex), causingAction);
         }
 
         public void OnDiagramNodeRemoved(DiagramNode diagramNode, ILayoutAction causingAction)
@@ -69,18 +77,94 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
             _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
-            RemoveVertex(diagramNodeLayoutVertex);
+            _absoluteLayoutCalculator.OnVertexRemoved(diagramNodeLayoutVertex,
+                _layers.GetLocationOrThrow(diagramNodeLayoutVertex), causingAction);
+
+            _layers.RemoveVertex(diagramNodeLayoutVertex);
+            _layoutGraph.RemoveVertex(diagramNodeLayoutVertex);
         }
 
         public void OnDiagramConnectorAdded(DiagramConnector diagramConnector, ILayoutAction causingAction)
         {
+            Debug.WriteLine($"OnDiagramConnectorAdded {diagramConnector}");
+
             if (_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
                 throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
 
-            var diagramNodeLayoutEdge = CreateLayoutPath(diagramConnector);
-            _diagramConnectorToLayoutPathMap.Set(diagramConnector, diagramNodeLayoutEdge);
+            var layoutPath = CreateLayoutPath(diagramConnector);
+            _diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
 
-            _layoutGraph.AddEdge(diagramNodeLayoutEdge);
+            var affectedVerticesBefore = GetAffectedVertices(layoutPath).ToList();
+
+            var oldLocations = new Map<LayoutVertexBase, RelativeLocation>();
+            affectedVerticesBefore.ForEach(i => SaveLocation(i, oldLocations));
+            affectedVerticesBefore.ForEach(i => RemoveFromLayers(i, oldLocations));
+
+            _layoutGraph.AddEdge(layoutPath);
+
+            var affectedVerticesAfter = GetAffectedVertices(layoutPath)
+                .OrderBy(ProperLayoutGraph.GetLayerIndex).ToList();
+            affectedVerticesAfter.ForEach(i => SetLocation(i, causingAction, oldLocations));
+
+            foreach (var vertex in affectedVerticesBefore.Union(affectedVerticesAfter))
+            {
+                var oldLocation = oldLocations.ContainsKey(vertex) 
+                    ? oldLocations.Get(vertex) 
+                    : (RelativeLocation?)null;
+
+                var newLocation = _layers.GetLocation(vertex);
+
+                if (oldLocation == null && newLocation != null)
+                    _absoluteLayoutCalculator.OnVertexAdded(vertex, newLocation.Value, causingAction);
+                else if (oldLocation != null && newLocation == null)
+                    _absoluteLayoutCalculator.OnVertexRemoved(vertex, oldLocation.Value, causingAction);
+                else if (oldLocation != null && oldLocation.Value != newLocation.Value)
+                    _absoluteLayoutCalculator.OnVertexMoved(vertex, oldLocation.Value, newLocation.Value, causingAction);
+            }
+
+            _absoluteLayoutCalculator.OnPathAdded(layoutPath, causingAction);
+        }
+
+        private IEnumerable<LayoutVertexBase> GetAffectedVertices(LayoutPath layoutPath)
+        {
+            var diagramNodeVertices = _layoutGraph.GetVertexAndDescendants(layoutPath.PathSource).ToList();
+            var dummyVertices = diagramNodeVertices.SelectMany(i => _layoutGraph.OutEdges(i))
+                .SelectMany(i => i.InterimVertices);
+            return diagramNodeVertices.Concat((IEnumerable<LayoutVertexBase>)dummyVertices);
+        }
+
+        private void SaveLocation(LayoutVertexBase vertex, Map<LayoutVertexBase, RelativeLocation> oldLocations)
+        {
+            var oldLocation = _layers.GetLocation(vertex);
+            if (oldLocation != null)
+                oldLocations.Set(vertex, oldLocation.Value);
+        }
+
+        private void RemoveFromLayers(LayoutVertexBase vertex, Map<LayoutVertexBase, RelativeLocation> oldLocations)
+        {
+            if (oldLocations.ContainsKey(vertex))
+                _layers.RemoveVertex(vertex);
+        }
+
+        private void SetLocation(LayoutVertexBase vertex, ILayoutAction causingAction,
+            Map<LayoutVertexBase, RelativeLocation> oldLocations = null)
+        {
+            if (!ProperLayoutGraph.ContainsVertex(vertex))
+                return;
+
+            var oldLocation = oldLocations != null && oldLocations.ContainsKey(vertex)
+                ? oldLocations.Get(vertex)
+                : (RelativeLocation?)null;
+
+            var targetLocation = _locationCalculator.GetTargetLocation(vertex);
+            _layers.AddVertex(vertex, targetLocation);
+
+            if (oldLocation == null)
+                RaiseRelativeLocationAssignedLayoutAction(vertex, targetLocation, causingAction);
+            else
+                RaiseRelativeLocationChangedLayoutAction(vertex, oldLocation.Value, targetLocation, causingAction);
+
+            Debug.WriteLine($"SetRelativeLocation {vertex} to {targetLocation}");
         }
 
         public void OnDiagramConnectorRemoved(DiagramConnector diagramConnector, ILayoutAction causingAction)
@@ -99,22 +183,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             var sourceVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
             var targetVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
             return new LayoutPath(sourceVertex, targetVertex, diagramConnector);
-        }
-
-        private void AddVertex(DiagramNodeLayoutVertex vertex, ILayoutAction causingAction)
-        {
-            _layoutGraph.AddVertex(vertex);
-
-            var targetLocation = _locationCalculator.GetTargetLocation(vertex);
-            _layers.AddVertex(vertex, targetLocation);
-
-            RaiseRelativeLocationAssignedLayoutAction(vertex, targetLocation, causingAction);
-        }
-
-        private void RemoveVertex(DiagramNodeLayoutVertex vertex)
-        {
-            _layers.RemoveVertex(vertex);
-            _layoutGraph.RemoveVertex(vertex);
         }
 
         private void EnsureCorrectLocation(LayoutVertexBase vertex, ILayoutAction causingAction)

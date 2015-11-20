@@ -6,7 +6,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 {
     /// <summary>
     /// Calculates the relative location of a vertex.
+    /// Ensures that primary edges never cross.
     /// </summary>
+    /// <remarks>
+    /// No primary edge crossing is achieved by:
+    /// <para>proper graph ensures that parent and children are always on adjacent layers,</para>
+    /// <para>primary siblings on a layer are always placed together to form a block,</para>
+    /// <para>without primary siblings but having a primary parent the order is based on parent ordering.</para>
+    /// </remarks>
     internal sealed class RelativeLocationCalculator : RelativeLayoutActionEventSource
     {
         private readonly IReadOnlyQuasiProperLayoutGraph _properLayoutGraph;
@@ -23,60 +30,67 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public RelativeLocation GetTargetLocation(LayoutVertexBase vertex)
         {
-            var relativeLocation = _layoutVertexLayers.GetLocation(vertex);
+            return GetTargetLocation(vertex, _layoutVertexLayers);
+        }
+
+        public RelativeLocation GetTargetLocation(LayoutVertexBase vertex, IReadOnlyLayoutVertexLayers layers)
+        {
+            var relativeLocation = layers.GetLocation(vertex);
             if (relativeLocation != null)
                 throw new InvalidOperationException($"Vertex {vertex} already has a relative location: {relativeLocation}.");
 
             var toLayerIndex = _properLayoutGraph.GetLayerIndex(vertex);
-            var toIndexInLayer = DetermineIndexInLayer(vertex, toLayerIndex);
+            var toIndexInLayer = DetermineIndexInLayer(vertex, toLayerIndex, layers);
 
             return new RelativeLocation(toLayerIndex, toIndexInLayer);
         }
 
-        private int DetermineIndexInLayer(LayoutVertexBase vertex, int layerIndex)
+        private int DetermineIndexInLayer(LayoutVertexBase vertex, int layerIndex, IReadOnlyLayoutVertexLayers layers)
         {
-            var layer = _layoutVertexLayers.GetLayer(layerIndex);
+            var layer = layers.GetLayer(layerIndex);
 
             var parentVertex = _properLayoutGraph.GetPrimaryParent(vertex);
             if (parentVertex == null)
                 return layer.Count;
 
-            var siblingsInLayer = GetPrimarySiblingsInLayer(vertex, layerIndex)
+            var siblingsInLayer = GetPrimarySiblingsInLayer(vertex, layerIndex, layers)
                 .OrderBy(layer.IndexOf).ToArray();
             if (siblingsInLayer.Any())
-                return CalculateInsertionIndexBasedOnSiblings(vertex, siblingsInLayer);
+                return CalculateInsertionIndexBasedOnSiblings(vertex, siblingsInLayer, layers);
 
-            return CalculateInsertionIndexBasedOnParent(layerIndex, parentVertex);
+            return CalculateInsertionIndexBasedOnParent(layerIndex, parentVertex, layers);
         }
 
-        private int CalculateInsertionIndexBasedOnSiblings(LayoutVertexBase vertex, LayoutVertexBase[] siblingsInLayer)
+        private int CalculateInsertionIndexBasedOnSiblings(LayoutVertexBase vertex,
+            LayoutVertexBase[] siblingsInLayer, IReadOnlyLayoutVertexLayers layers)
         {
             var followingSiblingInLayer = siblingsInLayer.FirstOrDefault(i => Precedes(vertex, i));
             return followingSiblingInLayer != null
-                ? _layoutVertexLayers.GetIndexInLayer(followingSiblingInLayer)
-                : _layoutVertexLayers.GetIndexInLayer(siblingsInLayer.Last()) + 1;
+                ? layers.GetIndexInLayer(followingSiblingInLayer)
+                : layers.GetIndexInLayer(siblingsInLayer.Last()) + 1;
         }
 
-        private int CalculateInsertionIndexBasedOnParent(int targetLayer, LayoutVertexBase parentVertex)
+        private int CalculateInsertionIndexBasedOnParent(int targetLayer, LayoutVertexBase parentVertex,
+            IReadOnlyLayoutVertexLayers layers)
         {
-            var parentLayer = _layoutVertexLayers.GetLayer(parentVertex);
-            var parentIndexInLayer = _layoutVertexLayers.GetIndexInLayer(parentVertex);
+            var parentLayer = layers.GetLayer(parentVertex);
+            var parentIndexInLayer = layers.GetIndexInLayer(parentVertex);
 
-            var followingParent = GetFollowingVerticesWithPrimaryChildren(parentLayer, parentIndexInLayer).FirstOrDefault();
+            var followingParent = GetFollowingParent(parentLayer, parentIndexInLayer, layers);
             if (followingParent == null)
-                return _layoutVertexLayers.GetLayer(targetLayer).Count;
+                return layers.GetLayer(targetLayer).Count;
 
             var firstChildOfFollowingParent = _properLayoutGraph.GetPrimaryChildren(followingParent)
-                .OrderBy(_layoutVertexLayers.GetIndexInLayer).First();
+                .Where(layers.HasLocation).OrderBy(layers.GetIndexInLayer).First();
 
-            return _layoutVertexLayers.GetIndexInLayer(firstChildOfFollowingParent);
+            return layers.GetIndexInLayer(firstChildOfFollowingParent);
         }
 
-        private IEnumerable<LayoutVertexBase> GetFollowingVerticesWithPrimaryChildren(
-            IReadOnlyLayoutVertexLayer layer, int index)
+        private LayoutVertexBase GetFollowingParent(IReadOnlyLayoutVertexLayer layer, int index,
+            IReadOnlyLayoutVertexLayers layers)
         {
-            return layer.OrderBy(_layoutVertexLayers.GetIndexInLayer)
-                .Where(i => _layoutVertexLayers.GetIndexInLayer(i) > index && _properLayoutGraph.HasPrimaryChildren(i));
+            return layer.FirstOrDefault(i => layers.GetIndexInLayer(i) > index && 
+                _properLayoutGraph.GetPrimaryChildren(i).Any(layers.HasLocation));
         }
 
         private bool Precedes(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
@@ -84,9 +98,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return _siblingsComparer.Compare(vertex1, vertex2) < 0;
         }
 
-        private IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(LayoutVertexBase vertex, int layerIndex)
+        private IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(
+            LayoutVertexBase vertex, int layerIndex, IReadOnlyLayoutVertexLayers layers)
         {
-            return _properLayoutGraph.GetPrimarySiblings(vertex).Where(i => _layoutVertexLayers.GetLayerIndex(i) == layerIndex);
+            return _properLayoutGraph.GetPrimarySiblings(vertex).Where(i => layers.GetLayerIndex(i) == layerIndex);
         }
     }
 }

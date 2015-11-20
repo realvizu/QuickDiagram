@@ -104,6 +104,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 : new RelativeLocation(layerIndex.Value, GetIndexInLayer(vertex));
         }
 
+        public bool HasLocation(LayoutVertexBase vertex)
+        {
+            return GetLocation(vertex) != null;
+        }
+
         public RelativeLocation GetLocationOrThrow(LayoutVertexBase vertex)
         {
             var location = GetLocation(vertex);

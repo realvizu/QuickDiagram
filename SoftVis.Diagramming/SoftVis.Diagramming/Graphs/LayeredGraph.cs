@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.Graphs
             if (!base.AddEdge(edge))
                 return false;
 
-            ExecuteOnDescendantVertices(edge.Source, UpdateLayerIndex);
+            ExecuteOnVertexAndDescendants(edge.Source, UpdateLayerIndex);
 
             CheckInvariant();
             return true;
@@ -72,7 +72,7 @@ namespace Codartis.SoftVis.Graphs
             if (!base.RemoveEdge(edge))
                 return false;
 
-            ExecuteOnDescendantVertices(edge.Source, UpdateLayerIndex);
+            ExecuteOnVertexAndDescendants(edge.Source, UpdateLayerIndex);
 
             CheckInvariant();
             return true;
@@ -94,12 +94,24 @@ namespace Codartis.SoftVis.Graphs
             return Vertices.Where(i => !vertex.Equals(i) && parentVertices.Intersect(GetParents(i)).Any());
         }
 
-        public void ExecuteOnDescendantVertices(TVertex rootVertex, Action<TVertex> actionOnVertex)
+        public IEnumerable<TVertex> GetDescendants(TVertex vertex)
+        {
+            return GetChildren(vertex).SelectMany(GetVertexAndDescendants).Distinct();
+        }
+
+        public IEnumerable<TVertex> GetVertexAndDescendants(TVertex vertex)
+        {
+            yield return vertex;
+            foreach (var descendant in GetDescendants(vertex))
+                yield return descendant;
+        }
+
+        public void ExecuteOnVertexAndDescendants(TVertex rootVertex, Action<TVertex> actionOnVertex)
         {
             actionOnVertex(rootVertex);
 
             foreach (var child in GetChildren(rootVertex))
-                ExecuteOnDescendantVertices(child, actionOnVertex);
+                ExecuteOnVertexAndDescendants(child, actionOnVertex);
         }
 
         /// <summary>

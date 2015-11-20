@@ -84,5 +84,10 @@ namespace Codartis.SoftVis.Geometry
         {
             return X.IsEqualWithTolerance(point.X) && Y.IsEqualWithTolerance(point.Y);
         }
+
+        public static bool IsNaN(Point2D point)
+        {
+            return double.IsNaN(point.X) || double.IsNaN(point.Y);
+        }
     }
 }

@@ -1,7 +1,7 @@
+using System.Linq;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
 {
@@ -44,8 +44,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             Layers.UpdateLayerVerticalPositions(_verticalGap);
 
             _vertexPositioningLogic.PositionVertex(vertex, causingAction);
+
             // TODO: compact sibling-blocks
             _vertexPositioningLogic.Compact(causingAction);
+
+            RerouteAllPaths(causingAction);
         }
 
         public void OnVertexRemoved(LayoutVertexBase vertex, RelativeLocation oldLocation, ILayoutAction causingAction)
@@ -53,6 +56,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             Layers.UpdateLayerVerticalPositions(_verticalGap);
 
             _vertexPositioningLogic.Compact(causingAction);
+
+            RerouteAllPaths(causingAction);
         }
 
         public void OnVertexMoved(LayoutVertexBase vertex, RelativeLocation oldLocation, RelativeLocation newLocation, ILayoutAction causingAction)
@@ -60,9 +65,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             OnVertexRemoved(vertex, oldLocation, causingAction);
             OnVertexAdded(vertex, newLocation, causingAction);
 
-            var diagramNodeLayoutVertex = vertex as DiagramNodeLayoutVertex;
-            if (diagramNodeLayoutVertex != null)
-                RerouteAllAttachedPaths(diagramNodeLayoutVertex, causingAction);
+            RerouteAllPaths(causingAction);
         }
 
         public void OnPathAdded(LayoutPath layoutPath, ILayoutAction causingAction)
@@ -74,15 +77,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
         {
         }
 
-        private void RerouteAllAttachedPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
+        private void RerouteAllPaths(ILayoutAction causingAction)
         {
-            foreach (var path in LayeredLayoutGraph.GetAllEdges(diagramNodeLayoutVertex))
-                ReroutePath(path, causingAction);
+            foreach (var layoutPath in LayeredLayoutGraph.Edges)
+                ReroutePath(layoutPath, causingAction);
         }
 
         private void ReroutePath(LayoutPath path, ILayoutAction causingAction)
         {
             if (path.IsFloating)
+                return;
+
+            if (path.Vertices.Any(i => i.Center == Point2D.Empty))
                 return;
 
             var oldRoute = _layoutPathToPreviousRouteMap.Get(path);
