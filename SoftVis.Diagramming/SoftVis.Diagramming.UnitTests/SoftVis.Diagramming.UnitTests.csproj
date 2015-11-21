@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagramming\Layout\Incremental\Builders\BuilderBase.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Builders\RelativeLayoutCalculatorBuilder.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Builders\GraphRelatedBuilderBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutVertexLayersBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\EdgeSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\GraphBuilderBase.cs" />

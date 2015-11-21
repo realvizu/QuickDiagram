@@ -14,12 +14,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return new PathSpecification(nonDummyVertices);
         }
 
-        protected override DiagramNodeLayoutVertex CreateGraphVertex(string name)
+        protected override DiagramNodeLayoutVertex CreateVertex(string name)
         {
             return CreateTestLayoutVertex(name);
         }
 
-        protected override LayoutPath CreateGraphEdge(DiagramNodeLayoutVertex source, DiagramNodeLayoutVertex target)
+        protected override LayoutPath CreateEdge(DiagramNodeLayoutVertex source, DiagramNodeLayoutVertex target)
         {
             return new LayoutPath(source, target, null);
         }

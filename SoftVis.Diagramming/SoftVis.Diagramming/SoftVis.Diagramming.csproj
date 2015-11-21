@@ -86,7 +86,6 @@
     <Compile Include="Diagramming\Layout\BaseActions\DiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\LayoutActionVisitorBase.cs" />
     <Compile Include="Diagramming\Layout\DiagramMutatorLayoutActionVisitor.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\MainLogic\RelativeLayoutActionDispatcherVisitor.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutActionVisitorBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationAssignedLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationChangedLayoutAction.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="Diagramming\Layout\Incremental\LayoutEdgeAction.cs" />
     <Compile Include="Diagramming\Layout\BaseActions\DiagramNodeLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutVertexAction.cs" />
-    <Compile Include="Diagramming\Layout\IDiagramChangeConsumer.cs" />
     <Compile Include="Diagramming\Layout\BaseActions\BaseLayoutActionEventSource.cs" />
     <Compile Include="Diagramming\Layout\LayoutActionEventSource.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertex.cs" />

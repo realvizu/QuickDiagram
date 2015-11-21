@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
@@ -8,8 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
     /// <summary>
     /// Calculates diagram node positions and connector routes based on their relative layout.
     /// </summary>
-    internal class AbsoluteLayoutCalculator : AbsoluteLayoutActionEventSource,
-        IRelativeLayoutChangeConsumer
+    internal class AbsoluteLayoutCalculator : AbsoluteLayoutActionEventSource
     {
         private readonly IReadOnlyRelativeLayout _relativeLayout;
         private readonly double _horizontalGap;
@@ -30,8 +30,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             _vertexPositioningLogic.LayoutActionExecuted += RaiseLayoutAction;
         }
 
-        private IReadOnlyLayeredLayoutGraph LayeredLayoutGraph => _relativeLayout.LayeredLayoutGraph;
-        private IReadOnlyQuasiProperLayoutGraph ProperLayeredLayoutGraph => _relativeLayout.ProperLayeredLayoutGraph;
+        private IReadOnlyLayeredLayoutGraph LayoutGraph => _relativeLayout.LayeredLayoutGraph;
+        private IReadOnlyQuasiProperLayoutGraph ProperLayoutGraph => _relativeLayout.ProperLayeredLayoutGraph;
         private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
 
         public void OnLayoutCleared()
@@ -39,19 +39,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             _layoutPathToPreviousRouteMap.Clear();
         }
 
-        public void OnVertexAdded(LayoutVertexBase vertex, RelativeLocation newLocation, ILayoutAction causingAction)
+        public void OnDiagramNodeAdded(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
         {
             Layers.UpdateLayerVerticalPositions(_verticalGap);
 
-            _vertexPositioningLogic.PositionVertex(vertex, causingAction);
-
+            _vertexPositioningLogic.PositionVertex(diagramNodeLayoutVertex, causingAction);
             // TODO: compact sibling-blocks
             _vertexPositioningLogic.Compact(causingAction);
 
             RerouteAllPaths(causingAction);
         }
 
-        public void OnVertexRemoved(LayoutVertexBase vertex, RelativeLocation oldLocation, ILayoutAction causingAction)
+        public void OnDiagramNodeRemoved(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
         {
             Layers.UpdateLayerVerticalPositions(_verticalGap);
 
@@ -60,33 +59,40 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
             RerouteAllPaths(causingAction);
         }
 
-        public void OnVertexMoved(LayoutVertexBase vertex, RelativeLocation oldLocation, RelativeLocation newLocation, ILayoutAction causingAction)
+        public void OnDiagramConnectorAdded(LayoutPath layoutPath, ILayoutAction causingAction)
         {
-            OnVertexRemoved(vertex, oldLocation, causingAction);
-            OnVertexAdded(vertex, newLocation, causingAction);
+            Layers.UpdateLayerVerticalPositions(_verticalGap);
+
+            var affectedVertices = GetAffectedVertices(layoutPath).OrderBy(ProperLayoutGraph.GetLayerIndex).ToList();
+
+            foreach (var vertex in affectedVertices)
+                _vertexPositioningLogic.PositionVertex(vertex, causingAction);
 
             RerouteAllPaths(causingAction);
         }
 
-        public void OnPathAdded(LayoutPath layoutPath, ILayoutAction causingAction)
+        public void OnDiagramConnectorRemoved(LayoutPath layoutPath, ILayoutAction causingAction)
         {
-            ReroutePath(layoutPath, causingAction);
         }
 
-        public void OnPathRemoved(LayoutPath layoutPath, ILayoutAction causingAction)
+        private IEnumerable<LayoutVertexBase> GetAffectedVertices(LayoutPath layoutPath)
         {
+            var diagramNodeVertices = LayoutGraph.GetVertexAndDescendants(layoutPath.PathSource).ToList();
+            var dummyVertices = diagramNodeVertices.SelectMany(i => LayoutGraph.OutEdges(i))
+                .SelectMany(i => i.InterimVertices);
+            return diagramNodeVertices.Concat((IEnumerable<LayoutVertexBase>)dummyVertices);
         }
 
         private void RerouteAllPaths(ILayoutAction causingAction)
         {
-            foreach (var layoutPath in LayeredLayoutGraph.Edges)
+            foreach (var layoutPath in LayoutGraph.Edges)
                 ReroutePath(layoutPath, causingAction);
         }
 
         private void ReroutePath(LayoutPath path, ILayoutAction causingAction)
         {
-            if (path.IsFloating)
-                return;
+            //if (path.IsFloating)
+            //    return;
 
             if (path.Vertices.Any(i => i.Center == Point2D.Empty))
                 return;

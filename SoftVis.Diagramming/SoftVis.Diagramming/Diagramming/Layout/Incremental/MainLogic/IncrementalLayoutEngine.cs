@@ -37,11 +37,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
     {
         private readonly DiagramGraph _diagramGraph;
 
+        private readonly Map<DiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
+        private readonly Map<DiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
         private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
 
         private readonly RelativeLayoutCalculator _relativeLayoutCalculator;
         private readonly AbsoluteLayoutCalculator _absoluteLayoutCalculator;
-        private readonly RelativeLayoutActionDispatcherVisitor _relativeLayoutActionDispatcher;
 
         public IncrementalLayoutEngine(DiagramGraph diagramGraph)
         {
@@ -50,6 +51,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
 
             _diagramGraph = diagramGraph;
 
+            _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
+            _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
             _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
 
             _relativeLayoutCalculator = new RelativeLayoutCalculator();
@@ -58,7 +61,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
             _absoluteLayoutCalculator = new AbsoluteLayoutCalculator(_relativeLayoutCalculator.RelativeLayout, horizontalGap, verticalGap);
             _absoluteLayoutCalculator.LayoutActionExecuted += OnLayoutActionExecuted;
 
-            _relativeLayoutActionDispatcher = new RelativeLayoutActionDispatcherVisitor(_absoluteLayoutCalculator);
             HookIntoDiagramGraphEvents();
         }
 
@@ -73,43 +75,79 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic
 
         private void OnDiagramGraphCleared(object sender, EventArgs e)
         {
-            _relativeLayoutCalculator.OnDiagramCleared();
             _absoluteLayoutCalculator.OnLayoutCleared();
+            _relativeLayoutCalculator.OnDiagramCleared();
 
             _layoutPathToPreviousRouteMap.Clear();
+            _diagramConnectorToLayoutPathMap.Clear();
+            _diagramNodeToLayoutVertexMap.Clear();
         }
 
         private void OnDiagramNodeAdded(DiagramNode diagramNode)
         {
+            if (_diagramNodeToLayoutVertexMap.ContainsKey(diagramNode))
+                throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
+
             var layoutAction = RaiseDiagramNodeLayoutAction("AddDiagramNode", diagramNode);
-            _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNode, layoutAction);
+
+            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode);
+            _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
+
+            _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex, layoutAction);
+            _absoluteLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex, layoutAction);
         }
 
         private void OnDiagramNodeRemoved(DiagramNode diagramNode)
         {
+            if (!_diagramNodeToLayoutVertexMap.ContainsKey(diagramNode))
+                throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
+
             var layoutAction = RaiseDiagramNodeLayoutAction("RemoveDiagramNode", diagramNode);
-            // TODO: float->abs->rel ?
-            _relativeLayoutCalculator.OnDiagramNodeRemoved(diagramNode, layoutAction);
+
+            var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
+            _diagramNodeToLayoutVertexMap.Remove(diagramNode);
+
+            _absoluteLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex, layoutAction);
+            _relativeLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex, layoutAction);
         }
 
         private void OnDiagramConnectorAdded(DiagramConnector diagramConnector)
         {
+            if (_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
+                throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
+
             var layoutAction = RaiseDiagramConnectorLayoutAction("AddDiagramConnector", diagramConnector);
-            _relativeLayoutCalculator.OnDiagramConnectorAdded(diagramConnector, layoutAction);
+
+            var layoutPath = CreateLayoutPath(diagramConnector);
+            _diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
+
+            _relativeLayoutCalculator.OnDiagramConnectorAdded(layoutPath, layoutAction);
+            _absoluteLayoutCalculator.OnDiagramConnectorAdded(layoutPath, layoutAction);
         }
 
         private void OnDiagramConnectorRemoved(DiagramConnector diagramConnector)
         {
+            if (!_diagramConnectorToLayoutPathMap.ContainsKey(diagramConnector))
+                throw new InvalidOperationException($"Diagram connector {diagramConnector} not found.");
+
             var layoutAction = RaiseDiagramConnectorLayoutAction("RemoveDiagramConnector", diagramConnector);
-            // TODO: float->abs->rel ?
-            _relativeLayoutCalculator.OnDiagramConnectorRemoved(diagramConnector, layoutAction);
+
+            var layoutPath = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
+            _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
+
+            _absoluteLayoutCalculator.OnDiagramConnectorRemoved(layoutPath, layoutAction);
+            _relativeLayoutCalculator.OnDiagramConnectorRemoved(layoutPath, layoutAction);
+        }
+
+        private LayoutPath CreateLayoutPath(DiagramConnector diagramConnector)
+        {
+            var sourceVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
+            var targetVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
+            return new LayoutPath(sourceVertex, targetVertex, diagramConnector);
         }
 
         private void OnLayoutActionExecuted(object sender, ILayoutAction layoutAction)
         {
-            //var relativeLayoutAction = layoutAction as IRelativeLayoutAction;
-            //relativeLayoutAction?.AcceptVisitor(_relativeLayoutActionDispatcher);
-
             RaiseLayoutAction(sender, layoutAction);
         }
     }

@@ -4,12 +4,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class DiagramGraphBuilder : GraphBuilderBase<DiagramNode, DiagramConnector, DiagramGraph>
     {
-        protected override DiagramNode CreateGraphVertex(string name)
+        protected override DiagramNode CreateVertex(string name)
         {
             return new TestDiagramNode(name);
         }
 
-        protected override DiagramConnector CreateGraphEdge(DiagramNode source, DiagramNode target)
+        protected override DiagramConnector CreateEdge(DiagramNode source, DiagramNode target)
         {
             return new TestDiagramConnector(source, target);
         }

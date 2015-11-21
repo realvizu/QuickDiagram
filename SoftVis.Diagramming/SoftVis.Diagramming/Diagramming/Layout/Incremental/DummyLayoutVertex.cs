@@ -27,6 +27,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             }
         }
 
+        public static void ResetUniqueIdCounter() => _nextId = 1;
+
         public override bool IsDummy => true;
         public override string Name => $"Dummy#{Id}";
 
