@@ -35,9 +35,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         public RelativeLocation GetTargetLocation(LayoutVertexBase vertex, IReadOnlyLayoutVertexLayers layers)
         {
-            var relativeLocation = layers.GetLocation(vertex);
-            if (relativeLocation != null)
-                throw new InvalidOperationException($"Vertex {vertex} already has a relative location: {relativeLocation}.");
+            if (layers.HasLocation(vertex))
+                throw new InvalidOperationException($"Vertex {vertex} already has a relative location.");
 
             var toLayerIndex = _properLayoutGraph.GetLayerIndex(vertex);
             var toIndexInLayer = DetermineIndexInLayer(vertex, toLayerIndex, layers);
@@ -101,7 +100,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private IEnumerable<LayoutVertexBase> GetPrimarySiblingsInLayer(
             LayoutVertexBase vertex, int layerIndex, IReadOnlyLayoutVertexLayers layers)
         {
-            return _properLayoutGraph.GetPrimarySiblings(vertex).Where(i => layers.GetLayerIndex(i) == layerIndex);
+            return _properLayoutGraph.GetPrimarySiblings(vertex)
+                .Where(i => layers.HasLocation(i) && layers.GetLayerIndex(i) == layerIndex);
         }
     }
 }

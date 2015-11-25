@@ -75,11 +75,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return GetChildren(vertex).Where(i => GetPrimaryParent(i) == vertex);
         }
 
-        public IEnumerable<LayoutVertexBase> GetPlacedPrimaryChildren(LayoutVertexBase vertex)
-        {
-            return GetPrimaryChildren(vertex).Where(i => !i.IsFloating);
-        }
-
         public IEnumerable<LayoutVertexBase> GetPrimarySiblings(LayoutVertexBase vertex)
         {
             var primaryParent = GetPrimaryParent(vertex);
@@ -99,13 +94,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             yield return vertex;
             foreach (var descendant in GetPrimaryDescendants(vertex))
                 yield return descendant;
-        }
-
-        public bool IsPlacedPrimarySiblingOf(LayoutVertexBase vertex1, LayoutVertexBase vertex2)
-        {
-            return vertex2 != null
-                && !vertex2.IsFloating
-                && GetPrimaryParent(vertex1) == GetPrimaryParent(vertex2);
         }
 
         public void ExecuteOnPrimaryDescendantVertices(LayoutVertexBase rootVertex, Action<LayoutVertexBase> actionOnVertex)

@@ -41,8 +41,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private IEnumerable<LayoutVertexBase> InterimVerticesPrivate => this.Skip(1).Select(i => i.Source);
         public IEnumerable<DummyLayoutVertex> InterimVertices => InterimVerticesPrivate.OfType<DummyLayoutVertex>();
-        public bool IsFloating => Vertices.Any(i => i.IsFloating);
-        public DiagramConnector DiagramConnector => Edges.FirstOrDefault()?.DiagramConnector;
 
         public void Substitute(int atIndex, int removeEdgeCount, params GeneralLayoutEdge[] newEdges)
         {
@@ -60,27 +58,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var sourceRect = vertexCenters.GetRect(Source);
             var interimRoutePoints = InterimVertices.Select(vertexCenters.Get).ToArray();
             var targetRect = vertexCenters.GetRect(Target);
-
-            var secondPoint = interimRoutePoints.Any()
-                ? interimRoutePoints.First()
-                : targetRect.Center;
-            var penultimatePoint = interimRoutePoints.Any()
-                ? interimRoutePoints.Last()
-                : sourceRect.Center;
-
-            return new Route
-            {
-                sourceRect.GetAttachPointToward(secondPoint),
-                interimRoutePoints,
-                targetRect.GetAttachPointToward(penultimatePoint)
-            };
-        }
-
-        public Route GetRoute()
-        {
-            var sourceRect = Source.Rect;
-            var interimRoutePoints = InterimVertices.Select(i => i.Center).ToArray();
-            var targetRect = Target.Rect;
 
             var secondPoint = interimRoutePoints.Any()
                 ? interimRoutePoints.First()

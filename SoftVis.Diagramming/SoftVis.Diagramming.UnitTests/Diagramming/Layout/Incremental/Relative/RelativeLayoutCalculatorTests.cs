@@ -85,7 +85,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             Layers.GetLocation(dummy).Should().Be(new RelativeLocation(1, 1));
 
             Calculator.OnDiagramConnectorAdded(CreateEdge("E<-D"), null);
-            Layers.GetLocation(dummy).Should().BeNull();
+            Layers.HasLocation(dummy).Should().BeFalse();
         }
 
         [Fact]

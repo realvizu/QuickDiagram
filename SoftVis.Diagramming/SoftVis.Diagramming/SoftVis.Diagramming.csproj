@@ -72,8 +72,6 @@
     <Compile Include="Diagramming\Layout\Incremental\Absolute\Logic\AbsolutePositionCalculator.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertexToPointMap.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutVertexToPointMap.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\IFloatable.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\IFilterableToNonFloating.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IncrementalLayoutActionEventSource.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutEdge.cs" />
     <Compile Include="Diagramming\Layout\Incremental\GeneralLayoutEdge.cs" />
