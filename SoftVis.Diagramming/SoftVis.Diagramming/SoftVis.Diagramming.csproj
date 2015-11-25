@@ -69,6 +69,9 @@
     <Compile Include="Diagramming\IReadOnlyDiagramGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\AbsoluteLayoutActionEventSource.cs" />
     <Compile Include="Common\IFilterable.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Absolute\Logic\AbsolutePositionCalculator.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertexToPointMap.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\LayoutVertexToPointMap.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IFloatable.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IFilterableToNonFloating.cs" />
     <Compile Include="Diagramming\Layout\Incremental\IncrementalLayoutActionEventSource.cs" />
@@ -92,7 +95,6 @@
     <Compile Include="Diagramming\Layout\Incremental\Relative\IRelativeLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IRelativeLayoutChangeConsumer.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyRelativeLayout.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Absolute\Logic\AbsoluteLayoutCalculator.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\IMoveVertexAction.cs" />
     <Compile Include="Diagramming\Layout\ActionGraph\LayoutActionEdge.cs" />
     <Compile Include="Diagramming\Layout\ActionGraph\LayoutActionGraph.cs" />
@@ -109,7 +111,7 @@
     <Compile Include="Diagramming\Layout\LayoutActionEventSource.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DummyLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\MainLogic\IncrementalLayoutEngine.cs" />
+    <Compile Include="Diagramming\Layout\Incremental\Logic\IncrementalLayoutEngine.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyQuasiProperLayoutGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathException.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LayeredLayoutGraph.cs" />
@@ -121,7 +123,6 @@
     <Compile Include="Diagramming\Layout\IMoveDiagramNodeLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\BaseActions\LayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\RelativeLayoutCalculator.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Absolute\Logic\VertexPositioningLogic.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\MoveDummyVertexAction.cs" />
     <Compile Include="Diagramming\DiagramGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocation.cs" />

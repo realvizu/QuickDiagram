@@ -127,9 +127,6 @@ namespace Codartis.SoftVis.Graphs
 
         public int GetLayerIndex(TVertex vertex)
         {
-            if (!_vertexToLayerIndexMap.ContainsKey(vertex))
-                throw new ArgumentException($"Vertex {vertex} is not in the layered graph.");
-
             return _vertexToLayerIndexMap.Get(vertex);
         }
 
@@ -151,10 +148,10 @@ namespace Codartis.SoftVis.Graphs
         {
             foreach (var vertex in Vertices)
             {
-                var layerIndex = _vertexToLayerIndexMap.Get(vertex);
+                var layerIndex = GetLayerIndex(vertex);
                 foreach (var parentVertex in GetParents(vertex))
                 {
-                    var parentLayerIndex = _vertexToLayerIndexMap.Get(parentVertex);
+                    var parentLayerIndex = GetLayerIndex(parentVertex);
                     if (layerIndex <= parentLayerIndex)
                         throw new Exception($"Vertex {vertex} at layer {layerIndex} should be higher then its parent {parentVertex} at {parentLayerIndex}.");
                 }

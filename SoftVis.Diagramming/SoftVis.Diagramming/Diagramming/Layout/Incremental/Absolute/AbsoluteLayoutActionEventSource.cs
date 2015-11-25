@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
                 : RaiseMoveDiagramNodeAction((DiagramNodeLayoutVertex)vertex, oldCenter, newCenter, causingAction);
         }
 
-        private ILayoutAction RaiseMoveDiagramNodeAction(DiagramNodeLayoutVertex vertex, 
+        protected ILayoutAction RaiseMoveDiagramNodeAction(DiagramNodeLayoutVertex vertex, 
             Point2D oldCenter, Point2D newCenter, ILayoutAction causingAction)
         {
             var layoutAction = new MoveDiagramNodeLayoutAction(vertex, oldCenter, newCenter, causingAction);
@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             return layoutAction;
         }
 
-        private ILayoutAction RaiseMoveDummyVertexAction(DummyLayoutVertex vertex, 
+        protected ILayoutAction RaiseMoveDummyVertexAction(DummyLayoutVertex vertex, 
             Point2D oldCenter, Point2D newCenter, ILayoutAction causingAction)
         {
             var layoutAction = new MoveDummyVertexAction(vertex, oldCenter, newCenter, causingAction);
@@ -32,10 +32,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             return layoutAction;
         }
 
-        protected LayoutAction RaisePathLayoutAction(string action, LayoutPath path,
-            Route oldRoute, Route newRoute, ILayoutAction causingAction = null)
+        protected LayoutAction RaiseReroutePathLayoutAction(LayoutPath path, Route oldRoute, Route newRoute, ILayoutAction causingAction = null)
         {
-            var layoutAction = new ReroutePathAction(action, path, oldRoute, newRoute, causingAction);
+            var layoutAction = new ReroutePathAction(path, oldRoute, newRoute, causingAction);
             RaiseLayoutAction(layoutAction);
             return layoutAction;
         }

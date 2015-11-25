@@ -19,5 +19,7 @@ namespace Codartis.SoftVis.Diagramming
 
         public static readonly Point2D DefaultNodePosition = Point2D.Empty;
         public static readonly Size2D DefaultNodeSize = new Size2D(DefaultNodeWidth, DefaultNodeHeight);
+
+        public static readonly Point2D DefaultLayoutStartingPoint = new Point2D(0, 0);
     }
 }

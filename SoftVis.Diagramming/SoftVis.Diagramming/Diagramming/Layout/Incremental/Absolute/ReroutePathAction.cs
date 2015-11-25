@@ -10,9 +10,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
         public Route OldRoute { get; }
         public Route NewRoute { get; }
 
-        public ReroutePathAction(string action, LayoutPath path, Route oldRoute, Route newRoute, 
+        public ReroutePathAction(LayoutPath path, Route oldRoute, Route newRoute, 
             ILayoutAction causingLayoutAction = null)
-            :base(action, path, causingLayoutAction)
+            :base("Reroute", path, causingLayoutAction)
         {
             OldRoute = oldRoute;
             NewRoute = newRoute;

@@ -66,7 +66,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
         private void OnShapeAdded(object sender, DiagramShape shape)
         {
-            if (DiagramShapeToControlMap.ContainsKey(shape))
+            if (DiagramShapeToControlMap.Contains(shape))
                 return;
 
             if (shape is DiagramNode)
@@ -77,7 +77,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
         private void OnShapeRemoved(object sender, DiagramShape shape)
         {
-            if (!DiagramShapeToControlMap.ContainsKey(shape))
+            if (!DiagramShapeToControlMap.Contains(shape))
                 return;
 
             RemoveDiagramShapeControl(shape);
@@ -129,7 +129,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderDiagramNode = sender as DiagramNodeControl;
-            if (senderDiagramNode == null || !ControlToDiagramShapeMap.ContainsKey(senderDiagramNode))
+            if (senderDiagramNode == null || !ControlToDiagramShapeMap.Contains(senderDiagramNode))
                 return;
 
             Diagram.OnShapeSelected(ControlToDiagramShapeMap.Get(senderDiagramNode));
@@ -138,7 +138,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         private void OnDiagramNodeDoubleClicked(object sender, MouseButtonEventArgs e)
         {
             var senderDiagramNode = sender as DiagramNodeControl;
-            if (senderDiagramNode == null || !ControlToDiagramShapeMap.ContainsKey(senderDiagramNode))
+            if (senderDiagramNode == null || !ControlToDiagramShapeMap.Contains(senderDiagramNode))
                 return;
 
             Diagram.OnShapeActivated(ControlToDiagramShapeMap.Get(senderDiagramNode));

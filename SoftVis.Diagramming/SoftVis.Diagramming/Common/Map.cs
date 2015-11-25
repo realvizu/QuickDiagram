@@ -1,48 +1,77 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Codartis.SoftVis.Common
 {
     /// <summary>
     /// Stores key-value pairs.
     /// Set operation performs add or update.
-    /// Get operation returns default(TValue) if the key is not found.
+    /// Get operation returns null if the key is not found and throws if TValue is not nullable.
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
     public class Map<TKey, TValue>
     {
-        private readonly Dictionary<TKey,TValue> _map = new Dictionary<TKey, TValue>();
+        // ReSharper disable once StaticMemberInGenericType
+        private static readonly bool IsValueNullable;
 
-        public IEnumerable<TKey> Keys => _map.Keys;
+        protected readonly Dictionary<TKey, TValue> Dictionary;
+
+        static Map()
+        {
+            var type = typeof(TValue);
+            IsValueNullable = type.IsClass || IsNullableValueType(type);
+        }
+
+        public Map() 
+            : this(new Dictionary<TKey, TValue>())
+        {
+        }
+
+        public Map(Dictionary<TKey, TValue> dictionary)
+        {
+            Dictionary = dictionary;
+        }
+
+        public IEnumerable<TKey> Keys => Dictionary.Keys;
 
         public void Set(TKey key, TValue value)
         {
-            if (_map.ContainsKey(key))
-                _map[key] = value;
+            if (Dictionary.ContainsKey(key))
+                Dictionary[key] = value;
             else
-                _map.Add(key,value);
+                Dictionary.Add(key, value);
         }
 
         public TValue Get(TKey key)
         {
-            return ContainsKey(key)
-                ? _map[key]
-                : default(TValue);
+            if (Contains(key))
+                return Dictionary[key];
+
+            if (IsValueNullable)
+                return default(TValue);
+
+            throw new KeyNotFoundException($"Key {key} not found in the map.");
         }
 
-        public bool ContainsKey(TKey key)
+        public bool Contains(TKey key)
         {
-            return _map.ContainsKey(key);
+            return Dictionary.ContainsKey(key);
         }
 
         public void Remove(TKey key)
         {
-            _map.Remove(key);
+            Dictionary.Remove(key);
         }
 
         public void Clear()
         {
-            _map.Clear();
+            Dictionary.Clear();
+        }
+
+        private static bool IsNullableValueType(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }

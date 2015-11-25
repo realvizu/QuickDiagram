@@ -55,6 +55,27 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             CheckAllInvariants();
         }
 
+        public Route GetRoute(LayoutVertexToPointMap vertexCenters)
+        {
+            var sourceRect = vertexCenters.GetRect(Source);
+            var interimRoutePoints = InterimVertices.Select(vertexCenters.Get).ToArray();
+            var targetRect = vertexCenters.GetRect(Target);
+
+            var secondPoint = interimRoutePoints.Any()
+                ? interimRoutePoints.First()
+                : targetRect.Center;
+            var penultimatePoint = interimRoutePoints.Any()
+                ? interimRoutePoints.Last()
+                : sourceRect.Center;
+
+            return new Route
+            {
+                sourceRect.GetAttachPointToward(secondPoint),
+                interimRoutePoints,
+                targetRect.GetAttachPointToward(penultimatePoint)
+            };
+        }
+
         public Route GetRoute()
         {
             var sourceRect = Source.Rect;
