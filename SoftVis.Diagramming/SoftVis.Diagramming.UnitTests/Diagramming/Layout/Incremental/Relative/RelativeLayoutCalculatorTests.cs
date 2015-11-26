@@ -24,17 +24,17 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void OnDiagramNodeAdded_FirstNodeAdded()
         {
-            Calculator.OnDiagramNodeAdded(CreateVertex("A"), null);
+            Calculator.OnDiagramNodeAdded(CreateVertex("A"));
             AssertLocation("A", new RelativeLocation(0, 0));
         }
 
         [Fact]
         public void OnDiagramNodeAdded_SecondNodeAdded()
         {
-            Calculator.OnDiagramNodeAdded(CreateVertex("A"), null);
+            Calculator.OnDiagramNodeAdded(CreateVertex("A"));
             AssertLocation("A", new RelativeLocation(0, 0));
 
-            Calculator.OnDiagramNodeAdded(CreateVertex("B"), null);
+            Calculator.OnDiagramNodeAdded(CreateVertex("B"));
             AssertLocation("B", new RelativeLocation(0, 1));
         }
 
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _calculatorBuilder.SetUp("A");
 
-            Calculator.OnDiagramNodeRemoved(GetVertex("A"), null);
+            Calculator.OnDiagramNodeRemoved(GetVertex("A"));
             GetVertex("A").Should().BeNull();
         }
 
@@ -52,7 +52,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _calculatorBuilder.SetUp("A", "B");
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("A<-B"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("A<-B"));
             AssertLocation("B", new RelativeLocation(1, 0));
         }
 
@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _calculatorBuilder.SetUp("A<-B", "C");
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("B<-C"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("B<-C"));
             AssertLocation("C", new RelativeLocation(2, 0));
         }
 
@@ -71,7 +71,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             DummyLayoutVertex.ResetUniqueIdCounter();
             _calculatorBuilder.SetUp("A<-B<-C");
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("A<-C"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("A<-C"));
             AssertLocation(GetDummyVertex("#1"), new RelativeLocation(1, 1));
         }
 
@@ -84,7 +84,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             var dummy = GetDummyVertex("#1");
             Layers.GetLocation(dummy).Should().Be(new RelativeLocation(1, 1));
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("E<-D"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("E<-D"));
             Layers.HasLocation(dummy).Should().BeFalse();
         }
 
@@ -94,7 +94,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             DummyLayoutVertex.ResetUniqueIdCounter();
             _calculatorBuilder.SetUp("A<-B<-C", "A<-C");
 
-            Calculator.OnDiagramConnectorRemoved(GetEdge("A<-C"), null);
+            Calculator.OnDiagramConnectorRemoved(GetEdge("A<-C"));
             GetDummyVertex("#1").Should().BeNull();
         }
 
@@ -103,7 +103,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _calculatorBuilder.SetUp("A<-B", "A<-C", "P");
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("P<-A"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("P<-A"));
             AssertLocation("A", new RelativeLocation(1, 0));
             AssertLocation("B", new RelativeLocation(2, 0));
             AssertLocation("C", new RelativeLocation(2, 1));
@@ -114,7 +114,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _calculatorBuilder.SetUp("A<-C", "B");
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("A<-B"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("A<-B"));
             AssertLocation("B", new RelativeLocation(1, 0));
         }
 
@@ -123,7 +123,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _calculatorBuilder.SetUp("A<-C", "A<-B<-C", "P");
 
-            Calculator.OnDiagramConnectorAdded(CreateEdge("P<-A"), null);
+            Calculator.OnDiagramConnectorAdded(CreateEdge("P<-A"));
             AssertLocation("A", new RelativeLocation(1, 0));
             AssertLocation("B", new RelativeLocation(2, 0));
             AssertLocation("C", new RelativeLocation(3, 0));

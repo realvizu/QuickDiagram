@@ -41,6 +41,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private IEnumerable<LayoutVertexBase> InterimVerticesPrivate => this.Skip(1).Select(i => i.Source);
         public IEnumerable<DummyLayoutVertex> InterimVertices => InterimVerticesPrivate.OfType<DummyLayoutVertex>();
+        public DiagramConnector DiagramConnector => Edges.FirstOrDefault()?.DiagramConnector;
 
         public void Substitute(int atIndex, int removeEdgeCount, params GeneralLayoutEdge[] newEdges)
         {

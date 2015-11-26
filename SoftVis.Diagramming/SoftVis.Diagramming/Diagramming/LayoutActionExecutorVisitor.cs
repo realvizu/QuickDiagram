@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Layout;
 
-namespace Codartis.SoftVis.Diagramming.Layout
+namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// Applies layout actions to a diagram (move node, reroute connector).
     /// </summary>
-    public sealed class DiagramMutatorLayoutActionVisitor : LayoutActionVisitorBase
+    public sealed class LayoutActionExecutorVisitor : ILayoutActionVisitor
     {
         private readonly Diagram _diagram;
 
-        public DiagramMutatorLayoutActionVisitor(Diagram diagram)
+        public LayoutActionExecutorVisitor(Diagram diagram)
         {
             _diagram = diagram;
         }
 
-        public override void Visit(IMoveDiagramNodeLayoutAction layoutAction)
+        public void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
             var diagramNode = _diagram.Nodes.FirstOrDefault(i => i == layoutAction.DiagramNode);
             if (diagramNode == null)
@@ -24,7 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
             diagramNode.Center = layoutAction.To;
         }
 
-        public override void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
+        public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
             var diagramConnector = _diagram.Connectors.FirstOrDefault(i => i == layoutAction.DiagramConnector);
             if (diagramConnector == null)
@@ -32,6 +33,5 @@ namespace Codartis.SoftVis.Diagramming.Layout
 
             diagramConnector.RoutePoints = layoutAction.NewRoute;
         }
-
     }
 }

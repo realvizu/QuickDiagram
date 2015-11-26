@@ -29,7 +29,7 @@
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.*" To="Codartis.SoftVis.Diagramming.Layout.BaseActions" />
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Rendering.Wpf.*" />

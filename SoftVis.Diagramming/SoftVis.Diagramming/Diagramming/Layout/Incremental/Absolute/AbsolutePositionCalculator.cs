@@ -5,12 +5,12 @@ using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
 using MoreLinq;
 
-namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.Logic
+namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
 {
     /// <summary>
     /// Calculates vertex coordinates from relative layout info.
     /// </summary>
-    internal class AbsolutePositionCalculator : AbsoluteLayoutActionEventSource
+    internal class AbsolutePositionCalculator
     {
         private readonly IReadOnlyRelativeLayout _relativeLayout;
         private readonly double _horizontalGap;

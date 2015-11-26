@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             if (vertex == null)
             {
                 vertex = CreateVertex(name);
-                RelativeLayoutCalculator.OnDiagramNodeAdded(vertex, null);
+                RelativeLayoutCalculator.OnDiagramNodeAdded(vertex);
             }
             return vertex;
         }
@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             var edge = GetOrCreateEdge(sourceName, targetName);
             if (edge != null)
-                RelativeLayoutCalculator.OnDiagramConnectorAdded(edge, null);
+                RelativeLayoutCalculator.OnDiagramConnectorAdded(edge);
             return edge;
         }
 
@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             var vertex = GetVertex(name);
             if (vertex != null)
-                RelativeLayoutCalculator.OnDiagramNodeRemoved(vertex, null);
+                RelativeLayoutCalculator.OnDiagramNodeRemoved(vertex);
             return vertex;
         }
 
@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             var edge = GetEdge(sourceName, targetName);
             if (edge != null)
-                RelativeLayoutCalculator.OnDiagramConnectorRemoved(edge, null);
+                RelativeLayoutCalculator.OnDiagramConnectorRemoved(edge);
             return edge;
         }
     }

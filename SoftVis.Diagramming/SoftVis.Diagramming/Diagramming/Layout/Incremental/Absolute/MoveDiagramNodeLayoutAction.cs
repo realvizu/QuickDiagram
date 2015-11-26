@@ -1,4 +1,3 @@
-using Codartis.SoftVis.Diagramming.Layout.BaseActions;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
@@ -6,15 +5,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
     /// <summary>
     /// A layout action that moves a DiagramNodeLayoutVertex.
     /// </summary>
-    internal class MoveDiagramNodeLayoutAction : DiagramNodeLayoutAction, IMoveDiagramNodeLayoutAction, IMoveVertexAction
+    internal class MoveDiagramNodeLayoutAction : IMoveDiagramNodeLayoutAction
     {
-        public DiagramNodeLayoutVertex Vertex { get; }
+        private DiagramNodeLayoutVertex Vertex { get; }
         public Point2D From { get; }
         public Point2D To { get; }
         public Point2D By { get; }
 
-        public MoveDiagramNodeLayoutAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D @from, Point2D to, ILayoutAction causingLayoutAction = null)
-            : base("MoveDiagramNode", diagramNodeLayoutVertex.DiagramNode, causingLayoutAction)
+        public MoveDiagramNodeLayoutAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D @from, Point2D to)
         {
             Vertex = diagramNodeLayoutVertex;
             From = @from;
@@ -22,50 +20,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             By = To - From;
         }
 
-        LayoutVertexBase IMoveVertexAction.Vertex => Vertex;
+        public DiagramNode DiagramNode => Vertex.DiagramNode;
 
-        public override void AcceptVisitor(LayoutActionVisitorBase visitor)
+        public void AcceptVisitor(ILayoutActionVisitor visitor)
         {
-            base.AcceptVisitor(visitor);
             visitor.Visit(this);
-        }
-
-        protected bool Equals(MoveDiagramNodeLayoutAction other)
-        {
-            return base.Equals(other) && From.Equals(other.By);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((MoveDiagramNodeLayoutAction) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = base.GetHashCode();
-                hashCode = (hashCode*397) ^ By.GetHashCode();
-                return hashCode;
-            }
-        }
-
-        public static bool operator ==(MoveDiagramNodeLayoutAction left, MoveDiagramNodeLayoutAction right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MoveDiagramNodeLayoutAction left, MoveDiagramNodeLayoutAction right)
-        {
-            return !Equals(left, right);
-        }
-
-        public override string ToString()
-        {
-            return $"{Action} ({SubjectName}) from {From} to {To}";
         }
     }
 }

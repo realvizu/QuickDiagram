@@ -5,8 +5,6 @@ namespace Codartis.SoftVis.Diagramming.Layout
     /// </summary>
     public interface ILayoutAction
     {
-        ILayoutAction CausingLayoutAction { get; }
-
-        void AcceptVisitor(LayoutActionVisitorBase visitor);
+        void AcceptVisitor(ILayoutActionVisitor visitor);
     }
 }

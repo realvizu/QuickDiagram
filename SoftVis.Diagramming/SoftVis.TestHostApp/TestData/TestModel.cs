@@ -101,6 +101,21 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             return new TestModel()
 
+                .AddClass("O1", 40)
+                .AddClass("O2", 40, "O1")
+                .AddInterface("O3")
+                .AddInterface("O4", 40, "O3")
+                .AddInterface("O5", 40, "O3")
+                .AddInterface("O6", 40, "O4")
+                .AddInterface("O7", 40, "O5")
+                .AddInterface("O8", 40, "O5")
+                .AddInterface("O9", 40, "O7")
+                .AddInterface("O10", 40, "O8")
+                .AddImplements("O2", "O6")
+                .AddImplements("O2", "O9")
+                .AddImplements("O2", "O10")
+
+
                 // Single node
                 .AddClass("1", 40)
 

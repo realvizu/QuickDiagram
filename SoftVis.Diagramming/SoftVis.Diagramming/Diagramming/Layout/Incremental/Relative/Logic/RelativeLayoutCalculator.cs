@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// <para>all edges span exactly 2 layers (by using dummy vertices as necessary)</para>
     /// <para>vertices in all layers ar ordered so that primary edges never cross.</para>
     /// </remarks>
-    internal class RelativeLayoutCalculator : RelativeLayoutActionEventSource
+    internal class RelativeLayoutCalculator
     {
         private readonly LayeredLayoutGraph _layoutGraph;
         private readonly LayoutVertexLayers _layers;
@@ -40,34 +40,34 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _layoutGraph.Clear();
         }
 
-        public void OnDiagramNodeAdded(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
+        public void OnDiagramNodeAdded(DiagramNodeLayoutVertex diagramNodeLayoutVertex)
         {
             _layoutGraph.AddVertex(diagramNodeLayoutVertex);
-            SetLocation(diagramNodeLayoutVertex, causingAction);
+            SetLocation(diagramNodeLayoutVertex);
         }
 
-        public void OnDiagramNodeRemoved(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
+        public void OnDiagramNodeRemoved(DiagramNodeLayoutVertex diagramNodeLayoutVertex)
         {
             _layers.RemoveVertex(diagramNodeLayoutVertex);
             _layoutGraph.RemoveVertex(diagramNodeLayoutVertex);
         }
 
-        public void OnDiagramConnectorAdded(LayoutPath layoutPath, ILayoutAction causingAction)
+        public void OnDiagramConnectorAdded(LayoutPath layoutPath)
         {
             GetAffectedVertices(layoutPath).ForEach(RemoveFromLayers);
 
             _layoutGraph.AddEdge(layoutPath);
 
-            GetAffectedVertices(layoutPath).OrderBy(ProperLayoutGraph.GetLayerIndex).ForEach(i => SetLocation(i, causingAction));
+            GetAffectedVertices(layoutPath).OrderBy(ProperLayoutGraph.GetLayerIndex).ForEach(SetLocation);
         }
 
-        public void OnDiagramConnectorRemoved(LayoutPath layoutPath, ILayoutAction causingAction)
+        public void OnDiagramConnectorRemoved(LayoutPath layoutPath)
         {
             GetAffectedVertices(layoutPath).ForEach(RemoveFromLayers);
 
             _layoutGraph.RemoveEdge(layoutPath);
 
-            GetAffectedVertices(layoutPath).OrderBy(ProperLayoutGraph.GetLayerIndex).ForEach(i => SetLocation(i, causingAction));
+            GetAffectedVertices(layoutPath).OrderBy(ProperLayoutGraph.GetLayerIndex).ForEach(SetLocation);
         }
 
         private IEnumerable<LayoutVertexBase> GetAffectedVertices(LayoutPath layoutPath)
@@ -84,7 +84,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
                 _layers.RemoveVertex(vertex);
         }
 
-        private void SetLocation(LayoutVertexBase vertex, ILayoutAction causingAction)
+        private void SetLocation(LayoutVertexBase vertex)
         {
             if (!ProperLayoutGraph.ContainsVertex(vertex))
                 return;

@@ -22,11 +22,11 @@ namespace Codartis.SoftVis.Diagramming
     /// The layout (relative positions and size) also conveys meaning.
     /// </summary>
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
-    public abstract class Diagram : LayoutActionEventSource
+    public abstract class Diagram
     {
         private readonly DiagramGraph _graph;
-        private readonly IncrementalLayoutEngine _layoutEngine;
-        private readonly DiagramMutatorLayoutActionVisitor _diagramMutatorForLayoutActions;
+        private readonly ILayoutActionEventSource _layoutEngine;
+        private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
 
         public event EventHandler<DiagramShape> ShapeAdded;
         public event EventHandler<DiagramShape> ShapeModified;
@@ -38,18 +38,10 @@ namespace Codartis.SoftVis.Diagramming
         protected Diagram()
         {
             _graph = new DiagramGraph();
-
             _layoutEngine = new IncrementalLayoutEngine(_graph);
-            _diagramMutatorForLayoutActions = new DiagramMutatorLayoutActionVisitor(this);
+            _layoutActionExecutor = new LayoutActionExecutorVisitor(this);
 
-            _layoutEngine.LayoutActionExecuted += OnLayoutActionExecuted;
-        }
-
-        private void OnLayoutActionExecuted(object sender, ILayoutAction layoutAction)
-        {
-            layoutAction.AcceptVisitor(_diagramMutatorForLayoutActions);
-
-            RaiseLayoutAction(sender, layoutAction);
+            _layoutEngine.LayoutAction += OnLayoutAction;
         }
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
@@ -262,6 +254,11 @@ namespace Codartis.SoftVis.Diagramming
         public void OnShapeActivated(DiagramShape diagramShape)
         {
             ShapeActivated?.Invoke(this, diagramShape);
+        }
+
+        private void OnLayoutAction(object sender, ILayoutAction layoutAction)
+        {
+            layoutAction.AcceptVisitor(_layoutActionExecutor);
         }
     }
 }

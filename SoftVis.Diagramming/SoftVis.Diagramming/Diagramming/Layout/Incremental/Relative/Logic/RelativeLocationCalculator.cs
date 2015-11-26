@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// <para>primary siblings on a layer are always placed together to form a block,</para>
     /// <para>without primary siblings but having a primary parent the order is based on parent ordering.</para>
     /// </remarks>
-    internal sealed class RelativeLocationCalculator : RelativeLayoutActionEventSource
+    internal sealed class RelativeLocationCalculator
     {
         private readonly IReadOnlyQuasiProperLayoutGraph _properLayoutGraph;
         private readonly IReadOnlyLayoutVertexLayers _layoutVertexLayers;
