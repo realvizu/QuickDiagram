@@ -24,16 +24,17 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             _verticalGap = verticalGap;
         }
 
+        private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
+
         public LayoutVertexToPointMap CalculateVertexCenters(Point2D startingPoint)
         {
             var vertexCenterXPositions = CalculateXPositions(startingPoint);
-
-            _relativeLayout.LayoutVertexLayers.UpdateLayerVerticalPositions(_verticalGap);
+            var layerCenterYPositions = CalculateYPositions(_verticalGap);
 
             var vertexCenters = new LayoutVertexToPointMap();
-            foreach (var layer in _relativeLayout.LayoutVertexLayers)
+            foreach (var layer in Layers)
             {
-                var yPos = layer.CenterY;
+                var yPos = layerCenterYPositions[layer];
                 foreach (var vertex in layer)
                 {
                     var xPos = vertexCenterXPositions[vertex];
@@ -45,11 +46,28 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             return vertexCenters;
         }
 
+        private Dictionary<IReadOnlyLayoutVertexLayer, double> CalculateYPositions(double verticalGap)
+        {
+            var layerCenterYPositions = new Dictionary<IReadOnlyLayoutVertexLayer, double>();
+
+            var previousBottom = -verticalGap;
+            foreach (var layer in Layers)
+            {
+                var height = layer.Select(i => i.Height).Max();
+                var bottom = previousBottom + verticalGap + height;
+
+                layerCenterYPositions[layer] = bottom - height/2;
+                previousBottom = bottom;
+            }
+
+            return layerCenterYPositions;
+        }
+
         private Dictionary<LayoutVertexBase, double> CalculateXPositions(Point2D startingPoint)
         {
             var vertexCenterXPositions = new Dictionary<LayoutVertexBase, double>();
 
-            foreach (var layer in _relativeLayout.LayoutVertexLayers.Reverse())
+            foreach (var layer in Layers.Reverse())
             {
                 var layerRight = double.MinValue;
 

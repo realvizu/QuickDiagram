@@ -46,25 +46,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             _vertexToLayerIndexMap.Remove(vertex);
         }
 
-        // TODO: move to VerticalPositionLogic class?
-        public void UpdateLayerVerticalPositions(double verticalGap)
-        {
-            for (var i = 0; i < Layers.Count(); i++)
-            {
-                Layers.ElementAt(i).Top = (i == 0)
-                    ? 0
-                    : Layers.ElementAt(i - 1).Bottom + verticalGap;
-            }
-        }
-
         public int GetLayerIndex(LayoutVertexBase vertex)
         {
             return _vertexToLayerIndexMap.Get(vertex);
         }
 
-        public RelativeLocation GetLocation(LayoutVertexBase vertex)
+        public int GetIndexInLayer(LayoutVertexBase vertex)
         {
-            return new RelativeLocation(GetLayerIndex(vertex), GetIndexInLayer(vertex));
+            return GetLayer(vertex).IndexOf(vertex);
         }
 
         public bool HasLocation(LayoutVertexBase vertex)
@@ -72,10 +61,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return _vertexToLayerIndexMap.Contains(vertex);
         }
 
-        public IReadOnlyLayoutVertexLayer GetLayer(int index)
+        public RelativeLocation GetLocation(LayoutVertexBase vertex)
         {
-            EnsureLayerExists(index);
-            return Layers.ElementAt(index);
+            return new RelativeLocation(GetLayerIndex(vertex), GetIndexInLayer(vertex));
         }
 
         public IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex)
@@ -84,19 +72,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
             return Layers.ElementAt(layerIndex);
         }
 
-        public int GetIndexInLayer(LayoutVertexBase vertex)
+        public IReadOnlyLayoutVertexLayer GetLayer(int index)
         {
-            return GetLayer(vertex).IndexOf(vertex);
-        }
-
-        public LayoutVertexBase GetPreviousInLayer(LayoutVertexBase vertex)
-        {
-            return GetLayer(vertex).GetPrevious(vertex);
-        }
-
-        public LayoutVertexBase GetNextInLayer(LayoutVertexBase vertex)
-        {
-            return GetLayer(vertex).GetNext(vertex);
+            EnsureLayerExists(index);
+            return Layers.ElementAt(index);
         }
 
         private LayoutVertexLayer EnsureLayerExists(int layerIndex)

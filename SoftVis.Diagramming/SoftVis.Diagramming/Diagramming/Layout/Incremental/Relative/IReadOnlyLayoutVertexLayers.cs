@@ -7,17 +7,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// </summary>
     internal interface IReadOnlyLayoutVertexLayers : IEnumerable<IReadOnlyLayoutVertexLayer>
     {
+        int Count { get; }
+
         int GetLayerIndex(LayoutVertexBase vertex);
+        int GetIndexInLayer(LayoutVertexBase vertex);
+
         bool HasLocation(LayoutVertexBase vertex);
         RelativeLocation GetLocation(LayoutVertexBase vertex);
 
         IReadOnlyLayoutVertexLayer GetLayer(LayoutVertexBase vertex);
         IReadOnlyLayoutVertexLayer GetLayer(int layerIndex);
-        int GetIndexInLayer(LayoutVertexBase vertex);
-        LayoutVertexBase GetPreviousInLayer(LayoutVertexBase vertex);
-        LayoutVertexBase GetNextInLayer(LayoutVertexBase vertex);
-
-        // TODO: ???
-        void UpdateLayerVerticalPositions(double verticalGap);
     }
 }
