@@ -101,21 +101,6 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             return new TestModel()
 
-                .AddClass("O1", 40)
-                .AddClass("O2", 40, "O1")
-                .AddInterface("O3")
-                .AddInterface("O4", 40, "O3")
-                .AddInterface("O5", 40, "O3")
-                .AddInterface("O6", 40, "O4")
-                .AddInterface("O7", 40, "O5")
-                .AddInterface("O8", 40, "O5")
-                .AddInterface("O9", 40, "O7")
-                .AddInterface("O10", 40, "O8")
-                .AddImplements("O2", "O6")
-                .AddImplements("O2", "O9")
-                .AddImplements("O2", "O10")
-
-
                 // Single node
                 .AddClass("1", 40)
 
@@ -170,51 +155,26 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("C0")
                 .AddBase("C1", "C0")
 
-                //.AddInterface("BaseInterface")
-                //.AddInterface("MyInterface1", baseName: "BaseInterface")
-                //.AddInterface("MyInterface2", baseName: "BaseInterface")
-                //.AddInterface("MyInterface3", baseName: "BaseInterface")
-                //.AddInterface("MyInterface3Child1LongName", baseName: "MyInterface3")
+                // Gap removal
+                .AddClass("G1", 40)
+                .AddClass("G2", 40, "G1")
+                .AddClass("G3", 40, "G1")
+                .AddClass("G4", 200, "G3")
 
-                //.AddClass("BaseClass")
-                //.AddClass("MyClass", baseName: "BaseClass")
-                //.AddClass("Child1", baseName: "MyClass")
-                //.AddClass("Child2", baseName: "MyClass")
-                //.AddClass("Child3", baseName: "BaseClass")
-                //.AddClass("Child1OfChild1WithLongName", baseName: "Child1")
-
-                //.AddClass("ForeverAlone")
-                //.AddClass("ForeverAlone2")
-
-                //// Loop
-                //.AddInterface("Loop")
-                //.AddInterface("Loop", baseName: "Loop")
-
-                //// Small circle where edge reversing results a multi-edge
-                //.AddInterface("SmallCircle1")
-                //.AddInterface("SmallCircle2")
-                //.AddInterface("SmallCircle1", baseName: "SmallCircle2")
-                //.AddInterface("SmallCircle2", baseName: "SmallCircle1")
-
-                //// Large circle
-                //.AddInterface("Circle1")
-                //.AddInterface("Circle2")
-                //.AddInterface("Circle3")
-                //.AddInterface("Circle4")
-                //.AddInterface("Circle1", baseName: "Circle2")
-                //.AddInterface("Circle2", baseName: "Circle3")
-                //.AddInterface("Circle3", baseName: "Circle4")
-                //.AddInterface("Circle4", baseName: "Circle1")
-
-                // Edge-crossings
-                //.AddClass("Child1", baseName: "BaseInterface")
-                //.AddClass("Child3", baseName: "BaseInterface")
-                //.AddClass("Child1", baseName: "MyInterface3")
-                //.AddClass("Child3", baseName: "Circle4")
-                //.AddClass("MyInterface3", baseName: "Circle2")
-
-                //.AddInterface("IntermediateInterface", baseName: "BaseInterface")
-                //.AddBase("MyInterface1", "IntermediateInterface")
+                // Overlap removal
+                .AddClass("O1", 40)
+                .AddClass("O2", 40, "O1")
+                .AddInterface("O3")
+                .AddInterface("O4", 40, "O3")
+                .AddInterface("O5", 40, "O3")
+                .AddInterface("O6", 40, "O4")
+                .AddInterface("O7", 40, "O5")
+                .AddInterface("O8", 40, "O5")
+                .AddInterface("O9", 40, "O7")
+                .AddInterface("O10", 40, "O8")
+                .AddImplements("O2", "O6")
+                .AddImplements("O2", "O9")
+                .AddImplements("O2", "O10")
 
                 ;
         }

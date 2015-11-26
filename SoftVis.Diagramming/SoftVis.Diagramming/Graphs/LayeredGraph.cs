@@ -106,12 +106,9 @@ namespace Codartis.SoftVis.Graphs
                 yield return descendant;
         }
 
-        public void ExecuteOnVertexAndDescendants(TVertex rootVertex, Action<TVertex> actionOnVertex)
+        public bool HasChildren(TVertex vertex)
         {
-            actionOnVertex(rootVertex);
-
-            foreach (var child in GetChildren(rootVertex))
-                ExecuteOnVertexAndDescendants(child, actionOnVertex);
+            return InDegree(vertex) > 0;
         }
 
         /// <summary>
@@ -130,6 +127,14 @@ namespace Codartis.SoftVis.Graphs
             return _vertexToLayerIndexMap.Get(vertex);
         }
 
+        protected void ExecuteOnVertexAndDescendants(TVertex rootVertex, Action<TVertex> actionOnVertex)
+        {
+            actionOnVertex(rootVertex);
+
+            foreach (var child in GetChildren(rootVertex))
+                ExecuteOnVertexAndDescendants(child, actionOnVertex);
+        }
+
         private void UpdateLayerIndex(TVertex vertex)
         {
             var newLayerIndex = CalculateLayerIndex(vertex);
@@ -139,9 +144,6 @@ namespace Codartis.SoftVis.Graphs
         private int CalculateLayerIndex(TVertex vertex)
         {
             return GetRank(vertex);
-            //var currentLayerIndex = _vertexToLayerIndexMap.Get(vertex);
-            //var minimumLayerIndex = GetRank(vertex);
-            //return Math.Max(currentLayerIndex, minimumLayerIndex);
         }
 
         private void CheckInvariant()
@@ -157,6 +159,5 @@ namespace Codartis.SoftVis.Graphs
                 }
             }
         }
-
     }
 }

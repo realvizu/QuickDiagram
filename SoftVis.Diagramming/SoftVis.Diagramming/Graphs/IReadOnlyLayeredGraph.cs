@@ -17,6 +17,8 @@ namespace Codartis.SoftVis.Graphs
         IEnumerable<TVertex> GetDescendants(TVertex vertex);
         IEnumerable<TVertex> GetVertexAndDescendants(TVertex vertex);
 
+        bool HasChildren(TVertex vertex);
+
         int GetRank(TVertex vertex);
         int GetLayerIndex(TVertex vertex);
     }

@@ -30,25 +30,20 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Logic
         private readonly Map<DiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
         private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
         private LayoutVertexToPointMap _previousVertexCenters;
-
         private readonly RelativeLayoutCalculator _relativeLayoutCalculator;
-        private readonly AbsolutePositionCalculator _absolutePositionCalculator;
+
+        private const double HorizontalGap = DiagramDefaults.HorizontalGap;
+        private const double VerticalGap = DiagramDefaults.VerticalGap;
 
         public IncrementalLayoutEngine(IReadOnlyDiagramGraph diagramGraph)
         {
-            const double horizontalGap = DiagramDefaults.HorizontalGap;
-            const double verticalGap = DiagramDefaults.VerticalGap;
-
             _diagramGraph = diagramGraph;
 
             _diagramNodeToLayoutVertexMap = new Map<DiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<DiagramConnector, LayoutPath>();
             _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
             _previousVertexCenters = new LayoutVertexToPointMap();
-
             _relativeLayoutCalculator = new RelativeLayoutCalculator();
-            _absolutePositionCalculator = new AbsolutePositionCalculator(_relativeLayoutCalculator.RelativeLayout, 
-                horizontalGap, verticalGap);
 
             HookIntoDiagramGraphEvents();
         }
@@ -131,7 +126,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Logic
 
         private void CalculateAbsolutePositions()
         {
-            var newVertexCenters = _absolutePositionCalculator.CalculateVertexCenters(DiagramDefaults.DefaultLayoutStartingPoint);
+            var newVertexCenters = AbsolutePositionCalculator.GetVertexCenters(
+                _relativeLayoutCalculator.RelativeLayout, HorizontalGap, VerticalGap);
             RaiseChangeEvents(newVertexCenters);
             SaveCurrentPositions(newVertexCenters);
         }
