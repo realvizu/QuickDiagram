@@ -73,7 +73,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
             var previousBottom = -_verticalGap;
             foreach (var layer in Layers)
             {
-                var height = layer.Select(i => i.Height).Max();
+                var height = layer.Any() ? layer.Select(i => i.Height).Max() : 0;
                 var bottom = previousBottom + _verticalGap + height;
 
                 _layerCenterYPositions[layer] = bottom - height / 2;

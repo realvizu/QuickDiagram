@@ -12,9 +12,21 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// </summary>
     public abstract class DiagramShapeControlBase : Control
     {
+        public static readonly DependencyProperty ScaleProperty =
+            DependencyProperty.Register("Scale", typeof(double), typeof(DiagramShapeControlBase),
+                new FrameworkPropertyMetadata(1d,
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
+
+        public double Scale
+        {
+            get { return (double)GetValue(ScaleProperty); }
+            set { SetValue(ScaleProperty, value); }
+        }
+
         public static readonly DependencyProperty RectProperty =
             DependencyProperty.Register("Rect", typeof(Rect), typeof(DiagramShapeControlBase),
-                new FrameworkPropertyMetadata(Rect.Empty, 
+                new FrameworkPropertyMetadata(Rect.Empty,
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
@@ -24,7 +36,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
             set { SetValue(RectProperty, value); }
         }
 
-        public Point Position => Rect.IsEmpty ? new Point(0,0) : new Point(Rect.X, Rect.Y);
+        public Point Position => Rect.IsEmpty ? new Point(0, 0) : new Point(Rect.X, Rect.Y);
         public Size Size => Rect.IsEmpty ? Size.Empty : new Size(Rect.Width, Rect.Height);
 
         protected override Size MeasureOverride(Size constraint)

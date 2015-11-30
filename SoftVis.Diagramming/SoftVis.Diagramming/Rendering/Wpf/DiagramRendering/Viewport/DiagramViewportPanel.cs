@@ -125,7 +125,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         protected override Size ArrangeOverride(Size arrangeSize)
         {
             foreach (var child in Children.OfType<DiagramShapeControlBase>())
-                ArrangeChildControl(child); 
+                ArrangeChildControl(child);
 
             return arrangeSize;
         }
@@ -133,12 +133,15 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         private void ArrangeChildControl(DiagramShapeControlBase child)
         {
             child.Arrange(new Rect(child.DesiredSize));
-            child.RenderTransform = CreateTransformForChild(child.Position);
+            child.RenderTransform = CreateTransformForChild(child.Position, child.Size, child.Scale);
         }
 
-        private Transform CreateTransformForChild(Point position)
+        private Transform CreateTransformForChild(Point position, Size size, double scale)
         {
             var transform = new TransformGroup();
+            transform.Children.Add(new TranslateTransform(size.Width / -2, size.Height / -2));
+            transform.Children.Add(new ScaleTransform(scale, scale));
+            transform.Children.Add(new TranslateTransform(size.Width / 2, size.Height / 2));
             transform.Children.Add(new TranslateTransform(position.X, position.Y));
             transform.Children.Add(DiagramSpaceToScreenSpace);
             return transform;

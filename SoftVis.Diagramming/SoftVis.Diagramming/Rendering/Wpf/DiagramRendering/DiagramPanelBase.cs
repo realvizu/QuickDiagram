@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
@@ -26,6 +27,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         public static readonly DependencyProperty DiagramProperty =
             DependencyProperty.Register("Diagram", typeof(Diagram), typeof(DiagramPanelBase),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, Diagram_PropertyChanged));
+
+        private static readonly Duration ShapeEnterAnimationDuration = new Duration(TimeSpan.FromMilliseconds(200));
+        private static readonly Duration ShapeExitAnimationDuration = ShapeEnterAnimationDuration;
 
         public Diagram Diagram
         {
@@ -108,6 +112,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             DiagramShapeToControlMap.Set(diagramNode, control);
             ControlToDiagramShapeMap.Set(control, diagramNode);
             Children.Add(control);
+            AnimateShapeEnter(control);
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
@@ -116,11 +121,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             DiagramShapeToControlMap.Set(diagramConnector, control);
             ControlToDiagramShapeMap.Set(control, diagramConnector);
             Children.Add(control);
+            AnimateShapeEnter(control);
         }
 
         private void RemoveDiagramShapeControl(DiagramShape diagramShape)
         {
             var control = DiagramShapeToControlMap.Get(diagramShape);
+            AnimateShapeExit(control);
             Children.Remove(control);
             DiagramShapeToControlMap.Remove(diagramShape);
             ControlToDiagramShapeMap.Remove(control);
@@ -143,6 +150,18 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
             Diagram.OnShapeActivated(ControlToDiagramShapeMap.Get(senderDiagramNode));
             e.Handled = true;
+        }
+
+        private static void AnimateShapeEnter(DiagramShapeControlBase control)
+        {
+            var animation = new DoubleAnimation(0, 1, ShapeEnterAnimationDuration);
+            control.BeginAnimation(DiagramShapeControlBase.ScaleProperty, animation);
+        }
+
+        private static void AnimateShapeExit(DiagramShapeControlBase control)
+        {
+            var animation = new DoubleAnimation(1, 0, ShapeExitAnimationDuration);
+            control.BeginAnimation(DiagramShapeControlBase.ScaleProperty, animation);
         }
     }
 }
