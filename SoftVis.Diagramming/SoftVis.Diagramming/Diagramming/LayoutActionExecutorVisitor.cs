@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming
             if (diagramNode == null)
                 throw new InvalidOperationException($"Applying layout action, but DiagramNode {layoutAction.DiagramNode} not found.");
 
-            diagramNode.Center = layoutAction.To;
+            _diagram.MoveNode(diagramNode, layoutAction.To);
         }
 
         public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.Diagramming
             if (diagramConnector == null)
                 throw new InvalidOperationException($"Applying layout action, but DiagramConnector {layoutAction.DiagramConnector} not found.");
 
-            diagramConnector.RoutePoints = layoutAction.NewRoute;
+            _diagram.RerouteConnector(diagramConnector, layoutAction.NewRoute);
         }
     }
 }

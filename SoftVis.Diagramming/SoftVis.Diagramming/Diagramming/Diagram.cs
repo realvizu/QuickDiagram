@@ -260,5 +260,17 @@ namespace Codartis.SoftVis.Diagramming
         {
             layoutAction.AcceptVisitor(_layoutActionExecutor);
         }
+
+        public void MoveNode(DiagramNode diagramNode, Point2D toPosition)
+        {
+            diagramNode.Center = toPosition;
+            OnShapeModified(diagramNode);
+        }
+
+        public void RerouteConnector(DiagramConnector diagramConnector, Route newRoute)
+        {
+            diagramConnector.RoutePoints = newRoute;
+            OnShapeModified(diagramConnector);
+        }
     }
 }

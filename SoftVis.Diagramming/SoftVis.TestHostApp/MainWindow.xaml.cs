@@ -60,7 +60,7 @@ namespace Codartis.SoftVis.TestHostApp
             if (_modelItemIndex < _testDiagram.ModelItems.Count - 1)
                 _modelItemIndex++;
 
-            FitToView();
+            //FitToView();
         }
 
         private void Remove_OnClick(object sender, RoutedEventArgs e)

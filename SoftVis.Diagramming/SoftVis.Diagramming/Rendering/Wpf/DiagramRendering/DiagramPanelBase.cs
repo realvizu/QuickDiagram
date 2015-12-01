@@ -30,6 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 
         private static readonly Duration ShapeEnterAnimationDuration = new Duration(TimeSpan.FromMilliseconds(200));
         private static readonly Duration ShapeExitAnimationDuration = ShapeEnterAnimationDuration;
+        private static readonly Duration ShapeMoveAnimationDuration = ShapeEnterAnimationDuration;
 
         public Diagram Diagram
         {
@@ -44,13 +45,14 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             diagramPanel.AddDiagram(diagram);
 
             diagram.ShapeAdded += diagramPanel.OnShapeAdded;
+            diagram.ShapeModified += diagramPanel.OnShapeModified;
             diagram.ShapeRemoved += diagramPanel.OnShapeRemoved;
             diagram.Cleared += diagramPanel.OnDiagramCleared;
         }
 
         protected Rect ContentRect
         {
-            get { return _contentRect == Rect.Empty ? new Rect(0,0,0,0) : _contentRect ; }
+            get { return _contentRect == Rect.Empty ? new Rect(0, 0, 0, 0) : _contentRect; }
             private set { _contentRect = value; }
         }
 
@@ -77,6 +79,48 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
                 CreateDiagramNodeControl((DiagramNode)shape);
             else if (shape is DiagramConnector)
                 CreateDiagramConnectorControl((DiagramConnector)shape);
+        }
+
+        private void OnShapeModified(object sender, DiagramShape shape)
+        {
+            var control = DiagramShapeToControlMap.Get(shape);
+            if (control == null)
+                return;
+
+
+            var diagramNodeControl = control as DiagramNodeControl;
+            if (diagramNodeControl != null)
+            {
+                var rect = ((DiagramNode) shape).Rect.ToWpf();
+                diagramNodeControl.Size = rect.Size;
+                if (diagramNodeControl.Position.IsExtreme())
+                    diagramNodeControl.Position = rect.Location;
+                else
+                    AnimateNodeMove(diagramNodeControl, rect.Location);
+            }
+
+            var diagramConnectorControl = control as DiagramConnectorControl;
+            if (diagramConnectorControl != null)
+            {
+                var rect = CreateRect((DiagramConnector)shape);
+                diagramConnectorControl.Size = rect.Size;
+                diagramConnectorControl.Position = rect.Location;
+            }
+        }
+
+        private static Rect CreateRect(DiagramConnector diagramConnector)
+        {
+            var rectUnion = new[]
+            {
+                diagramConnector.Source.Rect.ToWpf(),
+                diagramConnector.Target.Rect.ToWpf()
+            }.Union();
+
+            var routePoints = diagramConnector.RoutePoints.Select(j => j.ToWpf());
+            foreach (var routePoint in routePoints)
+                rectUnion.Union(routePoint);
+
+            return rectUnion;
         }
 
         private void OnShapeRemoved(object sender, DiagramShape shape)
@@ -113,6 +157,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             ControlToDiagramShapeMap.Set(control, diagramNode);
             Children.Add(control);
             AnimateShapeEnter(control);
+            OnShapeModified(this, diagramNode);
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
@@ -162,6 +207,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         {
             var animation = new DoubleAnimation(1, 0, ShapeExitAnimationDuration);
             control.BeginAnimation(DiagramShapeControlBase.ScaleProperty, animation);
+        }
+
+        private static void AnimateNodeMove(DiagramNodeControl control, Point toPosition)
+        {
+            var animation = new PointAnimation(toPosition, ShapeMoveAnimationDuration);
+            control.BeginAnimation(DiagramShapeControlBase.PositionProperty, animation);
         }
     }
 }

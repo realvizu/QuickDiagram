@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 {
@@ -24,20 +25,31 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
             set { SetValue(ScaleProperty, value); }
         }
 
-        public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof(Rect), typeof(DiagramShapeControlBase),
-                new FrameworkPropertyMetadata(Rect.Empty,
+        public static readonly DependencyProperty PositionProperty =
+            DependencyProperty.Register("Position", typeof(Point), typeof(DiagramShapeControlBase),
+                new FrameworkPropertyMetadata(WpfConstants.ExtremePoint,
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
-        public Rect Rect
+        public Point Position
         {
-            get { return (Rect)GetValue(RectProperty); }
-            set { SetValue(RectProperty, value); }
+            get { return (Point)GetValue(PositionProperty); }
+            set { SetValue(PositionProperty, value); }
         }
 
-        public Point Position => Rect.IsEmpty ? new Point(0, 0) : new Point(Rect.X, Rect.Y);
-        public Size Size => Rect.IsEmpty ? Size.Empty : new Size(Rect.Width, Rect.Height);
+        public static readonly DependencyProperty SizeProperty =
+            DependencyProperty.Register("Size", typeof(Size), typeof(DiagramShapeControlBase),
+                new FrameworkPropertyMetadata(Size.Empty,
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
+
+        public Size Size
+        {
+            get { return (Size)GetValue(SizeProperty); }
+            set { SetValue(SizeProperty, value); }
+        }
+
+        public Rect Rect => new Rect(Position, Size);
 
         protected override Size MeasureOverride(Size constraint)
         {

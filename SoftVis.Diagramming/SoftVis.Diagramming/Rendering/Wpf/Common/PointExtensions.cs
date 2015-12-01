@@ -6,6 +6,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common
 {
     public static class PointExtensions
     {
+        public static bool IsExtreme(this Point point)
+        {
+            return double.IsNaN(point.X) || double.IsNaN(point.Y);
+        }
+
         public static Rect BoundingRect(this IEnumerable<Point> points)
         {
             if (points == null)
