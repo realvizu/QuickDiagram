@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
@@ -13,6 +16,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// </summary>
     public abstract class DiagramShapeControlBase : Control
     {
+        private static readonly Duration ShapeEnterAnimationDuration = new Duration(TimeSpan.FromMilliseconds(200));
+        protected static readonly Duration ShapeExitAnimationDuration = ShapeEnterAnimationDuration;
+        protected static readonly Duration ShapeMoveAnimationDuration = ShapeEnterAnimationDuration;
+
         public static readonly DependencyProperty ScaleProperty =
             DependencyProperty.Register("Scale", typeof(double), typeof(DiagramShapeControlBase),
                 new FrameworkPropertyMetadata(1d,
@@ -51,9 +58,26 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 
         public Rect Rect => new Rect(Position, Size);
 
+        public abstract void RefreshBinding();
+
+        public void Remove(Action<DiagramShape, DiagramShapeControlBase> completedAction)
+        {
+            var animation = new DoubleAnimation(1, 0, ShapeExitAnimationDuration);
+            animation.Completed += (s, a) => completedAction(DiagramShape, this);
+            BeginAnimation(ScaleProperty, animation);
+        }
+
+        protected abstract DiagramShape DiagramShape { get; }
+
         protected override Size MeasureOverride(Size constraint)
         {
             return Size;
+        }
+
+        protected void AnimateEnter()
+        {
+            var animation = new DoubleAnimation(0, 1, ShapeEnterAnimationDuration);
+            BeginAnimation(ScaleProperty, animation);
         }
     }
 }

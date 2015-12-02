@@ -1,4 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Media.Animation;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Wpf.Common;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 {
@@ -6,12 +9,45 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// This control draws a diagram node on its parent canvas/panel.
     /// The visual appearance and the data bindings to its ViewModel are defined in XAML.
     /// </summary>
-    public class DiagramNodeControl : DiagramShapeControlBase
+    public sealed class DiagramNodeControl : DiagramShapeControlBase
     {
+        private readonly DiagramNode _diagramNode;
+
         static DiagramNodeControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramNodeControl), 
                 new FrameworkPropertyMetadata(typeof(DiagramNodeControl)));
+        }
+
+        public DiagramNodeControl(DiagramNode diagramNode)
+        {
+            _diagramNode = diagramNode;
+            DataContext = diagramNode;
+            RefreshBinding();
+            AnimateEnter();
+        }
+
+        protected override DiagramShape DiagramShape => _diagramNode;
+
+        public override void RefreshBinding()
+        {
+            var rect = _diagramNode.Rect.ToWpf();
+            Size = rect.Size;
+            Move(rect.Location);
+        }
+
+        private void Move(Point newPosition)
+        {
+            if (Position.IsExtreme())
+                Position = newPosition;
+            else
+                AnimateMove(newPosition);
+        }
+
+        private void AnimateMove(Point toPosition)
+        {
+            var animation = new PointAnimation(toPosition, ShapeMoveAnimationDuration);
+            BeginAnimation(PositionProperty, animation);
         }
     }
 }
