@@ -38,10 +38,11 @@ namespace Codartis.SoftVis.Diagramming
         protected Diagram()
         {
             _graph = new DiagramGraph();
-            _layoutEngine = new IncrementalLayoutEngine(_graph);
+
             _layoutActionExecutor = new LayoutActionExecutorVisitor(this);
 
-            _layoutEngine.LayoutAction += OnLayoutAction;
+            _layoutEngine = new IncrementalLayoutEngine(_graph);
+            _layoutEngine.LayoutAction += (o, i) => i.AcceptVisitor(_layoutActionExecutor);
         }
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
@@ -68,8 +69,8 @@ namespace Codartis.SoftVis.Diagramming
         /// <param name="modelRelationship">A relationship model item.</param>
         public virtual void ShowConnector(IModelRelationship modelRelationship)
         {
-            if (ConnectorExists(modelRelationship) || 
-                !NodeExists(modelRelationship.Source) || 
+            if (ConnectorExists(modelRelationship) ||
+                !NodeExists(modelRelationship.Source) ||
                 !NodeExists(modelRelationship.Target))
                 return;
 
@@ -254,11 +255,6 @@ namespace Codartis.SoftVis.Diagramming
         public void OnShapeActivated(DiagramShape diagramShape)
         {
             ShapeActivated?.Invoke(this, diagramShape);
-        }
-
-        private void OnLayoutAction(object sender, ILayoutAction layoutAction)
-        {
-            layoutAction.AcceptVisitor(_layoutActionExecutor);
         }
 
         public void MoveNode(DiagramNode diagramNode, Point2D toPosition)

@@ -11,11 +11,11 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     class TestDiagram : WpfDiagram
     {
-        public List<IModelItem> ModelItems { get; }
+        public List<List<IModelItem>> ModelItemGroups { get; }
 
         public TestDiagram(TestModel model)
         {
-            ModelItems = model.Items.ToList();
+            ModelItemGroups = model.ItemGroups.ToList();
         }
 
         protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)

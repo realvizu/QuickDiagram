@@ -7,7 +7,6 @@
                     xmlns:converters="clr-namespace:Codartis.SoftVis.Rendering.Wpf.Common.Converters"
                     xmlns:viewModels="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels">
 
-    <converters:RectsAndRoutesToWpfUnionConverter x:Key="RectsAndRoutesToWpfUnionConverter" />
     <converters:RouteToWpfConverter x:Key="RouteToWpfConverter" />
     <shapeControls:PointsToPathRelativeToRectConverter x:Key="PointsToPathRelativeToRectConverter" />
 
@@ -24,7 +23,8 @@
                         <Path.Data>
                             <MultiBinding Converter="{StaticResource PointsToPathRelativeToRectConverter}">
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Rect" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Size" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Position" />
                             </MultiBinding>
                         </Path.Data>
                     </Path>

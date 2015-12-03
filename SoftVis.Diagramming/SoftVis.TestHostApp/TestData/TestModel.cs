@@ -9,18 +9,19 @@ namespace Codartis.SoftVis.TestHostApp.TestData
     {
         private readonly List<IModelEntity> _entities;
         private readonly List<IModelRelationship> _relationships;
-        private readonly List<IModelItem> _modelItems;
+        private readonly List<List<IModelItem>> _modelItemGroups;
 
         private TestModel()
         {
             _entities = new List<IModelEntity>();
             _relationships = new List<IModelRelationship>();
-            _modelItems = new List<IModelItem>();
+            _modelItemGroups = new List<List<IModelItem>>();
+            EndGroup();
         }
 
         public IEnumerable<IModelEntity> Entities => _entities;
         public IEnumerable<IModelRelationship> Relationships => _relationships;
-        public IEnumerable<IModelItem> Items => _modelItems;
+        public IEnumerable<List<IModelItem>> ItemGroups => _modelItemGroups;
 
         private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype, int size)
         {
@@ -37,12 +38,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 throw new ArgumentException($"Unexpected entity type: {type}, stereotype: {stereotype}");
 
             _entities.Add(newEntity);
-            _modelItems.Add(newEntity);
+            _modelItemGroups.Last().Add(newEntity);
 
             return this;
         }
 
-        private TestModel AddRelationship(string sourceName, string targetName, 
+        private TestModel AddRelationship(string sourceName, string targetName,
             ModelRelationshipType type, ModelRelationshipStereotype stereotype = null)
         {
             if (_relationships
@@ -61,8 +62,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             sourceEntity.AddOutgoingRelationship(newRelationship);
             targetEntity.AddIncomingRelationship(newRelationship);
             _relationships.Add(newRelationship);
-            _modelItems.Add(newRelationship);
+            _modelItemGroups.Last().Add(newRelationship);
 
+            return this;
+        }
+
+        private TestModel EndGroup()
+        {
+            _modelItemGroups.Add(new List<IModelItem>());
             return this;
         }
 
@@ -103,42 +110,51 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
                 // Single node
                 .AddClass("1", 40)
+                .EndGroup()
 
                 // Single connector
                 .AddClass("3", 30, "1")
+                .EndGroup()
 
                 // Siblings added (left, right, middle)
                 .AddClass("2", 45, "1")
                 .AddClass("5", 25, "1")
                 .AddClass("4", 20, "1")
+                .EndGroup()
 
                 // Tree moves under parent
                 .AddClass("0", 20)
                 .AddBase("1", "0")
+                .EndGroup()
 
                 // Placing child with no siblings
                 .AddClass("10", 40)
                 .AddInterface("11", 50)
                 .AddInterface("12", 45, "11")
                 .AddClass("13", 40, "10")
+                .EndGroup()
 
                 // Dummy vertex added
                 .AddInterface("14", 55, "12")
                 .AddInterface("15")
                 .AddBase("14", "15")
+                .EndGroup()
 
                 // Dummy vertex removed
                 .AddInterface("16")
                 .AddBase("15", "16")
+                .EndGroup()
 
                 // Redundant edge removed
                 .AddInterface("20", 55)
                 .AddBase("12", "20")
                 .AddBase("20", "11")
+                .EndGroup()
 
                 // Path with 2 new dummy vertices
                 .AddInterface("17")
                 .AddBase("14", "17")
+                .EndGroup()
 
                 // Regression test: layer-assignment of dummy vertices should be finished before positioning, 
                 // otherwise it causes an infinite cycle in the layout logic
@@ -154,12 +170,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddImplements("C1", "A3")
                 .AddClass("C0")
                 .AddBase("C1", "C0")
+                .EndGroup()
 
                 // Gap removal
                 .AddClass("G1", 40)
                 .AddClass("G2", 40, "G1")
                 .AddClass("G3", 40, "G1")
                 .AddClass("G4", 200, "G3")
+                .EndGroup()
 
                 // Overlap removal
                 .AddClass("O1", 40)

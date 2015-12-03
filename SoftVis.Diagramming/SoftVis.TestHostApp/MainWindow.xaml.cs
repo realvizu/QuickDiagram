@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Modeling;
@@ -12,9 +13,8 @@ namespace Codartis.SoftVis.TestHostApp
     public partial class MainWindow
     {
         private TestModel _testModel;
-        private IModelEntity[] _modelEntities;
-        private int _modelItemIndex;
-        private int _nextToRemoveModelItemIndex;
+        private int _modelItemGroupIndex;
+        private int _nextToRemoveModelItemGroupIndex;
 
         private TestDiagram _testDiagram;
 
@@ -32,7 +32,6 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram = new TestDiagram(_testModel);
 
             DiagramViewerControl.DataContext = _testDiagram;
-            _modelEntities = _testDiagram.ModelItems.OfType<IModelEntity>().ToArray();
 
             FitToView();
 
@@ -47,8 +46,19 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void Add_OnClick(object sender, RoutedEventArgs e)
         {
-            var modelItem = _testDiagram.ModelItems[_modelItemIndex];
+            if (_modelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
+                return;
 
+            foreach (var modelItem in _testDiagram.ModelItemGroups[_modelItemGroupIndex])
+                AddModelItem(modelItem);
+
+            _modelItemGroupIndex++;
+
+            FitToView();
+        }
+
+        private void AddModelItem(IModelItem modelItem)
+        {
             var modelEntity = modelItem as IModelEntity;
             if (modelEntity != null)
                 _testDiagram.ShowNode(modelEntity);
@@ -56,18 +66,18 @@ namespace Codartis.SoftVis.TestHostApp
             var modelRelationship = modelItem as IModelRelationship;
             if (modelRelationship != null)
                 _testDiagram.ShowConnector((IModelRelationship)modelItem);
-
-            if (_modelItemIndex < _testDiagram.ModelItems.Count - 1)
-                _modelItemIndex++;
-
-            //FitToView();
         }
 
         private void Remove_OnClick(object sender, RoutedEventArgs e)
         {
-            _testDiagram.HideNode(_modelEntities[_nextToRemoveModelItemIndex]);
+            if (_nextToRemoveModelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
+                return;
 
-            _nextToRemoveModelItemIndex++;
+            var modelEntitiesToRemove = _testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex].OfType<IModelEntity>();
+            foreach (var modelEntity in modelEntitiesToRemove)
+                _testDiagram.HideNode(modelEntity);
+
+            _nextToRemoveModelItemGroupIndex++;
         }
     }
 }

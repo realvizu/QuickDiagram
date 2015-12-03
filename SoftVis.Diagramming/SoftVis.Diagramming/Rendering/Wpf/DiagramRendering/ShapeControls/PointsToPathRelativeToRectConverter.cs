@@ -12,7 +12,7 @@ using MoreLinq;
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 {
     /// <summary>
-    /// Creates a path from the supplied Point[] that is relative to the supplied Rect.
+    /// Creates a path from the supplied Point[] that is relative to the supplied Rect (given with size and position).
     /// </summary>
     public class PointsToPathRelativeToRectConverter : IMultiValueConverter
     {
@@ -22,14 +22,15 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null ||
-                value.Length != 2 ||
+                value.Length != 3 ||
                 !(value[0] is Point[]) ||
-                !(value[1] is Rect))
+                !(value[1] is Size) ||
+                !(value[2] is Point))
                 return null;
                 //throw new ArgumentException($"{typeof(PointsToPathRelativeToRectConverter)} expects these parameters: Point[], Rect.");
 
             var routePoints = (Point[])value[0];
-            var boundingRect = (Rect)value[1];
+            var boundingRect = new Rect((Point) value[2], (Size) value[1]);
 
             routePoints = MakePointsRelativeToBoundingRect(routePoints, boundingRect);
 

@@ -22,7 +22,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 
         public static readonly DependencyProperty RoutePointsProperty =
             DependencyProperty.Register("RoutePoints", typeof(Point[]), typeof(DiagramConnectorControl),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+                new FrameworkPropertyMetadata(null, 
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public Point[] RoutePoints
         {
@@ -34,8 +37,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         {
             _diagramConnector = diagramConnector;
             DataContext = diagramConnector;
-            AnimateEnter();
             RefreshBinding();
+            AnimateEnter();
         }
 
         protected override DiagramShape DiagramShape => _diagramConnector;
