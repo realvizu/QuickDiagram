@@ -16,9 +16,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// </summary>
     public abstract class DiagramShapeControlBase : Control
     {
-        private static readonly Duration ShapeEnterAnimationDuration = new Duration(TimeSpan.FromMilliseconds(200));
-        protected static readonly Duration ShapeExitAnimationDuration = ShapeEnterAnimationDuration;
-        protected static readonly Duration ShapeMoveAnimationDuration = ShapeEnterAnimationDuration;
+        private static readonly Duration ShapeEnterAnimationDuration = new Duration(TimeSpan.FromMilliseconds(250));
+        private static readonly Duration ShapeExitAnimationDuration = ShapeEnterAnimationDuration;
+        private static readonly Duration ShapeMoveAnimationDuration = ShapeEnterAnimationDuration;
 
         public static readonly DependencyProperty ScaleProperty =
             DependencyProperty.Register("Scale", typeof(double), typeof(DiagramShapeControlBase),
@@ -74,10 +74,29 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
             return Size;
         }
 
-        protected void AnimateEnter()
+        protected void MoveTo(Point newPosition)
+        {
+            if (Position.IsExtreme())
+            {
+                Position = newPosition;
+                AnimateEnter();
+            }
+            else
+            {
+                AnimateMove(newPosition);
+            }
+        }
+
+        private void AnimateEnter()
         {
             var animation = new DoubleAnimation(0, 1, ShapeEnterAnimationDuration);
             BeginAnimation(ScaleProperty, animation);
+        }
+
+        private void AnimateMove(Point toPosition)
+        {
+            var animation = new PointAnimation(toPosition, ShapeMoveAnimationDuration);
+            BeginAnimation(PositionProperty, animation);
         }
     }
 }

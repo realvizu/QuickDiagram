@@ -20,6 +20,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
         }
 
         public DiagramConnector DiagramConnector => Path.DiagramConnector;
+        public DiagramShape DiagramShape => DiagramConnector;
 
         public void AcceptVisitor(ILayoutActionVisitor visitor)
         {

@@ -2,7 +2,6 @@
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs.Layout;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
@@ -27,11 +26,6 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
             var size = new Size2D(((TestModelEntity)modelEntity).Size, height);
             return new DiagramNodeViewModel(modelEntity, Point2D.Empty, size);
-        }
-
-        private void LayoutTree()
-        {
-            Layout(LayoutType.Tree);
         }
     }
 }

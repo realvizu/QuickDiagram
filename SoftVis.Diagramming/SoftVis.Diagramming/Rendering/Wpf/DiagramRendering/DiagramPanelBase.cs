@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             diagramPanel.AddDiagram(diagram);
 
             diagram.ShapeAdded += diagramPanel.OnShapeAdded;
-            diagram.ShapeModified += diagramPanel.OnShapeModified;
+            diagram.ShapeMoved += diagramPanel.OnShapeMoved;
             diagram.ShapeRemoved += diagramPanel.OnShapeRemoved;
             diagram.Cleared += diagramPanel.OnDiagramCleared;
         }
@@ -75,10 +75,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             else if (shape is DiagramConnector)
                 CreateDiagramConnectorControl((DiagramConnector)shape);
 
-            OnShapeModified(sender, shape);
+            OnShapeMoved(sender, shape);
         }
 
-        private void OnShapeModified(object sender, DiagramShape shape)
+        private void OnShapeMoved(object sender, DiagramShape shape)
         {
             DiagramShapeToControlMap.Get(shape)?.RefreshBinding();
         }

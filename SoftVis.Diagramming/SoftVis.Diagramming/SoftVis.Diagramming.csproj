@@ -66,6 +66,10 @@
     <Compile Include="Common\Map.cs" />
     <Compile Include="Diagramming\Diagram.cs" />
     <Compile Include="Diagramming\DiagramDefaults.cs" />
+    <Compile Include="Diagramming\DiagramConnectorAction.cs" />
+    <Compile Include="Diagramming\DiagramNodeAction.cs" />
+    <Compile Include="Diagramming\DiagramShapeAction.cs" />
+    <Compile Include="Diagramming\IArrangeableDiagram.cs" />
     <Compile Include="Diagramming\IReadOnlyDiagramGraph.cs" />
     <Compile Include="Common\IFilterable.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\AbsolutePositionCalculator.cs" />
@@ -76,6 +80,7 @@
     <Compile Include="Diagramming\Layout\Incremental\LayoutPath.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutVertexBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayeredLayoutGraph.cs" />
+    <Compile Include="Diagramming\ShapeActionType.cs" />
     <Compile Include="Graphs\IReadOnlyLayeredGraph.cs" />
     <Compile Include="Graphs\LayeredGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\RelativeLayout.cs" />
@@ -88,7 +93,7 @@
     <Compile Include="Diagramming\Layout\Incremental\Absolute\MoveDiagramNodeLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\ReroutePathLayoutAction.cs" />
     <Compile Include="Diagramming\Layout\ILayoutAction.cs" />
-    <Compile Include="Diagramming\Layout\ILayoutActionEventSource.cs" />
+    <Compile Include="Diagramming\Layout\IIncrementalLayoutEngine.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DummyLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Logic\IncrementalLayoutEngine.cs" />

@@ -7,11 +7,11 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// Applies layout actions to a diagram (move node, reroute connector).
     /// </summary>
-    public sealed class LayoutActionExecutorVisitor : ILayoutActionVisitor
+    internal sealed class LayoutActionExecutorVisitor : ILayoutActionVisitor
     {
-        private readonly Diagram _diagram;
+        private readonly IArrangeableDiagram _diagram;
 
-        public LayoutActionExecutorVisitor(Diagram diagram)
+        public LayoutActionExecutorVisitor(IArrangeableDiagram diagram)
         {
             _diagram = diagram;
         }

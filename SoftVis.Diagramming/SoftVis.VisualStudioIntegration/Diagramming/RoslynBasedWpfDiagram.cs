@@ -8,16 +8,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynBasedWpfDiagram : WpfDiagram
     {
-        public override void ShowNode(IModelEntity modelEntity)
+        protected override void ShowEntity(IModelEntity modelEntity)
         {
-            base.ShowNode(modelEntity);
+            base.ShowEntity(modelEntity);
 
             foreach (var modelRelationship in modelEntity.AllRelationships)
             {
                 if (NodeExists(modelRelationship.Source) &&
                     NodeExists(modelRelationship.Target))
                 {
-                    ShowConnector(modelRelationship);
+                    ShowRelationship(modelRelationship);
                 }
             }
         }

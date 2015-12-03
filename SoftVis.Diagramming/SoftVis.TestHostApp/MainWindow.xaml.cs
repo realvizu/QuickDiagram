@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using Codartis.SoftVis.Modeling;
+using System.Windows.Threading;
 using Codartis.SoftVis.TestHostApp.TestData;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -49,23 +47,10 @@ namespace Codartis.SoftVis.TestHostApp
             if (_modelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
                 return;
 
-            foreach (var modelItem in _testDiagram.ModelItemGroups[_modelItemGroupIndex])
-                AddModelItem(modelItem);
-
+            _testDiagram.ShowItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
             _modelItemGroupIndex++;
 
-            FitToView();
-        }
-
-        private void AddModelItem(IModelItem modelItem)
-        {
-            var modelEntity = modelItem as IModelEntity;
-            if (modelEntity != null)
-                _testDiagram.ShowNode(modelEntity);
-
-            var modelRelationship = modelItem as IModelRelationship;
-            if (modelRelationship != null)
-                _testDiagram.ShowConnector((IModelRelationship)modelItem);
+            //FitToView();
         }
 
         private void Remove_OnClick(object sender, RoutedEventArgs e)
@@ -73,10 +58,7 @@ namespace Codartis.SoftVis.TestHostApp
             if (_nextToRemoveModelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
                 return;
 
-            var modelEntitiesToRemove = _testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex].OfType<IModelEntity>();
-            foreach (var modelEntity in modelEntitiesToRemove)
-                _testDiagram.HideNode(modelEntity);
-
+            _testDiagram.HideItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
             _nextToRemoveModelItemGroupIndex++;
         }
     }

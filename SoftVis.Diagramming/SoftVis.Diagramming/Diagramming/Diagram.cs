@@ -7,8 +7,6 @@ using Codartis.SoftVis.Diagramming.Layout.Incremental.Logic;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Layout;
-using Codartis.SoftVis.Graphs.Layout.EdgeRouting;
-using Codartis.SoftVis.Graphs.Layout.VertexPlacement;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -22,14 +20,15 @@ namespace Codartis.SoftVis.Diagramming
     /// The layout (relative positions and size) also conveys meaning.
     /// </summary>
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
-    public abstract class Diagram
+    public abstract class Diagram : IArrangeableDiagram
     {
         private readonly DiagramGraph _graph;
-        private readonly ILayoutActionEventSource _layoutEngine;
+        private readonly IIncrementalLayoutEngine _incrementalLayoutEngine;
         private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
+        private readonly List<DiagramShapeAction> _diagramShapeActionBuffer;
 
         public event EventHandler<DiagramShape> ShapeAdded;
-        public event EventHandler<DiagramShape> ShapeModified;
+        public event EventHandler<DiagramShape> ShapeMoved;
         public event EventHandler<DiagramShape> ShapeRemoved;
         public event EventHandler<DiagramShape> ShapeSelected;
         public event EventHandler<DiagramShape> ShapeActivated;
@@ -38,36 +37,71 @@ namespace Codartis.SoftVis.Diagramming
         protected Diagram()
         {
             _graph = new DiagramGraph();
-
+            _incrementalLayoutEngine = new IncrementalLayoutEngine();
             _layoutActionExecutor = new LayoutActionExecutorVisitor(this);
-
-            _layoutEngine = new IncrementalLayoutEngine(_graph);
-            _layoutEngine.LayoutAction += (o, i) => i.AcceptVisitor(_layoutActionExecutor);
+            _diagramShapeActionBuffer = new List<DiagramShapeAction>();
         }
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
 
         /// <summary>
+        /// Clear the diagram (that is, hide all nodes and connectors).
+        /// </summary>
+        public virtual void Clear()
+        {
+            _graph.Clear();
+            _incrementalLayoutEngine.Clear();
+            _diagramShapeActionBuffer.Clear();
+            OnCleared();
+        }
+
+        public void ShowItems(IEnumerable<IModelItem> modelItems)
+        {
+            foreach (var modelItem in modelItems)
+            {
+                if (modelItem is IModelEntity)
+                    ShowEntity((IModelEntity)modelItem);
+
+                if (modelItem is IModelRelationship)
+                    ShowRelationship((IModelRelationship)modelItem);
+            }
+
+            Layout();
+        }
+
+        public void HideItems(IEnumerable<IModelItem> modelItems)
+        {
+            foreach (var modelItem in modelItems)
+            {
+                if (modelItem is IModelEntity)
+                    HideEntity((IModelEntity)modelItem);
+
+                if (modelItem is IModelRelationship)
+                    HideRelationship((IModelRelationship)modelItem);
+            }
+
+            Layout();
+        }
+
+        /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        public virtual void ShowNode(IModelEntity modelEntity)
+        protected virtual void ShowEntity(IModelEntity modelEntity)
         {
             if (NodeExists(modelEntity))
                 return;
 
             var diagramNode = CreateDiagramNode(modelEntity);
-            _graph.AddVertex(diagramNode);
-
-            OnShapeAdded(diagramNode);
+            AddDiagramNode(diagramNode);
         }
 
         /// <summary>
         /// Show a connector on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A relationship model item.</param>
-        public virtual void ShowConnector(IModelRelationship modelRelationship)
+        protected virtual void ShowRelationship(IModelRelationship modelRelationship)
         {
             if (ConnectorExists(modelRelationship) ||
                 !NodeExists(modelRelationship.Source) ||
@@ -75,10 +109,7 @@ namespace Codartis.SoftVis.Diagramming
                 return;
 
             var diagramConnector = CreateDiagramConnector(modelRelationship);
-            _graph.AddEdge(diagramConnector);
-
-            OnShapeAdded(diagramConnector);
-
+            AddDiagramConnector(diagramConnector);
             HideRedundantDirectEdges();
         }
 
@@ -86,58 +117,69 @@ namespace Codartis.SoftVis.Diagramming
         /// Hide a node from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        public void HideNode(IModelEntity modelEntity)
+        protected virtual void HideEntity(IModelEntity modelEntity)
         {
             if (!NodeExists(modelEntity))
                 return;
 
             var diagramNode = FindNode(modelEntity);
 
-            foreach (var connector in _graph.GetAllEdges(diagramNode).ToArray())
-                HideConnector(connector.ModelRelationship);
+            foreach (var edge in _graph.GetAllEdges(diagramNode).ToArray())
+                HideRelationship(edge.ModelRelationship);
 
-            _graph.RemoveVertex(diagramNode);
-
-            OnShapeRemoved(diagramNode);
+            RemoveDiagramNode(diagramNode);
         }
 
         /// <summary>
         /// Hides a connector from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A modelRelationship model item.</param>
-        public void HideConnector(IModelRelationship modelRelationship)
+        protected virtual void HideRelationship(IModelRelationship modelRelationship)
         {
             if (!ConnectorExists(modelRelationship))
                 return;
 
             var diagramConnector = FindConnector(modelRelationship);
-            _graph.RemoveEdge(diagramConnector);
-
-            OnShapeRemoved(diagramConnector);
+            RemoveDiagramConnector(diagramConnector);
         }
 
+        private void Layout() => Layout(LayoutType.Incremental);
+
         /// <summary>
-        /// Recalculates the layout of the diagram and applies the new shape positions and edge routes.
+        /// Calculates the layout of the diagram and applies the new shape positions and edge routes.
         /// </summary>
-        public void Layout(LayoutType layoutType, ILayoutParameters layoutParameters = null)
+        private void Layout(LayoutType layoutType, ILayoutParameters layoutParameters = null)
         {
             switch (layoutType)
             {
-                case (LayoutType.Tree):
-                    ApplySimpleTreeLayoutAndStraightEdgeRouting();
+                case LayoutType.Incremental:
+                    ApplyIncrementalLayoutChanges();
                     break;
                 default:
                     throw new ArgumentException($"Unexpected layout type: {layoutType}");
             }
         }
 
-        /// <summary>
-        /// Clear the diagram (that is, hides all nodes and connectors).
-        /// </summary>
-        public void Clear()
+        public void MoveNode(DiagramNode diagramNode, Point2D newCenter)
         {
-            _graph.Clear();
-            OnCleared();
+            var isFirstPosition = diagramNode.Center == Point2D.Empty;
+            diagramNode.Center = newCenter;
+
+            if (isFirstPosition)
+                OnShapeAdded(diagramNode);
+            else
+                OnShapeMoved(diagramNode);
+        }
+
+        public void RerouteConnector(DiagramConnector diagramConnector, Route newRoute)
+        {
+            var isFirstRoute = diagramConnector.RoutePoints == null;
+            diagramConnector.RoutePoints = newRoute;
+
+            if (isFirstRoute)
+                OnShapeAdded(diagramConnector);
+            else
+                OnShapeMoved(diagramConnector);
         }
 
         protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
@@ -154,57 +196,51 @@ namespace Codartis.SoftVis.Diagramming
                 {
                     var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
                     if (pathToHide != null)
-                        HideConnector(pathToHide[0].ModelRelationship);
+                        HideRelationship(pathToHide[0].ModelRelationship);
                 }
             }
         }
 
-        private void ApplySimpleTreeLayoutAndStraightEdgeRouting()
+        private void ApplyIncrementalLayoutChanges()
         {
-            var layoutAlgorithm = new SimpleTreeLayoutAlgorithm<DiagramNode, DiagramConnector>(_graph);
-            layoutAlgorithm.Compute();
+            var layoutActions = _incrementalLayoutEngine.GetLayoutActions(_diagramShapeActionBuffer);
+            var netLayoutActions = CombineLayoutAction(layoutActions);
 
-            ApplyVertexCenters(layoutAlgorithm.VertexCenters);
+            foreach (var layoutAction in netLayoutActions)
+                layoutAction.AcceptVisitor(_layoutActionExecutor);
 
-            var routingAlgorithm = new StraightEdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(_graph);
-            routingAlgorithm.Compute();
-
-            ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
+            _diagramShapeActionBuffer.Clear();
         }
 
-        private void ApplyEdgeRouting(DiagramConnectorRoute specification)
+        private static IEnumerable<ILayoutAction> CombineLayoutAction(IEnumerable<ILayoutAction> layoutActions)
         {
-            var routingAlgorithm = new EdgeRoutingAlgorithm<DiagramNode, DiagramConnector>(
-                _graph.Edges, specification.EdgeRoutingType, specification.InterimRoutePointsOfEdges);
-            routingAlgorithm.Compute();
-
-            ApplyConnectorRoutes(routingAlgorithm.EdgeRoutes);
+            return layoutActions.GroupBy(i => i.DiagramShape).Select(j => j.Last());
         }
 
-        private void ApplyVertexCenters(IDictionary<DiagramNode, Point2D> vertexCenters)
+        private void AddDiagramNode(DiagramNode diagramNode)
         {
-            foreach (var node in Nodes)
-            {
-                Point2D center;
-                if (vertexCenters.TryGetValue(node, out center))
-                {
-                    node.Center = center;
-                    OnShapeModified(node);
-                }
-            }
+            _graph.AddVertex(diagramNode);
+            _diagramShapeActionBuffer.Add(new DiagramNodeAction(diagramNode, ShapeActionType.Add));
         }
 
-        private void ApplyConnectorRoutes(IDictionary<DiagramConnector, Route> edgeRoutes)
+        private void RemoveDiagramNode(DiagramNode diagramNode)
         {
-            foreach (var connector in Connectors)
-            {
-                Route route;
-                if (edgeRoutes.TryGetValue(connector, out route))
-                {
-                    connector.RoutePoints = route;
-                    OnShapeModified(connector);
-                }
-            }
+            _graph.RemoveVertex(diagramNode);
+            _diagramShapeActionBuffer.Add(new DiagramNodeAction(diagramNode, ShapeActionType.Remove));
+            OnShapeRemoved(diagramNode);
+        }
+
+        private void AddDiagramConnector(DiagramConnector diagramConnector)
+        {
+            _graph.AddEdge(diagramConnector);
+            _diagramShapeActionBuffer.Add(new DiagramConnectorAction(diagramConnector, ShapeActionType.Add));
+        }
+
+        private void RemoveDiagramConnector(DiagramConnector diagramConnector)
+        {
+            _graph.RemoveEdge(diagramConnector);
+            _diagramShapeActionBuffer.Add(new DiagramConnectorAction(diagramConnector, ShapeActionType.Remove));
+            OnShapeRemoved(diagramConnector);
         }
 
         protected DiagramNode FindNode(IModelEntity modelEntity)
@@ -232,9 +268,9 @@ namespace Codartis.SoftVis.Diagramming
             ShapeAdded?.Invoke(this, shape);
         }
 
-        private void OnShapeModified(DiagramShape shape)
+        private void OnShapeMoved(DiagramShape shape)
         {
-            ShapeModified?.Invoke(this, shape);
+            ShapeMoved?.Invoke(this, shape);
         }
 
         private void OnShapeRemoved(DiagramShape shape)
@@ -255,18 +291,6 @@ namespace Codartis.SoftVis.Diagramming
         public void OnShapeActivated(DiagramShape diagramShape)
         {
             ShapeActivated?.Invoke(this, diagramShape);
-        }
-
-        public void MoveNode(DiagramNode diagramNode, Point2D toPosition)
-        {
-            diagramNode.Center = toPosition;
-            OnShapeModified(diagramNode);
-        }
-
-        public void RerouteConnector(DiagramConnector diagramConnector, Route newRoute)
-        {
-            diagramConnector.RoutePoints = newRoute;
-            OnShapeModified(diagramConnector);
         }
     }
 }

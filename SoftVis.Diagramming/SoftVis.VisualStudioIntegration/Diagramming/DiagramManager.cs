@@ -26,6 +26,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             _diagram.ShapeActivated += OnShapeActivated;
 
             _diagramBuilder = new RoslynBasedDiagramBuilder(_diagram);
+
             _diagramToolWindow = diagramToolWindow;
             _diagramToolWindow.Initialize(_diagram);
         }

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Media.Animation;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 
@@ -23,8 +22,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         {
             _diagramNode = diagramNode;
             DataContext = diagramNode;
-            RefreshBinding();
-            AnimateEnter();
         }
 
         protected override DiagramShape DiagramShape => _diagramNode;
@@ -33,21 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         {
             var rect = _diagramNode.Rect.ToWpf();
             Size = rect.Size;
-            Move(rect.Location);
-        }
-
-        private void Move(Point newPosition)
-        {
-            if (Position.IsExtreme())
-                Position = newPosition;
-            else
-                AnimateMove(newPosition);
-        }
-
-        private void AnimateMove(Point toPosition)
-        {
-            var animation = new PointAnimation(toPosition, ShapeMoveAnimationDuration);
-            BeginAnimation(PositionProperty, animation);
+            MoveTo(rect.Location);
         }
     }
 }

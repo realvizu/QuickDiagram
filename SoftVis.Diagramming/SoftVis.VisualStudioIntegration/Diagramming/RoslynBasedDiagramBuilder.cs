@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using System.Collections.Generic;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -18,104 +19,117 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public void ShowModelEntity(IModelEntity modelEntity)
         {
+            IEnumerable<IModelItem> modelItems;
+
             if (modelEntity is RoslynBasedClass)
-                ShowClassWithRelatedEntities((RoslynBasedClass)modelEntity);
+                modelItems = GetClassWithRelatedEntities((RoslynBasedClass)modelEntity);
 
             else if (modelEntity is RoslynBasedInterface)
-                ShowInterfaceWithRelatedEntities((RoslynBasedInterface)modelEntity);
+                modelItems = GetInterfaceWithRelatedEntities((RoslynBasedInterface)modelEntity);
 
             else if (modelEntity is RoslynBasedStruct)
-                ShowStructWithRelatedEntities((RoslynBasedStruct)modelEntity);
+                modelItems = GetStructWithRelatedEntities((RoslynBasedStruct)modelEntity);
 
             else
-                _diagram.ShowNode(modelEntity);
+                modelItems = new[] { modelEntity };
 
-            UpdateLayout();
+            _diagram.ShowItems(modelItems);
         }
 
-        private void ShowClassWithRelatedEntities(RoslynBasedClass @class)
+        private static IEnumerable<IModelItem> GetClassWithRelatedEntities(RoslynBasedClass @class)
         {
-            _diagram.ShowNode(@class);
-            ShowBaseClass(@class);
-            ShowImplementedInterfaces(@class);
-            ShowDerivedClasses(@class);
+             yield return @class;
+
+            foreach (var baseClass in GetBaseClassesRecursive(@class))
+                yield return baseClass;
+
+            foreach (var implementedInterface in GetImplementedInterfacesRecursive(@class))
+                yield return implementedInterface;
+
+            foreach (var derivedClass in GetDerivedClassesRecursive(@class))
+                yield return derivedClass;
         }
 
-        private void ShowInterfaceWithRelatedEntities(RoslynBasedInterface @interface)
+        private static IEnumerable<IModelItem> GetInterfaceWithRelatedEntities(RoslynBasedInterface @interface)
         {
-            _diagram.ShowNode(@interface);
-            ShowBaseInterfaces(@interface);
-            ShowDerivedInterfaces(@interface);
-            ShowImplementers(@interface);
+            yield return @interface;
+
+            foreach (var baseInterface in GetBaseInterfacesRecursive(@interface))
+                yield return baseInterface;
+
+            foreach (var derivedInterface in GetDerivedInterfacesRecursive(@interface))
+                yield return derivedInterface;
+
+            foreach (var implementer in GetImplementers(@interface))
+                yield return implementer;
         }
 
-        private void ShowStructWithRelatedEntities(RoslynBasedStruct @struct)
+        private static IEnumerable<IModelItem> GetStructWithRelatedEntities(RoslynBasedStruct @struct)
         {
-            _diagram.ShowNode(@struct);
-            ShowImplementedInterfaces(@struct);
+            yield return @struct;
+
+            foreach (var implementedInterface in GetImplementedInterfacesRecursive(@struct))
+                yield return implementedInterface;
         }
 
-        private void ShowImplementedInterfaces(dynamic @classOrStruct)
+        private static IEnumerable<IModelItem> GetImplementedInterfacesRecursive(dynamic @classOrStruct)
         {
             foreach (var @interface in @classOrStruct.ImplementedInterfaces)
             {
-                _diagram.ShowNode(@interface);
-                ShowBaseInterfaces(@interface);
+                yield return @interface;
+
+                foreach (var baseInterfaceOfBaseInterface in GetBaseInterfacesRecursive(@interface))
+                    yield return baseInterfaceOfBaseInterface;
             }
         }
 
-        private void ShowDerivedClasses(RoslynBasedClass @class)
+        private static IEnumerable<IModelItem> GetDerivedClassesRecursive(RoslynBasedClass @class)
         {
             foreach (var childClass in @class.DerivedClasses)
             {
-                _diagram.ShowNode(childClass);
-                ShowDerivedClasses(childClass);
+                yield return childClass;
+
+                foreach (var childClassOfChildClass in GetDerivedClassesRecursive(childClass))
+                    yield return childClassOfChildClass;
             }
         }
 
-        private void ShowDerivedInterfaces(RoslynBasedInterface @interface)
+        private static IEnumerable<IModelItem> GetDerivedInterfacesRecursive(RoslynBasedInterface @interface)
         {
             foreach (var @derivedInterface in @interface.DerivedInterfaces)
             {
-                _diagram.ShowNode(@derivedInterface);
-                ShowDerivedInterfaces(@derivedInterface);
+                yield return @derivedInterface;
+
+                foreach (var derivedInterfaceOfDerivedInterfaces in GetDerivedInterfacesRecursive(@derivedInterface))
+                    yield return derivedInterfaceOfDerivedInterfaces;
             }
         }
 
-        private void ShowImplementers(RoslynBasedInterface @interface)
+        private static IEnumerable<IModelItem> GetImplementers(RoslynBasedInterface @interface)
         {
-            foreach (var @class in @interface.ImplementerTypes)
-            {
-                _diagram.ShowNode(@class);
-            }
+            return @interface.ImplementerTypes;
         }
 
-        private void ShowBaseClass(RoslynBasedClass @class)
+        private static IEnumerable<IModelItem> GetBaseClassesRecursive(RoslynBasedClass @class)
         {
             if (@class.BaseClass != null)
             {
-                _diagram.ShowNode(@class.BaseClass);
-                ShowBaseClass(@class.BaseClass);
+                yield return @class.BaseClass;
+
+                foreach (var baseClasses in GetBaseClassesRecursive(@class.BaseClass))
+                    yield return baseClasses;
             }
         }
 
-        private void ShowBaseInterfaces(RoslynBasedInterface @interface)
+        private static IEnumerable<IModelItem> GetBaseInterfacesRecursive(RoslynBasedInterface @interface)
         {
             foreach (var baseInterface in @interface.BaseInterfaces)
             {
-                _diagram.ShowNode(baseInterface);
-                ShowBaseInterfaces(baseInterface);
-            }
-        }
+                yield return baseInterface;
 
-        private void UpdateLayout()
-        {
-            //var sugiyamaLayoutParameters = new SimplifiedSugiyamaLayoutParameters()
-            //{
-            //    VerticalGap = 40,
-            //    HorizontalGap = 15
-            //};
-            //_diagram.Layout(LayoutType.SimplifiedSugiyama, sugiyamaLayoutParameters);
+                foreach (var baseInterfaceOfBase in GetBaseInterfacesRecursive(baseInterface))
+                    yield return baseInterfaceOfBase;
+            }
         }
     }
 }

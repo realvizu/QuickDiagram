@@ -20,8 +20,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures
         {
             var newZoom = CalculateZoom();
             var contentCenter = DiagramViewport.ContentInDiagramSpace.GetCenter();
-            ZoomViewportTo(newZoom);
-            MoveViewportCenterInDiagramSpaceTo(contentCenter);
+            if (!double.IsNaN(newZoom) && !contentCenter.IsExtreme())
+            {
+                ZoomViewportTo(newZoom);
+                MoveViewportCenterInDiagramSpaceTo(contentCenter);
+            }
         }
 
         private double CalculateZoom()

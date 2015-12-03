@@ -37,8 +37,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         {
             _diagramConnector = diagramConnector;
             DataContext = diagramConnector;
-            RefreshBinding();
-            AnimateEnter();
         }
 
         protected override DiagramShape DiagramShape => _diagramConnector;
@@ -47,7 +45,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         {
             var rect = CalculateRect(_diagramConnector);
             Size = rect.Size;
-            Position = rect.Location;
+            MoveTo(rect.Location);
         }
 
         private static Rect CalculateRect(DiagramConnector diagramConnector)
