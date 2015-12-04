@@ -7,7 +7,7 @@
         <Menus>
             <Menu guid="SoftVisCommandSetGuid" id="DiagramMainMenu" type="Menu">
                 <Strings>
-                    <ButtonText>Diagram</ButtonText>
+                    <ButtonText>D&amp;iagram</ButtonText>
                 </Strings>
             </Menu>
             <Menu guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" type="ToolWindowToolbar">
@@ -46,19 +46,19 @@
         <Buttons>
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" type="Button">
                 <Strings>
-                    <ButtonText>Add to Diagram</ButtonText>
+                    <ButtonText>&amp;Add to Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" type="Button">
                 <Icon guid="guidImages" id="bmpPicX" />
                 <Strings>
-                    <ButtonText>Clear Diagram</ButtonText>
+                    <ButtonText>&amp;Clear Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1" type="Button">
                 <Icon guid="guidImages" id="bmpPicSearch" />
                 <Strings>
-                    <ButtonText>Show Diagram Window</ButtonText>
+                    <ButtonText>&amp;Show Diagram Window</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="IncreaseFontSizeCommand" priority="2" type="Button">
@@ -90,6 +90,12 @@
         </Bitmaps>
     </Commands>
 
+    <KeyBindings>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="a" mod2="Shift Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="c" mod2="Shift Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="s" mod2="Shift Control"/>
+    </KeyBindings>
+
     <CommandPlacements>
         <!-- MainMenu DIAGRAM item -->
         <CommandPlacement guid="SoftVisCommandSetGuid" id="DiagramMainMenu" priority="0x1000">
@@ -104,7 +110,7 @@
             <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
         </CommandPlacement>
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="2">
-            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />    
+            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
         </CommandPlacement>
 
         <!-- CodeEditor context menu -->
@@ -159,7 +165,7 @@
             <Parent guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup" />
         </CommandPlacement>
     </CommandPlacements>
-    
+
     <Symbols>
         <GuidSymbol name="SoftVisPackageGuid" value="{198d9322-583a-4112-a2a8-61f4c0818966}" />
 
@@ -194,5 +200,7 @@
             <IDSymbol name="bmpPicArrows" value="5" />
             <IDSymbol name="bmpPicStrikethrough" value="6" />
         </GuidSymbol>
+
+        <GuidSymbol name ="guidSourceCodeTextEditor" value="{8b382828-6202-11d1-8870-0000f87579d2}" />
     </Symbols>
 </CommandTable>
