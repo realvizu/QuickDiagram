@@ -2,6 +2,7 @@
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.Animations;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 {
@@ -43,24 +44,35 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 
         public override void RefreshBinding()
         {
-            var rect = CalculateRect(_diagramConnector);
-            Size = rect.Size;
+            var newRoutePoints = _diagramConnector.RoutePoints.Select(j => j.ToWpf()).ToArray();
+            var rect = CalculateRect(_diagramConnector.Source.Rect.ToWpf(), _diagramConnector.Target.Rect.ToWpf(), newRoutePoints);
+
+            Appear();
             MoveTo(rect.Location);
+            SizeTo(rect.Size);
+            RerouteTo(newRoutePoints);
         }
 
-        private static Rect CalculateRect(DiagramConnector diagramConnector)
+        private static Rect CalculateRect(Rect sourceRect, Rect targetRect, Point[] routePoints)
         {
-            var rectUnion = new[]
-            {
-                diagramConnector.Source.Rect.ToWpf(),
-                diagramConnector.Target.Rect.ToWpf()
-            }.Union();
-
-            var routePoints = diagramConnector.RoutePoints.Select(j => j.ToWpf());
+            var rectUnion = Rect.Union(sourceRect, targetRect);
             foreach (var routePoint in routePoints)
                 rectUnion.Union(routePoint);
-
             return rectUnion;
+        }
+
+        private void RerouteTo(Point[] newRoute)
+        {
+            if (RoutePoints == null)
+                RoutePoints = newRoute;
+            else
+                AnimateRoute(newRoute);
+        }
+
+        private void AnimateRoute(Point[] newRoute)
+        {
+            var animation = new PointArrayAnimation(RoutePoints, newRoute, ShapeMoveAnimationDuration);
+            BeginAnimation(RoutePointsProperty, animation);
         }
     }
 }

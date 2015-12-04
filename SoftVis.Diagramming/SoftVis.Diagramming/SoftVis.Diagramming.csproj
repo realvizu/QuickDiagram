@@ -163,6 +163,7 @@
     <Compile Include="Rendering\Common\ScaleCalculator.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventArgs.cs" />
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />
+    <Compile Include="Rendering\Wpf\Common\Animations\PointArrayAnimation.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\PointsToBoundingRectConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\RouteToWpfConverter.cs" />

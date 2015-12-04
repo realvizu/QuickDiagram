@@ -29,8 +29,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         public override void RefreshBinding()
         {
             var rect = _diagramNode.Rect.ToWpf();
-            Size = rect.Size;
+            Appear();
             MoveTo(rect.Location);
+            SizeTo(rect.Size);
         }
     }
 }

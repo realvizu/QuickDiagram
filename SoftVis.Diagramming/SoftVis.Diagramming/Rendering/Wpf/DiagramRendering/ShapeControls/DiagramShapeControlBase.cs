@@ -16,9 +16,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// </summary>
     public abstract class DiagramShapeControlBase : Control
     {
-        private static readonly Duration ShapeEnterAnimationDuration = new Duration(TimeSpan.FromMilliseconds(250));
-        private static readonly Duration ShapeExitAnimationDuration = ShapeEnterAnimationDuration;
-        private static readonly Duration ShapeMoveAnimationDuration = ShapeEnterAnimationDuration;
+        private static readonly Duration ShapeAppearAnimationDuration = new Duration(TimeSpan.FromMilliseconds(250));
+        private static readonly Duration ShapeDisappearAnimationDuration = ShapeAppearAnimationDuration;
+        protected static readonly Duration ShapeMoveAnimationDuration = ShapeAppearAnimationDuration;
 
         public static readonly DependencyProperty ScaleProperty =
             DependencyProperty.Register("Scale", typeof(double), typeof(DiagramShapeControlBase),
@@ -62,7 +62,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
 
         public void Remove(Action<DiagramShape, DiagramShapeControlBase> completedAction)
         {
-            var animation = new DoubleAnimation(1, 0, ShapeExitAnimationDuration);
+            var animation = new DoubleAnimation(1, 0, ShapeDisappearAnimationDuration);
             animation.Completed += (s, a) => completedAction(DiagramShape, this);
             BeginAnimation(ScaleProperty, animation);
         }
@@ -74,22 +74,31 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
             return Size;
         }
 
+        protected void Appear()
+        {
+            if (Position.IsExtreme())
+                AnimateAppear();
+        }
+
         protected void MoveTo(Point newPosition)
         {
             if (Position.IsExtreme())
-            {
                 Position = newPosition;
-                AnimateEnter();
-            }
             else
-            {
                 AnimateMove(newPosition);
-            }
         }
 
-        private void AnimateEnter()
+        protected void SizeTo(Size newSize)
         {
-            var animation = new DoubleAnimation(0, 1, ShapeEnterAnimationDuration);
+            if (Size == Size.Empty)
+                Size = newSize;
+            else
+                AnimateSize(newSize);
+        }
+
+        private void AnimateAppear()
+        {
+            var animation = new DoubleAnimation(0, 1, ShapeAppearAnimationDuration);
             BeginAnimation(ScaleProperty, animation);
         }
 
@@ -97,6 +106,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
         {
             var animation = new PointAnimation(toPosition, ShapeMoveAnimationDuration);
             BeginAnimation(PositionProperty, animation);
+        }
+
+        private void AnimateSize(Size toSize)
+        {
+            var animation = new SizeAnimation(toSize, ShapeMoveAnimationDuration);
+            BeginAnimation(SizeProperty, animation);
         }
     }
 }
