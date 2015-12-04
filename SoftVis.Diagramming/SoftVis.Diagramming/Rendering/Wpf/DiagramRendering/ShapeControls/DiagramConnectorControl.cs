@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// <summary>
     /// This control draws a diagram connector on its parent canvas/panel.
     /// The visual appearance and the data bindings to its ViewModel are defined in XAML.
-    /// The PathGeometry of the connector (arrow) is created by PointsToPathRelativeToRectConverter.
+    /// The PathGeometry of the connector (arrow) is created by PointsToPathConverter.
     /// </summary>
     public sealed class DiagramConnectorControl : DiagramShapeControlBase
     {

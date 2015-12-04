@@ -8,7 +8,7 @@
                     xmlns:viewModels="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels">
 
     <converters:RouteToWpfConverter x:Key="RouteToWpfConverter" />
-    <shapeControls:PointsToPathRelativeToRectConverter x:Key="PointsToPathRelativeToRectConverter" />
+    <shapeControls:PointsToPathConverter x:Key="PointsToPathConverter" />
 
     <Style TargetType="{x:Type shapeControls:DiagramConnectorControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramConnectorViewModel}}">
@@ -21,7 +21,7 @@
                           Fill="{TemplateBinding Background}"
                           StrokeThickness="1" >
                         <Path.Data>
-                            <MultiBinding Converter="{StaticResource PointsToPathRelativeToRectConverter}">
+                            <MultiBinding Converter="{StaticResource PointsToPathConverter}">
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Size" />
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Position" />

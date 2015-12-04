@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
     /// <summary>
     /// Creates a path from the supplied Point[] that is relative to the supplied Rect (given with size and position).
     /// </summary>
-    public class PointsToPathRelativeToRectConverter : IMultiValueConverter
+    public class PointsToPathConverter : IMultiValueConverter
     {
         private const double ArrowHeadSize = 10;
         private const double ArrowHeadWidthPerLength = 0.5;
@@ -26,8 +26,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls
                 !(value[0] is Point[]) ||
                 !(value[1] is Size) ||
                 !(value[2] is Point))
-                return null;
-                //throw new ArgumentException($"{typeof(PointsToPathRelativeToRectConverter)} expects these parameters: Point[], Rect.");
+                throw new ArgumentException($"{typeof(PointsToPathConverter)} expects these parameters: Point[], Size, Point.");
 
             var routePoints = (Point[])value[0];
             var boundingRect = new Rect((Point) value[2], (Size) value[1]);

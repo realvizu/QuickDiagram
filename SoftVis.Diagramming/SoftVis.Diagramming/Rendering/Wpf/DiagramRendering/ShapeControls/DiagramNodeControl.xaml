@@ -10,7 +10,6 @@
 
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
-    <converters:RectToWpfConverter x:Key="RectToWpfConverter" />
 
     <Style TargetType="{x:Type shapeControls:DiagramNodeControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramNodeViewModel}}">

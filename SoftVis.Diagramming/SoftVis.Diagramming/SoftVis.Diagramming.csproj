@@ -179,7 +179,7 @@
     <Compile Include="Rendering\Wpf\Common\PointExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\WpfConstants.cs" />
-    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToPathRelativeToRectConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToPathConverter.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\DiagramPanelBase.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\ViewModels\DiagramConnectorViewModel.cs" />

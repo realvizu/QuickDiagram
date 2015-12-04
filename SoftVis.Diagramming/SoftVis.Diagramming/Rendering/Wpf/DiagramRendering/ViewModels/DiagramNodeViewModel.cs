@@ -31,7 +31,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
                 {
                     base.Position = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(Rect));
                 }
             }
         }
@@ -45,7 +44,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
                 {
                     base.Size = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(Rect));
                 }
             }
         }
