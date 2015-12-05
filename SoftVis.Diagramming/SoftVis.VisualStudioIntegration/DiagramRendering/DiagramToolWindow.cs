@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
     /// Implements a Visual Studio tool window that displays a diagram.
     /// </summary>
     [Guid("02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e")]
-    public class DiagramToolWindow : ToolWindowPane
+    public sealed class DiagramToolWindow : ToolWindowPane
     {
         private const string DiagramStylesXaml = "DiagramRendering/DiagramStyles.xaml";
 

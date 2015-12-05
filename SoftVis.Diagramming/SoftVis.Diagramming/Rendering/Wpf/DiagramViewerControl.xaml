@@ -14,6 +14,7 @@
         <Setter Property="MinZoom" Value="0.2"/>
         <Setter Property="MaxZoom" Value="10"/>
         <Setter Property="Background" Value="Beige"/>
+        <Setter Property="ClipToBounds" Value="True"/>
         <Setter Property="RenderOptions.EdgeMode" Value="Unspecified"/>
         <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
         <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
@@ -22,15 +23,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type this:DiagramViewerControl}">
-                    <Canvas>
-                        <viewport:DiagramViewportPanel x:Name="PART_DiagramViewportPanel" 
+                    <Canvas ClipToBounds="True">
+                        <AdornerDecorator>
+                            <viewport:DiagramViewportPanel x:Name="PART_DiagramViewportPanel" 
                                                        Focusable="False"
                                                        ClipToBounds="True" 
                                                        Background="{TemplateBinding Background}"
                                                        Diagram="{TemplateBinding Diagram}"
                                                        MinZoom="{TemplateBinding MinZoom}" 
                                                        MaxZoom="{TemplateBinding MaxZoom}" />
-
+                        </AdornerDecorator>
                         <inputControls:PanAndZoomControl x:Name="PART_PanAndZoomControl" 
                                                          Focusable="False"
                                                          IsTabStop="False"

@@ -84,6 +84,21 @@ namespace Codartis.SoftVis.Diagramming
             Layout();
         }
 
+        public void SelectShape(DiagramShape diagramShape)
+        {
+            OnShapeSelected(diagramShape);
+        }
+
+        public void ActivateShape(DiagramShape diagramShape)
+        {
+            OnShapeActivated(diagramShape);
+        }
+
+        public void RemoveShape(DiagramShape diagramShape)
+        {
+            HideItems(new[] { diagramShape.ModelItem });
+        }
+
         /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
@@ -263,19 +278,19 @@ namespace Codartis.SoftVis.Diagramming
             return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
-        private void OnShapeAdded(DiagramShape shape)
+        private void OnShapeAdded(DiagramShape diagramShape)
         {
-            ShapeAdded?.Invoke(this, shape);
+            ShapeAdded?.Invoke(this, diagramShape);
         }
 
-        private void OnShapeMoved(DiagramShape shape)
+        private void OnShapeMoved(DiagramShape diagramShape)
         {
-            ShapeMoved?.Invoke(this, shape);
+            ShapeMoved?.Invoke(this, diagramShape);
         }
 
-        private void OnShapeRemoved(DiagramShape shape)
+        private void OnShapeRemoved(DiagramShape diagramShape)
         {
-            ShapeRemoved?.Invoke(this, shape);
+            ShapeRemoved?.Invoke(this, diagramShape);
         }
 
         private void OnCleared()
@@ -283,12 +298,12 @@ namespace Codartis.SoftVis.Diagramming
             Cleared?.Invoke(this, EventArgs.Empty);
         }
 
-        public void OnShapeSelected(DiagramShape diagramShape)
+        private void OnShapeSelected(DiagramShape diagramShape)
         {
             ShapeSelected?.Invoke(this, diagramShape);
         }
 
-        public void OnShapeActivated(DiagramShape diagramShape)
+        private void OnShapeActivated(DiagramShape diagramShape)
         {
             ShapeActivated?.Invoke(this, diagramShape);
         }

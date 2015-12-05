@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
@@ -107,15 +106,15 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
                 CreateDiagramConnectorControl(connector);
         }
 
-        private void CreateDiagramNodeControl(DiagramNode diagramNode)
+        protected virtual DiagramNodeControl CreateDiagramNodeControl(DiagramNode diagramNode)
         {
             var control = new DiagramNodeControl(diagramNode);
-            control.PreviewMouseDoubleClick += OnDiagramNodeDoubleClicked;
-            control.PreviewMouseLeftButtonDown += OnDiagramNodeLeftButtonDown;
+            Children.Add(control);
 
             DiagramShapeToControlMap.Set(diagramNode, control);
             ControlToDiagramShapeMap.Set(control, diagramNode);
-            Children.Add(control);
+
+            return control;
         }
 
         private void CreateDiagramConnectorControl(DiagramConnector diagramConnector)
@@ -137,25 +136,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             Children.Remove(control);
             DiagramShapeToControlMap.Remove(diagramShape);
             ControlToDiagramShapeMap.Remove(control);
-        }
-
-        private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var senderDiagramNode = sender as DiagramNodeControl;
-            if (senderDiagramNode == null || !ControlToDiagramShapeMap.Contains(senderDiagramNode))
-                return;
-
-            Diagram.OnShapeSelected(ControlToDiagramShapeMap.Get(senderDiagramNode));
-        }
-
-        private void OnDiagramNodeDoubleClicked(object sender, MouseButtonEventArgs e)
-        {
-            var senderDiagramNode = sender as DiagramNodeControl;
-            if (senderDiagramNode == null || !ControlToDiagramShapeMap.Contains(senderDiagramNode))
-                return;
-
-            Diagram.OnShapeActivated(ControlToDiagramShapeMap.Get(senderDiagramNode));
-            e.Handled = true;
         }
     }
 }

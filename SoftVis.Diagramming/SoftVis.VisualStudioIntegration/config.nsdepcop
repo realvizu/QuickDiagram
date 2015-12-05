@@ -37,6 +37,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered" To="Microsoft.VisualStudio.Shell" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.EventTriggered" To="Codartis.SoftVis.VisualStudioIntegration.Events" />
 
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Diagramming.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Rendering.Wpf.*" />
@@ -47,6 +48,7 @@
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Diagramming.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.*" />

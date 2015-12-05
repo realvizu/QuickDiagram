@@ -15,6 +15,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         private IWorkspaceServices WorkspaceServices { get; }
         private RoslynBasedModel Model { get; }
 
+        private static readonly List<string> TrivialBaseSymbolNames =
+            new List<string>
+            {
+                "System.Object",
+                "object"
+            };
+
         internal RoslynBasedModelBuilder(IWorkspaceServices workspaceServices)
         {
             WorkspaceServices = workspaceServices;
@@ -84,12 +91,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         {
             EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
 
-            if (classSymbol.BaseType != null)
+            if (classSymbol.BaseType != null && !IsBaseHidden(classSymbol.BaseType))
             {
                 Model.GetOrAddEntity(classSymbol.BaseType);
                 Model.GetOrAddRelationship(classSymbol, classSymbol.BaseType, ModelRelationshipType.Generalization);
                 AddBaseClass(classSymbol.BaseType);
             }
+        }
+
+        private static bool IsBaseHidden(INamedTypeSymbol classSymbol)
+        {
+            EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
+
+            return GlobalOptions.HideTrivialBaseEntities && TrivialBaseSymbolNames.Contains(classSymbol.GetFullyQualifiedName());
         }
 
         private void AddImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)

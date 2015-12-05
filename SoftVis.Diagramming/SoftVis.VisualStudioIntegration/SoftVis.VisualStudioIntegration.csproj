@@ -67,6 +67,7 @@
     <Compile Include="Commands\EventTriggered\EventTriggeredCommandBase.cs" />
     <Compile Include="Commands\EventTriggered\ShowSourceFileCommand.cs" />
     <Compile Include="Diagramming\RoslynBasedWpfDiagram.cs" />
+    <Compile Include="DiagramRendering\RoslynBasedDiagramNodeViewModel.cs" />
     <Compile Include="DiagramRendering\StereotypeToBackgroundBrushConverter.cs" />
     <Compile Include="DiagramRendering\StereotypeToImageUriConverter.cs" />
     <Compile Include="DiagramRendering\FrameworkElementExtensions.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="DiagramRendering\WpfHelpers.cs" />
     <Compile Include="Events\DiagramNodeActivatedEventArgs.cs" />
     <Compile Include="Diagramming\DiagramManager.cs" />
+    <Compile Include="GlobalOptions.cs" />
     <Compile Include="ImageExport\Dpi.cs" />
     <Compile Include="Modeling\Building\ImplementingTypesFinderVisitor.cs" />
     <Compile Include="Modeling\IModelServices.cs" />
@@ -320,7 +322,6 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftVis.Diagramming\SoftVis.Diagramming.csproj">

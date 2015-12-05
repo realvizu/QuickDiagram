@@ -43,6 +43,6 @@
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.*" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands" />
 </NsDepCopConfig>

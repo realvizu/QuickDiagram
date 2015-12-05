@@ -1,5 +1,7 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
+using Codartis.SoftVis.VisualStudioIntegration.DiagramRendering;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
@@ -20,6 +22,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
                     ShowRelationship(modelRelationship);
                 }
             }
+        }
+
+        protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
+        {
+            var size = CalculateDiagramNodeSize(modelEntity);
+            return new RoslynBasedDiagramNodeViewModel(modelEntity, DiagramDefaults.DefaultNodePosition, size);
         }
     }
 }

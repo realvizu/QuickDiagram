@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
                 : new Size2D(size.Width, size.Height + 10);
         }
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

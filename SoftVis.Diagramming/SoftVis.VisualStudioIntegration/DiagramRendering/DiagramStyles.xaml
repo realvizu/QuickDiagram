@@ -5,18 +5,17 @@
                     mc:Ignorable="d"  
                     xmlns:rendering="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
                     xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;assembly=SoftVis.Diagramming"
-                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;assembly=SoftVis.Diagramming"
-                    xmlns:converters="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.DiagramRendering">
+                    xmlns:diagramRendering="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.DiagramRendering">
 
-    <converters:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
-    <converters:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
+    <diagramRendering:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
+    <diagramRendering:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
 
     <Style TargetType="{x:Type rendering:DiagramViewerControl}">
         <Setter Property="Background" Value="WhiteSmoke"/>
     </Style>
 
     <Style TargetType="{x:Type shapeControls:DiagramNodeControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramNodeViewModel}}">
+           d:DataContext="{d:DesignInstance {x:Type diagramRendering:RoslynBasedDiagramNodeViewModel}}">
         <Setter Property="Background" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"></Setter>
         <Setter Property="Template">
             <Setter.Value>
@@ -26,20 +25,21 @@
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}">
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="16"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Image Grid.Row="0" Margin="1" HorizontalAlignment="Left" 
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="16"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="0" Margin="1" HorizontalAlignment="Left" 
                                    Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
-                            <TextBlock Grid.Row="1" Margin="2,0,2,0" 
-                                       VerticalAlignment="Top" HorizontalAlignment="Center"
-                                       Text="{Binding Path=Name, Mode=OneWay}" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="1" Margin="2,0,2,0" 
+                                           VerticalAlignment="Top" HorizontalAlignment="Center"
+                                           FontStyle="{Binding Path=FontStyle, Mode=OneWay}"
+                                           Text="{Binding Path=Name, Mode=OneWay}" TextWrapping="Wrap"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>

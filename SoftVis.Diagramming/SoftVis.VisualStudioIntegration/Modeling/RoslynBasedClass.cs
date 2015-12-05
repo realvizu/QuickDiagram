@@ -16,6 +16,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         public override int Priority => 4;
 
+        public bool IsAbstract => RoslynSymbol.IsAbstract;
+
         public RoslynBasedClass BaseClass
         {
             get
