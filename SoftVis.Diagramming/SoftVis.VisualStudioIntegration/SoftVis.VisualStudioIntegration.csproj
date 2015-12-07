@@ -52,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\ShellTriggered\AddToDiagramWithRelatedEntitiesCommand.cs" />
     <Compile Include="Commands\ShellTriggered\AddToDiagramCommand.cs" />
     <Compile Include="Commands\ShellTriggered\ClearDiagramCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />

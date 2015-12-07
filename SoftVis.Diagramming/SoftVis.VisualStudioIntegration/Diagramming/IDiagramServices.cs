@@ -14,6 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         void ShowDiagram();
         void ShowModelEntity(IModelEntity modelEntity);
+        void ShowModelEntityWithRelatedEntities(IModelEntity modelEntity);
         void FitDiagramToView();
         void ClearDiagram();
         BitmapSource GetDiagramAsBitmap();

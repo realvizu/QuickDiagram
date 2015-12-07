@@ -49,6 +49,11 @@
                     <ButtonText>&amp;Add to Diagram</ButtonText>
                 </Strings>
             </Button>
+            <Button guid="SoftVisCommandSetGuid" id="AddToDiagramWithRelatedEntitiesCommand" type="Button">
+                <Strings>
+                    <ButtonText>Add to Diagram &amp;With Related Entities</ButtonText>
+                </Strings>
+            </Button>
             <Button guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" type="Button">
                 <Icon guid="guidImages" id="bmpPicX" />
                 <Strings>
@@ -92,6 +97,7 @@
 
     <KeyBindings>
         <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="a" mod2="Shift Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithRelatedEntitiesCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="w" mod2="Shift Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="c" mod2="Shift Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="s" mod2="Shift Control"/>
     </KeyBindings>
@@ -119,6 +125,9 @@
         </CommandPlacement>
 
         <CommandPlacement guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="CodeEditorCommandGroup" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="AddToDiagramWithRelatedEntitiesCommand" priority="2">
             <Parent guid="SoftVisCommandSetGuid" id="CodeEditorCommandGroup" />
         </CommandPlacement>
 
@@ -183,13 +192,14 @@
 
             <IDSymbol name="ShowDiagramWindowCommand" value="100"/>
             <IDSymbol name="AddToDiagramCommand" value="101" />
-            <IDSymbol name="ClearDiagramCommand" value="102"/>
-            <IDSymbol name="IncreaseFontSizeCommand" value="103"/>
-            <IDSymbol name="DecreaseFontSizeCommand" value="104"/>
-            <IDSymbol name="CopyToClipboardCommand" value="105"/>
-            <IDSymbol name="ExportToFileCommand" value="106"/>
-            <IDSymbol name="ImageDpiComboCommand" value="107" />
-            <IDSymbol name="ImageDpiComboGetItemsCommand" value="108" />
+            <IDSymbol name="AddToDiagramWithRelatedEntitiesCommand" value="102" />
+            <IDSymbol name="ClearDiagramCommand" value="103"/>
+            <IDSymbol name="IncreaseFontSizeCommand" value="104"/>
+            <IDSymbol name="DecreaseFontSizeCommand" value="105"/>
+            <IDSymbol name="CopyToClipboardCommand" value="106"/>
+            <IDSymbol name="ExportToFileCommand" value="107"/>
+            <IDSymbol name="ImageDpiComboCommand" value="108" />
+            <IDSymbol name="ImageDpiComboGetItemsCommand" value="109" />
         </GuidSymbol>
 
         <GuidSymbol name="guidImages" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">

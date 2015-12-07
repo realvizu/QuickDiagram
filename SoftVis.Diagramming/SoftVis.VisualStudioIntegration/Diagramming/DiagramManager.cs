@@ -68,6 +68,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             _diagramBuilder.ShowModelEntity(modelEntity);
         }
 
+        public void ShowModelEntityWithRelatedEntities(IModelEntity modelEntity)
+        {
+            _diagramBuilder.ShowModelEntityWithRelatedEntities(modelEntity);
+        }
+
         private void OnShapeSelected(object sender, DiagramShape diagramShape)
         {
             // TODO

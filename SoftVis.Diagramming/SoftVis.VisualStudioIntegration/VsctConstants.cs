@@ -10,13 +10,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration
 
         internal const int ShowDiagramWindowCommand = 100;
         internal const int AddToDiagramCommand = 101;
-        internal const int ClearDiagramCommand = 102;
-        internal const int IncreaseFontSizeCommand = 103;
-        internal const int DecreaseFontSizeCommand = 104;
-        internal const int CopyToClipboradCommand = 105;
-        internal const int ExportToFileCommand = 106;
-        internal const int ImageDpiComboCommand = 107;
-        internal const int ImageDpiComboGetItemsCommand = 108;
+        internal const int AddToDiagramWithRelatedEntitiesCommand = 102;
+        internal const int ClearDiagramCommand = 103;
+        internal const int IncreaseFontSizeCommand = 104;
+        internal const int DecreaseFontSizeCommand = 105;
+        internal const int CopyToClipboradCommand = 106;
+        internal const int ExportToFileCommand = 107;
+        internal const int ImageDpiComboCommand = 108;
+        internal const int ImageDpiComboGetItemsCommand = 109;
 
     }
 }
