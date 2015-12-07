@@ -19,6 +19,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public void ShowModelEntity(IModelEntity modelEntity)
         {
+            _diagram.ShowItems(new[] { modelEntity });
+        }
+
+        public void ShowModelEntityWithRelatedEntities(IModelEntity modelEntity)
+        {
             IEnumerable<IModelItem> modelItems;
 
             if (modelEntity is RoslynBasedClass)

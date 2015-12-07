@@ -5,7 +5,8 @@
                     mc:Ignorable="d"  
                     xmlns:rendering="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
                     xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;assembly=SoftVis.Diagramming"
-                    xmlns:diagramRendering="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.DiagramRendering">
+                    xmlns:diagramRendering="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.DiagramRendering"
+                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;assembly=SoftVis.Diagramming">
 
     <diagramRendering:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
     <diagramRendering:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
@@ -15,7 +16,7 @@
     </Style>
 
     <Style TargetType="{x:Type shapeControls:DiagramNodeControl}"
-           d:DataContext="{d:DesignInstance {x:Type diagramRendering:RoslynBasedDiagramNodeViewModel}}">
+           d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramNodeViewModel}}">
         <Setter Property="Background" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"></Setter>
         <Setter Property="Template">
             <Setter.Value>

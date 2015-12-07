@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -21,7 +22,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
         public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
         public bool IsStereotypeVisible => Stereotype != null;
         public string StereotypeText => $"<<{Stereotype?.Name.ToLower()}>>";
-
+        public FontStyle FontStyle => ModelEntity.IsAbstract ? FontStyles.Oblique : FontStyles.Normal;
+        
         public override Point2D Position
         {
             get { return base.Position; }
@@ -55,7 +57,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels
                 : new Size2D(size.Width, size.Height + 10);
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

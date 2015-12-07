@@ -29,6 +29,8 @@ namespace Codartis.SoftVis.Modeling
         /// </summary>
         int Priority { get; }
 
+        bool IsAbstract { get; }
+
         /// <summary>
         /// All relationships within the model whose source entity is this.
         /// </summary>
