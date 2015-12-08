@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
@@ -8,6 +9,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynBasedWpfDiagram : WpfDiagram
     {
+        public RoslynBasedWpfDiagram(IDiagramExtensionProvider extensionProvider) 
+            : base(extensionProvider)
+        {
+        }
+
         protected override void ShowEntity(IModelEntity modelEntity)
         {
             base.ShowEntity(modelEntity);

@@ -9,5 +9,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common
         {
             return new Point(point2D.X, point2D.Y);
         }
+
+        public static Vector ToVector(this Point2D point2D)
+        {
+            return new Vector(point2D.X, point2D.Y);
+        }
     }
 }

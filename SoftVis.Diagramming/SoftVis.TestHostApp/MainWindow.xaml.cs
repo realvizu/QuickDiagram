@@ -27,7 +27,8 @@ namespace Codartis.SoftVis.TestHostApp
             base.OnApplyTemplate();
 
             _testModel = TestModel.Create();
-            _testDiagram = new TestDiagram(_testModel);
+            var diagramStyleProvider = new TestDiagramExtensionProvider();
+            _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
 
             DiagramViewerControl.DataContext = _testDiagram;
 

@@ -11,6 +11,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
     /// </summary>
     public class WpfDiagram : Diagram
     {
+        public WpfDiagram(IDiagramExtensionProvider extensionProvider) 
+            : base(extensionProvider)
+        {
+        }
+
         protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
         {
             var size = CalculateDiagramNodeSize(modelEntity);
@@ -29,7 +34,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         {
             var sourceNode = (DiagramNodeViewModel)FindNode(relationship.Source);
             var targetNode = (DiagramNodeViewModel)FindNode(relationship.Target);
-            return new DiagramConnectorViewModel(relationship, sourceNode, targetNode);
+            return new DiagramConnectorViewModel(relationship, sourceNode, targetNode, ExtensionProvider);
         }
     }
 }

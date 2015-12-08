@@ -9,7 +9,7 @@ using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls.Adorners;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls.MiniButtons;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 {
@@ -210,17 +210,44 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         private void AddAdorners(Control control)
         {
-            var closeButtonAdorner = new CloseButtonAdorner(control);
-            closeButtonAdorner.MouseEnter += OnCloseButtonAdornerMouseEnterOrLeave;
-            closeButtonAdorner.MouseLeave += OnCloseButtonAdornerMouseEnterOrLeave;
-            closeButtonAdorner.PreviewMouseLeftButtonDown += OnCloseButtonClick;
-
             var adornerLayer = AdornerLayer.GetAdornerLayer(control);
             if (adornerLayer == null)
                 throw new Exception("No adorner layer.");
-            adornerLayer.Add(closeButtonAdorner);
 
-            _controlToAdornersMap[control] = new List<Adorner> { closeButtonAdorner };
+            _controlToAdornersMap[control] = new List<Adorner>();
+
+            var closeMiniButton = CreateCloseButtonAdorner(control);
+            AddAdorner(control, adornerLayer, closeMiniButton);
+
+            foreach (var relatedEntityMiniButtonDescriptor in Diagram.GetRelatedEntityMiniButtonDescriptors())
+            {
+                var relatedEntityMiniButton = CreateRelatedEntityMiniButton(control, relatedEntityMiniButtonDescriptor);
+                AddAdorner(control, adornerLayer, relatedEntityMiniButton);
+            }
+        }
+
+        private void AddAdorner(Control control, AdornerLayer adornerLayer, Adorner adorner)
+        {
+            adornerLayer.Add(adorner);
+            _controlToAdornersMap[control].Add(adorner);
+        }
+
+        private CloseMiniButton CreateCloseButtonAdorner(Control control)
+        {
+            var closeMiniButton = new CloseMiniButton(control);
+            closeMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
+            closeMiniButton.MouseLeave += OnMiniButtonMouseEnterOrLeave;
+            closeMiniButton.PreviewMouseLeftButtonDown += OnCloseButtonClick;
+            return closeMiniButton;
+        }
+
+        private ShowRelatedEntityMiniButton CreateRelatedEntityMiniButton(Control control, RelatedEntityMiniButtonDescriptor relatedEntityMiniButtonDescriptor)
+        {
+            var showRelatedEntityMiniButton = new ShowRelatedEntityMiniButton(relatedEntityMiniButtonDescriptor, control);
+            showRelatedEntityMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
+            showRelatedEntityMiniButton.MouseLeave += OnMiniButtonMouseEnterOrLeave;
+            //miniButton.PreviewMouseLeftButtonDown += OnRelatedEntityMiniButtonClick;
+            return showRelatedEntityMiniButton;
         }
 
         private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -244,7 +271,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         private void OnCloseButtonClick(object sender, MouseButtonEventArgs e)
         {
-            var diagramNode = ((CloseButtonAdorner)sender).AdornedElement as DiagramNodeControl;
+            var diagramNode = ((CloseMiniButton)sender).AdornedElement as DiagramNodeControl;
             if (diagramNode == null || !ControlToDiagramShapeMap.Contains(diagramNode))
                 return;
 
@@ -257,7 +284,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             HitTestAndSetAdornersVisibility((DiagramShapeControlBase)sender, e);
         }
 
-        private void OnCloseButtonAdornerMouseEnterOrLeave(object sender, MouseEventArgs e)
+        private void OnMiniButtonMouseEnterOrLeave(object sender, MouseEventArgs e)
         {
             var adorner = (Adorner)sender;
             HitTestAndSetAdornersVisibility((DiagramShapeControlBase)adorner.AdornedElement, e);

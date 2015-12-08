@@ -22,6 +22,8 @@ namespace Codartis.SoftVis.Diagramming
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
     public abstract class Diagram : IArrangeableDiagram
     {
+        protected readonly IDiagramExtensionProvider ExtensionProvider;
+
         private readonly DiagramGraph _graph;
         private readonly IIncrementalLayoutEngine _incrementalLayoutEngine;
         private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
@@ -34,8 +36,13 @@ namespace Codartis.SoftVis.Diagramming
         public event EventHandler<DiagramShape> ShapeActivated;
         public event EventHandler Cleared;
 
-        protected Diagram()
+        protected Diagram(IDiagramExtensionProvider extensionProvider)
         {
+            if (extensionProvider == null)
+                throw new ArgumentNullException(nameof(extensionProvider));
+
+            ExtensionProvider = extensionProvider;
+
             _graph = new DiagramGraph();
             _incrementalLayoutEngine = new IncrementalLayoutEngine();
             _layoutActionExecutor = new LayoutActionExecutorVisitor(this);
@@ -44,6 +51,9 @@ namespace Codartis.SoftVis.Diagramming
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
+
+        public IEnumerable<RelatedEntityMiniButtonDescriptor> GetRelatedEntityMiniButtonDescriptors()
+            => ExtensionProvider.GetRelatedEntityMiniButtonDescriptors();
 
         /// <summary>
         /// Clear the diagram (that is, hide all nodes and connectors).

@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public DiagramManager(DiagramToolWindow diagramToolWindow)
         {
-            _diagram = new RoslynBasedWpfDiagram();
+            _diagram = new RoslynBasedWpfDiagram(new DefaultDiagramExtensionProvider());
             _diagram.ShapeSelected += OnShapeSelected;
             _diagram.ShapeActivated += OnShapeActivated;
 

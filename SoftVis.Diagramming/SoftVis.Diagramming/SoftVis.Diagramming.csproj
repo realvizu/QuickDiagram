@@ -64,12 +64,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Map.cs" />
+    <Compile Include="Diagramming\ArrowHeadType.cs" />
+    <Compile Include="Diagramming\BuiltInConnectorStyles.cs" />
+    <Compile Include="Diagramming\ConnectorStyle.cs" />
+    <Compile Include="Diagramming\DefaultDiagramExtensionProvider.cs" />
     <Compile Include="Diagramming\Diagram.cs" />
     <Compile Include="Diagramming\DiagramDefaults.cs" />
     <Compile Include="Diagramming\DiagramConnectorAction.cs" />
     <Compile Include="Diagramming\DiagramNodeAction.cs" />
     <Compile Include="Diagramming\DiagramShapeAction.cs" />
     <Compile Include="Diagramming\IArrangeableDiagram.cs" />
+    <Compile Include="Diagramming\IDiagramExtensionProvider.cs" />
     <Compile Include="Diagramming\IReadOnlyDiagramGraph.cs" />
     <Compile Include="Common\IFilterable.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Absolute\AbsolutePositionCalculator.cs" />
@@ -80,7 +85,10 @@
     <Compile Include="Diagramming\Layout\Incremental\LayoutPath.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutVertexBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayeredLayoutGraph.cs" />
+    <Compile Include="Diagramming\LineType.cs" />
+    <Compile Include="Geometry\RectRelativeLocation.cs" />
     <Compile Include="Diagramming\ShapeActionType.cs" />
+    <Compile Include="Geometry\RectReferencePoint.cs" />
     <Compile Include="Graphs\IReadOnlyLayeredGraph.cs" />
     <Compile Include="Graphs\LayeredGraph.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\RelativeLayout.cs" />
@@ -151,6 +159,7 @@
     <Compile Include="Modeling\IModelItem.cs" />
     <Compile Include="Modeling\IModelEntity.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
+    <Compile Include="Modeling\ModelRelationshipDirection.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
     <Compile Include="Modeling\ModelEntityStereotype.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />
@@ -179,8 +188,13 @@
     <Compile Include="Rendering\Wpf\Common\PointExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\WpfConstants.cs" />
-    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\Adorners\CloseButtonAdorner.cs" />
-    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\MiniButtons\MiniButtonBase.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\MiniButtons\ShowRelatedEntityMiniButton.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\MiniButtons\CloseMiniButton.cs" />
+    <Compile Include="Diagramming\RelatedEntityMiniButtonDescriptor.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToArrowHeadPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToArrowShaftPathConverter.cs" />
+    <Compile Include="Rendering\Wpf\DiagramRendering\ShapeControls\PointsToPathConverterBase.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\DiagramPanelBase.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
     <Compile Include="Rendering\Wpf\DiagramRendering\ViewModels\DiagramConnectorViewModel.cs" />
