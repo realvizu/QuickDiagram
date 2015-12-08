@@ -1,8 +1,9 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {
@@ -11,8 +12,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
     /// </summary>
     public class WpfDiagram : Diagram
     {
-        public WpfDiagram(IDiagramExtensionProvider extensionProvider) 
-            : base(extensionProvider)
+        public WpfDiagram(IConnectorTypeResolver connectorTypeResolver) 
+            : base(connectorTypeResolver)
         {
         }
 
@@ -34,7 +35,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
         {
             var sourceNode = (DiagramNodeViewModel)FindNode(relationship.Source);
             var targetNode = (DiagramNodeViewModel)FindNode(relationship.Target);
-            return new DiagramConnectorViewModel(relationship, sourceNode, targetNode, ExtensionProvider);
+            var connectorType = ConnectorTypeResolver.GetConnectorType(relationship);
+            return new DiagramConnectorViewModel(relationship, sourceNode, targetNode, connectorType);
         }
     }
 }

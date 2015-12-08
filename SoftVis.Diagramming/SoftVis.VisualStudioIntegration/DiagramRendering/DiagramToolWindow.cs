@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;
@@ -35,7 +36,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
 
         internal void Initialize(Diagram diagram)
         {
-            _diagramViewerControl.DataContext = diagram;
+            var diagramBehaviourProvider = new DefaultDiagramBehaviourProvider();
+            _diagramViewerControl.DataContext = new DiagramViewerViewModel(diagram, diagramBehaviourProvider);
         }
 
         public int FontSize

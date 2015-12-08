@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Modeling
         public abstract int Priority { get; }
         public virtual bool IsAbstract => false;
 
-        public ModelEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype = null)
+        protected ModelEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype = null)
         {
             Name = name;
             Type = type;

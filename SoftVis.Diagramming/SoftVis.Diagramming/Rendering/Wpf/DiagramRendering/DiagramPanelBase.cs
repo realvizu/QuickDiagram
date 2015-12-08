@@ -4,8 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Rendering.Wpf.Common;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {

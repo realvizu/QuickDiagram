@@ -1,3 +1,4 @@
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.TestSubjects;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders

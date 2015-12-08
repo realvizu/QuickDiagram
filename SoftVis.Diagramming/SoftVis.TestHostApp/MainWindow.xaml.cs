@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Threading;
+using Codartis.SoftVis.Rendering.Wpf;
 using Codartis.SoftVis.TestHostApp.TestData;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -27,10 +27,13 @@ namespace Codartis.SoftVis.TestHostApp
             base.OnApplyTemplate();
 
             _testModel = TestModel.Create();
-            var diagramStyleProvider = new TestDiagramExtensionProvider();
+
+            var diagramStyleProvider = new TestConnectorTypeResolver();
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
 
-            DiagramViewerControl.DataContext = _testDiagram;
+            var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
+            var diagramViewerViewModel = new DiagramViewerViewModel(_testDiagram, diagramBehaviourProvider);
+            DiagramViewerControl.DataContext = diagramViewerViewModel;
 
             FitToView();
 

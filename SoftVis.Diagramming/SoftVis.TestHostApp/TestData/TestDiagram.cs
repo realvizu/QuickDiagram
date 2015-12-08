@@ -4,16 +4,16 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    class TestDiagram : WpfDiagram
+    internal class TestDiagram : WpfDiagram
     {
         public List<List<IModelItem>> ModelItemGroups { get; }
 
-        public TestDiagram(IDiagramExtensionProvider extensionProvider, TestModel model) 
-            : base(extensionProvider)
+        public TestDiagram(IConnectorTypeResolver connectorTypeResolver, TestModel model) 
+            : base(connectorTypeResolver)
         {
             ModelItemGroups = model.ItemGroups.ToList();
         }

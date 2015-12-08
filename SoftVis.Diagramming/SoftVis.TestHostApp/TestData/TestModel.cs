@@ -5,7 +5,7 @@ using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    public class TestModel : IModel
+    internal class TestModel : IModel
     {
         private readonly List<IModelEntity> _entities;
         private readonly List<IModelRelationship> _relationships;

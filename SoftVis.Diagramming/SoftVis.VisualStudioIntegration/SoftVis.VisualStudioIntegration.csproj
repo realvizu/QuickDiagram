@@ -68,6 +68,8 @@
     <Compile Include="Commands\EventTriggered\EventTriggeredCommandBase.cs" />
     <Compile Include="Commands\EventTriggered\ShowSourceFileCommand.cs" />
     <Compile Include="Diagramming\RoslynBasedWpfDiagram.cs" />
+    <Compile Include="Diagramming\RoslynBasedConnectorTypeResolver.cs" />
+    <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />
     <Compile Include="DiagramRendering\StereotypeToBackgroundBrushConverter.cs" />
     <Compile Include="DiagramRendering\StereotypeToImageUriConverter.cs" />
     <Compile Include="DiagramRendering\FrameworkElementExtensions.cs" />

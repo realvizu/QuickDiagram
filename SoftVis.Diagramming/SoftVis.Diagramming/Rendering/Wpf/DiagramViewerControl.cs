@@ -4,15 +4,16 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Common;
-using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
+using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.Animated;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures.Animated;
 using Codartis.SoftVis.Rendering.Wpf.ImageExport;
 using Codartis.SoftVis.Rendering.Wpf.InputControls;
 
@@ -50,6 +51,12 @@ namespace Codartis.SoftVis.Rendering.Wpf
         {
             get { return (Diagram)GetValue(DiagramProperty); }
             set { SetValue(DiagramProperty, value); }
+        }
+
+        public IDiagramBehaviourProvider DiagramBehaviourProvider
+        {
+            get { return (IDiagramBehaviourProvider)GetValue(DiagramBehaviourProviderProperty); }
+            set { SetValue(DiagramBehaviourProviderProperty, value); }
         }
 
         public double MinZoom

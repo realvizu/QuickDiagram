@@ -19,30 +19,27 @@
     <Allowed From="Codartis.SoftVis.Graphs.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Graphs.*" To="QuickGraph.*" />
 
-    <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Modeling" />
-    <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.Layout.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.Layout" />
-    <Allowed From="Codartis.SoftVis.Diagramming" To="Codartis.SoftVis.Diagramming.Layout.Incremental.MainLogic" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.*" To="Codartis.SoftVis.Diagramming.Layout.BaseActions" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Graph.*" To="Codartis.SoftVis.Graphs.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Graph" To="Codartis.SoftVis.Diagramming.Graph.Layout.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Absolute.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative" />
 
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Diagramming" />
+    <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Geometry" />
+    <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Diagramming.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Modeling.*" />
+
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Rendering.Wpf.*" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="System.Windows.*" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Geometry" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Extensibility" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Common.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.Common.*" />
 
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.*" To="Codartis.SoftVis.Diagramming" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.*" To="Codartis.SoftVis.Modeling" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls.*" />
-    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Gestures.*" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Commands" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.*" />
 </NsDepCopConfig>

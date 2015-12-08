@@ -5,12 +5,12 @@
                     mc:Ignorable="d"   
                     xmlns:this="clr-namespace:Codartis.SoftVis.Rendering.Wpf"
                     xmlns:inputControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.InputControls"
-                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport"
-                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.Diagramming">
+                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport">
 
     <Style TargetType="{x:Type this:DiagramViewerControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModels:Diagram}}">
-        <Setter Property="Diagram" Value="{Binding}"/>
+           d:DataContext="{d:DesignInstance {x:Type this:DiagramViewerViewModel}}">
+        <Setter Property="Diagram" Value="{Binding Path=Diagram}"/>
+        <Setter Property="DiagramBehaviourProvider" Value="{Binding Path=DiagramBehaviourProvider}"/>
         <Setter Property="MinZoom" Value="0.2"/>
         <Setter Property="MaxZoom" Value="10"/>
         <Setter Property="Background" Value="Beige"/>
@@ -30,6 +30,7 @@
                                                        ClipToBounds="True" 
                                                        Background="{TemplateBinding Background}"
                                                        Diagram="{TemplateBinding Diagram}"
+                                                       DiagramBehaviourProvider="{TemplateBinding DiagramBehaviourProvider}"
                                                        MinZoom="{TemplateBinding MinZoom}" 
                                                        MaxZoom="{TemplateBinding MaxZoom}" />
                         </AdornerDecorator>

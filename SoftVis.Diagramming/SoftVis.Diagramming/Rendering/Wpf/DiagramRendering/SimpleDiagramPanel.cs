@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
 {

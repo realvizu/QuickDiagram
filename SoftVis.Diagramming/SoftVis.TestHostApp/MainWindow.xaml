@@ -32,6 +32,6 @@
             <Button Margin="5" Click="Add_OnClick" Width="60" Height="20">Add</Button>
             <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20">Remove</Button>
         </StackPanel>
-        <softvis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" Diagram="{Binding}" />
+        <softvis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" />
     </Grid>
 </Window>

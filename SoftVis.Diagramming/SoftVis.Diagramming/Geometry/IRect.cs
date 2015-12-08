@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Codartis.SoftVis.Geometry
+﻿namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// A rectangular area in 2D space.

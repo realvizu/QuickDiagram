@@ -7,9 +7,10 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf.Common;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls.MiniButtons;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 {
@@ -28,6 +29,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         public Rect ViewportInDiagramSpace { get; private set; }
         private Transform DiagramSpaceToScreenSpace { get; set; }
 
+        public static readonly DependencyProperty DiagramBehaviourProviderProperty =
+            DependencyProperty.Register("DiagramBehaviourProvider", typeof(IDiagramBehaviourProvider),
+                typeof(DiagramViewportPanel));
+
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewportPanel));
 
@@ -43,6 +48,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             _centerInDiagramSpace = new Point(0, 0);
 
             RecalculateCachedValues();
+        }
+
+        public IDiagramBehaviourProvider DiagramBehaviourProvider
+        {
+            get { return (IDiagramBehaviourProvider)GetValue(DiagramBehaviourProviderProperty); }
+            set { SetValue(DiagramBehaviourProviderProperty, value); }
         }
 
         public double MinZoom
@@ -219,10 +230,13 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             var closeMiniButton = CreateCloseButtonAdorner(control);
             AddAdorner(control, adornerLayer, closeMiniButton);
 
-            foreach (var relatedEntityMiniButtonDescriptor in Diagram.GetRelatedEntityMiniButtonDescriptors())
+            if (DiagramBehaviourProvider != null)
             {
-                var relatedEntityMiniButton = CreateRelatedEntityMiniButton(control, relatedEntityMiniButtonDescriptor);
-                AddAdorner(control, adornerLayer, relatedEntityMiniButton);
+                foreach (var descriptor in DiagramBehaviourProvider.GetRelatedEntityMiniButtonDescriptors())
+                {
+                    var relatedEntityMiniButton = CreateRelatedEntityMiniButton(control, descriptor);
+                    AddAdorner(control, adornerLayer, relatedEntityMiniButton);
+                }
             }
         }
 

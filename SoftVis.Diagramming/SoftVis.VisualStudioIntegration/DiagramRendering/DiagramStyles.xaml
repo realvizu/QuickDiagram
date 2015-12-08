@@ -4,9 +4,8 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"  
                     xmlns:rendering="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
-                    xmlns:shapeControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ShapeControls;assembly=SoftVis.Diagramming"
                     xmlns:diagramRendering="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.DiagramRendering"
-                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.ViewModels;assembly=SoftVis.Diagramming">
+                    xmlns:shapes="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;assembly=SoftVis.Diagramming">
 
     <diagramRendering:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
     <diagramRendering:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
@@ -15,12 +14,12 @@
         <Setter Property="Background" Value="WhiteSmoke"/>
     </Style>
 
-    <Style TargetType="{x:Type shapeControls:DiagramNodeControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramNodeViewModel}}">
+    <Style TargetType="{x:Type shapes:DiagramNodeControl}"
+           d:DataContext="{d:DesignInstance {x:Type shapes:DiagramNodeViewModel}}">
         <Setter Property="Background" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"></Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type shapeControls:DiagramNodeControl}">
+                <ControlTemplate TargetType="{x:Type shapes:DiagramNodeControl}">
                     <Border Background="{TemplateBinding Background}" 
 							BorderBrush="{TemplateBinding BorderBrush}" 
 							BorderThickness="{TemplateBinding BorderThickness}"

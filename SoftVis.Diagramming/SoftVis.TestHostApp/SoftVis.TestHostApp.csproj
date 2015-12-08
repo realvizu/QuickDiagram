@@ -66,7 +66,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="TestData\TestDiagramExtensionProvider.cs" />
+    <Compile Include="TestData\TestConnectorTypes.cs" />
+    <Compile Include="TestData\TestDiagramBehaviourProvider.cs" />
+    <Compile Include="TestData\TestConnectorTypeResolver.cs" />
     <Compile Include="TestData\TestModelRelationshipStereotype.cs" />
     <Compile Include="TestData\TestDiagram.cs" />
     <Compile Include="TestData\TestClass.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="TestData\TestInterface.cs" />
     <Compile Include="TestData\TestModelEntity.cs" />
     <Compile Include="TestData\TestModelEntityStereotype.cs" />
+    <Compile Include="TestData\TestRelationshipSpecifications.cs" />
     <Compile Include="TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>

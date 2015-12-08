@@ -13,5 +13,10 @@
             ReferencePoint = referencePoint;
             Translate = translate;
         }
+
+        public RectRelativeLocation WithTranslate(Point2D translate)
+        {
+            return new RectRelativeLocation(ReferencePoint, translate);
+        }
     }
 }

@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynBasedWpfDiagram : WpfDiagram
     {
-        public RoslynBasedWpfDiagram(IDiagramExtensionProvider extensionProvider) 
-            : base(extensionProvider)
+        public RoslynBasedWpfDiagram(IConnectorTypeResolver connectorTypeResolver) 
+            : base(connectorTypeResolver)
         {
         }
 

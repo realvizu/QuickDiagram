@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.DiagramRendering;
 using Codartis.SoftVis.VisualStudioIntegration.Events;
@@ -21,7 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public DiagramManager(DiagramToolWindow diagramToolWindow)
         {
-            _diagram = new RoslynBasedWpfDiagram(new DefaultDiagramExtensionProvider());
+            var connectorTypeResolver = new RoslynBasedConnectorTypeResolver();
+            _diagram = new RoslynBasedWpfDiagram(connectorTypeResolver);
             _diagram.ShapeSelected += OnShapeSelected;
             _diagram.ShapeActivated += OnShapeActivated;
 
