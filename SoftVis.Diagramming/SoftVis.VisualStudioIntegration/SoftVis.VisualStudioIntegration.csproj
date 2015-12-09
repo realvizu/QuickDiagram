@@ -72,7 +72,6 @@
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />
     <Compile Include="DiagramRendering\StereotypeToBackgroundBrushConverter.cs" />
     <Compile Include="DiagramRendering\StereotypeToImageUriConverter.cs" />
-    <Compile Include="DiagramRendering\FrameworkElementExtensions.cs" />
     <Compile Include="DiagramRendering\StereotypeToVisualPropertyMaps.cs" />
     <Compile Include="DiagramRendering\WpfHelpers.cs" />
     <Compile Include="Events\DiagramNodeActivatedEventArgs.cs" />

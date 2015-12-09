@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
 {
@@ -21,6 +22,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
             var assemblyName = Path.GetFileNameWithoutExtension(assemblyFileName);
             var uri = new Uri($"/{assemblyName};component/{filenameRelativeToProjectRoot}", UriKind.Relative);
             return uri;
+        }
+
+        public static ResourceDictionary GetResourceDictionary(string resourceDictionaryFilename)
+        {
+            var uri = CreateUri(resourceDictionaryFilename);
+            return (ResourceDictionary)Application.LoadComponent(uri);
         }
     }
 }

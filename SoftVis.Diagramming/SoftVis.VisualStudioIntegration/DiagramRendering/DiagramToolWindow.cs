@@ -25,8 +25,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
 
         public DiagramToolWindow() : base(null)
         {
-            _diagramViewerControl = new DiagramViewerControl();
-            _diagramViewerControl.AddResourceDictionary(DiagramStylesXaml);
+            var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
+            _diagramViewerControl = new DiagramViewerControl(resourceDictionary);
 
             Caption = "Diagram";
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);

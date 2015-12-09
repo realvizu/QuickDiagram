@@ -10,6 +10,7 @@
     <Allowed From="*" To="System.Xml" />
     <Allowed From="*" To="System.Text" />
     <Allowed From="*" To="System.IO" />
+    <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="MoreLinq" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />

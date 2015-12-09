@@ -35,11 +35,17 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private PanAndZoomControl _panAndZoomControl;
         private readonly List<IViewportGesture> _gestures = new List<IViewportGesture>();
         private readonly SimpleDiagramPanel _diagramPanelForImageExport = new SimpleDiagramPanel();
+        private readonly ResourceDictionary _additionalResourceDictionary;
 
         static DiagramViewerControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramViewerControl), 
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramViewerControl),
                 new FrameworkPropertyMetadata(typeof(DiagramViewerControl)));
+        }
+
+        public DiagramViewerControl(ResourceDictionary additionalResourceDictionary = null)
+        {
+            _additionalResourceDictionary = additionalResourceDictionary;
         }
 
         public event PanEventHandler PanWidget;
@@ -86,6 +92,9 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         public override void OnApplyTemplate()
         {
+            if (_additionalResourceDictionary != null)
+                this.AddResourceDictionary(_additionalResourceDictionary);
+
             base.OnApplyTemplate();
 
             Focusable = true;
@@ -113,6 +122,9 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void InitializeDiagramPanelForImageExport()
         {
+            if (_additionalResourceDictionary != null)
+                _diagramPanelForImageExport.AddResourceDictionary(_additionalResourceDictionary);
+
             _diagramPanelForImageExport.Diagram = Diagram;
             _diagramPanelForImageExport.Background = _diagramViewportPanel.Background;
         }
