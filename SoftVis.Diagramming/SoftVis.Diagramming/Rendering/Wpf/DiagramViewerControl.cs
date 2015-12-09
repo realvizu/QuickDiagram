@@ -43,7 +43,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
                 new FrameworkPropertyMetadata(typeof(DiagramViewerControl)));
         }
 
-        public DiagramViewerControl(ResourceDictionary additionalResourceDictionary = null)
+        public DiagramViewerControl()
+        {
+        }
+
+        public DiagramViewerControl(ResourceDictionary additionalResourceDictionary)
         {
             _additionalResourceDictionary = additionalResourceDictionary;
         }

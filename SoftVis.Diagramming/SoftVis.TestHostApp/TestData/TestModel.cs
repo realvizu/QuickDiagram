@@ -104,6 +104,41 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return AddRelationship(name, baseName, ModelRelationshipType.Generalization, TestModelRelationshipStereotype.Implementation);
         }
 
+        public static TestModel CreateBig()
+        {
+            var testModel = new TestModel();
+            var root = testModel.CreateAndAddClass("root");
+            testModel.CreateChildren(root, 2, 1, 6);
+            return testModel;
+        }
+
+        private void CreateChildren(TestClass parent, int childCount, int level, int maxLevel)
+        {
+            if (level == maxLevel)
+                return;
+
+            for (var i = 0; i < childCount; i++)
+            {
+                var newEntity = CreateAndAddClass($"{level}-{i}");
+
+                var newRelationship = new ModelRelationship(newEntity, parent, ModelRelationshipType.Generalization);
+                newEntity.AddOutgoingRelationship(newRelationship);
+                parent.AddIncomingRelationship(newRelationship);
+                _relationships.Add(newRelationship);
+                _modelItemGroups.Last().Add(newRelationship);
+
+                CreateChildren(newEntity, childCount, level+1, maxLevel);
+            }
+        }
+
+        private TestClass CreateAndAddClass( string name)
+        {
+            var newEntity = new TestClass(name, 50);
+            _entities.Add(newEntity);
+            _modelItemGroups.Last().Add(newEntity);
+            return newEntity;
+        }
+
         public static TestModel Create()
         {
             return new TestModel()
