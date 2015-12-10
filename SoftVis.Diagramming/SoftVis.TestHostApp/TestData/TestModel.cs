@@ -104,22 +104,22 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return AddRelationship(name, baseName, ModelRelationshipType.Generalization, TestModelRelationshipStereotype.Implementation);
         }
 
-        public static TestModel CreateBig()
+        public static TestModel CreateBig(int childCount, int levels)
         {
             var testModel = new TestModel();
-            var root = testModel.CreateAndAddClass("root");
-            testModel.CreateChildren(root, 2, 1, 6);
+            var root = testModel.CreateAndAddClass("0");
+            testModel.CreateChildren(root, childCount, 1, levels);
             return testModel;
         }
 
-        private void CreateChildren(TestClass parent, int childCount, int level, int maxLevel)
+        private void CreateChildren(TestClass parent, int childCount, int currentLevel, int maxLevel)
         {
-            if (level == maxLevel)
+            if (currentLevel == maxLevel)
                 return;
 
             for (var i = 0; i < childCount; i++)
             {
-                var newEntity = CreateAndAddClass($"{level}-{i}");
+                var newEntity = CreateAndAddClass($"{parent.Name}-{i}");
 
                 var newRelationship = new ModelRelationship(newEntity, parent, ModelRelationshipType.Generalization);
                 newEntity.AddOutgoingRelationship(newRelationship);
@@ -127,7 +127,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 _relationships.Add(newRelationship);
                 _modelItemGroups.Last().Add(newRelationship);
 
-                CreateChildren(newEntity, childCount, level+1, maxLevel);
+                CreateChildren(newEntity, childCount, currentLevel+1, maxLevel);
             }
         }
 

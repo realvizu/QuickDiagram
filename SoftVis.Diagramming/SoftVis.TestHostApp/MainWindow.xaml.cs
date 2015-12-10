@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             base.OnApplyTemplate();
 
-            _testModel = TestModel.CreateBig();
+            _testModel = TestModel.CreateBig(2, 5);
 
             var diagramStyleProvider = new TestConnectorTypeResolver();
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
@@ -54,7 +54,9 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram.ShowItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
             _modelItemGroupIndex++;
 
-            //FitToView();
+            //_testDiagram.Save(@"c:\big.xml");
+
+            FitToView();
         }
 
         private void Remove_OnClick(object sender, RoutedEventArgs e)

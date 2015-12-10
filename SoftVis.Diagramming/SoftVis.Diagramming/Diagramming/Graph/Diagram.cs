@@ -314,5 +314,10 @@ namespace Codartis.SoftVis.Diagramming.Graph
         {
             ShapeActivated?.Invoke(this, diagramShape);
         }
+
+        public void Save(string filename)
+        {
+            _graph.Save(filename);
+        }
     }
 }

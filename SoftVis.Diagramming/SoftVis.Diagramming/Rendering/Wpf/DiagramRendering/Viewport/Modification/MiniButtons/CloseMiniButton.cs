@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.
         private const double XMarkThickness = 1.5;
         private static readonly Color XMarkColor = Colors.Red;
 
-        public CloseMiniButton(Control adornedControl, Visibility initialVisibility = Visibility.Collapsed)
+        public CloseMiniButton(Control adornedControl, Visibility initialVisibility = Visibility.Visible)
             : base(adornedControl, initialVisibility)
         {
         }

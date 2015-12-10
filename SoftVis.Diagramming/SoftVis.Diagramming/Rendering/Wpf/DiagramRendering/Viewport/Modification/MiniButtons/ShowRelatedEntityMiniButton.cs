@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.
         private readonly RelatedEntityMiniButtonDescriptor _miniButtonDescriptor;
 
         public ShowRelatedEntityMiniButton(RelatedEntityMiniButtonDescriptor miniButtonDescriptor,
-            Control adornedControl, Visibility initialVisibility = Visibility.Collapsed)
+            Control adornedControl, Visibility initialVisibility = Visibility.Visible)
             : base(adornedControl, initialVisibility)
         {
             _miniButtonDescriptor = miniButtonDescriptor;

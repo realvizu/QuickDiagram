@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +8,7 @@ using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.HitTesting;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
 
@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
     /// </summary>
     internal class DiagramViewportPanel : DiagramPanelBase, IDiagramViewport
     {
-        private readonly Dictionary<Control, List<Adorner>> _controlToAdornersMap;
+        private readonly List<MiniButtonBase> _miniButtons;
 
         private double _zoom;
         private Size _sizeInScreenSpace;
@@ -33,6 +33,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             DependencyProperty.Register("DiagramBehaviourProvider", typeof(IDiagramBehaviourProvider),
                 typeof(DiagramViewportPanel));
 
+        public static readonly DependencyProperty DiagramHitTesterProperty =
+            DependencyProperty.Register("DiagramHitTester", typeof(IHitTester),
+                typeof(DiagramViewportPanel));
+
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewportPanel));
 
@@ -41,7 +45,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         public DiagramViewportPanel()
         {
-            _controlToAdornersMap = new Dictionary<Control, List<Adorner>>();
+            _miniButtons = new List<MiniButtonBase>();
 
             _zoom = 1.0;
             _sizeInScreenSpace = Size.Empty;
@@ -54,6 +58,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         {
             get { return (IDiagramBehaviourProvider)GetValue(DiagramBehaviourProviderProperty); }
             set { SetValue(DiagramBehaviourProviderProperty, value); }
+        }
+
+        public IHitTester DiagramHitTester
+        {
+            get { return (IHitTester)GetValue(DiagramHitTesterProperty); }
+            set { SetValue(DiagramHitTesterProperty, value); }
         }
 
         public double MinZoom
@@ -161,8 +171,6 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             control.PreviewMouseDoubleClick += OnDiagramNodeDoubleClicked;
             control.PreviewMouseLeftButtonDown += OnDiagramNodeLeftButtonDown;
 
-            AddAdorners(control);
-
             return control;
         }
 
@@ -219,34 +227,44 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             return transform;
         }
 
-        private void AddAdorners(Control control)
+        private void AddMiniButtons(Control control)
         {
             var adornerLayer = AdornerLayer.GetAdornerLayer(control);
-            if (adornerLayer == null)
-                throw new Exception("No adorner layer.");
 
-            _controlToAdornersMap[control] = new List<Adorner>();
-
-            var closeMiniButton = CreateCloseButtonAdorner(control);
-            AddAdorner(control, adornerLayer, closeMiniButton);
+            var closeMiniButton = CreateCloseMiniButton(control);
+            AddMiniButton(adornerLayer, closeMiniButton);
 
             if (DiagramBehaviourProvider != null)
             {
                 foreach (var descriptor in DiagramBehaviourProvider.GetRelatedEntityMiniButtonDescriptors())
                 {
                     var relatedEntityMiniButton = CreateRelatedEntityMiniButton(control, descriptor);
-                    AddAdorner(control, adornerLayer, relatedEntityMiniButton);
+                    AddMiniButton(adornerLayer, relatedEntityMiniButton);
                 }
             }
         }
 
-        private void AddAdorner(Control control, AdornerLayer adornerLayer, Adorner adorner)
+        private void AddMiniButton(AdornerLayer adornerLayer, MiniButtonBase miniButton)
         {
-            adornerLayer.Add(adorner);
-            _controlToAdornersMap[control].Add(adorner);
+            adornerLayer.Add(miniButton);
+            _miniButtons.Add(miniButton);
         }
 
-        private CloseMiniButton CreateCloseButtonAdorner(Control control)
+        private void RemoveMiniButtons(Control control)
+        {
+            var adornerLayer = AdornerLayer.GetAdornerLayer(control);
+
+            foreach (var miniButton in _miniButtons)
+            {
+                miniButton.MouseEnter -= OnMiniButtonMouseEnterOrLeave;
+                miniButton.MouseLeave -= OnMiniButtonMouseEnterOrLeave;
+                adornerLayer.Remove(miniButton);
+            }
+
+            _miniButtons.Clear();
+        }
+
+        private CloseMiniButton CreateCloseMiniButton(Control control)
         {
             var closeMiniButton = new CloseMiniButton(control);
             closeMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
@@ -264,7 +282,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             return showRelatedEntityMiniButton;
         }
 
-        private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             var senderDiagramNode = sender as DiagramNodeControl;
             if (senderDiagramNode == null || !ControlToDiagramShapeMap.Contains(senderDiagramNode))
@@ -273,51 +291,57 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             Diagram.SelectShape(ControlToDiagramShapeMap.Get(senderDiagramNode));
         }
 
-        private void OnDiagramNodeDoubleClicked(object sender, MouseButtonEventArgs e)
+        private void OnDiagramNodeDoubleClicked(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             var diagramNode = sender as DiagramNodeControl;
             if (diagramNode == null || !ControlToDiagramShapeMap.Contains(diagramNode))
                 return;
 
             Diagram.ActivateShape(ControlToDiagramShapeMap.Get(diagramNode));
-            e.Handled = true;
+            mouseButtonEventArgs.Handled = true;
         }
 
-        private void OnCloseButtonClick(object sender, MouseButtonEventArgs e)
+        private void OnCloseButtonClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             var diagramNode = ((CloseMiniButton)sender).AdornedElement as DiagramNodeControl;
             if (diagramNode == null || !ControlToDiagramShapeMap.Contains(diagramNode))
                 return;
 
             Diagram.RemoveShape(ControlToDiagramShapeMap.Get(diagramNode));
-            e.Handled = true;
+            mouseButtonEventArgs.Handled = true;
         }
 
-        private void OnDiagramNodeMouseEnterOrLeave(object sender, MouseEventArgs e)
+        private void OnDiagramNodeMouseEnterOrLeave(object sender, MouseEventArgs mouseEventArgs)
         {
-            HitTestAndSetAdornersVisibility((DiagramShapeControlBase)sender, e);
+            HitTestAndShowOrHideMiniButton((DiagramShapeControlBase)sender, mouseEventArgs);
         }
 
-        private void OnMiniButtonMouseEnterOrLeave(object sender, MouseEventArgs e)
+        private void OnMiniButtonMouseEnterOrLeave(object sender, MouseEventArgs mouseEventArgs)
         {
-            var adorner = (Adorner)sender;
-            HitTestAndSetAdornersVisibility((DiagramShapeControlBase)adorner.AdornedElement, e);
+            var miniButton = (MiniButtonBase)sender;
+            HitTestAndShowOrHideMiniButton((DiagramShapeControlBase)miniButton.AdornedElement, mouseEventArgs);
         }
 
-        private void HitTestAndSetAdornersVisibility(DiagramShapeControlBase control, MouseEventArgs e)
+        private void HitTestAndShowOrHideMiniButton(DiagramShapeControlBase control, MouseEventArgs mouseEventArgs)
         {
-            var adorners = _controlToAdornersMap[control];
-            var hitTestSubjects = new List<UIElement> { control }.Concat(adorners);
-            var hit = hitTestSubjects.Any(i => VisualTreeHelper.HitTest(i, e.GetPosition(i)) != null);
+            var hitItem = DiagramHitTester.HitTest(mouseEventArgs);
 
-            SetAdornersVisibility(adorners, hit ? Visibility.Visible : Visibility.Collapsed);
+            if (hitItem == control || _miniButtons.Contains(hitItem))
+                ShowMiniButtons(control);
+            else
+                HideMiniButtons(control);
         }
 
-        private static void SetAdornersVisibility(IEnumerable<Adorner> adorners, Visibility visibility)
+        private void ShowMiniButtons(Control control)
         {
-            if (adorners != null)
-                foreach (var adorner in adorners)
-                    adorner.Visibility = visibility;
+            if (!_miniButtons.Any())
+                AddMiniButtons(control);
+        }
+
+        private void HideMiniButtons(Control control)
+        {
+            if (_miniButtons.Any())
+                RemoveMiniButtons(control);
         }
     }
 }

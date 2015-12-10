@@ -31,6 +31,7 @@
                                                        Background="{TemplateBinding Background}"
                                                        Diagram="{TemplateBinding Diagram}"
                                                        DiagramBehaviourProvider="{TemplateBinding DiagramBehaviourProvider}"
+                                                       DiagramHitTester="{TemplateBinding DiagramHitTester}"
                                                        MinZoom="{TemplateBinding MinZoom}" 
                                                        MaxZoom="{TemplateBinding MaxZoom}" />
                         </AdornerDecorator>

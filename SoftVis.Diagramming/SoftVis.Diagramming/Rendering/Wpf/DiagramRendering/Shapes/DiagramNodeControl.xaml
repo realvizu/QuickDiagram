@@ -24,7 +24,8 @@
                     <Border Background="{TemplateBinding Background}" 
 							BorderBrush="{TemplateBinding BorderBrush}" 
 							BorderThickness="{TemplateBinding BorderThickness}"
-							Padding="{TemplateBinding Padding}">
+							Padding="{TemplateBinding Padding}"
+                            IsHitTestVisible="False">
                         <StackPanel Orientation="Vertical" 
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">

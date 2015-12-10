@@ -8,6 +8,7 @@ using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Rendering.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.HitTesting;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport;
@@ -45,9 +46,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         public DiagramViewerControl()
         {
+            DiagramHitTester = new HitTester(this);
         }
 
-        public DiagramViewerControl(ResourceDictionary additionalResourceDictionary)
+        public DiagramViewerControl(ResourceDictionary additionalResourceDictionary) 
+            : this()
         {
             _additionalResourceDictionary = additionalResourceDictionary;
         }
@@ -67,6 +70,12 @@ namespace Codartis.SoftVis.Rendering.Wpf
         {
             get { return (IDiagramBehaviourProvider)GetValue(DiagramBehaviourProviderProperty); }
             set { SetValue(DiagramBehaviourProviderProperty, value); }
+        }
+
+        internal IHitTester DiagramHitTester
+        {
+            get { return (IHitTester)GetValue(DiagramHitTesterProperty); }
+            set { SetValue(DiagramHitTesterProperty, value); }
         }
 
         public double MinZoom

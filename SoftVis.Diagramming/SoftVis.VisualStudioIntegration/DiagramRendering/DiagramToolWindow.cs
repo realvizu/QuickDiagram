@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
 
         internal void Initialize(Diagram diagram)
         {
-            var diagramBehaviourProvider = new DefaultDiagramBehaviourProvider();
+            var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
             _diagramViewerControl.DataContext = new DiagramViewerViewModel(diagram, diagramBehaviourProvider);
         }
 

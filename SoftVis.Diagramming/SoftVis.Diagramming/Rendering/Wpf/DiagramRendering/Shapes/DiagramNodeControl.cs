@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
 
@@ -32,6 +33,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes
             Appear();
             MoveTo(rect.Location);
             SizeTo(rect.Size);
+        }
+
+        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
+        {
+            return new PointHitTestResult(this, hitTestParameters.HitPoint);
         }
     }
 }

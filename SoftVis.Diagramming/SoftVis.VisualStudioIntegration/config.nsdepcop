@@ -53,6 +53,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Diagramming.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Rendering.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.VisualStudioIntegration.ImageExport" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Microsoft.CodeAnalysis.*" />
