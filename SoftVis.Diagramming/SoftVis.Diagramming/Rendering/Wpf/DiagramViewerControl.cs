@@ -122,6 +122,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void InitializeDiagramViewportPanel()
         {
             _diagramViewportPanel = FindChildControlInTemplate<DiagramViewportPanel>(PART_DiagramViewportPanel);
+            MouseLeave += _diagramViewportPanel.OnControlMouseLeave;
         }
 
         private void InitializePanAndZoomControl()

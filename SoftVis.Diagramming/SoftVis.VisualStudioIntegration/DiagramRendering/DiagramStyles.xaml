@@ -23,7 +23,8 @@
                     <Border Background="{TemplateBinding Background}" 
 							BorderBrush="{TemplateBinding BorderBrush}" 
 							BorderThickness="{TemplateBinding BorderThickness}"
-							Padding="{TemplateBinding Padding}">
+							Padding="{TemplateBinding Padding}"
+                            IsHitTestVisible="False">
                         <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="16"></RowDefinition>

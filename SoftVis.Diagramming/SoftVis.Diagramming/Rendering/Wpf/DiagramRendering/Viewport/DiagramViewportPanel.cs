@@ -146,6 +146,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             Zoom = newZoom;
         }
 
+        public void OnControlMouseLeave(object sender, MouseEventArgs mouseEventArgs)
+        {
+            HideMiniButtons();
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
             base.MeasureOverride(availableSize);
@@ -229,7 +234,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         private void AddMiniButtons(Control control)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(control);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
             var closeMiniButton = CreateCloseMiniButton(control);
             AddMiniButton(adornerLayer, closeMiniButton);
@@ -250,16 +255,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             _miniButtons.Add(miniButton);
         }
 
-        private void RemoveMiniButtons(Control control)
+        private void RemoveMiniButtons()
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(control);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
             foreach (var miniButton in _miniButtons)
-            {
-                miniButton.MouseEnter -= OnMiniButtonMouseEnterOrLeave;
-                miniButton.MouseLeave -= OnMiniButtonMouseEnterOrLeave;
                 adornerLayer.Remove(miniButton);
-            }
 
             _miniButtons.Clear();
         }
@@ -329,7 +330,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             if (hitItem == control || _miniButtons.Contains(hitItem))
                 ShowMiniButtons(control);
             else
-                HideMiniButtons(control);
+                HideMiniButtons();
         }
 
         private void ShowMiniButtons(Control control)
@@ -338,10 +339,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
                 AddMiniButtons(control);
         }
 
-        private void HideMiniButtons(Control control)
+        private void HideMiniButtons()
         {
             if (_miniButtons.Any())
-                RemoveMiniButtons(control);
+                RemoveMiniButtons();
         }
     }
 }
