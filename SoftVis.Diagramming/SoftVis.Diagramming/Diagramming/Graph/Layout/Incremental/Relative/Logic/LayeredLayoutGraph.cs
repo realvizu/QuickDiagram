@@ -81,7 +81,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic
             foreach (var layoutEdge in layoutPath)
                 _properGraph.AddEdge(layoutEdge);
 
-            ExecuteOnVertexAndDescendants(layoutPath.PathSource, i => AdjustPaths(i, null));
+            ExecuteOnVertexAndDescendants(layoutPath.PathSource, AdjustPaths);
         }
 
         private void RemoveEdgeFromProperGraph(LayoutPath layoutPath)
@@ -92,16 +92,16 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic
             foreach (var interimVertex in layoutPath.InterimVertices)
                 _properGraph.RemoveVertex(interimVertex);
 
-            ExecuteOnVertexAndDescendants(layoutPath.PathSource, i => AdjustPaths(i, null));
+            ExecuteOnVertexAndDescendants(layoutPath.PathSource, AdjustPaths);
         }
 
-        private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex, ILayoutAction causingAction)
+        private void AdjustPaths(DiagramNodeLayoutVertex diagramNodeLayoutVertex)
         {
             foreach (var outEdge in OutEdges(diagramNodeLayoutVertex))
-                AdjustPathLength(outEdge, causingAction);
+                AdjustPathLength(outEdge);
         }
 
-        private void AdjustPathLength(LayoutPath layoutPath, ILayoutAction causingAction)
+        private void AdjustPathLength(LayoutPath layoutPath)
         {
             var sourceLayerIndex = GetLayerIndex(layoutPath.PathSource);
             var targetLayerIndex = GetLayerIndex(layoutPath.PathTarget);
@@ -110,26 +110,24 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic
             var pathLengthDifference = layerSpan - layoutPath.Length;
 
             if (pathLengthDifference > 0)
-                SplitEdge(layoutPath, 0, pathLengthDifference, causingAction);
+                SplitEdge(layoutPath, 0, pathLengthDifference);
             else if (pathLengthDifference < 0)
-                MergeEdgeWithNext(layoutPath, 0, -pathLengthDifference, causingAction);
+                MergeEdgeWithNext(layoutPath, 0, -pathLengthDifference);
         }
 
-        private void SplitEdge(LayoutPath layoutPath, int atIndex, int times, ILayoutAction causingAction)
+        private void SplitEdge(LayoutPath layoutPath, int atIndex, int times)
         {
             for (var i = 0; i < times; i++)
-                SplitEdge(layoutPath, atIndex, causingAction);
+                SplitEdge(layoutPath, atIndex);
         }
 
-        private void SplitEdge(LayoutPath layoutPath, int atIndex, ILayoutAction causingAction)
+        private void SplitEdge(LayoutPath layoutPath, int atIndex)
         {
             var edgeToSplit = layoutPath[atIndex];
             var interimVertex = new DummyLayoutVertex();
 
             var newEdges = SplitEdge(edgeToSplit, interimVertex);
             layoutPath.Substitute(atIndex, 1, newEdges[0], newEdges[1]);
-
-            //RaiseVertexLayoutAction("DummyVertexCreated", interimVertex, causingAction);
         }
 
         private GeneralLayoutEdge[] SplitEdge(GeneralLayoutEdge edgeToSplit, LayoutVertexBase interimVertex)
@@ -145,13 +143,13 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic
             return new[] { newEdge1, newEdge2 };
         }
 
-        private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex, int times, ILayoutAction causingAction)
+        private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex, int times)
         {
             for (var i = 0; i < times; i++)
-                MergeEdgeWithNext(layoutPath, atIndex, causingAction);
+                MergeEdgeWithNext(layoutPath, atIndex);
         }
 
-        private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex, ILayoutAction causingAction)
+        private void MergeEdgeWithNext(LayoutPath layoutPath, int atIndex)
         {
             var firstEdge = layoutPath[atIndex];
             var nextEdge = layoutPath[atIndex + 1];
@@ -159,7 +157,6 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic
             var vertexToRemove = firstEdge.Target as DummyLayoutVertex;
             if (vertexToRemove == null)
                 throw new Exception("FirstEdge.Target is null or not dummy!");
-            //RaiseVertexLayoutAction("DummyVertexRemoved", vertexToRemove, causingAction);
 
             var mergedEdge = MergeEdges(firstEdge, nextEdge);
             layoutPath.Substitute(atIndex, 2, mergedEdge);

@@ -7,6 +7,6 @@
     public enum ModelEntityType
     {
         Class,
-        Package,
+        Package
     }
 }

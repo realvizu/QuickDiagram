@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             var height = 30;
             int nameAsInt;
             if (int.TryParse(modelEntity.Name, out nameAsInt))
-                height = (int.Parse(modelEntity.Name) % 4) * 5 + 25;
+                height = int.Parse(modelEntity.Name) % 4 * 5 + 25;
 
             var size = new Size2D(((TestModelEntity)modelEntity).Size, height);
             return new DiagramNodeViewModel(modelEntity, Point2D.Empty, size);

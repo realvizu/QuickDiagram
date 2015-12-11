@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.
 
         protected override Point GetButtonCenter()
         {
-            var overlap = DefaultDiagramBehaviourProvider.MiniButtonOverlapParentBy;
+            const double overlap = DefaultDiagramBehaviourProvider.MiniButtonOverlapParentBy;
             var adornedElementRect = new Rect(AdornedElement.DesiredSize);
             return adornedElementRect.TopRight + new Vector(-overlap, overlap);
         }

@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
                 { RoslynBasedModelEntityStereotype.Interface, string.Format(ImagePathTemplate, "Interface")},
                 { RoslynBasedModelEntityStereotype.Struct, string.Format(ImagePathTemplate, "Struct")},
                 { RoslynBasedModelEntityStereotype.Enum, string.Format(ImagePathTemplate, "Enum")},
-                { RoslynBasedModelEntityStereotype.Delegate, string.Format(ImagePathTemplate, "Delegate")},
+                { RoslynBasedModelEntityStereotype.Delegate, string.Format(ImagePathTemplate, "Delegate")}
             };
 
         public static readonly Dictionary<ModelEntityStereotype, Brush> StereotypeToBackgroundBrushMap =
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
                 { RoslynBasedModelEntityStereotype.Interface, Brushes.LightGray},
                 { RoslynBasedModelEntityStereotype.Struct, new SolidColorBrush(Color.FromArgb(0xFF, 0xD1, 0xEA, 0xF3))},
                 { RoslynBasedModelEntityStereotype.Enum, Brushes.Gold},
-                { RoslynBasedModelEntityStereotype.Delegate, Brushes.Lavender},
+                { RoslynBasedModelEntityStereotype.Delegate, Brushes.Lavender}
             };
     }
 }

@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common.HitTesting
             return _hitTestResult;
         }
 
-        private HitTestFilterBehavior HitTestFilterCallback(DependencyObject potentialHitTestTarget)
+        private static HitTestFilterBehavior HitTestFilterCallback(DependencyObject potentialHitTestTarget)
         {
             var uiElement = potentialHitTestTarget as UIElement;
             if (uiElement != null &&

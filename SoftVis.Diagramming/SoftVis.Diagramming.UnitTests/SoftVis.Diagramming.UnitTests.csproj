@@ -86,11 +86,9 @@
     <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutVertexLayersBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\EdgeSpecification.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\GraphBuilderBase.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\DiagramGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\LayeredLayoutGraphBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutPathBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\PathSpecification.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\RelativeLayoutBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Helpers\VertexList.cs" />
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\LayeredLayoutGraphTests.cs" />

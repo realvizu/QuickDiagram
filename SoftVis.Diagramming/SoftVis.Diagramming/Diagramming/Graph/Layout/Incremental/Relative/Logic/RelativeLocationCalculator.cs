@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic
             return GetTargetLocation(vertex, _layoutVertexLayers);
         }
 
-        public RelativeLocation GetTargetLocation(LayoutVertexBase vertex, IReadOnlyLayoutVertexLayers layers)
+        private RelativeLocation GetTargetLocation(LayoutVertexBase vertex, IReadOnlyLayoutVertexLayers layers)
         {
             if (layers.HasLocation(vertex))
                 throw new InvalidOperationException($"Vertex {vertex} already has a relative location.");

@@ -3,6 +3,6 @@
     public enum ArrowHeadType
     {
         Simple,
-        Hollow,
+        Hollow
     }
 }

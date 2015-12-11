@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering
             return new DiagramNodeViewModel(modelEntity, DiagramDefaults.DefaultNodePosition, size);
         }
 
-        protected static Size2D CalculateDiagramNodeSize(IModelEntity modelEntity)
+        private static Size2D CalculateDiagramNodeSize(IModelEntity modelEntity)
         {
             var atLeastMinimalWidth = Math.Max(modelEntity.Name.Length*10, DiagramDefaults.MinimumNodeWidth);
             var width = Math.Min(atLeastMinimalWidth, DiagramDefaults.MaximumNodeWidth);

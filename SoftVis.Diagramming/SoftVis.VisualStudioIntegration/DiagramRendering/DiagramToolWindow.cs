@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Graph;
-using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;

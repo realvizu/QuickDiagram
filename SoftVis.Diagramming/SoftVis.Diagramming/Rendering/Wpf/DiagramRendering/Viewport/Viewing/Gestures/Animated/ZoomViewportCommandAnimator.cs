@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
 
         private static void OnZoomPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            var commandAnimator = obj as ZoomViewportCommandAnimator;
+            var commandAnimator = (ZoomViewportCommandAnimator)obj;
             commandAnimator.OnZoomPropertyChanged((double)args.NewValue);
         }
 

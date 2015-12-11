@@ -8,11 +8,11 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
     {
         private readonly MoveViewportCenterInDiagramSpaceCommand _originalCommand;
 
-        public static readonly DependencyProperty CenterProperty = 
-            DependencyProperty.Register("Center", typeof(Point), typeof(MoveViewportCenterInDiagramSpaceCommandAnimator), 
+        public static readonly DependencyProperty CenterProperty =
+            DependencyProperty.Register("Center", typeof(Point), typeof(MoveViewportCenterInDiagramSpaceCommandAnimator),
             new PropertyMetadata(OnCenterPropertyChanged));
 
-        internal MoveViewportCenterInDiagramSpaceCommandAnimator(IViewportGesture originalGesture, Duration animationDuration, 
+        internal MoveViewportCenterInDiagramSpaceCommandAnimator(IViewportGesture originalGesture, Duration animationDuration,
             MoveViewportCenterInDiagramSpaceCommand originalCommand)
             : base(originalGesture, animationDuration)
         {
@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
 
         private static void OnCenterPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            var commandAnimator = obj as MoveViewportCenterInDiagramSpaceCommandAnimator;
+            var commandAnimator = (MoveViewportCenterInDiagramSpaceCommandAnimator)obj;
             commandAnimator.OnCenterPropertyChanged((Point)args.NewValue);
         }
 

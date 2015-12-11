@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes
             {
                 arrowEndPoint - arrowHeadVector - arrowHeadWidthVector,
                 arrowEndPoint,
-                arrowEndPoint - arrowHeadVector + arrowHeadWidthVector,
+                arrowEndPoint - arrowHeadVector + arrowHeadWidthVector
             };
 
             return CreatePathFigure(arrowHeadPoints, true);

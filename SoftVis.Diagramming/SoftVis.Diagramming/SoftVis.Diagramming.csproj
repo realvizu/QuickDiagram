@@ -86,7 +86,6 @@
     <Compile Include="Rendering\Extensibility\IDiagramBehaviourProvider.cs" />
     <Compile Include="Diagramming\IConnectorTypeResolver.cs" />
     <Compile Include="Diagramming\Graph\IReadOnlyDiagramGraph.cs" />
-    <Compile Include="Common\IFilterable.cs" />
     <Compile Include="Diagramming\Graph\Layout\Incremental\Absolute\AbsolutePositionCalculator.cs" />
     <Compile Include="Diagramming\Graph\Layout\Incremental\DiagramNodeLayoutVertexToPointMap.cs" />
     <Compile Include="Diagramming\Graph\Layout\Incremental\LayoutVertexToPointMap.cs" />
@@ -142,7 +141,6 @@
     <Compile Include="Graphs\Layout\IEdgeRoutingSupportAlgorithm.cs" />
     <Compile Include="Graphs\Layout\IEdgeRoutingAlgorithm.cs" />
     <Compile Include="Graphs\Layout\ILayoutParameters.cs" />
-    <Compile Include="Geometry\RectMove.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
     <Compile Include="Graphs\Layout\LayoutType.cs" />
     <Compile Include="Geometry\ISized.cs" />
@@ -150,7 +148,6 @@
     <Compile Include="Graphs\ClusteredTopologicalSortAlgorithm.cs" />
     <Compile Include="Graphs\Layout\EdgeRoutingType.cs" />
     <Compile Include="Common\HashSetExtensions.cs" />
-    <Compile Include="Common\DoubleSpan.cs" />
     <Compile Include="Graphs\PathException.cs" />
     <Compile Include="Graphs\TopologicalSortOrder.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\SimpleTreeLayoutAlgorithm.cs" />
@@ -179,9 +176,7 @@
     <Compile Include="Rendering\Common\UIEvents\ResizeEventHandler.cs" />
     <Compile Include="Rendering\Wpf\Common\Animations\PointArrayAnimation.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Rendering\Wpf\Common\Converters\PointsToBoundingRectConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\RouteToWpfConverter.cs" />
-    <Compile Include="Rendering\Wpf\Common\Converters\RectsAndRoutesToWpfUnionConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\RectToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\SizeToWpfConverter.cs" />
     <Compile Include="Rendering\Wpf\Common\Size2DExtensions.cs" />
@@ -189,7 +184,6 @@
     <Compile Include="Rendering\Wpf\Common\Rect2DExtensions.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\Converters\PointToWpfConverter.cs" />
-    <Compile Include="Rendering\Wpf\Common\PathFigureCollectionExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\PointExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\RectExtensions.cs" />
     <Compile Include="Rendering\Wpf\Common\WpfConstants.cs" />

@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes
             var shaftPoints = new[]
             {
                 startPoint,
-                endPoint - arrowHeadVector,
+                endPoint - arrowHeadVector
             };
 
             return CreatePathFigure(shaftPoints, false);

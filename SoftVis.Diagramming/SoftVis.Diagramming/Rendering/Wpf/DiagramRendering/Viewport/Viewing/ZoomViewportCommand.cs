@@ -2,7 +2,7 @@
 {
     internal class ZoomViewportCommand : ViewportCommandBase
     {
-        internal double NewZoom { get; private set; }
+        internal double NewZoom { get; }
 
         internal ZoomViewportCommand(object sender, double newZoom)
             : base(sender)

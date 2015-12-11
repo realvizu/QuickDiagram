@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
             var zoomSign = zoomDirection == ZoomDirection.In ? 1 : -1;
 
             var linearZoom = ScaleCalculator.ExponentialToLinear(DiagramViewport.Zoom, DiagramViewport.MinZoom, DiagramViewport.MaxZoom);
-            var newLinearZoom = linearZoom + (zoomAmount * zoomSign);
+            var newLinearZoom = linearZoom + zoomAmount * zoomSign;
             var newZoom = ScaleCalculator.LinearToExponential(newLinearZoom, DiagramViewport.MinZoom, DiagramViewport.MaxZoom);
 
             if (newZoom < DiagramViewport.MinZoom)

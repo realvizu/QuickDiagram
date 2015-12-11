@@ -112,14 +112,14 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
         private bool IsAcceleratingInPositiveDirection(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
         {
             return _isKeyDown[(int)positiveKey]
-                && !(_isKeyDown[(int)negativeKey])
+                && !_isKeyDown[(int)negativeKey]
                 && speed >= 0;
         }
 
         private bool IsAccelaratingInNegativeDirection(int speed, GestureKeys positiveKey, GestureKeys negativeKey)
         {
             return _isKeyDown[(int)negativeKey]
-                && !(_isKeyDown[(int)positiveKey])
+                && !_isKeyDown[(int)positiveKey]
                 && speed <= 0;
         }
 
@@ -148,12 +148,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
         {
             switch (key)
             {
-                case (Key.Up): return GestureKeys.Up;
-                case (Key.Down): return GestureKeys.Down;
-                case (Key.Left): return GestureKeys.Left;
-                case (Key.Right): return GestureKeys.Right;
-                case (Key.W): return GestureKeys.ZoomIn;
-                case (Key.S): return GestureKeys.ZoomOut;
+                case Key.Up: return GestureKeys.Up;
+                case Key.Down: return GestureKeys.Down;
+                case Key.Left: return GestureKeys.Left;
+                case Key.Right: return GestureKeys.Right;
+                case Key.W: return GestureKeys.ZoomIn;
+                case Key.S: return GestureKeys.ZoomOut;
                 default: return null;
             }
         }

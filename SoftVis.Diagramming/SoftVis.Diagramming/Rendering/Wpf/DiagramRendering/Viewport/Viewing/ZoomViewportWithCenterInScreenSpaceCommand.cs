@@ -4,8 +4,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing
 {
     internal class ZoomViewportWithCenterInScreenSpaceCommand : ViewportCommandBase
     {
-        internal double NewZoom { get; private set; }
-        internal Point ZoomCenterInScreenSpace { get; private set; }
+        internal double NewZoom { get; }
+        internal Point ZoomCenterInScreenSpace { get; }
 
         internal ZoomViewportWithCenterInScreenSpaceCommand(object sender, double newZoom, Point zoomCenterInScreenSpace)
             : base(sender)

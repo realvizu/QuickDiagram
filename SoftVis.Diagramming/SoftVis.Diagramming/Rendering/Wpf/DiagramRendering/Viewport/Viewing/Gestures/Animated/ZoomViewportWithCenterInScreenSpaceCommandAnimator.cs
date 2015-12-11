@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
 
         private static void OnZoomWithCenterPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            var commandAnimator = obj as ZoomViewportWithCenterInScreenSpaceCommandAnimator;
+            var commandAnimator = (ZoomViewportWithCenterInScreenSpaceCommandAnimator)obj;
             commandAnimator.OnZoomWithCenterPropertyChanged((ZoomWithCenterSpecification)args.NewValue);
         }
 

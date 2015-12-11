@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
 
         private static void OnSizePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            var commandAnimator = obj as ResizeViewportCommandAnimator;
+            var commandAnimator = (ResizeViewportCommandAnimator)obj;
             commandAnimator.OnSizePropertyChanged((Size)args.NewValue);
         }
 

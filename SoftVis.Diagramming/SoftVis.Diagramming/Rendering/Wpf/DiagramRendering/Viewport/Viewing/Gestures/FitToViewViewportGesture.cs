@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
             {
                 1.0,
                 DiagramViewport.ViewportInScreenSpace.Size.Width / DiagramViewport.ContentInDiagramSpace.Width,
-                DiagramViewport.ViewportInScreenSpace.Size.Height / DiagramViewport.ContentInDiagramSpace.Height,
+                DiagramViewport.ViewportInScreenSpace.Size.Height / DiagramViewport.ContentInDiagramSpace.Height
             }.Min();
         }
     }

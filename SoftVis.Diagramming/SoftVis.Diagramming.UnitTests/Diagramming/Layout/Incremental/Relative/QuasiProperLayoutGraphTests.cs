@@ -85,7 +85,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             TestGraph.GetPrimarySiblings(GetVertex("C2")).Select(i => i.Name)
                 .ShouldBeEquivalentTo(new[]
                 {
-                    GetVertex("C1").Name,
+                    GetVertex("C1").Name
                 });
         }
 

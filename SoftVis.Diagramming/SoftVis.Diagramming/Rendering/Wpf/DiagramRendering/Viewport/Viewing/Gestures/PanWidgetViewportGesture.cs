@@ -29,16 +29,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
             Vector vector;
             switch (panDirection)
             {
-                case (PanDirection.Up):
+                case PanDirection.Up:
                     vector = new Vector(0, -PanAmount);
                     break;
-                case (PanDirection.Down):
+                case PanDirection.Down:
                     vector = new Vector(0, PanAmount);
                     break;
-                case (PanDirection.Left):
+                case PanDirection.Left:
                     vector = new Vector(-PanAmount, 0);
                     break;
-                case (PanDirection.Right):
+                case PanDirection.Right:
                     vector = new Vector(PanAmount, 0);
                     break;
                 default:

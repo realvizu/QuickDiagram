@@ -15,6 +15,6 @@
 
         BottomLeft,
         BottomCenter,
-        BottomRight,
+        BottomRight
     }
 }

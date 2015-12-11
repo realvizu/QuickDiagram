@@ -40,9 +40,9 @@ namespace Codartis.SoftVis.Rendering.Wpf.ImageExport
             var contentWidth = bounds.Width;
             var contentHeight = bounds.Height;
 
-            for (int i = 0; i <= contentHeight / tileHeight; i++)
+            for (var i = 0; i <= contentHeight / tileHeight; i++)
             {
-                for (int j = 0; j <= contentWidth / tileWidth; j++)
+                for (var j = 0; j <= contentWidth / tileWidth; j++)
                 {
                     var targetX = j * tileWidth;
                     var targetY = i * tileHeight;
@@ -50,10 +50,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.ImageExport
                     var sourceY = bounds.Top + targetY;
 
                     var width = (j + 1) * tileWidth > contentWidth
-                        ? contentWidth - (j * tileWidth)
+                        ? contentWidth - j * tileWidth
                         : tileWidth;
                     var height = (i + 1) * tileHeight > contentHeight
-                        ? contentHeight - (i * tileHeight)
+                        ? contentHeight - i * tileHeight
                         : tileHeight;
 
                     var contentBrush = new VisualBrush(visual)
@@ -64,7 +64,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.ImageExport
                         Viewbox = new Rect(sourceX, sourceY, width, height),
                         ViewboxUnits = BrushMappingMode.Absolute,
                         Viewport = new Rect(targetX, targetY, width, height),
-                        ViewportUnits = BrushMappingMode.Absolute,
+                        ViewportUnits = BrushMappingMode.Absolute
                     };
 
                     drawingContext.DrawRectangle(contentBrush, null, new Rect(targetX, targetY, width, height));

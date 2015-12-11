@@ -45,14 +45,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common
                 case RectReferencePoint.TopCenter:
                 case RectReferencePoint.Center:
                 case RectReferencePoint.BottomCenter:
-                    return rect.X + rect.Width/2;
+                    return rect.X + rect.Width / 2;
 
                 case RectReferencePoint.TopRight:
                 case RectReferencePoint.CenterRight:
                 case RectReferencePoint.BottomRight:
                     return rect.X + rect.Width;
+
+                default:
+                    throw new ArgumentException($"Unexpected reference point: {rectReferencePoint}");
             }
-            throw new ArgumentException($"Unexpected reference point: {rectReferencePoint}");
         }
 
         private static double GetRelativeYCoordinate(this Rect rect, RectReferencePoint rectReferencePoint)
@@ -73,8 +75,10 @@ namespace Codartis.SoftVis.Rendering.Wpf.Common
                 case RectReferencePoint.BottomCenter:
                 case RectReferencePoint.BottomRight:
                     return rect.Y + rect.Height;
+
+                default:
+                    throw new ArgumentException($"Unexpected reference point: {rectReferencePoint}");
             }
-            throw new ArgumentException($"Unexpected reference point: {rectReferencePoint}");
         }
     }
 }

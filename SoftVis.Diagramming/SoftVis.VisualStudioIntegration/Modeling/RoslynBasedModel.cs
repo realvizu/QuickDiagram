@@ -60,19 +60,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
             switch (namedTypeSymbol.TypeKind)
             {
-                case (TypeKind.Class):
+                case TypeKind.Class:
                     newEntity = new RoslynBasedClass(namedTypeSymbol);
                     break;
-                case (TypeKind.Interface):
+                case TypeKind.Interface:
                     newEntity = new RoslynBasedInterface(namedTypeSymbol);
                     break;
-                case (TypeKind.Struct):
+                case TypeKind.Struct:
                     newEntity = new RoslynBasedStruct(namedTypeSymbol);
                     break;
-                case (TypeKind.Enum):
+                case TypeKind.Enum:
                     newEntity = new RoslynBasedEnum(namedTypeSymbol);
                     break;
-                case (TypeKind.Delegate):
+                case TypeKind.Delegate:
                     newEntity = new RoslynBasedDelegate(namedTypeSymbol);
                     break;
                 default:

@@ -2,6 +2,6 @@
 {
     public enum LayoutType
     {
-        Incremental,
+        Incremental
     }
 }

@@ -4,7 +4,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing
 {
     internal class ResizeViewportCommand : ViewportCommandBase
     {
-        internal Size NewSizeInScreenSpace { get; private set; }
+        internal Size NewSizeInScreenSpace { get; }
 
         internal ResizeViewportCommand(object sender, Size newSizeInScreenSpace)
             : base(sender)

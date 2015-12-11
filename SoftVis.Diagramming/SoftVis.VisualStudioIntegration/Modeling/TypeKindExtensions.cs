@@ -16,15 +16,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         {
             switch (typeKind)
             {
-                case (TypeKind.Class):
+                case TypeKind.Class:
                     return RoslynBasedModelEntityStereotype.Class;
-                case (TypeKind.Interface):
+                case TypeKind.Interface:
                     return RoslynBasedModelEntityStereotype.Interface;
-                case (TypeKind.Struct):
+                case TypeKind.Struct:
                     return RoslynBasedModelEntityStereotype.Struct;
-                case (TypeKind.Enum):
+                case TypeKind.Enum:
                     return RoslynBasedModelEntityStereotype.Enum;
-                case (TypeKind.Delegate):
+                case TypeKind.Delegate:
                     return RoslynBasedModelEntityStereotype.Delegate;
                 default:
                     throw new ArgumentException($"Unexpected TypeKind {typeKind}.");
