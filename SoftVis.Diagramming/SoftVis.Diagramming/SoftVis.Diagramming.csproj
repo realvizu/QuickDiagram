@@ -69,6 +69,7 @@
     <Compile Include="Diagramming\ConnectorType.cs" />
     <Compile Include="Modeling\RelationshipSpecifications.cs" />
     <Compile Include="Rendering\Wpf\Common\FrameworkElementExtensions.cs" />
+    <Compile Include="Rendering\Wpf\Common\HitTesting\HitTesterInstance.cs" />
     <Compile Include="Rendering\Wpf\Common\HitTesting\HitTester.cs" />
     <Compile Include="Rendering\Wpf\Common\HitTesting\IHitTester.cs" />
     <Compile Include="Rendering\Wpf\DiagramViewerViewModel.cs" />
