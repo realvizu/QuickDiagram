@@ -181,8 +181,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         private void ArrangeChildControl(DiagramShapeControlBase child)
         {
-            child.Arrange(new Rect(child.DesiredSize));
             child.RenderTransform = CreateTransformForChild(child.Position, child.Size, child.Scale);
+            child.Arrange(new Rect(child.DesiredSize));
         }
 
         private Transform CreateTransformForChild(Point position, Size size, double scale)
