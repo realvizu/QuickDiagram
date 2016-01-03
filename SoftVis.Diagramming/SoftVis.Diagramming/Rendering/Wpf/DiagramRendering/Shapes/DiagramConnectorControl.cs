@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Rendering.Wpf.Common;
 using Codartis.SoftVis.Rendering.Wpf.Common.Animations;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes
 {

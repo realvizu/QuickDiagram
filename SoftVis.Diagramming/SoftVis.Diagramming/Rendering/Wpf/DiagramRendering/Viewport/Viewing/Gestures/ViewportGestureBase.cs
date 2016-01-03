@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Codartis.SoftVis.Rendering.Common;
-using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures

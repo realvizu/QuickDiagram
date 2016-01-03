@@ -8,6 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     public interface IModelServices
     {
+        IModel Model { get; }
         IModelEntity GetModelEntity(ISymbol symbol);
     }
 }

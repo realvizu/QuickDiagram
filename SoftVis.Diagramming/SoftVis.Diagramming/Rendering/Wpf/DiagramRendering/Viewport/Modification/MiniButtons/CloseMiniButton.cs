@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using Codartis.SoftVis.Rendering.Extensibility;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons
 {
@@ -14,12 +14,12 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.
         private const double XMarkThickness = 1.5;
         private static readonly Color XMarkColor = Colors.Red;
 
-        public CloseMiniButton(Control adornedControl, Visibility initialVisibility = Visibility.Visible)
-            : base(adornedControl, initialVisibility)
+        public CloseMiniButton(DiagramShapeControlBase adornedShape, Visibility initialVisibility = Visibility.Visible)
+            : base(adornedShape, initialVisibility)
         {
         }
 
-        protected override Point GetButtonCenter()
+        protected override Point GetButtonCenterRelativeToAdornedControl()
         {
             const double overlap = DefaultDiagramBehaviourProvider.MiniButtonOverlapParentBy;
             var adornedElementRect = new Rect(AdornedElement.DesiredSize);

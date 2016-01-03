@@ -17,5 +17,7 @@
         /// Provides an extensible set of relationship categories.
         /// </summary>
         ModelRelationshipStereotype Stereotype { get; }
+
+        bool IsOfType(ModelRelationshipType type, ModelRelationshipStereotype stereotype);
     }
 }

@@ -9,5 +9,7 @@ namespace Codartis.SoftVis.Modeling
     {
         IEnumerable<IModelEntity> Entities { get; }
         IEnumerable<IModelRelationship> Relationships { get; }
+
+        IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, RelationshipSpecification relationshipSpecification);
     }
 }

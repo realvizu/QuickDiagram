@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public event EventHandler PackageEvent;
 
-        public DiagramManager(DiagramToolWindow diagramToolWindow)
+        public DiagramManager(IModel model, DiagramToolWindow diagramToolWindow)
         {
             var connectorTypeResolver = new RoslynBasedConnectorTypeResolver();
             _diagram = new RoslynBasedWpfDiagram(connectorTypeResolver);
@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             _diagramBuilder = new RoslynBasedDiagramBuilder(_diagram);
 
             _diagramToolWindow = diagramToolWindow;
-            _diagramToolWindow.Initialize(_diagram);
+            _diagramToolWindow.Initialize(model, _diagram);
         }
 
         public int FontSize

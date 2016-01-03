@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Rendering.Extensibility;
+using Codartis.SoftVis.Rendering.Geometry;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -14,12 +15,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
         private static readonly RelatedEntityMiniButtonDescriptor ImplementedInterfacesDescriptor =
             new RelatedEntityMiniButtonDescriptor(
                 CustomRelationshipSpecifications.ImplementedInterfaces, CustomConnectorTypes.Implementation,
-                new RectRelativeLocation(RectReferencePoint.TopCenter, new Point2D(MiniButtonRadius * 1.2, MiniButtonOverlapParentBy)));
+                new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(MiniButtonRadius * 1.2, MiniButtonOverlapParentBy)));
 
         private static readonly RelatedEntityMiniButtonDescriptor ImplementerTypesDescriptor =
             new RelatedEntityMiniButtonDescriptor(
                 CustomRelationshipSpecifications.ImplementerTypes, CustomConnectorTypes.Implementation,
-                new RectRelativeLocation(RectReferencePoint.BottomCenter, new Point2D(MiniButtonRadius * 1.2, -MiniButtonOverlapParentBy)));
+                new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(MiniButtonRadius * 1.2, -MiniButtonOverlapParentBy)));
 
         public override IEnumerable<RelatedEntityMiniButtonDescriptor> GetRelatedEntityMiniButtonDescriptors()
         {

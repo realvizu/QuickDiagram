@@ -5,7 +5,7 @@ using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    internal class TestModel : IModel
+    internal class TestModel : ModelBase
     {
         private readonly List<IModelEntity> _entities;
         private readonly List<IModelRelationship> _relationships;
@@ -19,8 +19,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             EndGroup();
         }
 
-        public IEnumerable<IModelEntity> Entities => _entities;
-        public IEnumerable<IModelRelationship> Relationships => _relationships;
+        public override IEnumerable<IModelEntity> Entities => _entities;
+        public override IEnumerable<IModelRelationship> Relationships => _relationships;
         public IEnumerable<List<IModelItem>> ItemGroups => _modelItemGroups;
 
         private TestModel AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype, int size)

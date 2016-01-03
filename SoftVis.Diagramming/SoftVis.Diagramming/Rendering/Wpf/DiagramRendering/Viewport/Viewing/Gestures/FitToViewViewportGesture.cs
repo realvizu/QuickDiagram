@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures

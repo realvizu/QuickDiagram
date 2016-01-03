@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media.Animation;
-using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures.Animated
 {

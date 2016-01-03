@@ -1,6 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Rendering.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Extensibility
 {
@@ -13,9 +14,8 @@ namespace Codartis.SoftVis.Rendering.Extensibility
         public ConnectorType ConnectorStyle { get; }
         public RectRelativeLocation MiniButtonLocation { get; }
 
-        public RelatedEntityMiniButtonDescriptor(RelationshipSpecification relationshipSpecification, ConnectorType connectorStyle,
-            RectRelativeLocation miniButtonLocation
-            )
+        public RelatedEntityMiniButtonDescriptor(RelationshipSpecification relationshipSpecification, 
+            ConnectorType connectorStyle, RectRelativeLocation miniButtonLocation)
         {
             RelationshipSpecification = relationshipSpecification;
             ConnectorStyle = connectorStyle;

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Wpf.Common.Converters
 {

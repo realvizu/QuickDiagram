@@ -1,8 +1,8 @@
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using Codartis.SoftVis.Rendering.Extensibility;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons
 {
@@ -11,37 +11,33 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.
     /// </summary>
     internal abstract class MiniButtonBase : Adorner
     {
-        private const double MiniButtonRadius = DefaultDiagramBehaviourProvider.MiniButtonRadius;
+        protected const double MiniButtonRadius = DefaultDiagramBehaviourProvider.MiniButtonRadius;
         private const double ButtonFrameThickness = 1d;
 
-        /// <summary>
-        /// The adorned control is stored here to later acquire its colors. 
-        /// The base class also stores the adorned element but as a UIElement.
-        /// </summary>
-        protected readonly Control AdornedControl;
+        public DiagramShapeControlBase AdornedShape { get; }
 
-        protected MiniButtonBase(Control adornedControl, Visibility initialVisibility = Visibility.Collapsed)
-            : base(adornedControl)
+        protected MiniButtonBase(DiagramShapeControlBase adornedShape, Visibility initialVisibility = Visibility.Collapsed)
+            : base(adornedShape)
         {
-            AdornedControl = adornedControl;
+            AdornedShape = adornedShape;
             Visibility = initialVisibility;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var center = GetButtonCenter();
+            var center = GetButtonCenterRelativeToAdornedControl();
             DrawFrame(drawingContext, center);
             DrawPicture(drawingContext, center);
         }
 
-        protected abstract Point GetButtonCenter();
+        protected abstract Point GetButtonCenterRelativeToAdornedControl();
 
         protected abstract void DrawPicture(DrawingContext drawingContext, Point center);
 
         private void DrawFrame(DrawingContext drawingContext, Point center)
         {
-            var pen = new Pen(AdornedControl.Foreground, ButtonFrameThickness);
-            var brush = AdornedControl.Background;
+            var pen = new Pen(AdornedShape.Foreground, ButtonFrameThickness);
+            var brush = AdornedShape.Background;
 
             drawingContext.DrawEllipse(brush, pen, center, MiniButtonRadius, MiniButtonRadius);
         }

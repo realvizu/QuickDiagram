@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Rendering.Extensibility;
 using Codartis.SoftVis.Rendering.Wpf.Common.HitTesting;
@@ -21,5 +22,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         public static readonly DependencyProperty MaxZoomProperty =
             DependencyProperty.Register("MaxZoom", typeof(double), typeof(DiagramViewerControl));
+
+        public static readonly DependencyProperty ShowRelatedEntitySelectorCommandProperty =
+            DependencyProperty.Register("ShowRelatedEntitySelectorCommand", typeof(ICommand), typeof(DiagramViewerControl));
+
+        public static readonly DependencyProperty HideRelatedEntitySelectorCommandProperty =
+            DependencyProperty.Register("HideRelatedEntitySelectorCommand", typeof(ICommand), typeof(DiagramViewerControl));
     }
 }

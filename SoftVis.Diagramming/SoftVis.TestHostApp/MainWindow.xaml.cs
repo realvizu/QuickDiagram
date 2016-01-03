@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
 
             var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
-            var diagramViewerViewModel = new DiagramViewerViewModel(_testDiagram, diagramBehaviourProvider);
+            var diagramViewerViewModel = new DiagramViewerViewModel(_testModel, _testDiagram, diagramBehaviourProvider);
             DiagramViewerControl.DataContext = diagramViewerViewModel;
 
             FitToView();

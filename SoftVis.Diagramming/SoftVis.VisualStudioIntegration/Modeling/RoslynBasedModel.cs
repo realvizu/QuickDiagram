@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// A model created from Roslyn symbols.
     /// </summary>
-    internal class RoslynBasedModel : IModel
+    internal class RoslynBasedModel : ModelBase
     {
         private readonly Dictionary<string, RoslynBasedModelEntity> _entities;
         private readonly Dictionary<string, ModelRelationship> _relationships;
@@ -19,8 +19,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             _relationships = new Dictionary<string, ModelRelationship>();
         }
 
-        public IEnumerable<IModelEntity> Entities => _entities.Values;
-        public IEnumerable<IModelRelationship> Relationships => _relationships.Values;
+        public override IEnumerable<IModelEntity> Entities => _entities.Values;
+        public override IEnumerable<IModelRelationship> Relationships => _relationships.Values;
 
         public RoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol namedTypeSymbol)
         {

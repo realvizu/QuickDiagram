@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Common
+namespace Codartis.SoftVis.Rendering.Wpf.Common.Geometry
 {
     public static class PointExtensions
     {

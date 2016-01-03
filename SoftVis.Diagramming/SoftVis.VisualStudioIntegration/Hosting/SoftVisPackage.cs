@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             _workspaceServices = new WorkspaceServices(this);
             _modelBuilder = new RoslynBasedModelBuilder(_workspaceServices);
-            _diagramManager = new DiagramManager(CreateToolWindow());
+            _diagramManager = new DiagramManager(_modelBuilder.Model, CreateToolWindow());
             _diagramManager.PackageEvent += OnPackageEvent;
 
             InitializeShellTriggeredCommands();

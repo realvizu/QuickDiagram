@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Rendering.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Extensibility
 {
@@ -15,11 +16,11 @@ namespace Codartis.SoftVis.Rendering.Extensibility
 
         protected static readonly RelatedEntityMiniButtonDescriptor BaseTypesDescriptor =
             new RelatedEntityMiniButtonDescriptor(RelationshipSpecifications.BaseTypes, ConnectorTypes.Generalization,
-                new RectRelativeLocation(RectReferencePoint.TopCenter, new Point2D(0, MiniButtonOverlapParentBy)));
+                new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(0, MiniButtonOverlapParentBy)));
 
         protected static readonly RelatedEntityMiniButtonDescriptor SubtypesDescriptor =
             new RelatedEntityMiniButtonDescriptor(RelationshipSpecifications.Subtypes, ConnectorTypes.Generalization,
-                new RectRelativeLocation(RectReferencePoint.BottomCenter, new Point2D(0, -MiniButtonOverlapParentBy)));
+                new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(0, -MiniButtonOverlapParentBy)));
         
         public virtual IEnumerable<RelatedEntityMiniButtonDescriptor> GetRelatedEntityMiniButtonDescriptors()
         {

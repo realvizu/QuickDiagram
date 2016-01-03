@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Common;
@@ -12,11 +13,13 @@ using Codartis.SoftVis.Rendering.Wpf.Common.HitTesting;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestures.Animated;
 using Codartis.SoftVis.Rendering.Wpf.ImageExport;
 using Codartis.SoftVis.Rendering.Wpf.InputControls;
+using Codartis.SoftVis.Rendering.Wpf.View;
 
 namespace Codartis.SoftVis.Rendering.Wpf
 {
@@ -27,13 +30,17 @@ namespace Codartis.SoftVis.Rendering.Wpf
     /// </summary>
     [TemplatePart(Name = PART_DiagramViewportPanel, Type = typeof(DiagramViewportPanel))]
     [TemplatePart(Name = PART_PanAndZoomControl, Type = typeof(PanAndZoomControl))]
+    [TemplatePart(Name = PART_RelatedEntitySelectorControl, Type = typeof(EntitySelectorControl))]
     public partial class DiagramViewerControl : TemplatedControlBase, IUIEventSource
     {
         private const string PART_DiagramViewportPanel = "PART_DiagramViewportPanel";
         private const string PART_PanAndZoomControl = "PART_PanAndZoomControl";
+        private const string PART_RelatedEntitySelectorControl = "PART_RelatedEntitySelectorControl";
 
         private DiagramViewportPanel _diagramViewportPanel;
         private PanAndZoomControl _panAndZoomControl;
+        private EntitySelectorControl _entitySelectorControl;
+
         private readonly List<IViewportGesture> _gestures = new List<IViewportGesture>();
         private readonly SimpleDiagramPanel _diagramPanelForImageExport = new SimpleDiagramPanel();
         private readonly ResourceDictionary _additionalResourceDictionary;
@@ -90,6 +97,18 @@ namespace Codartis.SoftVis.Rendering.Wpf
             set { SetValue(MaxZoomProperty, value); }
         }
 
+        public ICommand ShowRelatedEntitySelectorCommand
+        {
+            get { return (ICommand)GetValue(ShowRelatedEntitySelectorCommandProperty); }
+            set { SetValue(ShowRelatedEntitySelectorCommandProperty, value); }
+        }
+
+        public ICommand HideRelatedEntitySelectorCommand
+        {
+            get { return (ICommand)GetValue(HideRelatedEntitySelectorCommandProperty); }
+            set { SetValue(HideRelatedEntitySelectorCommandProperty, value); }
+        }
+
         public void FitDiagramToView()
         {
             EnsureThatDelayedRenderingOperationsAreCompleted();
@@ -115,6 +134,7 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
             InitializeDiagramViewportPanel();
             InitializePanAndZoomControl();
+            InitializeRelatedEntitySelectorControl();
             InitializeDiagramPanelForImageExport();
             InitializeGestures();
         }
@@ -122,6 +142,8 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void InitializeDiagramViewportPanel()
         {
             _diagramViewportPanel = FindChildControlInTemplate<DiagramViewportPanel>(PART_DiagramViewportPanel);
+            _diagramViewportPanel.MiniButtonActivated += OnMiniButtonActivated;
+
             MouseLeave += _diagramViewportPanel.OnControlMouseLeave;
         }
 
@@ -132,6 +154,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
             _panAndZoomControl.FitToView += OnFitToView;
             _panAndZoomControl.Zoom += OnZoom;
             _panAndZoomControl.ZoomValue = _diagramViewportPanel.Zoom;
+        }
+
+        private void InitializeRelatedEntitySelectorControl()
+        {
+            _entitySelectorControl = FindChildControlInTemplate<EntitySelectorControl>(PART_RelatedEntitySelectorControl);
         }
 
         private void InitializeDiagramPanelForImageExport()
@@ -163,6 +190,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
         {
             base.OnRenderSizeChanged(sizeInfo);
             OnResize(sizeInfo.NewSize);
+        }
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            //HideRelatedEntitySelectorCommand?.Execute(null);
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)
@@ -199,6 +231,8 @@ namespace Codartis.SoftVis.Rendering.Wpf
 
         private void OnViewportCommand(object sender, ViewportCommandBase command)
         {
+            HideRelatedEntitySelectorCommand?.Execute(null);
+
             command.Execute(_diagramViewportPanel);
             _diagramViewportPanel.InvalidateArrange();
 
@@ -233,6 +267,11 @@ namespace Codartis.SoftVis.Rendering.Wpf
         private void EnsureThatDelayedRenderingOperationsAreCompleted()
         {
             Dispatcher.Invoke(DispatcherPriority.Loaded, new Action(() => { }));
+        }
+
+        private void OnMiniButtonActivated(object sender, MiniButtonActivatedEventArgs e)
+        {
+            ShowRelatedEntitySelectorCommand?.Execute(e);
         }
     }
 }

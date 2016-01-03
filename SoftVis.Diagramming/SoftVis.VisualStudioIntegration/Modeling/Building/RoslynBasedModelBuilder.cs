@@ -12,8 +12,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
     /// </summary>
     public class RoslynBasedModelBuilder : IModelServices
     {
-        private IWorkspaceServices WorkspaceServices { get; }
-        private RoslynBasedModel Model { get; }
+        private readonly RoslynBasedModel _model;
+        private readonly IWorkspaceServices _workspaceServices;
 
         private static readonly List<string> TrivialBaseSymbolNames =
             new List<string>
@@ -24,9 +24,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
         internal RoslynBasedModelBuilder(IWorkspaceServices workspaceServices)
         {
-            WorkspaceServices = workspaceServices;
-            Model = new RoslynBasedModel();
+            _workspaceServices = workspaceServices;
+            _model = new RoslynBasedModel();
         }
+
+        public IModel Model => _model;
 
         public IModelEntity GetModelEntity(ISymbol symbol)
         {
@@ -48,9 +50,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
                 case TypeKind.Struct:
                     return GetOrAddStructWithRelatedSymbols(namedTypeSymbol);
                 case TypeKind.Enum:
-                    return Model.GetOrAddEntity(namedTypeSymbol);
+                    return _model.GetOrAddEntity(namedTypeSymbol);
                 case TypeKind.Delegate:
-                    return Model.GetOrAddEntity(namedTypeSymbol);
+                    return _model.GetOrAddEntity(namedTypeSymbol);
                 default:
                     throw new Exception($"Unexpected TypeKind: {namedTypeSymbol.TypeKind}");
             }
@@ -60,7 +62,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         {
             EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
 
-            var newEntity = Model.GetOrAddEntity(classSymbol);
+            var newEntity = _model.GetOrAddEntity(classSymbol);
             AddBaseClass(classSymbol);
             AddImplementedInterfaces(classSymbol);
             AddDerivedTypes(classSymbol);
@@ -71,7 +73,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         {
             EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
 
-            var newEntity = Model.GetOrAddEntity(interfaceSymbol);
+            var newEntity = _model.GetOrAddEntity(interfaceSymbol);
             AddBaseInterfaces(interfaceSymbol);
             AddDerivedInterfaces(interfaceSymbol);
             AddImplementingTypes(interfaceSymbol);
@@ -82,7 +84,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         {
             EnsureSymbolTypeKind(structSymbol, TypeKind.Struct);
 
-            var newEntity = Model.GetOrAddEntity(structSymbol);
+            var newEntity = _model.GetOrAddEntity(structSymbol);
             AddImplementedInterfaces(structSymbol);
             return newEntity;
         }
@@ -93,8 +95,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
             if (classSymbol.BaseType != null && !IsBaseHidden(classSymbol.BaseType))
             {
-                Model.GetOrAddEntity(classSymbol.BaseType);
-                Model.GetOrAddRelationship(classSymbol, classSymbol.BaseType, ModelRelationshipType.Generalization);
+                _model.GetOrAddEntity(classSymbol.BaseType);
+                _model.GetOrAddRelationship(classSymbol, classSymbol.BaseType, ModelRelationshipType.Generalization);
                 AddBaseClass(classSymbol.BaseType);
             }
         }
@@ -112,8 +114,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
             foreach (var implementedInterfaceSymbol in classOrStructSymbol.Interfaces)
             {
-                Model.GetOrAddEntity(implementedInterfaceSymbol);
-                Model.GetOrAddRelationship(classOrStructSymbol, implementedInterfaceSymbol, 
+                _model.GetOrAddEntity(implementedInterfaceSymbol);
+                _model.GetOrAddRelationship(classOrStructSymbol, implementedInterfaceSymbol, 
                     ModelRelationshipType.Generalization, RoslynBasedModelRelationshipStereotype.Implementation);
                 AddBaseInterfaces(implementedInterfaceSymbol);
             }
@@ -125,8 +127,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
             foreach (var baseInterfaceSymbol in interfaceSymbol.Interfaces)
             {
-                Model.GetOrAddEntity(baseInterfaceSymbol);
-                Model.GetOrAddRelationship(interfaceSymbol, baseInterfaceSymbol, ModelRelationshipType.Generalization);
+                _model.GetOrAddEntity(baseInterfaceSymbol);
+                _model.GetOrAddRelationship(interfaceSymbol, baseInterfaceSymbol, ModelRelationshipType.Generalization);
                 AddBaseInterfaces(baseInterfaceSymbol);
             }
         }
@@ -137,8 +139,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
             foreach (var derivedTypeSymbol in GetDerivedTypeSymbols(classSymbol))
             {
-                Model.GetOrAddEntity(derivedTypeSymbol);
-                Model.GetOrAddRelationship(derivedTypeSymbol, classSymbol, ModelRelationshipType.Generalization);
+                _model.GetOrAddEntity(derivedTypeSymbol);
+                _model.GetOrAddRelationship(derivedTypeSymbol, classSymbol, ModelRelationshipType.Generalization);
                 AddDerivedTypes(derivedTypeSymbol);
             }
         }
@@ -147,7 +149,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         {
             EnsureSymbolTypeKind(classSymbol, TypeKind.Class);
 
-            var workspace = WorkspaceServices.GetWorkspace();
+            var workspace = _workspaceServices.GetWorkspace();
             return FindDerivedTypesAsync(workspace, classSymbol);
         }
 
@@ -176,8 +178,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
                 // So here we want to find non-interface children only.
                 if (implementingTypeSymbols.TypeKind != TypeKind.Interface)
                 {
-                    Model.GetOrAddEntity(implementingTypeSymbols);
-                    Model.GetOrAddRelationship(implementingTypeSymbols, interfaceSymbol,
+                    _model.GetOrAddEntity(implementingTypeSymbols);
+                    _model.GetOrAddRelationship(implementingTypeSymbols, interfaceSymbol,
                         ModelRelationshipType.Generalization, RoslynBasedModelRelationshipStereotype.Implementation);
                 }
             }
@@ -191,8 +193,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
             {
                 if (implementingTypeSymbols.TypeKind == TypeKind.Interface)
                 {
-                    Model.GetOrAddEntity(implementingTypeSymbols);
-                    Model.GetOrAddRelationship(implementingTypeSymbols, interfaceSymbol, ModelRelationshipType.Generalization);
+                    _model.GetOrAddEntity(implementingTypeSymbols);
+                    _model.GetOrAddRelationship(implementingTypeSymbols, interfaceSymbol, ModelRelationshipType.Generalization);
                 }
             }
         }
@@ -201,7 +203,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
         {
             EnsureSymbolTypeKind(interfaceSymbol, TypeKind.Interface);
 
-            var workspace = WorkspaceServices.GetWorkspace();
+            var workspace = _workspaceServices.GetWorkspace();
             return FindImplementingTypesAsync(workspace, interfaceSymbol);
         }
 

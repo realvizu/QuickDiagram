@@ -1,16 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Extensibility;
-using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Geometry;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 using Codartis.SoftVis.Rendering.Wpf.Common.HitTesting;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
+using Codartis.SoftVis.Rendering.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 {
@@ -28,6 +31,8 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
         public Rect ViewportInScreenSpace { get; private set; }
         public Rect ViewportInDiagramSpace { get; private set; }
         private Transform DiagramSpaceToScreenSpace { get; set; }
+
+        public event EventHandler<MiniButtonActivatedEventArgs> MiniButtonActivated;
 
         public static readonly DependencyProperty DiagramBehaviourProviderProperty =
             DependencyProperty.Register("DiagramBehaviourProvider", typeof(IDiagramBehaviourProvider),
@@ -232,7 +237,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             return transform;
         }
 
-        private void AddMiniButtons(Control control)
+        private void AddMiniButtons(DiagramNodeControl control)
         {
             var adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
@@ -265,7 +270,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             _miniButtons.Clear();
         }
 
-        private CloseMiniButton CreateCloseMiniButton(Control control)
+        private CloseMiniButton CreateCloseMiniButton(DiagramShapeControlBase control)
         {
             var closeMiniButton = new CloseMiniButton(control);
             closeMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
@@ -274,13 +279,56 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
             return closeMiniButton;
         }
 
-        private ShowRelatedEntityMiniButton CreateRelatedEntityMiniButton(Control control, RelatedEntityMiniButtonDescriptor relatedEntityMiniButtonDescriptor)
+        private ShowRelatedEntityMiniButton CreateRelatedEntityMiniButton(DiagramNodeControl control,
+            RelatedEntityMiniButtonDescriptor relatedEntityMiniButtonDescriptor)
         {
             var showRelatedEntityMiniButton = new ShowRelatedEntityMiniButton(relatedEntityMiniButtonDescriptor, control);
             showRelatedEntityMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
             showRelatedEntityMiniButton.MouseLeave += OnMiniButtonMouseEnterOrLeave;
-            //miniButton.PreviewMouseLeftButtonDown += OnRelatedEntityMiniButtonClick;
+            showRelatedEntityMiniButton.MouseLeftButtonDown += OnRelatedEntityMiniButtonClick;
             return showRelatedEntityMiniButton;
+        }
+
+        private void OnRelatedEntityMiniButtonClick(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("OnRelatedEntityMiniButtonClick");
+
+            var miniButton = (ShowRelatedEntityMiniButton)sender;
+            var diagramNodeControl = miniButton.AdornedDiagramNodeControl;
+
+            var diagramNode = (DiagramNode)ControlToDiagramShapeMap.Get(diagramNodeControl);
+            var modelEntity = diagramNode.ModelEntity;
+            var miniButtonRect = miniButton.GetRect(diagramNodeControl.Position);
+            var handleOrientation = CalculateHandleOrientation(miniButton.MiniButtonLocation);
+            var relationshipSpecification = miniButton.RelationshipSpecification;
+            var attachPointInDiagramSpace = CalculateAttachPoint(miniButtonRect, handleOrientation);
+            var attachPointInScreenSpace = DiagramSpaceToScreenSpace.Transform(attachPointInDiagramSpace);
+
+            var eventArgs = new MiniButtonActivatedEventArgs(modelEntity, relationshipSpecification,
+                attachPointInScreenSpace, handleOrientation);
+            MiniButtonActivated?.Invoke(miniButton, eventArgs);
+        }
+
+        private static HandleOrientation CalculateHandleOrientation(RectRelativeLocation miniButtonLocation)
+        {
+            switch (miniButtonLocation.Alignment.VerticalAlignment)
+            {
+                case VerticalAlignmentType.Top: return HandleOrientation.Bottom;
+                case VerticalAlignmentType.Bottom: return HandleOrientation.Top;
+
+                default: throw new NotImplementedException();
+            }
+        }
+
+        private static Point CalculateAttachPoint(Rect rect, HandleOrientation handleOrientation)
+        {
+            switch (handleOrientation)
+            {
+                case HandleOrientation.Top: return rect.GetRelativePoint(RectAlignment.BottomMiddle);
+                case HandleOrientation.Bottom: return rect.GetRelativePoint(RectAlignment.TopMiddle);
+
+                default: throw new NotImplementedException();
+            }
         }
 
         private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
@@ -314,16 +362,16 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
 
         private void OnDiagramNodeMouseEnterOrLeave(object sender, MouseEventArgs mouseEventArgs)
         {
-            HitTestAndShowOrHideMiniButton((DiagramShapeControlBase)sender, mouseEventArgs);
+            HitTestAndShowOrHideMiniButton((DiagramNodeControl)sender, mouseEventArgs);
         }
 
         private void OnMiniButtonMouseEnterOrLeave(object sender, MouseEventArgs mouseEventArgs)
         {
             var miniButton = (MiniButtonBase)sender;
-            HitTestAndShowOrHideMiniButton((DiagramShapeControlBase)miniButton.AdornedElement, mouseEventArgs);
+            HitTestAndShowOrHideMiniButton((DiagramNodeControl)miniButton.AdornedElement, mouseEventArgs);
         }
 
-        private void HitTestAndShowOrHideMiniButton(DiagramShapeControlBase control, MouseEventArgs mouseEventArgs)
+        private void HitTestAndShowOrHideMiniButton(DiagramNodeControl control, MouseEventArgs mouseEventArgs)
         {
             var hitItem = DiagramHitTester.HitTest(mouseEventArgs);
 
@@ -333,7 +381,7 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport
                 HideMiniButtons();
         }
 
-        private void ShowMiniButtons(Control control)
+        private void ShowMiniButtons(DiagramNodeControl control)
         {
             if (!_miniButtons.Any())
                 AddMiniButtons(control);

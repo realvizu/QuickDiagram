@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System" />
-    <Allowed From="*" To="System.Diagnostics" />
+    <Allowed From="*" To="System.Diagnostics.*" />
     <Allowed From="*" To="System.Collections.*" />
     <Allowed From="*" To="System.Linq.*" />
     <Allowed From="*" To="System.Globalization.*" />
     <Allowed From="*" To="System.ComponentModel" />
     <Allowed From="*" To="System.Runtime.*" />
+    <Allowed From="*" To="System.CodeDom.Compiler" />
     <Allowed From="*" To="System.Xml" />
     <Allowed From="*" To="System.Text" />
     <Allowed From="*" To="System.IO" />
@@ -32,6 +33,7 @@
     <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Diagramming.*" />
     <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Modeling.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.*" To="Codartis.SoftVis.Rendering.Geometry" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf" To="Codartis.SoftVis.Rendering.Wpf.*" />
 
@@ -39,8 +41,11 @@
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Extensibility" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Common.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.*" To="Codartis.SoftVis.Rendering.Wpf.Common.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.View.*" To="Codartis.SoftVis.Rendering.Wpf.ViewModel.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.*" To="Codartis.SoftVis.Rendering.Wpf.ViewModel.*" />
 
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes.*" />
     <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.*" />
+    <Allowed From="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons" To="Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes" />
 </NsDepCopConfig>

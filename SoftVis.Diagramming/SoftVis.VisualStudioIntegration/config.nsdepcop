@@ -20,6 +20,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration" To="Microsoft.VisualStudio.LanguageServices" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Commands.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" />

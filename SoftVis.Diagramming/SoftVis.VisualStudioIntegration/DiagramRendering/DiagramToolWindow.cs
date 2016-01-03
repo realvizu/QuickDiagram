@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;
@@ -33,10 +34,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.DiagramRendering
             ImageExportDpi = Dpi.Default;
         }
 
-        internal void Initialize(Diagram diagram)
+        internal void Initialize(IModel model, Diagram diagram)
         {
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
-            _diagramViewerControl.DataContext = new DiagramViewerViewModel(diagram, diagramBehaviourProvider);
+            _diagramViewerControl.DataContext = new DiagramViewerViewModel(model, diagram, diagramBehaviourProvider);
         }
 
         public int FontSize

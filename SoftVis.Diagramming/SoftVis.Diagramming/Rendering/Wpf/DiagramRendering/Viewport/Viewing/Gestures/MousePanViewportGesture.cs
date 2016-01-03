@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using Codartis.SoftVis.Rendering.Wpf.Common.UIEvents;
 
@@ -24,30 +25,35 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Viewing.Gestu
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            Debug.WriteLine("OnMouseLeftButtonDown");
             if (!_isPanning)
             {
                 _isPanning = true;
                 _cursorBeforePanning = DiagramViewport.Cursor;
                 DiagramViewport.Cursor = Cursors.Hand;
                 Mouse.Capture(UIEventSource);
+                Debug.WriteLine("Start panning, mouse captured");
             }
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            Debug.WriteLine("OnMouseLeftButtonUp");
             if (_isPanning)
             {
                 _isPanning = false;
                 DiagramViewport.Cursor = _cursorBeforePanning;
                 Mouse.Capture(null);
+                Debug.WriteLine("Finished panning, mouse released");
             }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             var position = e.GetPosition(UIEventSource);
-            if (_isPanning)
+            if (_isPanning && _lastMousePosition != position)
             {
+                Debug.WriteLine("Sending MoveViewportCenterInScreenSpaceBy");
                 MoveViewportCenterInScreenSpaceBy(_lastMousePosition - position);
             }
             _lastMousePosition = position;

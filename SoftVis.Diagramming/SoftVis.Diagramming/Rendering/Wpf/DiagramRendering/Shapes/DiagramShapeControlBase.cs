@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes
 {

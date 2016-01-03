@@ -5,8 +5,11 @@
                     mc:Ignorable="d"   
                     xmlns:this="clr-namespace:Codartis.SoftVis.Rendering.Wpf"
                     xmlns:inputControls="clr-namespace:Codartis.SoftVis.Rendering.Wpf.InputControls"
-                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport">
+                    xmlns:viewport="clr-namespace:Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.Rendering.Wpf.View">
 
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    
     <Style TargetType="{x:Type this:DiagramViewerControl}"
            d:DataContext="{d:DesignInstance {x:Type this:DiagramViewerViewModel}}">
         <Setter Property="Diagram" Value="{Binding Path=Diagram}"/>
@@ -20,20 +23,22 @@
         <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
         <Setter Property="TextOptions.TextHintingMode" Value="Auto"/>
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+        <Setter Property="ShowRelatedEntitySelectorCommand" Value="{Binding Path=ShowRelatedEntitySelectorCommand}"/>
+        <Setter Property="HideRelatedEntitySelectorCommand" Value="{Binding Path=HideRelatedEntitySelectorCommand}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type this:DiagramViewerControl}">
                     <Canvas ClipToBounds="True">
                         <AdornerDecorator>
                             <viewport:DiagramViewportPanel x:Name="PART_DiagramViewportPanel" 
-                                                       Focusable="False"
-                                                       ClipToBounds="True" 
-                                                       Background="{TemplateBinding Background}"
-                                                       Diagram="{TemplateBinding Diagram}"
-                                                       DiagramBehaviourProvider="{TemplateBinding DiagramBehaviourProvider}"
-                                                       DiagramHitTester="{TemplateBinding DiagramHitTester}"
-                                                       MinZoom="{TemplateBinding MinZoom}" 
-                                                       MaxZoom="{TemplateBinding MaxZoom}" />
+                                                           Focusable="False"
+                                                           ClipToBounds="True" 
+                                                           Background="{TemplateBinding Background}"
+                                                           Diagram="{TemplateBinding Diagram}"
+                                                           DiagramBehaviourProvider="{TemplateBinding DiagramBehaviourProvider}"
+                                                           DiagramHitTester="{TemplateBinding DiagramHitTester}"
+                                                           MinZoom="{TemplateBinding MinZoom}" 
+                                                           MaxZoom="{TemplateBinding MaxZoom}"/>
                         </AdornerDecorator>
                         <inputControls:PanAndZoomControl x:Name="PART_PanAndZoomControl" 
                                                          Focusable="False"
@@ -43,6 +48,16 @@
                                                          DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                                          MinZoom="{TemplateBinding MinZoom}" 
                                                          MaxZoom="{TemplateBinding MaxZoom}" />
+
+                        <view:EntitySelectorControl x:Name="PART_RelatedEntitySelectorControl"
+                                                    DataContext="{Binding Path=RelatedEntitySelector}"
+                                                    Width="{Binding Path=Width}" 
+                                                    Height="{Binding Path=Height}"
+                                                    Canvas.Top="{Binding Path=Top}" 
+                                                    Canvas.Left="{Binding Path=Left}"
+                                                    Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                    HandleOrientation="{Binding Path=HandleOrientation}"/>
+                        
                     </Canvas>
                 </ControlTemplate>
             </Setter.Value>

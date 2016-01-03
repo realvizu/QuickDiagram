@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Rendering.Extensibility;
-using Codartis.SoftVis.Rendering.Wpf.Common;
+using Codartis.SoftVis.Rendering.Geometry;
+using Codartis.SoftVis.Rendering.Wpf.Common.Geometry;
+using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
 using WpfGeometry = System.Windows.Media.Geometry;
 
 namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.MiniButtons
@@ -22,21 +24,33 @@ namespace Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Viewport.Modification.
         private readonly RelatedEntityMiniButtonDescriptor _miniButtonDescriptor;
 
         public ShowRelatedEntityMiniButton(RelatedEntityMiniButtonDescriptor miniButtonDescriptor,
-            Control adornedControl, Visibility initialVisibility = Visibility.Visible)
-            : base(adornedControl, initialVisibility)
+            DiagramNodeControl adornedDiagramNodeControl, Visibility initialVisibility = Visibility.Visible)
+            : base(adornedDiagramNodeControl, initialVisibility)
         {
             _miniButtonDescriptor = miniButtonDescriptor;
         }
 
-        protected override Point GetButtonCenter()
+        public DiagramNodeControl AdornedDiagramNodeControl => (DiagramNodeControl) AdornedShape;
+        public RelationshipSpecification RelationshipSpecification => _miniButtonDescriptor.RelationshipSpecification;
+        public RectRelativeLocation MiniButtonLocation => _miniButtonDescriptor.MiniButtonLocation;
+
+        public Rect GetRect(Point adornedElementTopLeft)
+        {
+            var centerToTopLeftVector = new Vector(MiniButtonRadius, MiniButtonRadius);
+            var location = GetButtonCenterRelativeToAdornedControl() - centerToTopLeftVector + (Vector)adornedElementTopLeft;
+            var size = new Size(MiniButtonRadius*2, MiniButtonRadius*2);
+            return new Rect(location, size);
+        }
+
+        protected override Point GetButtonCenterRelativeToAdornedControl()
         {
             return new Rect(AdornedElement.DesiredSize).GetRelativePoint(_miniButtonDescriptor.MiniButtonLocation);
         }
 
         protected override void DrawPicture(DrawingContext drawingContext, Point center)
         {
-            var pen = new Pen(AdornedControl.Foreground, 1);
-            var brush = AdornedControl.Background;
+            var pen = new Pen(AdornedShape.Foreground, 1);
+            var brush = AdornedShape.Background;
             var geometry = GetConnectorGeometry(_miniButtonDescriptor.ConnectorStyle, center);
             drawingContext.DrawGeometry(brush, pen, geometry);
         }

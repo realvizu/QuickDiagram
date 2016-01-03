@@ -39,5 +39,10 @@ namespace Codartis.SoftVis.Modeling
         {
             _incomingRelationships.Add(relationship);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

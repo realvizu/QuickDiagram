@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Codartis.SoftVis.Geometry;
 
-namespace Codartis.SoftVis.Rendering.Wpf.Common
+namespace Codartis.SoftVis.Rendering.Wpf.Common.Geometry
 {
     public static class Size2DExtensions
     {
