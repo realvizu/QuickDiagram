@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Codartis.SoftVis.UI.Wpf.View.DiagramViewportControl"
+             x:Name="ThisControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
+             xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+             xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
+             Focusable="False">
+
+    <Grid>
+        <AdornerDecorator>
+
+            <view:DiagramItemsControl ItemsSource="{Binding Path=DiagramShapeViewModels}"
+                                      Focusable="True">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <view:TransformCanvas Transform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <i:Interaction.Behaviors>
+                    <behaviors:MousePanAndZoomBehavior
+                        PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                        PanCursor="{x:Static Cursors.SizeAll}"
+                        ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
+                        ZoomAmountPerWheelClick=".5" />
+                    <behaviors:KeyboardPanAndZoomBehavior
+                        PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                        PanUpKey="{x:Static Key.Up}"
+                        PanDownKey="{x:Static Key.Down}"
+                        PanLeftKey="{x:Static Key.Left}"
+                        PanRightKey="{x:Static Key.Right}"
+                        PanAcceleration="2"
+                        PanDeceleration="6"
+                        PanMaxSpeed="40" 
+                        ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
+                        ZoomInKey="{x:Static Key.W}"
+                        ZoomOutKey="{x:Static Key.S}"
+                        ZoomAcceleration=".02"
+                        ZoomDeceleration=".06"
+                        ZoomMaxSpeed=".4" />
+                </i:Interaction.Behaviors>
+            </view:DiagramItemsControl>
+
+        </AdornerDecorator>
+
+        <view:PanAndZoomControl2 Focusable="False"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Top"
+                                 Margin="10"
+                                 Width="100" 
+                                 Height="100" 
+                                 Fill="Transparent"
+                                 Stroke="Black"
+                                 Opacity="0.2"
+                                 MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                                 MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                                 ZoomIncrement="{Binding Path=LargeZoomIncrement, ElementName=ThisControl, Mode=OneWay}"
+                                 ZoomValue="{Binding Path=LinearZoom, ElementName=ThisControl, Mode=TwoWay}"
+                                 PanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
+                                 CenterCommand="{Binding Path=FitToViewCommand, ElementName=ThisControl, Mode=OneWay}"/>
+    </Grid>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.UI.Common.UIEvents
+﻿namespace Codartis.SoftVis.UI.Common
 {
     public enum PanDirection
     {

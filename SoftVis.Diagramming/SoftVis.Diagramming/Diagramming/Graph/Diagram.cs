@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Graph
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
     public abstract class Diagram : IArrangeableDiagram
     {
-        protected readonly IConnectorTypeResolver ConnectorTypeResolver;
+        public IConnectorTypeResolver ConnectorTypeResolver { get; }
 
         private readonly DiagramGraph _graph;
         private readonly IIncrementalLayoutEngine _incrementalLayoutEngine;
@@ -51,6 +51,8 @@ namespace Codartis.SoftVis.Diagramming.Graph
 
         public IEnumerable<DiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<DiagramConnector> Connectors => _graph.Edges;
+        public IEnumerable<DiagramShape> Shapes => Nodes.OfType<DiagramShape>().Union(Connectors);
+        public Rect2D ContentRect => Shapes.Select(i => i.Rect).Union();
 
         /// <summary>
         /// Clear the diagram (that is, hide all nodes and connectors).

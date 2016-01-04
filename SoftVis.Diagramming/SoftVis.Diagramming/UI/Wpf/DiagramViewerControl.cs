@@ -28,16 +28,16 @@ namespace Codartis.SoftVis.UI.Wpf
     /// and hooking together the viewport manipulation events and gestures.
     /// Also responsible for hosting a diagram panel for image export.
     /// </summary>
-    [TemplatePart(Name = PART_DiagramViewportPanel, Type = typeof(DiagramViewportPanel))]
+    [TemplatePart(Name = PART_DiagramViewportControl, Type = typeof(DiagramViewportControl))]
     [TemplatePart(Name = PART_PanAndZoomControl, Type = typeof(PanAndZoomControl))]
     [TemplatePart(Name = PART_RelatedEntitySelectorControl, Type = typeof(EntitySelectorControl))]
     public partial class DiagramViewerControl : TemplatedControlBase, IUIEventSource
     {
-        private const string PART_DiagramViewportPanel = "PART_DiagramViewportPanel";
+        private const string PART_DiagramViewportControl = "PART_DiagramViewportControl";
         private const string PART_PanAndZoomControl = "PART_PanAndZoomControl";
         private const string PART_RelatedEntitySelectorControl = "PART_RelatedEntitySelectorControl";
 
-        private DiagramViewportPanel _diagramViewportPanel;
+        private DiagramViewportControl _diagramViewportControl;
         private PanAndZoomControl _panAndZoomControl;
         private EntitySelectorControl _entitySelectorControl;
 
@@ -141,10 +141,10 @@ namespace Codartis.SoftVis.UI.Wpf
 
         private void InitializeDiagramViewportPanel()
         {
-            _diagramViewportPanel = FindChildControlInTemplate<DiagramViewportPanel>(PART_DiagramViewportPanel);
-            _diagramViewportPanel.MiniButtonActivated += OnMiniButtonActivated;
+            _diagramViewportControl = FindChildControlInTemplate<DiagramViewportControl>(PART_DiagramViewportControl);
+            //_diagramViewportControl.MiniButtonActivated += OnMiniButtonActivated;
 
-            MouseLeave += _diagramViewportPanel.OnControlMouseLeave;
+            //MouseLeave += _diagramViewportControl.OnControlMouseLeave;
         }
 
         private void InitializePanAndZoomControl()
@@ -153,7 +153,7 @@ namespace Codartis.SoftVis.UI.Wpf
             _panAndZoomControl.Pan += OnPan;
             _panAndZoomControl.FitToView += OnFitToView;
             _panAndZoomControl.Zoom += OnZoom;
-            _panAndZoomControl.ZoomValue = _diagramViewportPanel.Zoom;
+            //_panAndZoomControl.ZoomValue = _diagramViewportControl.Zoom;
         }
 
         private void InitializeRelatedEntitySelectorControl()
@@ -167,23 +167,23 @@ namespace Codartis.SoftVis.UI.Wpf
                 _diagramPanelForImageExport.AddResourceDictionary(_additionalResourceDictionary);
 
             _diagramPanelForImageExport.Diagram = Diagram;
-            _diagramPanelForImageExport.Background = _diagramViewportPanel.Background;
+            _diagramPanelForImageExport.Background = _diagramViewportControl.Background;
         }
 
         private void InitializeGestures()
         {
-            _gestures.Add(new AnimatedViewportGesture(new FitToViewViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(500)));
-            _gestures.Add(new AnimatedViewportGesture(new ZoomWidgetViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
-            _gestures.Add(new AnimatedViewportGesture(new PanWidgetViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
-            _gestures.Add(new AnimatedViewportGesture(new MouseZoomViewportGesture(_diagramViewportPanel, this), TimeSpan.FromMilliseconds(200)));
-            _gestures.Add(new MousePanViewportGesture(_diagramViewportPanel, this));
-            _gestures.Add(new KeyboardViewportGesture(_diagramViewportPanel, this));
-            _gestures.Add(new ResizeViewportGesture(_diagramViewportPanel, this));
+            //_gestures.Add(new AnimatedViewportGesture(new FitToViewViewportGesture(_diagramViewportControl, this), TimeSpan.FromMilliseconds(500)));
+            //_gestures.Add(new AnimatedViewportGesture(new ZoomWidgetViewportGesture(_diagramViewportControl, this), TimeSpan.FromMilliseconds(200)));
+            //_gestures.Add(new AnimatedViewportGesture(new PanWidgetViewportGesture(_diagramViewportControl, this), TimeSpan.FromMilliseconds(200)));
+            //_gestures.Add(new AnimatedViewportGesture(new MouseZoomViewportGesture(_diagramViewportControl, this), TimeSpan.FromMilliseconds(200)));
+            //_gestures.Add(new MousePanViewportGesture(_diagramViewportControl, this));
+            //_gestures.Add(new KeyboardViewportGesture(_diagramViewportControl, this));
+            //_gestures.Add(new ResizeViewportGesture(_diagramViewportControl, this));
 
-            foreach (var gesture in _gestures)
-            {
-                gesture.ViewportCommand += OnViewportCommand;
-            }
+            //foreach (var gesture in _gestures)
+            //{
+            //    gesture.ViewportCommand += OnViewportCommand;
+            //}
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -201,7 +201,7 @@ namespace Codartis.SoftVis.UI.Wpf
         {
             base.ArrangeOverride(arrangeBounds);
 
-            _diagramViewportPanel?.Arrange(new Rect(arrangeBounds));
+            _diagramViewportControl?.Arrange(new Rect(arrangeBounds));
 
             return arrangeBounds;
         }
@@ -218,8 +218,8 @@ namespace Codartis.SoftVis.UI.Wpf
 
         private void OnZoom(object sender, ZoomEventArgs args)
         {
-            if (_diagramViewportPanel.Zoom.IsEqualWithTolerance(args.NewZoomValue))
-                return;
+            //if (_diagramViewportControl.Zoom.IsEqualWithTolerance(args.NewZoomValue))
+            //    return;
 
             ZoomWidget?.Invoke(sender, args);
         }
@@ -231,24 +231,24 @@ namespace Codartis.SoftVis.UI.Wpf
 
         private void OnViewportCommand(object sender, ViewportCommandBase command)
         {
-            HideRelatedEntitySelectorCommand?.Execute(null);
+            //HideRelatedEntitySelectorCommand?.Execute(null);
 
-            command.Execute(_diagramViewportPanel);
-            _diagramViewportPanel.InvalidateArrange();
+            //command.Execute(_diagramViewportControl);
+            //_diagramViewportControl.InvalidateArrange();
 
-            if (ViewportZoomMatchesWidgetZoom())
-                return;
+            //if (ViewportZoomMatchesWidgetZoom())
+            //    return;
 
-            if (IsCommandAnimatedFromZoomWidgetEvent(command))
-                return;
+            //if (IsCommandAnimatedFromZoomWidgetEvent(command))
+            //    return;
 
-            _panAndZoomControl.ZoomValue = _diagramViewportPanel.Zoom;
+            //_panAndZoomControl.ZoomValue = _diagramViewportControl.Zoom;
         }
 
-        private bool ViewportZoomMatchesWidgetZoom()
-        {
-            return _diagramViewportPanel.Zoom.IsEqualWithTolerance(_panAndZoomControl.ZoomValue);
-        }
+        //private bool ViewportZoomMatchesWidgetZoom()
+        //{
+            //return _diagramViewportControl.Zoom.IsEqualWithTolerance(_panAndZoomControl.ZoomValue);
+        //}
 
         private static bool IsCommandAnimatedFromZoomWidgetEvent(ViewportCommandBase command)
         {

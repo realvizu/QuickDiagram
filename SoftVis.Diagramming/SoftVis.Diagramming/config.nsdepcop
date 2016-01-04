@@ -41,6 +41,7 @@
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Extensibility" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Common.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Common.*" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.ViewModel.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.DiagramRendering.*" To="Codartis.SoftVis.UI.Wpf.ViewModel.*" />
 

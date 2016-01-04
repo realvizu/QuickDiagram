@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Codartis.SoftVis.UI.Wpf.Common
+namespace Codartis.SoftVis.UI.Wpf.Commands
 {
     /// <summary>
     /// A command that executes a delegate.

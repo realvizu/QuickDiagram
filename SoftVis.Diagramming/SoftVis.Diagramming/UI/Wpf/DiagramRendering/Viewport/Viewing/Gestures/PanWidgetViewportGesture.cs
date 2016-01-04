@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Common.UIEvents;
 using Codartis.SoftVis.UI.Wpf.Common.UIEvents;
 

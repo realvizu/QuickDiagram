@@ -36,7 +36,7 @@
                                        HorizontalAlignment="Center"/>
                             <StackPanel HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
-                                       HorizontalAlignment="Left" />
+                                           HorizontalAlignment="Left" />
                             </StackPanel>
                         </StackPanel>
                     </Border>

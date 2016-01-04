@@ -5,15 +5,12 @@ using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.Common;
 using Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 
-namespace Codartis.SoftVis.UI.Wpf
+namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
-    /// <summary>
-    /// The view model of a DiagramViewerControl.
-    /// </summary>
-    public class DiagramViewerViewModel
+    public class DiagramViewModel : ViewModelBase
     {
         public IModel Model { get; }
         public Diagram Diagram { get; }
@@ -24,7 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf
         public ICommand ShowRelatedEntitySelectorCommand { get; }
         public ICommand HideRelatedEntitySelectorCommand { get; }
 
-        public DiagramViewerViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+        public DiagramViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
         {
             Model = model;
             Diagram = diagram;

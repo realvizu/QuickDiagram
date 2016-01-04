@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -127,6 +128,8 @@ namespace Codartis.SoftVis.UI.Wpf.InputControls
             var oldValue = (double)e.OldValue;
             var newValue = (double)e.NewValue;
 
+            Debug.WriteLine($"ZoomValueChanged {oldValue}->{newValue}");
+
             if (oldValue.IsEqualWithTolerance(newValue))
                 return;
 
@@ -141,6 +144,8 @@ namespace Codartis.SoftVis.UI.Wpf.InputControls
         {
             var oldValue = (double)e.OldValue;
             var newValue = (double)e.NewValue;
+
+            Debug.WriteLine($"LinearZoomValueChanged {oldValue}->{newValue}");
 
             if (oldValue.IsEqualWithTolerance(newValue))
                 return;

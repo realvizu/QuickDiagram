@@ -5,10 +5,11 @@
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
-        xmlns:softVis="clr-namespace:Codartis.SoftVis.UI.Wpf;assembly=SoftVis.Diagramming"
+        xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
         Title="MainWindow" Height="600" Width="1200"
         x:Name="MyWindow"
-        d:DataContext="{d:DesignInstance {x:Type testHostApp:MainWindow }}">
+        d:DataContext="{d:DesignInstance {x:Type testHostApp:MainWindow }}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -32,6 +33,11 @@
             <Button Margin="5" Click="Add_OnClick" Width="60" Height="20">Add</Button>
             <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20">Remove</Button>
         </StackPanel>
-        <softVis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" />
+        <view:DiagramControl x:Name="DiagramControl" 
+                             Grid.Row="1" 
+                             Background="Beige"
+                             MinZoom="0.2"
+                             MaxZoom="5"
+                             InitialZoom="2.5" />
     </Grid>
 </Window>

@@ -2,6 +2,7 @@
 using System.Windows;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -19,7 +20,6 @@ namespace Codartis.SoftVis.TestHostApp
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
         }
 
         public override void OnApplyTemplate()
@@ -33,8 +33,8 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
 
             var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
-            var diagramViewerViewModel = new DiagramViewerViewModel(_testModel, _testDiagram, diagramBehaviourProvider);
-            DiagramViewerControl.DataContext = diagramViewerViewModel;
+            var diagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider);
+            DiagramControl.DataContext = diagramViewModel;
 
             FitToView();
 
@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void FitToView()
         {
-            Dispatcher.BeginInvoke(new Action(() => DiagramViewerControl.FitDiagramToView()));
+            //Dispatcher.BeginInvoke(new Action(() => DiagramControl.FitDiagramToView()));
         }
 
         private void Add_OnClick(object sender, RoutedEventArgs e)

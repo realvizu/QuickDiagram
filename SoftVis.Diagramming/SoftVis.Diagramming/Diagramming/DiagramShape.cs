@@ -1,4 +1,5 @@
 ﻿using System;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -17,5 +18,7 @@ namespace Codartis.SoftVis.Diagramming
 
             ModelItem = modelItem;
         }
+
+        public abstract Rect2D Rect { get; }
     }
 }

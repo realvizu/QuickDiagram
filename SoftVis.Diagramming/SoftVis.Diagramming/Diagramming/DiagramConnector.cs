@@ -28,6 +28,18 @@ namespace Codartis.SoftVis.Diagramming
 
         public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
         public ModelRelationshipType Type => ModelRelationship.Type;
+        public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
+
+        private static Rect2D CalculateRect(Rect2D sourceRect, Rect2D targetRect, Route routePoints)
+        {
+            var rectUnion = sourceRect.Union(targetRect);
+            if (routePoints != null)
+            {
+                foreach (var routePoint in routePoints)
+                    rectUnion = rectUnion.Union(routePoint);
+            }
+            return rectUnion;
+        }
 
         public override string ToString()
         {

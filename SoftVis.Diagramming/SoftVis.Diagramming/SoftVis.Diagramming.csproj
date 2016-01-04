@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -69,9 +70,21 @@
     <Compile Include="Diagramming\ConnectorType.cs" />
     <Compile Include="Modeling\ModelBase.cs" />
     <Compile Include="Modeling\RelationshipSpecifications.cs" />
+    <Compile Include="UI\Common\UIEvents\PanEventArgs.cs" />
+    <Compile Include="UI\Common\UIEvents\PanEventHandler.cs" />
+    <Compile Include="UI\Common\UIEvents\ResizeEventArgs.cs" />
+    <Compile Include="UI\Common\UIEvents\ResizeEventHandler.cs" />
+    <Compile Include="UI\Common\UIEvents\ZoomEventArgs.cs" />
+    <Compile Include="UI\Common\UIEvents\ZoomEventHandler.cs" />
+    <Compile Include="UI\Common\ZoomDirection.cs" />
     <Compile Include="UI\Geometry\VerticalAlignmentType.cs" />
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
-    <Compile Include="UI\Wpf\Common\DelegateCommand.cs" />
+    <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
+    <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
+    <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
+    <Compile Include="UI\Wpf\Commands\ZoomCommandParameters.cs" />
+    <Compile Include="UI\Wpf\Commands\DelegateCommand.cs" />
+    <Compile Include="UI\Wpf\Common\DurationExtensions.cs" />
     <Compile Include="UI\Wpf\Common\FrameworkElementExtensions.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTesterInstance.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
@@ -177,8 +190,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\DoubleHelper.cs" />
     <Compile Include="UI\Common\ScaleCalculator.cs" />
-    <Compile Include="UI\Common\UIEvents\ResizeEventArgs.cs" />
-    <Compile Include="UI\Common\UIEvents\ResizeEventHandler.cs" />
     <Compile Include="UI\Wpf\Common\Animations\PointArrayAnimation.cs" />
     <Compile Include="UI\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="UI\Wpf\Common\Converters\RouteToWpfConverter.cs" />
@@ -231,11 +242,7 @@
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\PanWidgetViewportGesture.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\ZoomWidgetViewportGesture.cs" />
     <Compile Include="UI\Wpf\Common\UIEvents\IUIEventSource.cs" />
-    <Compile Include="UI\Common\UIEvents\PanDirection.cs" />
-    <Compile Include="UI\Common\UIEvents\PanEventArgs.cs" />
-    <Compile Include="UI\Common\UIEvents\ZoomEventArgs.cs" />
-    <Compile Include="UI\Common\UIEvents\PanEventHandler.cs" />
-    <Compile Include="UI\Common\UIEvents\ZoomEventHandler.cs" />
+    <Compile Include="UI\Common\PanDirection.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\IDiagramViewport.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\IViewportGesture.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\MousePanViewportGesture.cs" />
@@ -246,12 +253,38 @@
     <Compile Include="UI\Wpf\Common\Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramNodeControl.cs" />
     <Compile Include="UI\Wpf\Common\TemplatedControlBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel2.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
+    <Compile Include="UI\Wpf\Common\DoubleInterval.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\HandleOrientation.cs" />
+    <Compile Include="UI\Wpf\View\DiagramConnectorControl2.xaml.cs">
+      <DependentUpon>DiagramConnectorControl2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Wpf\View\DiagramControl.xaml.cs">
+      <DependentUpon>DiagramControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Wpf\View\DiagramItemContainer.cs" />
+    <Compile Include="UI\Wpf\View\DiagramItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramNodeControl2.xaml.cs">
+      <DependentUpon>DiagramNodeControl2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
+      <DependentUpon>DiagramViewportControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Wpf\View\EntitySelectorControl.xaml.cs">
       <DependentUpon>EntitySelectorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Wpf\View\PanAndZoomControl2.xaml.cs">
+      <DependentUpon>PanAndZoomControl2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Wpf\View\TransformCanvas.cs" />
+    <Compile Include="UI\Wpf\View\ViewportLogic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Key.snk">
@@ -281,11 +314,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Wpf\View\DiagramConnectorControl2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramNodeControl2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramViewportControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Wpf\View\EntitySelectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramItemContainer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\View\PanAndZoomControl2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

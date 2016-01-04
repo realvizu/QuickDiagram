@@ -10,6 +10,11 @@ namespace Codartis.SoftVis.Geometry
             return Rect2D.Union(rect1, rect2);
         }
 
+        public static Rect2D Union(this Rect2D rect, Point2D point)
+        {
+            return Union(rect, new Rect2D(point, point));
+        }
+
         public static Rect2D Union(this IEnumerable<Rect2D> rects)
         {
             var enumerable = rects as IList<Rect2D> ?? rects.ToList();
