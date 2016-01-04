@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramViewerControl.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/InputControls/PanAndZoomControl.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramRendering/Shapes/DiagramNodeControl.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Rendering/Wpf/DiagramRendering/Shapes/DiagramConnectorControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/DiagramViewerControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/InputControls/PanAndZoomControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/DiagramRendering/Shapes/DiagramNodeControl.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/DiagramRendering/Shapes/DiagramConnectorControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

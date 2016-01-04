@@ -1,0 +1,48 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Common.Converters"
+                    xmlns:shapes="clr-namespace:Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes"
+                    mc:Ignorable="d">
+
+    <converters:RouteToWpfConverter x:Key="RouteToWpfConverter" />
+    <shapes:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />
+    <shapes:PointsToArrowHeadPathConverter x:Key="PointsToArrowHeadPathConverter" />
+
+    <Style TargetType="{x:Type shapes:DiagramConnectorControl}"
+           d:DataContext="{d:DesignInstance {x:Type shapes:DiagramConnectorViewModel}}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="RoutePoints" Value="{Binding Path=RoutePoints, Converter={StaticResource RouteToWpfConverter}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type shapes:DiagramConnectorControl}">
+                    <Grid>
+                        <Path Stroke="{TemplateBinding Foreground}"
+                          Fill="{TemplateBinding Background}"
+                          StrokeThickness="1"
+                          StrokeDashArray="{Binding Path=StrokeDashArray}">
+                            <Path.Data>
+                                <MultiBinding Converter="{StaticResource PointsToArrowShaftPathConverter}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Position" />
+                                </MultiBinding>
+                            </Path.Data>
+                        </Path>
+                        <Path Stroke="{TemplateBinding Foreground}"
+                          Fill="{TemplateBinding Background}"
+                          StrokeThickness="1">
+                            <Path.Data>
+                                <MultiBinding Converter="{StaticResource PointsToArrowHeadPathConverter}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RoutePoints" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Position" />
+                                </MultiBinding>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
-using Codartis.SoftVis.Rendering.Wpf;
 using Codartis.SoftVis.TestHostApp.TestData;
+using Codartis.SoftVis.UI.Wpf;
 
 namespace Codartis.SoftVis.TestHostApp
 {

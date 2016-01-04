@@ -4,8 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:softvis="clr-namespace:Codartis.SoftVis.Rendering.Wpf;assembly=SoftVis.Diagramming"
         xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
+        xmlns:softVis="clr-namespace:Codartis.SoftVis.UI.Wpf;assembly=SoftVis.Diagramming"
         Title="MainWindow" Height="600" Width="1200"
         x:Name="MyWindow"
         d:DataContext="{d:DesignInstance {x:Type testHostApp:MainWindow }}">
@@ -32,6 +32,6 @@
             <Button Margin="5" Click="Add_OnClick" Width="60" Height="20">Add</Button>
             <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20">Remove</Button>
         </StackPanel>
-        <softvis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" />
+        <softVis:DiagramViewerControl Grid.Row="1" x:Name="DiagramViewerControl" />
     </Grid>
 </Window>

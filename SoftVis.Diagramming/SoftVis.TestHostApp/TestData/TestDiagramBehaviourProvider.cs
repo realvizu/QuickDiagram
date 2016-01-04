@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Rendering.Extensibility;
-using Codartis.SoftVis.Rendering.Geometry;
+using Codartis.SoftVis.UI.Extensibility;
+using Codartis.SoftVis.UI.Geometry;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {

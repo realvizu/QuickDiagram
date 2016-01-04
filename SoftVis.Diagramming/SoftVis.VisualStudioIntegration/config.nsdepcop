@@ -25,7 +25,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.UI" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.*" To="System.Windows" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Commands.*" To="Microsoft.CodeAnalysis" />
@@ -41,21 +41,21 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Diagramming.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.Rendering.Wpf.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.UI.Wpf.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.UI" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.Events" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.ImageExport" />
 
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="System.Windows.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Microsoft.VisualStudio.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Modeling" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Diagramming.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.Rendering.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.DiagramRendering" To="Codartis.SoftVis.VisualStudioIntegration.ImageExport" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Geometry" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Diagramming.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.UI.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.VisualStudioIntegration.ImageExport" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.Modeling" />

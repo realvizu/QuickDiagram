@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
+using Codartis.SoftVis.UI.Wpf.DiagramRendering;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {

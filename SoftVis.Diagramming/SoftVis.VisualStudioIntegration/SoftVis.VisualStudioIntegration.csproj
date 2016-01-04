@@ -71,10 +71,10 @@
     <Compile Include="Diagramming\RoslynBasedConnectorTypeResolver.cs" />
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />
     <Compile Include="Diagramming\CustomConnectorTypes.cs" />
-    <Compile Include="DiagramRendering\StereotypeToBackgroundBrushConverter.cs" />
-    <Compile Include="DiagramRendering\StereotypeToImageUriConverter.cs" />
-    <Compile Include="DiagramRendering\StereotypeToVisualPropertyMaps.cs" />
-    <Compile Include="DiagramRendering\WpfHelpers.cs" />
+    <Compile Include="UI\StereotypeToBackgroundBrushConverter.cs" />
+    <Compile Include="UI\StereotypeToImageUriConverter.cs" />
+    <Compile Include="UI\StereotypeToVisualPropertyMaps.cs" />
+    <Compile Include="UI\WpfHelpers.cs" />
     <Compile Include="Events\DiagramNodeActivatedEventArgs.cs" />
     <Compile Include="Diagramming\DiagramManager.cs" />
     <Compile Include="GlobalOptions.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Diagramming\IDiagramServices.cs" />
     <Compile Include="Modeling\RoslynBasedModelEntity.cs" />
     <Compile Include="Modeling\RoslynBasedModelEntityStereotype.cs" />
-    <Compile Include="DiagramRendering\CustomDiagramBehaviourProvider.cs" />
+    <Compile Include="UI\CustomDiagramBehaviourProvider.cs" />
     <Compile Include="Modeling\CustomRelationshipSpecifications.cs" />
     <Compile Include="Modeling\TypeKindExtensions.cs" />
     <Compile Include="VsctConstants.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="Modeling\Building\DerivedTypesFinderVisitor.cs" />
     <Compile Include="Diagramming\RoslynBasedDiagramBuilder.cs" />
     <Compile Include="WorkspaceContext\IWorkspaceServices.cs" />
-    <Compile Include="DiagramRendering\DiagramToolWindow.cs" />
+    <Compile Include="UI\DiagramToolWindow.cs" />
     <Compile Include="IHostServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modeling\NamedTypeSymbolExtensions.cs" />
@@ -126,11 +126,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="DiagramRendering\Images\Class.png" />
-    <Resource Include="DiagramRendering\Images\Delegate.png" />
-    <Resource Include="DiagramRendering\Images\Enum.png" />
-    <Resource Include="DiagramRendering\Images\Interface.png" />
-    <Resource Include="DiagramRendering\Images\Struct.png" />
+    <Resource Include="UI\Images\Class.png" />
+    <Resource Include="UI\Images\Delegate.png" />
+    <Resource Include="UI\Images\Enum.png" />
+    <Resource Include="UI\Images\Interface.png" />
+    <Resource Include="UI\Images\Struct.png" />
     <Content Include="Resources\DiagramToolWindowCommand.png" />
     <Content Include="Resources\SoftVisPackage.ico" />
     <VSCTCompile Include="SoftVisPackage.vsct">
@@ -334,7 +334,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DiagramRendering\DiagramStyles.xaml">
+    <Page Include="UI\DiagramStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -3,8 +3,8 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering;
-using Codartis.SoftVis.Rendering.Wpf.DiagramRendering.Shapes;
+using Codartis.SoftVis.UI.Wpf.DiagramRendering;
+using Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {

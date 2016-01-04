@@ -3,9 +3,9 @@ using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.VisualStudioIntegration.DiagramRendering;
 using Codartis.SoftVis.VisualStudioIntegration.Events;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {

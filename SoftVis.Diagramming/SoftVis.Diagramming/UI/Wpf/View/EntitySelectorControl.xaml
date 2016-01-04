@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="Codartis.SoftVis.UI.Wpf.View.EntitySelectorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="200"
+             d:DataContext="{d:DesignInstance {x:Type viewModel:EntitySelectorViewModel}}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="6"/>
+        </Grid.RowDefinitions>
+        <Path x:Name="TopHandle"
+              Grid.Row="0"
+              Stroke="Black"
+              Fill="Black"
+              Stretch="Uniform"
+              Data="M -1 0 L 0 -1 L 1 0 Z"/>
+        <Border Grid.Row="1"
+                BorderBrush="Black"
+                BorderThickness="2"
+                CornerRadius="6"
+                Background="Yellow">
+            <ListBox Margin="2"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemsSource="{Binding ModelEntities}"
+                     SelectionMode="Single"
+                     SelectedItem="{Binding SelectedModelEntity, Mode=TwoWay}">
+            </ListBox>
+        </Border>
+        <Path x:Name="BottomHandle"
+              Grid.Row="2"
+              Stroke="Black"
+              Fill="Black"
+              Stretch="Uniform"
+              Data="M -1 0 L 0 1 L 1 0 Z"/>
+    </Grid>
+</UserControl>

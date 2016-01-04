@@ -1,0 +1,16 @@
+﻿using System.Windows;
+
+namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Viewing.Gestures.Animated
+{
+    internal class ZoomWithCenterSpecification
+    {
+        public double Zoom { get; private set; }
+        public Point CenterInScreenSpace { get; private set; }
+
+        internal ZoomWithCenterSpecification(double zoom, Point centerInScreenSpace)
+        {
+            Zoom = zoom;
+            CenterInScreenSpace = centerInScreenSpace;
+        }
+    }
+}
