@@ -179,7 +179,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
             control.MouseEnter += OnDiagramNodeMouseEnterOrLeave;
             control.MouseLeave += OnDiagramNodeMouseEnterOrLeave;
             control.PreviewMouseDoubleClick += OnDiagramNodeDoubleClicked;
-            control.PreviewMouseLeftButtonDown += OnDiagramNodeLeftButtonDown;
+            control.MouseLeftButtonUp += OnDiagramNodeLeftButtonUp;
 
             return control;
         }
@@ -275,7 +275,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
             var closeMiniButton = new CloseMiniButton(control);
             closeMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
             closeMiniButton.MouseLeave += OnMiniButtonMouseEnterOrLeave;
-            closeMiniButton.PreviewMouseLeftButtonDown += OnCloseButtonClick;
+            closeMiniButton.MouseLeftButtonUp += OnCloseButtonClick;
             return closeMiniButton;
         }
 
@@ -285,7 +285,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
             var showRelatedEntityMiniButton = new ShowRelatedEntityMiniButton(relatedEntityMiniButtonDescriptor, control);
             showRelatedEntityMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
             showRelatedEntityMiniButton.MouseLeave += OnMiniButtonMouseEnterOrLeave;
-            showRelatedEntityMiniButton.MouseLeftButtonDown += OnRelatedEntityMiniButtonClick;
+            showRelatedEntityMiniButton.MouseLeftButtonUp += OnRelatedEntityMiniButtonClick;
             return showRelatedEntityMiniButton;
         }
 
@@ -331,8 +331,10 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
             }
         }
 
-        private void OnDiagramNodeLeftButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        private void OnDiagramNodeLeftButtonUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
+            Debug.WriteLine("OnDiagramNodeLeftButtonUp");
+
             var senderDiagramNode = sender as DiagramNodeControl;
             if (senderDiagramNode == null || !ControlToDiagramShapeMap.Contains(senderDiagramNode))
                 return;
@@ -352,6 +354,8 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
 
         private void OnCloseButtonClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
+            Debug.WriteLine("OnCloseButtonClick");
+
             var diagramNode = ((CloseMiniButton)sender).AdornedElement as DiagramNodeControl;
             if (diagramNode == null || !ControlToDiagramShapeMap.Contains(diagramNode))
                 return;

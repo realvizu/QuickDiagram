@@ -93,24 +93,6 @@ namespace Codartis.SoftVis.UI.Wpf.InputControls
             FindChildControlInTemplate<Button>(PART_CenterButton).Click += OnFitToView;
         }
 
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseDown(e);
-            e.Handled = true;
-        }
-
-        protected override void OnMouseUp(MouseButtonEventArgs e)
-        {
-            base.OnMouseUp(e);
-            e.Handled = true;
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            e.Handled = true;
-        }
-
         protected override Size MeasureOverride(Size constraint)
         {
             constraint = SizeToRatio(constraint);

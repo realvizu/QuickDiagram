@@ -17,10 +17,10 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Viewing.Gestures
         internal MousePanViewportGesture(IDiagramViewport diagramViewport, IUIEventSource uiEventSource)
             : base(diagramViewport, uiEventSource)
         {
-            UIEventSource.MouseLeftButtonDown += OnMouseLeftButtonDown;
-            UIEventSource.MouseLeftButtonUp += OnMouseLeftButtonUp;
-            UIEventSource.MouseMove += OnMouseMove;
-            UIEventSource.LostMouseCapture += OnLostMouseCapture;
+            diagramViewport.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
+            diagramViewport.PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
+            diagramViewport.PreviewMouseMove += OnMouseMove;
+            diagramViewport.LostMouseCapture += OnLostMouseCapture;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Viewing.Gestures
                 _isPanning = true;
                 _cursorBeforePanning = DiagramViewport.Cursor;
                 DiagramViewport.Cursor = Cursors.Hand;
-                Mouse.Capture(UIEventSource);
+                Mouse.Capture(DiagramViewport);
                 Debug.WriteLine("Start panning, mouse captured");
             }
         }
@@ -50,10 +50,9 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Viewing.Gestures
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            var position = e.GetPosition(UIEventSource);
+            var position = e.GetPosition(DiagramViewport);
             if (_isPanning && _lastMousePosition != position)
             {
-                Debug.WriteLine("Sending MoveViewportCenterInScreenSpaceBy");
                 MoveViewportCenterInScreenSpaceBy(_lastMousePosition - position);
             }
             _lastMousePosition = position;
