@@ -274,6 +274,7 @@
     <Compile Include="UI\Wpf\View\DiagramNodeControl2.xaml.cs">
       <DependentUpon>DiagramNodeControl2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Wpf\View\DiagramViewportControl.DepProps.cs" />
     <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
       <DependentUpon>DiagramViewportControl.xaml</DependentUpon>
     </Compile>
