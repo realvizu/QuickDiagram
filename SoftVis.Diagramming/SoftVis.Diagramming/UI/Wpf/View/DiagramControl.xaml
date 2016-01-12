@@ -15,9 +15,9 @@
     </UserControl.Resources>
 
     <Canvas x:Name="Canvas">
-        <local:DiagramViewportControl DataContext="{Binding Path=DiagramViewportViewModel}"
+        <local:DiagramViewportControl x:Name="DiagramViewportControl"
+                                      DataContext="{Binding Path=DiagramViewportViewModel}"
                                       DiagramContentRect="{Binding Path=DiagramContentRect}"
-                                      Focusable="False"
                                       ClipToBounds="True"
                                       Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                       Height="{Binding Path=ActualHeight, ElementName=Canvas}"

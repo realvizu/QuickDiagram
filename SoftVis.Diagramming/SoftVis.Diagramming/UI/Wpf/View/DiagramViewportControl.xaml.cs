@@ -99,6 +99,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             UpdateViewportTransform();
         }
 
+        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            Keyboard.Focus(DiagramItemsControl);
+        }
+
         private static void OnLinearZoomChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             ((DiagramViewportControl)obj).SyncExponentialZoomValue((double)e.NewValue);

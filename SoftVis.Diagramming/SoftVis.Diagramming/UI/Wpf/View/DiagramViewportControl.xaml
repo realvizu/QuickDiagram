@@ -10,14 +10,13 @@
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
-             Focusable="False">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
     <Grid>
         <AdornerDecorator>
 
-            <view:DiagramItemsControl ItemsSource="{Binding Path=DiagramShapeViewModels}"
-                                      Focusable="True">
+            <view:DiagramItemsControl x:Name="DiagramItemsControl"
+                                      ItemsSource="{Binding Path=DiagramShapeViewModels}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <view:TransformCanvas Transform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"/>

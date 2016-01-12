@@ -248,13 +248,17 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             SetKeyDownState(e.Key, true);
-            e.Handled = true;
+
+            if (e.Key != Key.Tab)
+                e.Handled = true;
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
             SetKeyDownState(e.Key, false);
-            e.Handled = true;
+
+            if (e.Key != Key.Tab)
+                e.Handled = true;
         }
 
         private void SetKeyDownState(Key key, bool newState)

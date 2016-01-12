@@ -59,5 +59,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             get { return (double)GetValue(InitialZoomProperty); }
             set { SetValue(InitialZoomProperty, value); }
         }
+
+        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            Keyboard.Focus(DiagramViewportControl);
+        }
     }
 }

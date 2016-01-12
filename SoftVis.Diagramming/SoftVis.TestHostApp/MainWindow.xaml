@@ -30,14 +30,14 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
-            <Button Margin="5" Click="Add_OnClick" Width="60" Height="20">Add</Button>
-            <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20">Remove</Button>
+            <Button Margin="5" Click="Add_OnClick" Width="60" Height="20" IsTabStop="True" Focusable="True">Add</Button>
+            <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20" IsTabStop="True" Focusable="True">Remove</Button>
         </StackPanel>
         <view:DiagramControl x:Name="DiagramControl" 
                              Grid.Row="1" 
                              Background="Beige"
                              MinZoom="0.2"
                              MaxZoom="5"
-                             InitialZoom="2.5" />
+                             InitialZoom="2.5"/>
     </Grid>
 </Window>
