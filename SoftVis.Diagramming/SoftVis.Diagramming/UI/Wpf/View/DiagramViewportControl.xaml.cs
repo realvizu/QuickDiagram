@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Codartis.SoftVis.Common;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
@@ -30,28 +31,15 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty LargeZoomIncrementProperty =
             DependencyProperty.Register("LargeZoomIncrement", typeof(double), typeof(DiagramViewportControl));
 
-        /// <summary>
-        /// The zoom value changes on an exponential scale to give a feeling of depth.
-        /// </summary>
-        public static readonly DependencyProperty ExponentialZoomProperty =
-            DependencyProperty.Register("ExponentialZoom", typeof(double), typeof(DiagramViewportControl),
-                new FrameworkPropertyMetadata(double.NaN, OnViewportChanged));
-
-        /// <summary>
-        /// The zoom value on a linear scale. This is used for the slider value and zoom animation.
-        /// This is converted to an exponential scale for the viewport zoom value.
-        /// </summary>
-        public static readonly DependencyProperty LinearZoomProperty =
-            DependencyProperty.Register("LinearZoom", typeof(double), typeof(DiagramViewportControl),
-                new FrameworkPropertyMetadata(OnLinearZoomChanged));
+        public static readonly DependencyProperty ViewportZoomProperty =
+            DependencyProperty.Register("ViewportZoom", typeof(double), typeof(DiagramViewportControl),
+                new PropertyMetadata(OnViewportChanged));
 
         public static readonly DependencyProperty ViewportCenterXProperty =
-            DependencyProperty.Register("ViewportCenterX", typeof(double), typeof(DiagramViewportControl),
-                new FrameworkPropertyMetadata(0d, OnViewportChanged));
+            DependencyProperty.Register("ViewportCenterX", typeof (double), typeof (DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportCenterYProperty =
-            DependencyProperty.Register("ViewportCenterY", typeof(double), typeof(DiagramViewportControl),
-                new FrameworkPropertyMetadata(0d, OnViewportChanged));
+            DependencyProperty.Register("ViewportCenterY", typeof(double), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportTransformProperty =
             DependencyProperty.Register("ViewportTransform", typeof(Transform), typeof(DiagramViewportControl),
@@ -104,11 +92,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Keyboard.Focus(DiagramItemsControl);
         }
 
-        private static void OnLinearZoomChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-        {
-            ((DiagramViewportControl)obj).SyncExponentialZoomValue((double)e.NewValue);
-        }
-
         private static void OnZoomRangeChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             ((DiagramViewportControl)obj).UpdateLargeZoomIncrement();
@@ -121,17 +104,29 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void FitToView()
         {
-            var newExponentialZoom = CalculateFitToViewZoom();
-            var newLinearZoom = ScaleCalculator.ExponentialToLinear(newExponentialZoom, MinZoom, MaxZoom);
+            var newZoom = CalculateFitToViewZoom();
             var contentCenter = DiagramContentRect.GetCenter();
-            SetLinearViewportZoom(newLinearZoom);
             SetViewportCenter(contentCenter);
+
+            if (ViewportZoom.IsEqualWithTolerance(newZoom))
+                UpdateViewportTransform();
+            else
+                SetViewportZoom(newZoom);
+
         }
 
         private void Zoom(ZoomCommandParameters zoomCommand)
         {
-            var newLinearZoom = CalculateLinearZoom(zoomCommand.Direction, zoomCommand.Amount);
-            ZoomWithCenterInScreenSpace(newLinearZoom, zoomCommand.Center);
+            var newZoom = CalculateZoom(zoomCommand.Direction, zoomCommand.Amount);
+            ZoomWithCenterInScreenSpace(newZoom, zoomCommand.Center);
+        }
+
+        private void ZoomWithCenterInScreenSpace(double newZoom, Point zoomCenterInScreenSpace)
+        {
+            var zoomCenterInDiagramSpace = TransformToDiagramSpace(zoomCenterInScreenSpace);
+            var newViewportCenter = (ViewportCenter - zoomCenterInDiagramSpace) * (ViewportZoom / newZoom) + zoomCenterInDiagramSpace;
+            SetViewportCenter(newViewportCenter);
+            SetViewportZoom(newZoom);
         }
 
         private void PanInScreenSpace(PanDirection panDirection)
@@ -143,18 +138,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void PanInScreenSpace(Vector panVector)
         {
             var viewportMoveVectorInScreenSpace = panVector * -1;
-            var viewportMoveVectorInDiagramSpace = viewportMoveVectorInScreenSpace / ExponentialZoom;
+            var viewportMoveVectorInDiagramSpace = viewportMoveVectorInScreenSpace / ViewportZoom;
             var newViewportCenter = ViewportCenter + viewportMoveVectorInDiagramSpace;
             SetViewportCenter(newViewportCenter);
-        }
-
-        private void ZoomWithCenterInScreenSpace(double newLinearZoom, Point zoomCenterInScreenSpace)
-        {
-            var zoomCenterInDiagramSpace = TransformToDiagramSpace(zoomCenterInScreenSpace);
-            var newExponentialZoom = ScaleCalculator.LinearToExponential(newLinearZoom, MinZoom, MaxZoom);
-            var newViewportCenter = (ViewportCenter - zoomCenterInDiagramSpace) * (ExponentialZoom / newExponentialZoom) + zoomCenterInDiagramSpace;
-            SetLinearViewportZoom(newLinearZoom);
-            SetViewportCenter(newViewportCenter);
+            UpdateViewportTransform();
         }
 
         private Point TransformToDiagramSpace(Point pointInScreenSpace)
@@ -195,11 +182,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return vector;
         }
 
-        private double CalculateLinearZoom(ZoomDirection zoomDirection, double zoomAmount)
+        private double CalculateZoom(ZoomDirection zoomDirection, double zoomAmount)
         {
             var zoomSign = zoomDirection == ZoomDirection.In ? 1 : -1;
 
-            var newZoom = LinearZoom + zoomAmount * zoomSign;
+            var newZoom = ViewportZoom + zoomAmount * zoomSign;
 
             if (newZoom < MinZoom)
                 newZoom = MinZoom;
@@ -217,24 +204,19 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void UpdateViewportTransform()
         {
-            Debug.WriteLine($"Size:{Size}, Zoom:{ExponentialZoom}, Center:{ViewportCenter}");
-            if (double.IsNaN(ExponentialZoom))
+            Debug.WriteLine($"Size:{Size}, Zoom:{ViewportZoom}, Center:{ViewportCenter}");
+            if (double.IsNaN(ViewportZoom))
                 return;
 
-            ViewportTransform = ViewportLogic.CalculateViewportTransform(Size, ExponentialZoom, ViewportCenter);
+            ViewportTransform = ViewportLogic.CalculateViewportTransform(Size, ViewportZoom, ViewportCenter);
         }
 
-        private void SyncExponentialZoomValue(double newValue)
+        private void SetViewportZoom(double viewportZoom)
         {
-            ExponentialZoom = ScaleCalculator.LinearToExponential(newValue, MinZoom, MaxZoom);
-        }
-
-        private void SetLinearViewportZoom(double linearViewportZoom)
-        {
-            if (double.IsNaN(linearViewportZoom))
+            if (double.IsNaN(viewportZoom))
                 return;
 
-            LinearZoom = linearViewportZoom;
+            ViewportZoom = viewportZoom;
         }
 
         private void SetViewportCenter(Point viewportCenter)

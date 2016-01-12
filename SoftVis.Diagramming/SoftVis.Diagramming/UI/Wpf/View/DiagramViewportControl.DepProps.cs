@@ -24,16 +24,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(LargeZoomIncrementProperty, value); }
         }
 
-        public double ExponentialZoom
+        public double ViewportZoom
         {
-            get { return (double)GetValue(ExponentialZoomProperty); }
-            set { SetValue(ExponentialZoomProperty, value); }
-        }
-
-        public double LinearZoom
-        {
-            get { return (double)GetValue(LinearZoomProperty); }
-            set { SetValue(LinearZoomProperty, value); }
+            get { return (double)GetValue(ViewportZoomProperty); }
+            set { SetValue(ViewportZoomProperty, value); }
         }
 
         public double ViewportCenterX

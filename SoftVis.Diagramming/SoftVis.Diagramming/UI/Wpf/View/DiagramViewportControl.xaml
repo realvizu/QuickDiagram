@@ -12,6 +12,11 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
+    <UserControl.Resources>
+        <Duration x:Key="AnimationDuration">0:0:.1</Duration>
+        <QuadraticEase x:Key="EasingFunction" EasingMode="EaseOut"/>
+    </UserControl.Resources>
+    
     <Grid>
         <AdornerDecorator>
 
@@ -19,7 +24,10 @@
                                       ItemsSource="{Binding Path=DiagramShapeViewModels}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <view:TransformCanvas Transform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"/>
+                        <view:AnimatedTransformCanvas 
+                            AnimatedTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                            Duration="{StaticResource AnimationDuration}"
+                            EasingFunction="{StaticResource EasingFunction}"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <i:Interaction.Behaviors>
@@ -36,7 +44,7 @@
                         PanRightKey="{x:Static Key.Right}"
                         PanAcceleration="2"
                         PanDeceleration="6"
-                        PanMaxSpeed="40" 
+                        PanMaxSpeed="50" 
                         ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
                         ZoomInKey="{x:Static Key.W}"
                         ZoomOutKey="{x:Static Key.S}"
@@ -60,7 +68,7 @@
                                  MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                                  MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
                                  ZoomIncrement="{Binding Path=LargeZoomIncrement, ElementName=ThisControl, Mode=OneWay}"
-                                 ZoomValue="{Binding Path=LinearZoom, ElementName=ThisControl, Mode=TwoWay}"
+                                 ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=TwoWay}"
                                  PanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
                                  CenterCommand="{Binding Path=FitToViewCommand, ElementName=ThisControl, Mode=OneWay}"/>
     </Grid>

@@ -79,6 +79,7 @@
     <Compile Include="UI\Common\ZoomDirection.cs" />
     <Compile Include="UI\Geometry\VerticalAlignmentType.cs" />
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
+    <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="UI\Wpf\View\PanAndZoomControl2.xaml.cs">
       <DependentUpon>PanAndZoomControl2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Wpf\View\AnimatedTransformCanvas.cs" />
     <Compile Include="UI\Wpf\View\TransformCanvas.cs" />
     <Compile Include="UI\Wpf\View\ViewportLogic.cs" />
   </ItemGroup>
