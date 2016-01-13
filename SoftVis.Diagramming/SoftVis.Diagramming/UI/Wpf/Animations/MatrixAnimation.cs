@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -88,7 +87,7 @@ namespace Codartis.SoftVis.UI.Wpf.Animations
             return newMatrix;
         }
 
-        private Matrix InterpolateMatrix(Matrix @from, Matrix to, double animationTime)
+        private static Matrix InterpolateMatrix(Matrix @from, Matrix to, double animationTime)
         {
             var m11 = Interpolate(@from.M11, to.M11, animationTime);
             var m12 = Interpolate(@from.M12, to.M12, animationTime);
@@ -97,7 +96,7 @@ namespace Codartis.SoftVis.UI.Wpf.Animations
             var offsetX = Interpolate(@from.OffsetX, to.OffsetX, animationTime);
             var offsetY = Interpolate(@from.OffsetY, to.OffsetY, animationTime);
 
-            Debug.WriteLine($"{this.GetHashCode()} / {m11}|{m12}|{m21}|{m22}|{offsetX}|{offsetY}");
+            //Debug.WriteLine($"{this.GetHashCode()} / {m11}|{m12}|{m21}|{m22}|{offsetX}|{offsetY}");
             return new Matrix(m11, m12, m21, m22, offsetX, offsetY);
         }
 

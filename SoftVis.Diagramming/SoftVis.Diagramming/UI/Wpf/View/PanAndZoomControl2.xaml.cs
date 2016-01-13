@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Codartis.SoftVis.UI.Common;
+using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -19,6 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MaxZoomDefault = 10d;
         private const double ZoomValueDefault = 1d;
         private const double ZoomIncrementDefault = .5d;
+        private const double PanAmountDefault = 50d;
 
         public static readonly DependencyProperty FillProperty =
             DependencyProperty.Register("Fill", typeof(Brush), typeof(PanAndZoomControl2),
@@ -40,12 +43,19 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("ZoomIncrement", typeof(double), typeof(PanAndZoomControl2),
                 new FrameworkPropertyMetadata(ZoomIncrementDefault));
 
+        public static readonly DependencyProperty PanAmountProperty =
+            DependencyProperty.Register("PanAmount", typeof(double), typeof(PanAndZoomControl2),
+                new FrameworkPropertyMetadata(PanAmountDefault));
+
         public static readonly DependencyProperty ZoomValueProperty =
             DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomControl2),
                 new PropertyMetadata(ZoomValueDefault));
 
-        public static readonly DependencyProperty PanCommandProperty =
-            DependencyProperty.Register("PanCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+        public static readonly DependencyProperty DirectionPanCommandProperty =
+            DependencyProperty.Register("DirectionPanCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+
+        public static readonly DependencyProperty VectorPanCommandProperty =
+            DependencyProperty.Register("VectorPanCommand", typeof(ICommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty CenterCommandProperty =
             DependencyProperty.Register("CenterCommand", typeof(ICommand), typeof(PanAndZoomControl2));
@@ -53,6 +63,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public PanAndZoomControl2()
         {
             InitializeComponent();
+
+            DirectionPanCommand = new DelegateCommand(i => VectorPanCommand?.Execute(CalculatePanVector((PanDirection)i)));
         }
 
         public Brush Fill
@@ -85,16 +97,28 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ZoomIncrementProperty, value); }
         }
 
+        public double PanAmount
+        {
+            get { return (double)GetValue(PanAmountProperty); }
+            set { SetValue(PanAmountProperty, value); }
+        }
+
         public double ZoomValue
         {
             get { return (double)GetValue(ZoomValueProperty); }
             set { SetValue(ZoomValueProperty, value); }
         }
 
-        public ICommand PanCommand
+        public ICommand DirectionPanCommand
         {
-            get { return (ICommand)GetValue(PanCommandProperty); }
-            set { SetValue(PanCommandProperty, value); }
+            get { return (ICommand)GetValue(DirectionPanCommandProperty); }
+            set { SetValue(DirectionPanCommandProperty, value); }
+        }
+
+        public ICommand VectorPanCommand
+        {
+            get { return (ICommand)GetValue(VectorPanCommandProperty); }
+            set { SetValue(VectorPanCommandProperty, value); }
         }
 
         public ICommand CenterCommand
@@ -130,6 +154,29 @@ namespace Codartis.SoftVis.UI.Wpf.View
             var height = Math.Min(calculatedHeight, size.Height);
 
             return new Size(width, height);
+        }
+
+        private Vector CalculatePanVector(PanDirection panDirection)
+        {
+            Vector vector;
+            switch (panDirection)
+            {
+                case PanDirection.Up:
+                    vector = new Vector(0, -PanAmount);
+                    break;
+                case PanDirection.Down:
+                    vector = new Vector(0, PanAmount);
+                    break;
+                case PanDirection.Left:
+                    vector = new Vector(-PanAmount, 0);
+                    break;
+                case PanDirection.Right:
+                    vector = new Vector(PanAmount, 0);
+                    break;
+                default:
+                    throw new Exception($"Unexpected PanDirection: {panDirection}");
+            }
+            return vector;
         }
     }
 }

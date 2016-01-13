@@ -206,12 +206,12 @@
 
         <RepeatButton Grid.Row="0" Grid.Column="1" Margin="-1,-1,-1,-1" 
                       Style="{StaticResource PanUpRepeatButtonStyle}"
-                      Command="{Binding PanCommand}" 
+                      Command="{Binding DirectionPanCommand}" 
                       CommandParameter="{x:Static common:PanDirection.Up}" />
 
         <RepeatButton Grid.Row="1" Grid.Column="0" Margin="-1,-1,-1,-1"
                       Style="{StaticResource PanLeftRepeatButtonStyle}" 
-                      Command="{Binding PanCommand}" 
+                      Command="{Binding DirectionPanCommand}" 
                       CommandParameter="{x:Static common:PanDirection.Left}" />
 
         <Button Grid.Row="1" Grid.Column="1" Margin="2,2,2,2"
@@ -220,12 +220,12 @@
 
         <RepeatButton Grid.Row="1" Grid.Column="2" Margin="-1,-1,-1,-1"
                       Style="{StaticResource PanRightRepeatButtonStyle}" 
-                      Command="{Binding PanCommand}" 
+                      Command="{Binding DirectionPanCommand}" 
                       CommandParameter="{x:Static common:PanDirection.Right}" />
 
         <RepeatButton Grid.Row="2" Grid.Column="1" Margin="-1,-1,-1,-1"
                       Style="{StaticResource PanDownRepeatButtonStyle}" 
-                      Command="{Binding PanCommand}"
+                      Command="{Binding DirectionPanCommand}"
                       CommandTarget="{Binding}"
                       CommandParameter="{x:Static common:PanDirection.Down}" />
 

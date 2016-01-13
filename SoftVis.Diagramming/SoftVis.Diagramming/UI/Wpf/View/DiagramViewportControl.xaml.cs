@@ -19,8 +19,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MinZoomDefault = 0.1;
         private const double MaxZoomDefault = 10;
         private const double LargeZoomIncrementDefault = 1;
-
-        private const double PanAmount = 50d;
         private const double LargeZoomIncrementProportion = .1d;
 
         private readonly Viewport _viewport = new Viewport(ViewportSizeDefault, 
@@ -103,11 +101,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             InitializeComponent();
 
-            WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((PanDirection)i));
-            MousePanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
-            MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i));
             KeyboardPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
             KeyboardZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i));
+            MousePanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
+            MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i));
+            WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
             FitToViewCommand = new DelegateCommand(i => ZoomToContent());
         }
 
@@ -175,40 +173,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
         }
 
-        private void PanInScreenSpace(PanDirection panDirection)
-        {
-            var panVector = CalculatePanVector(panDirection);
-            PanInScreenSpace(panVector);
-        }
-
         private void PanInScreenSpace(Vector panVector)
         {
             _viewport.Pan(panVector);
             ViewportCenter = _viewport.CenterInDiagramSpace;
             ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
-        }
-
-        private static Vector CalculatePanVector(PanDirection panDirection)
-        {
-            Vector vector;
-            switch (panDirection)
-            {
-                case PanDirection.Up:
-                    vector = new Vector(0, -PanAmount);
-                    break;
-                case PanDirection.Down:
-                    vector = new Vector(0, PanAmount);
-                    break;
-                case PanDirection.Left:
-                    vector = new Vector(-PanAmount, 0);
-                    break;
-                case PanDirection.Right:
-                    vector = new Vector(PanAmount, 0);
-                    break;
-                default:
-                    throw new Exception($"Unexpected PanDirection: {panDirection}");
-            }
-            return vector;
         }
 
         private double CalculateModifiedZoom(double currentLinearZoom, ZoomDirection zoomDirection, double zoomAmount)
