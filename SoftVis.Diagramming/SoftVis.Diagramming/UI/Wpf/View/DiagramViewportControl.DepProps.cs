@@ -18,6 +18,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(MaxZoomProperty, value); }
         }
 
+        public double InitialZoom
+        {
+            get { return (double)GetValue(InitialZoomProperty); }
+            set { SetValue(InitialZoomProperty, value); }
+        }
+
         public double LargeZoomIncrement
         {
             get { return (double)GetValue(LargeZoomIncrementProperty); }

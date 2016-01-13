@@ -23,7 +23,7 @@
                                       Height="{Binding Path=ActualHeight, ElementName=Canvas}"
                                       MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                                       MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
-                                      LinearViewportZoom="{Binding Path=InitialZoom, ElementName=ThisControl, Mode=OneWay}"/>
+                                      InitialZoom="{Binding Path=InitialZoom, ElementName=ThisControl, Mode=OneWay}"/>
 
         <local:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
                                      Width="{Binding Path=Width}" 

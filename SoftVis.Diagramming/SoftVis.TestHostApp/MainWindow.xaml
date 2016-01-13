@@ -38,6 +38,6 @@
                              Background="Beige"
                              MinZoom="0.2"
                              MaxZoom="5"
-                             InitialZoom="2.5"/>
+                             InitialZoom="2"/>
     </Grid>
 </Window>

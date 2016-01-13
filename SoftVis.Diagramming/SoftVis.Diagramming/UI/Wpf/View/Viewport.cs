@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public double LinearZoom { get; private set; }
         public double MinZoom { get; private set; }
         public double MaxZoom { get; private set; }
+        public double DefaultExponentialZoom { get; private set; }
 
         public double ExponentialZoom { get; private set; }
         public Transform DiagramSpaceToScreenSpace { get; private set; }
@@ -27,6 +28,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
             LinearZoom = linearZoom;
             MinZoom = minZoom;
             MaxZoom = maxZoom;
+
+            DefaultExponentialZoom = ToExponentialZoom(linearZoom);
             UpdateCalculatedProperties();
         }
 
@@ -34,6 +37,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             SizeInScreenSpace = sizeInScreenSpace;
             UpdateCalculatedProperties();
+        }
+
+        public void UpdateDefaultZoom(double defaultLinearZoom)
+        {
+            DefaultExponentialZoom = ToExponentialZoom(defaultLinearZoom);
         }
 
         public void UpdateZoomRange(double minZoom, double maxZoom)
@@ -104,7 +112,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             return new[]
             {
-                1,
+                DefaultExponentialZoom,
                 SizeInScreenSpace.Width / contentSize.Width,
                 SizeInScreenSpace.Height / contentSize.Height
             }.Min();

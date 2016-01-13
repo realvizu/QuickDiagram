@@ -34,6 +34,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("MaxZoom", typeof(double), typeof(DiagramViewportControl),
                 new PropertyMetadata(MaxZoomDefault, OnZoomRangeChanged));
 
+        public static readonly DependencyProperty InitialZoomProperty =
+            DependencyProperty.Register("InitialZoom", typeof(double), typeof(DiagramViewportControl),
+                new PropertyMetadata(LinearViewportZoomDefault, OnInitialZoomChanged));
+
         public static readonly DependencyProperty LargeZoomIncrementProperty =
             DependencyProperty.Register("LargeZoomIncrement", typeof(double), typeof(DiagramViewportControl),
                 new PropertyMetadata(LargeZoomIncrementDefault));
@@ -89,6 +93,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnZoomRangeChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)obj).OnZoomRangeChanged();
 
+        private static void OnInitialZoomChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl)obj).OnInitialZoomChanged();
+
         private static void OnLinearViewportZoomChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)obj).OnLinearViewportZoomChanged();
 
@@ -132,6 +139,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
             _viewport.UpdateZoomRange(MinZoom, MaxZoom);
             ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+        }
+
+        private void OnInitialZoomChanged()
+        {
+            _viewport.UpdateDefaultZoom(InitialZoom);
+            LinearViewportZoom = InitialZoom;
         }
 
         private void OnLinearViewportZoomChanged()
