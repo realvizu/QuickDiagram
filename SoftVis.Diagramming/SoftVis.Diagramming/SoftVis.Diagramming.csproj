@@ -90,6 +90,7 @@
     <Compile Include="UI\Wpf\Common\HitTesting\HitTesterInstance.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
+    <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\MiniButtonActivatedEventArgs.cs" />
     <Compile Include="UI\Wpf\DiagramViewerViewModel.cs" />
     <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />

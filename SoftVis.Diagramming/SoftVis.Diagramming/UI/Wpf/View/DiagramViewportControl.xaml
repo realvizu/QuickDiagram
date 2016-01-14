@@ -13,7 +13,7 @@
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
     <UserControl.Resources>
-        <Duration x:Key="AnimationDuration">0:0:.1</Duration>
+        <Duration x:Key="AnimationDuration">0:0:0.1</Duration>
         <QuadraticEase x:Key="EasingFunction" EasingMode="EaseOut"/>
     </UserControl.Resources>
     
@@ -26,8 +26,7 @@
                     <ItemsPanelTemplate>
                         <view:AnimatedTransformCanvas 
                             AnimatedTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
-                            Duration="{StaticResource AnimationDuration}"
-                            EasingFunction="{StaticResource EasingFunction}"/>
+                            Duration="{StaticResource AnimationDuration}"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <i:Interaction.Behaviors>

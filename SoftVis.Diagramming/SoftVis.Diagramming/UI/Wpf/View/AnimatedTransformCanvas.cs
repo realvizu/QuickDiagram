@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Codartis.SoftVis.UI.Wpf.Animations;
+using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -11,6 +13,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     internal class AnimatedTransformCanvas : TransformCanvas
     {
+        private const int FrameRate = 30;
+
         static AnimatedTransformCanvas()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AnimatedTransformCanvas),
@@ -58,11 +62,25 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void AnimateTransform(Transform oldValue, Transform newValue)
         {
-            var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, Duration)
+            if (oldValue.Value ==  newValue.Value)
+                return;
+
+            //Debug.WriteLine($"-S {oldValue.Value.ToDebugString()}");
+            //Debug.WriteLine($"-F {newValue.Value.ToDebugString()}");
+            Animate(oldValue, newValue, Duration);
+        }
+
+
+        private void Animate(Transform oldValue, Transform newValue, Duration duration)
+        {
+            var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, duration)
             {
                 EasingFunction = EasingFunction,
-                FillBehavior = FillBehavior.HoldEnd
+                FillBehavior = FillBehavior.HoldEnd,
             };
+            Timeline.SetDesiredFrameRate(matrixAnimation, FrameRate);
+
+            //Debug.WriteLine("------------------");
 
             Transform.BeginAnimation(MatrixTransform.MatrixProperty, matrixAnimation, HandoffBehavior.SnapshotAndReplace);
         }
