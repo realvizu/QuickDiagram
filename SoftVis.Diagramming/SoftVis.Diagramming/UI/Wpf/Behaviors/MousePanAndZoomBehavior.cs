@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var zoomDirection = e.Delta < 0 ? ZoomDirection.Out : ZoomDirection.In;
-            //if (!IsZoomLimitReached(zoomDirection))
+            if (!IsZoomLimitReached(zoomDirection))
             {
                 var zoomAmount = Math.Abs(e.Delta / Mouse.MouseWheelDeltaForOneLine) * ZoomAmountPerWheelClick;
                 Zoom(zoomDirection, zoomAmount, e.GetPosition(AssociatedObject));

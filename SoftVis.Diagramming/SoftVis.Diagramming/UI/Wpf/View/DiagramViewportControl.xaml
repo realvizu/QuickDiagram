@@ -37,6 +37,9 @@
                         PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
                         PanCursor="{x:Static Cursors.SizeAll}"
                         ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
+                        MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                        MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                        ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
                         ZoomAmountPerWheelClick=".5" />
                     <behaviors:KeyboardPanAndZoomBehavior
                         PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
@@ -48,6 +51,9 @@
                         PanDeceleration="6"
                         PanMaxSpeed="50" 
                         ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
+                        MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                        MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                        ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
                         ZoomInKey="{x:Static Key.W}"
                         ZoomOutKey="{x:Static Key.S}"
                         ZoomAcceleration=".02"

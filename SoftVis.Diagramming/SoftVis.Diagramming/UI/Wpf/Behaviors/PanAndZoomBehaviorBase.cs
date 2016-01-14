@@ -14,6 +14,15 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         public static readonly DependencyProperty ZoomCommandProperty =
             DependencyProperty.Register("ZoomCommand", typeof(ICommand), typeof(PanAndZoomBehaviorBase));
 
+        public static readonly DependencyProperty MinZoomProperty =
+            DependencyProperty.Register("MinZoom", typeof(double), typeof(PanAndZoomBehaviorBase));
+
+        public static readonly DependencyProperty MaxZoomProperty =
+            DependencyProperty.Register("MaxZoom", typeof(double), typeof(PanAndZoomBehaviorBase));
+
+        public static readonly DependencyProperty ZoomValueProperty =
+            DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomBehaviorBase));
+
         public ICommand PanCommand
         {
             get { return (ICommand)GetValue(PanCommandProperty); }
@@ -26,6 +35,24 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
             set { SetValue(ZoomCommandProperty, value); }
         }
 
+        public double MinZoom
+        {
+            get { return (double)GetValue(MinZoomProperty); }
+            set { SetValue(MinZoomProperty, value); }
+        }
+
+        public double MaxZoom
+        {
+            get { return (double)GetValue(MaxZoomProperty); }
+            set { SetValue(MaxZoomProperty, value); }
+        }
+
+        public double ZoomValue
+        {
+            get { return (double)GetValue(ZoomValueProperty); }
+            set { SetValue(ZoomValueProperty, value); }
+        }
+
         protected void Pan(Vector vector)
         {
             PanCommand?.Execute(vector);
@@ -36,5 +63,12 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
             var commandParameters = new ZoomCommandParameters(direction, amount, center);
             ZoomCommand?.Execute(commandParameters);
         }
+
+        protected bool IsZoomLimitReached(ZoomDirection zoomDirection)
+        {
+            return (zoomDirection == ZoomDirection.In && ZoomValue >= MaxZoom) ||
+                  (zoomDirection == ZoomDirection.Out && ZoomValue <= MinZoom);
+        }
+
     }
 }

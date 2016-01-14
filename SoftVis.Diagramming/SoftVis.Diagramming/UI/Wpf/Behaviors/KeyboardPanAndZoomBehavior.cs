@@ -183,7 +183,10 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
             var zoomDirection = _zoomSpeed > 0 ? ZoomDirection.In : ZoomDirection.Out;
             var zoomCenter = new Point(AssociatedObject.ActualWidth / 2, AssociatedObject.ActualHeight / 2);
 
-            Zoom(zoomDirection, Math.Abs(_zoomSpeed), zoomCenter);
+            if (IsZoomLimitReached(zoomDirection))
+                _zoomSpeed = 0;
+            else
+                Zoom(zoomDirection, Math.Abs(_zoomSpeed), zoomCenter);
         }
 
         private void ProcessPan()
