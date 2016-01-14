@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MinZoomDefault = .2d;
         private const double MaxZoomDefault = 5d;
         private const double InitialZoomDefault = 1d;
+        private const double PanAndZoomControlSizeDefault = 120d;
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramControl),
@@ -36,6 +37,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty InitialZoomProperty =
             DependencyProperty.Register("InitialZoom", typeof(double), typeof(DiagramControl),
                 new PropertyMetadata(InitialZoomDefault));
+
+        public static readonly DependencyProperty PanAndZoomControlHeightProperty =
+            DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramControl),
+                new PropertyMetadata(PanAndZoomControlSizeDefault));
 
         public DiagramControl()
         {
@@ -58,6 +63,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(InitialZoomProperty); }
             set { SetValue(InitialZoomProperty, value); }
+        }
+
+        public double PanAndZoomControlHeight
+        {
+            get { return (double)GetValue(PanAndZoomControlHeightProperty); }
+            set { SetValue(PanAndZoomControlHeightProperty, value); }
         }
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)

@@ -36,6 +36,7 @@
         <view:DiagramControl x:Name="DiagramControl" 
                              Grid.Row="1" 
                              Background="Beige"
+                             PanAndZoomControlHeight="120"
                              MinZoom="0.2"
                              MaxZoom="5"
                              InitialZoom="2"/>

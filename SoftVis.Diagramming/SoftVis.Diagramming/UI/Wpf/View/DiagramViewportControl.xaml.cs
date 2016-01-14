@@ -20,6 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MaxZoomDefault = 10;
         private const double LargeZoomIncrementDefault = 1;
         private const double LargeZoomIncrementProportion = .1d;
+        private const double PanAndZoomControlSizeDefault = 100;
 
         private readonly Viewport _viewport = new Viewport(ViewportSizeDefault, 
             ViewportCenterDefault, LinearViewportZoomDefault, MinZoomDefault, MaxZoomDefault);
@@ -39,6 +40,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty LargeZoomIncrementProperty =
             DependencyProperty.Register("LargeZoomIncrement", typeof(double), typeof(DiagramViewportControl),
                 new PropertyMetadata(LargeZoomIncrementDefault));
+
+        public static readonly DependencyProperty PanAndZoomControlHeightProperty =
+            DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramViewportControl),
+                new PropertyMetadata(PanAndZoomControlSizeDefault));
 
         /// <summary>
         /// The zoom value that is manipulated by the different zoom gestures/widgets on a linear scale.

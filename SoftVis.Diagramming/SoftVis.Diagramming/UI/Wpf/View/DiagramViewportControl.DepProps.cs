@@ -30,6 +30,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(LargeZoomIncrementProperty, value); }
         }
 
+        public double PanAndZoomControlHeight
+        {
+            get { return (double)GetValue(PanAndZoomControlHeightProperty); }
+            set { SetValue(PanAndZoomControlHeightProperty, value); }
+        }
+
         public double LinearViewportZoom
         {
             get { return (double)GetValue(LinearViewportZoomProperty); }
