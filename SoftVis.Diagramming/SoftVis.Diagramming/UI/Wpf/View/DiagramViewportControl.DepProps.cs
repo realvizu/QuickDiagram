@@ -48,9 +48,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportCenterYProperty, value); }
         }
 
-        public Transform ViewportTransform
+        public HintedTransform ViewportTransform
         {
-            get { return (Transform)GetValue(ViewportTransformProperty); }
+            get { return (HintedTransform)GetValue(ViewportTransformProperty); }
             set { SetValue(ViewportTransformProperty, value); }
         }
 

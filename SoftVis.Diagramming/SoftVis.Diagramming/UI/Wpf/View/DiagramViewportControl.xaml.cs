@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
+using Codartis.SoftVis.UI.Wpf.Animations;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -60,12 +60,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new PropertyMetadata(ViewportCenterDefault.Y));
 
         /// <summary>
-        /// Transforms DiagramSpace to ScreenSpace.
+        /// Transforms DiagramSpace to ScreenSpace. Also contains a hint for the animation's length.
         /// Created by the Viewport class, used for rendering the diagram.
         /// </summary>
         public static readonly DependencyProperty ViewportTransformProperty =
-            DependencyProperty.Register("ViewportTransform", typeof(Transform), typeof(DiagramViewportControl),
-                new PropertyMetadata(Transform.Identity));
+            DependencyProperty.Register("ViewportTransform", typeof(HintedTransform), typeof(DiagramViewportControl),
+                new PropertyMetadata(HintedTransform.Identity));
 
         public static readonly DependencyProperty DiagramContentRectProperty =
             DependencyProperty.Register("DiagramContentRect", typeof(Rect), typeof(DiagramViewportControl));
@@ -101,12 +101,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             InitializeComponent();
 
-            KeyboardPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
-            KeyboardZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i));
-            MousePanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
-            MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i));
-            WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i));
-            FitToViewCommand = new DelegateCommand(i => ZoomToContent());
+            KeyboardPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.Short));
+            KeyboardZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters) i, AnimationHint.Short));
+            MousePanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.None));
+            MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i, AnimationHint.Short));
+            WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.Short));
+            FitToViewCommand = new DelegateCommand(i => ZoomToContent(AnimationHint.Long));
         }
 
         private Point ViewportCenter
@@ -129,14 +129,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
             base.OnRenderSizeChanged(sizeInfo);
 
             _viewport.Resize(sizeInfo.NewSize);
-            ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace);
         }
 
         private void OnZoomRangeChanged()
         {
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
             _viewport.UpdateZoomRange(MinZoom, MaxZoom);
-            ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void OnInitialZoomChanged()
@@ -148,36 +148,37 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void OnLinearViewportZoomChanged()
         {
             _viewport.ZoomTo(LinearViewportZoom);
-            ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace);
         }
 
-        private void ZoomToContent()
+        private void ZoomToContent(AnimationHint animationHint)
         {
             _viewport.ZoomToContent(DiagramContentRect);
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
-        private void Zoom(ZoomCommandParameters zoomCommand)
+        private void Zoom(ZoomCommandParameters zoomCommand, AnimationHint animationHint)
         {
             var newLinearZoom = CalculateModifiedZoom(LinearViewportZoom, zoomCommand.Direction, zoomCommand.Amount);
-            ZoomWithCenterInScreenSpace(newLinearZoom, zoomCommand.Center);
+            ZoomWithCenterInScreenSpace(newLinearZoom, zoomCommand.Center, animationHint);
         }
 
-        private void ZoomWithCenterInScreenSpace(double newLinearZoom, Point zoomCenterInScreenSpace)
+        private void ZoomWithCenterInScreenSpace(double newLinearZoom, Point zoomCenterInScreenSpace,
+            AnimationHint animationHint)
         {
             _viewport.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace);
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
-        private void PanInScreenSpace(Vector panVector)
+        private void PanInScreenSpace(Vector panVector, AnimationHint animationHint)
         {
             _viewport.Pan(panVector);
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = _viewport.DiagramSpaceToScreenSpace;
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private double CalculateModifiedZoom(double currentLinearZoom, ZoomDirection zoomDirection, double zoomAmount)

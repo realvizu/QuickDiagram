@@ -13,7 +13,8 @@
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
     <UserControl.Resources>
-        <Duration x:Key="AnimationDuration">0:0:0.1</Duration>
+        <Duration x:Key="ShortAnimationDuration">0:0:0.1</Duration>
+        <Duration x:Key="LongAnimationDuration">0:0:0.5</Duration>
         <QuadraticEase x:Key="EasingFunction" EasingMode="EaseOut"/>
     </UserControl.Resources>
     
@@ -25,8 +26,10 @@
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <view:AnimatedTransformCanvas 
-                            AnimatedTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
-                            Duration="{StaticResource AnimationDuration}"/>
+                            HintedTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                            ShortAnimationDuration="{StaticResource ShortAnimationDuration}"
+                            LongAnimationDuration="{StaticResource LongAnimationDuration}"
+                            EasingFunction="{StaticResource EasingFunction}"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <i:Interaction.Behaviors>

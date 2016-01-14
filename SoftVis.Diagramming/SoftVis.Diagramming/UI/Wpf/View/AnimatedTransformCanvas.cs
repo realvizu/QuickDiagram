@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Codartis.SoftVis.UI.Wpf.Animations;
-using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -14,6 +12,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
     internal class AnimatedTransformCanvas : TransformCanvas
     {
         private const int FrameRate = 30;
+        private static readonly Duration ShortAnimationDurationDefault = TimeSpan.FromMilliseconds(200);
+        private static readonly Duration LongAnimationDurationDefault = TimeSpan.FromMilliseconds(500);
 
         static AnimatedTransformCanvas()
         {
@@ -21,13 +21,17 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(typeof(AnimatedTransformCanvas)));
         }
 
-        public static readonly DependencyProperty AnimatedTransformProperty =
-            DependencyProperty.Register("AnimatedTransform", typeof(Transform), typeof(AnimatedTransformCanvas),
-                new FrameworkPropertyMetadata(Transform.Identity, OnTransformChanged));
+        public static readonly DependencyProperty HintedTransformProperty =
+            DependencyProperty.Register("HintedTransform", typeof(HintedTransform), typeof(AnimatedTransformCanvas),
+                new FrameworkPropertyMetadata(HintedTransform.Identity, OnHintedTransformChanged));
 
-        public static readonly DependencyProperty DurationProperty =
-            DependencyProperty.Register("Duration", typeof(Duration), typeof(AnimatedTransformCanvas),
-                new PropertyMetadata(new Duration(TimeSpan.Zero)));
+        public static readonly DependencyProperty ShortAnimationDurationProperty =
+            DependencyProperty.Register("ShortAnimationDuration", typeof(Duration), typeof(AnimatedTransformCanvas),
+                new PropertyMetadata(ShortAnimationDurationDefault));
+
+        public static readonly DependencyProperty LongAnimationDurationProperty =
+            DependencyProperty.Register("LongAnimationDuration", typeof(Duration), typeof(AnimatedTransformCanvas),
+                new PropertyMetadata(LongAnimationDurationDefault));
 
         public static readonly DependencyProperty EasingFunctionProperty =
             DependencyProperty.Register("EasingFunction", typeof(EasingFunctionBase), typeof(AnimatedTransformCanvas));
@@ -37,16 +41,22 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Transform = new MatrixTransform();
         }
 
-        public Transform AnimatedTransform
+        public HintedTransform HintedTransform
         {
-            get { return (Transform)GetValue(AnimatedTransformProperty); }
-            set { SetValue(AnimatedTransformProperty, value); }
+            get { return (HintedTransform)GetValue(HintedTransformProperty); }
+            set { SetValue(HintedTransformProperty, value); }
         }
 
-        public Duration Duration
+        public Duration ShortAnimationDuration
         {
-            get { return (Duration)GetValue(DurationProperty); }
-            set { SetValue(DurationProperty, value); }
+            get { return (Duration)GetValue(ShortAnimationDurationProperty); }
+            set { SetValue(ShortAnimationDurationProperty, value); }
+        }
+
+        public Duration LongAnimationDuration
+        {
+            get { return (Duration)GetValue(LongAnimationDurationProperty); }
+            set { SetValue(LongAnimationDurationProperty, value); }
         }
 
         public EasingFunctionBase EasingFunction
@@ -55,34 +65,56 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(EasingFunctionProperty, value); }
         }
 
-        private static void OnTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnHintedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AnimatedTransformCanvas)d).AnimateTransform((Transform)e.OldValue, (Transform)e.NewValue);
+            ((AnimatedTransformCanvas)d).AnimateTransform((HintedTransform)e.OldValue, (HintedTransform)e.NewValue);
         }
 
-        private void AnimateTransform(Transform oldValue, Transform newValue)
+        private void AnimateTransform(HintedTransform oldHintedTransform, HintedTransform newHintedTransform)
         {
-            if (oldValue.Value ==  newValue.Value)
+            if (oldHintedTransform.Transform.Value == newHintedTransform.Transform.Value)
                 return;
 
-            //Debug.WriteLine($"-S {oldValue.Value.ToDebugString()}");
-            //Debug.WriteLine($"-F {newValue.Value.ToDebugString()}");
-            Animate(oldValue, newValue, Duration);
+            if (newHintedTransform.AnimationHint == AnimationHint.None)
+            {
+                DontAnimate(newHintedTransform.Transform);
+            }
+            else
+            {
+                Animate(oldHintedTransform.Transform, newHintedTransform.Transform, newHintedTransform.AnimationHint);
+            }
         }
 
-
-        private void Animate(Transform oldValue, Transform newValue, Duration duration)
+        private void DontAnimate(Transform newTransform)
         {
-            var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, duration)
-            {
-                EasingFunction = EasingFunction,
-                FillBehavior = FillBehavior.HoldEnd,
-            };
-            Timeline.SetDesiredFrameRate(matrixAnimation, FrameRate);
+            Transform.BeginAnimation(MatrixTransform.MatrixProperty, null);
+            ((MatrixTransform) Transform).Matrix = newTransform.Value;
+        }
 
-            //Debug.WriteLine("------------------");
+        private void Animate(Transform oldValue, Transform newValue, AnimationHint animationHint)
+        {
+            var duration = AnimationHintToDuration(animationHint);
+
+            var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, duration, FillBehavior.HoldEnd);
+
+            if (animationHint == AnimationHint.Long)
+                matrixAnimation.EasingFunction = EasingFunction;
+
+            Timeline.SetDesiredFrameRate(matrixAnimation, FrameRate);
 
             Transform.BeginAnimation(MatrixTransform.MatrixProperty, matrixAnimation, HandoffBehavior.SnapshotAndReplace);
         }
+
+        private Duration AnimationHintToDuration(AnimationHint animationHint)
+        {
+            switch (animationHint)
+            {
+                case AnimationHint.None: return TimeSpan.Zero;
+                case AnimationHint.Short: return ShortAnimationDuration;
+                case AnimationHint.Long: return LongAnimationDuration;
+                default: throw new NotImplementedException($"Unexpected AnimationHint:{animationHint}");
+            }
+        }
+
     }
 }
