@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// </summary>
         public static readonly DependencyProperty LinearViewportZoomProperty =
             DependencyProperty.Register("LinearViewportZoom", typeof(double), typeof(DiagramViewportControl),
-                new PropertyMetadata(LinearViewportZoomDefault, OnLinearViewportZoomChanged));
+                new PropertyMetadata(LinearViewportZoomDefault));
 
         /// <summary>
         /// The center of the viewport in DiagramSpace.
@@ -73,6 +73,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty WidgetPanCommandProperty =
             DependencyProperty.Register("WidgetPanCommand", typeof(ICommand), typeof(DiagramViewportControl));
 
+        public static readonly DependencyProperty WidgetZoomCommandProperty =
+            DependencyProperty.Register("WidgetZoomCommand", typeof(ICommand), typeof(DiagramViewportControl));
+
         public static readonly DependencyProperty FitToViewCommandProperty =
             DependencyProperty.Register("FitToViewCommand", typeof(ICommand), typeof(DiagramViewportControl));
 
@@ -94,9 +97,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnInitialZoomChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)obj).OnInitialZoomChanged();
 
-        private static void OnLinearViewportZoomChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl)obj).OnLinearViewportZoomChanged();
-
         public DiagramViewportControl()
         {
             InitializeComponent();
@@ -106,6 +106,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             MousePanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.None));
             MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i, AnimationHint.Short));
             WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.Short));
+            WidgetZoomCommand = new DelegateCommand(i => ZoomTo((double)i, AnimationHint.Short));
             FitToViewCommand = new DelegateCommand(i => ZoomToContent(AnimationHint.Long));
         }
 
@@ -124,12 +125,17 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Keyboard.Focus(DiagramItemsControl);
         }
 
+        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
+        {
+            Keyboard.Focus(DiagramItemsControl);
+        }
+
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
 
             _viewport.Resize(sizeInfo.NewSize);
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace);
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void OnZoomRangeChanged()
@@ -143,12 +149,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             _viewport.UpdateDefaultZoom(InitialZoom);
             LinearViewportZoom = InitialZoom;
-        }
-
-        private void OnLinearViewportZoomChanged()
-        {
-            _viewport.ZoomTo(LinearViewportZoom);
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace);
+            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void ZoomToContent(AnimationHint animationHint)
@@ -157,6 +158,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
             ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+        }
+
+        private void ZoomTo(double newZoom, AnimationHint animationHint)
+        {
+            if (LinearViewportZoom != newZoom)
+            {
+                _viewport.ZoomTo(newZoom);
+                LinearViewportZoom = newZoom;
+                ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            }
         }
 
         private void Zoom(ZoomCommandParameters zoomCommand, AnimationHint animationHint)

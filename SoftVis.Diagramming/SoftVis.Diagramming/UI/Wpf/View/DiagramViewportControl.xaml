@@ -71,7 +71,8 @@
                                  MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
                                  ZoomIncrement="{Binding Path=LargeZoomIncrement, ElementName=ThisControl, Mode=OneWay}"
                                  PanAmount="50"
-                                 ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=TwoWay}"
+                                 ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
+                                 ZoomCommand="{Binding Path=WidgetZoomCommand, ElementName=ThisControl, Mode=OneWay}"
                                  VectorPanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
                                  CenterCommand="{Binding Path=FitToViewCommand, ElementName=ThisControl, Mode=OneWay}"/>
     </Grid>

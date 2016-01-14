@@ -234,7 +234,8 @@
                 Minimum="{Binding Path=MinZoom}" 
                 Maximum="{Binding Path=MaxZoom}" 
                 LargeChange="{Binding Path=ZoomIncrement}"
-                Value="{Binding Path=ZoomValue, Mode=TwoWay}" />
+                Value="{Binding Path=ZoomValue, Mode=OneWay}"
+                ValueChanged="OnSliderValueChanged"/>
     </Grid>
 
 </UserControl>

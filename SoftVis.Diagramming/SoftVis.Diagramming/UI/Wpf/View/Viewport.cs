@@ -42,6 +42,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public void UpdateDefaultZoom(double defaultLinearZoom)
         {
             DefaultExponentialZoom = ToExponentialZoom(defaultLinearZoom);
+            ZoomTo(defaultLinearZoom);
         }
 
         public void UpdateZoomRange(double minZoom, double maxZoom)

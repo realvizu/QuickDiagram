@@ -66,6 +66,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(WidgetPanCommandProperty, value); }
         }
 
+        public ICommand WidgetZoomCommand
+        {
+            get { return (ICommand)GetValue(WidgetZoomCommandProperty); }
+            set { SetValue(WidgetZoomCommandProperty, value); }
+        }
+
         public ICommand FitToViewCommand
         {
             get { return (ICommand)GetValue(FitToViewCommandProperty); }

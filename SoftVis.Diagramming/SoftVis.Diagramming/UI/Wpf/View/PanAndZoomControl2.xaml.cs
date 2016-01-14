@@ -51,6 +51,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomControl2),
                 new PropertyMetadata(ZoomValueDefault));
 
+        public static readonly DependencyProperty ZoomCommandProperty =
+            DependencyProperty.Register("ZoomCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+
         public static readonly DependencyProperty DirectionPanCommandProperty =
             DependencyProperty.Register("DirectionPanCommand", typeof(ICommand), typeof(PanAndZoomControl2));
 
@@ -107,6 +110,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(ZoomValueProperty); }
             set { SetValue(ZoomValueProperty, value); }
+        }
+
+        public ICommand ZoomCommand
+        {
+            get { return (ICommand)GetValue(ZoomCommandProperty); }
+            set { SetValue(ZoomCommandProperty, value); }
         }
 
         public ICommand DirectionPanCommand
@@ -177,6 +186,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
                     throw new Exception($"Unexpected PanDirection: {panDirection}");
             }
             return vector;
+        }
+
+        private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ZoomCommand?.Execute(e.NewValue);
         }
     }
 }
