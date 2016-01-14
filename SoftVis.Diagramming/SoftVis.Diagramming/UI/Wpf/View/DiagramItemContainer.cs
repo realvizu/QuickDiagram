@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -39,7 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                     FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty AnimationDurationProperty =
-            DependencyProperty.Register("AnimationDuration", typeof (Duration), typeof (DiagramItemContainer),
+            DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramItemContainer),
                 new PropertyMetadata(AnimationDurationDefault));
 
         public double X
@@ -64,6 +65,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (Duration)GetValue(AnimationDurationProperty); }
             set { SetValue(AnimationDurationProperty, value); }
+        }
+
+        public void OnBeforeRemove(Action<DiagramShapeViewModelBase> readyToBeRemovedCallback)
+        {
+            AnimateDisappear(readyToBeRemovedCallback);
         }
 
         private void OnXPropertyChanged(double oldValue, double newValue)
@@ -102,9 +108,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             BeginAnimation(property, animation);
         }
 
-        public void AnimateDisappear()
+        private void AnimateDisappear(Action<DiagramShapeViewModelBase> readyToBeRemovedCallback)
         {
             var animation = new DoubleAnimation(1, 0, AnimationDuration);
+
+            EventHandler onAnimationCompleted = null;
+            onAnimationCompleted = (sender, e) =>
+            {
+                animation.Completed -= onAnimationCompleted;
+                readyToBeRemovedCallback((DiagramShapeViewModelBase)DataContext);
+            };
+
+            animation.Completed += onAnimationCompleted;
             BeginAnimation(ScalingProperty, animation);
         }
     }
