@@ -1,7 +1,6 @@
 ﻿using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.Animations;
 
-namespace Codartis.SoftVis.UI.Wpf.View
+namespace Codartis.SoftVis.UI.Wpf.Animations
 {
     /// <summary>
     /// A WPF Transform bundled together with a hint about its animation.

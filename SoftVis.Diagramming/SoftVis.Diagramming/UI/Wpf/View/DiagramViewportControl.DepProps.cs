@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
+using Codartis.SoftVis.UI.Wpf.Animations;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

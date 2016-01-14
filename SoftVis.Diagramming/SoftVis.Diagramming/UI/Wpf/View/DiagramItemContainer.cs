@@ -5,9 +5,12 @@ using System.Windows.Media.Animation;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
+    /// <summary>
+    /// Wraps a diagram item. Animates appear, move, disappear.
+    /// </summary>
     internal class DiagramItemContainer : Control
     {
-        private static readonly Duration Duration = new Duration(new TimeSpan(0, 0, 2));
+        private static readonly Duration AnimationDurationDefault = TimeSpan.FromMilliseconds(250);
 
         static DiagramItemContainer()
         {
@@ -17,20 +20,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty XProperty =
             DependencyProperty.Register("X", typeof(double), typeof(DiagramItemContainer),
-                new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.None, XPropertyChangedCallback));
+                new PropertyMetadata(double.NaN, OnXPropertyChanged));
+
+        private static void OnXPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramItemContainer)d).OnXPropertyChanged((double)e.OldValue, (double)e.NewValue);
 
         public static readonly DependencyProperty YProperty =
             DependencyProperty.Register("Y", typeof(double), typeof(DiagramItemContainer),
-                new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.None, YPropertyChangedCallback));
+                new PropertyMetadata(double.NaN, OnYPropertyChanged));
 
-        public static readonly DependencyProperty AnimatedXProperty =
-            DependencyProperty.Register("AnimatedX", typeof(double), typeof(DiagramItemContainer),
-                new FrameworkPropertyMetadata(double.NaN));
+        private static void OnYPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramItemContainer)d).OnYPropertyChanged((double)e.OldValue, (double)e.NewValue);
 
-        public static readonly DependencyProperty AnimatedYProperty =
-            DependencyProperty.Register("AnimatedY", typeof(double), typeof(DiagramItemContainer),
-                new FrameworkPropertyMetadata(double.NaN));
+        public static readonly DependencyProperty ScalingProperty =
+            DependencyProperty.Register("Scaling", typeof(double), typeof(DiagramItemContainer),
+                new FrameworkPropertyMetadata(1d,
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
+        public static readonly DependencyProperty AnimationDurationProperty =
+            DependencyProperty.Register("AnimationDuration", typeof (Duration), typeof (DiagramItemContainer),
+                new PropertyMetadata(AnimationDurationDefault));
 
         public double X
         {
@@ -44,50 +54,58 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(YProperty, value); }
         }
 
-        public double AnimatedX
+        public double Scaling
         {
-            get { return (double)GetValue(AnimatedXProperty); }
-            set { SetValue(AnimatedXProperty, value); }
+            get { return (double)GetValue(ScalingProperty); }
+            set { SetValue(ScalingProperty, value); }
         }
 
-        public double AnimatedY
+        public Duration AnimationDuration
         {
-            get { return (double)GetValue(AnimatedYProperty); }
-            set { SetValue(AnimatedYProperty, value); }
+            get { return (Duration)GetValue(AnimationDurationProperty); }
+            set { SetValue(AnimationDurationProperty, value); }
         }
 
-        private static void XPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private void OnXPropertyChanged(double oldValue, double newValue)
         {
-            var oldValue = (double)dependencyPropertyChangedEventArgs.OldValue;
-            var newValue = (double)dependencyPropertyChangedEventArgs.NewValue;
+            UpdatePosition(Canvas.LeftProperty, oldValue, newValue);
+        }
 
+        private void OnYPropertyChanged(double oldValue, double newValue)
+        {
+            UpdatePosition(Canvas.TopProperty, oldValue, newValue);
+        }
+
+        private void UpdatePosition(DependencyProperty property, double oldValue, double newValue)
+        {
             var animate = !double.IsNaN(oldValue);
             if (animate)
             {
-                var animation = new DoubleAnimation(newValue, Duration);
-                ((DiagramItemContainer)dependencyObject).BeginAnimation(Canvas.LeftProperty, animation);
+                AnimateMove(property, newValue);
             }
             else
             {
-                ((DiagramItemContainer)dependencyObject).AnimatedX = newValue;
+                SetValue(property, newValue);
+                AnimateAppear();
             }
         }
 
-        private static void YPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private void AnimateAppear()
         {
-            var oldValue = (double)dependencyPropertyChangedEventArgs.OldValue;
-            var newValue = (double)dependencyPropertyChangedEventArgs.NewValue;
+            var animation = new DoubleAnimation(0, 1, AnimationDuration);
+            BeginAnimation(ScalingProperty, animation);
+        }
 
-            var animate = !double.IsNaN(oldValue);
-            if (animate)
-            {
-                var animation = new DoubleAnimation(newValue, Duration);
-                ((DiagramItemContainer)dependencyObject).BeginAnimation(Canvas.TopProperty, animation);
-            }
-            else
-            {
-                ((DiagramItemContainer)dependencyObject).AnimatedY = newValue;
-            }
+        private void AnimateMove(DependencyProperty property, double value)
+        {
+            var animation = new DoubleAnimation(value, AnimationDuration);
+            BeginAnimation(property, animation);
+        }
+
+        public void AnimateDisappear()
+        {
+            var animation = new DoubleAnimation(1, 0, AnimationDuration);
+            BeginAnimation(ScalingProperty, animation);
         }
     }
 }

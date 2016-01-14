@@ -16,11 +16,8 @@
 
     <Style TargetType="{x:Type view:DiagramItemContainer}" 
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramShapeViewModelBase}}">
-        <Setter Property="X" Value="{Binding Path=X}"/>
-        <Setter Property="Y" Value="{Binding Path=Y}"/>
-        <Setter Property="view:TransformCanvas.Left" Value="{Binding RelativeSource={RelativeSource Self}, Path=AnimatedX}"/>
-        <Setter Property="view:TransformCanvas.Top" Value="{Binding RelativeSource={RelativeSource Self}, Path=AnimatedY}"/>
         <Setter Property="Focusable" Value="False"/>
+        <Setter Property="AnimationDuration" Value="0:0:.4"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -32,6 +29,8 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="X" Value="{Binding Path=X}"/>
+        <Setter Property="Y" Value="{Binding Path=Y}"/>
     </Style>
 
 </ResourceDictionary>

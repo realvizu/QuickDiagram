@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -43,17 +43,37 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (UIElement child in Children)
+            foreach (var child in Children.OfType<DiagramItemContainer>())
             {
-                var shapePosition = new TranslateTransform(GetLeft(child), GetTop(child));
-                var renderTransform = new TransformGroup();
-                renderTransform.Children.Add(shapePosition);
-                renderTransform.Children.Add(Transform);
-                child.RenderTransform = renderTransform;
+                child.RenderTransform = CreateRenderTransform(child); 
                 child.Arrange(new Rect(child.DesiredSize));
             }
-
             return finalSize;
+        }
+
+        private Transform CreateRenderTransform(DiagramItemContainer child)
+        {
+            var appearDisappearTransform = CreateAppearDisappearTransform(child);
+            var positionChild = new TranslateTransform(GetLeft(child), GetTop(child));
+
+            var renderTransform = new TransformGroup();
+            renderTransform.Children.Add(appearDisappearTransform);
+            renderTransform.Children.Add(positionChild);
+            renderTransform.Children.Add(Transform);
+            return renderTransform;
+        }
+
+        private static Transform CreateAppearDisappearTransform(DiagramItemContainer child)
+        {
+            var childScaling = child.Scaling;
+            var childWidth = child.ActualWidth;
+            var childHeight = child.ActualHeight;
+
+            var transform = new TransformGroup();
+            transform.Children.Add(new TranslateTransform(-childWidth/2, -childHeight/2));
+            transform.Children.Add(new ScaleTransform(childScaling, childScaling));
+            transform.Children.Add(new TranslateTransform(childWidth/2, childHeight/2));
+            return transform;
         }
     }
 }
