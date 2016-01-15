@@ -13,9 +13,9 @@
     <Style TargetType="{x:Type view:DiagramControl}">
         <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
-        <Setter Property="MinZoom" Value=".2"/>
+        <Setter Property="MinZoom" Value=".1"/>
         <Setter Property="MaxZoom" Value="5"/>
-        <Setter Property="InitialZoom" Value="2"/>
+        <Setter Property="InitialZoom" Value="2.2"/>
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl2}"

@@ -32,8 +32,7 @@
                                       MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                                       MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
                                       InitialZoom="{Binding Path=InitialZoom, ElementName=ThisControl, Mode=OneWay}"
-                                      PanAndZoomControlHeight="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}"
-                                      FitToViewCommand="{Binding Path=FitContentCommand, ElementName=ThisControl}"/>
+                                      PanAndZoomControlHeight="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}"/>
 
         <local:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
                                      Width="{Binding Path=Width}" 

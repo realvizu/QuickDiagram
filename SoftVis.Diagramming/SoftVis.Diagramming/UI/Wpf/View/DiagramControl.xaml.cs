@@ -33,9 +33,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramControl),
                 new PropertyMetadata(PanAndZoomControlSizeDefault));
 
-        public static readonly DependencyProperty FitContentCommandProperty =
-            DependencyProperty.Register("FitContentCommand", typeof(ICommand), typeof(DiagramControl));
-
         public DiagramControl()
         {
             InitializeComponent();
@@ -71,15 +68,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(PanAndZoomControlHeightProperty, value); }
         }
 
-        public ICommand FitContentCommand
+        public void FitToContent()
         {
-            get { return (ICommand)GetValue(FitContentCommandProperty); }
-            set { SetValue(FitContentCommandProperty, value); }
-        }
-
-        public void FitContent()
-        {
-            FitContentCommand?.Execute(null);
+            DiagramViewportControl.FitToContentCommand?.Execute(null);
         }
 
         public override void OnApplyTemplate()

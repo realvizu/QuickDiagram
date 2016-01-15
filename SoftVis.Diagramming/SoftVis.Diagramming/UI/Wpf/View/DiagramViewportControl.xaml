@@ -79,6 +79,6 @@
                                  ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
                                  ZoomCommand="{Binding Path=WidgetZoomCommand, ElementName=ThisControl, Mode=OneWay}"
                                  VectorPanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
-                                 CenterCommand="{Binding Path=FitToViewCommand, ElementName=ThisControl, Mode=OneWay}"/>
+                                 CenterCommand="{Binding Path=FitToContentCommand, ElementName=ThisControl, Mode=OneWay}"/>
     </Grid>
 </UserControl>

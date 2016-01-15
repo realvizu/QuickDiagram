@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public void FitDiagramToView()
         {
-            _diagramControl.FitContent();
+            _diagramControl.FitToContent();
         }
 
         public BitmapSource GetDiagramAsBitmap()

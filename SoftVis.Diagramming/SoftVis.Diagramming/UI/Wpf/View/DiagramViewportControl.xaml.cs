@@ -81,8 +81,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty WidgetZoomCommandProperty =
             DependencyProperty.Register("WidgetZoomCommand", typeof(ICommand), typeof(DiagramViewportControl));
 
-        public static readonly DependencyProperty FitToViewCommandProperty =
-            DependencyProperty.Register("FitToViewCommand", typeof(ICommand), typeof(DiagramViewportControl));
+        public static readonly DependencyProperty FitToContentCommandProperty =
+            DependencyProperty.Register("FitToContentCommand", typeof(ICommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty MousePanCommandProperty =
             DependencyProperty.Register("MousePanCommand", typeof(ICommand), typeof(DiagramViewportControl));
@@ -112,7 +112,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i, AnimationHint.Short));
             WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.Short));
             WidgetZoomCommand = new DelegateCommand(i => ZoomTo((double)i, AnimationHint.Short));
-            FitToViewCommand = new DelegateCommand(i => ZoomToContent(AnimationHint.Long));
+            FitToContentCommand = new DelegateCommand(i => ZoomToContent(AnimationHint.Long));
         }
 
         private Point ViewportCenter
