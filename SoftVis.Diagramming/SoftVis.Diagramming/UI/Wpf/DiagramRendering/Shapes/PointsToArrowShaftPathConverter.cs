@@ -12,24 +12,24 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes
     /// </summary>
     public sealed class PointsToArrowShaftPathConverter : PointsToPathConverterBase
     {
-        protected override IEnumerable<PathFigure> CreatePathFigures(Point[] routePoints)
+        protected override IEnumerable<PathFigure> CreatePathFigures(IList<Point> routePoints)
         {
-            if (routePoints.Length > 2)
+            if (routePoints.Count > 2)
                 yield return CreatePathFigureWithoutLastSegment(routePoints);
 
             var lastSegment = routePoints.TakeLast(2).ToArray();
             yield return CreateGeneralizationArrowShaft(lastSegment);
         }
 
-        private static PathFigure CreatePathFigureWithoutLastSegment(Point[] points)
+        private static PathFigure CreatePathFigureWithoutLastSegment(IList<Point> points)
         {
             return CreatePathFigure(points.TakeButLast().ToArray(), false);
         }
 
-        private static PathFigure CreateGeneralizationArrowShaft(Point[] points)
+        private static PathFigure CreateGeneralizationArrowShaft(IList<Point> points)
         {
-            var startPoint = points[points.Length - 2];
-            var endPoint = points[points.Length - 1];
+            var startPoint = points[points.Count - 2];
+            var endPoint = points[points.Count - 1];
 
             var arrowVector = endPoint - startPoint;
             var arrowHeadVector = arrowVector / arrowVector.Length * ArrowHeadSize;

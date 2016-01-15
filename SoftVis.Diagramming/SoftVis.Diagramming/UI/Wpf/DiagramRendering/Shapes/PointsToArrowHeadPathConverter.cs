@@ -9,10 +9,10 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes
     /// </summary>
     public sealed class PointsToArrowHeadPathConverter : PointsToPathConverterBase
     {
-        protected override IEnumerable<PathFigure> CreatePathFigures(Point[] points)
+        protected override IEnumerable<PathFigure> CreatePathFigures(IList<Point> points)
         {
-            var startPoint = points[points.Length - 2];
-            var endPoint = points[points.Length - 1];
+            var startPoint = points[points.Count - 2];
+            var endPoint = points[points.Count - 1];
 
             var arrowVector = endPoint - startPoint;
             var arrowHeadVector = arrowVector / arrowVector.Length * ArrowHeadSize;

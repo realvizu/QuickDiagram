@@ -19,28 +19,32 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null ||
-                value.Length != 2 ||
-                !(value[0] is Point[]) ||
-                !(value[1] is Point))
-                throw new ArgumentException($"{typeof(PointsToPathConverterBase)} expects these parameters: Point[], Point.");
+                value.Length != 3 ||
+                (value[0] != null && !(value[0] is IList<Point>)) ||
+                !(value[1] is double) ||
+                !(value[2] is double))
+                throw new ArgumentException($"{typeof(PointsToPathConverterBase)} expects these parameters: IList<Point>, double, double.");
 
-            var routePoints = (Point[])value[0];
-            var topLeftPoint = (Point)value[1];
+            if (value[0] == null)
+                return null;
+
+            var routePoints = (IList<Point>)value[0];
+            var topLeftPoint = new Point((double) value[1], (double) value[2]);
 
             routePoints = MakePointsRelativeToPosition(routePoints, topLeftPoint);
             var pathFigures = CreatePathFigures(routePoints);
             return new PathGeometry(pathFigures);
         }
 
-        protected abstract IEnumerable<PathFigure> CreatePathFigures(Point[] routePoints);
+        protected abstract IEnumerable<PathFigure> CreatePathFigures(IList<Point> routePoints);
 
-        private static Point[] MakePointsRelativeToPosition(Point[] routePoints, Point referencePoint)
+        private static IList<Point> MakePointsRelativeToPosition(IList<Point> routePoints, Point referencePoint)
         {
             var translate = -(Vector)referencePoint;
             return routePoints.Select(i => i + translate).ToArray();
         }
 
-        protected static PathFigure CreatePathFigure(Point[] points, bool closed)
+        protected static PathFigure CreatePathFigure(IList<Point> points, bool closed)
         {
             var segments = points.Skip(1).Select(i => new LineSegment(i, true));
             return new PathFigure(points.First(), segments, closed);

@@ -29,10 +29,5 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             throw new NotImplementedException();
         }
-
-        public void UpdateViewModel(DiagramShapeViewModelBase diagramShapeViewModel)
-        {
-            diagramShapeViewModel.UpdateState();
-        }
     }
 }

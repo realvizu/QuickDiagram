@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Codartis.SoftVis.UI.Wpf.View.DiagramConnectorControl2"
+             x:Name="ThisControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -20,8 +21,9 @@
               StrokeDashArray="{Binding Path=StrokeDashArray}">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowShaftPathConverter}">
-                    <Binding Path="RoutePoints" />
-                    <Binding Path="Position" />
+                    <Binding Path="AnimatedRoutePoints" ElementName="ThisControl" Mode="OneWay" />
+                    <Binding Path="BoundingRectLeft" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="BoundingRectTop" ElementName="ThisControl" Mode="OneWay"/>
                 </MultiBinding>
             </Path.Data>
         </Path>
@@ -29,8 +31,9 @@
               StrokeThickness="1">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowHeadPathConverter}">
-                    <Binding Path="RoutePoints" />
-                    <Binding Path="Position" />
+                    <Binding Path="AnimatedRoutePoints" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="BoundingRectLeft" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="BoundingRectTop" ElementName="ThisControl" Mode="OneWay"/>
                 </MultiBinding>
             </Path.Data>
         </Path>

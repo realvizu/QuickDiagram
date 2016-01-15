@@ -86,7 +86,6 @@
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
     <Compile Include="UI\Wpf\Commands\ZoomCommandParameters.cs" />
     <Compile Include="UI\Wpf\Commands\DelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Common\DurationExtensions.cs" />
     <Compile Include="UI\Wpf\Common\FrameworkElementExtensions.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTesterInstance.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
@@ -193,7 +192,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\DoubleHelper.cs" />
     <Compile Include="UI\Common\ScaleCalculator.cs" />
-    <Compile Include="UI\Wpf\Common\Animations\PointArrayAnimation.cs" />
+    <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />
     <Compile Include="UI\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="UI\Wpf\Common\Converters\RouteToWpfConverter.cs" />
     <Compile Include="UI\Wpf\Common\Converters\RectToWpfConverter.cs" />

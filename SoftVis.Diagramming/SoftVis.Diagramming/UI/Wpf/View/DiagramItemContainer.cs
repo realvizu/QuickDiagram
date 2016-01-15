@@ -33,6 +33,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnYPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramItemContainer)d).OnYPropertyChanged((double)e.OldValue, (double)e.NewValue);
 
+        public static readonly DependencyProperty AnimatedXProperty =
+            DependencyProperty.Register("AnimatedX", typeof(double), typeof(DiagramItemContainer));
+
+        public static readonly DependencyProperty AnimatedYProperty =
+            DependencyProperty.Register("AnimatedY", typeof(double), typeof(DiagramItemContainer));
+
         public static readonly DependencyProperty ScalingProperty =
             DependencyProperty.Register("Scaling", typeof(double), typeof(DiagramItemContainer),
                 new FrameworkPropertyMetadata(1d,
@@ -55,6 +61,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(YProperty, value); }
         }
 
+        public double AnimatedX
+        {
+            get { return (double)GetValue(AnimatedXProperty); }
+            set { SetValue(AnimatedXProperty, value); }
+        }
+
+        public double AnimatedY
+        {
+            get { return (double)GetValue(AnimatedYProperty); }
+            set { SetValue(AnimatedYProperty, value); }
+        }
+
         public double Scaling
         {
             get { return (double)GetValue(ScalingProperty); }
@@ -74,12 +92,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnXPropertyChanged(double oldValue, double newValue)
         {
-            UpdatePosition(Canvas.LeftProperty, oldValue, newValue);
+            UpdatePosition(AnimatedXProperty, oldValue, newValue);
         }
 
         private void OnYPropertyChanged(double oldValue, double newValue)
         {
-            UpdatePosition(Canvas.TopProperty, oldValue, newValue);
+            UpdatePosition(AnimatedYProperty, oldValue, newValue);
         }
 
         private void UpdatePosition(DependencyProperty property, double oldValue, double newValue)
