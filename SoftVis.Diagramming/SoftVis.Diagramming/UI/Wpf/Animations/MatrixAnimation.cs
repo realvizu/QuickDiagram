@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.Animations
 {

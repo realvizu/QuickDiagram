@@ -3,27 +3,29 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"
-                    xmlns:rendering="clr-namespace:Codartis.SoftVis.UI.Wpf;assembly=SoftVis.Diagramming"
-                    xmlns:shapes="clr-namespace:Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes;assembly=SoftVis.Diagramming"
-                    xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI">
+                    xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=SoftVis.Diagramming">
 
     <ui:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
     <ui:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
 
-    <Style TargetType="{x:Type rendering:DiagramViewerControl}">
+    <Style TargetType="{x:Type view:DiagramControl}">
         <Setter Property="Background" Value="WhiteSmoke"/>
+        <Setter Property="PanAndZoomControlHeight" Value="120"/>
+        <Setter Property="MinZoom" Value=".2"/>
+        <Setter Property="MaxZoom" Value="5"/>
+        <Setter Property="InitialZoom" Value="2"/>
     </Style>
 
-    <Style TargetType="{x:Type shapes:DiagramNodeControl}"
-           d:DataContext="{d:DesignInstance {x:Type shapes:DiagramNodeViewModel}}">
-        <Setter Property="Background" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"></Setter>
+    <Style TargetType="{x:Type view:DiagramNodeControl2}"
+           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel2}}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type shapes:DiagramNodeControl}">
-                    <Border Background="{TemplateBinding Background}" 
-							BorderBrush="{TemplateBinding BorderBrush}" 
-							BorderThickness="{TemplateBinding BorderThickness}"
-							Padding="{TemplateBinding Padding}"
+                <ControlTemplate TargetType="{x:Type view:DiagramNodeControl2}">
+                    <Border Background="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"
+                            BorderBrush="Black" 
+							BorderThickness="1"
                             IsHitTestVisible="False">
                         <Grid>
                                 <Grid.RowDefinitions>

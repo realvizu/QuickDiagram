@@ -8,7 +8,15 @@
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
+
+             SnapsToDevicePixels="True"
+             RenderOptions.EdgeMode="Unspecified"
+             RenderOptions.ClearTypeHint="Enabled"
+             FontFamily="Ariel"
+             TextOptions.TextRenderingMode="Auto"
+             TextOptions.TextHintingMode="Auto"
+             TextOptions.TextFormattingMode="Ideal">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -24,7 +32,8 @@
                                       MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                                       MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
                                       InitialZoom="{Binding Path=InitialZoom, ElementName=ThisControl, Mode=OneWay}"
-                                      PanAndZoomControlHeight="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}"/>
+                                      PanAndZoomControlHeight="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}"
+                                      FitToViewCommand="{Binding Path=FitContentCommand, ElementName=ThisControl}"/>
 
         <local:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
                                      Width="{Binding Path=Width}" 

@@ -70,6 +70,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 case NotifyCollectionChangedAction.Remove:
                     RemoveItemsFromPresentedCollection(e.OldItems);
                     break;
+                case NotifyCollectionChangedAction.Reset:
+                    RemoveItemsFromPresentedCollection(_presentedItemsSource);
+                    break;
                 default:
                     throw new NotImplementedException($"NotifyCollectionChangedAction {e.Action} is not handled.");
             }

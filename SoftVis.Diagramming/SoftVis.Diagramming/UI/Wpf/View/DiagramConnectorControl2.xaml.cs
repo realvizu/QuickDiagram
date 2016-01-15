@@ -4,12 +4,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Codartis.SoftVis.UI.Wpf.Animations;
-using MoreLinq;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for DiagramConnectorControl2.xaml
+    /// Interaction logic for DiagramConnectorControl2.xaml.
+    /// Animates RoutePoints changes.
     /// </summary>
     public partial class DiagramConnectorControl2 : UserControl
     {

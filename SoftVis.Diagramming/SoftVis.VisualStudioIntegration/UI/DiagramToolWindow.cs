@@ -4,6 +4,7 @@ using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -19,31 +20,31 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
 
-        private readonly DiagramViewerControl _diagramViewerControl;
+        private readonly DiagramControl _diagramControl;
 
         public Dpi ImageExportDpi { get; set; }
 
         public DiagramToolWindow() : base(null)
         {
             var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
-            _diagramViewerControl = new DiagramViewerControl(resourceDictionary);
+            _diagramControl = new DiagramControl(resourceDictionary);
 
             Caption = "Diagram";
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
-            Content = _diagramViewerControl;
+            Content = _diagramControl;
             ImageExportDpi = Dpi.Default;
         }
 
         internal void Initialize(IModel model, Diagram diagram)
         {
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
-            _diagramViewerControl.DataContext = new DiagramViewerViewModel(model, diagram, diagramBehaviourProvider);
+            _diagramControl.DataContext = new DiagramViewerViewModel(model, diagram, diagramBehaviourProvider);
         }
 
         public int FontSize
         {
-            get { return (int)_diagramViewerControl.FontSize; }
-            set { _diagramViewerControl.FontSize = value; }
+            get { return (int)_diagramControl.FontSize; }
+            set { _diagramControl.FontSize = value; }
         }
 
         public void Show()
@@ -54,12 +55,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public void FitDiagramToView()
         {
-            _diagramViewerControl.FitDiagramToView();
+            _diagramControl.FitContent();
         }
 
         public BitmapSource GetDiagramAsBitmap()
         {
-            return _diagramViewerControl.GetDiagramAsBitmap(ImageExportDpi.Value);
+            return null; // _diagramControl.GetDiagramAsBitmap(ImageExportDpi.Value);
         }
     }
 }

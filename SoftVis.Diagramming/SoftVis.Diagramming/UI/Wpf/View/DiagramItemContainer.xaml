@@ -6,6 +6,8 @@
                     xmlns:viewModels="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
                     mc:Ignorable="d">
 
+    <Duration x:Key="AnimationDuration">0:0:.3</Duration>
+    
     <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
         <view:DiagramNodeControl2 />
     </DataTemplate>
@@ -13,15 +15,17 @@
     <DataTemplate DataType="{x:Type viewModels:DiagramConnectorViewModel2}">
         <view:DiagramConnectorControl2 
             RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
-            BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramItemContainer}}}"
-            BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramItemContainer}}}"
-            AnimationDuration="0:0:.4"/>
+            BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type view:DiagramItemContainer}}}"
+            BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type view:DiagramItemContainer}}}"
+            AnimationDuration="{StaticResource AnimationDuration}"/>
     </DataTemplate>
 
     <Style TargetType="{x:Type view:DiagramItemContainer}" 
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramShapeViewModelBase}}">
         <Setter Property="Focusable" Value="False"/>
-        <Setter Property="AnimationDuration" Value="0:0:.4"/>
+        <Setter Property="AnimationDuration" Value="{StaticResource AnimationDuration}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -35,8 +39,8 @@
         </Setter>
         <Setter Property="X" Value="{Binding Path=X}"/>
         <Setter Property="Y" Value="{Binding Path=Y}"/>
-        <Setter Property="Canvas.Left" Value="{Binding RelativeSource={RelativeSource Self}, Path=AnimatedX}"/>
-        <Setter Property="Canvas.Top" Value="{Binding RelativeSource={RelativeSource Self}, Path=AnimatedY}"/>
+        <Setter Property="Canvas.Left" Value="{Binding Path=AnimatedX, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Canvas.Top" Value="{Binding Path=AnimatedY, RelativeSource={RelativeSource Self}}"/>
     </Style>
 
 </ResourceDictionary>

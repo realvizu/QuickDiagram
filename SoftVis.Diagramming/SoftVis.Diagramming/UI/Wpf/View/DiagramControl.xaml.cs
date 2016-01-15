@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -25,6 +14,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MaxZoomDefault = 5d;
         private const double InitialZoomDefault = 1d;
         private const double PanAndZoomControlSizeDefault = 120d;
+
+        private readonly ResourceDictionary _additionalResourceDictionary;
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramControl),
@@ -42,9 +33,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramControl),
                 new PropertyMetadata(PanAndZoomControlSizeDefault));
 
+        public static readonly DependencyProperty FitContentCommandProperty =
+            DependencyProperty.Register("FitContentCommand", typeof(ICommand), typeof(DiagramControl));
+
         public DiagramControl()
         {
             InitializeComponent();
+        }
+
+        public DiagramControl(ResourceDictionary additionalResourceDictionary) 
+            : this()
+        {
+            _additionalResourceDictionary = additionalResourceDictionary;
         }
 
         public double MinZoom
@@ -69,6 +69,25 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(PanAndZoomControlHeightProperty); }
             set { SetValue(PanAndZoomControlHeightProperty, value); }
+        }
+
+        public ICommand FitContentCommand
+        {
+            get { return (ICommand)GetValue(FitContentCommandProperty); }
+            set { SetValue(FitContentCommandProperty, value); }
+        }
+
+        public void FitContent()
+        {
+            FitContentCommand?.Execute(null);
+        }
+
+        public override void OnApplyTemplate()
+        {
+            if (_additionalResourceDictionary != null)
+                this.AddResourceDictionary(_additionalResourceDictionary);
+
+            base.OnApplyTemplate();
         }
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
