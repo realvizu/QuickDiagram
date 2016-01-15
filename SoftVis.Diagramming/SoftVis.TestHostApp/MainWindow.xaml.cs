@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Codartis.SoftVis.TestHostApp.TestData;
-using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -26,8 +24,8 @@ namespace Codartis.SoftVis.TestHostApp
         {
             base.OnApplyTemplate();
 
-            _testModel = TestModel.Create();
-            //_testModel = TestModel.CreateBig(2, 5);
+            //_testModel = TestModel.Create();
+            _testModel = TestModel.CreateBig(40, 2);
 
             var diagramStyleProvider = new TestConnectorTypeResolver();
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);

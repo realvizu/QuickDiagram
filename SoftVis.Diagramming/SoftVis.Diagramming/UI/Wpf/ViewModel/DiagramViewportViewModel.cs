@@ -75,7 +75,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateDiagramContentRect();
         }
 
-
         private void OnShapeMoved(object sender, DiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);

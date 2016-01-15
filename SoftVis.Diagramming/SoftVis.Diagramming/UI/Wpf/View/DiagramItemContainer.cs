@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("Scaling", typeof(double), typeof(DiagramItemContainer),
                 new FrameworkPropertyMetadata(1d,
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
+                    FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty AnimationDurationProperty =
             DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramItemContainer),

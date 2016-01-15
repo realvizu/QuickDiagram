@@ -10,6 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
 
+             ClipToBounds="True"
              SnapsToDevicePixels="True"
              RenderOptions.EdgeMode="Unspecified"
              RenderOptions.ClearTypeHint="Enabled"
@@ -26,7 +27,6 @@
         <local:DiagramViewportControl x:Name="DiagramViewportControl"
                                       DataContext="{Binding Path=DiagramViewportViewModel}"
                                       DiagramContentRect="{Binding Path=DiagramContentRect}"
-                                      ClipToBounds="True"
                                       Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                       Height="{Binding Path=ActualHeight, ElementName=Canvas}"
                                       MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"

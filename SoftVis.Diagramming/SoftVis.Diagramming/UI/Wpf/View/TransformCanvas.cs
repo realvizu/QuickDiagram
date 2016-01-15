@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -10,6 +11,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     internal class TransformCanvas : Canvas
     {
+        private static readonly Size UnlimitedSize = new Size(Double.PositiveInfinity, Double.PositiveInfinity);
+
         static TransformCanvas()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TransformCanvas),
@@ -24,7 +27,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public TransformCanvas()
         {
-            ClipToBounds = true;
         }
 
         public Transform Transform
@@ -36,7 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         protected override Size MeasureOverride(Size availableSize)
         {
             foreach (UIElement child in Children)
-                child.Measure(availableSize);
+                child.Measure(UnlimitedSize);
 
             return Size.Empty;
         }

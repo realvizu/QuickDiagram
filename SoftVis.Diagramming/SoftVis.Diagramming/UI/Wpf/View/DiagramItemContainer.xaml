@@ -16,9 +16,9 @@
         <view:DiagramConnectorControl2 
             RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
             BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
-                                        AncestorType={x:Type view:DiagramItemContainer}}}"
+                                        AncestorType={x:Type view:DiagramItemContainer}}, Mode=OneWay}"
             BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
-                                        AncestorType={x:Type view:DiagramItemContainer}}}"
+                                        AncestorType={x:Type view:DiagramItemContainer}}, Mode=OneWay}"
             AnimationDuration="{StaticResource AnimationDuration}"/>
     </DataTemplate>
 
@@ -30,13 +30,13 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Border>
-                        <ContentPresenter Content="{Binding}"
-                                          Width="{Binding Path=Width}"
-                                          Height="{Binding Path=Height}"/>
+                        <ContentPresenter Content="{Binding}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="Width" Value="{Binding Path=Width}"/>
+        <Setter Property="Height" Value="{Binding Path=Height}"/>
         <Setter Property="X" Value="{Binding Path=X}"/>
         <Setter Property="Y" Value="{Binding Path=Y}"/>
         <Setter Property="Canvas.Left" Value="{Binding Path=AnimatedX, RelativeSource={RelativeSource Self}}"/>

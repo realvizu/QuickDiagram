@@ -86,7 +86,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void RemoveItemsFromPresentedCollection(IList oldItems)
         {
-            foreach (var oldItem in oldItems.OfType<DiagramShapeViewModelBase>())
+            foreach (var oldItem in oldItems.OfType<DiagramShapeViewModelBase>().ToList())
             {
                 var container = ItemContainerGenerator.ContainerFromItem(oldItem) as DiagramItemContainer;
                 container?.OnBeforeRemove(OnItemReadyToBeRemoved);
