@@ -7,7 +7,15 @@
                     mc:Ignorable="d">
 
     <Duration x:Key="AnimationDuration">0:0:.3</Duration>
-    
+
+    <DataTemplate  DataType="{x:Type viewModels:DiagramShapeViewModelBase}">
+        <Rectangle Fill="Yellow" Width="50" Height="50"/>
+    </DataTemplate>
+
+    <DataTemplate  DataType="{x:Type viewModels:TestDiagramNodeViewModel2}">
+        <Rectangle Fill="Red" Width="50" Height="50"/>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
         <view:DiagramNodeControl2 />
     </DataTemplate>

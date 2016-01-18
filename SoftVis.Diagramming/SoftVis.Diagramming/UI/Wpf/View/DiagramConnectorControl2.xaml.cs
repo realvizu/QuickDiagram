@@ -34,10 +34,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new PropertyMetadata(AnimationDurationDefault));
 
         public static readonly DependencyProperty BoundingRectTopProperty =
-            DependencyProperty.Register("BoundingRectTop", typeof(double), typeof(DiagramConnectorControl2));
+            DependencyProperty.Register("BoundingRectTop", typeof(double), typeof(DiagramConnectorControl2),
+                new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty BoundingRectLeftProperty =
-            DependencyProperty.Register("BoundingRectLeft", typeof(double), typeof(DiagramConnectorControl2));
+            DependencyProperty.Register("BoundingRectLeft", typeof(double), typeof(DiagramConnectorControl2),
+                new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public DiagramConnectorControl2()
         {

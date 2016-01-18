@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Animations;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -54,10 +55,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportCenterYProperty, value); }
         }
 
-        public HintedTransform ViewportTransform
+        public Transform ViewportTransform
         {
-            get { return (HintedTransform)GetValue(ViewportTransformProperty); }
+            get { return (Transform)GetValue(ViewportTransformProperty); }
             set { SetValue(ViewportTransformProperty, value); }
+        }
+
+        public AnimatedTransform AnimatedViewportTransform
+        {
+            get { return (AnimatedTransform)GetValue(AnimatedViewportTransformProperty); }
+            set { SetValue(AnimatedViewportTransformProperty, value); }
         }
 
         public Rect DiagramContentRect

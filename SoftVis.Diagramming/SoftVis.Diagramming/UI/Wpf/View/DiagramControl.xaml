@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
 
              ClipToBounds="True"
-             SnapsToDevicePixels="True"
+             SnapsToDevicePixels="False"
              RenderOptions.EdgeMode="Unspecified"
              RenderOptions.ClearTypeHint="Enabled"
              FontFamily="Ariel"

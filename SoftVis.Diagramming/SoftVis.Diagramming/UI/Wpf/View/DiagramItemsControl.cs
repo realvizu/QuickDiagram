@@ -56,7 +56,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _originalItemsSource = viewModels;
             ((INotifyCollectionChanged)_originalItemsSource).CollectionChanged += OnOriginalCollectionChanged;
 
-            _presentedItemsSource = new ObservableCollection<DiagramShapeViewModelBase>();
+            _presentedItemsSource = new ObservableCollection<DiagramShapeViewModelBase>(_originalItemsSource);
             ItemsSource = _presentedItemsSource;
         }
 

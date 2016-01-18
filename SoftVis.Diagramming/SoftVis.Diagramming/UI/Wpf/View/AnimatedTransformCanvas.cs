@@ -21,9 +21,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(typeof(AnimatedTransformCanvas)));
         }
 
-        public static readonly DependencyProperty HintedTransformProperty =
-            DependencyProperty.Register("HintedTransform", typeof(HintedTransform), typeof(AnimatedTransformCanvas),
-                new FrameworkPropertyMetadata(HintedTransform.Identity, OnHintedTransformChanged));
+        public static readonly DependencyProperty AnimatedTransformProperty =
+            DependencyProperty.Register("AnimatedTransform", typeof(AnimatedTransform), typeof(AnimatedTransformCanvas),
+                new FrameworkPropertyMetadata(AnimatedTransform.Identity, 
+                    FrameworkPropertyMetadataOptions.AffectsRender,
+                    OnAnimatedTransformChanged));
+
+        private static void OnAnimatedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedTransformCanvas) d).AnimateTransform((AnimatedTransform) e.OldValue, (AnimatedTransform) e.NewValue);
 
         public static readonly DependencyProperty ShortAnimationDurationProperty =
             DependencyProperty.Register("ShortAnimationDuration", typeof(Duration), typeof(AnimatedTransformCanvas),
@@ -41,10 +46,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Transform = new MatrixTransform();
         }
 
-        public HintedTransform HintedTransform
+        public AnimatedTransform AnimatedTransform
         {
-            get { return (HintedTransform)GetValue(HintedTransformProperty); }
-            set { SetValue(HintedTransformProperty, value); }
+            get { return (AnimatedTransform)GetValue(AnimatedTransformProperty); }
+            set { SetValue(AnimatedTransformProperty, value); }
         }
 
         public Duration ShortAnimationDuration
@@ -65,23 +70,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(EasingFunctionProperty, value); }
         }
 
-        private static void OnHintedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private void AnimateTransform(AnimatedTransform oldAnimatedTransform, AnimatedTransform newAnimatedTransform)
         {
-            ((AnimatedTransformCanvas)d).AnimateTransform((HintedTransform)e.OldValue, (HintedTransform)e.NewValue);
-        }
-
-        private void AnimateTransform(HintedTransform oldHintedTransform, HintedTransform newHintedTransform)
-        {
-            if (oldHintedTransform.Transform.Value == newHintedTransform.Transform.Value)
+            if (oldAnimatedTransform.Transform.Value == newAnimatedTransform.Transform.Value)
                 return;
 
-            if (newHintedTransform.AnimationHint == AnimationHint.None)
+            if (newAnimatedTransform.AnimationHint == AnimationHint.None)
             {
-                DontAnimate(newHintedTransform.Transform);
+                DontAnimate(newAnimatedTransform.Transform);
             }
             else
             {
-                Animate(oldHintedTransform.Transform, newHintedTransform.Transform, newHintedTransform.AnimationHint);
+                Animate(oldAnimatedTransform.Transform, newAnimatedTransform.Transform, newAnimatedTransform.AnimationHint);
             }
         }
 

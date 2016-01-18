@@ -256,6 +256,7 @@
     <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramNodeControl.cs" />
     <Compile Include="UI\Wpf\Common\TemplatedControlBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />
+    <Compile Include="UI\Wpf\ViewModel\TestDiagramNodeViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
@@ -283,11 +284,12 @@
     <Compile Include="UI\Wpf\View\EntitySelectorControl.xaml.cs">
       <DependentUpon>EntitySelectorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\Animations\HintedTransform.cs" />
+    <Compile Include="UI\Wpf\Animations\AnimatedTransform.cs" />
     <Compile Include="UI\Wpf\View\PanAndZoomControl2.xaml.cs">
       <DependentUpon>PanAndZoomControl2.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\AnimatedTransformCanvas.cs" />
+    <Compile Include="UI\Wpf\View\TestObColl.cs" />
     <Compile Include="UI\Wpf\View\TransformCanvas.cs" />
     <Compile Include="UI\Wpf\View\Viewport.cs" />
   </ItemGroup>

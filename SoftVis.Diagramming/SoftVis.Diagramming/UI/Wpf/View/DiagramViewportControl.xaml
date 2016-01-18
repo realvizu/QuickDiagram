@@ -16,53 +16,74 @@
         <Duration x:Key="ShortAnimationDuration">0:0:0.1</Duration>
         <Duration x:Key="LongAnimationDuration">0:0:0.5</Duration>
         <QuadraticEase x:Key="EasingFunction" EasingMode="EaseOut"/>
+
+        <ItemsPanelTemplate x:Key="AnimatedTransformCanvas">
+            <view:AnimatedTransformCanvas 
+                AnimatedTransform="{Binding Path=AnimatedViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                ShortAnimationDuration="{StaticResource ShortAnimationDuration}"
+                LongAnimationDuration="{StaticResource LongAnimationDuration}"
+                EasingFunction="{StaticResource EasingFunction}"/>
+        </ItemsPanelTemplate>
+
+        <view:TestObColl x:Key="TestShapes">
+            <viewModel:TestDiagramNodeViewModel2
+                        Position="100,100"
+                        Size="50,50"/>
+            <viewModel:TestDiagramNodeViewModel2
+                        Position="150,90"
+                        Size="100,30"/>
+            <viewModel:TestDiagramNodeViewModel2
+                        Position="10,20"
+                        Size="200,50"/>
+        </view:TestObColl>
     </UserControl.Resources>
-    
+
     <Grid>
-        <AdornerDecorator>
+        <view:DiagramItemsControl x:Name="DiagramItemsControl"
+                                  ItemsSource="{Binding Path=DiagramShapeViewModels}">
+            <view:DiagramItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <view:AnimatedTransformCanvas 
+                AnimatedTransform="{Binding Path=AnimatedViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                ShortAnimationDuration="{StaticResource ShortAnimationDuration}"
+                LongAnimationDuration="{StaticResource LongAnimationDuration}"
+                EasingFunction="{StaticResource EasingFunction}"/>
+                </ItemsPanelTemplate>
+            </view:DiagramItemsControl.ItemsPanel>
+            <i:Interaction.Behaviors>
+                <behaviors:MousePanAndZoomBehavior
+                    PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                    PanCursor="{x:Static Cursors.SizeAll}"
+                    ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
+                    MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                    MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                    ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
+                    ZoomAmountPerWheelClick=".5" />
+                <behaviors:KeyboardPanAndZoomBehavior
+                    PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                    PanUpKey="{x:Static Key.Up}"
+                    PanDownKey="{x:Static Key.Down}"
+                    PanLeftKey="{x:Static Key.Left}"
+                    PanRightKey="{x:Static Key.Right}"
+                    PanAcceleration="2"
+                    PanDeceleration="6"
+                    PanMaxSpeed="50" 
+                    ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
+                    MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                    MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                    ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
+                    ZoomInKey="{x:Static Key.W}"
+                    ZoomOutKey="{x:Static Key.S}"
+                    ZoomAcceleration=".02"
+                    ZoomDeceleration=".06"
+                    ZoomMaxSpeed=".4" />
+            </i:Interaction.Behaviors>
+        </view:DiagramItemsControl>
 
-            <view:DiagramItemsControl x:Name="DiagramItemsControl"
-                                      ItemsSource="{Binding Path=DiagramShapeViewModels}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <view:AnimatedTransformCanvas 
-                            HintedTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
-                            ShortAnimationDuration="{StaticResource ShortAnimationDuration}"
-                            LongAnimationDuration="{StaticResource LongAnimationDuration}"
-                            EasingFunction="{StaticResource EasingFunction}"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <i:Interaction.Behaviors>
-                    <behaviors:MousePanAndZoomBehavior
-                        PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
-                        PanCursor="{x:Static Cursors.SizeAll}"
-                        ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
-                        MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
-                        MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
-                        ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
-                        ZoomAmountPerWheelClick=".5" />
-                    <behaviors:KeyboardPanAndZoomBehavior
-                        PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
-                        PanUpKey="{x:Static Key.Up}"
-                        PanDownKey="{x:Static Key.Down}"
-                        PanLeftKey="{x:Static Key.Left}"
-                        PanRightKey="{x:Static Key.Right}"
-                        PanAcceleration="2"
-                        PanDeceleration="6"
-                        PanMaxSpeed="50" 
-                        ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
-                        MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
-                        MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
-                        ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"
-                        ZoomInKey="{x:Static Key.W}"
-                        ZoomOutKey="{x:Static Key.S}"
-                        ZoomAcceleration=".02"
-                        ZoomDeceleration=".06"
-                        ZoomMaxSpeed=".4" />
-                </i:Interaction.Behaviors>
-            </view:DiagramItemsControl>
-
-        </AdornerDecorator>
+        <!--<view:DiagramItemsControl ItemsSource="{StaticResource TestShapes}" 
+                                  IsHitTestVisible="False"
+                                  ItemsPanel="{StaticResource AnimatedTransformCanvas}">
+        </view:DiagramItemsControl>-->
 
         <view:PanAndZoomControl2 Focusable="False"
                                  HorizontalAlignment="Left"

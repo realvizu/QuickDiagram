@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Animations;
 using Codartis.SoftVis.UI.Wpf.Commands;
@@ -65,12 +66,21 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new PropertyMetadata(ViewportCenterDefault.Y));
 
         /// <summary>
-        /// Transforms DiagramSpace to ScreenSpace. Also contains a hint for the animation's length.
-        /// Created by the Viewport class, used for rendering the diagram.
+        /// Transforms DiagramSpace to ScreenSpace. Created by the Viewport class, used for rendering the diagram.
         /// </summary>
         public static readonly DependencyProperty ViewportTransformProperty =
-            DependencyProperty.Register("ViewportTransform", typeof(HintedTransform), typeof(DiagramViewportControl),
-                new PropertyMetadata(HintedTransform.Identity));
+            DependencyProperty.Register("ViewportTransform", typeof(Transform), typeof(DiagramViewportControl),
+                new PropertyMetadata(Transform.Identity));
+
+        /// <summary>
+        /// Same as ViewportTransform but also contains a hint for the animation's length.
+        /// </summary>
+        public static readonly DependencyProperty AnimatedViewportTransformProperty =
+            DependencyProperty.Register("AnimatedViewportTransform", typeof(AnimatedTransform), typeof(DiagramViewportControl),
+                new PropertyMetadata(AnimatedTransform.Identity, OnAnimatedViewportTransformChanged));
+
+        private static void OnAnimatedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl) d).ViewportTransform = ((AnimatedTransform) e.NewValue).Transform;
 
         public static readonly DependencyProperty DiagramContentRectProperty =
             DependencyProperty.Register("DiagramContentRect", typeof(Rect), typeof(DiagramViewportControl));
@@ -140,21 +150,21 @@ namespace Codartis.SoftVis.UI.Wpf.View
             base.OnRenderSizeChanged(sizeInfo);
 
             _viewport.Resize(sizeInfo.NewSize);
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void OnZoomRangeChanged()
         {
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
             _viewport.UpdateZoomRange(MinZoom, MaxZoom);
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void OnInitialZoomChanged()
         {
             _viewport.UpdateDefaultZoom(InitialZoom);
             LinearViewportZoom = InitialZoom;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void ZoomToContent(AnimationHint animationHint)
@@ -162,7 +172,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _viewport.ZoomToContent(DiagramContentRect);
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private void ZoomTo(double newZoom, AnimationHint animationHint)
@@ -171,7 +181,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             {
                 _viewport.ZoomTo(newZoom);
                 LinearViewportZoom = newZoom;
-                ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+                AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
             }
         }
 
@@ -187,14 +197,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _viewport.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace);
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private void PanInScreenSpace(Vector panVector, AnimationHint animationHint)
         {
             _viewport.Pan(panVector);
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private double CalculateModifiedZoom(double currentLinearZoom, ZoomDirection zoomDirection, double zoomAmount)

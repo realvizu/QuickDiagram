@@ -21,23 +21,31 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty XProperty =
             DependencyProperty.Register("X", typeof(double), typeof(DiagramItemContainer),
-                new PropertyMetadata(double.NaN, OnXPropertyChanged));
+                new FrameworkPropertyMetadata(double.NaN,
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange,
+                    OnXPropertyChanged));
 
         private static void OnXPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramItemContainer)d).OnXPropertyChanged((double)e.OldValue, (double)e.NewValue);
 
         public static readonly DependencyProperty YProperty =
             DependencyProperty.Register("Y", typeof(double), typeof(DiagramItemContainer),
-                new PropertyMetadata(double.NaN, OnYPropertyChanged));
+                new FrameworkPropertyMetadata(double.NaN,
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange,
+                    OnYPropertyChanged));
 
         private static void OnYPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramItemContainer)d).OnYPropertyChanged((double)e.OldValue, (double)e.NewValue);
 
         public static readonly DependencyProperty AnimatedXProperty =
-            DependencyProperty.Register("AnimatedX", typeof(double), typeof(DiagramItemContainer));
+            DependencyProperty.Register("AnimatedX", typeof(double), typeof(DiagramItemContainer),
+                new FrameworkPropertyMetadata(double.NaN, 
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty AnimatedYProperty =
-            DependencyProperty.Register("AnimatedY", typeof(double), typeof(DiagramItemContainer));
+            DependencyProperty.Register("AnimatedY", typeof(double), typeof(DiagramItemContainer),
+                new FrameworkPropertyMetadata(double.NaN, 
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty ScalingProperty =
             DependencyProperty.Register("Scaling", typeof(double), typeof(DiagramItemContainer),
