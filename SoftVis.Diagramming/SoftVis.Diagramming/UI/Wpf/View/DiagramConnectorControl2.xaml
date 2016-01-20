@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:shapes="clr-namespace:Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+             xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel2}}">
@@ -16,7 +17,7 @@
     </UserControl.Resources>
     
     <Grid>
-        <Path Stroke="Black"
+        <Path Stroke="{Binding Path=Stroke, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}"
               StrokeThickness="1"
               StrokeDashArray="{Binding Path=StrokeDashArray}">
             <Path.Data>
@@ -27,7 +28,7 @@
                 </MultiBinding>
             </Path.Data>
         </Path>
-        <Path Stroke="Black"
+        <Path Stroke="{Binding Path=Stroke, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}"
               StrokeThickness="1">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowHeadPathConverter}">

@@ -5,8 +5,6 @@ using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Wpf.Commands;
-using Codartis.SoftVis.UI.Wpf.Common;
-using Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

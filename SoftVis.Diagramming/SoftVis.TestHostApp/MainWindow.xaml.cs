@@ -24,8 +24,8 @@ namespace Codartis.SoftVis.TestHostApp
         {
             base.OnApplyTemplate();
 
-            //_testModel = TestModel.Create();
-            _testModel = TestModel.CreateBig(40, 2);
+            _testModel = TestModel.Create();
+            //_testModel = TestModel.CreateBig(40, 2);
 
             var diagramStyleProvider = new TestConnectorTypeResolver();
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);

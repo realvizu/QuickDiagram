@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Animations;
 using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.Common;
+using Codartis.SoftVis.UI.Wpf.Common.HitTesting;
+using Codartis.SoftVis.UI.Wpf.RoutedEvents;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -22,8 +30,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double LargeZoomIncrementProportion = .1d;
         private const double PanAndZoomControlSizeDefault = 100;
 
-        private readonly Viewport _viewport = new Viewport(ViewportSizeDefault, 
-            ViewportCenterDefault, LinearViewportZoomDefault, MinZoomDefault, MaxZoomDefault);
+        private readonly HitTester _hitTester;
+        private readonly Viewport _viewport;
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewportControl),
@@ -65,12 +73,21 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new PropertyMetadata(ViewportCenterDefault.Y));
 
         /// <summary>
-        /// Transforms DiagramSpace to ScreenSpace. Also contains a hint for the animation's length.
-        /// Created by the Viewport class, used for rendering the diagram.
+        /// Transforms DiagramSpace to ScreenSpace. Created by the Viewport class, used for rendering the diagram.
         /// </summary>
         public static readonly DependencyProperty ViewportTransformProperty =
-            DependencyProperty.Register("ViewportTransform", typeof(HintedTransform), typeof(DiagramViewportControl),
-                new PropertyMetadata(HintedTransform.Identity));
+            DependencyProperty.Register("ViewportTransform", typeof(Transform), typeof(DiagramViewportControl),
+                new PropertyMetadata(Transform.Identity));
+
+        /// <summary>
+        /// Same as ViewportTransform but also contains a hint for the animation's length.
+        /// </summary>
+        public static readonly DependencyProperty AnimatedViewportTransformProperty =
+            DependencyProperty.Register("AnimatedViewportTransform", typeof(AnimatedTransform), typeof(DiagramViewportControl),
+                new PropertyMetadata(AnimatedTransform.Identity, OnAnimatedViewportTransformChanged));
+
+        private static void OnAnimatedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl)d).ViewportTransform = ((AnimatedTransform)e.NewValue).Transform;
 
         public static readonly DependencyProperty DiagramContentRectProperty =
             DependencyProperty.Register("DiagramContentRect", typeof(Rect), typeof(DiagramViewportControl));
@@ -104,10 +121,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public DiagramViewportControl()
         {
+            _hitTester = new HitTester(this);
+            _viewport = new Viewport(ViewportSizeDefault, ViewportCenterDefault, LinearViewportZoomDefault,
+                MinZoomDefault, MaxZoomDefault);
+
             InitializeComponent();
 
             KeyboardPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.Short));
-            KeyboardZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters) i, AnimationHint.Short));
+            KeyboardZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i, AnimationHint.Short));
             MousePanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.None));
             MouseZoomCommand = new DelegateCommand(i => Zoom((ZoomCommandParameters)i, AnimationHint.Short));
             WidgetPanCommand = new DelegateCommand(i => PanInScreenSpace((Vector)i, AnimationHint.Short));
@@ -125,6 +146,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             }
         }
 
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+            UnfocusAllDiagramNodes();
+        }
+
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             Keyboard.Focus(DiagramItemsControl);
@@ -140,21 +167,21 @@ namespace Codartis.SoftVis.UI.Wpf.View
             base.OnRenderSizeChanged(sizeInfo);
 
             _viewport.Resize(sizeInfo.NewSize);
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void OnZoomRangeChanged()
         {
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
             _viewport.UpdateZoomRange(MinZoom, MaxZoom);
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void OnInitialZoomChanged()
         {
             _viewport.UpdateDefaultZoom(InitialZoom);
             LinearViewportZoom = InitialZoom;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, AnimationHint.None);
         }
 
         private void ZoomToContent(AnimationHint animationHint)
@@ -162,7 +189,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _viewport.ZoomToContent(DiagramContentRect);
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private void ZoomTo(double newZoom, AnimationHint animationHint)
@@ -171,7 +198,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             {
                 _viewport.ZoomTo(newZoom);
                 LinearViewportZoom = newZoom;
-                ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+                AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
             }
         }
 
@@ -187,14 +214,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _viewport.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace);
             LinearViewportZoom = _viewport.LinearZoom;
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private void PanInScreenSpace(Vector panVector, AnimationHint animationHint)
         {
             _viewport.Pan(panVector);
             ViewportCenter = _viewport.CenterInDiagramSpace;
-            ViewportTransform = new HintedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
+            AnimatedViewportTransform = new AnimatedTransform(_viewport.DiagramSpaceToScreenSpace, animationHint);
         }
 
         private double CalculateModifiedZoom(double currentLinearZoom, ZoomDirection zoomDirection, double zoomAmount)
@@ -210,6 +237,80 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 newLinearZoom = MaxZoom;
 
             return newLinearZoom;
+        }
+
+        private void OnDiagramNodeBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
+        {
+            Focus(e.OriginalSource as DiagramNodeControl2);
+        }
+
+        private void OnDiagramNodeBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
+        {
+            var diagramNodeControl = e.OriginalSource as DiagramNodeControl2;
+            var miniButtons = GetMiniButtonsForDiagramNodeControl(diagramNodeControl);
+
+            var hitMiniButton = _hitTester.HitTest<MiniButton>(e.MouseEventArgs);
+            if (!miniButtons.Contains(hitMiniButton))
+                Unfocus(diagramNodeControl);
+        }
+
+        private void OnMiniButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
+        {
+            var diagramNodeControl = GetDiagramNodeControlForMiniButton(e.OriginalSource as MiniButton);
+            Focus(diagramNodeControl);
+        }
+
+        private void OnMiniButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
+        {
+            var diagramNodeControl = GetDiagramNodeControlForMiniButton(e.OriginalSource as MiniButton);
+            if (diagramNodeControl == null)
+                return;
+
+            var hitDiagramNodeControl = _hitTester.HitTest<DiagramNodeControl2>(e.MouseEventArgs);
+            if (diagramNodeControl != hitDiagramNodeControl)
+                Unfocus(diagramNodeControl);
+        }
+
+        private DiagramNodeControl2 GetDiagramNodeControlForMiniButton(MiniButton miniButton)
+        {
+            var miniButtonViewModel = miniButton.DataContext as MiniButtonViewModelBase;
+
+            var diagramNodeControls = this.FindChildren<DiagramNodeControl2>(
+                i => i.DataContext == miniButtonViewModel?.AssociatedDiagramShapeViewModel);
+
+            return diagramNodeControls.FirstOrDefault();
+        }
+
+        private IEnumerable<MiniButton> GetMiniButtonsForDiagramNodeControl(DiagramNodeControl2 diagramNodeControl)
+        {
+            var diagramShapeViewModel = diagramNodeControl.DataContext as DiagramShapeViewModelBase;
+
+            var miniButtons = this.FindChildren<MiniButton>(
+                i => ((MiniButtonViewModelBase)i.DataContext).AssociatedDiagramShapeViewModel == diagramShapeViewModel);
+
+            return miniButtons;
+        }
+
+        private void OnPanAndZoomControlMouseEnter(object sender, MouseEventArgs e)
+        {
+            UnfocusAllDiagramNodes();
+        }
+
+        private void UnfocusAllDiagramNodes()
+        {
+            var diagramNodeControls = this.FindChildren<DiagramNodeControl2>();
+            foreach (var diagramNodeControl in diagramNodeControls)
+                Unfocus(diagramNodeControl);
+        }
+
+        private static void Focus(DiagramNodeControl2 diagramNodeControl)
+        {
+            diagramNodeControl?.FocusCommand?.Execute(null);
+        }
+
+        private static void Unfocus(DiagramNodeControl2 diagramNodeControl)
+        {
+            diagramNodeControl?.UnfocusCommand?.Execute(null);
         }
     }
 }

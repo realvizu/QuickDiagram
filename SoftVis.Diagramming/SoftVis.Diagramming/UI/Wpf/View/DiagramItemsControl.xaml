@@ -6,41 +6,40 @@
                     xmlns:viewModels="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
                     mc:Ignorable="d">
 
-    <Duration x:Key="AnimationDuration">0:0:.3</Duration>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimatedPositionedItemContainer.xaml" />
+    </ResourceDictionary.MergedDictionaries>
     
+    <Duration x:Key="AnimationDuration">0:0:.3</Duration>
+
     <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
-        <view:DiagramNodeControl2 />
+        <view:DiagramNodeControl2 
+            Background="{Binding Path=Fill, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}" 
+			BorderBrush="{Binding Path=Stroke, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}"
+            BorderThickness="1"
+            FocusCommand="{Binding FocusCommand}"
+            UnfocusCommand="{Binding UnfocusCommand}"/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:DiagramConnectorViewModel2}">
         <view:DiagramConnectorControl2 
             RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
             BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
-                                        AncestorType={x:Type view:DiagramItemContainer}}, Mode=OneWay}"
+                                        AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
             BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
-                                        AncestorType={x:Type view:DiagramItemContainer}}, Mode=OneWay}"
+                                        AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
             AnimationDuration="{StaticResource AnimationDuration}"/>
     </DataTemplate>
 
-    <Style TargetType="{x:Type view:DiagramItemContainer}" 
+    <Style x:Key="DiagramShapeItemContainerStyle" 
+           TargetType="{x:Type view:AnimatedPositionedItemContainer}" 
+           BasedOn="{StaticResource AnimatedPositionedItemContainerBaseStyle}"
            d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramShapeViewModelBase}}">
-        <Setter Property="Focusable" Value="False"/>
-        <Setter Property="AnimationDuration" Value="{StaticResource AnimationDuration}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Border>
-                        <ContentPresenter Content="{Binding}"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
         <Setter Property="Width" Value="{Binding Path=Width}"/>
         <Setter Property="Height" Value="{Binding Path=Height}"/>
         <Setter Property="X" Value="{Binding Path=X}"/>
         <Setter Property="Y" Value="{Binding Path=Y}"/>
-        <Setter Property="Canvas.Left" Value="{Binding Path=AnimatedX, RelativeSource={RelativeSource Self}}"/>
-        <Setter Property="Canvas.Top" Value="{Binding Path=AnimatedY, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="AnimationDuration" Value="{StaticResource AnimationDuration}"/>
     </Style>
 
 </ResourceDictionary>

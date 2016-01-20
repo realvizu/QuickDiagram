@@ -18,6 +18,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateState();
         }
 
+        public override DiagramShape DiagramShape => _diagramNode;
+
         public override void UpdateState()
         {
             Position = _diagramNode.Position.ToWpf();

@@ -1,64 +1,43 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Wraps a diagram item. Animates appear, move, disappear.
+    /// Wraps an item that is positioned on a canvas. 
+    /// Animates appear, move, disappear.
     /// </summary>
-    internal class DiagramItemContainer : Control
+    internal class AnimatedPositionedItemContainer : PositionedItemContainer
     {
         private static readonly Duration AnimationDurationDefault = TimeSpan.FromMilliseconds(250);
 
-        static DiagramItemContainer()
+        static AnimatedPositionedItemContainer()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramItemContainer),
-                new FrameworkPropertyMetadata(typeof(DiagramItemContainer)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(AnimatedPositionedItemContainer),
+                new FrameworkPropertyMetadata(typeof(AnimatedPositionedItemContainer)));
         }
 
-        public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register("X", typeof(double), typeof(DiagramItemContainer),
-                new PropertyMetadata(double.NaN, OnXPropertyChanged));
-
-        private static void OnXPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramItemContainer)d).OnXPropertyChanged((double)e.OldValue, (double)e.NewValue);
-
-        public static readonly DependencyProperty YProperty =
-            DependencyProperty.Register("Y", typeof(double), typeof(DiagramItemContainer),
-                new PropertyMetadata(double.NaN, OnYPropertyChanged));
-
-        private static void OnYPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramItemContainer)d).OnYPropertyChanged((double)e.OldValue, (double)e.NewValue);
-
         public static readonly DependencyProperty AnimatedXProperty =
-            DependencyProperty.Register("AnimatedX", typeof(double), typeof(DiagramItemContainer));
+            DependencyProperty.Register("AnimatedX", typeof(double), typeof(AnimatedPositionedItemContainer),
+                new FrameworkPropertyMetadata(double.NaN, 
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty AnimatedYProperty =
-            DependencyProperty.Register("AnimatedY", typeof(double), typeof(DiagramItemContainer));
+            DependencyProperty.Register("AnimatedY", typeof(double), typeof(AnimatedPositionedItemContainer),
+                new FrameworkPropertyMetadata(double.NaN, 
+                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty ScalingProperty =
-            DependencyProperty.Register("Scaling", typeof(double), typeof(DiagramItemContainer),
+            DependencyProperty.Register("Scaling", typeof(double), typeof(AnimatedPositionedItemContainer),
                 new FrameworkPropertyMetadata(1d,
                     FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty AnimationDurationProperty =
-            DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramItemContainer),
+            DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(AnimatedPositionedItemContainer),
                 new PropertyMetadata(AnimationDurationDefault));
-
-        public double X
-        {
-            get { return (double)GetValue(XProperty); }
-            set { SetValue(XProperty, value); }
-        }
-
-        public double Y
-        {
-            get { return (double)GetValue(YProperty); }
-            set { SetValue(YProperty, value); }
-        }
 
         public double AnimatedX
         {
@@ -84,17 +63,26 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(AnimationDurationProperty, value); }
         }
 
-        public void OnBeforeRemove(Action<DiagramShapeViewModelBase> readyToBeRemovedCallback)
+        public void OnBeforeRemove(Action<ViewModelBase> readyToBeRemovedCallback)
         {
             AnimateDisappear(readyToBeRemovedCallback);
         }
 
-        private void OnXPropertyChanged(double oldValue, double newValue)
+        public override Transform GetItemTransform()
+        {
+            var transform = new TransformGroup();
+            transform.Children.Add(new TranslateTransform(-ActualWidth / 2, -ActualHeight / 2));
+            transform.Children.Add(new ScaleTransform(Scaling, Scaling));
+            transform.Children.Add(new TranslateTransform(ActualWidth / 2, ActualHeight / 2));
+            return transform;
+        }
+
+        protected override void OnXPropertyChanged(double oldValue, double newValue)
         {
             UpdatePosition(AnimatedXProperty, oldValue, newValue);
         }
 
-        private void OnYPropertyChanged(double oldValue, double newValue)
+        protected override void OnYPropertyChanged(double oldValue, double newValue)
         {
             UpdatePosition(AnimatedYProperty, oldValue, newValue);
         }
@@ -125,7 +113,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             BeginAnimation(property, animation);
         }
 
-        private void AnimateDisappear(Action<DiagramShapeViewModelBase> readyToBeRemovedCallback)
+        private void AnimateDisappear(Action<ViewModelBase> readyToBeRemovedCallback)
         {
             var animation = new DoubleAnimation(1, 0, AnimationDuration);
 
@@ -133,7 +121,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             onAnimationCompleted = (sender, e) =>
             {
                 animation.Completed -= onAnimationCompleted;
-                readyToBeRemovedCallback((DiagramShapeViewModelBase)DataContext);
+                readyToBeRemovedCallback((ViewModelBase)DataContext);
             };
 
             animation.Completed += onAnimationCompleted;

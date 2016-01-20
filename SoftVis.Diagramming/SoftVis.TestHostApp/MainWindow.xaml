@@ -16,11 +16,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!--<Style TargetType="{x:Type controls:DiagramNodeControl}">
-                <Setter Property="Background" Value="LightYellow"/>
-            </Style>-->
-
         </ResourceDictionary>
     </Window.Resources>
 
@@ -36,6 +31,9 @@
         <view:DiagramControl x:Name="DiagramControl" 
                              Grid.Row="1" 
                              Background="Beige"
+                             Foreground="Blue"
+                             Fill="Ivory"
+                             Stroke="Black"
                              PanAndZoomControlHeight="120"
                              MinZoom="0.2"
                              MaxZoom="5"

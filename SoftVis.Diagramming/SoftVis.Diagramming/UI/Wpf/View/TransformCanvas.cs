@@ -45,7 +45,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (var child in Children.OfType<DiagramItemContainer>())
+            foreach (var child in Children.OfType<PositionedItemContainer>())
             {
                 child.RenderTransform = CreateRenderTransform(child); 
                 child.Arrange(new Rect(child.DesiredSize));
@@ -53,29 +53,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return finalSize;
         }
 
-        private Transform CreateRenderTransform(DiagramItemContainer child)
+        private Transform CreateRenderTransform(PositionedItemContainer child)
         {
-            var appearDisappearTransform = CreateAppearDisappearTransform(child);
-            var positionChild = new TranslateTransform(GetLeft(child), GetTop(child));
+            var itemTransform = child.GetItemTransform();
+            var positionItem = new TranslateTransform(GetLeft(child), GetTop(child));
 
             var renderTransform = new TransformGroup();
-            renderTransform.Children.Add(appearDisappearTransform);
-            renderTransform.Children.Add(positionChild);
+            if (itemTransform != null) renderTransform.Children.Add(itemTransform);
+            renderTransform.Children.Add(positionItem);
             renderTransform.Children.Add(Transform);
             return renderTransform;
-        }
-
-        private static Transform CreateAppearDisappearTransform(DiagramItemContainer child)
-        {
-            var childScaling = child.Scaling;
-            var childWidth = child.ActualWidth;
-            var childHeight = child.ActualHeight;
-
-            var transform = new TransformGroup();
-            transform.Children.Add(new TranslateTransform(-childWidth/2, -childHeight/2));
-            transform.Children.Add(new ScaleTransform(childScaling, childScaling));
-            transform.Children.Add(new TranslateTransform(childWidth/2, childHeight/2));
-            return transform;
         }
     }
 }

@@ -20,6 +20,7 @@ using Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Viewing.Gestures.Animate
 using Codartis.SoftVis.UI.Wpf.ImageExport;
 using Codartis.SoftVis.UI.Wpf.InputControls;
 using Codartis.SoftVis.UI.Wpf.View;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf
 {

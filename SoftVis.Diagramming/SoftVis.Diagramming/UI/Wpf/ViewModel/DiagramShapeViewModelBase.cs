@@ -1,14 +1,17 @@
 ﻿using System.Windows;
+using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Abstract base class for diagram shape view models. Defines position and size.
     /// </summary>
-    public abstract class DiagramShapeViewModelBase : ViewModelBase
+    public abstract class DiagramShapeViewModelBase : FocusableViewModelBase
     {
         private Point _position;
         private Size _size;
+
+        public abstract DiagramShape DiagramShape { get; }
 
         public Point Position
         {

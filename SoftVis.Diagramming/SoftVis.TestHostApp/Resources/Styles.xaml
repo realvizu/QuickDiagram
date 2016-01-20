@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:shapeControls="clr-namespace:Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes;assembly=SoftVis.Diagramming">
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="{x:Type shapeControls:DiagramNodeControl}" >
+    <Style TargetType="{x:Type view:DiagramNodeControl2}" >
         <Setter Property="Background" Value="Yellow"/>
     </Style>
 

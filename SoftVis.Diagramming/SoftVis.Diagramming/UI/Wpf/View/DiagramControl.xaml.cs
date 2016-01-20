@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -14,6 +15,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MaxZoomDefault = 5d;
         private const double InitialZoomDefault = 1d;
         private const double PanAndZoomControlSizeDefault = 120d;
+        private static readonly Brush FillDefault=Brushes.White;
+        private static readonly Brush StrokeDefault = Brushes.Black;
 
         private readonly ResourceDictionary _additionalResourceDictionary;
 
@@ -32,6 +35,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramControl),
                 new PropertyMetadata(PanAndZoomControlSizeDefault));
+
+        public static readonly DependencyProperty FillProperty =
+            DependencyProperty.Register("Fill", typeof(Brush), typeof(DiagramControl),
+                new PropertyMetadata(FillDefault));
+
+        public static readonly DependencyProperty StrokeProperty =
+            DependencyProperty.Register("Stroke", typeof(Brush), typeof(DiagramControl),
+                new PropertyMetadata(StrokeDefault));
 
         public DiagramControl()
         {
@@ -66,6 +77,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(PanAndZoomControlHeightProperty); }
             set { SetValue(PanAndZoomControlHeightProperty, value); }
+        }
+
+        public Brush Fill
+        {
+            get { return (Brush)GetValue(FillProperty); }
+            set { SetValue(FillProperty, value); }
+        }
+
+        public Brush Stroke
+        {
+            get { return (Brush)GetValue(StrokeProperty); }
+            set { SetValue(StrokeProperty, value); }
         }
 
         public void FitToContent()

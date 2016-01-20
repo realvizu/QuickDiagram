@@ -24,6 +24,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateState();
         }
 
+        public override DiagramShape DiagramShape => _diagramConnector;
+
         public override void UpdateState()
         {
             var rect = _diagramConnector.Rect.ToWpf();

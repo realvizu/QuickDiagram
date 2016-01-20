@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 
-namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniButtons
+namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Event data for MiniButtonActivated event.

@@ -23,5 +23,11 @@ namespace Codartis.SoftVis.UI.Wpf.Common.HitTesting
         {
             return HitTesterInstance.HitTest(_testingRoot, mouseEventArgs);
         }
+
+        public T HitTest<T>(MouseEventArgs mouseEventArgs)
+            where T : UIElement
+        {
+            return HitTesterInstance.HitTest<T>(_testingRoot, mouseEventArgs);
+        }
     }
 }

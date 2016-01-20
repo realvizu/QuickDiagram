@@ -7,40 +7,22 @@ using Codartis.SoftVis.UI.Wpf.RoutedEvents;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for DiagramNodeControl2.xaml
+    /// A special button used on diagrams. 
+    /// Fires bubbling mouse enter and leave events.
     /// </summary>
-    public partial class DiagramNodeControl2 : UserControl
+    public class MiniButton : Button
     {
-        public static readonly DependencyProperty FocusCommandProperty =
-            DependencyProperty.Register("FocusCommand", typeof(ICommand), typeof(DiagramNodeControl2));
-
-        public static readonly DependencyProperty UnfocusCommandProperty =
-            DependencyProperty.Register("UnfocusCommand", typeof(ICommand), typeof(DiagramNodeControl2));
-
-        public static readonly RoutedEvent BubblingMouseEnterEvent =
-            EventManager.RegisterRoutedEvent("BubblingMouseEnter", RoutingStrategy.Bubble,
-                typeof(BubblingMouseRoutedEventHandler), typeof(DiagramNodeControl2));
+        public static readonly RoutedEvent BubblingMouseEnterEvent = 
+            EventManager.RegisterRoutedEvent("BubblingMouseEnter", RoutingStrategy.Bubble, 
+                typeof(BubblingMouseRoutedEventHandler), typeof(MiniButton));
 
         public static readonly RoutedEvent BubblingMouseLeaveEvent =
             EventManager.RegisterRoutedEvent("BubblingMouseLeave", RoutingStrategy.Bubble,
-                typeof(BubblingMouseRoutedEventHandler), typeof(DiagramNodeControl2));
+                typeof(BubblingMouseRoutedEventHandler), typeof(MiniButton));
 
-        public DiagramNodeControl2()
+        public MiniButton()
         {
-            InitializeComponent();
-            Focusable = true;
-        }
-
-        public ICommand FocusCommand
-        {
-            get { return (ICommand)GetValue(FocusCommandProperty); }
-            set { SetValue(FocusCommandProperty, value); }
-        }
-
-        public ICommand UnfocusCommand
-        {
-            get { return (ICommand)GetValue(UnfocusCommandProperty); }
-            set { SetValue(UnfocusCommandProperty, value); }
+            IsHitTestVisible = true;
         }
 
         public event BubblingMouseRoutedEventHandler BubblingMouseEnter
