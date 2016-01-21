@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniBut
         {
             var pen = new Pen(AdornedShape.Foreground, 1);
             var brush = AdornedShape.Background;
-            var geometry = GetConnectorGeometry(_miniButtonDescriptor.ConnectorStyle, center);
+            var geometry = GetConnectorGeometry(_miniButtonDescriptor.ConnectorType, center);
             drawingContext.DrawGeometry(brush, pen, geometry);
         }
 

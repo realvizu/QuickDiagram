@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram = diagram;
             DiagramBehaviourProvider = diagramBehaviourProvider;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram);
+            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
             ShowRelatedEntitySelectorCommand = new DelegateCommand(i => ShowRelationshipSelector((MiniButtonActivatedEventArgs)i));
             HideRelatedEntitySelectorCommand = new DelegateCommand(i => HideRelationshipSelector());

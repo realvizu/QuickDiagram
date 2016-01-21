@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using Codartis.SoftVis.UI.Geometry;
+using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -9,17 +10,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class MiniButtonViewModelBase : ViewModelBase
     {
-        private RectRelativeLocation _relativeLocation;
         private Size _size;
         private Point _topLeft;
         private bool _isVisible;
         private bool _isEnabled;
         private ICommand _buttonClickedCommand;
 
+        protected double MiniButtonRadius { get; }
+        protected RectRelativeLocation RectRelativeLocation { get; }
+
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected MiniButtonViewModelBase(double miniButtonRadius)
+        protected MiniButtonViewModelBase(double miniButtonRadius, RectRelativeLocation rectRelativeLocation)
         {
+            MiniButtonRadius = miniButtonRadius;
+            RectRelativeLocation = rectRelativeLocation;
+
             _size = new Size(miniButtonRadius*2, miniButtonRadius*2);
             _isVisible = false;
             _isEnabled = true;
@@ -103,13 +109,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             AssociatedDiagramShapeViewModel = diagramShapeViewModel;
-            TopLeft = (Point) (diagramShapeViewModel.Position - new Point(5d, 5d));
+            TopLeft = CalculateTopLeft(diagramShapeViewModel);
             IsVisible = true;
         }
 
         public void Hide()
         {
             IsVisible = false;
+        }
+
+        private Point CalculateTopLeft(DiagramShapeViewModelBase diagramShapeViewModel)
+        {
+            var parentTopLeft = diagramShapeViewModel.Position;
+            var parentTopLeftToButtonCenter = GetButtonCenterRelativeToDiagramShape(diagramShapeViewModel.Size);
+            var buttonCenterToButtonTopLeft = new Vector(-MiniButtonRadius, -MiniButtonRadius);
+            var location = parentTopLeft + parentTopLeftToButtonCenter + buttonCenterToButtonTopLeft;
+            return location;
+        }
+
+        private Vector GetButtonCenterRelativeToDiagramShape(Size diagramShapeSize)
+        {
+            return (Vector) new Rect(diagramShapeSize).GetRelativePoint(RectRelativeLocation);
         }
     }
 }

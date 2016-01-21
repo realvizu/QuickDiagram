@@ -10,7 +10,7 @@
     <converters:ThicknessMultiplierConverter x:Key="ThicknessMultiplierConverter"/>
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
 
-    <Style TargetType="view:MiniButton">
+    <Style x:Key="EllipseMiniButton" TargetType="view:MiniButton">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="view:MiniButton">

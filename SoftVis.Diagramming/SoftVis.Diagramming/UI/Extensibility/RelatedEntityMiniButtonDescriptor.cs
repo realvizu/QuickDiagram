@@ -11,25 +11,25 @@ namespace Codartis.SoftVis.UI.Extensibility
     public class RelatedEntityMiniButtonDescriptor
     {
         public RelationshipSpecification RelationshipSpecification { get; }
-        public ConnectorType ConnectorStyle { get; }
+        public ConnectorType ConnectorType { get; }
         public RectRelativeLocation MiniButtonLocation { get; }
 
         public RelatedEntityMiniButtonDescriptor(RelationshipSpecification relationshipSpecification, 
-            ConnectorType connectorStyle, RectRelativeLocation miniButtonLocation)
+            ConnectorType connectorType, RectRelativeLocation miniButtonLocation)
         {
             RelationshipSpecification = relationshipSpecification;
-            ConnectorStyle = connectorStyle;
+            ConnectorType = connectorType;
             MiniButtonLocation = miniButtonLocation;
         }
 
         public RelatedEntityMiniButtonDescriptor WithRelativeLocation(RectRelativeLocation relativeLocation)
         {
-            return new RelatedEntityMiniButtonDescriptor(RelationshipSpecification, ConnectorStyle, relativeLocation);
+            return new RelatedEntityMiniButtonDescriptor(RelationshipSpecification, ConnectorType, relativeLocation);
         }
 
         public RelatedEntityMiniButtonDescriptor WithRelativeLocationTranslate(Point2D translate)
         {
-            return new RelatedEntityMiniButtonDescriptor(RelationshipSpecification, ConnectorStyle, MiniButtonLocation.WithTranslate(translate));
+            return new RelatedEntityMiniButtonDescriptor(RelationshipSpecification, ConnectorType, MiniButtonLocation.WithTranslate(translate));
         }
     }
 }

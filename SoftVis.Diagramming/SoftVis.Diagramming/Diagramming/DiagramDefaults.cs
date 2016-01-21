@@ -14,6 +14,7 @@ namespace Codartis.SoftVis.Diagramming
         public const double DefaultNodeHeight = 38;
         public const double MaximumNodeHeight = 50;
         public const double MiniButtonRadius = 8;
+        public const double MiniButtonOverlapParentBy = 3;
 
         public const double HorizontalGap = 20;
         public const double VerticalGap = 40;
