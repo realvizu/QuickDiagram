@@ -261,6 +261,7 @@
     <Compile Include="UI\Wpf\RoutedEvents\BubblingMouseRoutedEventArgs.cs" />
     <Compile Include="UI\Wpf\RoutedEvents\BubblingMouseRoutedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\FocusableViewModelBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\MiniButtonCollectionViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\MiniButtonViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\ShowRelatedEntityMiniButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />

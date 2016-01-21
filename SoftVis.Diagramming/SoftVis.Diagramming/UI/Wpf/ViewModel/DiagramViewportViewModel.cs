@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
@@ -18,24 +17,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Diagram _diagram;
         private readonly Map<DiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
-        private readonly MiniButtonViewModelFactory _miniButtonViewModelFactory;
-
+        private readonly MiniButtonCollectionViewModel _miniButtonCollectionViewModel;
         private Rect _diagramContentRect;
+
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
-        public ObservableCollection<MiniButtonViewModelBase> MiniButtonViewModels { get; }
 
         public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
         {
             _diagram = diagram;
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram.ConnectorTypeResolver);
-            _miniButtonViewModelFactory = new MiniButtonViewModelFactory(diagramBehaviourProvider,
-                DiagramDefaults.MiniButtonRadius, DiagramDefaults.MiniButtonOverlapParentBy);
-
+            _miniButtonCollectionViewModel = new MiniButtonCollectionViewModel(diagramBehaviourProvider);
             _diagramContentRect = Rect.Empty;
+
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
-            MiniButtonViewModels = new ObservableCollection<MiniButtonViewModelBase>();
-            CreateMiniButtons();
 
             diagram.ShapeAdded += OnShapeAdded;
             diagram.ShapeMoved += OnShapeMoved;
@@ -44,6 +39,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             AddDiagram(diagram);
         }
+
+        public ObservableCollection<MiniButtonViewModelBase> MiniButtonViewModels
+            => _miniButtonCollectionViewModel.MiniButtonViewModels;
 
         public Rect DiagramContentRect
         {
@@ -119,42 +117,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var diagramShapeViewModel = focusableViewModel as DiagramShapeViewModelBase;
             if (diagramShapeViewModel == null)
-                throw new ArgumentException($"DiagramShapeViewModelBase expected");
+                throw new ArgumentException("DiagramShapeViewModelBase expected");
 
-            AssignMiniButtonsTo(diagramShapeViewModel);
+           _miniButtonCollectionViewModel.AssignMiniButtonsTo(diagramShapeViewModel);
         }
 
         private void OnShapeUnfocused(FocusableViewModelBase focusableViewModel)
         {
             var diagramShapeViewModel = focusableViewModel as DiagramShapeViewModelBase;
             if (diagramShapeViewModel == null)
-                throw new ArgumentException($"DiagramShapeViewModelBase expected");
+                throw new ArgumentException("DiagramShapeViewModelBase expected");
 
-            if (AreMiniButtonsAssignedTo(diagramShapeViewModel))
-                HideMiniButtons();
-        }
-
-        private void CreateMiniButtons()
-        {
-            foreach (var miniButtonViewModel in _miniButtonViewModelFactory.CreateButtons())
-                MiniButtonViewModels.Add(miniButtonViewModel);
-        }
-
-        private void AssignMiniButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)
-        {
-            foreach (var miniButtonViewModel in MiniButtonViewModels)
-                miniButtonViewModel.AssociateWith(diagramShapeViewModel);
-        }
-
-        private bool AreMiniButtonsAssignedTo(DiagramShapeViewModelBase diagramShapeViewModel)
-        {
-            return MiniButtonViewModels.Any(i => i.AssociatedDiagramShapeViewModel == diagramShapeViewModel);
-        }
-
-        private void HideMiniButtons()
-        {
-            foreach (var miniButtonViewModel in MiniButtonViewModels)
-                miniButtonViewModel.Hide();
+            if (_miniButtonCollectionViewModel.AreMiniButtonsAssignedTo(diagramShapeViewModel))
+                _miniButtonCollectionViewModel.HideMiniButtons();
         }
     }
 }

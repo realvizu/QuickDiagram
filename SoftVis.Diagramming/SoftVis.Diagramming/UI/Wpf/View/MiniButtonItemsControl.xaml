@@ -20,9 +20,9 @@
     <DataTemplate DataType="{x:Type viewModels:CloseMiniButtonViewModel}">
         <Path Stretch="Uniform" 
                   Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width,
-                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.9}"
+                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
                   Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Height, 
-                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.9}"
+                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
                   Stroke="Red"
                   StrokeThickness="1.5"
                   Data="M -1 -1 L 1 1 M -1 1 L 1 -1" />

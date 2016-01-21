@@ -64,8 +64,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public double Left => TopLeft.X;
         public double Top => TopLeft.Y;
+        public double Left => TopLeft.X;
 
         public bool IsVisible
         {
