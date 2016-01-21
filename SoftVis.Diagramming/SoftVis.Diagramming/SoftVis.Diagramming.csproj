@@ -278,6 +278,7 @@
     <Compile Include="UI\Wpf\ViewModel\ViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\Common\Converters\ConnectorTypeToGeometryConverter.cs" />
+    <Compile Include="UI\Wpf\View\DiagramFocusManager.cs" />
     <Compile Include="UI\Wpf\View\MiniButton.cs" />
     <Compile Include="UI\Wpf\View\MiniButtonItemsControl.cs" />
     <Compile Include="UI\Wpf\View\PositionedItemsControl.cs" />

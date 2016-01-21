@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,10 +6,7 @@ using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Animations;
 using Codartis.SoftVis.UI.Wpf.Commands;
-using Codartis.SoftVis.UI.Wpf.Common;
-using Codartis.SoftVis.UI.Wpf.Common.HitTesting;
 using Codartis.SoftVis.UI.Wpf.RoutedEvents;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -30,8 +24,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double LargeZoomIncrementProportion = .1d;
         private const double PanAndZoomControlSizeDefault = 100;
 
-        private readonly HitTester _hitTester;
         private readonly Viewport _viewport;
+        private readonly DiagramFocusManager _diagramFocusManager;
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewportControl),
@@ -121,9 +115,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public DiagramViewportControl()
         {
-            _hitTester = new HitTester(this);
             _viewport = new Viewport(ViewportSizeDefault, ViewportCenterDefault, LinearViewportZoomDefault,
                 MinZoomDefault, MaxZoomDefault);
+            _diagramFocusManager = new DiagramFocusManager(this);
 
             InitializeComponent();
 
@@ -144,12 +138,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 ViewportCenterX = value.X;
                 ViewportCenterY = value.Y;
             }
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-            UnfocusAllDiagramNodes();
         }
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
@@ -239,78 +227,39 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return newLinearZoom;
         }
 
-        private void OnDiagramNodeBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
+        protected override void OnMouseLeave(MouseEventArgs e)
         {
-            Focus(e.OriginalSource as DiagramNodeControl2);
-        }
-
-        private void OnDiagramNodeBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
-        {
-            var diagramNodeControl = e.OriginalSource as DiagramNodeControl2;
-            var miniButtons = GetMiniButtonsForDiagramNodeControl(diagramNodeControl);
-
-            var hitMiniButton = _hitTester.HitTest<MiniButton>(e.MouseEventArgs);
-            if (!miniButtons.Contains(hitMiniButton))
-                Unfocus(diagramNodeControl);
-        }
-
-        private void OnMiniButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
-        {
-            var diagramNodeControl = GetDiagramNodeControlForMiniButton(e.OriginalSource as MiniButton);
-            Focus(diagramNodeControl);
-        }
-
-        private void OnMiniButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
-        {
-            var diagramNodeControl = GetDiagramNodeControlForMiniButton(e.OriginalSource as MiniButton);
-            if (diagramNodeControl == null)
-                return;
-
-            var hitDiagramNodeControl = _hitTester.HitTest<DiagramNodeControl2>(e.MouseEventArgs);
-            if (diagramNodeControl != hitDiagramNodeControl)
-                Unfocus(diagramNodeControl);
-        }
-
-        private DiagramNodeControl2 GetDiagramNodeControlForMiniButton(MiniButton miniButton)
-        {
-            var miniButtonViewModel = miniButton.DataContext as MiniButtonViewModelBase;
-
-            var diagramNodeControls = this.FindChildren<DiagramNodeControl2>(
-                i => i.DataContext == miniButtonViewModel?.AssociatedDiagramShapeViewModel);
-
-            return diagramNodeControls.FirstOrDefault();
-        }
-
-        private IEnumerable<MiniButton> GetMiniButtonsForDiagramNodeControl(DiagramNodeControl2 diagramNodeControl)
-        {
-            var diagramShapeViewModel = diagramNodeControl.DataContext as DiagramShapeViewModelBase;
-
-            var miniButtons = this.FindChildren<MiniButton>(
-                i => ((MiniButtonViewModelBase)i.DataContext).AssociatedDiagramShapeViewModel == diagramShapeViewModel);
-
-            return miniButtons;
+            base.OnMouseLeave(e);
+            _diagramFocusManager.UnfocusAll();
         }
 
         private void OnPanAndZoomControlMouseEnter(object sender, MouseEventArgs e)
         {
-            UnfocusAllDiagramNodes();
+            _diagramFocusManager.UnfocusAll();
         }
 
-        private void UnfocusAllDiagramNodes()
+        private void OnDiagramNodeBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
         {
-            var diagramNodeControls = this.FindChildren<DiagramNodeControl2>();
-            foreach (var diagramNodeControl in diagramNodeControls)
-                Unfocus(diagramNodeControl);
+            var diagramNodeControl = (DiagramNodeControl2)e.OriginalSource;
+            _diagramFocusManager.OnDiagramNodeMouseEnter(diagramNodeControl, e.MouseEventArgs);
         }
 
-        private static void Focus(DiagramNodeControl2 diagramNodeControl)
+        private void OnDiagramNodeBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
         {
-            diagramNodeControl?.FocusCommand?.Execute(null);
+            var diagramNodeControl = (DiagramNodeControl2)e.OriginalSource;
+            _diagramFocusManager.OnDiagramNodeMouseLeave(diagramNodeControl, e.MouseEventArgs);
         }
 
-        private static void Unfocus(DiagramNodeControl2 diagramNodeControl)
+        private void OnMiniButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
         {
-            diagramNodeControl?.UnfocusCommand?.Execute(null);
+            var miniButton = (MiniButton)e.OriginalSource;
+            _diagramFocusManager.OnMiniButtonMouseEnter(miniButton, e.MouseEventArgs);
+        }
+
+        private void OnMiniButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
+        {
+            var miniButton = (MiniButton)e.OriginalSource;
+            _diagramFocusManager.OnMiniButtonMouseLeave(miniButton, e.MouseEventArgs);
         }
     }
 }

@@ -11,10 +11,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
-             view:MiniButton.BubblingMouseEnter="OnMiniButtonBubblingMouseEnter"
-             view:MiniButton.BubblingMouseLeave="OnMiniButtonBubblingMouseLeave"
+             
              view:DiagramNodeControl2.BubblingMouseEnter="OnDiagramNodeBubblingMouseEnter"
-             view:DiagramNodeControl2.BubblingMouseLeave="OnDiagramNodeBubblingMouseLeave" >
+             view:DiagramNodeControl2.BubblingMouseLeave="OnDiagramNodeBubblingMouseLeave"
+             view:MiniButton.BubblingMouseEnter="OnMiniButtonBubblingMouseEnter"
+             view:MiniButton.BubblingMouseLeave="OnMiniButtonBubblingMouseLeave" >
 
     <UserControl.Resources>
         <ResourceDictionary>
