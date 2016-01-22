@@ -15,10 +15,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double MaxZoomDefault = 5d;
         private const double InitialZoomDefault = 1d;
         private const double PanAndZoomControlSizeDefault = 120d;
-        private static readonly Brush FillDefault=Brushes.White;
-        private static readonly Brush StrokeDefault = Brushes.Black;
 
         private readonly ResourceDictionary _additionalResourceDictionary;
+
+        public static readonly DependencyProperty DiagramFillProperty =
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramControl));
+
+        public static readonly DependencyProperty DiagramStrokeProperty =
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramControl));
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramControl),
@@ -36,23 +40,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramControl),
                 new PropertyMetadata(PanAndZoomControlSizeDefault));
 
-        public static readonly DependencyProperty FillProperty =
-            DependencyProperty.Register("Fill", typeof(Brush), typeof(DiagramControl),
-                new PropertyMetadata(FillDefault));
-
-        public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(DiagramControl),
-                new PropertyMetadata(StrokeDefault));
-
         public DiagramControl()
         {
             InitializeComponent();
         }
 
-        public DiagramControl(ResourceDictionary additionalResourceDictionary) 
+        public DiagramControl(ResourceDictionary additionalResourceDictionary)
             : this()
         {
             _additionalResourceDictionary = additionalResourceDictionary;
+        }
+
+        public Brush DiagramFill
+        {
+            get { return (Brush)GetValue(DiagramFillProperty); }
+            set { SetValue(DiagramFillProperty, value); }
+        }
+
+        public Brush DiagramStroke
+        {
+            get { return (Brush)GetValue(DiagramStrokeProperty); }
+            set { SetValue(DiagramStrokeProperty, value); }
         }
 
         public double MinZoom
@@ -77,18 +85,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(PanAndZoomControlHeightProperty); }
             set { SetValue(PanAndZoomControlHeightProperty, value); }
-        }
-
-        public Brush Fill
-        {
-            get { return (Brush)GetValue(FillProperty); }
-            set { SetValue(FillProperty, value); }
-        }
-
-        public Brush Stroke
-        {
-            get { return (Brush)GetValue(StrokeProperty); }
-            set { SetValue(StrokeProperty, value); }
         }
 
         public void FitToContent()

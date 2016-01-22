@@ -16,7 +16,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double WidthPerHeightRatio = 3d / 10d;
 
         private static readonly Brush FillDefault = Brushes.Transparent;
-        private static readonly Brush StrokeDefault = Brushes.Black;
         private const double MinZoomDefault = .1d;
         private const double MaxZoomDefault = 10d;
         private const double ZoomValueDefault = 1d;
@@ -26,10 +25,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty FillProperty =
             DependencyProperty.Register("Fill", typeof(Brush), typeof(PanAndZoomControl2),
                 new FrameworkPropertyMetadata(FillDefault));
-
-        public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(PanAndZoomControl2),
-                new FrameworkPropertyMetadata(StrokeDefault));
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(PanAndZoomControl2),
@@ -74,12 +69,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (Brush)GetValue(FillProperty); }
             set { SetValue(FillProperty, value); }
-        }
-
-        public Brush Stroke
-        {
-            get { return (Brush)GetValue(StrokeProperty); }
-            set { SetValue(StrokeProperty, value); }
         }
 
         public double MinZoom

@@ -270,7 +270,7 @@ namespace Codartis.SoftVis.UI.Wpf
             Dispatcher.Invoke(DispatcherPriority.Loaded, new Action(() => { }));
         }
 
-        private void OnMiniButtonActivated(object sender, MiniButtonActivatedEventArgs e)
+        private void OnMiniButtonActivated(object sender, DiagramButtonActivatedEventArgs e)
         {
             ShowRelatedEntitySelectorCommand?.Execute(e);
         }

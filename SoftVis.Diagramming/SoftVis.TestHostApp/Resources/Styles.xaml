@@ -6,8 +6,11 @@
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="{x:Type view:DiagramNodeControl2}" >
-        <Setter Property="Background" Value="Yellow"/>
-    </Style>
+    <!--<Style TargetType="{x:Type view:DiagramControl}" >
+        <Setter Property="Background" Value="NavajoWhite"/>
+        <Setter Property="Foreground" Value="Sienna"/>
+        <Setter Property="DiagramFill" Value="Yellow"/>
+        <Setter Property="DiagramStroke" Value="Sienna"/>
+    </Style>-->
 
 </ResourceDictionary>

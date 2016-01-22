@@ -5,13 +5,13 @@ using Codartis.SoftVis.UI.Extensibility;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// A minibutton to choose related entities.
+    /// A diagram button to choose related entities.
     /// </summary>
-    internal class ShowRelatedEntityMiniButtonViewModel : MiniButtonViewModelBase
+    internal class ShowRelatedShapeButtonViewModel : DiagramButtonViewModelBase
     {
         private readonly RelatedEntityMiniButtonDescriptor _descriptor;
 
-        public ShowRelatedEntityMiniButtonViewModel(double miniButtonRadius,
+        public ShowRelatedShapeButtonViewModel(double miniButtonRadius,
             RelatedEntityMiniButtonDescriptor descriptor)
             : base(miniButtonRadius, descriptor.MiniButtonLocation)
         {

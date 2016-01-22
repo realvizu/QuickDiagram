@@ -8,13 +8,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Creates MiniButton view model objects.
     /// </summary>
-    internal class MiniButtonViewModelFactory
+    internal class DiagramButtonViewModelFactory
     {
         private readonly IDiagramBehaviourProvider _diagramBehaviourProvider;
         private readonly double _miniButtonRadius;
         private readonly double _miniButtonOverlap;
 
-        public MiniButtonViewModelFactory(IDiagramBehaviourProvider diagramBehaviourProvider, 
+        public DiagramButtonViewModelFactory(IDiagramBehaviourProvider diagramBehaviourProvider, 
             double miniButtonRadius, double miniButtonOverlap)
         {
             _diagramBehaviourProvider = diagramBehaviourProvider;
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _miniButtonOverlap = miniButtonOverlap;
         }
 
-        public IEnumerable<MiniButtonViewModelBase> CreateButtons()
+        public IEnumerable<DiagramButtonViewModelBase> CreateButtons()
         {
             yield return CreateCloseButton();
             foreach (var descriptor in _diagramBehaviourProvider.GetRelatedEntityMiniButtonDescriptors())
@@ -31,17 +31,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private CloseMiniButtonViewModel CreateCloseButton()
+        private CloseShapeButtonViewModel CreateCloseButton()
         {
             var translate = new Point2D(-_miniButtonOverlap, _miniButtonOverlap);
             var miniButtonLocation = new RectRelativeLocation(RectAlignment.TopRight, translate);
-            return new CloseMiniButtonViewModel(_miniButtonRadius, miniButtonLocation);
+            return new CloseShapeButtonViewModel(_miniButtonRadius, miniButtonLocation);
         }
 
-        private ShowRelatedEntityMiniButtonViewModel CreateShowRelatedEntityButton(
+        private ShowRelatedShapeButtonViewModel CreateShowRelatedEntityButton(
             RelatedEntityMiniButtonDescriptor descriptor)
         {
-            return new ShowRelatedEntityMiniButtonViewModel(_miniButtonRadius, descriptor);
+            return new ShowRelatedShapeButtonViewModel(_miniButtonRadius, descriptor);
         }
     }
 }

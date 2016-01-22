@@ -94,7 +94,7 @@
     <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
     <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
-    <Compile Include="UI\Wpf\ViewModel\MiniButtonActivatedEventArgs.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramButtonActivatedEventArgs.cs" />
     <Compile Include="UI\Wpf\DiagramViewerViewModel.cs" />
     <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />
     <Compile Include="Modeling\RelationshipSpecification.cs" />
@@ -212,9 +212,13 @@
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\ShowRelatedEntityMiniButton.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\CloseMiniButton.cs" />
     <Compile Include="UI\Extensibility\RelatedEntityMiniButtonDescriptor.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\PointsToArrowHeadPathConverter.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\PointsToArrowShaftPathConverter.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\PointsToPathConverterBase.cs" />
+    <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
+    <Compile Include="UI\Wpf\View\PathControl.xaml.cs">
+      <DependentUpon>PathControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
+    <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
+    <Compile Include="UI\Wpf\View\PointsToPathConverterBase.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\DiagramPanelBase.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramConnectorViewModel.cs" />
@@ -261,12 +265,12 @@
     <Compile Include="UI\Wpf\RoutedEvents\BubblingMouseRoutedEventArgs.cs" />
     <Compile Include="UI\Wpf\RoutedEvents\BubblingMouseRoutedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\FocusableViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\MiniButtonCollectionViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\MiniButtonViewModelFactory.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ShowRelatedEntityMiniButtonViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramButtonCollectionViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelFactory.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ShowRelatedShapeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />
-    <Compile Include="UI\Wpf\ViewModel\CloseMiniButtonViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\MiniButtonViewModelBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\TestDiagramNodeViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
@@ -279,8 +283,8 @@
     <Compile Include="UI\Wpf\ViewModel\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\Common\Converters\ConnectorTypeToGeometryConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramFocusManager.cs" />
-    <Compile Include="UI\Wpf\View\MiniButton.cs" />
-    <Compile Include="UI\Wpf\View\MiniButtonItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramButton.cs" />
+    <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
     <Compile Include="UI\Wpf\View\PositionedItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorControl2.xaml.cs">
       <DependentUpon>DiagramConnectorControl2.xaml</DependentUpon>
@@ -338,7 +342,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Wpf\View\EllipseMiniButton.xaml">
+    <Page Include="UI\Wpf\View\DiagramButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\View\EllipseDiagramButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -358,9 +366,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Wpf\View\MiniButtonItemsControl.xaml">
+    <Page Include="UI\Wpf\View\DiagramButtonItemsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\View\PathControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\PositionedItemContainer.xaml">
       <Generator>MSBuild:Compile</Generator>

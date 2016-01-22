@@ -13,22 +13,17 @@
     <Duration x:Key="AnimationDuration">0:0:.3</Duration>
 
     <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
-        <view:DiagramNodeControl2 
-            Background="{Binding Path=Fill, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}" 
-			BorderBrush="{Binding Path=Stroke, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}"
-            BorderThickness="1"
-            FocusCommand="{Binding FocusCommand}"
-            UnfocusCommand="{Binding UnfocusCommand}"/>
+        <view:DiagramNodeControl2 FocusCommand="{Binding FocusCommand}"
+                                  UnfocusCommand="{Binding UnfocusCommand}"/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:DiagramConnectorViewModel2}">
-        <view:DiagramConnectorControl2 
-            RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
-            BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
-                                        AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
-            BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
-                                        AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
-            AnimationDuration="{StaticResource AnimationDuration}"/>
+        <view:DiagramConnectorControl2 RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
+                                       BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
+                                       BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
+                                       AnimationDuration="{StaticResource AnimationDuration}"/>
     </DataTemplate>
 
     <Style x:Key="DiagramShapeItemContainerStyle" 

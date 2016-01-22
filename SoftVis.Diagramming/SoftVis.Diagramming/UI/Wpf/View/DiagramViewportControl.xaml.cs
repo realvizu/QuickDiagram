@@ -27,6 +27,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private readonly Viewport _viewport;
         private readonly DiagramFocusManager _diagramFocusManager;
 
+        public static readonly DependencyProperty DiagramFillProperty =
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramViewportControl));
+
+        public static readonly DependencyProperty DiagramStrokeProperty =
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramViewportControl));
+
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramViewportControl),
                 new PropertyMetadata(MinZoomDefault, OnZoomRangeChanged));
@@ -238,27 +244,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _diagramFocusManager.UnfocusAll();
         }
 
-        private void OnDiagramNodeBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
+        private void OnShapeBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
         {
             var diagramNodeControl = (DiagramNodeControl2)e.OriginalSource;
             _diagramFocusManager.OnDiagramNodeMouseEnter(diagramNodeControl, e.MouseEventArgs);
         }
 
-        private void OnDiagramNodeBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
+        private void OnShapeBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
         {
             var diagramNodeControl = (DiagramNodeControl2)e.OriginalSource;
             _diagramFocusManager.OnDiagramNodeMouseLeave(diagramNodeControl, e.MouseEventArgs);
         }
 
-        private void OnMiniButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
+        private void OnButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
         {
-            var miniButton = (MiniButton)e.OriginalSource;
+            var miniButton = (DiagramButton)e.OriginalSource;
             _diagramFocusManager.OnMiniButtonMouseEnter(miniButton, e.MouseEventArgs);
         }
 
-        private void OnMiniButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
+        private void OnButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
         {
-            var miniButton = (MiniButton)e.OriginalSource;
+            var miniButton = (DiagramButton)e.OriginalSource;
             _diagramFocusManager.OnMiniButtonMouseLeave(miniButton, e.MouseEventArgs);
         }
     }

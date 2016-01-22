@@ -16,18 +16,22 @@
         <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical" 
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-        <TextBlock Visibility="{Binding Path=IsStereotypeVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                   Text="{Binding Path=StereotypeText}" 
-                   FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
-                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
-                   HorizontalAlignment="Center"/>
-        <StackPanel HorizontalAlignment="Center">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
-                       HorizontalAlignment="Left"
-                       FontStyle="{Binding Path=FontStyle}" />
+    <Border BorderThickness="1"
+            BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+            Background="{Binding DiagramFill, ElementName=ThisControl}">
+        <StackPanel Orientation="Vertical" 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <TextBlock Visibility="{Binding Path=IsStereotypeVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Text="{Binding Path=StereotypeText}" 
+                       FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
+                            Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
+                       HorizontalAlignment="Center"/>
+            <StackPanel HorizontalAlignment="Center">
+                <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
+                           HorizontalAlignment="Left"
+                           FontStyle="{Binding Path=FontStyle}" />
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
+    </Border>
 </UserControl>

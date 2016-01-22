@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
         public Rect ViewportInDiagramSpace { get; private set; }
         private Transform DiagramSpaceToScreenSpace { get; set; }
 
-        public event EventHandler<MiniButtonActivatedEventArgs> MiniButtonActivated;
+        public event EventHandler<DiagramButtonActivatedEventArgs> MiniButtonActivated;
 
         public static readonly DependencyProperty DiagramBehaviourProviderProperty =
             DependencyProperty.Register("DiagramBehaviourProvider", typeof(IDiagramBehaviourProvider),
@@ -304,7 +304,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
             var attachPointInDiagramSpace = CalculateAttachPoint(miniButtonRect, handleOrientation);
             var attachPointInScreenSpace = DiagramSpaceToScreenSpace.Transform(attachPointInDiagramSpace);
 
-            var eventArgs = new MiniButtonActivatedEventArgs(modelEntity, relationshipSpecification,
+            var eventArgs = new DiagramButtonActivatedEventArgs(modelEntity, relationshipSpecification,
                 attachPointInScreenSpace, handleOrientation);
             MiniButtonActivated?.Invoke(miniButton, eventArgs);
         }

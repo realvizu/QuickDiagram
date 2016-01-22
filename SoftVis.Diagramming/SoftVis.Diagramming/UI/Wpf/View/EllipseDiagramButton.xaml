@@ -10,10 +10,10 @@
     <converters:ThicknessMultiplierConverter x:Key="ThicknessMultiplierConverter"/>
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
 
-    <Style x:Key="EllipseMiniButton" TargetType="view:MiniButton">
+    <Style x:Key="EllipseDiagramButton" TargetType="view:DiagramButton">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="view:MiniButton">
+                <ControlTemplate TargetType="view:DiagramButton">
                     <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -23,21 +23,13 @@
                                         <DoubleAnimation Duration="0" 
                                                          Storyboard.TargetName="MouseOverEffect" 
                                                          Storyboard.TargetProperty="Opacity" 
-                                                         To=".5"/>
+                                                         To=".2"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" 
                                                          Storyboard.TargetName="PressedEffect" 
-                                                         Storyboard.TargetProperty="Opacity" 
-                                                         To=".5"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" 
-                                                         Storyboard.TargetName="DisabledEffect" 
                                                          Storyboard.TargetProperty="Opacity" 
                                                          To=".5"/>
                                     </Storyboard>
@@ -57,15 +49,14 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Ellipse x:Name="ButtonBackground" 
-                                 Fill="{TemplateBinding Background}" 
-                                 StrokeThickness="{TemplateBinding BorderThickness, Converter={StaticResource ThicknessToDoubleConverter}}" 
-                                 Stroke="{TemplateBinding BorderBrush}"/>
-                        <Ellipse x:Name="MouseOverEffect" Fill="White" Opacity="0" IsHitTestVisible="false" />
+                                 Fill="{TemplateBinding Background}" />
+                        <Ellipse x:Name="MouseOverEffect" Fill="Black" Opacity="0" IsHitTestVisible="false" />
                         <Ellipse x:Name="PressedEffect" Fill="Black" Opacity="0" IsHitTestVisible="false" />
-                        
+
                         <ContentPresenter x:Name="contentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          IsEnabled="{TemplateBinding IsEnabled}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           Margin="{TemplateBinding Padding}"
@@ -75,13 +66,21 @@
                                           Height="{TemplateBinding Height, 
                                                 Converter={StaticResource DoubleMultiplierConverter}, 
                                                 ConverterParameter=.7}" />
-                        
-                        <Ellipse x:Name="DisabledEffect" Fill="LightGray" Opacity="0" IsHitTestVisible="false" />
-                        <Ellipse x:Name="FocusEffect" Stroke="Black" Opacity="0" IsHitTestVisible="false" 
+                        <Ellipse x:Name="Border" 
+                                 Fill="Transparent" 
+                                 StrokeThickness="{TemplateBinding BorderThickness, Converter={StaticResource ThicknessToDoubleConverter}}" 
+                                 Stroke="{TemplateBinding BorderBrush}"/>
+                        <Ellipse x:Name="FocusEffect" Opacity="0" IsHitTestVisible="false" 
                                  StrokeThickness="{TemplateBinding BorderThickness, 
                                     Converter={StaticResource ThicknessMultiplierConverter},
-                                    ConverterParameter=2}"/>
+                                    ConverterParameter=10}"/>
                     </Grid>
+                    
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="DarkGray"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

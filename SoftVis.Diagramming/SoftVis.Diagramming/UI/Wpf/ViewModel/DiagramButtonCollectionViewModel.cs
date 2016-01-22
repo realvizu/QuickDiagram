@@ -6,20 +6,20 @@ using Codartis.SoftVis.UI.Extensibility;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Creates and manages the minibutton viewmodels.
+    /// Creates and manages the diagram button viewmodels.
     /// </summary>
-    internal class MiniButtonCollectionViewModel
+    internal class DiagramButtonCollectionViewModel
     {
-        private readonly MiniButtonViewModelFactory _miniButtonViewModelFactory;
+        private readonly DiagramButtonViewModelFactory _miniButtonViewModelFactory;
 
-        public ObservableCollection<MiniButtonViewModelBase> MiniButtonViewModels { get; }
+        public ObservableCollection<DiagramButtonViewModelBase> MiniButtonViewModels { get; }
 
-        public MiniButtonCollectionViewModel(IDiagramBehaviourProvider diagramBehaviourProvider)
+        public DiagramButtonCollectionViewModel(IDiagramBehaviourProvider diagramBehaviourProvider)
         {
-            _miniButtonViewModelFactory = new MiniButtonViewModelFactory(diagramBehaviourProvider,
-                DiagramDefaults.MiniButtonRadius, DiagramDefaults.MiniButtonOverlapParentBy);
+            _miniButtonViewModelFactory = new DiagramButtonViewModelFactory(diagramBehaviourProvider,
+                DiagramDefaults.ButtonRadius, DiagramDefaults.ButtonOverlapParentBy);
 
-            MiniButtonViewModels = new ObservableCollection<MiniButtonViewModelBase>();
+            MiniButtonViewModels = new ObservableCollection<DiagramButtonViewModelBase>();
             CreateMiniButtons();
         }
 

@@ -4,11 +4,12 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Common.Converters"
                     xmlns:shapes="clr-namespace:Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
                     mc:Ignorable="d">
 
     <converters:RouteToWpfConverter x:Key="RouteToWpfConverter" />
-    <shapes:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />
-    <shapes:PointsToArrowHeadPathConverter x:Key="PointsToArrowHeadPathConverter" />
+    <view:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />
+    <view:PointsToArrowHeadPathConverter x:Key="PointsToArrowHeadPathConverter" />
 
     <Style TargetType="{x:Type shapes:DiagramConnectorControl}"
            d:DataContext="{d:DesignInstance {x:Type shapes:DiagramConnectorViewModel}}">

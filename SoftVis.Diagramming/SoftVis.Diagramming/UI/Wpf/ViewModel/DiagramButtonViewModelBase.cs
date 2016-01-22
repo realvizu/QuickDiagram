@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
@@ -8,7 +9,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A minibutton is a button on a diagram shape.
     /// </summary>
-    public abstract class MiniButtonViewModelBase : ViewModelBase
+    public abstract class DiagramButtonViewModelBase : ViewModelBase
     {
         private Size _size;
         private Point _topLeft;
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected MiniButtonViewModelBase(double miniButtonRadius, RectRelativeLocation rectRelativeLocation)
+        protected DiagramButtonViewModelBase(double miniButtonRadius, RectRelativeLocation rectRelativeLocation)
         {
             MiniButtonRadius = miniButtonRadius;
             RectRelativeLocation = rectRelativeLocation;
@@ -111,6 +112,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             AssociatedDiagramShapeViewModel = diagramShapeViewModel;
             TopLeft = CalculateTopLeft(diagramShapeViewModel);
             IsVisible = true;
+            IsEnabled = ((DiagramNode) diagramShapeViewModel.DiagramShape).Name.StartsWith("1");
         }
 
         public void Hide()

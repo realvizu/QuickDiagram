@@ -3,13 +3,13 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
-                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
                     xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Common.Converters"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/PositionedItemContainer.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseMiniButton.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseDiagramButton.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -17,28 +17,26 @@
 
     <Geometry x:Key="PlusSignGeometry">M -2 0 L 2 0 M 0 -2 L 0 2</Geometry>
 
-    <DataTemplate DataType="{x:Type viewModels:CloseMiniButtonViewModel}">
-        <Path Stretch="Uniform" 
-                  Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width,
-                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
-                  Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Height, 
-                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
-                  Stroke="Red"
-                  StrokeThickness="1.5"
-                  Data="M -1 -1 L 1 1 M -1 1 L 1 -1" />
+    <DataTemplate DataType="{x:Type viewModel:CloseShapeButtonViewModel}">
+        <view:PathControl Stretch="Uniform" 
+                          Foreground="Red"
+                          StrokeThickness="1.5"
+                          Data="M -1 -1 L 1 1 M -1 1 L 1 -1"
+                          Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width,
+                              Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
+                          Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Height, 
+                              Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}" />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:ShowRelatedEntityMiniButtonViewModel}">
-        <Path Stretch="Uniform" 
-              Stroke="Black"
-              StrokeThickness="1"
-              Data="{Binding ConnectorType, Converter={StaticResource ConnectorTypeToGeometryConverter}}" />
+    <DataTemplate DataType="{x:Type viewModel:ShowRelatedShapeButtonViewModel}">
+        <view:PathControl Stretch="Uniform" 
+                          Data="{Binding ConnectorType, Converter={StaticResource ConnectorTypeToGeometryConverter}}" />
     </DataTemplate>
 
     <Style x:Key="MiniButtonItemContainerStyle" 
            TargetType="{x:Type view:PositionedItemContainer}" 
            BasedOn="{StaticResource PositionedItemContainerBaseStyle}"
-           d:DataContext="{d:DesignInstance {x:Type viewModels:MiniButtonViewModelBase}}">
+           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramButtonViewModelBase}}">
         <Setter Property="Width" Value="{Binding Path=Width}"/>
         <Setter Property="Height" Value="{Binding Path=Height}"/>
         <Setter Property="X" Value="{Binding Path=Left}"/>
@@ -46,12 +44,12 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <view:MiniButton Style="{StaticResource EllipseMiniButton}"
+                    <view:DiagramButton Style="{StaticResource EllipseDiagramButton}"
                                      Width="{Binding Width}" 
                                      Height="{Binding Height}"
                                      IsEnabled="{Binding IsEnabled}"
                                      Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                     Content="{Binding}"/>
+                                     Content="{Binding}" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

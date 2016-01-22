@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes;
 
-namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes
+namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
     /// Creates a path that represents an arrow head (without the shaft).

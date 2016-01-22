@@ -5,16 +5,16 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Event data for MiniButtonActivated event.
+    /// Event data for diagram button activation.
     /// </summary>
-    internal class MiniButtonActivatedEventArgs : EventArgs
+    internal class DiagramButtonActivatedEventArgs : EventArgs
     {
         public IModelEntity ModelEntity { get; }
         public RelationshipSpecification RelationshipSpecification { get; }
         public Point AttachPoint { get; }
         public HandleOrientation HandleOrientation { get; }
 
-        public MiniButtonActivatedEventArgs(IModelEntity modelEntity, RelationshipSpecification relationshipSpecification,
+        public DiagramButtonActivatedEventArgs(IModelEntity modelEntity, RelationshipSpecification relationshipSpecification,
             Point attachPoint, HandleOrientation handleOrientation)
         {
             ModelEntity = modelEntity;

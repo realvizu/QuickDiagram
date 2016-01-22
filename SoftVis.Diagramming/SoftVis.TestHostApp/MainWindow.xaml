@@ -30,13 +30,17 @@
         </StackPanel>
         <view:DiagramControl x:Name="DiagramControl" 
                              Grid.Row="1" 
+                             
                              Background="Beige"
-                             Foreground="Blue"
-                             Fill="Ivory"
-                             Stroke="Black"
+                             Foreground="Black"
+                             DiagramFill="Bisque"
+                             DiagramStroke="Black"
+                             FontFamily="Arial"
+                             FontSize="12"
+                             
                              PanAndZoomControlHeight="120"
                              MinZoom="0.2"
                              MaxZoom="5"
-                             InitialZoom="2"/>
+                             InitialZoom="2" />
     </Grid>
 </Window>

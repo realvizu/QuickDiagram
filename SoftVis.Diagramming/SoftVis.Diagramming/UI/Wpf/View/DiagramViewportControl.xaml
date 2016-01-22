@@ -12,17 +12,17 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
              
-             view:DiagramNodeControl2.BubblingMouseEnter="OnDiagramNodeBubblingMouseEnter"
-             view:DiagramNodeControl2.BubblingMouseLeave="OnDiagramNodeBubblingMouseLeave"
-             view:MiniButton.BubblingMouseEnter="OnMiniButtonBubblingMouseEnter"
-             view:MiniButton.BubblingMouseLeave="OnMiniButtonBubblingMouseLeave" >
+             view:DiagramNodeControl2.BubblingMouseEnter="OnShapeBubblingMouseEnter"
+             view:DiagramNodeControl2.BubblingMouseLeave="OnShapeBubblingMouseLeave"
+             view:DiagramButton.BubblingMouseEnter="OnButtonBubblingMouseEnter"
+             view:DiagramButton.BubblingMouseLeave="OnButtonBubblingMouseLeave" >
 
     <UserControl.Resources>
         <ResourceDictionary>
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramItemsControl.xaml" />
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/MiniButtonItemsControl.xaml" />
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramButtonItemsControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Duration x:Key="ShortAnimationDuration">0:0:0.1</Duration>
@@ -75,7 +75,7 @@
             </i:Interaction.Behaviors>
         </view:DiagramItemsControl>
 
-        <view:MiniButtonItemsControl ItemsSource="{Binding MiniButtonViewModels}" 
+        <view:DiagramButtonItemsControl ItemsSource="{Binding MiniButtonViewModels}" 
                                      ItemsPanel="{StaticResource AnimatedTransformCanvas}"
                                      ItemContainerStyle="{StaticResource MiniButtonItemContainerStyle}"
                                      Background="{x:Null}" />
@@ -86,7 +86,6 @@
                                  Margin="10"
                                  Height="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}" 
                                  Fill="Transparent"
-                                 Stroke="Black"
                                  Opacity="0.2"
                                  MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                                  MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"

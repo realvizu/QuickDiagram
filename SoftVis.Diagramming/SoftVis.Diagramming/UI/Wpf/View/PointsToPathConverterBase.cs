@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes
+namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
     /// Creates a path from the supplied Point[] that is relative to the supplied Point.

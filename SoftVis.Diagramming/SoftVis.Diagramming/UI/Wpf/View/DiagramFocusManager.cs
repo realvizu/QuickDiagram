@@ -38,18 +38,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             var miniButtons = GetMiniButtonsForDiagramNodeControl(diagramNodeControl);
 
-            var hitMiniButton = _hitTester.HitTest<MiniButton>(e);
+            var hitMiniButton = _hitTester.HitTest<DiagramButton>(e);
             if (!miniButtons.Contains(hitMiniButton))
                 Unfocus(diagramNodeControl);
         }
 
-        public void OnMiniButtonMouseEnter(MiniButton miniButton, MouseEventArgs e)
+        public void OnMiniButtonMouseEnter(DiagramButton miniButton, MouseEventArgs e)
         {
             var diagramNodeControl = GetDiagramNodeControlForMiniButton(miniButton);
             Focus(diagramNodeControl);
         }
 
-        public void OnMiniButtonMouseLeave(MiniButton miniButton, MouseEventArgs e)
+        public void OnMiniButtonMouseLeave(DiagramButton miniButton, MouseEventArgs e)
         {
             var diagramNodeControl = GetDiagramNodeControlForMiniButton(miniButton);
             if (diagramNodeControl == null)
@@ -60,9 +60,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 Unfocus(diagramNodeControl);
         }
 
-        private DiagramNodeControl2 GetDiagramNodeControlForMiniButton(MiniButton miniButton)
+        private DiagramNodeControl2 GetDiagramNodeControlForMiniButton(DiagramButton miniButton)
         {
-            var miniButtonViewModel = miniButton.DataContext as MiniButtonViewModelBase;
+            var miniButtonViewModel = miniButton.DataContext as DiagramButtonViewModelBase;
 
             var diagramNodeControls = _parentControl.FindChildren<DiagramNodeControl2>(
                 i => i.DataContext == miniButtonViewModel?.AssociatedDiagramShapeViewModel);
@@ -70,12 +70,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return diagramNodeControls.FirstOrDefault();
         }
 
-        private IEnumerable<MiniButton> GetMiniButtonsForDiagramNodeControl(DiagramNodeControl2 diagramNodeControl)
+        private IEnumerable<DiagramButton> GetMiniButtonsForDiagramNodeControl(DiagramNodeControl2 diagramNodeControl)
         {
             var diagramShapeViewModel = diagramNodeControl.DataContext as DiagramShapeViewModelBase;
 
-            var miniButtons = _parentControl.FindChildren<MiniButton>(
-                i => ((MiniButtonViewModelBase)i.DataContext).AssociatedDiagramShapeViewModel == diagramShapeViewModel);
+            var miniButtons = _parentControl.FindChildren<DiagramButton>(
+                i => ((DiagramButtonViewModelBase)i.DataContext).AssociatedDiagramShapeViewModel == diagramShapeViewModel);
 
             return miniButtons;
         }

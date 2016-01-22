@@ -11,6 +11,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public partial class DiagramNodeControl2 : UserControl
     {
+        public static readonly DependencyProperty DiagramFillProperty =
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramNodeControl2));
+
+        public static readonly DependencyProperty DiagramStrokeProperty =
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeControl2));
+
         public static readonly DependencyProperty FocusCommandProperty =
             DependencyProperty.Register("FocusCommand", typeof(ICommand), typeof(DiagramNodeControl2));
 
@@ -29,6 +35,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             InitializeComponent();
             Focusable = true;
+        }
+
+        public Brush DiagramFill
+        {
+            get { return (Brush)GetValue(DiagramFillProperty); }
+            set { SetValue(DiagramFillProperty, value); }
+        }
+
+        public Brush DiagramStroke
+        {
+            get { return (Brush)GetValue(DiagramStrokeProperty); }
+            set { SetValue(DiagramStrokeProperty, value); }
         }
 
         public ICommand FocusCommand

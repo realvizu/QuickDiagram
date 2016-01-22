@@ -32,11 +32,11 @@ namespace Codartis.SoftVis.UI.Wpf
 
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
-            ShowRelatedEntitySelectorCommand = new DelegateCommand(i => ShowRelationshipSelector((MiniButtonActivatedEventArgs)i));
+            ShowRelatedEntitySelectorCommand = new DelegateCommand(i => ShowRelationshipSelector((DiagramButtonActivatedEventArgs)i));
             HideRelatedEntitySelectorCommand = new DelegateCommand(i => HideRelationshipSelector());
         }
 
-        private void ShowRelationshipSelector(MiniButtonActivatedEventArgs e)
+        private void ShowRelationshipSelector(DiagramButtonActivatedEventArgs e)
         {
             var relatedEntities = Model.GetRelatedEntities(e.ModelEntity, e.RelationshipSpecification).ToList();
             RelatedEntitySelectorViewModel.Show(e.AttachPoint, e.HandleOrientation, relatedEntities);

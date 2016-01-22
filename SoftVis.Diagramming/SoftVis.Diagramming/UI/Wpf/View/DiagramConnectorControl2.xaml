@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:shapes="clr-namespace:Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              mc:Ignorable="d" 
@@ -12,12 +11,12 @@
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel2}}">
 
     <UserControl.Resources>
-        <shapes:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />
-        <shapes:PointsToArrowHeadPathConverter x:Key="PointsToArrowHeadPathConverter" />
+        <view:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />
+        <view:PointsToArrowHeadPathConverter x:Key="PointsToArrowHeadPathConverter" />
     </UserControl.Resources>
     
     <Grid>
-        <Path Stroke="{Binding Path=Stroke, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}"
+        <Path Stroke="{Binding Path=DiagramStroke, ElementName=ThisControl}"
               StrokeThickness="1"
               StrokeDashArray="{Binding Path=StrokeDashArray}">
             <Path.Data>
@@ -28,7 +27,7 @@
                 </MultiBinding>
             </Path.Data>
         </Path>
-        <Path Stroke="{Binding Path=Stroke, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramControl}}}"
+        <Path Stroke="{Binding Path=DiagramStroke, ElementName=ThisControl}"
               StrokeThickness="1">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowHeadPathConverter}">

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -11,7 +10,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     internal class TransformCanvas : Canvas
     {
-        private static readonly Size UnlimitedSize = new Size(Double.PositiveInfinity, Double.PositiveInfinity);
+        private static readonly Size UnlimitedSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
         static TransformCanvas()
         {
@@ -24,10 +23,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(Transform.Identity,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsArrange));
-
-        public TransformCanvas()
-        {
-        }
 
         public Transform Transform
         {

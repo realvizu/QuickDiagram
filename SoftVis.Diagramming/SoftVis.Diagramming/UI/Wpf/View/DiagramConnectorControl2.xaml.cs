@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Animations;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -14,6 +15,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
     public partial class DiagramConnectorControl2 : UserControl
     {
         private static readonly Duration AnimationDurationDefault = TimeSpan.FromMilliseconds(250);
+
+        public static readonly DependencyProperty DiagramFillProperty =
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramConnectorControl2));
+
+        public static readonly DependencyProperty DiagramStrokeProperty =
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramConnectorControl2));
 
         public static readonly DependencyProperty RoutePointsProperty =
             DependencyProperty.Register("RoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl2),
@@ -44,6 +51,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public DiagramConnectorControl2()
         {
             InitializeComponent();
+        }
+
+        public Brush DiagramFill
+        {
+            get { return (Brush)GetValue(DiagramFillProperty); }
+            set { SetValue(DiagramFillProperty, value); }
+        }
+
+        public Brush DiagramStroke
+        {
+            get { return (Brush)GetValue(DiagramStrokeProperty); }
+            set { SetValue(DiagramStrokeProperty, value); }
         }
 
         public IList<Point> RoutePoints
