@@ -246,7 +246,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
 
             if (DiagramBehaviourProvider != null)
             {
-                foreach (var descriptor in DiagramBehaviourProvider.GetRelatedEntityMiniButtonDescriptors())
+                foreach (var descriptor in DiagramBehaviourProvider.GetRelatedEntityButtonDescriptors())
                 {
                     var relatedEntityMiniButton = CreateRelatedEntityMiniButton(control, descriptor);
                     AddMiniButton(adornerLayer, relatedEntityMiniButton);
@@ -280,9 +280,9 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport
         }
 
         private ShowRelatedEntityMiniButton CreateRelatedEntityMiniButton(DiagramNodeControl control,
-            RelatedEntityMiniButtonDescriptor relatedEntityMiniButtonDescriptor)
+            RelatedEntityButtonDescriptor relatedEntityButtonDescriptor)
         {
-            var showRelatedEntityMiniButton = new ShowRelatedEntityMiniButton(relatedEntityMiniButtonDescriptor, control);
+            var showRelatedEntityMiniButton = new ShowRelatedEntityMiniButton(relatedEntityButtonDescriptor, control);
             showRelatedEntityMiniButton.MouseEnter += OnMiniButtonMouseEnterOrLeave;
             showRelatedEntityMiniButton.MouseLeave += OnMiniButtonMouseEnterOrLeave;
             showRelatedEntityMiniButton.MouseLeftButtonUp += OnRelatedEntityMiniButtonClick;

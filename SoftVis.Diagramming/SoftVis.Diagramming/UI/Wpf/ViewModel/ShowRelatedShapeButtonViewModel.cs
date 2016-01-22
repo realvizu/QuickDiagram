@@ -9,11 +9,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class ShowRelatedShapeButtonViewModel : DiagramButtonViewModelBase
     {
-        private readonly RelatedEntityMiniButtonDescriptor _descriptor;
+        private readonly RelatedEntityButtonDescriptor _descriptor;
 
-        public ShowRelatedShapeButtonViewModel(double miniButtonRadius,
-            RelatedEntityMiniButtonDescriptor descriptor)
-            : base(miniButtonRadius, descriptor.MiniButtonLocation)
+        public ShowRelatedShapeButtonViewModel(double buttonRadius,
+            RelatedEntityButtonDescriptor descriptor)
+            : base(buttonRadius, descriptor.ButtonLocation)
         {
             _descriptor = descriptor;
         }

@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniBut
     /// </summary>
     internal abstract class MiniButtonBase : Adorner
     {
-        protected const double MiniButtonRadius = DefaultDiagramBehaviourProvider.MiniButtonRadius;
+        protected const double MiniButtonRadius = DefaultDiagramBehaviourProvider.ButtonRadius;
         private const double ButtonFrameThickness = 1d;
 
         public DiagramShapeControlBase AdornedShape { get; }

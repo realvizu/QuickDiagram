@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Diagram _diagram;
         private readonly Map<DiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
-        private readonly DiagramButtonCollectionViewModel _miniButtonCollectionViewModel;
+        private readonly DiagramButtonCollectionViewModel _diagramButtonCollectionViewModel;
         private Rect _diagramContentRect;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagram = diagram;
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram.ConnectorTypeResolver);
-            _miniButtonCollectionViewModel = new DiagramButtonCollectionViewModel(diagramBehaviourProvider);
+            _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(diagramBehaviourProvider);
             _diagramContentRect = Rect.Empty;
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
@@ -40,8 +40,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             AddDiagram(diagram);
         }
 
-        public ObservableCollection<DiagramButtonViewModelBase> MiniButtonViewModels
-            => _miniButtonCollectionViewModel.MiniButtonViewModels;
+        public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels
+            => _diagramButtonCollectionViewModel.DiagramButtonViewModels;
 
         public Rect DiagramContentRect
         {
@@ -119,7 +119,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeViewModel == null)
                 throw new ArgumentException("DiagramShapeViewModelBase expected");
 
-           _miniButtonCollectionViewModel.AssignMiniButtonsTo(diagramShapeViewModel);
+           _diagramButtonCollectionViewModel.AssignButtonsTo(diagramShapeViewModel);
         }
 
         private void OnShapeUnfocused(FocusableViewModelBase focusableViewModel)
@@ -128,8 +128,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeViewModel == null)
                 throw new ArgumentException("DiagramShapeViewModelBase expected");
 
-            if (_miniButtonCollectionViewModel.AreMiniButtonsAssignedTo(diagramShapeViewModel))
-                _miniButtonCollectionViewModel.HideMiniButtons();
+            if (_diagramButtonCollectionViewModel.AreButtonsAssignedTo(diagramShapeViewModel))
+                _diagramButtonCollectionViewModel.HideButtons();
         }
     }
 }

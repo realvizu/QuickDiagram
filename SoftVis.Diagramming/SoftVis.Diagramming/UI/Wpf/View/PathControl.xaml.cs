@@ -11,8 +11,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public partial class PathControl : UserControl
     {
-        public static readonly DependencyProperty DiagramFillProperty = DiagramVisual.DiagramFillProperty.AddOwner(typeof(PathControl));
-        public static readonly DependencyProperty DiagramStrokeProperty = DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(PathControl));
         public static readonly DependencyProperty StrokeThicknessProperty = Shape.StrokeThicknessProperty.AddOwner(typeof(PathControl));
         public static readonly DependencyProperty StretchProperty = Shape.StretchProperty.AddOwner(typeof(PathControl));
         public static readonly DependencyProperty DataProperty = Path.DataProperty.AddOwner(typeof(PathControl));
@@ -20,18 +18,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public PathControl()
         {
             InitializeComponent();
-        }
-
-        public Brush DiagramFill
-        {
-            get { return (Brush)GetValue(DiagramFillProperty); }
-            set { SetValue(DiagramFillProperty, value); }
-        }
-
-        public Brush DiagramStroke
-        {
-            get { return (Brush)GetValue(DiagramStrokeProperty); }
-            set { SetValue(DiagramStrokeProperty, value); }
         }
 
         public double StrokeThickness

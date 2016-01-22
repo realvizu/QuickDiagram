@@ -75,9 +75,9 @@
             </i:Interaction.Behaviors>
         </view:DiagramItemsControl>
 
-        <view:DiagramButtonItemsControl ItemsSource="{Binding MiniButtonViewModels}" 
+        <view:DiagramButtonItemsControl ItemsSource="{Binding DiagramButtonViewModels}" 
                                      ItemsPanel="{StaticResource AnimatedTransformCanvas}"
-                                     ItemContainerStyle="{StaticResource MiniButtonItemContainerStyle}"
+                                     ItemContainerStyle="{StaticResource DiagramButtonItemContainerStyle}"
                                      Background="{x:Null}" />
 
         <view:PanAndZoomControl2 Focusable="False"

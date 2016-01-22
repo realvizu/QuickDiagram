@@ -21,18 +21,18 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniBut
         private static readonly WpfGeometry SimpleArrowShaftGeometry = WpfGeometry.Parse("M 0 0 L 0 5");
         private static readonly WpfGeometry DashedArrowShaftGeometry = WpfGeometry.Parse("M 0 1 L 0 2.5 M 0 3.5 L 0 5");
 
-        private readonly RelatedEntityMiniButtonDescriptor _miniButtonDescriptor;
+        private readonly RelatedEntityButtonDescriptor _buttonDescriptor;
 
-        public ShowRelatedEntityMiniButton(RelatedEntityMiniButtonDescriptor miniButtonDescriptor,
+        public ShowRelatedEntityMiniButton(RelatedEntityButtonDescriptor buttonDescriptor,
             DiagramNodeControl adornedDiagramNodeControl, Visibility initialVisibility = Visibility.Visible)
             : base(adornedDiagramNodeControl, initialVisibility)
         {
-            _miniButtonDescriptor = miniButtonDescriptor;
+            _buttonDescriptor = buttonDescriptor;
         }
 
         public DiagramNodeControl AdornedDiagramNodeControl => (DiagramNodeControl) AdornedShape;
-        public RelationshipSpecification RelationshipSpecification => _miniButtonDescriptor.RelationshipSpecification;
-        public RectRelativeLocation MiniButtonLocation => _miniButtonDescriptor.MiniButtonLocation;
+        public RelationshipSpecification RelationshipSpecification => _buttonDescriptor.RelationshipSpecification;
+        public RectRelativeLocation MiniButtonLocation => _buttonDescriptor.ButtonLocation;
 
         public Rect GetRect(Point adornedElementTopLeft)
         {
@@ -44,14 +44,14 @@ namespace Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniBut
 
         protected override Point GetButtonCenterRelativeToAdornedControl()
         {
-            return new Rect(AdornedElement.DesiredSize).GetRelativePoint(_miniButtonDescriptor.MiniButtonLocation);
+            return new Rect(AdornedElement.DesiredSize).GetRelativePoint(_buttonDescriptor.ButtonLocation);
         }
 
         protected override void DrawPicture(DrawingContext drawingContext, Point center)
         {
             var pen = new Pen(AdornedShape.Foreground, 1);
             var brush = AdornedShape.Background;
-            var geometry = GetConnectorGeometry(_miniButtonDescriptor.ConnectorType, center);
+            var geometry = GetConnectorGeometry(_buttonDescriptor.ConnectorType, center);
             drawingContext.DrawGeometry(brush, pen, geometry);
         }
 

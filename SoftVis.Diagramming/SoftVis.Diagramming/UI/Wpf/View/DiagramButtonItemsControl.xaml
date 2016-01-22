@@ -33,7 +33,7 @@
                           Data="{Binding ConnectorType, Converter={StaticResource ConnectorTypeToGeometryConverter}}" />
     </DataTemplate>
 
-    <Style x:Key="MiniButtonItemContainerStyle" 
+    <Style x:Key="DiagramButtonItemContainerStyle" 
            TargetType="{x:Type view:PositionedItemContainer}" 
            BasedOn="{StaticResource PositionedItemContainerBaseStyle}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramButtonViewModelBase}}">

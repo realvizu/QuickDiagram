@@ -258,14 +258,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
         {
-            var miniButton = (DiagramButton)e.OriginalSource;
-            _diagramFocusManager.OnMiniButtonMouseEnter(miniButton, e.MouseEventArgs);
+            var diagramButton = (DiagramButton)e.OriginalSource;
+            _diagramFocusManager.OnDiagramButtonMouseEnter(diagramButton, e.MouseEventArgs);
         }
 
         private void OnButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
         {
-            var miniButton = (DiagramButton)e.OriginalSource;
-            _diagramFocusManager.OnMiniButtonMouseLeave(miniButton, e.MouseEventArgs);
+            var diagramButton = (DiagramButton)e.OriginalSource;
+            _diagramFocusManager.OnDiagramButtonMouseLeave(diagramButton, e.MouseEventArgs);
         }
     }
 }

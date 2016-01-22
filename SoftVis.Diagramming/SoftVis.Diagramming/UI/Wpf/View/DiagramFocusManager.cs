@@ -36,48 +36,48 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public void OnDiagramNodeMouseLeave(DiagramNodeControl2 diagramNodeControl, MouseEventArgs e)
         {
-            var miniButtons = GetMiniButtonsForDiagramNodeControl(diagramNodeControl);
+            var diagramButtons = GetButtonsForDiagramNodeControl(diagramNodeControl);
 
-            var hitMiniButton = _hitTester.HitTest<DiagramButton>(e);
-            if (!miniButtons.Contains(hitMiniButton))
+            var diagramButtonHit = _hitTester.HitTest<DiagramButton>(e);
+            if (!diagramButtons.Contains(diagramButtonHit))
                 Unfocus(diagramNodeControl);
         }
 
-        public void OnMiniButtonMouseEnter(DiagramButton miniButton, MouseEventArgs e)
+        public void OnDiagramButtonMouseEnter(DiagramButton diagramButton, MouseEventArgs e)
         {
-            var diagramNodeControl = GetDiagramNodeControlForMiniButton(miniButton);
+            var diagramNodeControl = GetDiagramNodeControlForButton(diagramButton);
             Focus(diagramNodeControl);
         }
 
-        public void OnMiniButtonMouseLeave(DiagramButton miniButton, MouseEventArgs e)
+        public void OnDiagramButtonMouseLeave(DiagramButton diagramButton, MouseEventArgs e)
         {
-            var diagramNodeControl = GetDiagramNodeControlForMiniButton(miniButton);
+            var diagramNodeControl = GetDiagramNodeControlForButton(diagramButton);
             if (diagramNodeControl == null)
                 return;
 
-            var hitDiagramNodeControl = _hitTester.HitTest<DiagramNodeControl2>(e);
-            if (diagramNodeControl != hitDiagramNodeControl)
+            var diagramNodeControlHit = _hitTester.HitTest<DiagramNodeControl2>(e);
+            if (diagramNodeControl != diagramNodeControlHit)
                 Unfocus(diagramNodeControl);
         }
 
-        private DiagramNodeControl2 GetDiagramNodeControlForMiniButton(DiagramButton miniButton)
+        private DiagramNodeControl2 GetDiagramNodeControlForButton(DiagramButton diagramButton)
         {
-            var miniButtonViewModel = miniButton.DataContext as DiagramButtonViewModelBase;
+            var diagramButtonViewModel = diagramButton.DataContext as DiagramButtonViewModelBase;
 
             var diagramNodeControls = _parentControl.FindChildren<DiagramNodeControl2>(
-                i => i.DataContext == miniButtonViewModel?.AssociatedDiagramShapeViewModel);
+                i => i.DataContext == diagramButtonViewModel?.AssociatedDiagramShapeViewModel);
 
             return diagramNodeControls.FirstOrDefault();
         }
 
-        private IEnumerable<DiagramButton> GetMiniButtonsForDiagramNodeControl(DiagramNodeControl2 diagramNodeControl)
+        private IEnumerable<DiagramButton> GetButtonsForDiagramNodeControl(DiagramNodeControl2 diagramNodeControl)
         {
             var diagramShapeViewModel = diagramNodeControl.DataContext as DiagramShapeViewModelBase;
 
-            var miniButtons = _parentControl.FindChildren<DiagramButton>(
+            var diagramButtons = _parentControl.FindChildren<DiagramButton>(
                 i => ((DiagramButtonViewModelBase)i.DataContext).AssociatedDiagramShapeViewModel == diagramShapeViewModel);
 
-            return miniButtons;
+            return diagramButtons;
         }
 
         private static void Focus(DiagramNodeControl2 diagramNodeControl)

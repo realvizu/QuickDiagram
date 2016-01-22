@@ -211,7 +211,7 @@
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\MiniButtonBase.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\ShowRelatedEntityMiniButton.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\CloseMiniButton.cs" />
-    <Compile Include="UI\Extensibility\RelatedEntityMiniButtonDescriptor.cs" />
+    <Compile Include="UI\Extensibility\RelatedEntityButtonDescriptor.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
     <Compile Include="UI\Wpf\View\PathControl.xaml.cs">
       <DependentUpon>PathControl.xaml</DependentUpon>

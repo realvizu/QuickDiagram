@@ -10,40 +10,40 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramButtonCollectionViewModel
     {
-        private readonly DiagramButtonViewModelFactory _miniButtonViewModelFactory;
+        private readonly DiagramButtonViewModelFactory _diagramButtonViewModelFactory;
 
-        public ObservableCollection<DiagramButtonViewModelBase> MiniButtonViewModels { get; }
+        public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels { get; }
 
         public DiagramButtonCollectionViewModel(IDiagramBehaviourProvider diagramBehaviourProvider)
         {
-            _miniButtonViewModelFactory = new DiagramButtonViewModelFactory(diagramBehaviourProvider,
+            _diagramButtonViewModelFactory = new DiagramButtonViewModelFactory(diagramBehaviourProvider,
                 DiagramDefaults.ButtonRadius, DiagramDefaults.ButtonOverlapParentBy);
 
-            MiniButtonViewModels = new ObservableCollection<DiagramButtonViewModelBase>();
-            CreateMiniButtons();
+            DiagramButtonViewModels = new ObservableCollection<DiagramButtonViewModelBase>();
+            CreateButtons();
         }
 
-        public void AssignMiniButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)
+        public void AssignButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            foreach (var miniButtonViewModel in MiniButtonViewModels)
-                miniButtonViewModel.AssociateWith(diagramShapeViewModel);
+            foreach (var buttonViewModel in DiagramButtonViewModels)
+                buttonViewModel.AssociateWith(diagramShapeViewModel);
         }
 
-        public bool AreMiniButtonsAssignedTo(DiagramShapeViewModelBase diagramShapeViewModel)
+        public bool AreButtonsAssignedTo(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            return MiniButtonViewModels.Any(i => i.AssociatedDiagramShapeViewModel == diagramShapeViewModel);
+            return DiagramButtonViewModels.Any(i => i.AssociatedDiagramShapeViewModel == diagramShapeViewModel);
         }
 
-        public void HideMiniButtons()
+        public void HideButtons()
         {
-            foreach (var miniButtonViewModel in MiniButtonViewModels)
-                miniButtonViewModel.Hide();
+            foreach (var buttonViewModel in DiagramButtonViewModels)
+                buttonViewModel.Hide();
         }
 
-        private void CreateMiniButtons()
+        private void CreateButtons()
         {
-            foreach (var miniButtonViewModel in _miniButtonViewModelFactory.CreateButtons())
-                MiniButtonViewModels.Add(miniButtonViewModel);
+            foreach (var buttonViewModel in _diagramButtonViewModelFactory.CreateButtons())
+                DiagramButtonViewModels.Add(buttonViewModel);
         }
     }
 }

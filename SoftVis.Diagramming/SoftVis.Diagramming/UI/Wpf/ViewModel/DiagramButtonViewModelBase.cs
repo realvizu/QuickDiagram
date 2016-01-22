@@ -7,7 +7,7 @@ using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// A minibutton is a button on a diagram shape.
+    /// A button on a diagram shape.
     /// </summary>
     public abstract class DiagramButtonViewModelBase : ViewModelBase
     {
@@ -17,17 +17,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool _isEnabled;
         private ICommand _buttonClickedCommand;
 
-        protected double MiniButtonRadius { get; }
+        protected double ButtonRadius { get; }
         protected RectRelativeLocation RectRelativeLocation { get; }
 
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramButtonViewModelBase(double miniButtonRadius, RectRelativeLocation rectRelativeLocation)
+        protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation)
         {
-            MiniButtonRadius = miniButtonRadius;
+            ButtonRadius = buttonRadius;
             RectRelativeLocation = rectRelativeLocation;
 
-            _size = new Size(miniButtonRadius*2, miniButtonRadius*2);
+            _size = new Size(buttonRadius*2, buttonRadius*2);
             _isVisible = false;
             _isEnabled = true;
         }
@@ -124,7 +124,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var parentTopLeft = diagramShapeViewModel.Position;
             var parentTopLeftToButtonCenter = GetButtonCenterRelativeToDiagramShape(diagramShapeViewModel.Size);
-            var buttonCenterToButtonTopLeft = new Vector(-MiniButtonRadius, -MiniButtonRadius);
+            var buttonCenterToButtonTopLeft = new Vector(-ButtonRadius, -ButtonRadius);
             var location = parentTopLeft + parentTopLeftToButtonCenter + buttonCenterToButtonTopLeft;
             return location;
         }
