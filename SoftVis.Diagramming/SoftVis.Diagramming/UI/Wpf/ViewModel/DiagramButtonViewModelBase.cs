@@ -117,6 +117,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Hide()
         {
+            AssociatedDiagramShapeViewModel = null;
             IsVisible = false;
         }
 

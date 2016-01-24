@@ -6,7 +6,6 @@ using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Animations;
 using Codartis.SoftVis.UI.Wpf.Commands;
-using Codartis.SoftVis.UI.Wpf.RoutedEvents;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -25,7 +24,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double PanAndZoomControlSizeDefault = 100;
 
         private readonly Viewport _viewport;
-        private readonly DiagramFocusManager _diagramFocusManager;
+        private readonly DiagramFocusTracker _diagramFocusTracker;
+        private bool _isViewportObscured;
 
         public static readonly DependencyProperty DiagramFillProperty =
             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramViewportControl));
@@ -123,7 +123,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             _viewport = new Viewport(ViewportSizeDefault, ViewportCenterDefault, LinearViewportZoomDefault,
                 MinZoomDefault, MaxZoomDefault);
-            _diagramFocusManager = new DiagramFocusManager(this);
+            _diagramFocusTracker = new DiagramFocusTracker(this);
+            _isViewportObscured = false;
 
             InitializeComponent();
 
@@ -233,39 +234,26 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return newLinearZoom;
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (!_isViewportObscured)
+                _diagramFocusTracker.TrackMouse(e);
+        }
+
         protected override void OnMouseLeave(MouseEventArgs e)
         {
-            base.OnMouseLeave(e);
-            _diagramFocusManager.UnfocusAll();
+            _diagramFocusTracker.Unfocus();
         }
 
         private void OnPanAndZoomControlMouseEnter(object sender, MouseEventArgs e)
         {
-            _diagramFocusManager.UnfocusAll();
+            _isViewportObscured = true;
+            _diagramFocusTracker.Unfocus();
         }
 
-        private void OnShapeBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
+        private void OnPanAndZoomControlMouseLeave(object sender, MouseEventArgs e)
         {
-            var diagramNodeControl = (DiagramNodeControl2)e.OriginalSource;
-            _diagramFocusManager.OnDiagramNodeMouseEnter(diagramNodeControl, e.MouseEventArgs);
-        }
-
-        private void OnShapeBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
-        {
-            var diagramNodeControl = (DiagramNodeControl2)e.OriginalSource;
-            _diagramFocusManager.OnDiagramNodeMouseLeave(diagramNodeControl, e.MouseEventArgs);
-        }
-
-        private void OnButtonBubblingMouseEnter(object sender, BubblingMouseRoutedEventArgs e)
-        {
-            var diagramButton = (DiagramButton)e.OriginalSource;
-            _diagramFocusManager.OnDiagramButtonMouseEnter(diagramButton, e.MouseEventArgs);
-        }
-
-        private void OnButtonBubblingMouseLeave(object sender, BubblingMouseRoutedEventArgs e)
-        {
-            var diagramButton = (DiagramButton)e.OriginalSource;
-            _diagramFocusManager.OnDiagramButtonMouseLeave(diagramButton, e.MouseEventArgs);
+            _isViewportObscured = false;
         }
     }
 }

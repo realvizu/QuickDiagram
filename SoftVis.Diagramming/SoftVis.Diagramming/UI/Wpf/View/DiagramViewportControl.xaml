@@ -10,12 +10,7 @@
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
-             
-             view:DiagramNodeControl2.BubblingMouseEnter="OnShapeBubblingMouseEnter"
-             view:DiagramNodeControl2.BubblingMouseLeave="OnShapeBubblingMouseLeave"
-             view:DiagramButton.BubblingMouseEnter="OnButtonBubblingMouseEnter"
-             view:DiagramButton.BubblingMouseLeave="OnButtonBubblingMouseLeave" >
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -95,6 +90,7 @@
                                  ZoomCommand="{Binding Path=WidgetZoomCommand, ElementName=ThisControl, Mode=OneWay}"
                                  VectorPanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
                                  CenterCommand="{Binding Path=FitToContentCommand, ElementName=ThisControl, Mode=OneWay}"
-                                 MouseEnter="OnPanAndZoomControlMouseEnter"/>
+                                 MouseEnter="OnPanAndZoomControlMouseEnter"
+                                 MouseLeave="OnPanAndZoomControlMouseLeave"/>
     </Grid>
 </UserControl>

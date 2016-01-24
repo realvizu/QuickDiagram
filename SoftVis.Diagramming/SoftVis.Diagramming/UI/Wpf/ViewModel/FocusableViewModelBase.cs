@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class FocusableViewModelBase : ViewModelBase
     {
-        private bool _isFocused;
+        public bool IsFocused { get; private set; }
 
         public ICommand FocusCommand { get; set; }
         public ICommand UnfocusCommand { get; set; }
@@ -27,18 +27,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Focus()
         {
-            if (!_isFocused)
+            if (!IsFocused)
             {
-                _isFocused = true;
+                IsFocused = true;
                 GotFocus?.Invoke(this);
             }
         }
 
         public void Unfocus()
         {
-            if (_isFocused)
+            if (IsFocused)
             {
-                _isFocused = false;
+                IsFocused = false;
                 LostFocus?.Invoke(this);
             }
         }
