@@ -7,7 +7,7 @@ using WpfGeometry = System.Windows.Media.Geometry;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for PathControl.xaml
+    /// Wraps a Path shape into a UserControl so it can inherit Foreground and other properties.
     /// </summary>
     public partial class PathControl : UserControl
     {

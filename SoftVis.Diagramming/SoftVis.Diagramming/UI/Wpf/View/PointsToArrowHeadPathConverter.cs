@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

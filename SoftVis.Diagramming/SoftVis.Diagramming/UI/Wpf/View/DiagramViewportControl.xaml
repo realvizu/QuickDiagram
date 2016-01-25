@@ -82,8 +82,6 @@
                                  Height="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}" 
                                  Fill="Transparent"
                                  Opacity="0.2"
-                                 MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
-                                 MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
                                  ZoomIncrement="{Binding Path=LargeZoomIncrement, ElementName=ThisControl, Mode=OneWay}"
                                  PanAmount="50"
                                  ZoomValue="{Binding Path=LinearViewportZoom, ElementName=ThisControl, Mode=OneWay}"

@@ -7,18 +7,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
 {
     partial class DiagramViewportControl
     {
-        public Brush DiagramFill
-        {
-            get { return (Brush)GetValue(DiagramFillProperty); }
-            set { SetValue(DiagramFillProperty, value); }
-        }
-
-        public Brush DiagramStroke
-        {
-            get { return (Brush)GetValue(DiagramStrokeProperty); }
-            set { SetValue(DiagramStrokeProperty, value); }
-        }
-
         public double MinZoom
         {
             get { return (double)GetValue(MinZoomProperty); }

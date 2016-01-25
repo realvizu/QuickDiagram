@@ -11,11 +11,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public partial class DiagramControl : UserControl
     {
-        private const double MinZoomDefault = .2d;
-        private const double MaxZoomDefault = 5d;
-        private const double InitialZoomDefault = 1d;
-        private const double PanAndZoomControlSizeDefault = 120d;
-
         private readonly ResourceDictionary _additionalResourceDictionary;
 
         public static readonly DependencyProperty DiagramFillProperty =
@@ -25,20 +20,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramControl));
 
         public static readonly DependencyProperty MinZoomProperty =
-            DependencyProperty.Register("MinZoom", typeof(double), typeof(DiagramControl),
-                new FrameworkPropertyMetadata(MinZoomDefault));
+            ZoomableVisual.MinZoomProperty.AddOwner(typeof(DiagramControl));
 
         public static readonly DependencyProperty MaxZoomProperty =
-            DependencyProperty.Register("MaxZoom", typeof(double), typeof(DiagramControl),
-                new FrameworkPropertyMetadata(MaxZoomDefault));
+            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(DiagramControl));
 
         public static readonly DependencyProperty InitialZoomProperty =
-            DependencyProperty.Register("InitialZoom", typeof(double), typeof(DiagramControl),
-                new PropertyMetadata(InitialZoomDefault));
+            ZoomableVisual.InitialZoomProperty.AddOwner(typeof(DiagramControl));
 
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
-            DependencyProperty.Register("PanAndZoomControlHeight", typeof(double), typeof(DiagramControl),
-                new PropertyMetadata(PanAndZoomControlSizeDefault));
+            DiagramViewportControl.PanAndZoomControlHeightProperty.AddOwner(typeof(DiagramControl));
 
         public DiagramControl()
         {
@@ -89,7 +80,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public void FitToContent()
         {
-            DiagramViewportControl.FitToContentCommand?.Execute(null);
+            TheDiagramViewportControl.FitToContentCommand?.Execute(null);
         }
 
         public override void OnApplyTemplate()
@@ -102,7 +93,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            Keyboard.Focus(DiagramViewportControl);
+            Keyboard.Focus(TheDiagramViewportControl);
         }
     }
 }

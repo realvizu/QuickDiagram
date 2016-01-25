@@ -23,15 +23,11 @@
     </UserControl.Resources>
 
     <Canvas x:Name="Canvas">
-        <local:DiagramViewportControl x:Name="DiagramViewportControl"
+        <local:DiagramViewportControl x:Name="TheDiagramViewportControl"
                                       DataContext="{Binding Path=DiagramViewportViewModel}"
                                       DiagramContentRect="{Binding Path=DiagramContentRect}"
                                       Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
-                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"
-                                      MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
-                                      MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
-                                      InitialZoom="{Binding Path=InitialZoom, ElementName=ThisControl, Mode=OneWay}"
-                                      PanAndZoomControlHeight="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}" />
+                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}" />
 
         <local:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
                                      Width="{Binding Path=Width}" 

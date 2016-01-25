@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
@@ -15,24 +16,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
     {
         private const double WidthPerHeightRatio = 3d / 10d;
 
-        private static readonly Brush FillDefault = Brushes.Transparent;
-        private const double MinZoomDefault = .1d;
-        private const double MaxZoomDefault = 10d;
         private const double ZoomValueDefault = 1d;
         private const double ZoomIncrementDefault = .5d;
         private const double PanAmountDefault = 50d;
 
         public static readonly DependencyProperty FillProperty =
-            DependencyProperty.Register("Fill", typeof(Brush), typeof(PanAndZoomControl2),
-                new FrameworkPropertyMetadata(FillDefault));
+            Shape.FillProperty.AddOwner(typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty MinZoomProperty =
-            DependencyProperty.Register("MinZoom", typeof(double), typeof(PanAndZoomControl2),
-                new FrameworkPropertyMetadata(MinZoomDefault));
+            ZoomableVisual.MinZoomProperty.AddOwner(typeof (PanAndZoomControl2));
 
         public static readonly DependencyProperty MaxZoomProperty =
-            DependencyProperty.Register("MaxZoom", typeof(double), typeof(PanAndZoomControl2),
-                new FrameworkPropertyMetadata(MaxZoomDefault));
+            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty ZoomIncrementProperty =
             DependencyProperty.Register("ZoomIncrement", typeof(double), typeof(PanAndZoomControl2),

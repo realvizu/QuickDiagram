@@ -15,8 +15,6 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:ConnectorTypeToGeometryConverter x:Key="ConnectorTypeToGeometryConverter"/>
 
-    <Geometry x:Key="PlusSignGeometry">M -2 0 L 2 0 M 0 -2 L 0 2</Geometry>
-
     <DataTemplate DataType="{x:Type viewModel:CloseShapeButtonViewModel}">
         <view:PathControl Stretch="Uniform" 
                           Foreground="Red"
