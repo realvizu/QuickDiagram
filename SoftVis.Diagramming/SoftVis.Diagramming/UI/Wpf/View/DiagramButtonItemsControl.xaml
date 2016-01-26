@@ -42,12 +42,18 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <view:DiagramButton Style="{StaticResource EllipseDiagramButton}"
-                                     Width="{Binding Width}" 
-                                     Height="{Binding Height}"
-                                     IsEnabled="{Binding IsEnabled}"
-                                     Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                     Content="{Binding}" />
+                    <!--<view:DiagramButton Style="{StaticResource EllipseDiagramButton}"
+                                        Width="{Binding Width}" 
+                                        Height="{Binding Height}"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Content="{Binding}"
+                                        Command="{Binding Command}"/>-->
+                    <Button  Width="10" 
+                                        Height="10"
+                                        IsEnabled="True"
+                                        Visibility="Visible"
+                                        Command="{Binding Command}" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

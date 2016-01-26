@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -10,6 +11,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private Point _position;
         private Size _size;
+
+        public event Action<DiagramShape> RemoveRequested;
 
         public abstract DiagramShape DiagramShape { get; }
 
@@ -50,5 +53,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double Height => Size.Height;
 
         public abstract void UpdateState();
+
+        public void Remove() => RemoveRequested?.Invoke(DiagramShape);
     }
 }

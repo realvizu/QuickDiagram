@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -20,15 +20,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
 
-        private readonly DiagramControl _diagramControl;
+        private DiagramViewModel _diagramViewModel;
+        private DiagramControl _diagramControl;
 
         public Dpi ImageExportDpi { get; set; }
 
         public DiagramToolWindow() : base(null)
         {
-            var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
-            _diagramControl = new DiagramControl(resourceDictionary);
-
             Caption = "Diagram";
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
             Content = _diagramControl;
@@ -38,7 +36,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         internal void Initialize(IModel model, Diagram diagram)
         {
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
-            _diagramControl.DataContext = new DiagramViewerViewModel(model, diagram, diagramBehaviourProvider);
+            _diagramViewModel = new DiagramViewModel(model, diagram, diagramBehaviourProvider, .1, 10, 1);
+
+            var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
+            _diagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};
         }
 
         public int FontSize
@@ -55,7 +56,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public void FitDiagramToView()
         {
-            _diagramControl.FitToContent();
+            _diagramViewModel.ZoomToContent();
         }
 
         public BitmapSource GetDiagramAsBitmap()

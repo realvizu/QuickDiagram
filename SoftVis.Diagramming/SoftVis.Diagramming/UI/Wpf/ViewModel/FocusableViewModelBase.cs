@@ -21,8 +21,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected FocusableViewModelBase()
         {
-            FocusCommand = new DelegateCommand(i => Focus());
-            UnfocusCommand = new DelegateCommand(i => Unfocus());
+            FocusCommand = new DelegateCommand(Focus);
+            UnfocusCommand = new DelegateCommand(Unfocus);
         }
 
         public void Focus()

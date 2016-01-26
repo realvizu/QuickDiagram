@@ -5,7 +5,6 @@ using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Wpf.Commands;
-using Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniButtons;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf
@@ -24,16 +23,17 @@ namespace Codartis.SoftVis.UI.Wpf
         public ICommand ShowRelatedEntitySelectorCommand { get; }
         public ICommand HideRelatedEntitySelectorCommand { get; }
 
-        public DiagramViewerViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+        public DiagramViewerViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+            double minZoom, double maxZoom, double initialZoom)
         {
             Model = model;
             Diagram = diagram;
             DiagramBehaviourProvider = diagramBehaviourProvider;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider);
+            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
-            ShowRelatedEntitySelectorCommand = new DelegateCommand(i => ShowRelationshipSelector((DiagramButtonActivatedEventArgs)i));
-            HideRelatedEntitySelectorCommand = new DelegateCommand(i => HideRelationshipSelector());
+            ShowRelatedEntitySelectorCommand = new DelegateCommand<DiagramButtonActivatedEventArgs>(ShowRelationshipSelector);
+            HideRelatedEntitySelectorCommand = new DelegateCommand(HideRelationshipSelector);
         }
 
         private void ShowRelationshipSelector(DiagramButtonActivatedEventArgs e)

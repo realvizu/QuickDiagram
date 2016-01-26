@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Geometry;
+using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -15,17 +18,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point _topLeft;
         private bool _isVisible;
         private bool _isEnabled;
-        private ICommand _buttonClickedCommand;
+        private ICommand _command;
 
-        protected double ButtonRadius { get; }
-        protected RectRelativeLocation RectRelativeLocation { get; }
+        private double ButtonRadius { get; }
+        private RectRelativeLocation RectRelativeLocation { get; }
 
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation)
+        protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation,
+            Action<DiagramShapeViewModelBase> clickCommandDelegate)
         {
             ButtonRadius = buttonRadius;
             RectRelativeLocation = rectRelativeLocation;
+            Command = new DelegateCommand(()=>Debug.WriteLine("DiagramButtonCommand"));
 
             _size = new Size(buttonRadius*2, buttonRadius*2);
             _isVisible = false;
@@ -94,14 +99,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public ICommand ButtonClickedCommand
+        public ICommand Command
         {
-            get { return _buttonClickedCommand; }
+            get { return _command; }
             set
             {
-                if (_buttonClickedCommand != value)
+                if (_command != value)
                 {
-                    _buttonClickedCommand = value;
+                    _command = value;
                     OnPropertyChanged();
                 }
             }

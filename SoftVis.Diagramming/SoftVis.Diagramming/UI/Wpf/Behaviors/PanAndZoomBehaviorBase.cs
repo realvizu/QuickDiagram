@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using Codartis.SoftVis.UI.Common;
-using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.Behaviors
 {
@@ -60,8 +60,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
 
         protected void Zoom(ZoomDirection direction, double amount, Point center)
         {
-            var commandParameters = new ZoomCommandParameters(direction, amount, center);
-            ZoomCommand?.Execute(commandParameters);
+            ZoomCommand?.Execute(direction, amount, center);
         }
 
         protected bool IsZoomLimitReached(ZoomDirection zoomDirection)

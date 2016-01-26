@@ -79,12 +79,12 @@
     <Compile Include="UI\Common\ZoomDirection.cs" />
     <Compile Include="UI\Geometry\VerticalAlignmentType.cs" />
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
-    <Compile Include="UI\Wpf\Animations\AnimationHint.cs" />
+    <Compile Include="UI\Wpf\Common\CommandExtensions.cs" />
+    <Compile Include="UI\Common\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
-    <Compile Include="UI\Wpf\Commands\ZoomCommandParameters.cs" />
     <Compile Include="UI\Wpf\Commands\DelegateCommand.cs" />
     <Compile Include="UI\Wpf\Common\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="UI\Wpf\Common\Converters\ThicknessMultiplierConverter.cs" />
@@ -212,6 +212,8 @@
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\ShowRelatedEntityMiniButton.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\CloseMiniButton.cs" />
     <Compile Include="UI\Extensibility\RelatedEntityButtonDescriptor.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ViewportDescriptor.cs" />
+    <Compile Include="UI\Wpf\View\ViewportTransformCalculator.cs" />
     <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
     <Compile Include="UI\Wpf\View\PathControl.xaml.cs">
@@ -304,14 +306,14 @@
     <Compile Include="UI\Wpf\View\EntitySelectorControl.xaml.cs">
       <DependentUpon>EntitySelectorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\Animations\AnimatedTransform.cs" />
+    <Compile Include="UI\Wpf\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\View\PanAndZoomControl2.xaml.cs">
       <DependentUpon>PanAndZoomControl2.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\AnimatedTransformCanvas.cs" />
     <Compile Include="UI\Wpf\View\PositionedItemContainer.cs" />
     <Compile Include="UI\Wpf\View\TransformCanvas.cs" />
-    <Compile Include="UI\Wpf\View\Viewport.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ViewportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Key.snk">

@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Shape.FillProperty.AddOwner(typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty MinZoomProperty =
-            ZoomableVisual.MinZoomProperty.AddOwner(typeof (PanAndZoomControl2));
+            ZoomableVisual.MinZoomProperty.AddOwner(typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty MaxZoomProperty =
             ZoomableVisual.MaxZoomProperty.AddOwner(typeof(PanAndZoomControl2));
@@ -55,9 +55,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public PanAndZoomControl2()
         {
-            InitializeComponent();
+            DirectionPanCommand = new DelegateCommand<PanDirection>(i => VectorPanCommand?.Execute(CalculatePanVector(i)));
 
-            DirectionPanCommand = new DelegateCommand(i => VectorPanCommand?.Execute(CalculatePanVector((PanDirection)i)));
+            InitializeComponent();
         }
 
         public Brush Fill

@@ -78,11 +78,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(PanAndZoomControlHeightProperty, value); }
         }
 
-        public void FitToContent()
-        {
-            TheDiagramViewportControl.FitToContentCommand?.Execute(null);
-        }
-
         public override void OnApplyTemplate()
         {
             if (_additionalResourceDictionary != null)

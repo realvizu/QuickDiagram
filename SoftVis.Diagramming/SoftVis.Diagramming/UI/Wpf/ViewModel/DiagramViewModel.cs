@@ -14,21 +14,32 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Diagram Diagram { get; }
         public IDiagramBehaviourProvider DiagramBehaviourProvider { get; }
 
-        public DiagramViewportViewModel DiagramViewportViewModel { get; }
+        private DiagramViewportViewModel _diagramViewportViewModel;
         public EntitySelectorViewModel RelatedEntitySelectorViewModel { get; }
         public ICommand ShowRelatedEntitySelectorCommand { get; }
         public ICommand HideRelatedEntitySelectorCommand { get; }
 
-        public DiagramViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+        public DiagramViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+            double minZoom, double maxZoom, double initialZoom)
         {
             Model = model;
             Diagram = diagram;
             DiagramBehaviourProvider = diagramBehaviourProvider;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider);
+            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
-            ShowRelatedEntitySelectorCommand = new DelegateCommand(i => ShowRelationshipSelector((DiagramButtonActivatedEventArgs)i));
-            HideRelatedEntitySelectorCommand = new DelegateCommand(i => HideRelationshipSelector());
+            ShowRelatedEntitySelectorCommand = new DelegateCommand<DiagramButtonActivatedEventArgs>(ShowRelationshipSelector);
+            HideRelatedEntitySelectorCommand = new DelegateCommand(HideRelationshipSelector);
+        }
+
+        public DiagramViewportViewModel DiagramViewportViewModel
+        {
+            get { return _diagramViewportViewModel; }
+            set
+            {
+                _diagramViewportViewModel = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ShowRelationshipSelector(DiagramButtonActivatedEventArgs e)
@@ -40,6 +51,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void HideRelationshipSelector()
         {
             RelatedEntitySelectorViewModel.Hide();
+        }
+
+        public void ZoomToContent()
+        {
+            DiagramViewportViewModel.ZoomToContent();
         }
     }
 }

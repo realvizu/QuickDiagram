@@ -1,15 +1,13 @@
 ﻿<Window x:Class="Codartis.SoftVis.TestHostApp.MainWindow"
+        x:Name="MyWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
         xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
         Title="MainWindow" Height="600" Width="1200"
-        x:Name="MyWindow"
-        d:DataContext="{d:DesignInstance {x:Type testHostApp:MainWindow }}"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{StaticResource MainWindowViewModel}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -25,12 +23,12 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
-            <Button Margin="5" Click="Add_OnClick" Width="60" Height="20" IsTabStop="True" Focusable="True">Add</Button>
-            <Button Margin="5" Click="Remove_OnClick" Width="60" Height="20" IsTabStop="True" Focusable="True">Remove</Button>
+            <Button Margin="5" Command="{Binding AddCommand}" Width="60" Height="20" IsTabStop="True" Focusable="True">Add</Button>
+            <Button Margin="5" Command="{Binding RemoveCommand}" Width="60" Height="20" IsTabStop="True" Focusable="True">Remove</Button>
         </StackPanel>
-        <view:DiagramControl x:Name="DiagramControl" 
-                             Grid.Row="1" 
+        <view:DiagramControl DataContext="{Binding Path=DiagramViewModel}"
                              
+                             Grid.Row="1" 
                              Background="Beige"
                              Foreground="Black"
                              DiagramFill="Bisque"

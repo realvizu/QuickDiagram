@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.Animations;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -19,12 +18,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(MaxZoomProperty, value); }
         }
 
-        public double InitialZoom
-        {
-            get { return (double)GetValue(InitialZoomProperty); }
-            set { SetValue(InitialZoomProperty, value); }
-        }
-
         public double LargeZoomIncrement
         {
             get { return (double)GetValue(LargeZoomIncrementProperty); }
@@ -37,22 +30,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(PanAndZoomControlHeightProperty, value); }
         }
 
-        public double LinearViewportZoom
+        public ViewportDescriptor ViewportDescriptor
         {
-            get { return (double)GetValue(LinearViewportZoomProperty); }
-            set { SetValue(LinearViewportZoomProperty, value); }
+            get { return (ViewportDescriptor)GetValue(ViewportDescriptorProperty); }
+            set { SetValue(ViewportDescriptorProperty, value); }
         }
 
-        public double ViewportCenterX
+        public double ViewportZoom
         {
-            get { return (double)GetValue(ViewportCenterXProperty); }
-            set { SetValue(ViewportCenterXProperty, value); }
-        }
-
-        public double ViewportCenterY
-        {
-            get { return (double)GetValue(ViewportCenterYProperty); }
-            set { SetValue(ViewportCenterYProperty, value); }
+            get { return (double)GetValue(ViewportZoomProperty); }
+            set { SetValue(ViewportZoomProperty, value); }
         }
 
         public Transform ViewportTransform
@@ -61,16 +48,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportTransformProperty, value); }
         }
 
-        public AnimatedTransform AnimatedViewportTransform
+        public TransitionedTransform TransitionedViewportTransform
         {
-            get { return (AnimatedTransform)GetValue(AnimatedViewportTransformProperty); }
-            set { SetValue(AnimatedViewportTransformProperty, value); }
-        }
-
-        public Rect DiagramContentRect
-        {
-            get { return (Rect)GetValue(DiagramContentRectProperty); }
-            set { SetValue(DiagramContentRectProperty, value); }
+            get { return (TransitionedTransform)GetValue(TransitionedViewportTransformProperty); }
+            set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
         public ICommand WidgetPanCommand
@@ -85,10 +66,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(WidgetZoomCommandProperty, value); }
         }
 
-        public ICommand FitToContentCommand
+        public ICommand WidgetZoomToContentCommand
         {
-            get { return (ICommand)GetValue(FitToContentCommandProperty); }
-            set { SetValue(FitToContentCommandProperty, value); }
+            get { return (ICommand)GetValue(WidgetZoomToContentCommandProperty); }
+            set { SetValue(WidgetZoomToContentCommandProperty, value); }
         }
 
         public ICommand MousePanCommand
@@ -113,6 +94,30 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (ICommand)GetValue(KeyboardZoomCommandProperty); }
             set { SetValue(KeyboardZoomCommandProperty, value); }
+        }
+
+        public ICommand ViewportResizeCommand
+        {
+            get { return (ICommand)GetValue(ViewportResizeCommandProperty); }
+            set { SetValue(ViewportResizeCommandProperty, value); }
+        }
+
+        public ICommand ViewportPanCommand
+        {
+            get { return (ICommand)GetValue(ViewportPanCommandProperty); }
+            set { SetValue(ViewportPanCommandProperty, value); }
+        }
+
+        public ICommand ViewportZoomCommand
+        {
+            get { return (ICommand)GetValue(ViewportZoomCommandProperty); }
+            set { SetValue(ViewportZoomCommandProperty, value); }
+        }
+
+        public ICommand ViewportZoomToContentCommand
+        {
+            get { return (ICommand)GetValue(ViewportZoomToContentCommandProperty); }
+            set { SetValue(ViewportZoomToContentCommandProperty, value); }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Windows;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
@@ -21,8 +22,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Rect _diagramContentRect;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
+        public ViewportViewModel ViewportViewModel { get; }
 
-        public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+        public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+            double minZoom, double maxZoom, double initialZoom)
         {
             _diagram = diagram;
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
@@ -31,6 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramContentRect = Rect.Empty;
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
+            ViewportViewModel = new ViewportViewModel(minZoom, maxZoom, initialZoom);
 
             diagram.ShapeAdded += OnShapeAdded;
             diagram.ShapeMoved += OnShapeMoved;
@@ -43,23 +47,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels
             => _diagramButtonCollectionViewModel.DiagramButtonViewModels;
 
-        public Rect DiagramContentRect
-        {
-            get { return _diagramContentRect; }
-            set
-            {
-                if (_diagramContentRect != value)
-                {
-                    _diagramContentRect = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public void ZoomToContent() => ViewportViewModel.ZoomToContent(TransitionSpeed.Slow);
 
-        private void UpdateDiagramContentRect()
-        {
-            DiagramContentRect = _diagram.ContentRect.ToWpf();
-        }
+        //public void Resize(Size sizeInScreenSpace) => ViewportViewModel.Resize(sizeInScreenSpace);
+        //public void ZoomTo(double newLinearZoom) => ViewportViewModel.ZoomTo(newLinearZoom);
+        //public void Pan(Vector panVectorInScreenSpace) => ViewportViewModel.Pan(panVectorInScreenSpace);
+        //public void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace)
+        //    => ViewportViewModel.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace);
 
         private void AddDiagram(Diagram diagram)
         {
@@ -77,6 +71,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
             diagramShapeViewModel.GotFocus += OnShapeFocused;
             diagramShapeViewModel.LostFocus += OnShapeUnfocused;
+            diagramShapeViewModel.RemoveRequested += OnShapeRemoveRequested;
 
             DiagramShapeViewModels.Add(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
@@ -98,6 +93,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             OnShapeUnfocused(diagramShapeViewModel);
             diagramShapeViewModel.GotFocus -= OnShapeFocused;
             diagramShapeViewModel.LostFocus -= OnShapeUnfocused;
+            diagramShapeViewModel.RemoveRequested -= OnShapeRemoveRequested;
 
             DiagramShapeViewModels.Remove(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Remove(diagramShape);
@@ -111,6 +107,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Clear();
 
             UpdateDiagramContentRect();
+        }
+
+        private void OnShapeRemoveRequested(DiagramShape diagramShape)
+        {
+            OnShapeRemoved(this, diagramShape);
         }
 
         private void OnShapeFocused(FocusableViewModelBase focusableViewModel)
@@ -130,6 +131,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             if (_diagramButtonCollectionViewModel.AreButtonsAssignedTo(diagramShapeViewModel))
                 _diagramButtonCollectionViewModel.HideButtons();
+        }
+
+        private void UpdateDiagramContentRect()
+        {
+            _diagramContentRect = _diagram.ContentRect.ToWpf();
+            ViewportViewModel.UpdateContentRect(_diagramContentRect);
         }
     }
 }

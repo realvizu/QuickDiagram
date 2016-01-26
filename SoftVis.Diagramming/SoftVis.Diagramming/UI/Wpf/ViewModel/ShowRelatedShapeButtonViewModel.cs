@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ShowRelatedShapeButtonViewModel(double buttonRadius,
             RelatedEntityButtonDescriptor descriptor)
-            : base(buttonRadius, descriptor.ButtonLocation)
+            : base(buttonRadius, descriptor.ButtonLocation, i => i.Remove())
         {
             _descriptor = descriptor;
         }

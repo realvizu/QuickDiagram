@@ -26,9 +26,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             yield return CreateCloseButton();
             foreach (var descriptor in _diagramBehaviourProvider.GetRelatedEntityButtonDescriptors())
-            {
                 yield return CreateShowRelatedEntityButton(descriptor);
-            }
         }
 
         private CloseShapeButtonViewModel CreateCloseButton()
@@ -38,8 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return new CloseShapeButtonViewModel(_buttonRadius, buttonLocation);
         }
 
-        private ShowRelatedShapeButtonViewModel CreateShowRelatedEntityButton(
-            RelatedEntityButtonDescriptor descriptor)
+        private ShowRelatedShapeButtonViewModel CreateShowRelatedEntityButton(RelatedEntityButtonDescriptor descriptor)
         {
             return new ShowRelatedShapeButtonViewModel(_buttonRadius, descriptor);
         }

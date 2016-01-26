@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Animations;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -21,14 +22,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(typeof(AnimatedTransformCanvas)));
         }
 
-        public static readonly DependencyProperty AnimatedTransformProperty =
-            DependencyProperty.Register("AnimatedTransform", typeof(AnimatedTransform), typeof(AnimatedTransformCanvas),
-                new FrameworkPropertyMetadata(AnimatedTransform.Identity, 
+        public static readonly DependencyProperty TransitionedTransformProperty =
+            DependencyProperty.Register("TransitionedTransform", typeof(TransitionedTransform), typeof(AnimatedTransformCanvas),
+                new FrameworkPropertyMetadata(TransitionedTransform.Identity, 
                     FrameworkPropertyMetadataOptions.AffectsRender,
-                    OnAnimatedTransformChanged));
+                    OnTransitionedTransformChanged));
 
-        private static void OnAnimatedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((AnimatedTransformCanvas) d).AnimateTransform((AnimatedTransform) e.OldValue, (AnimatedTransform) e.NewValue);
+        private static void OnTransitionedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedTransformCanvas) d).TransitionTransform((TransitionedTransform) e.OldValue, (TransitionedTransform) e.NewValue);
 
         public static readonly DependencyProperty ShortAnimationDurationProperty =
             DependencyProperty.Register("ShortAnimationDuration", typeof(Duration), typeof(AnimatedTransformCanvas),
@@ -46,10 +47,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Transform = new MatrixTransform();
         }
 
-        public AnimatedTransform AnimatedTransform
+        public TransitionedTransform TransitionedTransform
         {
-            get { return (AnimatedTransform)GetValue(AnimatedTransformProperty); }
-            set { SetValue(AnimatedTransformProperty, value); }
+            get { return (TransitionedTransform)GetValue(TransitionedTransformProperty); }
+            set { SetValue(TransitionedTransformProperty, value); }
         }
 
         public Duration ShortAnimationDuration
@@ -70,18 +71,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(EasingFunctionProperty, value); }
         }
 
-        private void AnimateTransform(AnimatedTransform oldAnimatedTransform, AnimatedTransform newAnimatedTransform)
+        private void TransitionTransform(TransitionedTransform oldTransitionedTransform, TransitionedTransform newTransitionedTransform)
         {
-            if (oldAnimatedTransform.Transform.Value == newAnimatedTransform.Transform.Value)
+            if (oldTransitionedTransform.Transform.Value == newTransitionedTransform.Transform.Value)
                 return;
 
-            if (newAnimatedTransform.AnimationHint == AnimationHint.None)
+            if (newTransitionedTransform.TransitionSpeed == TransitionSpeed.Instant)
             {
-                DontAnimate(newAnimatedTransform.Transform);
+                DontAnimate(newTransitionedTransform.Transform);
             }
             else
             {
-                Animate(oldAnimatedTransform.Transform, newAnimatedTransform.Transform, newAnimatedTransform.AnimationHint);
+                Animate(oldTransitionedTransform.Transform, newTransitionedTransform.Transform, newTransitionedTransform.TransitionSpeed);
             }
         }
 
@@ -91,13 +92,13 @@ namespace Codartis.SoftVis.UI.Wpf.View
             ((MatrixTransform) Transform).Matrix = newTransform.Value;
         }
 
-        private void Animate(Transform oldValue, Transform newValue, AnimationHint animationHint)
+        private void Animate(Transform oldValue, Transform newValue, TransitionSpeed transitionSpeed)
         {
-            var duration = AnimationHintToDuration(animationHint);
+            var duration = TransitionSpeedToDuration(transitionSpeed);
 
             var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, duration, FillBehavior.HoldEnd);
 
-            if (animationHint == AnimationHint.Long)
+            if (transitionSpeed == TransitionSpeed.Slow)
                 matrixAnimation.EasingFunction = EasingFunction;
 
             Timeline.SetDesiredFrameRate(matrixAnimation, FrameRate);
@@ -105,14 +106,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Transform.BeginAnimation(MatrixTransform.MatrixProperty, matrixAnimation, HandoffBehavior.SnapshotAndReplace);
         }
 
-        private Duration AnimationHintToDuration(AnimationHint animationHint)
+        private Duration TransitionSpeedToDuration(TransitionSpeed transitionSpeed)
         {
-            switch (animationHint)
+            switch (transitionSpeed)
             {
-                case AnimationHint.None: return TimeSpan.Zero;
-                case AnimationHint.Short: return ShortAnimationDuration;
-                case AnimationHint.Long: return LongAnimationDuration;
-                default: throw new NotImplementedException($"Unexpected AnimationHint:{animationHint}");
+                case TransitionSpeed.Instant: return TimeSpan.Zero;
+                case TransitionSpeed.Fast: return ShortAnimationDuration;
+                case TransitionSpeed.Slow: return LongAnimationDuration;
+                default: throw new NotImplementedException($"Unexpected TransitionSpeed:{transitionSpeed}");
             }
         }
 

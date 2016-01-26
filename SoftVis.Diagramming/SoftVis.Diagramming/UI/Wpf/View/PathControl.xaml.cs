@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfGeometry = System.Windows.Media.Geometry;
@@ -36,6 +37,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (WpfGeometry)GetValue(DataProperty); }
             set { SetValue(DataProperty, value); }
+        }
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+        }
+
+        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
+        {
+            return new PointHitTestResult(this, hitTestParameters.HitPoint);
         }
     }
 }

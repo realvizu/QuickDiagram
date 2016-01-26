@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="TestData\TestConnectorTypes.cs" />
     <Compile Include="TestData\TestDiagramBehaviourProvider.cs" />
     <Compile Include="TestData\TestConnectorTypeResolver.cs" />

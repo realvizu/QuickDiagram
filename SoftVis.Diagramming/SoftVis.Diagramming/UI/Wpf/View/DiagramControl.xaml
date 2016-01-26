@@ -25,7 +25,11 @@
     <Canvas x:Name="Canvas">
         <local:DiagramViewportControl x:Name="TheDiagramViewportControl"
                                       DataContext="{Binding Path=DiagramViewportViewModel}"
-                                      DiagramContentRect="{Binding Path=DiagramContentRect}"
+                                      ViewportDescriptor="{Binding Path=ViewportViewModel.ViewportDescriptor}"
+                                      ViewportResizeCommand="{Binding Path=ViewportViewModel.ResizeCommand}"
+                                      ViewportPanCommand="{Binding Path=ViewportViewModel.PanCommand}"
+                                      ViewportZoomCommand="{Binding Path=ViewportViewModel.ZoomCommand}"
+                                      ViewportZoomToContentCommand="{Binding Path=ViewportViewModel.ZoomToContentCommand}"
                                       Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                       Height="{Binding Path=ActualHeight, ElementName=Canvas}" />
 
