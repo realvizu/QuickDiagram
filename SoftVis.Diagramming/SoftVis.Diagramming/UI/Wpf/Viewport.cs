@@ -1,16 +1,17 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
-using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
-namespace Codartis.SoftVis.UI.Wpf.ViewModel
+namespace Codartis.SoftVis.UI.Wpf
 {
     /// <summary>
     /// Calculates the properties of the viewport.
+    /// Stateful, publishes events when calculated properties change.
     /// </summary>
-    public class ViewportViewModel : ViewModelBase
+    public class Viewport
     {
         private const double MinZoomDefault = 0.1;
         private const double MaxZoomDefault = 10;
@@ -25,105 +26,40 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private double _linearZoom;
         private Size _sizeInScreenSpace;
         private Point _centerInDiagramSpace;
-        private Rect _contentRect;
-
         private double _exponentialZoom;
-        private ViewportDescriptor _viewportDescriptor;
+        private TransitionedTransform _transitionedTransform = TransitionedTransform.Identity;
 
-        private ICommand _resizeCommand;
-        private ICommand _panCommand;
-        private ICommand _zoomToContentCommand;
-        private ICommand _zoomCommand;
+        public Rect ContentRect { get; set; }
 
-        public ViewportViewModel(double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
+        public event Action<double> LinearZoomChanged;
+        public event Action<TransitionedTransform> TransitionedTransformChanged;
+
+        public Viewport(double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
             : this(minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault, ContentRectDefault)
         {
         }
 
-        private ViewportViewModel(double minZoom, double maxZoom, double initialZoom, 
+        private Viewport(double minZoom, double maxZoom, double initialZoom,
             Size sizeInScreenSpace, Point centerInDiagramSpace, Rect contentRect)
         {
             _minZoom = minZoom;
             _maxZoom = maxZoom;
             _defaultExponentialZoom = initialZoom;
-            _linearZoom = ToLinearZoom(initialZoom);
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _contentRect = contentRect;
+            _linearZoom = ToLinearZoom(initialZoom);
+            ContentRect = contentRect;
 
             UpdateCalculatedProperties(TransitionSpeed.Instant);
-
-            ResizeCommand = new DelegateCommand<Size, TransitionSpeed>(Resize);
-            PanCommand = new DelegateCommand<Vector, TransitionSpeed>(Pan);
-            ZoomToContentCommand = new DelegateCommand<TransitionSpeed>(ZoomToContent);
-            ZoomCommand = new DelegateCommand<double, Point, TransitionSpeed>(ZoomWithCenterTo);
         }
 
-        public ViewportDescriptor ViewportDescriptor
-        {
-            get { return _viewportDescriptor; }
-            set
-            {
-                if (_viewportDescriptor != value)
-                {
-                    _viewportDescriptor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public ICommand ResizeCommand
-        {
-            get { return _resizeCommand; }
-            set
-            {
-                _resizeCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand PanCommand
-        {
-            get { return _panCommand; }
-            set
-            {
-                _panCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand ZoomToContentCommand
-        {
-            get { return _zoomToContentCommand; }
-            set
-            {
-                _zoomToContentCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand ZoomCommand
-        {
-            get { return _zoomCommand; }
-            set
-            {
-                _zoomCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public void Resize(Size sizeInScreenSpace, TransitionSpeed transitionSpeed)
+        public void Resize(Size sizeInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Instant)
         {
             _sizeInScreenSpace = sizeInScreenSpace;
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public void UpdateContentRect(Rect contentRect)
-        {
-            _contentRect = contentRect;
-        }
-
-        public void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
+        public void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
         {
             var viewportMoveVectorInScreenSpace = panVectorInScreenSpace * -1;
             var viewportMoveVectorInDiagramSpace = viewportMoveVectorInScreenSpace / _exponentialZoom;
@@ -132,15 +68,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public void ZoomToContent(TransitionSpeed transitionSpeed)
+        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
         {
-            var exponentialZoom = CalculateZoomForContent(_contentRect.Size);
+            var exponentialZoom = CalculateZoomForContent(ContentRect.Size);
             _linearZoom = ToLinearZoom(exponentialZoom);
-            _centerInDiagramSpace = _contentRect.GetCenter();
+            _centerInDiagramSpace = ContentRect.GetCenter();
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace, TransitionSpeed transitionSpeed)
+        public void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace,
+            TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
         {
             var zoomCenterInDiagramSpace = ProjectToDiagramSpace(zoomCenterInScreenSpace);
             var newExponentialZoom = ToExponentialZoom(newLinearZoom);
@@ -153,9 +90,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateCalculatedProperties(TransitionSpeed transitionSpeed)
         {
+            UpdateLinearZoom(_linearZoom);
             _exponentialZoom = ToExponentialZoom(_linearZoom);
-            ViewportDescriptor = new ViewportDescriptor(_sizeInScreenSpace, _centerInDiagramSpace,
-                _linearZoom, _minZoom, _maxZoom, _exponentialZoom, transitionSpeed);
+            var transform = CreateTransformToScreenSpace();
+            UpdateTransitionedTransform(new TransitionedTransform(transform, transitionSpeed));
+        }
+
+        private void UpdateLinearZoom(double newLinearZoom)
+        {
+            _linearZoom = newLinearZoom;
+            LinearZoomChanged?.Invoke(_linearZoom);
+        }
+
+        private void UpdateTransitionedTransform(TransitionedTransform newTransitionedTransform)
+        {
+            _transitionedTransform = newTransitionedTransform;
+            TransitionedTransformChanged?.Invoke(_transitionedTransform);
         }
 
         private double ToExponentialZoom(double linearZoom)
@@ -184,6 +134,33 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 _sizeInScreenSpace.Width / contentSize.Width,
                 _sizeInScreenSpace.Height / contentSize.Height
             }.Min();
+        }
+
+        private Transform CreateTransformToScreenSpace()
+        {
+            var viewportInDiagramSpace = ProjectViewportIntoDiagramSpace();
+            var diagramSpaceToScreenSpace = GetDiagramSpaceToScreenSpaceTransform(viewportInDiagramSpace);
+            return diagramSpaceToScreenSpace;
+        }
+
+        private Rect ProjectViewportIntoDiagramSpace()
+        {
+            if (_sizeInScreenSpace.IsEmpty)
+                return new Rect(Size.Empty);
+
+            var projectedSize = new Size(_sizeInScreenSpace.Width / _exponentialZoom, _sizeInScreenSpace.Height / _exponentialZoom);
+            var projectedTopLeft = new Point(_centerInDiagramSpace.X - projectedSize.Width / 2, _centerInDiagramSpace.Y - projectedSize.Height / 2);
+            return new Rect(projectedTopLeft, projectedSize);
+        }
+
+        private Transform GetDiagramSpaceToScreenSpaceTransform(Rect viewportInDiagramSpace)
+        {
+            var translateVector = (Vector)viewportInDiagramSpace.TopLeft * -1;
+
+            var transform = new TransformGroup();
+            transform.Children.Add(new TranslateTransform(translateVector.X, translateVector.Y));
+            transform.Children.Add(new ScaleTransform(_exponentialZoom, _exponentialZoom));
+            return transform;
         }
     }
 }

@@ -7,7 +7,6 @@ using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -23,33 +22,31 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private readonly DiagramFocusTracker _diagramFocusTracker;
         private bool _isViewportObscured;
 
-        public static readonly DependencyProperty MinZoomProperty =
-            ZoomableVisual.MinZoomProperty.AddOwner(typeof(DiagramViewportControl));
-
-        public static readonly DependencyProperty MaxZoomProperty =
-            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(DiagramViewportControl));
-
-        public static readonly DependencyProperty LargeZoomIncrementProperty =
-            DependencyProperty.Register("LargeZoomIncrement", typeof(double), typeof(DiagramViewportControl),
-                new PropertyMetadata(LargeZoomIncrementDefault));
-
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DependencyProperty.RegisterAttached("PanAndZoomControlHeight", typeof(double), typeof(DiagramViewportControl),
                 new FrameworkPropertyMetadata(PanAndZoomControlSizeDefault,
                     FrameworkPropertyMetadataOptions.Inherits));
 
-        public static readonly DependencyProperty ViewportDescriptorProperty =
-            DependencyProperty.Register("ViewportDescriptor", typeof(ViewportDescriptor), typeof(DiagramViewportControl),
-                new PropertyMetadata(null, OnViewportDescriptorChanged));
+        public static readonly DependencyProperty MinZoomProperty =
+            ZoomableVisual.MinZoomProperty.AddOwner(typeof(DiagramViewportControl),
+                new FrameworkPropertyMetadata(0d, OnZoomIntervalChanged));
 
-        private static void OnViewportDescriptorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl)obj).OnViewportDescriptorChanged();
+        public static readonly DependencyProperty MaxZoomProperty =
+            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(DiagramViewportControl),
+                new FrameworkPropertyMetadata(0d, OnZoomIntervalChanged));
+
+        private static void OnZoomIntervalChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl)obj).OnZoomIntervalChanged();
+
+        public static readonly DependencyProperty LargeZoomIncrementProperty =
+            DependencyProperty.Register("LargeZoomIncrement", typeof(double), typeof(DiagramViewportControl),
+                new PropertyMetadata(LargeZoomIncrementDefault));
 
         public static readonly DependencyProperty ViewportZoomProperty =
             DependencyProperty.Register("ViewportZoom", typeof(double), typeof(DiagramViewportControl));
 
         /// <summary>
-        /// Transforms DiagramSpace to ScreenSpace. Created by the ViewportViewModel class, used for rendering the diagram.
+        /// Transforms DiagramSpace to ScreenSpace. Created by the Viewport class, used for rendering the diagram.
         /// </summary>
         public static readonly DependencyProperty ViewportTransformProperty =
             DependencyProperty.Register("ViewportTransform", typeof(Transform), typeof(DiagramViewportControl),
@@ -196,23 +193,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return newLinearZoom;
         }
 
-        private void OnViewportDescriptorChanged()
+        private void OnZoomIntervalChanged()
         {
-            MinZoom = ViewportDescriptor.MinZoom;
-            MaxZoom = ViewportDescriptor.MaxZoom;
-            ViewportZoom = ViewportDescriptor.LinearZoom;
-            LargeZoomIncrement = CalculateLargeZoomIncrement(MinZoom, MaxZoom, LargeZoomIncrementProportion);
-
-            var transform = ViewportTransformCalculator.CreateTransformToScreenSpace(
-                ViewportDescriptor.SizeInScreenSpace,
-                ViewportDescriptor.ExponentialZoom,
-                ViewportDescriptor.CenterInDiagramSpace);
-            TransitionedViewportTransform = new TransitionedTransform(transform, ViewportDescriptor.TransitionSpeed);
-        }
-
-        private static double CalculateLargeZoomIncrement(double minZoom, double maxZoom, double largeZoomIncrementProportion)
-        {
-            return Math.Max(0, maxZoom - minZoom) * largeZoomIncrementProportion;
+            LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
         }
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)

@@ -212,8 +212,6 @@
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\ShowRelatedEntityMiniButton.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\CloseMiniButton.cs" />
     <Compile Include="UI\Extensibility\RelatedEntityButtonDescriptor.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ViewportDescriptor.cs" />
-    <Compile Include="UI\Wpf\View\ViewportTransformCalculator.cs" />
     <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
     <Compile Include="UI\Wpf\View\PathControl.xaml.cs">
@@ -313,7 +311,7 @@
     <Compile Include="UI\Wpf\View\AnimatedTransformCanvas.cs" />
     <Compile Include="UI\Wpf\View\PositionedItemContainer.cs" />
     <Compile Include="UI\Wpf\View\TransformCanvas.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ViewportViewModel.cs" />
+    <Compile Include="UI\Wpf\Viewport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Key.snk">

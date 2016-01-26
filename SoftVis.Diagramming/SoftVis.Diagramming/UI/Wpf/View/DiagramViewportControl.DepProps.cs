@@ -1,11 +1,16 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     partial class DiagramViewportControl
     {
+        public double PanAndZoomControlHeight
+        {
+            get { return (double)GetValue(PanAndZoomControlHeightProperty); }
+            set { SetValue(PanAndZoomControlHeightProperty, value); }
+        }
+
         public double MinZoom
         {
             get { return (double)GetValue(MinZoomProperty); }
@@ -22,18 +27,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(LargeZoomIncrementProperty); }
             set { SetValue(LargeZoomIncrementProperty, value); }
-        }
-
-        public double PanAndZoomControlHeight
-        {
-            get { return (double)GetValue(PanAndZoomControlHeightProperty); }
-            set { SetValue(PanAndZoomControlHeightProperty, value); }
-        }
-
-        public ViewportDescriptor ViewportDescriptor
-        {
-            get { return (ViewportDescriptor)GetValue(ViewportDescriptorProperty); }
-            set { SetValue(ViewportDescriptorProperty, value); }
         }
 
         public double ViewportZoom

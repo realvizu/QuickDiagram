@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
+using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -19,10 +21,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Map<DiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
         private readonly DiagramButtonCollectionViewModel _diagramButtonCollectionViewModel;
-        private Rect _diagramContentRect;
+        private readonly Viewport _viewport;
+
+        private double _minZoom;
+        private double _maxZoom;
+        private double _viewportZoom;
+        private TransitionedTransform _transitionedViewportTransform = TransitionedTransform.Identity;
+
+        private ICommand _resizeCommand;
+        private ICommand _panCommand;
+        private ICommand _zoomToContentCommand;
+        private ICommand _zoomCommand;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
-        public ViewportViewModel ViewportViewModel { get; }
 
         public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -31,10 +42,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram.ConnectorTypeResolver);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(diagramBehaviourProvider);
-            _diagramContentRect = Rect.Empty;
+
+            MinZoom = minZoom;
+            MaxZoom = maxZoom;
+
+            _viewport = new Viewport(minZoom, maxZoom, initialZoom);
+            _viewport.LinearZoomChanged += OnViewportLinearZoomChanged;
+            _viewport.TransitionedTransformChanged += OnViewportTransitionedTransformChanged;
+
+            ResizeCommand = new DelegateCommand<Size, TransitionSpeed>(_viewport.Resize);
+            PanCommand = new DelegateCommand<Vector, TransitionSpeed>(_viewport.Pan);
+            ZoomToContentCommand = new DelegateCommand<TransitionSpeed>(_viewport.ZoomToContent);
+            ZoomCommand = new DelegateCommand<double, Point, TransitionSpeed>(_viewport.ZoomWithCenterTo);
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
-            ViewportViewModel = new ViewportViewModel(minZoom, maxZoom, initialZoom);
 
             diagram.ShapeAdded += OnShapeAdded;
             diagram.ShapeMoved += OnShapeMoved;
@@ -47,13 +68,88 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels
             => _diagramButtonCollectionViewModel.DiagramButtonViewModels;
 
-        public void ZoomToContent() => ViewportViewModel.ZoomToContent(TransitionSpeed.Slow);
+        public double MinZoom
+        {
+            get { return _minZoom; }
+            set
+            {
+                _minZoom = value;
+                OnPropertyChanged();
+            }
+        }
 
-        //public void Resize(Size sizeInScreenSpace) => ViewportViewModel.Resize(sizeInScreenSpace);
-        //public void ZoomTo(double newLinearZoom) => ViewportViewModel.ZoomTo(newLinearZoom);
-        //public void Pan(Vector panVectorInScreenSpace) => ViewportViewModel.Pan(panVectorInScreenSpace);
-        //public void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace)
-        //    => ViewportViewModel.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace);
+        public double MaxZoom
+        {
+            get { return _maxZoom; }
+            set
+            {
+                _maxZoom = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double ViewportZoom
+        {
+            get { return _viewportZoom; }
+            set
+            {
+                _viewportZoom = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TransitionedTransform TransitionedViewportTransform
+        {
+            get { return _transitionedViewportTransform; }
+            set
+            {
+                _transitionedViewportTransform = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand ResizeCommand
+        {
+            get { return _resizeCommand; }
+            set
+            {
+                _resizeCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand PanCommand
+        {
+            get { return _panCommand; }
+            set
+            {
+                _panCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand ZoomToContentCommand
+        {
+            get { return _zoomToContentCommand; }
+            set
+            {
+                _zoomToContentCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand ZoomCommand
+        {
+            get { return _zoomCommand; }
+            set
+            {
+                _zoomCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
+            => _viewport.ZoomToContent(transitionSpeed);
 
         private void AddDiagram(Diagram diagram)
         {
@@ -120,7 +216,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeViewModel == null)
                 throw new ArgumentException("DiagramShapeViewModelBase expected");
 
-           _diagramButtonCollectionViewModel.AssignButtonsTo(diagramShapeViewModel);
+            _diagramButtonCollectionViewModel.AssignButtonsTo(diagramShapeViewModel);
         }
 
         private void OnShapeUnfocused(FocusableViewModelBase focusableViewModel)
@@ -135,8 +231,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateDiagramContentRect()
         {
-            _diagramContentRect = _diagram.ContentRect.ToWpf();
-            ViewportViewModel.UpdateContentRect(_diagramContentRect);
+            _viewport.ContentRect = _diagram.ContentRect.ToWpf(); ;
+        }
+
+        private void OnViewportLinearZoomChanged(double viewportZoom)
+        {
+            ViewportZoom = viewportZoom;
+        }
+
+        private void OnViewportTransitionedTransformChanged(TransitionedTransform transitionedTransform)
+        {
+            TransitionedViewportTransform = transitionedTransform;
         }
     }
 }
