@@ -11,6 +11,10 @@ namespace Codartis.SoftVis.UI.Wpf
     /// Calculates the properties of the viewport.
     /// Stateful, publishes events when calculated properties change.
     /// </summary>
+    /// <remarks>
+    /// Internally the zoom values change on an exponential scale to give a feel of depth.
+    /// But externally the zoom values are converted to/from a linear scale for easy linear manipulation.
+    /// </remarks>
     public class Viewport
     {
         private const double MinZoomDefault = 0.1;
@@ -23,13 +27,10 @@ namespace Codartis.SoftVis.UI.Wpf
         private readonly double _minZoom;
         private readonly double _maxZoom;
         private readonly double _defaultExponentialZoom;
-        private double _linearZoom;
+        private double _exponentialZoom;
         private Size _sizeInScreenSpace;
         private Point _centerInDiagramSpace;
-        private double _exponentialZoom;
-        private TransitionedTransform _transitionedTransform = TransitionedTransform.Identity;
-
-        public Rect ContentRect { get; set; }
+        private Rect _contentRect;
 
         public event Action<double> LinearZoomChanged;
         public event Action<TransitionedTransform> TransitionedTransformChanged;
@@ -45,10 +46,10 @@ namespace Codartis.SoftVis.UI.Wpf
             _minZoom = minZoom;
             _maxZoom = maxZoom;
             _defaultExponentialZoom = initialZoom;
+            _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _linearZoom = ToLinearZoom(initialZoom);
-            ContentRect = contentRect;
+            _contentRect = contentRect;
 
             UpdateCalculatedProperties(TransitionSpeed.Instant);
         }
@@ -57,6 +58,11 @@ namespace Codartis.SoftVis.UI.Wpf
         {
             _sizeInScreenSpace = sizeInScreenSpace;
             UpdateCalculatedProperties(transitionSpeed);
+        }
+
+        public void UpdateContentRect(Rect newContentRect)
+        {
+            _contentRect = newContentRect;
         }
 
         public void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
@@ -70,42 +76,41 @@ namespace Codartis.SoftVis.UI.Wpf
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
         {
-            var exponentialZoom = CalculateZoomForContent(ContentRect.Size);
-            _linearZoom = ToLinearZoom(exponentialZoom);
-            _centerInDiagramSpace = ContentRect.GetCenter();
+            _exponentialZoom = CalculateZoomForContent(_contentRect.Size);
+            _centerInDiagramSpace = _contentRect.GetCenter();
             UpdateCalculatedProperties(transitionSpeed);
         }
 
         public void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace,
             TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
         {
-            var zoomCenterInDiagramSpace = ProjectToDiagramSpace(zoomCenterInScreenSpace);
+            var oldExponentialZoom = _exponentialZoom;
             var newExponentialZoom = ToExponentialZoom(newLinearZoom);
-            var relativeZoom = _exponentialZoom / newExponentialZoom;
+            var relativeZoom = oldExponentialZoom / newExponentialZoom;
+            var zoomCenterInDiagramSpace = ProjectToDiagramSpace(zoomCenterInScreenSpace);
 
-            _linearZoom = newLinearZoom;
             _centerInDiagramSpace = (_centerInDiagramSpace - zoomCenterInDiagramSpace) * relativeZoom + zoomCenterInDiagramSpace;
+            _exponentialZoom = newExponentialZoom;
             UpdateCalculatedProperties(transitionSpeed);
         }
 
         private void UpdateCalculatedProperties(TransitionSpeed transitionSpeed)
         {
-            UpdateLinearZoom(_linearZoom);
-            _exponentialZoom = ToExponentialZoom(_linearZoom);
-            var transform = CreateTransformToScreenSpace();
-            UpdateTransitionedTransform(new TransitionedTransform(transform, transitionSpeed));
+            UpdateLinearZoom();
+            UpdateTransitionedTransform(transitionSpeed);
         }
 
-        private void UpdateLinearZoom(double newLinearZoom)
+        private void UpdateLinearZoom()
         {
-            _linearZoom = newLinearZoom;
-            LinearZoomChanged?.Invoke(_linearZoom);
+            var newLinearZoom = ToLinearZoom(_exponentialZoom);
+            LinearZoomChanged?.Invoke(newLinearZoom);
         }
 
-        private void UpdateTransitionedTransform(TransitionedTransform newTransitionedTransform)
+        private void UpdateTransitionedTransform(TransitionSpeed transitionSpeed)
         {
-            _transitionedTransform = newTransitionedTransform;
-            TransitionedTransformChanged?.Invoke(_transitionedTransform);
+            var newTransform = CreateTransformToScreenSpace();
+            var transitionedTransform = new TransitionedTransform(newTransform, transitionSpeed);
+            TransitionedTransformChanged?.Invoke(transitionedTransform);
         }
 
         private double ToExponentialZoom(double linearZoom)

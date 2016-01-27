@@ -231,7 +231,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateDiagramContentRect()
         {
-            _viewport.ContentRect = _diagram.ContentRect.ToWpf(); ;
+            _viewport.UpdateContentRect(_diagram.ContentRect.ToWpf());
         }
 
         private void OnViewportLinearZoomChanged(double viewportZoom)
