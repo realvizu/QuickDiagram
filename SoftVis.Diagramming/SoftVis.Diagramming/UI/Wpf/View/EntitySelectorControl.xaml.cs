@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.UI.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

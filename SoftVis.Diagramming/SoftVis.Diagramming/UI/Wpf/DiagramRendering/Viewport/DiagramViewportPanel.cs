@@ -7,6 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;

@@ -270,7 +270,6 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\TestDiagramNodeViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
@@ -279,7 +278,7 @@
     <Compile Include="UI\Wpf\Common\DoubleInterval.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\HandleOrientation.cs" />
+    <Compile Include="UI\Common\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\Common\Converters\ConnectorTypeToGeometryConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\View\DiagramButton.cs" />

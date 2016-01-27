@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.UI.Wpf.ViewModel
+﻿namespace Codartis.SoftVis.UI.Common
 {
     public enum HandleOrientation
     {

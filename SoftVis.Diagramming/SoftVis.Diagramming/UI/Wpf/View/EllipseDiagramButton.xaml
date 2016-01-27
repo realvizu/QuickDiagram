@@ -23,7 +23,7 @@
                                         <DoubleAnimation Duration="0" 
                                                          Storyboard.TargetName="MouseOverEffect" 
                                                          Storyboard.TargetProperty="Opacity" 
-                                                         To=".2"/>
+                                                         To=".7"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
@@ -31,7 +31,7 @@
                                         <DoubleAnimation Duration="0" 
                                                          Storyboard.TargetName="PressedEffect" 
                                                          Storyboard.TargetProperty="Opacity" 
-                                                         To=".5"/>
+                                                         To=".4"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -50,7 +50,7 @@
 
                         <Ellipse x:Name="ButtonBackground" 
                                  Fill="{TemplateBinding Background}" />
-                        <Ellipse x:Name="MouseOverEffect" Fill="Black" Opacity="0" IsHitTestVisible="false" />
+                        <Ellipse x:Name="MouseOverEffect" Fill="White" Opacity="0" IsHitTestVisible="false" />
                         <Ellipse x:Name="PressedEffect" Fill="Black" Opacity="0" IsHitTestVisible="false" />
 
                         <ContentPresenter x:Name="contentPresenter"

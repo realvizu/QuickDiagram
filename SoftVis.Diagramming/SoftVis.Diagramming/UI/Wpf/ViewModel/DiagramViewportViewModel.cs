@@ -23,17 +23,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly DiagramButtonCollectionViewModel _diagramButtonCollectionViewModel;
         private readonly Viewport _viewport;
 
-        private double _minZoom;
-        private double _maxZoom;
         private double _viewportZoom;
         private TransitionedTransform _transitionedViewportTransform = TransitionedTransform.Identity;
 
-        private ICommand _resizeCommand;
-        private ICommand _panCommand;
-        private ICommand _zoomToContentCommand;
-        private ICommand _zoomCommand;
-
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
+        public double MinZoom { get; }
+        public double MaxZoom { get; }
+        public ICommand ResizeCommand { get; }
+        public ICommand PanCommand { get; }
+        public ICommand ZoomToContentCommand { get; }
+        public ICommand ZoomCommand { get; }
 
         public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -42,51 +41,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram.ConnectorTypeResolver);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(diagramBehaviourProvider);
+            _viewport = new Viewport(minZoom, maxZoom, initialZoom);
 
+            DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
             MinZoom = minZoom;
             MaxZoom = maxZoom;
-
-            _viewport = new Viewport(minZoom, maxZoom, initialZoom);
-            _viewport.LinearZoomChanged += OnViewportLinearZoomChanged;
-            _viewport.TransitionedTransformChanged += OnViewportTransitionedTransformChanged;
-
             ResizeCommand = new DelegateCommand<Size, TransitionSpeed>(_viewport.Resize);
             PanCommand = new DelegateCommand<Vector, TransitionSpeed>(_viewport.Pan);
             ZoomToContentCommand = new DelegateCommand<TransitionSpeed>(_viewport.ZoomToContent);
             ZoomCommand = new DelegateCommand<double, Point, TransitionSpeed>(_viewport.ZoomWithCenterTo);
 
-            DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
-
-            diagram.ShapeAdded += OnShapeAdded;
-            diagram.ShapeMoved += OnShapeMoved;
-            diagram.ShapeRemoved += OnShapeRemoved;
-            diagram.Cleared += OnDiagramCleared;
-
+            SubscribeToViewportEvents();
+            SubscribeToDiagramEvents();
             AddDiagram(diagram);
         }
 
         public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels
             => _diagramButtonCollectionViewModel.DiagramButtonViewModels;
-
-        public double MinZoom
-        {
-            get { return _minZoom; }
-            set
-            {
-                _minZoom = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public double MaxZoom
-        {
-            get { return _maxZoom; }
-            set
-            {
-                _maxZoom = value;
-                OnPropertyChanged();
-            }
-        }
 
         public double ViewportZoom
         {
@@ -108,48 +79,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public ICommand ResizeCommand
-        {
-            get { return _resizeCommand; }
-            set
-            {
-                _resizeCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand PanCommand
-        {
-            get { return _panCommand; }
-            set
-            {
-                _panCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand ZoomToContentCommand
-        {
-            get { return _zoomToContentCommand; }
-            set
-            {
-                _zoomToContentCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand ZoomCommand
-        {
-            get { return _zoomCommand; }
-            set
-            {
-                _zoomCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
             => _viewport.ZoomToContent(transitionSpeed);
+
+        private void SubscribeToViewportEvents()
+        {
+            _viewport.LinearZoomChanged += OnViewportLinearZoomChanged;
+            _viewport.TransitionedTransformChanged += OnViewportTransitionedTransformChanged;
+        }
+
+        private void SubscribeToDiagramEvents()
+        {
+            _diagram.ShapeAdded += OnShapeAdded;
+            _diagram.ShapeMoved += OnShapeMoved;
+            _diagram.ShapeRemoved += OnShapeRemoved;
+            _diagram.Cleared += OnDiagramCleared;
+        }
 
         private void AddDiagram(Diagram diagram)
         {
