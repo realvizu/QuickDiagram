@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
@@ -14,27 +12,30 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramButtonViewModelBase : ViewModelBase
     {
+        private readonly double _buttonRadius;
+        private readonly RectRelativeLocation _rectRelativeLocation;
+        private readonly Action<DiagramShapeViewModelBase> _clickCommandDelegate;
+
         private Size _size;
         private Point _topLeft;
         private bool _isVisible;
         private bool _isEnabled;
-        private ICommand _command;
 
-        private double ButtonRadius { get; }
-        private RectRelativeLocation RectRelativeLocation { get; }
-
+        public ICommand Command { get; private set; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
         protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation,
             Action<DiagramShapeViewModelBase> clickCommandDelegate)
         {
-            ButtonRadius = buttonRadius;
-            RectRelativeLocation = rectRelativeLocation;
-            Command = new DelegateCommand(()=>Debug.WriteLine("DiagramButtonCommand"));
+            _buttonRadius = buttonRadius;
+            _rectRelativeLocation = rectRelativeLocation;
+            _clickCommandDelegate = clickCommandDelegate;
 
-            _size = new Size(buttonRadius*2, buttonRadius*2);
+            _size = new Size(buttonRadius * 2, buttonRadius * 2);
             _isVisible = false;
             _isEnabled = true;
+
+            Command = new DelegateCommand(OnClick);
         }
 
         public Size Size
@@ -99,25 +100,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public ICommand Command
-        {
-            get { return _command; }
-            set
-            {
-                if (_command != value)
-                {
-                    _command = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
+        public virtual void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             AssociatedDiagramShapeViewModel = diagramShapeViewModel;
             TopLeft = CalculateTopLeft(diagramShapeViewModel);
             IsVisible = true;
-            IsEnabled = ((DiagramNode) diagramShapeViewModel.DiagramShape).Name.StartsWith("1");
         }
 
         public void Hide()
@@ -130,14 +117,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var parentTopLeft = diagramShapeViewModel.Position;
             var parentTopLeftToButtonCenter = GetButtonCenterRelativeToDiagramShape(diagramShapeViewModel.Size);
-            var buttonCenterToButtonTopLeft = new Vector(-ButtonRadius, -ButtonRadius);
+            var buttonCenterToButtonTopLeft = new Vector(-_buttonRadius, -_buttonRadius);
             var location = parentTopLeft + parentTopLeftToButtonCenter + buttonCenterToButtonTopLeft;
             return location;
         }
 
         private Vector GetButtonCenterRelativeToDiagramShape(Size diagramShapeSize)
         {
-            return (Vector) new Rect(diagramShapeSize).GetRelativePoint(RectRelativeLocation);
+            return (Vector)new Rect(diagramShapeSize).GetRelativePoint(_rectRelativeLocation);
+        }
+
+        private void OnClick()
+        {
+            _clickCommandDelegate(AssociatedDiagramShapeViewModel);
         }
     }
 }

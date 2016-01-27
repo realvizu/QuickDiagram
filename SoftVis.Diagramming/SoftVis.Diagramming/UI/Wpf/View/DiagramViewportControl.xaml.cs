@@ -198,16 +198,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
         }
 
-        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            Keyboard.Focus(DiagramItemsControl);
-        }
-
-        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
-        {
-            Keyboard.Focus(DiagramItemsControl);
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (!_isViewportObscured)

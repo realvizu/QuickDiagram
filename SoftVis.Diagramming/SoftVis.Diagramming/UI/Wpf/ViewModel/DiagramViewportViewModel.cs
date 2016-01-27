@@ -207,7 +207,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnShapeRemoveRequested(DiagramShape diagramShape)
         {
-            OnShapeRemoved(this, diagramShape);
+            _diagram.RemoveShape(diagramShape);
         }
 
         private void OnShapeFocused(FocusableViewModelBase focusableViewModel)

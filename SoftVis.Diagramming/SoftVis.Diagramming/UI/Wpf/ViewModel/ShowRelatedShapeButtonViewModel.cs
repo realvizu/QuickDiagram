@@ -20,5 +20,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ConnectorType ConnectorType => _descriptor.ConnectorType;
         public RelationshipSpecification RelationshipSpecification => _descriptor.RelationshipSpecification;
+
+        public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
+        {
+            base.AssociateWith(diagramShapeViewModel);
+            IsEnabled = ((DiagramNode)diagramShapeViewModel.DiagramShape).Name.StartsWith("1");
+        }
     }
 }

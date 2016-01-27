@@ -58,10 +58,5 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
             base.OnApplyTemplate();
         }
-
-        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            Keyboard.Focus(TheDiagramViewportControl);
-        }
     }
 }
