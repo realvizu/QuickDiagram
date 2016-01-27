@@ -35,10 +35,6 @@
                              DiagramStroke="Black"
                              FontFamily="Arial"
                              FontSize="12"
-                             
-                             PanAndZoomControlHeight="120"
-                             MinZoom="0.2"
-                             MaxZoom="5"
-                             InitialZoom="2" />
+                             PanAndZoomControlHeight="120" />
     </Grid>
 </Window>

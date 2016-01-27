@@ -19,15 +19,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty DiagramStrokeProperty =
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramControl));
 
-        public static readonly DependencyProperty MinZoomProperty =
-            ZoomableVisual.MinZoomProperty.AddOwner(typeof(DiagramControl));
-
-        public static readonly DependencyProperty MaxZoomProperty =
-            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(DiagramControl));
-
-        public static readonly DependencyProperty InitialZoomProperty =
-            ZoomableVisual.InitialZoomProperty.AddOwner(typeof(DiagramControl));
-
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DiagramViewportControl.PanAndZoomControlHeightProperty.AddOwner(typeof(DiagramControl));
 
@@ -52,24 +43,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (Brush)GetValue(DiagramStrokeProperty); }
             set { SetValue(DiagramStrokeProperty, value); }
-        }
-
-        public double MinZoom
-        {
-            get { return (double)GetValue(MinZoomProperty); }
-            set { SetValue(MinZoomProperty, value); }
-        }
-
-        public double MaxZoom
-        {
-            get { return (double)GetValue(MaxZoomProperty); }
-            set { SetValue(MaxZoomProperty, value); }
-        }
-
-        public double InitialZoom
-        {
-            get { return (double)GetValue(InitialZoomProperty); }
-            set { SetValue(InitialZoomProperty, value); }
         }
 
         public double PanAndZoomControlHeight

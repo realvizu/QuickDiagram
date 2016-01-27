@@ -57,9 +57,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// </summary>
         public static readonly DependencyProperty TransitionedViewportTransformProperty =
             DependencyProperty.Register("TransitionedViewportTransform", typeof(TransitionedTransform), typeof(DiagramViewportControl),
-                new PropertyMetadata(TransitionedTransform.Identity, OnAnimatedViewportTransformChanged));
+                new PropertyMetadata(TransitionedTransform.Identity, OnTransitionedViewportTransformChanged));
 
-        private static void OnAnimatedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
 
         public static readonly DependencyProperty WidgetPanCommandProperty =

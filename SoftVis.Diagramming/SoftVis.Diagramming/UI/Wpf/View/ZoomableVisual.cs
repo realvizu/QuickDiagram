@@ -9,7 +9,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
     {
         private const double MinZoomDefault = .1;
         private const double MaxZoomDefault = 10;
-        private const double InitialZoomDefault = 1;
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.RegisterAttached("MinZoom", typeof(double), typeof(ZoomableVisual), 
@@ -19,18 +18,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.RegisterAttached("MaxZoom", typeof(double), typeof(ZoomableVisual),
                 new FrameworkPropertyMetadata(MaxZoomDefault, FrameworkPropertyMetadataOptions.Inherits));
 
-        public static readonly DependencyProperty InitialZoomProperty =
-            DependencyProperty.RegisterAttached("InitialZoom", typeof(double), typeof(ZoomableVisual),
-                new FrameworkPropertyMetadata(InitialZoomDefault, FrameworkPropertyMetadataOptions.Inherits));
-
         public static void SetMinZoom(UIElement element, double value) => element.SetValue(MinZoomProperty, value);
         public static double GetMinZoom(UIElement element) => (double)element.GetValue(MinZoomProperty);
 
         public static void SetMaxZoom(UIElement element, double value) => element.SetValue(MaxZoomProperty, value);
         public static double GetMaxZoom(UIElement element) => (double)element.GetValue(MaxZoomProperty);
-
-        public static void SetInitialZoom(UIElement element, double value) => element.SetValue(InitialZoomProperty, value);
-        public static double GetInitialZoom(UIElement element) => (double)element.GetValue(InitialZoomProperty);
 
         public double MinZoom
         {
@@ -42,12 +34,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(MaxZoomProperty); }
             set { SetValue(MaxZoomProperty, value); }
-        }
-
-        public double InitialZoom
-        {
-            get { return (double)GetValue(InitialZoomProperty); }
-            set { SetValue(InitialZoomProperty, value); }
         }
     }
 }
