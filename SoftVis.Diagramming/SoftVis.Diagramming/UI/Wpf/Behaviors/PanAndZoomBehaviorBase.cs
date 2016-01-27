@@ -1,18 +1,17 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interactivity;
 using Codartis.SoftVis.UI.Common;
-using Codartis.SoftVis.UI.Wpf.Common;
+using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.Behaviors
 {
     internal abstract class PanAndZoomBehaviorBase : Behavior<FrameworkElement>
     {
         public static readonly DependencyProperty PanCommandProperty =
-            DependencyProperty.Register("PanCommand", typeof(ICommand), typeof(PanAndZoomBehaviorBase));
+            DependencyProperty.Register("PanCommand", typeof(VectorCommand), typeof(PanAndZoomBehaviorBase));
 
         public static readonly DependencyProperty ZoomCommandProperty =
-            DependencyProperty.Register("ZoomCommand", typeof(ICommand), typeof(PanAndZoomBehaviorBase));
+            DependencyProperty.Register("ZoomCommand", typeof(ZoomCommand), typeof(PanAndZoomBehaviorBase));
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(PanAndZoomBehaviorBase));
@@ -23,15 +22,15 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         public static readonly DependencyProperty ZoomValueProperty =
             DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomBehaviorBase));
 
-        public ICommand PanCommand
+        public VectorCommand PanCommand
         {
-            get { return (ICommand)GetValue(PanCommandProperty); }
+            get { return (VectorCommand)GetValue(PanCommandProperty); }
             set { SetValue(PanCommandProperty, value); }
         }
 
-        public ICommand ZoomCommand
+        public ZoomCommand ZoomCommand
         {
-            get { return (ICommand)GetValue(ZoomCommandProperty); }
+            get { return (ZoomCommand)GetValue(ZoomCommandProperty); }
             set { SetValue(ZoomCommandProperty, value); }
         }
 

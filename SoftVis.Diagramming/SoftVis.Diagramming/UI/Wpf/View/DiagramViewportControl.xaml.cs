@@ -5,7 +5,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
-using Codartis.SoftVis.UI.Wpf.Common;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -63,50 +62,50 @@ namespace Codartis.SoftVis.UI.Wpf.View
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
 
         public static readonly DependencyProperty WidgetPanCommandProperty =
-            DependencyProperty.Register("WidgetPanCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("WidgetPanCommand", typeof(VectorCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty WidgetZoomCommandProperty =
-            DependencyProperty.Register("WidgetZoomCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("WidgetZoomCommand", typeof(DoubleCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty WidgetZoomToContentCommandProperty =
-            DependencyProperty.Register("WidgetZoomToContentCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("WidgetZoomToContentCommand", typeof(ParameterlessCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty MousePanCommandProperty =
-            DependencyProperty.Register("MousePanCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("MousePanCommand", typeof(VectorCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty MouseZoomCommandProperty =
-            DependencyProperty.Register("MouseZoomCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("MouseZoomCommand", typeof(ZoomCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty KeyboardPanCommandProperty =
-            DependencyProperty.Register("KeyboardPanCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("KeyboardPanCommand", typeof(VectorCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty KeyboardZoomCommandProperty =
-            DependencyProperty.Register("KeyboardZoomCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("KeyboardZoomCommand", typeof(ZoomCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportResizeCommandProperty =
-            DependencyProperty.Register("ViewportResizeCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportResizeCommand", typeof(ViewportResizeCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportPanCommandProperty =
-            DependencyProperty.Register("ViewportPanCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportPanCommand", typeof(ViewportPanCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportZoomCommandProperty =
-            DependencyProperty.Register("ViewportZoomCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportZoomCommand", typeof(ViewportZoomCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportZoomToContentCommandProperty =
-            DependencyProperty.Register("ViewportZoomToContentCommand", typeof(ICommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportZoomToContentCommand", typeof(ViewportZoomToContentCommand), typeof(DiagramViewportControl));
 
         public DiagramViewportControl()
         {
             _diagramFocusTracker = new DiagramFocusTracker(this);
             _isViewportObscured = false;
 
-            KeyboardPanCommand = new DelegateCommand<Vector>(OnKeyboardPan);
-            KeyboardZoomCommand = new DelegateCommand<ZoomDirection, double, Point>(OnKeyboardZoom);
-            MousePanCommand = new DelegateCommand<Vector>(OnMousePan);
-            MouseZoomCommand = new DelegateCommand<ZoomDirection, double, Point>(OnMouseZoom);
-            WidgetPanCommand = new DelegateCommand<Vector>(OnWidgetPan);
-            WidgetZoomCommand = new DelegateCommand<double>(OnWidgetZoom);
-            WidgetZoomToContentCommand = new DelegateCommand(OnWidgetZoomToContent);
+            KeyboardPanCommand = new VectorCommand(OnKeyboardPan);
+            KeyboardZoomCommand = new ZoomCommand(OnKeyboardZoom);
+            MousePanCommand = new VectorCommand(OnMousePan);
+            MouseZoomCommand = new ZoomCommand(OnMouseZoom);
+            WidgetPanCommand = new VectorCommand(OnWidgetPan);
+            WidgetZoomCommand = new DoubleCommand(OnWidgetZoom);
+            WidgetZoomToContentCommand = new ParameterlessCommand(OnWidgetZoomToContent);
 
             Loaded += OnLoaded;
 

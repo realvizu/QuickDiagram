@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
@@ -29,10 +27,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
-        public ICommand ResizeCommand { get; }
-        public ICommand PanCommand { get; }
-        public ICommand ZoomToContentCommand { get; }
-        public ICommand ZoomCommand { get; }
+        public ViewportResizeCommand ViewportResizeCommand { get; }
+        public ViewportPanCommand ViewportPanCommand { get; }
+        public ViewportZoomToContentCommand ViewportZoomToContentCommand { get; }
+        public ViewportZoomCommand ViewportZoomCommand { get; }
 
         public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -46,10 +44,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
             MinZoom = minZoom;
             MaxZoom = maxZoom;
-            ResizeCommand = new DelegateCommand<Size, TransitionSpeed>(_viewport.Resize);
-            PanCommand = new DelegateCommand<Vector, TransitionSpeed>(_viewport.Pan);
-            ZoomToContentCommand = new DelegateCommand<TransitionSpeed>(_viewport.ZoomToContent);
-            ZoomCommand = new DelegateCommand<double, Point, TransitionSpeed>(_viewport.ZoomWithCenterTo);
+            ViewportResizeCommand = new ViewportResizeCommand(_viewport.Resize);
+            ViewportPanCommand = new ViewportPanCommand(_viewport.Pan);
+            ViewportZoomToContentCommand = new ViewportZoomToContentCommand(_viewport.ZoomToContent);
+            ViewportZoomCommand = new ViewportZoomCommand(_viewport.ZoomWithCenterTo);
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();

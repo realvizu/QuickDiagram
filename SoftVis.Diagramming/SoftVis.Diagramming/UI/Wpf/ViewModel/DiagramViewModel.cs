@@ -4,7 +4,6 @@ using System.Windows.Input;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
-using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -28,8 +27,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
-            ShowRelatedEntitySelectorCommand = new DelegateCommand<DiagramButtonActivatedEventArgs>(ShowRelationshipSelector);
-            HideRelatedEntitySelectorCommand = new DelegateCommand(HideRelationshipSelector);
+            //ShowRelatedEntitySelectorCommand = new DelegateCommand<DiagramButtonActivatedEventArgs>(ShowRelationshipSelector);
+            //HideRelatedEntitySelectorCommand = new DelegateCommand(HideRelationshipSelector);
         }
 
         private void ShowRelationshipSelector(DiagramButtonActivatedEventArgs e)

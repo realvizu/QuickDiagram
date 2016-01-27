@@ -1,5 +1,5 @@
-﻿using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows.Media;
+using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -47,69 +47,69 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
-        public ICommand WidgetPanCommand
+        public VectorCommand WidgetPanCommand
         {
-            get { return (ICommand)GetValue(WidgetPanCommandProperty); }
+            get { return (VectorCommand)GetValue(WidgetPanCommandProperty); }
             set { SetValue(WidgetPanCommandProperty, value); }
         }
 
-        public ICommand WidgetZoomCommand
+        public DoubleCommand WidgetZoomCommand
         {
-            get { return (ICommand)GetValue(WidgetZoomCommandProperty); }
+            get { return (DoubleCommand)GetValue(WidgetZoomCommandProperty); }
             set { SetValue(WidgetZoomCommandProperty, value); }
         }
 
-        public ICommand WidgetZoomToContentCommand
+        public ParameterlessCommand WidgetZoomToContentCommand
         {
-            get { return (ICommand)GetValue(WidgetZoomToContentCommandProperty); }
+            get { return (ParameterlessCommand)GetValue(WidgetZoomToContentCommandProperty); }
             set { SetValue(WidgetZoomToContentCommandProperty, value); }
         }
 
-        public ICommand MousePanCommand
+        public VectorCommand MousePanCommand
         {
-            get { return (ICommand)GetValue(MousePanCommandProperty); }
+            get { return (VectorCommand)GetValue(MousePanCommandProperty); }
             set { SetValue(MousePanCommandProperty, value); }
         }
 
-        public ICommand MouseZoomCommand
+        public ZoomCommand MouseZoomCommand
         {
-            get { return (ICommand)GetValue(MouseZoomCommandProperty); }
+            get { return (ZoomCommand)GetValue(MouseZoomCommandProperty); }
             set { SetValue(MouseZoomCommandProperty, value); }
         }
 
-        public ICommand KeyboardPanCommand
+        public VectorCommand KeyboardPanCommand
         {
-            get { return (ICommand)GetValue(KeyboardPanCommandProperty); }
+            get { return (VectorCommand)GetValue(KeyboardPanCommandProperty); }
             set { SetValue(KeyboardPanCommandProperty, value); }
         }
 
-        public ICommand KeyboardZoomCommand
+        public ZoomCommand KeyboardZoomCommand
         {
-            get { return (ICommand)GetValue(KeyboardZoomCommandProperty); }
+            get { return (ZoomCommand)GetValue(KeyboardZoomCommandProperty); }
             set { SetValue(KeyboardZoomCommandProperty, value); }
         }
 
-        public ICommand ViewportResizeCommand
+        public ViewportResizeCommand ViewportResizeCommand
         {
-            get { return (ICommand)GetValue(ViewportResizeCommandProperty); }
+            get { return (ViewportResizeCommand)GetValue(ViewportResizeCommandProperty); }
             set { SetValue(ViewportResizeCommandProperty, value); }
         }
 
-        public ICommand ViewportPanCommand
+        public ViewportPanCommand ViewportPanCommand
         {
-            get { return (ICommand)GetValue(ViewportPanCommandProperty); }
+            get { return (ViewportPanCommand)GetValue(ViewportPanCommandProperty); }
             set { SetValue(ViewportPanCommandProperty, value); }
         }
 
-        public ICommand ViewportZoomCommand
+        public ViewportZoomCommand ViewportZoomCommand
         {
-            get { return (ICommand)GetValue(ViewportZoomCommandProperty); }
+            get { return (ViewportZoomCommand)GetValue(ViewportZoomCommandProperty); }
             set { SetValue(ViewportZoomCommandProperty, value); }
         }
 
-        public ICommand ViewportZoomToContentCommand
+        public ViewportZoomToContentCommand ViewportZoomToContentCommand
         {
-            get { return (ICommand)GetValue(ViewportZoomToContentCommandProperty); }
+            get { return (ViewportZoomToContentCommand)GetValue(ViewportZoomToContentCommandProperty); }
             set { SetValue(ViewportZoomToContentCommandProperty, value); }
         }
     }

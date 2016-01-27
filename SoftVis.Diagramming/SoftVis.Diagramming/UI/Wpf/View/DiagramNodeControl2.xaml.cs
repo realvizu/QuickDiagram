@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
+using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -17,10 +17,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeControl2));
 
         public static readonly DependencyProperty FocusCommandProperty =
-            DependencyProperty.Register("FocusCommand", typeof(ICommand), typeof(DiagramNodeControl2));
+            DependencyProperty.Register("FocusCommand", typeof(ParameterlessCommand), typeof(DiagramNodeControl2));
 
         public static readonly DependencyProperty UnfocusCommandProperty =
-            DependencyProperty.Register("UnfocusCommand", typeof(ICommand), typeof(DiagramNodeControl2));
+            DependencyProperty.Register("UnfocusCommand", typeof(ParameterlessCommand), typeof(DiagramNodeControl2));
 
         public DiagramNodeControl2()
         {
@@ -40,15 +40,15 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DiagramStrokeProperty, value); }
         }
 
-        public ICommand FocusCommand
+        public ParameterlessCommand FocusCommand
         {
-            get { return (ICommand)GetValue(FocusCommandProperty); }
+            get { return (ParameterlessCommand)GetValue(FocusCommandProperty); }
             set { SetValue(FocusCommandProperty, value); }
         }
 
-        public ICommand UnfocusCommand
+        public ParameterlessCommand UnfocusCommand
         {
-            get { return (ICommand)GetValue(UnfocusCommandProperty); }
+            get { return (ParameterlessCommand)GetValue(UnfocusCommandProperty); }
             set { SetValue(UnfocusCommandProperty, value); }
         }
 

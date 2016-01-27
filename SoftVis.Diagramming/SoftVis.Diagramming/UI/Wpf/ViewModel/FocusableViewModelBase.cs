@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Input;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -13,16 +12,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         public bool IsFocused { get; private set; }
 
-        public ICommand FocusCommand { get; set; }
-        public ICommand UnfocusCommand { get; set; }
+        public ParameterlessCommand FocusCommand { get; set; }
+        public ParameterlessCommand UnfocusCommand { get; set; }
 
         public event Action<FocusableViewModelBase> GotFocus;
         public event Action<FocusableViewModelBase> LostFocus;
 
         protected FocusableViewModelBase()
         {
-            FocusCommand = new DelegateCommand(Focus);
-            UnfocusCommand = new DelegateCommand(Unfocus);
+            FocusCommand = new ParameterlessCommand(Focus);
+            UnfocusCommand = new ParameterlessCommand(Unfocus);
         }
 
         public void Focus()

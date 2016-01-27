@@ -1,6 +1,6 @@
 ﻿namespace Codartis.SoftVis.UI.Common
 {
-    internal enum ZoomDirection
+    public enum ZoomDirection
     {
         In,
         Out

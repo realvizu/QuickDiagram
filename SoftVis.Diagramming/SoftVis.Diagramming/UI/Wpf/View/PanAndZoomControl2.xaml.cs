@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Codartis.SoftVis.UI.Common;
@@ -42,20 +41,20 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new PropertyMetadata(ZoomValueDefault));
 
         public static readonly DependencyProperty ZoomCommandProperty =
-            DependencyProperty.Register("ZoomCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("ZoomCommand", typeof(DoubleCommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty DirectionPanCommandProperty =
-            DependencyProperty.Register("DirectionPanCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("DirectionPanCommand", typeof(PanDirectionCommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty VectorPanCommandProperty =
-            DependencyProperty.Register("VectorPanCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("VectorPanCommand", typeof(VectorCommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty CenterCommandProperty =
-            DependencyProperty.Register("CenterCommand", typeof(ICommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("CenterCommand", typeof(ParameterlessCommand), typeof(PanAndZoomControl2));
 
         public PanAndZoomControl2()
         {
-            DirectionPanCommand = new DelegateCommand<PanDirection>(i => VectorPanCommand?.Execute(CalculatePanVector(i)));
+            DirectionPanCommand = new PanDirectionCommand(OnDirectionPan);
 
             InitializeComponent();
         }
@@ -96,27 +95,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ZoomValueProperty, value); }
         }
 
-        public ICommand ZoomCommand
+        public DoubleCommand ZoomCommand
         {
-            get { return (ICommand)GetValue(ZoomCommandProperty); }
+            get { return (DoubleCommand)GetValue(ZoomCommandProperty); }
             set { SetValue(ZoomCommandProperty, value); }
         }
 
-        public ICommand DirectionPanCommand
+        public PanDirectionCommand DirectionPanCommand
         {
-            get { return (ICommand)GetValue(DirectionPanCommandProperty); }
+            get { return (PanDirectionCommand)GetValue(DirectionPanCommandProperty); }
             set { SetValue(DirectionPanCommandProperty, value); }
         }
 
-        public ICommand VectorPanCommand
+        public VectorCommand VectorPanCommand
         {
-            get { return (ICommand)GetValue(VectorPanCommandProperty); }
+            get { return (VectorCommand)GetValue(VectorPanCommandProperty); }
             set { SetValue(VectorPanCommandProperty, value); }
         }
 
-        public ICommand CenterCommand
+        public ParameterlessCommand CenterCommand
         {
-            get { return (ICommand)GetValue(CenterCommandProperty); }
+            get { return (ParameterlessCommand)GetValue(CenterCommandProperty); }
             set { SetValue(CenterCommandProperty, value); }
         }
 
@@ -175,6 +174,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ZoomCommand?.Execute(e.NewValue);
+        }
+
+        private void OnDirectionPan(PanDirection panDirection)
+        {
+            var panVector = CalculatePanVector(panDirection);
+            VectorPanCommand?.Execute(panVector);
         }
     }
 }

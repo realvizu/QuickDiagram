@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
 using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
@@ -21,7 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool _isVisible;
         private bool _isEnabled;
 
-        public ICommand Command { get; private set; }
+        public ParameterlessCommand ClickCommand { get; private set; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
         protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation,
@@ -35,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _isVisible = false;
             _isEnabled = true;
 
-            Command = new DelegateCommand(OnClick);
+            ClickCommand = new ParameterlessCommand(OnClick);
         }
 
         public Size Size

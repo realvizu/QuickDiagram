@@ -36,8 +36,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <view:DiagramItemsControl x:Name="DiagramItemsControl"
-                                  ItemsSource="{Binding DiagramShapeViewModels}"
+        <view:DiagramItemsControl ItemsSource="{Binding DiagramShapeViewModels}"
                                   ItemsPanel="{StaticResource AnimatedTransformCanvas}"
                                   ItemContainerStyle="{StaticResource DiagramShapeItemContainerStyle}">
             <i:Interaction.Behaviors>
@@ -71,9 +70,9 @@
         </view:DiagramItemsControl>
 
         <view:DiagramButtonItemsControl ItemsSource="{Binding DiagramButtonViewModels}" 
-                                     ItemsPanel="{StaticResource AnimatedTransformCanvas}"
-                                     ItemContainerStyle="{StaticResource DiagramButtonItemContainerStyle}"
-                                     Background="{x:Null}" />
+                                        ItemsPanel="{StaticResource AnimatedTransformCanvas}"
+                                        ItemContainerStyle="{StaticResource DiagramButtonItemContainerStyle}"
+                                        Background="{x:Null}" />
 
         <view:PanAndZoomControl2 Focusable="False"
                                  HorizontalAlignment="Left"

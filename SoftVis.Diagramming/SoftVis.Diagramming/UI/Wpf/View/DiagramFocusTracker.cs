@@ -68,12 +68,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private static void Focus(DiagramNodeControl2 diagramNodeControl)
         {
-            diagramNodeControl?.FocusCommand?.Execute(null);
+            diagramNodeControl?.FocusCommand?.Execute();
         }
 
         private static void Unfocus(DiagramNodeControl2 diagramNodeControl)
         {
-            diagramNodeControl?.UnfocusCommand?.Execute(null);
+            diagramNodeControl?.UnfocusCommand?.Execute();
         }
     }
 }
