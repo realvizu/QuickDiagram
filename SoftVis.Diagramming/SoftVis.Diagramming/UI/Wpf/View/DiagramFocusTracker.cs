@@ -46,14 +46,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private DiagramNodeControl2 FindPointedControl(MouseEventArgs mouseEventArgs)
         {
             var pointedDiagramButton = _hitTester.HitTest<DiagramButton>(mouseEventArgs);
-            if (pointedDiagramButton != null)
-                return GetDiagramNodeControlForButton(pointedDiagramButton);
-
-            var pointedDiagramNode = _hitTester.HitTest<DiagramNodeControl2>(mouseEventArgs);
-            if (pointedDiagramNode != null)
-                return pointedDiagramNode;
-
-            return null;
+            return pointedDiagramButton != null 
+                ? GetDiagramNodeControlForButton(pointedDiagramButton) 
+                : _hitTester.HitTest<DiagramNodeControl2>(mouseEventArgs);
         }
 
         private DiagramNodeControl2 GetDiagramNodeControlForButton(DiagramButton diagramButton)

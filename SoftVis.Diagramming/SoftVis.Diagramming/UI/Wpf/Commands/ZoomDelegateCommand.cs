@@ -7,9 +7,9 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
     /// <summary>
     /// A command that invokes a delegate with zoom parameters.
     /// </summary>
-    public class ZoomCommand : DelegateCommand<ZoomDirection, double, Point>
+    public class ZoomDelegateCommand : DelegateCommand<ZoomDirection, double, Point>
     {
-        public ZoomCommand(Action<ZoomDirection, double, Point> execute, Func<ZoomDirection, double, Point, bool> canExecute = null) 
+        public ZoomDelegateCommand(Action<ZoomDirection, double, Point> execute, Func<ZoomDirection, double, Point, bool> canExecute = null) 
             : base(execute, canExecute)
         { }
 

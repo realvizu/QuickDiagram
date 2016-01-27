@@ -12,16 +12,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         public bool IsFocused { get; private set; }
 
-        public ParameterlessCommand FocusCommand { get; set; }
-        public ParameterlessCommand UnfocusCommand { get; set; }
+        public DelegateCommand FocusCommand { get; set; }
+        public DelegateCommand UnfocusCommand { get; set; }
 
         public event Action<FocusableViewModelBase> GotFocus;
         public event Action<FocusableViewModelBase> LostFocus;
 
         protected FocusableViewModelBase()
         {
-            FocusCommand = new ParameterlessCommand(Focus);
-            UnfocusCommand = new ParameterlessCommand(Unfocus);
+            FocusCommand = new DelegateCommand(Focus);
+            UnfocusCommand = new DelegateCommand(Unfocus);
         }
 
         public void Focus()

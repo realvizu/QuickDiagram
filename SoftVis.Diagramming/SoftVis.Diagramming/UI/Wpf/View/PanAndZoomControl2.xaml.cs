@@ -41,20 +41,20 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new PropertyMetadata(ZoomValueDefault));
 
         public static readonly DependencyProperty ZoomCommandProperty =
-            DependencyProperty.Register("ZoomCommand", typeof(DoubleCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("ZoomCommand", typeof(DoubleDelegateCommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty DirectionPanCommandProperty =
-            DependencyProperty.Register("DirectionPanCommand", typeof(PanDirectionCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("DirectionPanCommand", typeof(PanDirectionDelegateCommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty VectorPanCommandProperty =
-            DependencyProperty.Register("VectorPanCommand", typeof(VectorCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("VectorPanCommand", typeof(VectorDelegateCommand), typeof(PanAndZoomControl2));
 
         public static readonly DependencyProperty CenterCommandProperty =
-            DependencyProperty.Register("CenterCommand", typeof(ParameterlessCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("CenterCommand", typeof(DelegateCommand), typeof(PanAndZoomControl2));
 
         public PanAndZoomControl2()
         {
-            DirectionPanCommand = new PanDirectionCommand(OnDirectionPan);
+            DirectionPanCommand = new PanDirectionDelegateCommand(OnDirectionPan);
 
             InitializeComponent();
         }
@@ -95,27 +95,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ZoomValueProperty, value); }
         }
 
-        public DoubleCommand ZoomCommand
+        public DoubleDelegateCommand ZoomCommand
         {
-            get { return (DoubleCommand)GetValue(ZoomCommandProperty); }
+            get { return (DoubleDelegateCommand)GetValue(ZoomCommandProperty); }
             set { SetValue(ZoomCommandProperty, value); }
         }
 
-        public PanDirectionCommand DirectionPanCommand
+        public PanDirectionDelegateCommand DirectionPanCommand
         {
-            get { return (PanDirectionCommand)GetValue(DirectionPanCommandProperty); }
+            get { return (PanDirectionDelegateCommand)GetValue(DirectionPanCommandProperty); }
             set { SetValue(DirectionPanCommandProperty, value); }
         }
 
-        public VectorCommand VectorPanCommand
+        public VectorDelegateCommand VectorPanCommand
         {
-            get { return (VectorCommand)GetValue(VectorPanCommandProperty); }
+            get { return (VectorDelegateCommand)GetValue(VectorPanCommandProperty); }
             set { SetValue(VectorPanCommandProperty, value); }
         }
 
-        public ParameterlessCommand CenterCommand
+        public DelegateCommand CenterCommand
         {
-            get { return (ParameterlessCommand)GetValue(CenterCommandProperty); }
+            get { return (DelegateCommand)GetValue(CenterCommandProperty); }
             set { SetValue(CenterCommandProperty, value); }
         }
 

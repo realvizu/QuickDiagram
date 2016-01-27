@@ -8,10 +8,10 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
     internal abstract class PanAndZoomBehaviorBase : Behavior<FrameworkElement>
     {
         public static readonly DependencyProperty PanCommandProperty =
-            DependencyProperty.Register("PanCommand", typeof(VectorCommand), typeof(PanAndZoomBehaviorBase));
+            DependencyProperty.Register("PanCommand", typeof(VectorDelegateCommand), typeof(PanAndZoomBehaviorBase));
 
         public static readonly DependencyProperty ZoomCommandProperty =
-            DependencyProperty.Register("ZoomCommand", typeof(ZoomCommand), typeof(PanAndZoomBehaviorBase));
+            DependencyProperty.Register("ZoomCommand", typeof(ZoomDelegateCommand), typeof(PanAndZoomBehaviorBase));
 
         public static readonly DependencyProperty MinZoomProperty =
             DependencyProperty.Register("MinZoom", typeof(double), typeof(PanAndZoomBehaviorBase));
@@ -22,15 +22,15 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         public static readonly DependencyProperty ZoomValueProperty =
             DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomBehaviorBase));
 
-        public VectorCommand PanCommand
+        public VectorDelegateCommand PanCommand
         {
-            get { return (VectorCommand)GetValue(PanCommandProperty); }
+            get { return (VectorDelegateCommand)GetValue(PanCommandProperty); }
             set { SetValue(PanCommandProperty, value); }
         }
 
-        public ZoomCommand ZoomCommand
+        public ZoomDelegateCommand ZoomCommand
         {
-            get { return (ZoomCommand)GetValue(ZoomCommandProperty); }
+            get { return (ZoomDelegateCommand)GetValue(ZoomCommandProperty); }
             set { SetValue(ZoomCommandProperty, value); }
         }
 

@@ -6,14 +6,14 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
     /// <summary>
     /// A command that executes a delegate with no parameter.
     /// </summary>
-    public class ParameterlessCommand : ICommand
+    public class DelegateCommand : ICommand
     {
         private readonly Action _execute;
         private readonly object _lockObject = new object();
 
         public event EventHandler CanExecuteChanged;
 
-        public ParameterlessCommand(Action execute)
+        public DelegateCommand(Action execute)
         {
             _execute = execute;
         }

@@ -6,9 +6,9 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
     /// <summary>
     /// A command that invokes a delegate with a PanDirection parameter.
     /// </summary>
-    public class PanDirectionCommand : DelegateCommand<PanDirection>
+    public class PanDirectionDelegateCommand : DelegateCommand<PanDirection>
     {
-        public PanDirectionCommand(Action<PanDirection> execute, Func<PanDirection, bool> canExecute = null) 
+        public PanDirectionDelegateCommand(Action<PanDirection> execute, Func<PanDirection, bool> canExecute = null) 
             : base(execute, canExecute)
         {
         }

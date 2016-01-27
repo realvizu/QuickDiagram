@@ -29,8 +29,8 @@ namespace Codartis.SoftVis.TestHostApp
             _diagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider,
                 0.2, 5, 1);
             
-            AddCommand = new ParameterlessCommand(AddShapes);
-            RemoveCommand = new ParameterlessCommand(RemoveShapes);
+            AddCommand = new DelegateCommand(AddShapes);
+            RemoveCommand = new DelegateCommand(RemoveShapes);
         }
 
         public ICommand AddCommand

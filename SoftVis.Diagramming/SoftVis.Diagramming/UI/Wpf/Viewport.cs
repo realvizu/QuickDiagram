@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
+using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf
@@ -166,6 +167,39 @@ namespace Codartis.SoftVis.UI.Wpf
             transform.Children.Add(new TranslateTransform(translateVector.X, translateVector.Y));
             transform.Children.Add(new ScaleTransform(_exponentialZoom, _exponentialZoom));
             return transform;
+        }
+
+        public class PanCommand : DelegateCommand<Vector, TransitionSpeed>
+        {
+            public PanCommand(Viewport viewport) : base(viewport.Pan)
+            { }
+
+            public void Execute(Vector panVector, TransitionSpeed transitionSpeed)
+                => ExecuteCore(panVector, transitionSpeed);
+        }
+
+        public class ResizeCommand : DelegateCommand<Size, TransitionSpeed>
+        {
+            public ResizeCommand(Viewport viewport) : base(viewport.Resize)
+            { }
+
+            public void Execute(Size newSize, TransitionSpeed transitionSpeed)
+                => ExecuteCore(newSize, transitionSpeed);
+        }
+
+        public class ZoomCommand : DelegateCommand<double, Point, TransitionSpeed>
+        {
+            public ZoomCommand(Viewport viewport) : base(viewport.ZoomWithCenterTo)
+            { }
+
+            public void Execute(double zoomValue, Point zoomCenter, TransitionSpeed transitionSpeed)
+                => ExecuteCore(zoomValue, zoomCenter, transitionSpeed);
+        }
+
+        public class ZoomToContentCommand : DelegateCommand<TransitionSpeed>
+        {
+            public ZoomToContentCommand(Viewport viewport) : base(viewport.ZoomToContent)
+            { }
         }
     }
 }

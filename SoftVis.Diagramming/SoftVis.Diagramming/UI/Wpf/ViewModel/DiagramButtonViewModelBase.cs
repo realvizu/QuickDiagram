@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool _isVisible;
         private bool _isEnabled;
 
-        public ParameterlessCommand ClickCommand { get; private set; }
+        public DelegateCommand ClickCommand { get; private set; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
         protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation,
@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _isVisible = false;
             _isEnabled = true;
 
-            ClickCommand = new ParameterlessCommand(OnClick);
+            ClickCommand = new DelegateCommand(OnClick);
         }
 
         public Size Size

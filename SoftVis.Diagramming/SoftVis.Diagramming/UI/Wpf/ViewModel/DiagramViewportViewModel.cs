@@ -5,7 +5,6 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
-using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -27,10 +26,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
-        public ViewportResizeCommand ViewportResizeCommand { get; }
-        public ViewportPanCommand ViewportPanCommand { get; }
-        public ViewportZoomToContentCommand ViewportZoomToContentCommand { get; }
-        public ViewportZoomCommand ViewportZoomCommand { get; }
+        public Viewport.ResizeCommand ViewportResizeCommand { get; }
+        public Viewport.PanCommand ViewportPanCommand { get; }
+        public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
+        public Viewport.ZoomCommand ViewportZoomCommand { get; }
 
         public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -44,10 +43,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
             MinZoom = minZoom;
             MaxZoom = maxZoom;
-            ViewportResizeCommand = new ViewportResizeCommand(_viewport.Resize);
-            ViewportPanCommand = new ViewportPanCommand(_viewport.Pan);
-            ViewportZoomToContentCommand = new ViewportZoomToContentCommand(_viewport.ZoomToContent);
-            ViewportZoomCommand = new ViewportZoomCommand(_viewport.ZoomWithCenterTo);
+            ViewportResizeCommand = new Viewport.ResizeCommand(_viewport);
+            ViewportPanCommand = new Viewport.PanCommand(_viewport);
+            ViewportZoomToContentCommand = new Viewport.ZoomToContentCommand(_viewport);
+            ViewportZoomCommand = new Viewport.ZoomCommand(_viewport);
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
