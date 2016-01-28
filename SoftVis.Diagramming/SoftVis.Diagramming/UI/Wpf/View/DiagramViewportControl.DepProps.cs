@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Windows.Controls;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -45,6 +46,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (TransitionedTransform)GetValue(TransitionedViewportTransformProperty); }
             set { SetValue(TransitionedViewportTransformProperty, value); }
+        }
+
+        public ContentPresenter FocusedDiagramShapeContainer
+        {
+            get { return (ContentPresenter)GetValue(FocusedDiagramShapeContainerProperty); }
+            set { SetValue(FocusedDiagramShapeContainerProperty, value); }
         }
 
         public VectorDelegateCommand WidgetPanCommand

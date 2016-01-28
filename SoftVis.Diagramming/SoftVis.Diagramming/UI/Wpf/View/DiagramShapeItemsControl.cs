@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// Presents a collection of diagram shape view models.
     /// </summary>
-    internal class DiagramItemsControl : AnimatedPositionedItemsControl<DiagramShapeViewModelBase>
+    internal class DiagramShapeItemsControl : AnimatedItemsControl<DiagramShapeViewModelBase>
     {
     }
 }

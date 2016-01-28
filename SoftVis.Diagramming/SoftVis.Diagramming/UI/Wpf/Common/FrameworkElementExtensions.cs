@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Data;
 
 namespace Codartis.SoftVis.UI.Wpf.Common
 {
@@ -12,31 +10,20 @@ namespace Codartis.SoftVis.UI.Wpf.Common
             frameworkElement.Resources.MergedDictionaries.Add(resourceDictionary);
         }
 
-        public static FrameworkElement FindParent<T>(this FrameworkElement frameworkElement)
-            where T: FrameworkElement
+        public static void SetBinding(this FrameworkElement targetObject, DependencyProperty targetProperty,
+            DependencyObject sourceObject, DependencyProperty sourceProperty)
         {
-            var currentElement = frameworkElement;
-            while (currentElement != null && !(currentElement is T))
-                currentElement = VisualTreeHelper.GetParent(currentElement) as FrameworkElement;
-
-            return currentElement;
+            var binding = new Binding
+            {
+                Source = sourceObject,
+                Path = new PropertyPath(sourceProperty)
+            };
+            targetObject.SetBinding(targetProperty, binding);
         }
 
-        public static IEnumerable<T> FindChildren<T>(this FrameworkElement frameworkElement, Predicate<T> predicate = null)
-            where T : class
+        public static void ClearBinding(this FrameworkElement dependencyObject, DependencyProperty dependencyProperty)
         {
-            var childrenCount = VisualTreeHelper.GetChildrenCount(frameworkElement);
-            for (var i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(frameworkElement, i) as FrameworkElement;
-
-                var typedChild = child as T;
-                if (typedChild != null && (predicate == null || predicate(typedChild)))
-                    yield return typedChild;
-
-                foreach (var foundChild in FindChildren(child, predicate))
-                    yield return foundChild;
-            }
+            BindingOperations.ClearBinding(dependencyObject, dependencyProperty);
         }
     }
 }

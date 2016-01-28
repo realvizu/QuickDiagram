@@ -22,6 +22,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty UnfocusCommandProperty =
             DependencyProperty.Register("UnfocusCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
 
+        public static readonly RoutedEvent DiagramItemGotFocusRoutedEvent =
+            EventManager.RegisterRoutedEvent("DiagramItemGotFocus", RoutingStrategy.Bubble,
+                typeof(RoutedEventHandler), typeof(DiagramNodeControl2));
+
+        public static readonly RoutedEvent DiagramItemLostFocusRoutedEvent =
+            EventManager.RegisterRoutedEvent("DiagramItemLostFocus", RoutingStrategy.Bubble,
+                typeof(RoutedEventHandler), typeof(DiagramNodeControl2));
+
         public DiagramNodeControl2()
         {
             InitializeComponent();
@@ -50,6 +58,30 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (DelegateCommand)GetValue(UnfocusCommandProperty); }
             set { SetValue(UnfocusCommandProperty, value); }
+        }
+
+        public event RoutedEventHandler DiagramItemGotFocus
+        {
+            add { AddHandler(DiagramItemGotFocusRoutedEvent, value); }
+            remove { RemoveHandler(DiagramItemGotFocusRoutedEvent, value); }
+        }
+
+        public event RoutedEventHandler DiagramItemLostFocus
+        {
+            add { AddHandler(DiagramItemLostFocusRoutedEvent, value); }
+            remove { RemoveHandler(DiagramItemLostFocusRoutedEvent, value); }
+        }
+
+        public void RaiseDiagramItemGotFocus()
+        {
+            var newEventArgs = new DiagramItemRoutedEventArgs(DiagramItemGotFocusRoutedEvent, this);
+            RaiseEvent(newEventArgs);
+        }
+
+        public void RaiseDiagramItemLostFocus()
+        {
+            var newEventArgs = new DiagramItemRoutedEventArgs(DiagramItemLostFocusRoutedEvent, this);
+            RaiseEvent(newEventArgs);
         }
 
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)

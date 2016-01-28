@@ -92,11 +92,15 @@
     <Compile Include="UI\Wpf\Common\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="UI\Wpf\Common\Converters\ThicknessMultiplierConverter.cs" />
     <Compile Include="UI\Wpf\Common\Converters\ThicknessToDoubleConverter.cs" />
+    <Compile Include="UI\Wpf\Common\TransformExtensions.cs" />
+    <Compile Include="UI\Wpf\Common\UIElementExtensions.cs" />
     <Compile Include="UI\Wpf\Common\FrameworkElementExtensions.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTesterInstance.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
     <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
+    <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramItemRoutedEventArgs.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonActivatedEventArgs.cs" />
     <Compile Include="UI\Wpf\DiagramViewerViewModel.cs" />
     <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />
@@ -215,6 +219,8 @@
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\ShowRelatedEntityMiniButton.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\CloseMiniButton.cs" />
     <Compile Include="UI\Extensibility\RelatedEntityButtonDescriptor.cs" />
+    <Compile Include="UI\Wpf\View\AdornerlikeContentPresenter.cs" />
+    <Compile Include="UI\Wpf\View\AdornerlikeItemsControl.cs" />
     <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
     <Compile Include="UI\Wpf\View\PathControl.xaml.cs">
@@ -285,17 +291,15 @@
     <Compile Include="UI\Wpf\Common\Converters\ConnectorTypeToGeometryConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\View\DiagramButton.cs" />
-    <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\PositionedItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorControl2.xaml.cs">
       <DependentUpon>DiagramConnectorControl2.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramControl.xaml.cs">
       <DependentUpon>DiagramControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\AnimatedPositionedItemContainer.cs" />
-    <Compile Include="UI\Wpf\View\DiagramItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\AnimatedPositionedItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\AnimatedContentPresenter.cs" />
+    <Compile Include="UI\Wpf\View\DiagramShapeItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\AnimatedItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramNodeControl2.xaml.cs">
       <DependentUpon>DiagramNodeControl2.xaml</DependentUpon>
     </Compile>
@@ -310,9 +314,7 @@
     <Compile Include="UI\Wpf\View\PanAndZoomControl2.xaml.cs">
       <DependentUpon>PanAndZoomControl2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\AnimatedTransformCanvas.cs" />
-    <Compile Include="UI\Wpf\View\PositionedItemContainer.cs" />
-    <Compile Include="UI\Wpf\View\TransformCanvas.cs" />
+    <Compile Include="UI\Wpf\View\AnimatedRenderTransformCanvas.cs" />
     <Compile Include="UI\Wpf\Viewport.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -347,6 +349,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Wpf\View\AnimationConstants.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramShapeDataTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Wpf\View\EllipseDiagramButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -363,21 +373,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\AnimatedPositionedItemContainer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramButtonItemsControl.xaml">
+    <Page Include="UI\Wpf\View\DiagramButtonDataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\PathControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\PositionedItemContainer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\DiagramViewportControl.xaml">
       <SubType>Designer</SubType>
@@ -390,10 +392,6 @@
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramItemsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\PanAndZoomControl2.xaml">
       <SubType>Designer</SubType>

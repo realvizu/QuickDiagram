@@ -7,12 +7,8 @@
                     xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Common.Converters"
                     mc:Ignorable="d">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/PositionedItemContainer.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseDiagramButton.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
     <converters:ConnectorTypeToGeometryConverter x:Key="ConnectorTypeToGeometryConverter"/>
 
     <DataTemplate DataType="{x:Type viewModel:CloseShapeButtonViewModel}">
@@ -30,28 +26,5 @@
         <view:PathControl Stretch="Uniform" 
                           Data="{Binding ConnectorType, Converter={StaticResource ConnectorTypeToGeometryConverter}}" />
     </DataTemplate>
-
-    <Style x:Key="DiagramButtonItemContainerStyle" 
-           TargetType="{x:Type view:PositionedItemContainer}" 
-           BasedOn="{StaticResource PositionedItemContainerBaseStyle}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramButtonViewModelBase}}">
-        <Setter Property="Width" Value="{Binding Path=Width}"/>
-        <Setter Property="Height" Value="{Binding Path=Height}"/>
-        <Setter Property="X" Value="{Binding Path=Left}"/>
-        <Setter Property="Y" Value="{Binding Path=Top}"/>
-        <Setter Property="ContentTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <view:DiagramButton Style="{StaticResource EllipseDiagramButton}"
-                                        Width="{Binding Width}" 
-                                        Height="{Binding Height}"
-                                        IsEnabled="{Binding IsEnabled}"
-                                        Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Content="{Binding}"
-                                        Command="{Binding ClickCommand}"/>
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
 </ResourceDictionary>

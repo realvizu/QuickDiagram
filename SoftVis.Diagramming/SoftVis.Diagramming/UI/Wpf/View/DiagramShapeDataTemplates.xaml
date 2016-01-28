@@ -7,10 +7,8 @@
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimatedPositionedItemContainer.xaml" />
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
-    <Duration x:Key="AnimationDuration">0:0:.3</Duration>
 
     <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
         <view:DiagramNodeControl2 FocusCommand="{Binding FocusCommand}"
@@ -20,21 +18,10 @@
     <DataTemplate DataType="{x:Type viewModels:DiagramConnectorViewModel2}">
         <view:DiagramConnectorControl2 RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
                                        BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
+                                            AncestorType={x:Type ContentPresenter}}, Mode=OneWay}"
                                        BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type view:AnimatedPositionedItemContainer}}, Mode=OneWay}"
-                                       AnimationDuration="{StaticResource AnimationDuration}"/>
+                                            AncestorType={x:Type ContentPresenter}}, Mode=OneWay}"
+                                       AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"/>
     </DataTemplate>
-
-    <Style x:Key="DiagramShapeItemContainerStyle" 
-           TargetType="{x:Type view:AnimatedPositionedItemContainer}" 
-           BasedOn="{StaticResource AnimatedPositionedItemContainerBaseStyle}"
-           d:DataContext="{d:DesignInstance {x:Type viewModels:DiagramShapeViewModelBase}}">
-        <Setter Property="Width" Value="{Binding Path=Width}"/>
-        <Setter Property="Height" Value="{Binding Path=Height}"/>
-        <Setter Property="X" Value="{Binding Path=X}"/>
-        <Setter Property="Y" Value="{Binding Path=Y}"/>
-        <Setter Property="AnimationDuration" Value="{StaticResource AnimationDuration}"/>
-    </Style>
 
 </ResourceDictionary>

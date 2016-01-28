@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.Common;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -60,6 +61,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
+
+        public static readonly DependencyProperty FocusedDiagramShapeContainerProperty =
+            DependencyProperty.Register("FocusedDiagramShapeContainer", typeof(ContentPresenter), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty WidgetPanCommandProperty =
             DependencyProperty.Register("WidgetPanCommand", typeof(VectorDelegateCommand), typeof(DiagramViewportControl));
@@ -217,6 +221,20 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void OnPanAndZoomControlMouseLeave(object sender, MouseEventArgs e)
         {
             _isViewportObscured = false;
+        }
+
+        private void OnDiagramItemGotFocus(object sender, RoutedEventArgs e)
+        {
+            var diagramItemRoutedEventArgs = (DiagramItemRoutedEventArgs) e;
+            var diagramNodeControl = diagramItemRoutedEventArgs.DiagramNodeControl;
+            var diagramShapeContainer = diagramNodeControl.FindParent<ContentPresenter>();
+
+            FocusedDiagramShapeContainer = diagramShapeContainer;
+        }
+
+        private void OnDiagramItemLostFocus(object sender, RoutedEventArgs e)
+        {
+            FocusedDiagramShapeContainer = null;
         }
     }
 }

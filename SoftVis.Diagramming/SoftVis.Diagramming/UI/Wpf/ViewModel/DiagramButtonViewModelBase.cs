@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Action<DiagramShapeViewModelBase> _clickCommandDelegate;
 
         private Size _size;
-        private Point _topLeft;
+        private Point _relativeTopLeft;
         private bool _isVisible;
         private bool _isEnabled;
 
@@ -55,23 +55,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double Width => Size.Width;
         public double Height => Size.Height;
 
-        public Point TopLeft
+        public Point RelativeTopLeft
         {
-            get { return _topLeft; }
+            get { return _relativeTopLeft; }
             set
             {
-                if (_topLeft != value)
+                if (_relativeTopLeft != value)
                 {
-                    _topLeft = value;
+                    _relativeTopLeft = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("Left");
-                    OnPropertyChanged("Top");
+                    OnPropertyChanged("RelativeLeft");
+                    OnPropertyChanged("RelativeTop");
                 }
             }
         }
 
-        public double Top => TopLeft.Y;
-        public double Left => TopLeft.X;
+        public double RelativeTop => RelativeTopLeft.Y;
+        public double RelativeLeft => RelativeTopLeft.X;
 
         public bool IsVisible
         {
@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public virtual void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             AssociatedDiagramShapeViewModel = diagramShapeViewModel;
-            TopLeft = CalculateTopLeft(diagramShapeViewModel);
+            RelativeTopLeft = CalculateTopLeft(diagramShapeViewModel);
             IsVisible = true;
         }
 
@@ -114,16 +114,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private Point CalculateTopLeft(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            var parentTopLeft = diagramShapeViewModel.Position;
             var parentTopLeftToButtonCenter = GetButtonCenterRelativeToDiagramShape(diagramShapeViewModel.Size);
             var buttonCenterToButtonTopLeft = new Vector(-_buttonRadius, -_buttonRadius);
-            var location = parentTopLeft + parentTopLeftToButtonCenter + buttonCenterToButtonTopLeft;
+            var location = parentTopLeftToButtonCenter + buttonCenterToButtonTopLeft;
             return location;
         }
 
-        private Vector GetButtonCenterRelativeToDiagramShape(Size diagramShapeSize)
+        private Point GetButtonCenterRelativeToDiagramShape(Size diagramShapeSize)
         {
-            return (Vector)new Rect(diagramShapeSize).GetRelativePoint(_rectRelativeLocation);
+            return new Rect(diagramShapeSize).GetRelativePoint(_rectRelativeLocation);
         }
 
         private void OnClick()

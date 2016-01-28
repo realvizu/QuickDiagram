@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Codartis.SoftVis.UI.Common;
@@ -8,49 +9,49 @@ using Codartis.SoftVis.UI.Wpf.Animations;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// A canvas with an additional Transform that is animated for each change.
+    /// A canvas whose RenderTransform is animated.
     /// </summary>
-    internal class AnimatedTransformCanvas : TransformCanvas
+    internal class AnimatedRenderTransformCanvas : Canvas
     {
         private const int FrameRate = 30;
         private static readonly Duration ShortAnimationDurationDefault = TimeSpan.FromMilliseconds(200);
         private static readonly Duration LongAnimationDurationDefault = TimeSpan.FromMilliseconds(500);
 
-        static AnimatedTransformCanvas()
+        static AnimatedRenderTransformCanvas()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(AnimatedTransformCanvas),
-                new FrameworkPropertyMetadata(typeof(AnimatedTransformCanvas)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(AnimatedRenderTransformCanvas),
+                new FrameworkPropertyMetadata(typeof(AnimatedRenderTransformCanvas)));
         }
 
-        public static readonly DependencyProperty TransitionedTransformProperty =
-            DependencyProperty.Register("TransitionedTransform", typeof(TransitionedTransform), typeof(AnimatedTransformCanvas),
+        public static readonly DependencyProperty AnimatedRenderTransformProperty =
+            DependencyProperty.Register("AnimatedRenderTransform", typeof(TransitionedTransform), typeof(AnimatedRenderTransformCanvas),
                 new FrameworkPropertyMetadata(TransitionedTransform.Identity, 
                     FrameworkPropertyMetadataOptions.AffectsRender,
                     OnTransitionedTransformChanged));
 
         private static void OnTransitionedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((AnimatedTransformCanvas) d).TransitionTransform((TransitionedTransform) e.OldValue, (TransitionedTransform) e.NewValue);
+            => ((AnimatedRenderTransformCanvas) d).TransitionTransform((TransitionedTransform) e.OldValue, (TransitionedTransform) e.NewValue);
 
         public static readonly DependencyProperty ShortAnimationDurationProperty =
-            DependencyProperty.Register("ShortAnimationDuration", typeof(Duration), typeof(AnimatedTransformCanvas),
+            DependencyProperty.Register("ShortAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
                 new PropertyMetadata(ShortAnimationDurationDefault));
 
         public static readonly DependencyProperty LongAnimationDurationProperty =
-            DependencyProperty.Register("LongAnimationDuration", typeof(Duration), typeof(AnimatedTransformCanvas),
+            DependencyProperty.Register("LongAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
                 new PropertyMetadata(LongAnimationDurationDefault));
 
-        public static readonly DependencyProperty EasingFunctionProperty =
-            DependencyProperty.Register("EasingFunction", typeof(EasingFunctionBase), typeof(AnimatedTransformCanvas));
+        public static readonly DependencyProperty LongAnimationEasingFunctionProperty =
+            DependencyProperty.Register("LongAnimationEasingFunction", typeof(EasingFunctionBase), typeof(AnimatedRenderTransformCanvas));
 
-        public AnimatedTransformCanvas()
+        public AnimatedRenderTransformCanvas()
         {
-            Transform = new MatrixTransform();
+            RenderTransform = new MatrixTransform();
         }
 
-        public TransitionedTransform TransitionedTransform
+        public TransitionedTransform AnimatedRenderTransform
         {
-            get { return (TransitionedTransform)GetValue(TransitionedTransformProperty); }
-            set { SetValue(TransitionedTransformProperty, value); }
+            get { return (TransitionedTransform)GetValue(AnimatedRenderTransformProperty); }
+            set { SetValue(AnimatedRenderTransformProperty, value); }
         }
 
         public Duration ShortAnimationDuration
@@ -65,10 +66,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(LongAnimationDurationProperty, value); }
         }
 
-        public EasingFunctionBase EasingFunction
+        public EasingFunctionBase LongAnimationEasingFunction
         {
-            get { return (EasingFunctionBase)GetValue(EasingFunctionProperty); }
-            set { SetValue(EasingFunctionProperty, value); }
+            get { return (EasingFunctionBase)GetValue(LongAnimationEasingFunctionProperty); }
+            set { SetValue(LongAnimationEasingFunctionProperty, value); }
         }
 
         private void TransitionTransform(TransitionedTransform oldTransitionedTransform, TransitionedTransform newTransitionedTransform)
@@ -88,8 +89,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void DontAnimate(Transform newTransform)
         {
-            Transform.BeginAnimation(MatrixTransform.MatrixProperty, null);
-            ((MatrixTransform) Transform).Matrix = newTransform.Value;
+            RenderTransform.BeginAnimation(MatrixTransform.MatrixProperty, null);
+            ((MatrixTransform)RenderTransform).Matrix = newTransform.Value;
         }
 
         private void Animate(Transform oldValue, Transform newValue, TransitionSpeed transitionSpeed)
@@ -99,11 +100,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, duration, FillBehavior.HoldEnd);
 
             if (transitionSpeed == TransitionSpeed.Slow)
-                matrixAnimation.EasingFunction = EasingFunction;
+                matrixAnimation.EasingFunction = LongAnimationEasingFunction;
 
             Timeline.SetDesiredFrameRate(matrixAnimation, FrameRate);
 
-            Transform.BeginAnimation(MatrixTransform.MatrixProperty, matrixAnimation, HandoffBehavior.SnapshotAndReplace);
+            RenderTransform.BeginAnimation(MatrixTransform.MatrixProperty, matrixAnimation, HandoffBehavior.SnapshotAndReplace);
         }
 
         private Duration TransitionSpeedToDuration(TransitionSpeed transitionSpeed)

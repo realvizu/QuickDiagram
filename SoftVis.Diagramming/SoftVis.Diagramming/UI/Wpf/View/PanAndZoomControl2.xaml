@@ -10,7 +10,6 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <UserControl.Resources>
-        
         <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
         <Style x:Key="RepeatButtonStyleBase" TargetType="{x:Type RepeatButton}">

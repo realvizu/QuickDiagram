@@ -10,68 +10,77 @@
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
+             
+             view:DiagramNodeControl2.DiagramItemGotFocus="OnDiagramItemGotFocus" 
+             view:DiagramNodeControl2.DiagramItemLostFocus="OnDiagramItemLostFocus" >
 
     <UserControl.Resources>
         <ResourceDictionary>
-            
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramItemsControl.xaml" />
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramButtonItemsControl.xaml" />
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseDiagramButton.xaml" />
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramButtonDataTemplates.xaml" />
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramShapeDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Duration x:Key="ShortAnimationDuration">0:0:0.1</Duration>
-            <Duration x:Key="LongAnimationDuration">0:0:0.5</Duration>
-            <QuadraticEase x:Key="EasingFunction" EasingMode="EaseOut"/>
+            <Style x:Key="DiagramShapeContainerStyle" 
+                   TargetType="{x:Type view:AnimatedContentPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">
+                <Setter Property="Width" Value="{Binding Path=Width}"/>
+                <Setter Property="Height" Value="{Binding Path=Height}"/>
+                <Setter Property="AnimatedLeft" Value="{Binding Path=X}"/>
+                <Setter Property="AnimatedTop" Value="{Binding Path=Y}"/>
+                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
+            </Style>
 
-            <ItemsPanelTemplate x:Key="AnimatedTransformCanvas">
-                <view:AnimatedTransformCanvas 
-                    TransitionedTransform="{Binding Path=TransitionedViewportTransform, ElementName=ThisControl, Mode=OneWay}"
-                    ShortAnimationDuration="{StaticResource ShortAnimationDuration}"
-                    LongAnimationDuration="{StaticResource LongAnimationDuration}"
-                    EasingFunction="{StaticResource EasingFunction}"/>
+            <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
+                <view:AnimatedRenderTransformCanvas 
+                        AnimatedRenderTransform="{Binding Path=TransitionedViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                        ShortAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
+                        LongAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
+                        LongAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
+            </ItemsPanelTemplate>
+
+            <Style x:Key="DiagramButtonContainerStyle" 
+                   TargetType="{x:Type view:AdornerlikeContentPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramButtonViewModelBase}}">
+                <Setter Property="Width" Value="{Binding Path=Width}"/>
+                <Setter Property="Height" Value="{Binding Path=Height}"/>
+                <Setter Property="Canvas.Left" Value="{Binding Path=RelativeLeft}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Path=RelativeTop}"/>
+                <Setter Property="AdornedElement" Value="{Binding Path=FocusedDiagramShapeContainer, ElementName=ThisControl}"/>
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <view:DiagramButton Style="{StaticResource EllipseDiagramButton}"
+                                                Width="{Binding Width}" 
+                                                Height="{Binding Height}"
+                                                IsEnabled="{Binding IsEnabled}"
+                                                Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Content="{Binding}"
+                                                Command="{Binding ClickCommand}"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ItemsPanelTemplate x:Key="DiagramButtonItemsPanel">
+                <Canvas/>
             </ItemsPanelTemplate>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <view:DiagramItemsControl ItemsSource="{Binding DiagramShapeViewModels}"
-                                  ItemsPanel="{StaticResource AnimatedTransformCanvas}"
-                                  ItemContainerStyle="{StaticResource DiagramShapeItemContainerStyle}">
-            <i:Interaction.Behaviors>
-                <behaviors:MousePanAndZoomBehavior
-                    PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
-                    PanCursor="{x:Static Cursors.SizeAll}"
-                    ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
-                    MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
-                    MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
-                    ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
-                    ZoomAmountPerWheelClick=".5" />
-                <behaviors:KeyboardPanAndZoomBehavior
-                    PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
-                    PanUpKey="{x:Static Key.Up}"
-                    PanDownKey="{x:Static Key.Down}"
-                    PanLeftKey="{x:Static Key.Left}"
-                    PanRightKey="{x:Static Key.Right}"
-                    PanAcceleration="2"
-                    PanDeceleration="6"
-                    PanMaxSpeed="50" 
-                    ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
-                    MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
-                    MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
-                    ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
-                    ZoomInKey="{x:Static Key.W}"
-                    ZoomOutKey="{x:Static Key.S}"
-                    ZoomAcceleration=".02"
-                    ZoomDeceleration=".06"
-                    ZoomMaxSpeed=".4" />
-            </i:Interaction.Behaviors>
-        </view:DiagramItemsControl>
+    <Grid Background="Transparent">
+        
+        <view:DiagramShapeItemsControl ItemsSource="{Binding DiagramShapeViewModels}"
+                                       ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
+                                       ItemContainerStyle="{StaticResource DiagramShapeContainerStyle}"/>
 
         <view:DiagramButtonItemsControl ItemsSource="{Binding DiagramButtonViewModels}" 
-                                        ItemsPanel="{StaticResource AnimatedTransformCanvas}"
-                                        ItemContainerStyle="{StaticResource DiagramButtonItemContainerStyle}"
+                                        ItemsPanel="{StaticResource DiagramButtonItemsPanel}"
+                                        ItemContainerStyle="{StaticResource DiagramButtonContainerStyle}"
                                         Background="{x:Null}" />
 
         <view:PanAndZoomControl2 Focusable="False"
@@ -89,5 +98,34 @@
                                  CenterCommand="{Binding Path=WidgetZoomToContentCommand, ElementName=ThisControl, Mode=OneWay}"
                                  MouseEnter="OnPanAndZoomControlMouseEnter"
                                  MouseLeave="OnPanAndZoomControlMouseLeave"/>
+
+        <i:Interaction.Behaviors>
+            <behaviors:MousePanAndZoomBehavior
+                PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                PanCursor="{x:Static Cursors.SizeAll}"
+                ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
+                MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
+                ZoomAmountPerWheelClick=".5" />
+            <behaviors:KeyboardPanAndZoomBehavior
+                PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                PanUpKey="{x:Static Key.Up}"
+                PanDownKey="{x:Static Key.Down}"
+                PanLeftKey="{x:Static Key.Left}"
+                PanRightKey="{x:Static Key.Right}"
+                PanAcceleration="2"
+                PanDeceleration="6"
+                PanMaxSpeed="50" 
+                ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
+                MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
+                MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
+                ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
+                ZoomInKey="{x:Static Key.W}"
+                ZoomOutKey="{x:Static Key.S}"
+                ZoomAcceleration=".02"
+                ZoomDeceleration=".06"
+                ZoomMaxSpeed=".4" />
+        </i:Interaction.Behaviors>
     </Grid>
 </UserControl>
