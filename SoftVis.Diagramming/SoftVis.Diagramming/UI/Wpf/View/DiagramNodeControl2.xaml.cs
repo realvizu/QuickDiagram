@@ -16,11 +16,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty DiagramStrokeProperty =
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeControl2));
 
-        public static readonly DependencyProperty FocusCommandProperty =
-            DependencyProperty.Register("FocusCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
+        public static readonly DependencyProperty FocusDiagramItemCommandProperty =
+            DependencyProperty.Register("FocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
 
-        public static readonly DependencyProperty UnfocusCommandProperty =
-            DependencyProperty.Register("UnfocusCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
+        public static readonly DependencyProperty UnfocusDiagramItemCommandProperty =
+            DependencyProperty.Register("UnfocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
 
         public static readonly RoutedEvent DiagramItemGotFocusRoutedEvent =
             EventManager.RegisterRoutedEvent("DiagramItemGotFocus", RoutingStrategy.Bubble,
@@ -48,16 +48,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DiagramStrokeProperty, value); }
         }
 
-        public DelegateCommand FocusCommand
+        public DelegateCommand FocusDiagramItemCommand
         {
-            get { return (DelegateCommand)GetValue(FocusCommandProperty); }
-            set { SetValue(FocusCommandProperty, value); }
+            get { return (DelegateCommand)GetValue(FocusDiagramItemCommandProperty); }
+            set { SetValue(FocusDiagramItemCommandProperty, value); }
         }
 
-        public DelegateCommand UnfocusCommand
+        public DelegateCommand UnfocusDiagramItemCommand
         {
-            get { return (DelegateCommand)GetValue(UnfocusCommandProperty); }
-            set { SetValue(UnfocusCommandProperty, value); }
+            get { return (DelegateCommand)GetValue(UnfocusDiagramItemCommandProperty); }
+            set { SetValue(UnfocusDiagramItemCommandProperty, value); }
         }
 
         public event RoutedEventHandler DiagramItemGotFocus
@@ -72,13 +72,25 @@ namespace Codartis.SoftVis.UI.Wpf.View
             remove { RemoveHandler(DiagramItemLostFocusRoutedEvent, value); }
         }
 
-        public void RaiseDiagramItemGotFocus()
+        public void FocusDiagramItem()
+        {
+            FocusDiagramItemCommand?.Execute();
+            RaiseDiagramItemGotFocus();
+        }
+
+        public void UnfocusDiagramItem()
+        {
+            UnfocusDiagramItemCommand?.Execute();
+            RaiseDiagramItemLostFocus();
+        }
+
+        private void RaiseDiagramItemGotFocus()
         {
             var newEventArgs = new DiagramItemRoutedEventArgs(DiagramItemGotFocusRoutedEvent, this);
             RaiseEvent(newEventArgs);
         }
 
-        public void RaiseDiagramItemLostFocus()
+        private void RaiseDiagramItemLostFocus()
         {
             var newEventArgs = new DiagramItemRoutedEventArgs(DiagramItemLostFocusRoutedEvent, this);
             RaiseEvent(newEventArgs);

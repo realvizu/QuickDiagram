@@ -11,8 +11,8 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
-        <view:DiagramNodeControl2 FocusCommand="{Binding FocusCommand}"
-                                  UnfocusCommand="{Binding UnfocusCommand}"/>
+        <view:DiagramNodeControl2 FocusDiagramItemCommand="{Binding FocusCommand}"
+                                  UnfocusDiagramItemCommand="{Binding UnfocusCommand}"/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:DiagramConnectorViewModel2}">
