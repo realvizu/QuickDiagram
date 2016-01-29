@@ -73,6 +73,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double RelativeTop => RelativeTopLeft.Y;
         public double RelativeLeft => RelativeTopLeft.X;
 
+        public Rect RelativeRect => new Rect(RelativeTopLeft, Size);
+
         public bool IsVisible
         {
             get { return _isVisible; }

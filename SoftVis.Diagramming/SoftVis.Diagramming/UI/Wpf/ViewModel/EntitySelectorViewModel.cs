@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
@@ -26,13 +27,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _height = size.Height;
         }
 
-        public void Show(Point attachPoint, HandleOrientation handleOrientation, List<IModelEntity> modelEntities)
+        public void Show(Point attachPoint, HandleOrientation handleOrientation, IEnumerable<IModelEntity> modelEntities)
         {
             IsVisible = true;
             HandleOrientation = handleOrientation;
             Top = CalculateTop(attachPoint, handleOrientation);
             Left = CalculateLeft(attachPoint, handleOrientation);
-            ModelEntities = modelEntities;
+            ModelEntities = modelEntities.ToList();
             SelectedModelEntity = null;
         }
 

@@ -6,6 +6,8 @@ namespace Codartis.SoftVis.UI.Wpf.Common.Geometry
 {
     public static class PointExtensions
     {
+        public static Point Extreme = new Point(double.NaN, double.NaN);
+
         public static bool IsExtreme(this Point point)
         {
             return double.IsNaN(point.X) || double.IsNaN(point.Y);

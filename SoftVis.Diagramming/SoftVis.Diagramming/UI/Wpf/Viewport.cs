@@ -33,6 +33,8 @@ namespace Codartis.SoftVis.UI.Wpf
         private Point _centerInDiagramSpace;
         private Rect _contentRect;
 
+        private Transform _diagramSpaceToScreenSpaceTransform;
+
         public event Action<double> LinearZoomChanged;
         public event Action<TransitionedTransform> TransitionedTransformChanged;
 
@@ -88,11 +90,21 @@ namespace Codartis.SoftVis.UI.Wpf
             var oldExponentialZoom = _exponentialZoom;
             var newExponentialZoom = ToExponentialZoom(newLinearZoom);
             var relativeZoom = oldExponentialZoom / newExponentialZoom;
-            var zoomCenterInDiagramSpace = ProjectToDiagramSpace(zoomCenterInScreenSpace);
+            var zoomCenterInDiagramSpace = ProjectFromScreenSpaceToDiagramSpace(zoomCenterInScreenSpace);
 
             _centerInDiagramSpace = (_centerInDiagramSpace - zoomCenterInDiagramSpace) * relativeZoom + zoomCenterInDiagramSpace;
             _exponentialZoom = newExponentialZoom;
             UpdateCalculatedProperties(transitionSpeed);
+        }
+
+        public Point ProjectFromDiagramSpaceToScreenSpace(Point pointInDiagramSpace)
+        {
+            return _diagramSpaceToScreenSpaceTransform.Transform(pointInDiagramSpace);
+        }
+
+        public Point ProjectFromScreenSpaceToDiagramSpace(Point pointInScreenSpace)
+        {
+            return _diagramSpaceToScreenSpaceTransform.Inverse?.Transform(pointInScreenSpace) ?? PointExtensions.Extreme;
         }
 
         private void UpdateCalculatedProperties(TransitionSpeed transitionSpeed)
@@ -109,8 +121,8 @@ namespace Codartis.SoftVis.UI.Wpf
 
         private void UpdateTransitionedTransform(TransitionSpeed transitionSpeed)
         {
-            var newTransform = CreateTransformToScreenSpace();
-            var transitionedTransform = new TransitionedTransform(newTransform, transitionSpeed);
+            _diagramSpaceToScreenSpaceTransform = CreateTransformToScreenSpace();
+            var transitionedTransform = new TransitionedTransform(_diagramSpaceToScreenSpaceTransform, transitionSpeed);
             TransitionedTransformChanged?.Invoke(transitionedTransform);
         }
 
@@ -122,14 +134,6 @@ namespace Codartis.SoftVis.UI.Wpf
         private double ToLinearZoom(double exponentialZoom)
         {
             return ScaleCalculator.ExponentialToLinear(exponentialZoom, _minZoom, _maxZoom);
-        }
-
-        private Point ProjectToDiagramSpace(Point pointInScreenSpace)
-        {
-            var screenCenter = new Rect(_sizeInScreenSpace).GetCenter();
-            var vectorToScreenCenter = screenCenter - pointInScreenSpace;
-            var vectorResizedToDiagramSpace = vectorToScreenCenter / _exponentialZoom;
-            return _centerInDiagramSpace - vectorResizedToDiagramSpace;
         }
 
         private double CalculateZoomForContent(Size contentSize)

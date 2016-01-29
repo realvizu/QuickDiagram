@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
     /// A command that executes a delegate with one typed parameter.
     /// TODO: implement CanExecuteChanged raising
     /// </summary>
-    public abstract class DelegateCommand<T> : ICommand
+    public class DelegateCommand<T> : ICommand
     {
         private readonly Func<T, bool> _canExecute;
         private readonly Action<T> _execute;
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
 
         public event EventHandler CanExecuteChanged;
 
-        protected DelegateCommand(Action<T> execute, Func<T, bool> canExecute = null)
+        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute = null)
         {
             _execute = execute;
             _canExecute = canExecute;

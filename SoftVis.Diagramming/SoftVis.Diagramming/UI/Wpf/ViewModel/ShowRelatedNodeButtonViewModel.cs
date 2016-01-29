@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
+using Codartis.SoftVis.UI.Geometry;
+using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -18,15 +22,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private List<IModelEntity> _displayedRelatedEntities;
         private List<IModelEntity> _undisplayedRelatedEntities;
 
+        public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
+
         public ShowRelatedNodeButtonViewModel(IModel model, Diagram diagram,
             double buttonRadius, RelatedEntityButtonDescriptor descriptor)
             : base(model, diagram, buttonRadius, descriptor.ButtonLocation)
         {
             _descriptor = descriptor;
         }
-
+        
         public ConnectorType ConnectorType => _descriptor.ConnectorType;
 
+        private RectRelativeLocation ButtonLocation => _descriptor.ButtonLocation;
         private RelationshipSpecification RelationshipSpecification => _descriptor.RelationshipSpecification;
         private DiagramNodeViewModel2 AssociatedDiagramNodeViewModel => (DiagramNodeViewModel2)AssociatedDiagramShapeViewModel;
         private DiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel.DiagramNode;
@@ -42,10 +49,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             if (_undisplayedRelatedEntities.Count == 1)
             {
-                var modelEntity = _undisplayedRelatedEntities.First();
-                Diagram.ShowItem(modelEntity);
+                Diagram.ShowItem(_undisplayedRelatedEntities.First());
                 UpdateDisplayedEntityInfo();
             }
+            else if (_undisplayedRelatedEntities.Count > 1)
+            {
+                RaiseEntitySelectorRequest();
+            }
+        }
+
+        private void RaiseEntitySelectorRequest()
+        {
+            var handleOrientation = CalculateHandleOrientation(ButtonLocation);
+            var parentNodePositionVector = (Vector) AssociatedDiagramNodeViewModel.Position;
+            var rectInDiagramSpace = RelativeRect.Add(parentNodePositionVector);
+            var attachPointInDiagramSpace = CalculateAttachPoint(rectInDiagramSpace, handleOrientation);
+            EntitySelectorRequested?.Invoke(attachPointInDiagramSpace, handleOrientation, _undisplayedRelatedEntities);
         }
 
         private void UpdateDisplayedEntityInfo()
@@ -56,5 +75,28 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             IsEnabled = _undisplayedRelatedEntities.Count > 0;
         }
+
+        private static HandleOrientation CalculateHandleOrientation(RectRelativeLocation buttonLocation)
+        {
+            switch (buttonLocation.Alignment.VerticalAlignment)
+            {
+                case VerticalAlignmentType.Top: return HandleOrientation.Bottom;
+                case VerticalAlignmentType.Bottom: return HandleOrientation.Top;
+
+                default: throw new NotImplementedException();
+            }
+        }
+
+        private static Point CalculateAttachPoint(Rect rect, HandleOrientation handleOrientation)
+        {
+            switch (handleOrientation)
+            {
+                case HandleOrientation.Top: return rect.GetRelativePoint(RectAlignment.BottomMiddle);
+                case HandleOrientation.Bottom: return rect.GetRelativePoint(RectAlignment.TopMiddle);
+
+                default: throw new NotImplementedException();
+            }
+        }
+
     }
 }

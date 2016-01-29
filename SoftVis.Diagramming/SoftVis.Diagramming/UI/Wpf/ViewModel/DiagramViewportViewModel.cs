@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
@@ -31,6 +34,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
         public Viewport.ZoomCommand ViewportZoomCommand { get; }
 
+        public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
+
         public DiagramViewportViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
             : base(model, diagram)
@@ -50,6 +55,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
+            SubscribeToDiagramButtonEvents();
             AddDiagram(diagram);
         }
 
@@ -91,6 +97,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShapeMoved += OnShapeMoved;
             Diagram.ShapeRemoved += OnShapeRemoved;
             Diagram.Cleared += OnDiagramCleared;
+        }
+
+        private void SubscribeToDiagramButtonEvents()
+        {
+            foreach (var showRelatedNodeButtonViewModel in DiagramButtonViewModels.OfType<ShowRelatedNodeButtonViewModel>())
+                showRelatedNodeButtonViewModel.EntitySelectorRequested += OnEntitySelectorRequested;
         }
 
         private void AddDiagram(Diagram diagram)
@@ -187,6 +199,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnViewportTransitionedTransformChanged(TransitionedTransform transitionedTransform)
         {
             TransitionedViewportTransform = transitionedTransform;
+        }
+
+        private void OnEntitySelectorRequested(Point attachPointInDiagramSpace,
+            HandleOrientation handleOrientation, IEnumerable<IModelEntity> modelEntities)
+        {
+            var attachPointInScreenSpace = _viewport.ProjectFromDiagramSpaceToScreenSpace(attachPointInDiagramSpace);
+            EntitySelectorRequested?.Invoke(attachPointInScreenSpace, handleOrientation, modelEntities);
         }
     }
 }

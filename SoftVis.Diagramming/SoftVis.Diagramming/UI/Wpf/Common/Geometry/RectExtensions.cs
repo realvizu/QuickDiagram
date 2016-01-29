@@ -13,6 +13,11 @@ namespace Codartis.SoftVis.UI.Wpf.Common.Geometry
             return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
         }
 
+        public static Rect Add(this Rect rect, Vector vector)
+        {
+            return new Rect(rect.TopLeft + vector, rect.Size);
+        }
+
         public static Rect Union(this IEnumerable<Rect> rectCollection)
         {
             var rectList = rectCollection as IList<Rect> ?? rectCollection.ToList();

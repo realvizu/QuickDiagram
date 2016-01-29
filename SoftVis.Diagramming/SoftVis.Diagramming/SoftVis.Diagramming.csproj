@@ -103,6 +103,7 @@
     <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
     <Compile Include="UI\Wpf\Common\DispatcherObjectExtensions.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
