@@ -15,11 +15,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private readonly RelatedEntityButtonDescriptor _descriptor;
         private List<IModelEntity> _relatedEntities;
-        private List<DiagramNode> _relatedNodes;
+        private List<IModelEntity> _displayedRelatedEntities;
+        private List<IModelEntity> _undisplayedRelatedEntities;
 
         public ShowRelatedNodeButtonViewModel(IModel model, Diagram diagram,
             double buttonRadius, RelatedEntityButtonDescriptor descriptor)
-            : base(model, diagram, buttonRadius, descriptor.ButtonLocation, i => i.Remove())
+            : base(model, diagram, buttonRadius, descriptor.ButtonLocation)
         {
             _descriptor = descriptor;
         }
@@ -33,21 +34,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            var diagramNodeViewModel = diagramShapeViewModel as DiagramNodeViewModel2;
-            if (diagramNodeViewModel == null)
-                throw new ArgumentException($"Must be associated with diagram node.");
-
             base.AssociateWith(diagramShapeViewModel);
-
-            _relatedEntities = Model.GetRelatedEntities(AssociatedModelEntity, RelationshipSpecification).ToList();
-            _relatedNodes = Diagram.GetRelatedNodes(AssociatedDiagramNode, RelationshipSpecification).ToList();
-
-            IsEnabled = HasUndisplayedRelatedEntity();
+            UpdateDisplayedEntityInfo();
         }
 
-        private bool HasUndisplayedRelatedEntity()
+        protected override void OnClick()
         {
-            return _relatedEntities.Count > _relatedNodes.Count;
+            if (_undisplayedRelatedEntities.Count == 1)
+            {
+                var modelEntity = _undisplayedRelatedEntities.First();
+                Diagram.ShowItem(modelEntity);
+                UpdateDisplayedEntityInfo();
+            }
+        }
+
+        private void UpdateDisplayedEntityInfo()
+        {
+            _relatedEntities = Model.GetRelatedEntities(AssociatedModelEntity, RelationshipSpecification).ToList();
+            _displayedRelatedEntities = _relatedEntities.Where(i => Diagram.Nodes.Any(j => j.ModelEntity == i)).ToList();
+            _undisplayedRelatedEntities = _relatedEntities.Except(_displayedRelatedEntities).ToList();
+
+            IsEnabled = _undisplayedRelatedEntities.Count > 0;
         }
     }
 }

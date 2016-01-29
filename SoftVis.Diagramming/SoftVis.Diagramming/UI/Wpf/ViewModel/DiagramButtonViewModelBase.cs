@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Geometry;
@@ -15,7 +14,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private readonly double _buttonRadius;
         private readonly RectRelativeLocation _rectRelativeLocation;
-        private readonly Action<DiagramShapeViewModelBase> _clickCommandDelegate;
 
         private Size _size;
         private Point _relativeTopLeft;
@@ -26,12 +24,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
         protected DiagramButtonViewModelBase(IModel model, Diagram diagram, double buttonRadius, 
-            RectRelativeLocation rectRelativeLocation, Action<DiagramShapeViewModelBase> clickCommandDelegate)
+            RectRelativeLocation rectRelativeLocation)
             :base(model, diagram)
         {
             _buttonRadius = buttonRadius;
             _rectRelativeLocation = rectRelativeLocation;
-            _clickCommandDelegate = clickCommandDelegate;
 
             _size = new Size(buttonRadius * 2, buttonRadius * 2);
             _isVisible = false;
@@ -115,6 +112,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IsVisible = false;
         }
 
+        protected abstract void OnClick();
+
         private Point CalculateTopLeft(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             var parentTopLeftToButtonCenter = GetButtonCenterRelativeToDiagramShape(diagramShapeViewModel.Size);
@@ -126,11 +125,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point GetButtonCenterRelativeToDiagramShape(Size diagramShapeSize)
         {
             return new Rect(diagramShapeSize).GetRelativePoint(_rectRelativeLocation);
-        }
-
-        private void OnClick()
-        {
-            _clickCommandDelegate(AssociatedDiagramShapeViewModel);
         }
     }
 }

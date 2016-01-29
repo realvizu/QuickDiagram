@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             : base(model, diagram)
         {
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram.ConnectorTypeResolver);
+            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(model, diagram, diagram.ConnectorTypeResolver);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);
 
@@ -128,6 +128,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnShapeRemoved(object sender, DiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
+            if (diagramShapeViewModel == null)
+                return;
+
             OnShapeUnfocused(diagramShapeViewModel);
             diagramShapeViewModel.GotFocus -= OnShapeFocused;
             diagramShapeViewModel.LostFocus -= OnShapeUnfocused;
@@ -165,7 +168,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var diagramShapeViewModel = focusableViewModel as DiagramShapeViewModelBase;
             if (diagramShapeViewModel == null)
-                throw new ArgumentException("DiagramShapeViewModelBase expected");
+                return;
 
             if (_diagramButtonCollectionViewModel.AreButtonsAssignedTo(diagramShapeViewModel))
                 _diagramButtonCollectionViewModel.HideButtons();

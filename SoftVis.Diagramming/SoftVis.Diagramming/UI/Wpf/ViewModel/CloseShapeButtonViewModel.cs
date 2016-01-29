@@ -11,9 +11,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         public CloseShapeButtonViewModel(IModel model, Diagram diagram,
             double buttonRadius, RectRelativeLocation buttonLocation)
-            : base(model, diagram, buttonRadius, buttonLocation, i => i.Remove())
+            : base(model, diagram, buttonRadius, buttonLocation)
         {
             IsEnabled = true;
         }
+
+        protected override void OnClick() => AssociatedDiagramShapeViewModel.Remove();
     }
 }

@@ -1,16 +1,19 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Creates view models from diagram shapes.
     /// </summary>
-    internal class DiagramShapeViewModelFactory
+    internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
         private readonly IConnectorTypeResolver _connectorTypeResolver;
 
-        public DiagramShapeViewModelFactory(IConnectorTypeResolver connectorTypeResolver)
+        public DiagramShapeViewModelFactory(IModel model, Diagram diagram, IConnectorTypeResolver connectorTypeResolver)
+              : base(model, diagram)
         {
             _connectorTypeResolver = connectorTypeResolver;
         }
@@ -18,13 +21,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramShapeViewModelBase CreateViewModel(DiagramShape diagramShape)
         {
             if (diagramShape is DiagramNode)
-                return new DiagramNodeViewModel2((DiagramNode)diagramShape);
+                return new DiagramNodeViewModel2(Model, Diagram, (DiagramNode)diagramShape);
 
             if (diagramShape is DiagramConnector)
             {
                 var diagramConnector = (DiagramConnector) diagramShape;
                 var connectorType = _connectorTypeResolver.GetConnectorType(diagramConnector.ModelRelationship);
-                return new DiagramConnectorViewModel2(diagramConnector, connectorType);
+                return new DiagramConnectorViewModel2(Model, Diagram, diagramConnector, connectorType);
             }
 
             throw new NotImplementedException();

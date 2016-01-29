@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -17,7 +19,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
-        public DiagramConnectorViewModel2(DiagramConnector diagramConnector, ConnectorType connectorType)
+        public DiagramConnectorViewModel2(IModel model, Diagram diagram, 
+            DiagramConnector diagramConnector, ConnectorType connectorType)
+            :base(model, diagram)
         {
             _diagramConnector = diagramConnector;
             _connectorType = connectorType;

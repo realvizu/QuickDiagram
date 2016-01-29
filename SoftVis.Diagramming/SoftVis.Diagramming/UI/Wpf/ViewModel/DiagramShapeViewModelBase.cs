@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -9,10 +11,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramShapeViewModelBase : FocusableViewModelBase
     {
+        protected readonly IModel Model;
+        protected readonly Diagram Diagram;
+
         private Point _position;
         private Size _size;
 
         public event Action<DiagramShape> RemoveRequested;
+
+        protected DiagramShapeViewModelBase(IModel model, Diagram diagram)
+        {
+            Model = model;
+            Diagram = diagram;
+        }
 
         public abstract DiagramShape DiagramShape { get; }
 

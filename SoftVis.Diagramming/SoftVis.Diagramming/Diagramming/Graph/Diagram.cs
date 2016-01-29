@@ -65,15 +65,18 @@ namespace Codartis.SoftVis.Diagramming.Graph
             OnCleared();
         }
 
+        public void ShowItem(IModelItem modelItem) => ShowItems(new[] { modelItem });
+        public void HideItem(IModelItem modelItem) => HideItems(new[] { modelItem });
+
         public void ShowItems(IEnumerable<IModelItem> modelItems)
         {
             foreach (var modelItem in modelItems)
             {
                 if (modelItem is IModelEntity)
-                    ShowEntity((IModelEntity)modelItem);
+                    ShowEntityCore((IModelEntity)modelItem);
 
                 if (modelItem is IModelRelationship)
-                    ShowRelationship((IModelRelationship)modelItem);
+                    ShowRelationshipCore((IModelRelationship)modelItem);
             }
 
             Layout();
@@ -84,10 +87,10 @@ namespace Codartis.SoftVis.Diagramming.Graph
             foreach (var modelItem in modelItems)
             {
                 if (modelItem is IModelEntity)
-                    HideEntity((IModelEntity)modelItem);
+                    HideEntityCore((IModelEntity)modelItem);
 
                 if (modelItem is IModelRelationship)
-                    HideRelationship((IModelRelationship)modelItem);
+                    HideRelationshipCore((IModelRelationship)modelItem);
             }
 
             Layout();
@@ -121,20 +124,21 @@ namespace Codartis.SoftVis.Diagramming.Graph
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        protected virtual void ShowEntity(IModelEntity modelEntity)
+        protected virtual void ShowEntityCore(IModelEntity modelEntity)
         {
             if (NodeExists(modelEntity))
                 return;
 
             var diagramNode = CreateDiagramNode(modelEntity);
             AddDiagramNode(diagramNode);
+            ShowRelationshipsIfBothEndsAreVisible(modelEntity);
         }
 
         /// <summary>
         /// Show a connector on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A relationship model item.</param>
-        protected virtual void ShowRelationship(IModelRelationship modelRelationship)
+        protected virtual void ShowRelationshipCore(IModelRelationship modelRelationship)
         {
             if (ConnectorExists(modelRelationship) ||
                 !NodeExists(modelRelationship.Source) ||
@@ -150,7 +154,7 @@ namespace Codartis.SoftVis.Diagramming.Graph
         /// Hide a node from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        protected virtual void HideEntity(IModelEntity modelEntity)
+        protected virtual void HideEntityCore(IModelEntity modelEntity)
         {
             if (!NodeExists(modelEntity))
                 return;
@@ -158,7 +162,7 @@ namespace Codartis.SoftVis.Diagramming.Graph
             var diagramNode = FindNode(modelEntity);
 
             foreach (var edge in _graph.GetAllEdges(diagramNode).ToArray())
-                HideRelationship(edge.ModelRelationship);
+                HideRelationshipCore(edge.ModelRelationship);
 
             RemoveDiagramNode(diagramNode);
         }
@@ -167,7 +171,7 @@ namespace Codartis.SoftVis.Diagramming.Graph
         /// Hides a connector from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A modelRelationship model item.</param>
-        protected virtual void HideRelationship(IModelRelationship modelRelationship)
+        protected virtual void HideRelationshipCore(IModelRelationship modelRelationship)
         {
             if (!ConnectorExists(modelRelationship))
                 return;
@@ -229,7 +233,19 @@ namespace Codartis.SoftVis.Diagramming.Graph
                 {
                     var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
                     if (pathToHide != null)
-                        HideRelationship(pathToHide[0].ModelRelationship);
+                        HideRelationshipCore(pathToHide[0].ModelRelationship);
+                }
+            }
+        }
+
+        private void ShowRelationshipsIfBothEndsAreVisible(IModelEntity modelEntity)
+        {
+            foreach (var modelRelationship in modelEntity.AllRelationships)
+            {
+                if (NodeExists(modelRelationship.Source) &&
+                    NodeExists(modelRelationship.Target))
+                {
+                    ShowRelationshipCore(modelRelationship);
                 }
             }
         }
