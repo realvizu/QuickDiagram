@@ -119,8 +119,9 @@ namespace Codartis.SoftVis.UI.Wpf
         public BitmapSource GetDiagramAsBitmap(int dpi)
         {
             EnsureUpToDateDiagramForExport();
-            var bitmap = ImageRenderer.RenderUIElementToBitmap(_diagramPanelForImageExport, dpi);
-            return bitmap;
+            //var bitmap = ImageRenderer.RenderUIElementToBitmap(_diagramPanelForImageExport, dpi);
+            //return bitmap;
+            return null;
         }
 
         public override void OnApplyTemplate()

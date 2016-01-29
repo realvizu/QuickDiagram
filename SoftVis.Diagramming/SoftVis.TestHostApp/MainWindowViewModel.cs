@@ -9,13 +9,16 @@ namespace Codartis.SoftVis.TestHostApp
     {
         private readonly TestModel _testModel;
         private readonly TestDiagram _testDiagram;
-        private DiagramViewModel _diagramViewModel;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
+        private double _selectedDpi;
 
-        private ICommand _addCommand;
-        private ICommand _removeCommand;
+        public DiagramViewModel DiagramViewModel { get; }
+        public ICommand AddCommand { get; }
+        public ICommand RemoveCommand { get; }
+        public ICommand ZoomToContentCommand { get; }
+        public ICommand CopyToClipboardCommand { get; }
 
         public MainWindowViewModel()
         {
@@ -26,46 +29,25 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
 
             var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
-            _diagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider,
-                0.2, 5, 1);
+            DiagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider,
+                minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
+            ZoomToContentCommand = new DelegateCommand(ZoomToContent);
+            CopyToClipboardCommand = new DelegateCommand(CopyToClipboard);
+
+            SelectedDpi = 300;
         }
 
-        public ICommand AddCommand
+        public double SelectedDpi
         {
-            get { return _addCommand; }
+            get { return _selectedDpi; }
             set
             {
-                _addCommand = value;
+                _selectedDpi = value;
                 OnPropertyChanged();
             }
-        }
-
-        public ICommand RemoveCommand
-        {
-            get { return _removeCommand; }
-            set
-            {
-                _removeCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DiagramViewModel DiagramViewModel
-        {
-            get { return _diagramViewModel; }
-            set
-            {
-                _diagramViewModel = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void ZoomToContent()
-        {
-            _diagramViewModel.ZoomToContent();
         }
 
         private void AddShapes()
@@ -78,7 +60,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             //_testDiagram.Save(@"c:\big.xml");
 
-            ZoomToContent();
+           // ZoomToContent();
         }
 
         private void RemoveShapes()
@@ -88,6 +70,16 @@ namespace Codartis.SoftVis.TestHostApp
 
             _testDiagram.HideItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
             _nextToRemoveModelItemGroupIndex++;
+        }
+
+        private void ZoomToContent()
+        {
+            DiagramViewModel.ZoomToContent();
+        }
+
+        private void CopyToClipboard()
+        {
+            DiagramViewModel.CopyToClipboard(SelectedDpi);
         }
     }
 }

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
+             xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -23,24 +23,24 @@
     </UserControl.Resources>
 
     <Canvas x:Name="Canvas">
-        <local:DiagramViewportControl DataContext="{Binding Path=DiagramViewportViewModel}"
-                                      MinZoom="{Binding Path=MinZoom}"
-                                      MaxZoom="{Binding Path=MaxZoom}"
-                                      ViewportZoom="{Binding Path=ViewportZoom}"
-                                      TransitionedViewportTransform="{Binding Path=TransitionedViewportTransform}"
-                                      ViewportResizeCommand="{Binding Path=ViewportResizeCommand}"
-                                      ViewportPanCommand="{Binding Path=ViewportPanCommand}"
-                                      ViewportZoomCommand="{Binding Path=ViewportZoomCommand}"
-                                      ViewportZoomToContentCommand="{Binding Path=ViewportZoomToContentCommand}"
-                                      Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
-                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}" />
+        <view:DiagramViewportControl DataContext="{Binding Path=DiagramViewportViewModel}"
+                                     MinZoom="{Binding Path=MinZoom}"
+                                     MaxZoom="{Binding Path=MaxZoom}"
+                                     ViewportZoom="{Binding Path=ViewportZoom}"
+                                     TransitionedViewportTransform="{Binding Path=TransitionedViewportTransform}"
+                                     ViewportResizeCommand="{Binding Path=ViewportResizeCommand}"
+                                     ViewportPanCommand="{Binding Path=ViewportPanCommand}"
+                                     ViewportZoomCommand="{Binding Path=ViewportZoomCommand}"
+                                     ViewportZoomToContentCommand="{Binding Path=ViewportZoomToContentCommand}"
+                                     Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
+                                     Height="{Binding Path=ActualHeight, ElementName=Canvas}" />
 
-        <local:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
-                                     Width="{Binding Path=Width}" 
-                                     Height="{Binding Path=Height}"
-                                     Canvas.Top="{Binding Path=Top}" 
-                                     Canvas.Left="{Binding Path=Left}"
-                                     Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                     HandleOrientation="{Binding Path=HandleOrientation}"/>
+        <view:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
+                                    Width="{Binding Path=Width}" 
+                                    Height="{Binding Path=Height}"
+                                    Canvas.Top="{Binding Path=Top}" 
+                                    Canvas.Left="{Binding Path=Left}"
+                                    Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    HandleOrientation="{Binding Path=HandleOrientation}"/>
     </Canvas>
 </UserControl>

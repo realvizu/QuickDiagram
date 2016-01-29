@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
+using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -12,9 +16,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly IModel _model;
         private readonly Diagram _diagram;
         private readonly IDiagramBehaviourProvider _diagramBehaviourProvider;
+        private Rect _diagramContentRect;
+
+        public event Action<double> DiagramImageExportRequested;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public EntitySelectorViewModel RelatedEntitySelectorViewModel { get; }
+        public BitmapSourceDelegateCommand ExportDiagramImageCommand { get; }
         public ICommand ShowRelatedEntitySelectorCommand { get; }
         public ICommand HideRelatedEntitySelectorCommand { get; }
 
@@ -27,8 +35,21 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
+            ExportDiagramImageCommand = new BitmapSourceDelegateCommand(CopyDiagramImageToClipboard);
             //ShowRelatedEntitySelectorCommand = new DelegateCommand<DiagramButtonActivatedEventArgs>(ShowRelationshipSelector);
             //HideRelatedEntitySelectorCommand = new DelegateCommand(HideRelationshipSelector);
+
+            SubscribeToDiagramEvents();
+        }
+
+        public Rect DiagramContentRect
+        {
+            get { return _diagramContentRect; }
+            set
+            {
+                _diagramContentRect = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ShowRelationshipSelector(DiagramButtonActivatedEventArgs e)
@@ -45,6 +66,29 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void ZoomToContent()
         {
             DiagramViewportViewModel.ZoomToContent();
+        }
+
+        public void CopyToClipboard(double dpi)
+        {
+            DiagramImageExportRequested?.Invoke(dpi);
+        }
+
+        private void CopyDiagramImageToClipboard(BitmapSource bitmapSource)
+        {
+            Clipboard.SetImage(bitmapSource);
+        }
+
+        private void SubscribeToDiagramEvents()
+        {
+            _diagram.ShapeAdded += (o, e) => UpdateDiagramContentRect();
+            _diagram.ShapeMoved += (o, e) => UpdateDiagramContentRect();
+            _diagram.ShapeRemoved += (o, e) => UpdateDiagramContentRect();
+            _diagram.Cleared += (o, e) => UpdateDiagramContentRect();
+        }
+
+        private void UpdateDiagramContentRect()
+        {
+            DiagramContentRect = _diagram.ContentRect.ToWpf();
         }
     }
 }

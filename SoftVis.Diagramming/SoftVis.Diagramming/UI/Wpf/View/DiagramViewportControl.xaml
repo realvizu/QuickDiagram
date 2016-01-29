@@ -24,6 +24,17 @@
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramShapeDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="{x:Type view:DiagramNodeControl2}"
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel2}}">
+                <Setter Property="FocusDiagramItemCommand" Value="{Binding FocusCommand}"/>
+                <Setter Property="UnfocusDiagramItemCommand" Value="{Binding UnfocusCommand}"/>
+            </Style>
+
+            <Style TargetType="{x:Type view:DiagramConnectorControl2}"
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel2}}">
+                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
+            </Style>
+
             <Style x:Key="DiagramShapeContainerStyle" 
                    TargetType="{x:Type view:AnimatedContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">

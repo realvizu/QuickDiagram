@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Codartis.SoftVis.UI.Wpf.View.DiagramImageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+             xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Common.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
+             Width="{Binding Path=DiagramContentRect.Width}"
+             Height="{Binding Path=DiagramContentRect.Height}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramShapeDataTemplates.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+            
+            <ItemsPanelTemplate x:Key="DiagramImageItemsPanel">
+                <Canvas>
+                    <Canvas.RenderTransform>
+                        <TranslateTransform 
+                            X="{Binding Path=DiagramContentRect.Left, 
+                                Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"
+                            Y="{Binding Path=DiagramContentRect.Top, 
+                                Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"/>
+                    </Canvas.RenderTransform>
+                </Canvas>
+            </ItemsPanelTemplate>
+
+            <Style x:Key="DiagramImageItemContainerStyle" 
+                   TargetType="{x:Type ContentPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">
+                <Setter Property="Width" Value="{Binding Path=Width}"/>
+                <Setter Property="Height" Value="{Binding Path=Height}"/>
+                <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
+            </Style>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ItemsControl ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramShapeViewModels}"
+                  ItemsPanel="{StaticResource DiagramImageItemsPanel}"
+                  ItemContainerStyle="{StaticResource DiagramImageItemContainerStyle}" />
+</UserControl>

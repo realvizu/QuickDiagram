@@ -3,25 +3,19 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
-                    xmlns:viewModels="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
                     mc:Ignorable="d">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-
-    <DataTemplate DataType="{x:Type viewModels:DiagramNodeViewModel2}">
-        <view:DiagramNodeControl2 FocusDiagramItemCommand="{Binding FocusCommand}"
-                                  UnfocusDiagramItemCommand="{Binding UnfocusCommand}"/>
+    <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel2}">
+        <view:DiagramNodeControl2 />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:DiagramConnectorViewModel2}">
+    <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel2}">
         <view:DiagramConnectorControl2 RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
                                        BoundingRectTop="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource FindAncestor, 
                                             AncestorType={x:Type ContentPresenter}}, Mode=OneWay}"
                                        BoundingRectLeft="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type ContentPresenter}}, Mode=OneWay}"
-                                       AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"/>
+                                            AncestorType={x:Type ContentPresenter}}, Mode=OneWay}" />
     </DataTemplate>
 
 </ResourceDictionary>

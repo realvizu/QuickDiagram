@@ -81,6 +81,7 @@
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
+    <Compile Include="UI\Wpf\Commands\BitmapSourceDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ZoomDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\VectorDelegateCommand.cs" />
     <Compile Include="UI\Common\TransitionSpeed.cs" />
@@ -99,7 +100,11 @@
     <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
     <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
     <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
+    <Compile Include="UI\Wpf\Common\DispatcherObjectExtensions.cs" />
     <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
+      <DependentUpon>DiagramImageControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Wpf\View\DiagramItemRoutedEventArgs.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonActivatedEventArgs.cs" />
     <Compile Include="UI\Wpf\DiagramViewerViewModel.cs" />
@@ -352,6 +357,10 @@
     <Page Include="UI\Wpf\View\AnimationConstants.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramImageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\DiagramShapeDataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>

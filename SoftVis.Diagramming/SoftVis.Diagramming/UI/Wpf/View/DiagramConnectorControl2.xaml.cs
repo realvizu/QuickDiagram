@@ -14,8 +14,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public partial class DiagramConnectorControl2 : UserControl
     {
-        private static readonly Duration AnimationDurationDefault = TimeSpan.FromMilliseconds(250);
-
         public static readonly DependencyProperty DiagramFillProperty =
             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramConnectorControl2));
 
@@ -38,7 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty AnimationDurationProperty =
             DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramConnectorControl2),
-                new PropertyMetadata(AnimationDurationDefault));
+                new PropertyMetadata((Duration)TimeSpan.Zero));
 
         public static readonly DependencyProperty BoundingRectTopProperty =
             DependencyProperty.Register("BoundingRectTop", typeof(double), typeof(DiagramConnectorControl2),

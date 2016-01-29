@@ -6,6 +6,7 @@
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         Title="MainWindow" Height="600" Width="1200"
         DataContext="{StaticResource MainWindowViewModel}">
 
@@ -14,6 +15,27 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <system:Double x:Key="ControlWidth">100</system:Double>
+            <system:Double x:Key="ControlHeight">20</system:Double>
+
+            <Style x:Key="MyBorder" TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="8"/>
+            </Style>
+
+            <Style x:Key="MyButton" TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="{StaticResource ControlWidth}"/>
+                <Setter Property="Height" Value="{StaticResource ControlHeight}"/>
+                <Setter Property="Margin" Value="8"/>
+            </Style>
+
+            <Style x:Key="MyCombo" TargetType="{x:Type ComboBox}">
+                <Setter Property="Width" Value="{StaticResource ControlWidth}"/>
+                <Setter Property="Height" Value="{StaticResource ControlHeight}"/>
+                <Setter Property="Margin" Value="8"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -22,19 +44,39 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
-            <Button Margin="5" Command="{Binding AddCommand}" Width="60" Height="20" IsTabStop="True" Focusable="True">Add</Button>
-            <Button Margin="5" Command="{Binding RemoveCommand}" Width="60" Height="20" IsTabStop="True" Focusable="True">Remove</Button>
-        </StackPanel>
-        <view:DiagramControl DataContext="{Binding Path=DiagramViewModel}"
-                             
-                             Grid.Row="1" 
+        <Border Grid.Row="0" Background="AntiqueWhite" BorderBrush="Black" BorderThickness="0,0,0,1">
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Style="{StaticResource MyBorder}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource MyButton}" Command="{Binding AddCommand}">Add</Button>
+                        <Button Style="{StaticResource MyButton}" Command="{Binding RemoveCommand}">Remove</Button>
+                    </StackPanel>
+                </Border>
+                <Button Style="{StaticResource MyButton}" Command="{Binding ZoomToContentCommand}">ZoomToContent</Button>
+                <Border Style="{StaticResource MyBorder}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource MyButton}" Command="{Binding CopyToClipboardCommand}">CopyToClipboard</Button>
+                        <ComboBox Style="{StaticResource MyCombo}" SelectedValue="{Binding SelectedDpi}">
+                            <ComboBox.Items>
+                                <system:Double>96</system:Double>
+                                <system:Double>300</system:Double>
+                                <system:Double>1200</system:Double>
+                            </ComboBox.Items>
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+        <view:DiagramControl Grid.Row="1" 
                              Background="Beige"
                              Foreground="Black"
                              DiagramFill="Bisque"
                              DiagramStroke="Black"
                              FontFamily="Arial"
                              FontSize="12"
-                             PanAndZoomControlHeight="120" />
+                             PanAndZoomControlHeight="120" 
+                             
+                             DataContext="{Binding DiagramViewModel}"
+                             ExportImageCommand="{Binding ExportDiagramImageCommand}"/>
     </Grid>
 </Window>
