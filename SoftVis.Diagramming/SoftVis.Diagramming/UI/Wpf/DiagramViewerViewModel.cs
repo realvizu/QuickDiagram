@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.UI.Wpf
             Diagram = diagram;
             DiagramBehaviourProvider = diagramBehaviourProvider;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
             //ShowRelatedEntitySelectorCommand = new DelegateCommand<DiagramButtonActivatedEventArgs>(ShowRelationshipSelector);
             //HideRelatedEntitySelectorCommand = new DelegateCommand(HideRelationshipSelector);

@@ -108,6 +108,15 @@ namespace Codartis.SoftVis.Diagramming.Graph
             HideItems(new[] { diagramShape.ModelItem });
         }
 
+        public IEnumerable<DiagramNode> GetRelatedNodes(DiagramNode diagramNode, RelationshipSpecification specification)
+        {
+            var typeSpecification = specification.TypeSpecification;
+
+            return specification.Direction == ModelRelationshipDirection.Incoming
+                ? _graph.InEdges(diagramNode).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Source)
+                : _graph.OutEdges(diagramNode).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Target);
+        }
+
         /// <summary>
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
@@ -315,11 +324,6 @@ namespace Codartis.SoftVis.Diagramming.Graph
         private void OnShapeActivated(DiagramShape diagramShape)
         {
             ShapeActivated?.Invoke(this, diagramShape);
-        }
-
-        public void Save(string filename)
-        {
-            _graph.Save(filename);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
@@ -9,7 +11,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button on a diagram shape.
     /// </summary>
-    public abstract class DiagramButtonViewModelBase : ViewModelBase
+    public abstract class DiagramButtonViewModelBase : DiagramViewModelBase
     {
         private readonly double _buttonRadius;
         private readonly RectRelativeLocation _rectRelativeLocation;
@@ -23,8 +25,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; private set; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramButtonViewModelBase(double buttonRadius, RectRelativeLocation rectRelativeLocation,
-            Action<DiagramShapeViewModelBase> clickCommandDelegate)
+        protected DiagramButtonViewModelBase(IModel model, Diagram diagram, double buttonRadius, 
+            RectRelativeLocation rectRelativeLocation, Action<DiagramShapeViewModelBase> clickCommandDelegate)
+            :base(model, diagram)
         {
             _buttonRadius = buttonRadius;
             _rectRelativeLocation = rectRelativeLocation;

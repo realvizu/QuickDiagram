@@ -22,9 +22,9 @@ namespace Codartis.SoftVis.Modeling
             Stereotype = stereotype;
         }
 
-        public bool IsOfType(ModelRelationshipType type, ModelRelationshipStereotype stereotype)
+        public bool IsOfType(RelationshipTypeSpecification typeSpecification)
         {
-            return Type == type && Stereotype == stereotype;
+            return Type == typeSpecification.Type && Stereotype == typeSpecification.Stereotype;
         }
     }
 }

@@ -10,26 +10,26 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public sealed class DiagramNodeViewModel2 : DiagramShapeViewModelBase
     {
-        private readonly DiagramNode _diagramNode;
+        public DiagramNode DiagramNode { get; }
 
         public DiagramNodeViewModel2(DiagramNode diagramNode)
         {
-            _diagramNode = diagramNode;
+            DiagramNode = diagramNode;
             UpdateState();
         }
 
-        public override DiagramShape DiagramShape => _diagramNode;
+        public override DiagramShape DiagramShape => DiagramNode;
 
         public override void UpdateState()
         {
-            Position = _diagramNode.Position.ToWpf();
-            Size = _diagramNode.Size.ToWpf();
+            Position = DiagramNode.Position.ToWpf();
+            Size = DiagramNode.Size.ToWpf();
         }
 
-        public string Name => _diagramNode.Name;
-        public ModelEntityStereotype Stereotype => _diagramNode.ModelEntity.Stereotype;
+        public string Name => DiagramNode.Name;
+        public ModelEntityStereotype Stereotype => DiagramNode.ModelEntity.Stereotype;
         public bool IsStereotypeVisible => Stereotype != null;
         public string StereotypeText => $"<<{Stereotype?.Name.ToLower()}>>";
-        public FontStyle FontStyle => _diagramNode.ModelEntity.IsAbstract ? FontStyles.Oblique : FontStyles.Normal;
+        public FontStyle FontStyle => DiagramNode.ModelEntity.IsAbstract ? FontStyles.Oblique : FontStyles.Normal;
     }
 }

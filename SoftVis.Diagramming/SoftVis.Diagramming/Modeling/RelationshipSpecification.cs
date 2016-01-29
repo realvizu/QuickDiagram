@@ -6,15 +6,22 @@
     public class RelationshipSpecification
     {
         public ModelRelationshipDirection Direction { get; }
-        public ModelRelationshipType Type { get; }
-        public ModelRelationshipStereotype Stereotype { get; }
+        public RelationshipTypeSpecification TypeSpecification { get; }
 
-        public RelationshipSpecification(ModelRelationshipDirection direction, 
+        public RelationshipSpecification(ModelRelationshipDirection direction,
             ModelRelationshipType type, ModelRelationshipStereotype stereotype)
+            : this(direction, new RelationshipTypeSpecification(type, stereotype))
+        {
+        }
+
+        public RelationshipSpecification(ModelRelationshipDirection direction,
+            RelationshipTypeSpecification typeSpecification)
         {
             Direction = direction;
-            Type = type;
-            Stereotype = stereotype;
+            TypeSpecification = typeSpecification;
         }
+
+        public ModelRelationshipType Type => TypeSpecification.Type;
+        public ModelRelationshipStereotype Stereotype => TypeSpecification.Stereotype;
     }
 }

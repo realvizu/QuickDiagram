@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
@@ -12,9 +13,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Tracks the change events of a diagram and creates/modifies diagram shape viewmodels accordingly.
     /// </summary>
-    public class DiagramViewportViewModel : ViewModelBase
+    public class DiagramViewportViewModel : DiagramViewModelBase
     {
-        private readonly Diagram _diagram;
         private readonly Map<DiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
         private readonly DiagramButtonCollectionViewModel _diagramButtonCollectionViewModel;
@@ -31,13 +31,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
         public Viewport.ZoomCommand ViewportZoomCommand { get; }
 
-        public DiagramViewportViewModel(Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+        public DiagramViewportViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
+            : base(model, diagram)
         {
-            _diagram = diagram;
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram.ConnectorTypeResolver);
-            _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(diagramBehaviourProvider);
+            _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
@@ -87,10 +87,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
-            _diagram.ShapeAdded += OnShapeAdded;
-            _diagram.ShapeMoved += OnShapeMoved;
-            _diagram.ShapeRemoved += OnShapeRemoved;
-            _diagram.Cleared += OnDiagramCleared;
+            Diagram.ShapeAdded += OnShapeAdded;
+            Diagram.ShapeMoved += OnShapeMoved;
+            Diagram.ShapeRemoved += OnShapeRemoved;
+            Diagram.Cleared += OnDiagramCleared;
         }
 
         private void AddDiagram(Diagram diagram)
@@ -149,7 +149,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnShapeRemoveRequested(DiagramShape diagramShape)
         {
-            _diagram.RemoveShape(diagramShape);
+            Diagram.RemoveShape(diagramShape);
         }
 
         private void OnShapeFocused(FocusableViewModelBase focusableViewModel)
@@ -173,7 +173,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateDiagramContentRect()
         {
-            _viewport.UpdateContentRect(_diagram.ContentRect.ToWpf());
+            _viewport.UpdateContentRect(Diagram.ContentRect.ToWpf());
         }
 
         private void OnViewportLinearZoomChanged(double viewportZoom)

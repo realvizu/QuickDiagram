@@ -69,6 +69,7 @@
     <Compile Include="Diagramming\ConnectorTypes.cs" />
     <Compile Include="Diagramming\ConnectorType.cs" />
     <Compile Include="Modeling\ModelBase.cs" />
+    <Compile Include="Modeling\RelationshipTypeSpecification.cs" />
     <Compile Include="Modeling\RelationshipSpecifications.cs" />
     <Compile Include="UI\Common\UIEvents\PanEventArgs.cs" />
     <Compile Include="UI\Common\UIEvents\PanEventHandler.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
     <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
     <Compile Include="UI\Wpf\Common\DispatcherObjectExtensions.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
     <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
@@ -280,7 +282,7 @@
     <Compile Include="UI\Wpf\ViewModel\FocusableViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonCollectionViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelFactory.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ShowRelatedShapeButtonViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />
     <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelBase.cs" />

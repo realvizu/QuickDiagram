@@ -11,16 +11,13 @@ namespace Codartis.SoftVis.Modeling
         public abstract IEnumerable<IModelEntity> Entities { get; }
         public abstract IEnumerable<IModelRelationship> Relationships { get; }
 
-        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, RelationshipSpecification relationshipSpecification)
+        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, RelationshipSpecification specification)
         {
-            return relationshipSpecification.Direction == ModelRelationshipDirection.Incoming
-                ? entity.IncomingRelationships.Where(i => MatchesSpecification(i, relationshipSpecification)).Select(i => i.Source)
-                : entity.OutgoingRelationships.Where(i => MatchesSpecification(i, relationshipSpecification)).Select(i => i.Target);
-        }
+            var typeSpecification = specification.TypeSpecification;
 
-        private static bool MatchesSpecification(IModelRelationship relationship, RelationshipSpecification relationshipSpecification)
-        {
-            return relationship.IsOfType(relationshipSpecification.Type, relationshipSpecification.Stereotype);
+            return specification.Direction == ModelRelationshipDirection.Incoming
+                ? entity.IncomingRelationships.Where(i => i.IsOfType(typeSpecification)).Select(i => i.Source)
+                : entity.OutgoingRelationships.Where(i => i.IsOfType(typeSpecification)).Select(i => i.Target);
         }
     }
 }

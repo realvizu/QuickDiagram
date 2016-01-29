@@ -1,4 +1,6 @@
-﻿using Codartis.SoftVis.UI.Geometry;
+﻿using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.UI.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -7,8 +9,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class CloseShapeButtonViewModel : DiagramButtonViewModelBase
     {
-        public CloseShapeButtonViewModel(double buttonRadius, RectRelativeLocation buttonLocation)
-            : base(buttonRadius, buttonLocation, i => i.Remove())
+        public CloseShapeButtonViewModel(IModel model, Diagram diagram,
+            double buttonRadius, RectRelativeLocation buttonLocation)
+            : base(model, diagram, buttonRadius, buttonLocation, i => i.Remove())
         {
             IsEnabled = true;
         }

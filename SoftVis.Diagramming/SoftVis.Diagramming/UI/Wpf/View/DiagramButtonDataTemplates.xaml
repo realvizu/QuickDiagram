@@ -22,7 +22,7 @@
                               Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}" />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModel:ShowRelatedShapeButtonViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:ShowRelatedNodeButtonViewModel}">
         <view:PathControl Stretch="Uniform" 
                           Data="{Binding ConnectorType, Converter={StaticResource ConnectorTypeToGeometryConverter}}" />
     </DataTemplate>
