@@ -21,20 +21,20 @@
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseDiagramButton.xaml" />
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramButtonDataTemplates.xaml" />
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramShapeDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="{x:Type view:DiagramNodeControl2}"
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel2}}">
-                <Setter Property="FocusDiagramItemCommand" Value="{Binding FocusCommand}"/>
-                <Setter Property="UnfocusDiagramItemCommand" Value="{Binding UnfocusCommand}"/>
-            </Style>
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel2}">
+                <view:DiagramNodeControl2 
+                    FocusDiagramItemCommand="{Binding FocusCommand}"
+                    UnfocusDiagramItemCommand="{Binding UnfocusCommand}" />
+            </DataTemplate>
 
-            <Style TargetType="{x:Type view:DiagramConnectorControl2}"
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel2}}">
-                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
-            </Style>
-
+            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel2}">
+                <view:DiagramConnectorControl2 
+                    AnimatedRoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
+                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"/>
+            </DataTemplate>
+            
             <Style x:Key="DiagramShapeContainerStyle" 
                    TargetType="{x:Type view:AnimatedContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">

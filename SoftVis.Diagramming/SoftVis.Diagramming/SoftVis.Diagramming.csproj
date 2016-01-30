@@ -236,7 +236,6 @@
     </Compile>
     <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
     <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
-    <Compile Include="UI\Wpf\View\PointsToPathConverterBase.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\DiagramPanelBase.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
     <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramConnectorViewModel.cs" />
@@ -364,10 +363,6 @@
     <Page Include="UI\Wpf\View\DiagramImageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramShapeDataTemplates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\EllipseDiagramButton.xaml">
       <Generator>MSBuild:Compile</Generator>

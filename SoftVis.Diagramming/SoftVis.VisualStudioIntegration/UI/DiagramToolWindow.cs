@@ -20,13 +20,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
 
+        private readonly DiagramControl _diagramControl;
         private DiagramViewModel _diagramViewModel;
-        private DiagramControl _diagramControl;
 
         public Dpi ImageExportDpi { get; set; }
 
         public DiagramToolWindow() : base(null)
         {
+            var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
+            _diagramControl = new DiagramControl(resourceDictionary);
+
             Caption = "Diagram";
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
             Content = _diagramControl;
@@ -36,10 +39,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         internal void Initialize(IModel model, Diagram diagram)
         {
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
-            _diagramViewModel = new DiagramViewModel(model, diagram, diagramBehaviourProvider, .1, 10, 1);
-
-            var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
-            _diagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};
+            _diagramViewModel = new DiagramViewModel(model, diagram, diagramBehaviourProvider, 
+               minZoom: .1, maxZoom: 10, initialZoom: 1);
+            _diagramControl.DataContext = _diagramViewModel;
         }
 
         public int FontSize

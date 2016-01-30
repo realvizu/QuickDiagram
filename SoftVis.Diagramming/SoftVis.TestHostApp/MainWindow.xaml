@@ -68,15 +68,8 @@
             </StackPanel>
         </Border>
         <view:DiagramControl Grid.Row="1" 
-                             Background="Beige"
-                             Foreground="Black"
-                             DiagramFill="Bisque"
-                             DiagramStroke="Black"
-                             FontFamily="Arial"
-                             FontSize="12"
-                             PanAndZoomControlHeight="120" 
-                             
                              DataContext="{Binding DiagramViewModel}"
                              ExportImageCommand="{Binding ExportDiagramImageCommand}"/>
     </Grid>
+
 </Window>

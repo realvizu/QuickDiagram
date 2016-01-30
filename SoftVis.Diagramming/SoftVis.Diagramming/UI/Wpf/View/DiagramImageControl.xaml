@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Common.Converters"
+             xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
@@ -13,12 +14,17 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramShapeDataTemplates.xaml" />
-            </ResourceDictionary.MergedDictionaries>
 
             <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
-            
+
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel2}">
+                <view:DiagramNodeControl2 />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel2}">
+                <view:DiagramConnectorControl2 RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}" />
+            </DataTemplate>
+        
             <ItemsPanelTemplate x:Key="DiagramImageItemsPanel">
                 <Canvas>
                     <Canvas.RenderTransform>
@@ -45,5 +51,5 @@
 
     <ItemsControl ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramShapeViewModels}"
                   ItemsPanel="{StaticResource DiagramImageItemsPanel}"
-                  ItemContainerStyle="{StaticResource DiagramImageItemContainerStyle}" />
+                  ItemContainerStyle="{StaticResource DiagramImageItemContainerStyle}"/>
 </UserControl>

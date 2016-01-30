@@ -6,11 +6,17 @@
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <!--<Style TargetType="{x:Type view:DiagramControl}" >
-        <Setter Property="Background" Value="NavajoWhite"/>
-        <Setter Property="Foreground" Value="Sienna"/>
-        <Setter Property="DiagramFill" Value="Yellow"/>
-        <Setter Property="DiagramStroke" Value="Sienna"/>
-    </Style>-->
+    <Style TargetType="{x:Type view:DiagramControl}" >
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Background" Value="Beige"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="DiagramFill" Value="Bisque"/>
+        <Setter Property="DiagramStroke" Value="Black"/>
+        <Setter Property="PanAndZoomControlHeight" Value="120"/>
+    </Style>
 
+    <!--<Style x:Key="MyMy" TargetType="{x:Type view:DiagramNodeControl2}" >
+        <Setter Property="DiagramFill" Value="Orange"/>
+    </Style>-->
 </ResourceDictionary>

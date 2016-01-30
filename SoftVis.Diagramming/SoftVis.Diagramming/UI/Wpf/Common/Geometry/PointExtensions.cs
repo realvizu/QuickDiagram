@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Codartis.SoftVis.UI.Wpf.Common.Geometry
 {
@@ -11,6 +12,13 @@ namespace Codartis.SoftVis.UI.Wpf.Common.Geometry
         public static bool IsExtreme(this Point point)
         {
             return double.IsNaN(point.X) || double.IsNaN(point.Y);
+        }
+
+        public static PathFigure ToPathFigure(this IEnumerable<Point> points, bool closed)
+        {
+            var enumerable = points as Point[] ?? points.ToArray();
+            var segments = enumerable.Skip(1).Select(i => new LineSegment(i, true));
+            return new PathFigure(enumerable.First(), segments, closed);
         }
 
         public static Rect BoundingRect(this IEnumerable<Point> points)

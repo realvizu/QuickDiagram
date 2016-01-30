@@ -11,6 +11,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of diagram connectors.
     /// </summary>
+    /// <remarks>
+    /// Calculates the enclosing rectangle of the route points 
+    /// and translate the route points so they are relative to the bounding rectangle.
+    /// </remarks>
     public sealed class DiagramConnectorViewModel2 : DiagramShapeViewModelBase
     {
         private static readonly DoubleCollection DashPattern = new DoubleCollection(new[] { 5d, 5d });
@@ -19,9 +23,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
-        public DiagramConnectorViewModel2(IModel model, Diagram diagram, 
+        public DiagramConnectorViewModel2(IModel model, Diagram diagram,
             DiagramConnector diagramConnector, ConnectorType connectorType)
-            :base(model, diagram)
+            : base(model, diagram)
         {
             _diagramConnector = diagramConnector;
             _connectorType = connectorType;
@@ -35,7 +39,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var rect = _diagramConnector.Rect.ToWpf();
             Position = rect.Location;
             Size = rect.Size;
-            RoutePoints = _diagramConnector.RoutePoints.Select(j => j.ToWpf()).ToArray();
+            var rectRelativeTranslate = -(Vector)rect.TopLeft;
+            RoutePoints = _diagramConnector.RoutePoints.Select(i => i.ToWpf() + rectRelativeTranslate).ToArray();
         }
 
         public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;

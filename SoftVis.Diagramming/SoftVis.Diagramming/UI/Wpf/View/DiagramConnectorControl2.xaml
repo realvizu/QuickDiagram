@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel2}}">
@@ -13,6 +14,9 @@
     <UserControl.Resources>
         <view:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />
         <view:PointsToArrowHeadPathConverter x:Key="PointsToArrowHeadPathConverter" />
+
+        <system:Double x:Key="ArrowHeadSize">10</system:Double>
+        <system:Double x:Key="ArrowHeadLengthPerWidth">2</system:Double>
     </UserControl.Resources>
     
     <Grid>
@@ -21,19 +25,20 @@
               StrokeDashArray="{Binding Path=StrokeDashArray}">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowShaftPathConverter}">
-                    <Binding Path="AnimatedRoutePoints" ElementName="ThisControl" Mode="OneWay" />
-                    <Binding Path="BoundingRectLeft" ElementName="ThisControl" Mode="OneWay"/>
-                    <Binding Path="BoundingRectTop" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="RoutePoints" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Source="{StaticResource ArrowHeadSize}"/>
                 </MultiBinding>
             </Path.Data>
         </Path>
+        
         <Path Stroke="{Binding Path=DiagramStroke, ElementName=ThisControl}"
               StrokeThickness="1">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowHeadPathConverter}">
-                    <Binding Path="AnimatedRoutePoints" ElementName="ThisControl" Mode="OneWay"/>
-                    <Binding Path="BoundingRectLeft" ElementName="ThisControl" Mode="OneWay"/>
-                    <Binding Path="BoundingRectTop" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="RoutePoints" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="ArrowHeadType"/>
+                    <Binding Source="{StaticResource ArrowHeadSize}"/>
+                    <Binding Source="{StaticResource ArrowHeadLengthPerWidth}"/>
                 </MultiBinding>
             </Path.Data>
         </Path>
