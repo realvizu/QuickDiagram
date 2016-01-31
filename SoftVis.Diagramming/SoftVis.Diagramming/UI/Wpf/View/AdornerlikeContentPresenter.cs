@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.Common;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Wpf.DiagramRendering;
-using Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    internal class TestDiagram : WpfDiagram
+    internal class TestDiagram : Diagram
     {
         public List<List<IModelItem>> ModelItemGroups { get; }
 
@@ -18,15 +17,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             ModelItemGroups = model.ItemGroups.ToList();
         }
 
-        protected override DiagramNode CreateDiagramNode(IModelEntity modelEntity)
+        protected override Size2D CalculateDiagramNodeSize(IModelEntity modelEntity)
         {
             var height = 30;
             int nameAsInt;
             if (int.TryParse(modelEntity.Name, out nameAsInt))
                 height = int.Parse(modelEntity.Name) % 4 * 5 + 25;
 
-            var size = new Size2D(((TestModelEntity)modelEntity).Size, height);
-            return new DiagramNodeViewModel(modelEntity, Point2D.Empty, size);
+            return new Size2D(((TestModelEntity)modelEntity).Size, height);
         }
     }
 }

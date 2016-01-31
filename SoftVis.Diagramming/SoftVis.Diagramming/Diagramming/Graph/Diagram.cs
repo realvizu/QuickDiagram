@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Diagramming.Graph
     /// The layout (relative positions and size) also conveys meaning.
     /// </summary>
     [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
-    public abstract class Diagram : IArrangeableDiagram
+    public class Diagram : IArrangeableDiagram
     {
         public IConnectorTypeResolver ConnectorTypeResolver { get; }
 
@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.Diagramming.Graph
         public event EventHandler<DiagramShape> ShapeActivated;
         public event EventHandler Cleared;
 
-        protected Diagram(IConnectorTypeResolver connectorTypeResolver)
+        public Diagram(IConnectorTypeResolver connectorTypeResolver)
         {
             if (connectorTypeResolver == null)
                 throw new ArgumentNullException(nameof(connectorTypeResolver));
@@ -219,8 +219,26 @@ namespace Codartis.SoftVis.Diagramming.Graph
                 OnShapeMoved(diagramConnector);
         }
 
-        protected abstract DiagramNode CreateDiagramNode(IModelEntity modelEntity);
-        protected abstract DiagramConnector CreateDiagramConnector(IModelRelationship relationship);
+        private DiagramNode CreateDiagramNode(IModelEntity modelEntity)
+        {
+            var size = CalculateDiagramNodeSize(modelEntity);
+            return new DiagramNode(modelEntity, DiagramDefaults.DefaultNodePosition, size);
+        }
+
+        protected virtual Size2D CalculateDiagramNodeSize(IModelEntity modelEntity)
+        {
+            var atLeastMinimalWidth = Math.Max(modelEntity.Name.Length * 8, DiagramDefaults.MinimumNodeWidth);
+            var width = Math.Min(atLeastMinimalWidth, DiagramDefaults.MaximumNodeWidth);
+            var size = new Size2D(width, DiagramDefaults.DefaultNodeHeight);
+            return size;
+        }
+
+        private DiagramConnector CreateDiagramConnector(IModelRelationship relationship)
+        {
+            var sourceNode = FindNode(relationship.Source);
+            var targetNode = FindNode(relationship.Target);
+            return new DiagramConnector(relationship, sourceNode, targetNode);
+        }
 
         private void HideRedundantDirectEdges()
         {

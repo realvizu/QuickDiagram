@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public static class DiagramDefaults
     {
-        public const double MinimumNodeWidth = 40;
+        public const double MinimumNodeWidth = 50;
         public const double DefaultNodeWidth = 100;
         public const double MaximumNodeWidth = 250;
         public const double MinimumNodeHeight = 20;

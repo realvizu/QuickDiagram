@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.UI.Wpf.Common;
 using Codartis.SoftVis.UI.Wpf.ImageExport;
 
 namespace Codartis.SoftVis.UI.Wpf.View

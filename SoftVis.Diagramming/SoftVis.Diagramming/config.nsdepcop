@@ -35,22 +35,13 @@
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.*" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.UI.Geometry" />
 
-    <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.*" />
-
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Extensibility" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Common.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Common.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.ViewModel.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.Animations" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.RoutedEvents" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.HitTesting" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.ImageExport" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.ViewModel.*" />
 
-    <Allowed From="Codartis.SoftVis.UI.Wpf.DiagramRendering.*" To="Codartis.SoftVis.UI.Wpf.ViewModel.*" />
-
-    <Allowed From="Codartis.SoftVis.UI.Wpf.DiagramRendering" To="Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport" To="Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.DiagramRendering.Viewport.Modification.MiniButtons" To="Codartis.SoftVis.UI.Wpf.DiagramRendering.Shapes" />
 </NsDepCopConfig>

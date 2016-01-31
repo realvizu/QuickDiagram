@@ -71,12 +71,6 @@
     <Compile Include="Modeling\ModelBase.cs" />
     <Compile Include="Modeling\RelationshipTypeSpecification.cs" />
     <Compile Include="Modeling\RelationshipSpecifications.cs" />
-    <Compile Include="UI\Common\UIEvents\PanEventArgs.cs" />
-    <Compile Include="UI\Common\UIEvents\PanEventHandler.cs" />
-    <Compile Include="UI\Common\UIEvents\ResizeEventArgs.cs" />
-    <Compile Include="UI\Common\UIEvents\ResizeEventHandler.cs" />
-    <Compile Include="UI\Common\UIEvents\ZoomEventArgs.cs" />
-    <Compile Include="UI\Common\UIEvents\ZoomEventHandler.cs" />
     <Compile Include="UI\Common\ZoomDirection.cs" />
     <Compile Include="UI\Geometry\VerticalAlignmentType.cs" />
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
@@ -90,17 +84,15 @@
     <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
     <Compile Include="UI\Wpf\Commands\DelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\InverseBoolToVisibilityConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\ThicknessMultiplierConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\ThicknessToDoubleConverter.cs" />
-    <Compile Include="UI\Wpf\Common\TransformExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\UIElementExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\FrameworkElementExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\HitTesting\HitTesterInstance.cs" />
-    <Compile Include="UI\Wpf\Common\HitTesting\HitTester.cs" />
-    <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
-    <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\DispatcherObjectExtensions.cs" />
+    <Compile Include="UI\Wpf\Converters\ThicknessMultiplierConverter.cs" />
+    <Compile Include="UI\Wpf\Converters\ThicknessToDoubleConverter.cs" />
+    <Compile Include="UI\Wpf\TransformExtensions.cs" />
+    <Compile Include="UI\Wpf\UIElementExtensions.cs" />
+    <Compile Include="UI\Wpf\FrameworkElementExtensions.cs" />
+    <Compile Include="UI\Wpf\HitTesting\HitTesterInstance.cs" />
+    <Compile Include="UI\Wpf\HitTesting\HitTester.cs" />
+    <Compile Include="UI\Wpf\HitTesting\IHitTester.cs" />
+    <Compile Include="UI\Wpf\DispatcherObjectExtensions.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
@@ -110,7 +102,6 @@
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramItemRoutedEventArgs.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonActivatedEventArgs.cs" />
-    <Compile Include="UI\Wpf\DiagramViewerViewModel.cs" />
     <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />
     <Compile Include="Modeling\RelationshipSpecification.cs" />
     <Compile Include="Diagramming\DefaultConnectorTypeResolver.cs" />
@@ -211,21 +202,12 @@
     <Compile Include="Common\DoubleHelper.cs" />
     <Compile Include="UI\Common\ScaleCalculator.cs" />
     <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\RouteToWpfConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\RectToWpfConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\SizeToWpfConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Geometry\Size2DExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\Geometry\Point2DExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\Geometry\Rect2DExtensions.cs" />
+    <Compile Include="UI\Wpf\Size2DExtensions.cs" />
+    <Compile Include="UI\Wpf\Point2DExtensions.cs" />
+    <Compile Include="UI\Wpf\Rect2DExtensions.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\PointToWpfConverter.cs" />
-    <Compile Include="UI\Wpf\Common\Geometry\PointExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\Geometry\RectExtensions.cs" />
-    <Compile Include="UI\Wpf\Common\WpfConstants.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\MiniButtonBase.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\ShowRelatedEntityMiniButton.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Modification\MiniButtons\CloseMiniButton.cs" />
+    <Compile Include="UI\Wpf\PointExtensions.cs" />
+    <Compile Include="UI\Wpf\RectExtensions.cs" />
     <Compile Include="UI\Extensibility\RelatedEntityButtonDescriptor.cs" />
     <Compile Include="UI\Wpf\View\AdornerlikeContentPresenter.cs" />
     <Compile Include="UI\Wpf\View\AdornerlikeItemsControl.cs" />
@@ -236,49 +218,9 @@
     </Compile>
     <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
     <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\DiagramPanelBase.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\SimpleDiagramPanel.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramConnectorViewModel.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramNodeViewModel.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\WpfDiagram.cs" />
     <Compile Include="UI\Wpf\ImageExport\ImageRenderer.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\DiagramViewportPanel.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramConnectorControl.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramShapeControlBase.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\ResizeViewportCommand.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\MoveViewportCenterInScreenSpaceCommand.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\ZoomViewportWithCenterInScreenSpaceCommand.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\ZoomViewportCommand.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\MoveViewportCenterInDiagramSpaceCommand.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\ViewportCommandHandler.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\ViewportCommandBase.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\ZoomViewportWithCenterInScreenSpaceCommandAnimator.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\ViewportCommandAnimatorBase.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\ResizeViewportCommandAnimator.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\MoveViewportCenterInDiagramSpaceCommandAnimator.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\ZoomViewportCommandAnimator.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\ResizeViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\ZoomWithCenterSpecification.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\ZoomWithCenterSpecificationAnimation.cs" />
-    <Compile Include="UI\Wpf\DiagramViewerControl.cs" />
-    <Compile Include="UI\Wpf\DiagramViewerControl.DepProps.cs" />
-    <Compile Include="UI\Wpf\InputControls\PanAndZoomControl.DepProps.cs" />
-    <Compile Include="UI\Wpf\InputControls\PanAndZoomControl.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\FitToViewViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\PanWidgetViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\ZoomWidgetViewportGesture.cs" />
-    <Compile Include="UI\Wpf\Common\UIEvents\IUIEventSource.cs" />
     <Compile Include="UI\Common\PanDirection.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\IDiagramViewport.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\IViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\MousePanViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\Animated\AnimatedViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\KeyboardViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\MouseZoomViewportGesture.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Viewport\Viewing\Gestures\ViewportGestureBase.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\DoubleMultiplierConverter.cs" />
-    <Compile Include="UI\Wpf\DiagramRendering\Shapes\DiagramNodeControl.cs" />
-    <Compile Include="UI\Wpf\Common\TemplatedControlBase.cs" />
+    <Compile Include="UI\Wpf\Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="UI\Wpf\ViewModel\FocusableViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonCollectionViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelFactory.cs" />
@@ -291,11 +233,10 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
-    <Compile Include="UI\Wpf\Common\DoubleInterval.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewModelBase.cs" />
     <Compile Include="UI\Common\HandleOrientation.cs" />
-    <Compile Include="UI\Wpf\Common\Converters\ConnectorTypeToGeometryConverter.cs" />
+    <Compile Include="UI\Wpf\Converters\ConnectorTypeToGeometryConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\View\DiagramButton.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorControl2.xaml.cs">
@@ -336,22 +277,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Wpf\DiagramRendering\Shapes\DiagramConnectorControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Wpf\DiagramRendering\Shapes\DiagramNodeControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Wpf\DiagramViewerControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Wpf\InputControls\PanAndZoomControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\Wpf\View\DiagramButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -405,9 +330,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Wpf\RoutedEvents\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

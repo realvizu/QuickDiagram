@@ -10,13 +10,13 @@ namespace Codartis.SoftVis.Diagramming
     /// It is the representation of a directed model relationship and it connects two diagram nodes.
     /// Eg. an inheritance arrow pointing from a derived class shape to its base class shape.
     /// </summary>
-    public abstract class DiagramConnector : DiagramShape, IEdge<DiagramNode>
+    public class DiagramConnector : DiagramShape, IEdge<DiagramNode>
     {
         public DiagramNode Source { get; }
         public DiagramNode Target { get; }
         public virtual Route RoutePoints { get; set; }
 
-        protected DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
+        public DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
             : base(relationship)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));

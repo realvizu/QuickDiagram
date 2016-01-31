@@ -8,7 +8,6 @@ using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.UI.Geometry;
-using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

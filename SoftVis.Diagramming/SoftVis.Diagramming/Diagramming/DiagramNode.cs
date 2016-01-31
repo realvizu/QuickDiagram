@@ -12,12 +12,12 @@ namespace Codartis.SoftVis.Diagramming
     /// <remarks>
     /// Warning: DiagramNode comparison is based on name order, not position or size!
     /// </remarks>
-    public abstract class DiagramNode : DiagramShape, IComparable<DiagramNode>
+    public class DiagramNode : DiagramShape, IComparable<DiagramNode>
     {
         private Point2D _position;
         private Size2D _size;
 
-        protected DiagramNode(IModelEntity modelEntity, Point2D position, Size2D size)
+        public DiagramNode(IModelEntity modelEntity, Point2D position, Size2D size)
             : base(modelEntity)
         {
             _position = position;
