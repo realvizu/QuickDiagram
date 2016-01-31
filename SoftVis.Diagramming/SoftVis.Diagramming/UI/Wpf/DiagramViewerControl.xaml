@@ -50,12 +50,12 @@
                                                          MaxZoom="{TemplateBinding MaxZoom}" />
 
                         <view:EntitySelectorControl x:Name="PART_RelatedEntitySelectorControl"
-                                                          DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
-                                                          Width="{Binding Path=Width}" 
-                                                          Height="{Binding Path=Height}"
-                                                          Canvas.Top="{Binding Path=Top}" 
-                                                          Canvas.Left="{Binding Path=Left}"
-                                                          Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
+                                                    Width="{Binding Path=Width}" 
+                                                    Height="{Binding Path=Height}"
+                                                    Canvas.Top="{Binding Path=Top}" 
+                                                    Canvas.Left="{Binding Path=Left}"
+                                                    Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         
                     </Canvas>
                 </ControlTemplate>

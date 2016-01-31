@@ -82,7 +82,6 @@
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\BitmapSourceDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ZoomDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\VectorDelegateCommand.cs" />
     <Compile Include="UI\Common\TransitionSpeed.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="UI\Wpf\Common\HitTesting\IHitTester.cs" />
     <Compile Include="UI\Wpf\Common\MatrixExtensions.cs" />
     <Compile Include="UI\Wpf\Common\DispatcherObjectExtensions.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramImageRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />

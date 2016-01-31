@@ -15,8 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
         public override void Execute(object sender, EventArgs e)
         {
             var diagramServices = PackageServices.GetDiagramServices();
-            var bitmap = diagramServices.GetDiagramAsBitmap();
-            Clipboard.SetImage(bitmap);
+            diagramServices.GetDiagramImage(Clipboard.SetImage);
         }
     }
 }

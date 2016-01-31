@@ -67,9 +67,9 @@
                 </Border>
             </StackPanel>
         </Border>
+        
         <view:DiagramControl Grid.Row="1" 
-                             DataContext="{Binding DiagramViewModel}"
-                             ExportImageCommand="{Binding ExportDiagramImageCommand}"/>
+                             DataContext="{Binding DiagramViewModel}"/>
     </Grid>
 
 </Window>

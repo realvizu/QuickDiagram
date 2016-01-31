@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -72,14 +73,7 @@ namespace Codartis.SoftVis.TestHostApp
             _nextToRemoveModelItemGroupIndex++;
         }
 
-        private void ZoomToContent()
-        {
-            DiagramViewModel.ZoomToContent();
-        }
-
-        private void CopyToClipboard()
-        {
-            DiagramViewModel.CopyToClipboard(SelectedDpi);
-        }
+        private void ZoomToContent() => DiagramViewModel.ZoomToContent();
+        private void CopyToClipboard() => DiagramViewModel.GetDiagramImage(SelectedDpi, Clipboard.SetImage);
     }
 }

@@ -12,14 +12,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public partial class DiagramImageControl : UserControl
     {
+        private readonly ResourceDictionary _additionalResourceDictionary;
+
         public static readonly DependencyProperty DiagramFillProperty =
             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramImageControl));
 
         public static readonly DependencyProperty DiagramStrokeProperty =
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramImageControl));
 
-        public DiagramImageControl()
+        public DiagramImageControl(ResourceDictionary additionalResourceDictionary)
         {
+            _additionalResourceDictionary = additionalResourceDictionary;
+
             InitializeComponent();
         }
 
@@ -33,6 +37,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (Brush)GetValue(DiagramStrokeProperty); }
             set { SetValue(DiagramStrokeProperty, value); }
+        }
+
+        public override void OnApplyTemplate()
+        {
+            if (_additionalResourceDictionary != null)
+                this.AddResourceDictionary(_additionalResourceDictionary);
+
+            base.OnApplyTemplate();
         }
 
         public BitmapSource GetImage(Rect bounds, double dpi)

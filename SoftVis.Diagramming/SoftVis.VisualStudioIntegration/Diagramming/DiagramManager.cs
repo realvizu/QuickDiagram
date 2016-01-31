@@ -60,9 +60,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             _diagram.Clear();
         }
 
-        public BitmapSource GetDiagramAsBitmap()
+        public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
         {
-            return _diagramToolWindow.GetDiagramAsBitmap();
+            _diagramToolWindow.GetDiagramImage(imageCreatedCallback);
         }
 
         public void ShowModelEntity(IModelEntity modelEntity)

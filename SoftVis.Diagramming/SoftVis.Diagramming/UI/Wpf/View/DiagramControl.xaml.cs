@@ -1,7 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.Commands;
+using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf.Common;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
@@ -25,22 +26,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DiagramViewportControl.PanAndZoomControlHeightProperty.AddOwner(typeof(DiagramControl));
 
-        public static readonly DependencyProperty ExportImageCommandProperty =
-            DependencyProperty.Register("ExportImageCommand", typeof(BitmapSourceDelegateCommand), typeof(DiagramControl));
+        public DiagramControl() : this(null)
+        { }
 
-        public DiagramControl()
+        public DiagramControl(ResourceDictionary additionalResourceDictionary = null)
         {
-            _diagramImageControl = new DiagramImageControl();
+            _additionalResourceDictionary = additionalResourceDictionary;
+
+            _diagramImageControl = new DiagramImageControl(_additionalResourceDictionary);
 
             DataContextChanged += OnDataContextChanged;
 
             InitializeComponent();
-        }
-
-        public DiagramControl(ResourceDictionary additionalResourceDictionary)
-            : this()
-        {
-            _additionalResourceDictionary = additionalResourceDictionary;
         }
 
         public Brush DiagramFill
@@ -59,12 +56,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(PanAndZoomControlHeightProperty); }
             set { SetValue(PanAndZoomControlHeightProperty, value); }
-        }
-
-        public BitmapSourceDelegateCommand ExportImageCommand
-        {
-            get { return (BitmapSourceDelegateCommand)GetValue(ExportImageCommandProperty); }
-            set { SetValue(ExportImageCommandProperty, value); }
         }
 
         public override void OnApplyTemplate()
@@ -86,13 +77,13 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _diagramImageControl.DataContext = DataContext;
         }
 
-        private void OnDiagramImageExportRequested(double dpi)
+        private void OnDiagramImageExportRequested(double dpi, Action<BitmapSource> imageCreatedCallback)
         {
             UpdateDiagramImageControlProperties();
 
             var boundsTranslatedToOrigo = new Rect(_diagramViewModel.DiagramContentRect.Size);
             var bitmapSource = _diagramImageControl.GetImage(boundsTranslatedToOrigo, dpi);
-            ExportImageCommand?.Execute(bitmapSource);
+            imageCreatedCallback?.Invoke(bitmapSource);
         }
 
         private void UpdateDiagramImageControlProperties()

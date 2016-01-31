@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System;
+using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 
@@ -17,7 +18,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         void ShowModelEntityWithRelatedEntities(IModelEntity modelEntity);
         void FitDiagramToView();
         void ClearDiagram();
-        BitmapSource GetDiagramAsBitmap();
-
+        void GetDiagramImage(Action<BitmapSource> imageCreatedCallback);
     }
 }

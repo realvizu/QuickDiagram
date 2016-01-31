@@ -6,7 +6,6 @@ using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
-using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.Common.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -19,11 +18,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly IDiagramBehaviourProvider _diagramBehaviourProvider;
         private Rect _diagramContentRect;
 
-        public event Action<double> DiagramImageExportRequested;
+        public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public EntitySelectorViewModel RelatedEntitySelectorViewModel { get; }
-        public BitmapSourceDelegateCommand ExportDiagramImageCommand { get; }
 
         public DiagramViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -33,7 +31,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
             RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
-            ExportDiagramImageCommand = new BitmapSourceDelegateCommand(CopyDiagramImageToClipboard);
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -70,14 +67,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ZoomToContent();
         }
 
-        public void CopyToClipboard(double dpi)
+        public void GetDiagramImage(double dpi, Action<BitmapSource> imageCreatedCallback)
         {
-            DiagramImageExportRequested?.Invoke(dpi);
-        }
-
-        private void CopyDiagramImageToClipboard(BitmapSource bitmapSource)
-        {
-            Clipboard.SetImage(bitmapSource);
+            DiagramImageExportRequested?.Invoke(dpi, imageCreatedCallback);
         }
 
         private void SubscribeToDiagramEvents()

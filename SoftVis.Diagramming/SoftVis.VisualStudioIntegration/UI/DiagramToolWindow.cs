@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Graph;
@@ -61,9 +62,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _diagramViewModel.ZoomToContent();
         }
 
-        public BitmapSource GetDiagramAsBitmap()
+        public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
         {
-            return null; // _diagramControl.GetDiagramAsBitmap(ImageExportDpi.Value);
+            _diagramViewModel.GetDiagramImage(ImageExportDpi.Value, imageCreatedCallback);
         }
     }
 }
