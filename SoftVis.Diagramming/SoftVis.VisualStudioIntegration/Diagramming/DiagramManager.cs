@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         public DiagramManager(IModel model, DiagramToolWindow diagramToolWindow)
         {
             var connectorTypeResolver = new RoslynBasedConnectorTypeResolver();
-            _diagram = new Diagram(connectorTypeResolver);
+            _diagram = new RoslynBasedDiagram(connectorTypeResolver);
             _diagram.ShapeSelected += OnShapeSelected;
             _diagram.ShapeActivated += OnShapeActivated;
 

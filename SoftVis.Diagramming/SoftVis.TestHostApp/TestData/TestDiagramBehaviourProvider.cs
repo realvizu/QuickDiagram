@@ -7,20 +7,22 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal class TestDiagramBehaviourProvider : DefaultDiagramBehaviourProvider
     {
+        private const double ButtonShiftX = ButtonRadius * 1.1;
+
         private static readonly RelatedEntityButtonDescriptor ImplementedInterfacesDescriptor =
             new RelatedEntityButtonDescriptor(
                 TestRelationshipSpecifications.ImplementedInterfaces, TestConnectorTypes.Implementation,
-                new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(ButtonRadius * 1.2, ButtonOverlapParentBy)));
+                new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(ButtonShiftX, ButtonOverlapParentBy)));
 
         private static readonly RelatedEntityButtonDescriptor ImplementerTypesDescriptor =
             new RelatedEntityButtonDescriptor(
                 TestRelationshipSpecifications.ImplementerTypes, TestConnectorTypes.Implementation,
-                new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(ButtonRadius * 1.2, -ButtonOverlapParentBy)));
+                new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(ButtonShiftX, -ButtonOverlapParentBy)));
 
         public override IEnumerable<RelatedEntityButtonDescriptor> GetRelatedEntityButtonDescriptors()
         {
-            yield return BaseTypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonRadius * 1.2, ButtonOverlapParentBy));
-            yield return SubtypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonRadius * 1.2, -ButtonOverlapParentBy));
+            yield return BaseTypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonShiftX, ButtonOverlapParentBy));
+            yield return SubtypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonShiftX, -ButtonOverlapParentBy));
             yield return ImplementedInterfacesDescriptor;
             yield return ImplementerTypesDescriptor;
         }

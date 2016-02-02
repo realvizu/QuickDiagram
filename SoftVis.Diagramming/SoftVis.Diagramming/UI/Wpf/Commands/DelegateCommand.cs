@@ -6,34 +6,30 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
     /// <summary>
     /// A command that executes a delegate with no parameter.
     /// </summary>
+    /// <remarks>
+    /// CanExecute is always true, CanExecuteChanged is never raised.
+    /// </remarks>
     public class DelegateCommand : ICommand
     {
         private readonly Action _execute;
-        private readonly object _lockObject = new object();
 
+        #pragma warning disable CS0067
         public event EventHandler CanExecuteChanged;
+        #pragma warning restore CS0067
 
         public DelegateCommand(Action execute)
         {
             _execute = execute;
         }
 
-        event EventHandler ICommand.CanExecuteChanged
-        {
-            add { lock (_lockObject) CanExecuteChanged += value; }
-            remove { lock (_lockObject) CanExecuteChanged -= value; }
-        }
-
         bool ICommand.CanExecute(object parameter) => true;
         void ICommand.Execute(object parameter) => _execute();
 
-        public bool CanExecute() => ((ICommand)this).CanExecute(null);
         public void Execute() => ((ICommand)this).Execute(null);
     }
 
     /// <summary>
     /// A command that executes a delegate with one typed parameter.
-    /// TODO: implement CanExecuteChanged raising
     /// </summary>
     public class DelegateCommand<T> : ICommand
     {
@@ -65,13 +61,13 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
             _execute((T) parameter);
         }
 
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         public bool CanExecute(T parameter) => ((ICommand)this).CanExecute(parameter);
         public void Execute(T parameter) => ((ICommand)this).Execute(parameter);
     }
 
     /// <summary>
     /// A command that executes a delegate with two typed parameters.
-    /// TODO: implement CanExecuteChanged raising
     /// </summary>
     public abstract class DelegateCommand<T1, T2> : ICommand
     {
@@ -105,6 +101,7 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
             _execute(tuple.Item1, tuple.Item2);
         }
 
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         protected bool CanExecuteCore(T1 param1, T2 param2) => ((ICommand)this).CanExecute(Tuple.Create(param1, param2));
         protected void ExecuteCore(T1 param1, T2 param2) => ((ICommand)this).Execute(Tuple.Create(param1, param2));
 
@@ -113,7 +110,6 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
 
     /// <summary>
     /// A command that executes a delegate with three typed parameters.
-    /// TODO: implement CanExecuteChanged raising
     /// </summary>
     public abstract class DelegateCommand<T1, T2, T3> : ICommand
     {
@@ -147,6 +143,7 @@ namespace Codartis.SoftVis.UI.Wpf.Commands
             _execute(tuple.Item1, tuple.Item2, tuple.Item3);
         }
 
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         protected bool CanExecuteCore(T1 param1, T2 param2, T3 param3) => ((ICommand)this).CanExecute(Tuple.Create(param1, param2, param3));
         protected void ExecuteCore(T1 param1, T2 param2, T3 param3) => ((ICommand)this).Execute(Tuple.Create(param1, param2, param3));
 
