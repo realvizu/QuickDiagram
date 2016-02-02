@@ -225,10 +225,10 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonCollectionViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel2.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel2.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
@@ -239,8 +239,8 @@
     <Compile Include="UI\Wpf\Converters\ConnectorTypeToGeometryConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\View\DiagramButton.cs" />
-    <Compile Include="UI\Wpf\View\DiagramConnectorControl2.xaml.cs">
-      <DependentUpon>DiagramConnectorControl2.xaml</DependentUpon>
+    <Compile Include="UI\Wpf\View\DiagramConnectorControl.xaml.cs">
+      <DependentUpon>DiagramConnectorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramControl.xaml.cs">
       <DependentUpon>DiagramControl.xaml</DependentUpon>
@@ -248,8 +248,8 @@
     <Compile Include="UI\Wpf\View\AnimatedContentPresenter.cs" />
     <Compile Include="UI\Wpf\View\DiagramShapeItemsControl.cs" />
     <Compile Include="UI\Wpf\View\AnimatedItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\DiagramNodeControl2.xaml.cs">
-      <DependentUpon>DiagramNodeControl2.xaml</DependentUpon>
+    <Compile Include="UI\Wpf\View\DiagramNodeControl.xaml.cs">
+      <DependentUpon>DiagramNodeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramViewportControl.DepProps.cs" />
     <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
@@ -259,8 +259,8 @@
       <DependentUpon>EntitySelectorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />
-    <Compile Include="UI\Wpf\View\PanAndZoomControl2.xaml.cs">
-      <DependentUpon>PanAndZoomControl2.xaml</DependentUpon>
+    <Compile Include="UI\Wpf\View\PanAndZoomControl.xaml.cs">
+      <DependentUpon>PanAndZoomControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\AnimatedRenderTransformCanvas.cs" />
     <Compile Include="UI\Wpf\Viewport.cs" />
@@ -293,7 +293,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Wpf\View\DiagramConnectorControl2.xaml">
+    <Page Include="UI\Wpf\View\DiagramConnectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -301,7 +301,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeControl2.xaml">
+    <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -325,7 +325,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\PanAndZoomControl2.xaml">
+    <Page Include="UI\Wpf\View\PanAndZoomControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

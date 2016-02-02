@@ -21,8 +21,8 @@
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
     </Style>
 
-    <Style TargetType="{x:Type view:DiagramNodeControl2}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel2}}">
+    <Style TargetType="{x:Type view:DiagramNodeControl}"
+           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>

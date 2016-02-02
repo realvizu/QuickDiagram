@@ -9,38 +9,38 @@ using Codartis.SoftVis.UI.Wpf.Animations;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for DiagramConnectorControl2.xaml.
+    /// Interaction logic for DiagramConnectorControl.xaml.
     /// Animates RoutePoints changes.
     /// </summary>
-    public partial class DiagramConnectorControl2 : UserControl
+    public partial class DiagramConnectorControl : UserControl
     {
         private static readonly IList<Point> EmptyPointList = new List<Point>();
 
         public static readonly DependencyProperty DiagramFillProperty =
-            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramConnectorControl2));
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramConnectorControl));
 
         public static readonly DependencyProperty DiagramStrokeProperty =
-            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramConnectorControl2));
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramConnectorControl));
 
         public static readonly DependencyProperty AnimatedRoutePointsProperty =
-            DependencyProperty.Register("AnimatedRoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl2),
+            DependencyProperty.Register("AnimatedRoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl),
                 new FrameworkPropertyMetadata(EmptyPointList, OnAnimatedRoutePointsChanged));
 
         public static readonly DependencyProperty RoutePointsProperty =
-            DependencyProperty.Register("RoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl2),
+            DependencyProperty.Register("RoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl),
                 new FrameworkPropertyMetadata(EmptyPointList,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         private static void OnAnimatedRoutePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramConnectorControl2)d).OnAnimatedRoutePointsChanged((IList<Point>)e.OldValue, (IList<Point>)e.NewValue);
+            => ((DiagramConnectorControl)d).OnAnimatedRoutePointsChanged((IList<Point>)e.OldValue, (IList<Point>)e.NewValue);
 
         public static readonly DependencyProperty AnimationDurationProperty =
-            DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramConnectorControl2),
+            DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramConnectorControl),
                 new PropertyMetadata((Duration)TimeSpan.Zero));
 
-        public DiagramConnectorControl2()
+        public DiagramConnectorControl()
         {
             InitializeComponent();
         }

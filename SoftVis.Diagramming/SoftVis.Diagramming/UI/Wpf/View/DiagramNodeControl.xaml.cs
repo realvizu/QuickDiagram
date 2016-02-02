@@ -6,31 +6,31 @@ using Codartis.SoftVis.UI.Wpf.Commands;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for DiagramNodeControl2.xaml
+    /// Interaction logic for DiagramNodeControl.xaml
     /// </summary>
-    public partial class DiagramNodeControl2 : UserControl
+    public partial class DiagramNodeControl : UserControl
     {
         public static readonly DependencyProperty DiagramFillProperty =
-            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramNodeControl2));
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramNodeControl));
 
         public static readonly DependencyProperty DiagramStrokeProperty =
-            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeControl2));
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeControl));
 
         public static readonly DependencyProperty FocusDiagramItemCommandProperty =
-            DependencyProperty.Register("FocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
+            DependencyProperty.Register("FocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
 
         public static readonly DependencyProperty UnfocusDiagramItemCommandProperty =
-            DependencyProperty.Register("UnfocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl2));
+            DependencyProperty.Register("UnfocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
 
         public static readonly RoutedEvent DiagramItemGotFocusRoutedEvent =
             EventManager.RegisterRoutedEvent("DiagramItemGotFocus", RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(DiagramNodeControl2));
+                typeof(RoutedEventHandler), typeof(DiagramNodeControl));
 
         public static readonly RoutedEvent DiagramItemLostFocusRoutedEvent =
             EventManager.RegisterRoutedEvent("DiagramItemLostFocus", RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(DiagramNodeControl2));
+                typeof(RoutedEventHandler), typeof(DiagramNodeControl));
 
-        public DiagramNodeControl2()
+        public DiagramNodeControl()
         {
             InitializeComponent();
             Focusable = true;

@@ -15,8 +15,4 @@
         <Setter Property="DiagramStroke" Value="Black"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
     </Style>
-
-    <!--<Style x:Key="MyMy" TargetType="{x:Type view:DiagramNodeControl2}" >
-        <Setter Property="DiagramFill" Value="Orange"/>
-    </Style>-->
 </ResourceDictionary>

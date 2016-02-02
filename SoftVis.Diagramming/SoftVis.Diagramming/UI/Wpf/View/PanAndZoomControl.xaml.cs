@@ -9,9 +9,9 @@ using Codartis.SoftVis.UI.Wpf.Commands;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for PanAndZoomControl2.xaml
+    /// Interaction logic for PanAndZoomControl.xaml
     /// </summary>
-    public partial class PanAndZoomControl2 : UserControl
+    public partial class PanAndZoomControl : UserControl
     {
         private const double WidthPerHeightRatio = 3d / 10d;
 
@@ -20,39 +20,39 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double PanAmountDefault = 50d;
 
         public static readonly DependencyProperty FillProperty =
-            Shape.FillProperty.AddOwner(typeof(PanAndZoomControl2));
+            Shape.FillProperty.AddOwner(typeof(PanAndZoomControl));
 
         public static readonly DependencyProperty MinZoomProperty =
-            ZoomableVisual.MinZoomProperty.AddOwner(typeof(PanAndZoomControl2));
+            ZoomableVisual.MinZoomProperty.AddOwner(typeof(PanAndZoomControl));
 
         public static readonly DependencyProperty MaxZoomProperty =
-            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(PanAndZoomControl2));
+            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(PanAndZoomControl));
 
         public static readonly DependencyProperty ZoomIncrementProperty =
-            DependencyProperty.Register("ZoomIncrement", typeof(double), typeof(PanAndZoomControl2),
+            DependencyProperty.Register("ZoomIncrement", typeof(double), typeof(PanAndZoomControl),
                 new FrameworkPropertyMetadata(ZoomIncrementDefault));
 
         public static readonly DependencyProperty PanAmountProperty =
-            DependencyProperty.Register("PanAmount", typeof(double), typeof(PanAndZoomControl2),
+            DependencyProperty.Register("PanAmount", typeof(double), typeof(PanAndZoomControl),
                 new FrameworkPropertyMetadata(PanAmountDefault));
 
         public static readonly DependencyProperty ZoomValueProperty =
-            DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomControl2),
+            DependencyProperty.Register("ZoomValue", typeof(double), typeof(PanAndZoomControl),
                 new PropertyMetadata(ZoomValueDefault));
 
         public static readonly DependencyProperty ZoomCommandProperty =
-            DependencyProperty.Register("ZoomCommand", typeof(DoubleDelegateCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("ZoomCommand", typeof(DoubleDelegateCommand), typeof(PanAndZoomControl));
 
         public static readonly DependencyProperty DirectionPanCommandProperty =
-            DependencyProperty.Register("DirectionPanCommand", typeof(PanDirectionDelegateCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("DirectionPanCommand", typeof(PanDirectionDelegateCommand), typeof(PanAndZoomControl));
 
         public static readonly DependencyProperty VectorPanCommandProperty =
-            DependencyProperty.Register("VectorPanCommand", typeof(VectorDelegateCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("VectorPanCommand", typeof(VectorDelegateCommand), typeof(PanAndZoomControl));
 
         public static readonly DependencyProperty CenterCommandProperty =
-            DependencyProperty.Register("CenterCommand", typeof(DelegateCommand), typeof(PanAndZoomControl2));
+            DependencyProperty.Register("CenterCommand", typeof(DelegateCommand), typeof(PanAndZoomControl));
 
-        public PanAndZoomControl2()
+        public PanAndZoomControl()
         {
             DirectionPanCommand = new PanDirectionDelegateCommand(OnDirectionPan);
 

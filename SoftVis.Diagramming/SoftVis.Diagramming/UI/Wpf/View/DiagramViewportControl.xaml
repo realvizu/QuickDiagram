@@ -12,8 +12,8 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
              
-             view:DiagramNodeControl2.DiagramItemGotFocus="OnDiagramItemGotFocus" 
-             view:DiagramNodeControl2.DiagramItemLostFocus="OnDiagramItemLostFocus" >
+             view:DiagramNodeControl.DiagramItemGotFocus="OnDiagramItemGotFocus" 
+             view:DiagramNodeControl.DiagramItemLostFocus="OnDiagramItemLostFocus" >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,14 +23,14 @@
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramButtonDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel2}">
-                <view:DiagramNodeControl2 
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
+                <view:DiagramNodeControl 
                     FocusDiagramItemCommand="{Binding FocusCommand}"
                     UnfocusDiagramItemCommand="{Binding UnfocusCommand}" />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel2}">
-                <view:DiagramConnectorControl2 
+            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
+                <view:DiagramConnectorControl 
                     AnimatedRoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
                     AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"/>
             </DataTemplate>
@@ -94,21 +94,21 @@
                                         ItemContainerStyle="{StaticResource DiagramButtonContainerStyle}"
                                         Background="{x:Null}" />
 
-        <view:PanAndZoomControl2 Focusable="False"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Top"
-                                 Margin="10"
-                                 Height="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}" 
-                                 Fill="Transparent"
-                                 Opacity="0.2"
-                                 PanAmount="50"
-                                 ZoomIncrement="{Binding Path=LargeZoomIncrement, ElementName=ThisControl, Mode=OneWay}"
-                                 ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
-                                 ZoomCommand="{Binding Path=WidgetZoomCommand, ElementName=ThisControl, Mode=OneWay}"
-                                 VectorPanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
-                                 CenterCommand="{Binding Path=WidgetZoomToContentCommand, ElementName=ThisControl, Mode=OneWay}"
-                                 MouseEnter="OnPanAndZoomControlMouseEnter"
-                                 MouseLeave="OnPanAndZoomControlMouseLeave"/>
+        <view:PanAndZoomControl Focusable="False"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Margin="10"
+                                Height="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}" 
+                                Fill="Transparent"
+                                Opacity="0.2"
+                                PanAmount="50"
+                                ZoomIncrement="{Binding Path=LargeZoomIncrement, ElementName=ThisControl, Mode=OneWay}"
+                                ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
+                                ZoomCommand="{Binding Path=WidgetZoomCommand, ElementName=ThisControl, Mode=OneWay}"
+                                VectorPanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
+                                CenterCommand="{Binding Path=WidgetZoomToContentCommand, ElementName=ThisControl, Mode=OneWay}"
+                                MouseEnter="OnPanAndZoomControlMouseEnter"
+                                MouseLeave="OnPanAndZoomControlMouseLeave"/>
 
         <i:Interaction.Behaviors>
             <behaviors:MousePanAndZoomBehavior

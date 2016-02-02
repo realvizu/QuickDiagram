@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private RectRelativeLocation ButtonLocation => _descriptor.ButtonLocation;
         private RelationshipSpecification RelationshipSpecification => _descriptor.RelationshipSpecification;
-        private DiagramNodeViewModel2 AssociatedDiagramNodeViewModel => (DiagramNodeViewModel2)AssociatedDiagramShapeViewModel;
+        private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
         private DiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel.DiagramNode;
         private IModelEntity AssociatedModelEntity => AssociatedDiagramNode.ModelEntity;
 

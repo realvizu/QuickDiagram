@@ -17,12 +17,12 @@
 
             <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel2}">
-                <view:DiagramNodeControl2 />
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
+                <view:DiagramNodeControl />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel2}">
-                <view:DiagramConnectorControl2 RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}" />
+            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
+                <view:DiagramConnectorControl RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}" />
             </DataTemplate>
         
             <ItemsPanelTemplate x:Key="DiagramImageItemsPanel">

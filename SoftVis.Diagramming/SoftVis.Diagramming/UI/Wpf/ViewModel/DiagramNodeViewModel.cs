@@ -8,11 +8,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of diagram nodes.
     /// </summary>
-    public sealed class DiagramNodeViewModel2 : DiagramShapeViewModelBase
+    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase
     {
         public DiagramNode DiagramNode { get; }
 
-        public DiagramNodeViewModel2(IModel model, Diagram diagram, DiagramNode diagramNode)
+        public DiagramNodeViewModel(IModel model, Diagram diagram, DiagramNode diagramNode)
               : base(model, diagram)
         {
             DiagramNode = diagramNode;

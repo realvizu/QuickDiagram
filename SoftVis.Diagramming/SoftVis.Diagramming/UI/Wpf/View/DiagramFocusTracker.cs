@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     {
         private readonly Control _parentControl;
         private readonly HitTester _hitTester;
-        private DiagramNodeControl2 _focusOwner;
+        private DiagramNodeControl _focusOwner;
 
         public DiagramFocusTracker(Control parentControl)
         {
@@ -42,25 +42,25 @@ namespace Codartis.SoftVis.UI.Wpf.View
             }
         }
 
-        private DiagramNodeControl2 FindPointedControl(MouseEventArgs mouseEventArgs)
+        private DiagramNodeControl FindPointedControl(MouseEventArgs mouseEventArgs)
         {
             var pointedDiagramButton = _hitTester.HitTest<DiagramButton>(mouseEventArgs);
             return pointedDiagramButton != null 
                 ? GetDiagramNodeControlForButton(pointedDiagramButton) 
-                : _hitTester.HitTest<DiagramNodeControl2>(mouseEventArgs);
+                : _hitTester.HitTest<DiagramNodeControl>(mouseEventArgs);
         }
 
-        private DiagramNodeControl2 GetDiagramNodeControlForButton(DiagramButton diagramButton)
+        private DiagramNodeControl GetDiagramNodeControlForButton(DiagramButton diagramButton)
         {
             var diagramButtonViewModel = diagramButton.DataContext as DiagramButtonViewModelBase;
 
-            var diagramNodeControls = _parentControl.FindChildren<DiagramNodeControl2>(
+            var diagramNodeControls = _parentControl.FindChildren<DiagramNodeControl>(
                 i => i.DataContext == diagramButtonViewModel?.AssociatedDiagramShapeViewModel);
 
             return diagramNodeControls.FirstOrDefault();
         }
 
-        private static void Focus(DiagramNodeControl2 diagramNodeControl) => diagramNodeControl?.FocusDiagramItem();
-        private static void Unfocus(DiagramNodeControl2 diagramNodeControl) => diagramNodeControl?.UnfocusDiagramItem();
+        private static void Focus(DiagramNodeControl diagramNodeControl) => diagramNodeControl?.FocusDiagramItem();
+        private static void Unfocus(DiagramNodeControl diagramNodeControl) => diagramNodeControl?.UnfocusDiagramItem();
     }
 }
