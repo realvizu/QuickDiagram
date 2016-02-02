@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
+﻿using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
@@ -10,14 +7,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     public interface IDiagramServices
     {
-        int FontSize { get; set; }
-        Dpi ImageExportDpi { get; set; }
-
-        void ShowDiagram();
         void ShowModelEntity(IModelEntity modelEntity);
         void ShowModelEntityWithRelatedEntities(IModelEntity modelEntity);
-        void FitDiagramToView();
         void ClearDiagram();
-        void GetDiagramImage(Action<BitmapSource> imageCreatedCallback);
     }
 }

@@ -19,20 +19,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
         {
             var oleMenuCmdEventArgs = (OleMenuCmdEventArgs)e;
 
-            var diagramServices = PackageServices.GetDiagramServices();
-            if (diagramServices == null)
-                throw new Exception("Unable to get DiagramWindow.");
+            var uiServices = PackageServices.GetUIServices();
+            if (uiServices == null)
+                throw new Exception("Unable to get diagram window.");
 
             if (IsCurrentValueRequested(oleMenuCmdEventArgs))
             {
-                var currentDpiName = diagramServices.ImageExportDpi.Name;
+                var currentDpiName = uiServices.ImageExportDpi.Name;
                 Marshal.GetNativeVariantForObject(currentDpiName, oleMenuCmdEventArgs.OutValue);
             }
             else if (IsSelectedValueModified(oleMenuCmdEventArgs))
             {
                 var selectedString = Convert.ToString(oleMenuCmdEventArgs.InValue);
                 var selectedDpi = Dpi.DpiChoices.First(i => i.Name == selectedString);
-                diagramServices.ImageExportDpi = selectedDpi;
+                uiServices.ImageExportDpi = selectedDpi;
             }
         }
 

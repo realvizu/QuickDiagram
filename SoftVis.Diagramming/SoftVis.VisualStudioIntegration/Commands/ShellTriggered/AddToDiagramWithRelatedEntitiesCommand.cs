@@ -27,8 +27,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 
             var diagramServices = PackageServices.GetDiagramServices();
             diagramServices.ShowModelEntityWithRelatedEntities(modelEntity);
-            diagramServices.ShowDiagram();
-            diagramServices.FitDiagramToView();
+
+            var uiServices = PackageServices.GetUIServices();
+            uiServices.ShowDiagramWindow();
+            uiServices.FitDiagramToView();
         }
     }
 }

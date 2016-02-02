@@ -43,10 +43,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private IVisualStudioServiceProvider _visualStudioServiceProvider;
         private IComponentModel _componentModel;
-
+        
         private IWorkspaceServices _workspaceServices;
         private IModelServices _modelBuilder;
         private DiagramManager _diagramManager;
+        private DiagramToolWindow _diagramToolWindow;
 
         protected override void Initialize()
         {
@@ -64,28 +65,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 throw new Exception("Unable to get IComponentModel.");
 
             _workspaceServices = new WorkspaceServices(this);
+
             _modelBuilder = new RoslynBasedModelBuilder(_workspaceServices);
-            _diagramManager = new DiagramManager(_modelBuilder.Model, CreateToolWindow());
+
+            _diagramManager = new DiagramManager();
             _diagramManager.PackageEvent += OnPackageEvent;
+
+            _diagramToolWindow = CreateToolWindow();
+            _diagramToolWindow.Initialize(_modelBuilder.Model, _diagramManager.Diagram);
 
             InitializeShellTriggeredCommands();
             InitializeEventTriggeredCommands();
         }
 
-        public IWorkspaceServices GetWorkspaceServices()
-        {
-            return _workspaceServices;
-        }
-
-        public IModelServices GetModelServices()
-        {
-            return _modelBuilder;
-        }
-
-        public IDiagramServices GetDiagramServices()
-        {
-            return _diagramManager;
-        }
+        public IWorkspaceServices GetWorkspaceServices() => _workspaceServices;
+        public IModelServices GetModelServices() => _modelBuilder;
+        public IDiagramServices GetDiagramServices() => _diagramManager;
+        public IUIServices GetUIServices() => _diagramToolWindow;
 
         public IVsRunningDocumentTable GetRunningDocumentTableService()
         {

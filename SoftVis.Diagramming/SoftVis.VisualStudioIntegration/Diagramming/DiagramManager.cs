@@ -1,68 +1,35 @@
 ﻿using System;
-using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Events;
-using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
-using Codartis.SoftVis.VisualStudioIntegration.UI;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
     /// <summary>
-    /// Encapsulates a diagram, its builder and its presenter window.
+    /// Encapsulates a diagram and its builder.
     /// </summary>
     internal class DiagramManager : IDiagramServices
     {
-        private readonly Diagram _diagram;
         private readonly RoslynBasedDiagramBuilder _diagramBuilder;
-        private readonly DiagramToolWindow _diagramToolWindow;
+
+        public Diagram Diagram { get; }
 
         public event EventHandler PackageEvent;
 
-        public DiagramManager(IModel model, DiagramToolWindow diagramToolWindow)
+        public DiagramManager()
         {
             var connectorTypeResolver = new RoslynBasedConnectorTypeResolver();
-            _diagram = new RoslynBasedDiagram(connectorTypeResolver);
-            _diagram.ShapeSelected += OnShapeSelected;
-            _diagram.ShapeActivated += OnShapeActivated;
+            Diagram = new RoslynBasedDiagram(connectorTypeResolver);
+            Diagram.ShapeSelected += OnShapeSelected;
+            Diagram.ShapeActivated += OnShapeActivated;
 
-            _diagramBuilder = new RoslynBasedDiagramBuilder(_diagram);
-
-            _diagramToolWindow = diagramToolWindow;
-            _diagramToolWindow.Initialize(model, _diagram);
-        }
-
-        public int FontSize
-        {
-            get { return _diagramToolWindow.FontSize; }
-            set { _diagramToolWindow.FontSize = value; }
-        }
-
-        public Dpi ImageExportDpi
-        {
-            get { return _diagramToolWindow.ImageExportDpi; }
-            set { _diagramToolWindow.ImageExportDpi = value; }
-        }
-
-        public void ShowDiagram()
-        {
-            _diagramToolWindow.Show();
-        }
-
-        public void FitDiagramToView()
-        {
-            _diagramToolWindow.FitDiagramToView();
+            _diagramBuilder = new RoslynBasedDiagramBuilder(Diagram);
         }
 
         public void ClearDiagram()
         {
-            _diagram.Clear();
-        }
-
-        public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
-        {
-            _diagramToolWindow.GetDiagramImage(imageCreatedCallback);
+            Diagram.Clear();
         }
 
         public void ShowModelEntity(IModelEntity modelEntity)

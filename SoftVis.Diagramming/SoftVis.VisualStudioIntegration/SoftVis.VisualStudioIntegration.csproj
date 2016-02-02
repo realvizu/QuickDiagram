@@ -71,6 +71,7 @@
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />
     <Compile Include="Diagramming\CustomConnectorTypes.cs" />
     <Compile Include="Diagramming\RoslynBasedDiagram.cs" />
+    <Compile Include="UI\IUIServices.cs" />
     <Compile Include="UI\StereotypeToBackgroundBrushConverter.cs" />
     <Compile Include="UI\StereotypeToImageUriConverter.cs" />
     <Compile Include="UI\StereotypeToVisualPropertyMaps.cs" />

@@ -13,8 +13,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
-            var diagramServices = PackageServices.GetDiagramServices();
-            diagramServices.FontSize = DecreaseFontSize(diagramServices.FontSize);
+            var uiServices = PackageServices.GetUIServices();
+            uiServices.FontSize = DecreaseFontSize(uiServices.FontSize);
         }
     }
 }

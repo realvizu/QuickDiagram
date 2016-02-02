@@ -13,8 +13,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
+            var uiServices = PackageServices.GetUIServices();
+            uiServices.ShowDiagramWindow();
+
             var diagramServices = PackageServices.GetDiagramServices();
-            diagramServices.ShowDiagram();
             diagramServices.ClearDiagram();
         }
     }

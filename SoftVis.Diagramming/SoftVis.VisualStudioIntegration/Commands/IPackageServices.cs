@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands
@@ -12,5 +13,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands
         IWorkspaceServices GetWorkspaceServices();
         IModelServices GetModelServices();
         IDiagramServices GetDiagramServices();
+        IUIServices GetUIServices();
     }
 }
