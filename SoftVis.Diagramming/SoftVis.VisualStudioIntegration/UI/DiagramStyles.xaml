@@ -23,11 +23,12 @@
 
     <Style TargetType="{x:Type view:DiagramNodeControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
+        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border Background="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"
-                            BorderBrush="Black" 
+                    <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
+                            BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
 							BorderThickness="1"
                             IsHitTestVisible="False">
                         <Grid>

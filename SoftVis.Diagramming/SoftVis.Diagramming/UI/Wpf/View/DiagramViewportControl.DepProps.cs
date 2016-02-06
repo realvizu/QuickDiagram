@@ -48,6 +48,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
+        public DiagramNodeControl FocusedDiagramNodeControl
+        {
+            get { return (DiagramNodeControl)GetValue(FocusedDiagramNodeControlProperty); }
+            set { SetValue(FocusedDiagramNodeControlProperty, value); }
+        }
+
         public ContentPresenter FocusedDiagramShapeContainer
         {
             get { return (ContentPresenter)GetValue(FocusedDiagramShapeContainerProperty); }

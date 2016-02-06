@@ -69,6 +69,7 @@
                                                 Height="{Binding Height}"
                                                 IsEnabled="{Binding IsEnabled}"
                                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                DiagramFill="{Binding Path=FocusedDiagramNodeControl.DiagramFill, ElementName=ThisControl}"
                                                 Content="{Binding}"
                                                 Command="{Binding ClickCommand}"/>
                         </DataTemplate>
