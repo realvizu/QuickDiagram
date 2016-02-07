@@ -60,6 +60,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
 
+        public static readonly DependencyProperty IsFocusPinnedProperty =
+            DependencyProperty.Register("IsFocusPinned", typeof(bool), typeof(DiagramViewportControl));
+
         public static readonly DependencyProperty FocusedDiagramNodeControlProperty =
             DependencyProperty.Register("FocusedDiagramNodeControl", typeof(DiagramNodeControl), typeof(DiagramViewportControl));
 
@@ -226,6 +229,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnDiagramItemGotFocus(object sender, RoutedEventArgs e)
         {
+            if (IsFocusPinned)
+                return;
+
             var diagramItemRoutedEventArgs = (DiagramItemRoutedEventArgs) e;
 
             var diagramNodeControl = diagramItemRoutedEventArgs.DiagramNodeControl;
@@ -237,6 +243,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnDiagramItemLostFocus(object sender, RoutedEventArgs e)
         {
+            if (IsFocusPinned)
+                return;
+
             FocusedDiagramNodeControl = null;
             FocusedDiagramShapeContainer = null;
         }

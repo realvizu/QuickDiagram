@@ -53,12 +53,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void ShowRelatedEntitySelector(Point attachPointInScreenSpace, HandleOrientation handleOrientation,
             IEnumerable<IModelEntity> modelEntities)
         {
+            DiagramViewportViewModel.PinFocus();
             RelatedEntitySelectorViewModel.Show(attachPointInScreenSpace, handleOrientation, modelEntities);
         }
 
         private void HideRelatedEntitySelector()
         {
             RelatedEntitySelectorViewModel.Hide();
+            DiagramViewportViewModel.UnpinFocus();
         }
 
         public void ZoomToContent()

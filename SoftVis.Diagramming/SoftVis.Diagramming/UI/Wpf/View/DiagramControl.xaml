@@ -33,7 +33,8 @@
                                      ViewportZoomCommand="{Binding Path=ViewportZoomCommand}"
                                      ViewportZoomToContentCommand="{Binding Path=ViewportZoomToContentCommand}"
                                      Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
-                                     Height="{Binding Path=ActualHeight, ElementName=Canvas}" />
+                                     Height="{Binding Path=ActualHeight, ElementName=Canvas}"
+                                     IsFocusPinned="{Binding IsFocusPinned}"/>
 
         <view:EntitySelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
                                     Width="{Binding Path=Width}" 

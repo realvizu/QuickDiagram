@@ -48,6 +48,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
+        public bool IsFocusPinned
+        {
+            get { return (bool)GetValue(IsFocusPinnedProperty); }
+            set { SetValue(IsFocusPinnedProperty, value); }
+        }
+
         public DiagramNodeControl FocusedDiagramNodeControl
         {
             get { return (DiagramNodeControl)GetValue(FocusedDiagramNodeControlProperty); }

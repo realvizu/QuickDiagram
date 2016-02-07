@@ -23,7 +23,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Viewport _viewport;
 
         private double _viewportZoom;
-        private TransitionedTransform _transitionedViewportTransform = TransitionedTransform.Identity;
+        private TransitionedTransform _transitionedViewportTransform;
+        private bool _isFocusPinned;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
         public double MinZoom { get; }
@@ -43,6 +44,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(model, diagram, diagram.ConnectorTypeResolver);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);
+            _transitionedViewportTransform = TransitionedTransform.Identity;
+            _isFocusPinned = false;
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
             MinZoom = minZoom;
@@ -81,8 +84,21 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        public bool IsFocusPinned
+        {
+            get { return _isFocusPinned; }
+            set
+            {
+                _isFocusPinned = value;
+                OnPropertyChanged();
+            }
+        }
+
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
             => _viewport.ZoomToContent(transitionSpeed);
+
+        public void PinFocus() => IsFocusPinned = true;
+        public void UnpinFocus() => IsFocusPinned = false;
 
         private void SubscribeToViewportEvents()
         {
@@ -168,6 +184,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnShapeFocused(FocusableViewModelBase focusableViewModel)
         {
+            if (IsFocusPinned)
+                return;
+
             var diagramShapeViewModel = focusableViewModel as DiagramShapeViewModelBase;
             if (diagramShapeViewModel == null)
                 throw new ArgumentException("DiagramShapeViewModelBase expected");
@@ -177,6 +196,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnShapeUnfocused(FocusableViewModelBase focusableViewModel)
         {
+            if (IsFocusPinned)
+                return;
+
             var diagramShapeViewModel = focusableViewModel as DiagramShapeViewModelBase;
             if (diagramShapeViewModel == null)
                 return;
