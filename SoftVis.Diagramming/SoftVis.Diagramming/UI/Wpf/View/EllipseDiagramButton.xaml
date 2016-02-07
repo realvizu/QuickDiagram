@@ -15,43 +15,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="view:DiagramButton">
                     <Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="MouseOver">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" 
-                                                         Storyboard.TargetName="MouseOverEffect" 
-                                                         Storyboard.TargetProperty="Opacity" 
-                                                         To=".7"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" 
-                                                         Storyboard.TargetName="PressedEffect" 
-                                                         Storyboard.TargetProperty="Opacity" 
-                                                         To=".4"/>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" 
-                                                         Storyboard.TargetName="FocusEffect" 
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="1"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unfocused" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-
-                        <Ellipse x:Name="ButtonBackground" 
-                                 Fill="{TemplateBinding Background}" />
-                        <Ellipse x:Name="MouseOverEffect" Fill="White" Opacity="0" IsHitTestVisible="false" />
-                        <Ellipse x:Name="PressedEffect" Fill="Black" Opacity="0" IsHitTestVisible="false" />
+                        <Ellipse x:Name="ButtonBackground" Fill="{TemplateBinding Background}" />
+                        <Ellipse x:Name="MouseOverEffect" Fill="White" Opacity=".7"
+                                 Visibility="Collapsed" IsHitTestVisible="False" />
+                        <Ellipse x:Name="PressedEffect" Fill="Black" Opacity=".4"
+                                 Visibility="Collapsed" IsHitTestVisible="False" />
 
                         <ContentPresenter x:Name="contentPresenter"
                                           Content="{TemplateBinding Content}"
@@ -70,13 +38,32 @@
                                  Fill="Transparent" 
                                  StrokeThickness="{TemplateBinding BorderThickness, Converter={StaticResource ThicknessToDoubleConverter}}" 
                                  Stroke="{TemplateBinding BorderBrush}"/>
-                        <Ellipse x:Name="FocusEffect" Opacity="0" IsHitTestVisible="false" 
+                        <Ellipse x:Name="FocusEffect"
                                  StrokeThickness="{TemplateBinding BorderThickness, 
                                     Converter={StaticResource ThicknessMultiplierConverter},
-                                    ConverterParameter=10}"/>
+                                    ConverterParameter=10}"
+                                 Visibility="Collapsed" IsHitTestVisible="False" />
                     </Grid>
-                    
+
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PressedEffect" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="False">
+                            <Setter TargetName="PressedEffect" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="MouseOverEffect" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="MouseOverEffect" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="FocusEffect" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="False">
+                            <Setter TargetName="FocusEffect" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="DarkGray"/>
                         </Trigger>
