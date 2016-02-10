@@ -48,6 +48,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void SubscribeToViewportEvents()
         {
             DiagramViewportViewModel.EntitySelectorRequested += ShowRelatedEntitySelector;
+            DiagramViewportViewModel.ViewportChanged += HideRelatedEntitySelector;
         }
 
         private void ShowRelatedEntitySelector(Point attachPointInScreenSpace, HandleOrientation handleOrientation,

@@ -34,6 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
         public Viewport.ZoomCommand ViewportZoomCommand { get; }
 
+        public event Action ViewportChanged;
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
         public DiagramViewportViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
@@ -142,6 +143,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
 
             UpdateDiagramContentRect();
+            RaiseViewportChanged();
         }
 
         private void OnShapeMoved(object sender, DiagramShape diagramShape)
@@ -150,6 +152,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramShapeViewModel.UpdateState();
 
             UpdateDiagramContentRect();
+            RaiseViewportChanged();
         }
 
         private void OnShapeRemoved(object sender, DiagramShape diagramShape)
@@ -167,6 +170,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Remove(diagramShape);
 
             UpdateDiagramContentRect();
+            RaiseViewportChanged();
         }
 
         private void OnDiagramCleared(object sender, EventArgs e)
@@ -175,6 +179,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Clear();
 
             UpdateDiagramContentRect();
+            RaiseViewportChanged();
         }
 
         private void OnShapeRemoveRequested(DiagramShape diagramShape)
@@ -220,6 +225,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnViewportTransitionedTransformChanged(TransitionedTransform transitionedTransform)
         {
             TransitionedViewportTransform = transitionedTransform;
+            RaiseViewportChanged();
         }
 
         private void OnEntitySelectorRequested(Point attachPointInDiagramSpace,
@@ -227,6 +233,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var attachPointInScreenSpace = _viewport.ProjectFromDiagramSpaceToScreenSpace(attachPointInDiagramSpace);
             EntitySelectorRequested?.Invoke(attachPointInScreenSpace, handleOrientation, modelEntities);
+        }
+
+        private void RaiseViewportChanged()
+        {
+            ViewportChanged?.Invoke();
         }
     }
 }
