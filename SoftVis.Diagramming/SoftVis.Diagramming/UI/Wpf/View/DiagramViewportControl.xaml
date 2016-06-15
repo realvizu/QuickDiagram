@@ -10,10 +10,7 @@
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}"
-             
-             view:DiagramNodeControl.DiagramItemGotFocus="OnDiagramItemGotFocus" 
-             view:DiagramNodeControl.DiagramItemLostFocus="OnDiagramItemLostFocus" >
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
     <UserControl.Resources>
         <ResourceDictionary>

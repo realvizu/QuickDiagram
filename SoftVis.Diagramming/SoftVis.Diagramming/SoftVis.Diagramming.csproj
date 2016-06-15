@@ -100,7 +100,6 @@
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\DiagramItemRoutedEventArgs.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonActivatedEventArgs.cs" />
     <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />
     <Compile Include="Modeling\RelationshipSpecification.cs" />

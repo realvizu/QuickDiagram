@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning">
     <Allowed From="*" To="System.*" />
     <Allowed From="*" To="MoreLinq" />
     <Allowed From="*" To="." />

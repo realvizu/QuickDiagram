@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -48,10 +49,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
-        public bool IsFocusPinned
+        public DiagramNodeViewModel FocusedDiagramNode
         {
-            get { return (bool)GetValue(IsFocusPinnedProperty); }
-            set { SetValue(IsFocusPinnedProperty, value); }
+            get { return (DiagramNodeViewModel)GetValue(FocusedDiagramNodeProperty); }
+            set { SetValue(FocusedDiagramNodeProperty, value); }
         }
 
         public DiagramNodeControl FocusedDiagramNodeControl

@@ -1,17 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System" />
     <Allowed From="*" To="System.Diagnostics.*" />
     <Allowed From="*" To="System.Collections.*" />
     <Allowed From="*" To="System.Linq.*" />
     <Allowed From="*" To="System.Globalization.*" />
     <Allowed From="*" To="System.Threading.Tasks" />
-    <Allowed From="*" To="System.CodeDom.Compiler" />
     <Allowed From="*" To="System.ComponentModel.*" />
     <Allowed From="*" To="System.Runtime.InteropServices" />
     <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="System.IO" />
     <Allowed From="*" To="System.Windows.Media.Imaging" />
+    <VisibleMembers OfNamespace="System.Windows.Media.Imaging">
+        <Type Name="BitmapSource" />
+        <Type Name="BitmapFrame" />
+        <Type Name="PngBitmapEncoder" />
+    </VisibleMembers>
     <Allowed From="*" To="System.Windows.Threading" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />

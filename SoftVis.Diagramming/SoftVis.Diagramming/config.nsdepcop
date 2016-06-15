@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System" />
     <Allowed From="*" To="System.Diagnostics.*" />
     <Allowed From="*" To="System.Collections.*" />
@@ -8,10 +8,15 @@
     <Allowed From="*" To="System.ComponentModel" />
     <Allowed From="*" To="System.Runtime.*" />
     <Allowed From="*" To="System.CodeDom.Compiler" />
+    <VisibleMembers OfNamespace="System.CodeDom.Compiler">
+        <Type Name="GeneratedCodeAttribute" />
+    </VisibleMembers>
     <Allowed From="*" To="System.Xml" />
     <Allowed From="*" To="System.Text" />
+    <VisibleMembers OfNamespace="System.Text">
+        <Type Name="Encoding" />
+    </VisibleMembers>
     <Allowed From="*" To="System.IO" />
-    <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="MoreLinq" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />

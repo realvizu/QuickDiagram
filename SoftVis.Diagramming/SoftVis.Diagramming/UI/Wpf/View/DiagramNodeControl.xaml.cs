@@ -22,14 +22,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty UnfocusDiagramItemCommandProperty =
             DependencyProperty.Register("UnfocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
 
-        public static readonly RoutedEvent DiagramItemGotFocusRoutedEvent =
-            EventManager.RegisterRoutedEvent("DiagramItemGotFocus", RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(DiagramNodeControl));
-
-        public static readonly RoutedEvent DiagramItemLostFocusRoutedEvent =
-            EventManager.RegisterRoutedEvent("DiagramItemLostFocus", RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(DiagramNodeControl));
-
         public DiagramNodeControl()
         {
             InitializeComponent();
@@ -60,40 +52,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(UnfocusDiagramItemCommandProperty, value); }
         }
 
-        public event RoutedEventHandler DiagramItemGotFocus
-        {
-            add { AddHandler(DiagramItemGotFocusRoutedEvent, value); }
-            remove { RemoveHandler(DiagramItemGotFocusRoutedEvent, value); }
-        }
-
-        public event RoutedEventHandler DiagramItemLostFocus
-        {
-            add { AddHandler(DiagramItemLostFocusRoutedEvent, value); }
-            remove { RemoveHandler(DiagramItemLostFocusRoutedEvent, value); }
-        }
-
         public void FocusDiagramItem()
         {
             FocusDiagramItemCommand?.Execute();
-            RaiseDiagramItemGotFocus();
         }
 
         public void UnfocusDiagramItem()
         {
             UnfocusDiagramItemCommand?.Execute();
-            RaiseDiagramItemLostFocus();
-        }
-
-        private void RaiseDiagramItemGotFocus()
-        {
-            var newEventArgs = new DiagramItemRoutedEventArgs(DiagramItemGotFocusRoutedEvent, this);
-            RaiseEvent(newEventArgs);
-        }
-
-        private void RaiseDiagramItemLostFocus()
-        {
-            var newEventArgs = new DiagramItemRoutedEventArgs(DiagramItemLostFocusRoutedEvent, this);
-            RaiseEvent(newEventArgs);
         }
 
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)

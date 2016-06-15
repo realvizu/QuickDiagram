@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -60,8 +62,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
 
-        public static readonly DependencyProperty IsFocusPinnedProperty =
-            DependencyProperty.Register("IsFocusPinned", typeof(bool), typeof(DiagramViewportControl));
+        public static readonly DependencyProperty FocusedDiagramNodeProperty =
+            DependencyProperty.Register("FocusedDiagramNode", typeof(DiagramNodeViewModel), typeof(DiagramViewportControl),
+                new PropertyMetadata(OnFocusedDiagramNodeChanged));
+
+        private static void OnFocusedDiagramNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl) d).OnFocusedDiagramNodeChanged();
 
         public static readonly DependencyProperty FocusedDiagramNodeControlProperty =
             DependencyProperty.Register("FocusedDiagramNodeControl", typeof(DiagramNodeControl), typeof(DiagramViewportControl));
@@ -227,27 +233,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _isViewportObscured = false;
         }
 
-        private void OnDiagramItemGotFocus(object sender, RoutedEventArgs e)
+        private void OnFocusedDiagramNodeChanged()
         {
-            if (IsFocusPinned)
-                return;
-
-            var diagramItemRoutedEventArgs = (DiagramItemRoutedEventArgs) e;
-
-            var diagramNodeControl = diagramItemRoutedEventArgs.DiagramNodeControl;
-            FocusedDiagramNodeControl = diagramNodeControl;
-
-            var diagramShapeContainer = diagramNodeControl.FindParent<ContentPresenter>();
-            FocusedDiagramShapeContainer = diagramShapeContainer;
-        }
-
-        private void OnDiagramItemLostFocus(object sender, RoutedEventArgs e)
-        {
-            if (IsFocusPinned)
-                return;
-
-            FocusedDiagramNodeControl = null;
-            FocusedDiagramShapeContainer = null;
+            if (FocusedDiagramNode == null)
+            {
+                FocusedDiagramNodeControl = null;
+                FocusedDiagramShapeContainer = null;
+            }
+            else
+            {
+                FocusedDiagramNodeControl = this.FindChildren<DiagramNodeControl>().First(i => i.DataContext == FocusedDiagramNode);
+                FocusedDiagramShapeContainer = FocusedDiagramNodeControl.FindParent<ContentPresenter>();
+            }
         }
     }
 }
