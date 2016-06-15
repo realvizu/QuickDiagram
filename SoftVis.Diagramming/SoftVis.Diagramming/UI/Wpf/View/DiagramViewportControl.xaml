@@ -57,7 +57,7 @@
                 <Setter Property="Height" Value="{Binding Path=Height}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=RelativeLeft}"/>
                 <Setter Property="Canvas.Top" Value="{Binding Path=RelativeTop}"/>
-                <Setter Property="AdornedElement" Value="{Binding Path=FocusedDiagramShapeContainer, ElementName=ThisControl}"/>
+                <Setter Property="AdornedElement" Value="{Binding Path=DecoratedDiagramShapeContainer, ElementName=ThisControl}"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -66,7 +66,7 @@
                                                 Height="{Binding Height}"
                                                 IsEnabled="{Binding IsEnabled}"
                                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                DiagramFill="{Binding Path=FocusedDiagramNodeControl.DiagramFill, ElementName=ThisControl}"
+                                                DiagramFill="{Binding Path=DecoratedDiagramNodeControl.DiagramFill, ElementName=ThisControl}"
                                                 Content="{Binding}"
                                                 Command="{Binding ClickCommand}"/>
                         </DataTemplate>

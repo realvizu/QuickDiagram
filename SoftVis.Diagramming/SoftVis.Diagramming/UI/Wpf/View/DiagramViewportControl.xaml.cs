@@ -62,18 +62,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
 
-        public static readonly DependencyProperty FocusedDiagramNodeProperty =
-            DependencyProperty.Register("FocusedDiagramNode", typeof(DiagramNodeViewModel), typeof(DiagramViewportControl),
-                new PropertyMetadata(OnFocusedDiagramNodeChanged));
+        public static readonly DependencyProperty DecoratedDiagramNodeProperty =
+            DependencyProperty.Register("DecoratedDiagramNode", typeof(DiagramNodeViewModel), typeof(DiagramViewportControl),
+                new PropertyMetadata(OnDecoratedDiagramNodeChanged));
 
-        private static void OnFocusedDiagramNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl) d).OnFocusedDiagramNodeChanged();
+        private static void OnDecoratedDiagramNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl) d).OnDecoratedDiagramNodeChanged();
 
-        public static readonly DependencyProperty FocusedDiagramNodeControlProperty =
-            DependencyProperty.Register("FocusedDiagramNodeControl", typeof(DiagramNodeControl), typeof(DiagramViewportControl));
+        public static readonly DependencyProperty DecoratedDiagramNodeControlProperty =
+            DependencyProperty.Register("DecoratedDiagramNodeControl", typeof(DiagramNodeControl), typeof(DiagramViewportControl));
 
-        public static readonly DependencyProperty FocusedDiagramShapeContainerProperty =
-            DependencyProperty.Register("FocusedDiagramShapeContainer", typeof(ContentPresenter), typeof(DiagramViewportControl));
+        public static readonly DependencyProperty DecoratedDiagramShapeContainerProperty =
+            DependencyProperty.Register("DecoratedDiagramShapeContainer", typeof(ContentPresenter), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty WidgetPanCommandProperty =
             DependencyProperty.Register("WidgetPanCommand", typeof(VectorDelegateCommand), typeof(DiagramViewportControl));
@@ -233,17 +233,17 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _isViewportObscured = false;
         }
 
-        private void OnFocusedDiagramNodeChanged()
+        private void OnDecoratedDiagramNodeChanged()
         {
-            if (FocusedDiagramNode == null)
+            if (DecoratedDiagramNode == null)
             {
-                FocusedDiagramNodeControl = null;
-                FocusedDiagramShapeContainer = null;
+                DecoratedDiagramNodeControl = null;
+                DecoratedDiagramShapeContainer = null;
             }
             else
             {
-                FocusedDiagramNodeControl = this.FindChildren<DiagramNodeControl>().First(i => i.DataContext == FocusedDiagramNode);
-                FocusedDiagramShapeContainer = FocusedDiagramNodeControl.FindParent<ContentPresenter>();
+                DecoratedDiagramNodeControl = this.FindChildren<DiagramNodeControl>().First(i => i.DataContext == DecoratedDiagramNode);
+                DecoratedDiagramShapeContainer = DecoratedDiagramNodeControl.FindParent<ContentPresenter>();
             }
         }
     }

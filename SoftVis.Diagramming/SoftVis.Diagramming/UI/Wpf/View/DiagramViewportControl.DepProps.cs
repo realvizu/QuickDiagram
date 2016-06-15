@@ -49,22 +49,22 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
-        public DiagramNodeViewModel FocusedDiagramNode
+        public DiagramNodeViewModel DecoratedDiagramNode
         {
-            get { return (DiagramNodeViewModel)GetValue(FocusedDiagramNodeProperty); }
-            set { SetValue(FocusedDiagramNodeProperty, value); }
+            get { return (DiagramNodeViewModel)GetValue(DecoratedDiagramNodeProperty); }
+            set { SetValue(DecoratedDiagramNodeProperty, value); }
         }
 
-        public DiagramNodeControl FocusedDiagramNodeControl
+        public DiagramNodeControl DecoratedDiagramNodeControl
         {
-            get { return (DiagramNodeControl)GetValue(FocusedDiagramNodeControlProperty); }
-            set { SetValue(FocusedDiagramNodeControlProperty, value); }
+            get { return (DiagramNodeControl)GetValue(DecoratedDiagramNodeControlProperty); }
+            set { SetValue(DecoratedDiagramNodeControlProperty, value); }
         }
 
-        public ContentPresenter FocusedDiagramShapeContainer
+        public ContentPresenter DecoratedDiagramShapeContainer
         {
-            get { return (ContentPresenter)GetValue(FocusedDiagramShapeContainerProperty); }
-            set { SetValue(FocusedDiagramShapeContainerProperty, value); }
+            get { return (ContentPresenter)GetValue(DecoratedDiagramShapeContainerProperty); }
+            set { SetValue(DecoratedDiagramShapeContainerProperty, value); }
         }
 
         public VectorDelegateCommand WidgetPanCommand

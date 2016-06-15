@@ -25,8 +25,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private double _viewportZoom;
         private TransitionedTransform _transitionedViewportTransform;
         private DiagramNodeViewModel _focusedDiagramNode;
-        private bool _isFocusPinned;
-        private DiagramNodeViewModel _pinnedFocusedDiagramNode;
+        private bool _isDecorationPinned;
+        private DiagramNodeViewModel _decoratedDiagramNode;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
         public double MinZoom { get; }
@@ -49,7 +49,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);
             _transitionedViewportTransform = TransitionedTransform.Identity;
             _focusedDiagramNode = null;
-            _isFocusPinned = false;
+            _isDecorationPinned = false;
+            _decoratedDiagramNode = null;
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
             MinZoom = minZoom;
@@ -88,12 +89,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public DiagramNodeViewModel FocusedDiagramNode
+        public DiagramNodeViewModel DecoratedDiagramNode
         {
-            get { return _pinnedFocusedDiagramNode; }
+            get { return _decoratedDiagramNode; }
             set
             {
-                _pinnedFocusedDiagramNode = value;
+                _decoratedDiagramNode = value;
                 OnPropertyChanged();
             }
         }
@@ -101,15 +102,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
             => _viewport.ZoomToContent(transitionSpeed);
 
-        public void PinFocus()
+        public void PinDecoration()
         {
-            _isFocusPinned = true;
+            _isDecorationPinned = true;
         }
 
-        public void UnpinFocus()
+        public void UnpinDecoration()
         {
-            _isFocusPinned = false;
-            ChangeFocusTo(_focusedDiagramNode);
+            _isDecorationPinned = false;
+            ChangeDecorationTo(_focusedDiagramNode);
         }
 
         private void SubscribeToViewportEvents()
@@ -200,30 +201,30 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnShapeFocused(FocusableViewModelBase focusableViewModel)
         {
-            _focusedDiagramNode = focusableViewModel as DiagramNodeViewModel;
-            if (_isFocusPinned)
-                return;
-
-            ChangeFocusTo(_focusedDiagramNode);
+            ChangeFocusTo(focusableViewModel as DiagramNodeViewModel);
         }
 
         private void OnShapeUnfocused(FocusableViewModelBase focusableViewModel)
         {
-            _focusedDiagramNode = null;
-            if (_isFocusPinned)
-                return;
-
             ChangeFocusTo(null);
         }
 
         private void ChangeFocusTo(DiagramNodeViewModel diagramNodeViewModel)
         {
-            if (diagramNodeViewModel == null)
+            _focusedDiagramNode = diagramNodeViewModel;
+
+            if (!_isDecorationPinned)
+                ChangeDecorationTo(diagramNodeViewModel);
+        }
+
+        private void ChangeDecorationTo(DiagramNodeViewModel newlyDecoratedDiagramNodeViewModel)
+        {
+            if (newlyDecoratedDiagramNodeViewModel == null)
                 _diagramButtonCollectionViewModel.HideButtons();
             else
-                _diagramButtonCollectionViewModel.AssignButtonsTo(diagramNodeViewModel);
+                _diagramButtonCollectionViewModel.AssignButtonsTo(newlyDecoratedDiagramNodeViewModel);
 
-            FocusedDiagramNode = diagramNodeViewModel;
+            DecoratedDiagramNode = newlyDecoratedDiagramNodeViewModel;
         }
 
         private void UpdateDiagramContentRect()
