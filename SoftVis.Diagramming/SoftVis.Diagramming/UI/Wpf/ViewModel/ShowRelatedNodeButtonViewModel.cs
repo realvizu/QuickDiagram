@@ -49,7 +49,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (_undisplayedRelatedEntities.Count == 1)
             {
                 Diagram.ShowItem(_undisplayedRelatedEntities.First());
-                UpdateDisplayedEntityInfo();
             }
             else if (_undisplayedRelatedEntities.Count > 1)
             {

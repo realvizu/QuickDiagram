@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
-        public EntitySelectorViewModel RelatedEntitySelectorViewModel { get; }
+        public ModelEntitySelectorViewModel RelatedModelEntitySelectorViewModel { get; }
 
         public DiagramViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -29,7 +29,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramBehaviourProvider = diagramBehaviourProvider;
 
             DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
-            RelatedEntitySelectorViewModel = new EntitySelectorViewModel(new Size(200, 100));
+
+            RelatedModelEntitySelectorViewModel = new ModelEntitySelectorViewModel(new Size(200, 100));
+            RelatedModelEntitySelectorViewModel.ModelEntitySelected += AddModelModelEntityToDiagram;
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -55,12 +57,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IEnumerable<IModelEntity> modelEntities)
         {
             DiagramViewportViewModel.PinDecoration();
-            RelatedEntitySelectorViewModel.Show(attachPointInScreenSpace, handleOrientation, modelEntities);
+            RelatedModelEntitySelectorViewModel.Show(attachPointInScreenSpace, handleOrientation, modelEntities);
         }
 
         private void HideRelatedEntitySelector()
         {
-            RelatedEntitySelectorViewModel.Hide();
+            RelatedModelEntitySelectorViewModel.Hide();
             DiagramViewportViewModel.UnpinDecoration();
         }
 
@@ -85,6 +87,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void UpdateDiagramContentRect()
         {
             DiagramContentRect = Diagram.ContentRect.ToWpf();
+        }
+
+        private void AddModelModelEntityToDiagram(IModelEntity selectedEntity)
+        {
+            Diagram.ShowItem(selectedEntity);
         }
     }
 }

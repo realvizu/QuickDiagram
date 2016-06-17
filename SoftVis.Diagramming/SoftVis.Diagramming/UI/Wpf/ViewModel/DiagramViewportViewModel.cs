@@ -46,6 +46,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(model, diagram, diagram.ConnectorTypeResolver);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
+
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);
             _transitionedViewportTransform = TransitionedTransform.Identity;
             _focusedDiagramNode = null;
