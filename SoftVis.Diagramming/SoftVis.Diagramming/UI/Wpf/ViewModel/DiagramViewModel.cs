@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             _diagramBehaviourProvider = diagramBehaviourProvider;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, _diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
 
             RelatedModelEntitySelectorViewModel = new ModelEntitySelectorViewModel(new Size(200, 100));
             RelatedModelEntitySelectorViewModel.ModelEntitySelected += AddModelModelEntityToDiagram;

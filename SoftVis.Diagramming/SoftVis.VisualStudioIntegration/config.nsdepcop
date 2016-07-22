@@ -10,14 +10,9 @@
     <Allowed From="*" To="System.Runtime.InteropServices" />
     <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="System.IO" />
-    <Allowed From="*" To="System.Windows.Media.Imaging" />
-    <VisibleMembers OfNamespace="System.Windows.Media.Imaging">
-        <Type Name="BitmapSource" />
-        <Type Name="BitmapFrame" />
-        <Type Name="PngBitmapEncoder" />
-    </VisibleMembers>
+    <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
-
+    
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration" To="Microsoft.VisualStudio.Shell.*" />

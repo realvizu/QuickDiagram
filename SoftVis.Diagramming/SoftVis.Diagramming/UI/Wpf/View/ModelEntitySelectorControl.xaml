@@ -23,8 +23,10 @@
         <Border Grid.Row="1"
                 BorderBrush="Black"
                 BorderThickness="2"
-                CornerRadius="6"
-                Background="Yellow">
+                CornerRadius="6">
+            <Border.Background>
+                <SolidColorBrush Color="White" Opacity=".75"></SolidColorBrush>
+            </Border.Background>
             <ListBox x:Name="ListBox"
                      Margin="2"
                      Background="Transparent"

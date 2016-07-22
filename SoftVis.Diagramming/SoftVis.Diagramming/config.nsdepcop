@@ -7,15 +7,17 @@
     <Allowed From="*" To="System.Globalization.*" />
     <Allowed From="*" To="System.ComponentModel" />
     <Allowed From="*" To="System.Runtime.*" />
-    <Allowed From="*" To="System.CodeDom.Compiler" />
-    <VisibleMembers OfNamespace="System.CodeDom.Compiler">
-        <Type Name="GeneratedCodeAttribute" />
-    </VisibleMembers>
+    <Allowed From="*" To="System.CodeDom.Compiler">
+        <VisibleMembers>
+            <Type Name="GeneratedCodeAttribute" />
+        </VisibleMembers>
+    </Allowed>
     <Allowed From="*" To="System.Xml" />
-    <Allowed From="*" To="System.Text" />
-    <VisibleMembers OfNamespace="System.Text">
-        <Type Name="Encoding" />
-    </VisibleMembers>
+    <Allowed From="*" To="System.Text">
+        <VisibleMembers>
+            <Type Name="Encoding" />
+        </VisibleMembers>
+    </Allowed>
     <Allowed From="*" To="System.IO" />
     <Allowed From="*" To="MoreLinq" />
 
@@ -44,9 +46,9 @@
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Extensibility" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Common.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands.*" />
+
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.Animations" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.HitTesting" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.ImageExport" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View.*" To="Codartis.SoftVis.UI.Wpf.ViewModel.*" />
-
 </NsDepCopConfig>

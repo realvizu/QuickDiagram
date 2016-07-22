@@ -14,23 +14,32 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Tracks the change events of a diagram and creates/modifies diagram shape viewmodels accordingly.
+    /// Also handles viewport transform (resize, pan and zoom) in a transitioned style (with a given transition speed).
+    /// Also handles which shape has the focus and which one has the decorators (mini buttons).
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
         private readonly Map<DiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
         private readonly DiagramButtonCollectionViewModel _diagramButtonCollectionViewModel;
-        private readonly Viewport _viewport;
 
+        private readonly Viewport _viewport;
         private double _viewportZoom;
         private TransitionedTransform _transitionedViewportTransform;
+
+        /// <summary>The focused shape is the one that the user points to.</summary>
         private DiagramNodeViewModel _focusedDiagramNode;
-        private bool _isDecorationPinned;
+
+        /// <summary>The decorated shape is the one that has the minibuttons attached.</summary>
         private DiagramNodeViewModel _decoratedDiagramNode;
+
+        /// <summary>The decoration is pinned of the minibuttons stay visible even when focus is lost from a shape.</summary>
+        private bool _isDecorationPinned;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
+
         public Viewport.ResizeCommand ViewportResizeCommand { get; }
         public Viewport.PanCommand ViewportPanCommand { get; }
         public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
