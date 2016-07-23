@@ -15,11 +15,11 @@ namespace Codartis.SoftVis.UI.Extensibility
         public const double ButtonOverlapParentBy = 3d;
 
         protected static readonly RelatedEntityButtonDescriptor BaseTypesDescriptor =
-            new RelatedEntityButtonDescriptor(RelationshipSpecifications.BaseTypes, ConnectorTypes.Generalization,
+            new RelatedEntityButtonDescriptor(RelationshipSpecifications.BaseType, ConnectorTypes.Generalization,
                 new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(0, ButtonOverlapParentBy)));
 
         protected static readonly RelatedEntityButtonDescriptor SubtypesDescriptor =
-            new RelatedEntityButtonDescriptor(RelationshipSpecifications.Subtypes, ConnectorTypes.Generalization,
+            new RelatedEntityButtonDescriptor(RelationshipSpecifications.Subtype, ConnectorTypes.Generalization,
                 new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(0, -ButtonOverlapParentBy)));
         
         public virtual IEnumerable<RelatedEntityButtonDescriptor> GetRelatedEntityButtonDescriptors()

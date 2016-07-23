@@ -28,15 +28,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             : base(model, diagram, buttonRadius, descriptor.ButtonLocation)
         {
             _descriptor = descriptor;
+            SubscribeToModelEvents();
         }
-        
+
         public ConnectorType ConnectorType => _descriptor.ConnectorType;
 
         private RectRelativeLocation ButtonLocation => _descriptor.ButtonLocation;
         private RelationshipSpecification RelationshipSpecification => _descriptor.RelationshipSpecification;
         private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
-        private DiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel.DiagramNode;
-        private IModelEntity AssociatedModelEntity => AssociatedDiagramNode.ModelEntity;
+        private DiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
+        private IModelEntity AssociatedModelEntity => AssociatedDiagramNode?.ModelEntity;
 
         public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
@@ -67,11 +68,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateDisplayedEntityInfo()
         {
+            if (AssociatedDiagramNode == null)
+                return;
+
             _relatedEntities = Model.GetRelatedEntities(AssociatedModelEntity, RelationshipSpecification).ToList();
             _displayedRelatedEntities = _relatedEntities.Where(i => Diagram.Nodes.Any(j => j.ModelEntity == i)).ToList();
             _undisplayedRelatedEntities = _relatedEntities.Except(_displayedRelatedEntities).ToList();
 
             IsEnabled = _undisplayedRelatedEntities.Count > 0;
+        }
+
+        private void SubscribeToModelEvents()
+        {
+            Model.EntityAdded += (o, e) => UpdateDisplayedEntityInfo();
+            Model.RelationshipAdded += (o, e) => UpdateDisplayedEntityInfo();
+            Model.EntityRemoved += (o, e) => UpdateDisplayedEntityInfo();
+            Model.RelationshipRemoved += (o, e) => UpdateDisplayedEntityInfo();
         }
 
         private static HandleOrientation CalculateHandleOrientation(RectRelativeLocation buttonLocation)

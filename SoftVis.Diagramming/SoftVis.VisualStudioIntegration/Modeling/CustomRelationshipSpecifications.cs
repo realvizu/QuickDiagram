@@ -7,11 +7,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal static class CustomRelationshipSpecifications
     {
-        public static readonly RelationshipSpecification ImplementedInterfaces =
+        public static readonly RelationshipSpecification ImplementedInterface =
             new RelationshipSpecification(ModelRelationshipDirection.Outgoing, ModelRelationshipType.Generalization,
                 RoslynBasedModelRelationshipStereotype.Implementation);
 
-        public static readonly RelationshipSpecification ImplementerTypes =
+        public static readonly RelationshipSpecification ImplementerType =
             new RelationshipSpecification(ModelRelationshipDirection.Incoming, ModelRelationshipType.Generalization,
                 RoslynBasedModelRelationshipStereotype.Implementation);
     }

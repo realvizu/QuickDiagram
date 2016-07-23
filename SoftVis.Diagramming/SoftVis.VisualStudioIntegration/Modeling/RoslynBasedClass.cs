@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling.Building;
+using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -42,5 +45,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
                     .Select(i => i.Source).OfType<RoslynBasedClass>();
             }
         }
+
+        public override IEnumerable<RelatedRoslynSymbols> FindRelatedSymbols(IWorkspaceServices workspaceServices, INamedTypeSymbol roslynSymbol)
+        {
+            EnsureSymbolTypeKind(roslynSymbol, TypeKind.Class);
+
+            return GetDerivedTypeSymbols(workspaceServices, roslynSymbol);
+        }
+
+        private IEnumerable<RelatedRoslynSymbols> GetDerivedTypeSymbols(IWorkspaceServices workspaceServices, INamedTypeSymbol classSymbol)
+        {
+            var workspace = workspaceServices.GetWorkspace();
+            return FindDerivedTypesAsync(workspace, classSymbol);
+        }
+
+        private static IEnumerable<RelatedRoslynSymbols> FindDerivedTypesAsync(Workspace workspace, INamedTypeSymbol classSymbol)
+        {
+            foreach (var project in workspace.CurrentSolution.Projects)
+            {
+                var compilation = project.GetCompilationAsync().Result;
+                var visitor = new DerivedTypesFinderVisitor(classSymbol);
+
+                compilation.Assembly.Accept(visitor);
+                foreach (var descendant in visitor.DerivedTypeSymbols)
+                    yield return new RelatedRoslynSymbols(classSymbol, descendant, RelationshipSpecifications.Subtype);
+            }
+        }
+
     }
 }

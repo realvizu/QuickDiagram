@@ -5,10 +5,10 @@
     /// </summary>
     public static class RelationshipSpecifications
     {
-        public static readonly RelationshipSpecification BaseTypes =
+        public static readonly RelationshipSpecification BaseType =
             new RelationshipSpecification(ModelRelationshipDirection.Outgoing, ModelRelationshipType.Generalization, null);
 
-        public static readonly RelationshipSpecification Subtypes =
+        public static readonly RelationshipSpecification Subtype =
             new RelationshipSpecification(ModelRelationshipDirection.Incoming, ModelRelationshipType.Generalization, null);
     }
 }

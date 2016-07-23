@@ -13,6 +13,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         private readonly Dictionary<string, RoslynBasedModelEntity> _entities;
         private readonly Dictionary<string, ModelRelationship> _relationships;
 
+        public override event EventHandler<IModelEntity> EntityAdded;
+        public override event EventHandler<IModelRelationship> RelationshipAdded;
+        public override event EventHandler<IModelEntity> EntityRemoved;
+        public override event EventHandler<IModelRelationship> RelationshipRemoved;
+
         internal RoslynBasedModel()
         {
             _entities = new Dictionary<string, RoslynBasedModelEntity>();
@@ -80,6 +85,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             }
 
             _entities.Add(namedTypeSymbol.GetKey(), newEntity);
+            EntityAdded?.Invoke(this, newEntity);
 
             return newEntity;
         }
@@ -95,6 +101,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
             var key = GetRelationshipKey(sourceEntity, targetEntity, type, stereotype);
             _relationships.Add(key, newRelationship);
+            RelationshipAdded?.Invoke(this, newRelationship);
 
             return newRelationship;
         }

@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         public Diagram Diagram { get; }
 
         public event EventHandler PackageEvent;
+        public event EventHandler<DiagramShape> ShapeAddedToDiagram; 
 
         public DiagramManager()
         {
@@ -23,6 +24,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Diagram = new RoslynBasedDiagram(connectorTypeResolver);
             Diagram.ShapeSelected += OnShapeSelected;
             Diagram.ShapeActivated += OnShapeActivated;
+            Diagram.ShapeAdded += OnShapeAdded;
 
             _diagramBuilder = new RoslynBasedDiagramBuilder(Diagram);
         }
@@ -54,6 +56,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
                 var eventArgs = new DiagramNodeActivatedEventArgs((DiagramNode) diagramShape);
                 PackageEvent?.Invoke(sender, eventArgs);
             }
+        }
+
+        private void OnShapeAdded(object sender, DiagramShape diagramShape)
+        {
+            ShapeAddedToDiagram?.Invoke(sender, diagramShape);
         }
     }
 }

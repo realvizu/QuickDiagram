@@ -4,6 +4,7 @@ using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
 using Microsoft.CodeAnalysis;
+using MoreLinq;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 {
@@ -30,13 +31,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Building
 
         public IModel Model => _model;
 
-        public IModelEntity GetModelEntity(ISymbol symbol)
+        public IModelEntity GetOrAddRoslynSymbol(INamedTypeSymbol namedTypeSymbol)
         {
-            var namedTypeSymbol = symbol as INamedTypeSymbol;
-            if (namedTypeSymbol == null)
-                return null;
+            var modelEntity = _model.GetOrAddEntity(namedTypeSymbol);
+            FindAndAddRelatedEntities(modelEntity);
+            return modelEntity;
+        }
 
-            return GetOrAddWithRelatedSymbols(namedTypeSymbol);
+        // TODO: make it async
+        public void FindAndAddRelatedEntities(RoslynBasedModelEntity modelEntity)
+        {
+            modelEntity
+                .FindRelatedSymbols(_workspaceServices, modelEntity.RoslynSymbol)
+                .ForEach(AddIfNotExists);
+        }
+
+        private void AddIfNotExists(RelatedRoslynSymbols relatedRoslynSymbols)
+        {
+            _model.GetOrAddEntity(relatedRoslynSymbols.RelatedSymbol);
+            _model.GetOrAddRelationship(relatedRoslynSymbols.SourceSymbol, relatedRoslynSymbols.TargetSymbol,
+                relatedRoslynSymbols.RelationshipSpecification.Type, relatedRoslynSymbols.RelationshipSpecification.Stereotype);
         }
 
         private IModelEntity GetOrAddWithRelatedSymbols(INamedTypeSymbol namedTypeSymbol)

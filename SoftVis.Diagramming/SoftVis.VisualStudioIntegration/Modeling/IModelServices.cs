@@ -9,6 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     public interface IModelServices
     {
         IModel Model { get; }
-        IModelEntity GetModelEntity(ISymbol symbol);
+        IModelEntity GetOrAddRoslynSymbol(INamedTypeSymbol namedTypeSymbol);
+        void FindAndAddRelatedEntities(RoslynBasedModelEntity modelEntity);
     }
 }

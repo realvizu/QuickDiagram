@@ -16,12 +16,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private static readonly RelatedEntityButtonDescriptor ImplementedInterfacesDescriptor =
             new RelatedEntityButtonDescriptor(
-                CustomRelationshipSpecifications.ImplementedInterfaces, CustomConnectorTypes.Implementation,
+                CustomRelationshipSpecifications.ImplementedInterface, CustomConnectorTypes.Implementation,
                 new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(ButtonShiftX, ButtonOverlapParentBy)));
 
         private static readonly RelatedEntityButtonDescriptor ImplementerTypesDescriptor =
             new RelatedEntityButtonDescriptor(
-                CustomRelationshipSpecifications.ImplementerTypes, CustomConnectorTypes.Implementation,
+                CustomRelationshipSpecifications.ImplementerType, CustomConnectorTypes.Implementation,
                 new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(ButtonShiftX, -ButtonOverlapParentBy)));
 
         public override IEnumerable<RelatedEntityButtonDescriptor> GetRelatedEntityButtonDescriptors()

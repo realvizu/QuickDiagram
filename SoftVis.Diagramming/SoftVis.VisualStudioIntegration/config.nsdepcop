@@ -12,7 +12,8 @@
     <Allowed From="*" To="System.IO" />
     <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
-    
+    <Allowed From="*" To="MoreLinq" />
+
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration" To="Microsoft.VisualStudio.Shell.*" />
@@ -58,7 +59,8 @@
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.Modeling" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.Building" To="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.Building" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" To="Microsoft.VisualStudio.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" To="Microsoft.CodeAnalysis.*" />

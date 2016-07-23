@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Commands.EventTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered;
@@ -70,6 +71,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             _diagramManager = new DiagramManager();
             _diagramManager.PackageEvent += OnPackageEvent;
+            _diagramManager.ShapeAddedToDiagram += OnShapeAddedToDiagram;
 
             _diagramToolWindow = CreateToolWindow();
             _diagramToolWindow.Initialize(_modelBuilder.Model, _diagramManager.Diagram);
@@ -186,6 +188,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             var command = _eventTriggeredCommands[eventArgs.GetType()];
             command?.Execute(sender, eventArgs);
+        }
+
+        private void OnShapeAddedToDiagram(object sender, DiagramShape diagramShape)
+        {
+            var roslynBasedModelEntity = diagramShape.ModelItem as RoslynBasedModelEntity;
+            if (roslynBasedModelEntity == null)
+                return;
+
+            _modelBuilder.FindAndAddRelatedEntities(roslynBasedModelEntity);
         }
     }
 }

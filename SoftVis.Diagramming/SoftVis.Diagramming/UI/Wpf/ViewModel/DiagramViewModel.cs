@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, _diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
 
             RelatedModelEntitySelectorViewModel = new ModelEntitySelectorViewModel(new Size(200, 100));
-            RelatedModelEntitySelectorViewModel.ModelEntitySelected += AddModelModelEntityToDiagram;
+            RelatedModelEntitySelectorViewModel.ModelEntitySelected += AddModelEntityToDiagram;
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -89,7 +89,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramContentRect = Diagram.ContentRect.ToWpf();
         }
 
-        private void AddModelModelEntityToDiagram(IModelEntity selectedEntity)
+        private void AddModelEntityToDiagram(IModelEntity selectedEntity)
         {
             Diagram.ShowItem(selectedEntity);
         }

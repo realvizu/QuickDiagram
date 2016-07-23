@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
 {
@@ -16,12 +17,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered
         public override async void Execute(object sender, EventArgs e)
         {
             var workspaceServices = PackageServices.GetWorkspaceServices();
-            var symbol = await workspaceServices.GetCurrentSymbol();
-            if (symbol == null)
+            var namedTypeSymbol = await workspaceServices.GetCurrentSymbol() as INamedTypeSymbol;
+            if (namedTypeSymbol == null)
                 return;
 
             var modelBuilder = PackageServices.GetModelServices();
-            var modelEntity = modelBuilder.GetModelEntity(symbol);
+            var modelEntity = modelBuilder.GetOrAddRoslynSymbol(namedTypeSymbol);
             if (modelEntity == null)
                 return;
 

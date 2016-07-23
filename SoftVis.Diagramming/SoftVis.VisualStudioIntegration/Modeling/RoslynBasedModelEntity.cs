@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -7,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Abstract base class for model entities created from Roslyn symbols.
     /// </summary>
-    internal abstract class RoslynBasedModelEntity : ModelEntity
+    public abstract class RoslynBasedModelEntity : ModelEntity
     {
         public INamedTypeSymbol RoslynSymbol { get; }
 
@@ -21,5 +24,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         }
 
         public string Id => RoslynSymbol.GetKey();
+
+        public virtual IEnumerable<RelatedRoslynSymbols> FindRelatedSymbols(IWorkspaceServices workspaceService, INamedTypeSymbol roslynSymbol)
+            => Enumerable.Empty<RelatedRoslynSymbols>();
+
+        protected static void EnsureSymbolTypeKind(INamedTypeSymbol symbol, params TypeKind[] expectedTypeKinds)
+        {
+            if (expectedTypeKinds.Any(i => symbol.TypeKind == i))
+                return;
+
+            throw new InvalidOperationException($"Unexpected symbol type: {symbol.TypeKind}");
+        }
     }
 }
