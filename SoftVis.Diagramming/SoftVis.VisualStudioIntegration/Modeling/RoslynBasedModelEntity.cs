@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
 using Microsoft.CodeAnalysis;
 

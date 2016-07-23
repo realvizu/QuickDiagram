@@ -58,7 +58,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Diagramming" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.Modeling.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.Building" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" To="Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext" />
 

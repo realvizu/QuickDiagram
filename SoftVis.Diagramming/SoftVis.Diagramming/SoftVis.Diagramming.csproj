@@ -68,7 +68,7 @@
     <Compile Include="Diagramming\ArrowHeadType.cs" />
     <Compile Include="Diagramming\ConnectorTypes.cs" />
     <Compile Include="Diagramming\ConnectorType.cs" />
-    <Compile Include="Modeling\ModelBase.cs" />
+    <Compile Include="Modeling\Implementation\ModelBase.cs" />
     <Compile Include="Modeling\RelationshipTypeSpecification.cs" />
     <Compile Include="Modeling\RelationshipSpecifications.cs" />
     <Compile Include="UI\Common\ZoomDirection.cs" />
@@ -196,8 +196,8 @@
     <Compile Include="Modeling\ModelRelationshipType.cs" />
     <Compile Include="Modeling\ModelEntityType.cs" />
     <Compile Include="Modeling\IModel.cs" />
-    <Compile Include="Modeling\ModelRelationship.cs" />
-    <Compile Include="Modeling\ModelEntity.cs" />
+    <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
+    <Compile Include="Modeling\Implementation\ModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\DoubleHelper.cs" />
     <Compile Include="UI\Common\ScaleCalculator.cs" />

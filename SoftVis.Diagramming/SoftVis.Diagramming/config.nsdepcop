@@ -38,9 +38,9 @@
     <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative" />
 
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.*" />
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.*" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.UI.Geometry" />
+    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.*" />
+    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Extensibility" />
