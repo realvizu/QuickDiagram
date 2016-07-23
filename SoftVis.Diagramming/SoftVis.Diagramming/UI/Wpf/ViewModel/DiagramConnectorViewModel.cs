@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -18,12 +17,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private static readonly DoubleCollection DashPattern = new DoubleCollection(new[] { 5d, 5d });
 
-        private readonly DiagramConnector _diagramConnector;
+        private readonly IDiagramConnector _diagramConnector;
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
-        public DiagramConnectorViewModel(IModel model, Diagram diagram,
-            DiagramConnector diagramConnector, ConnectorType connectorType)
+        public DiagramConnectorViewModel(IModel model, IDiagram diagram,
+            IDiagramConnector diagramConnector, ConnectorType connectorType)
             : base(model, diagram)
         {
             _diagramConnector = diagramConnector;
@@ -31,7 +30,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateState();
         }
 
-        public override DiagramShape DiagramShape => _diagramConnector;
+        public override IDiagramShape DiagramShape => _diagramConnector;
 
         public override void UpdateState()
         {

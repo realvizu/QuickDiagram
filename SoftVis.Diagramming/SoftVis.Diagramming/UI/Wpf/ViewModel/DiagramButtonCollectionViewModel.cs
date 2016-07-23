@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
 
@@ -16,7 +15,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels { get; }
 
-        public DiagramButtonCollectionViewModel(IModel model, Diagram diagram,
+        public DiagramButtonCollectionViewModel(IModel model, IDiagram diagram,
             IDiagramBehaviourProvider diagramBehaviourProvider)
             : base(model, diagram)
         {

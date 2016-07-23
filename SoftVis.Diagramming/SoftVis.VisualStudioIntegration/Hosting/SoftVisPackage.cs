@@ -190,7 +190,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             command?.Execute(sender, eventArgs);
         }
 
-        private void OnShapeAddedToDiagram(object sender, DiagramShape diagramShape)
+        private void OnShapeAddedToDiagram(object sender, IDiagramShape diagramShape)
         {
             var roslynBasedModelEntity = diagramShape.ModelItem as RoslynBasedModelEntity;
             if (roslynBasedModelEntity == null)

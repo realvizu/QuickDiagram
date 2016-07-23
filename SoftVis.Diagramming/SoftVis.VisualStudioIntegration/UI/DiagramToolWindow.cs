@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             ImageExportDpi = Dpi.Default;
         }
 
-        internal void Initialize(IModel model, Diagram diagram)
+        internal void Initialize(IModel model, IDiagram diagram)
         {
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
             _diagramViewModel = new DiagramViewModel(model, diagram, diagramBehaviourProvider, 

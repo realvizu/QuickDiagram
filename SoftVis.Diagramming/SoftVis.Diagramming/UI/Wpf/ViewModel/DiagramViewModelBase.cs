@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming.Graph;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -9,9 +9,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public abstract class DiagramViewModelBase: ViewModelBase
     {
         protected readonly IModel Model;
-        protected readonly Diagram Diagram;
+        protected readonly IDiagram Diagram;
 
-        protected DiagramViewModelBase(IModel model, Diagram diagram)
+        protected DiagramViewModelBase(IModel model, IDiagram diagram)
         {
             Model = model;
             Diagram = diagram;

@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming.Graph.Layout.Incremental;
+﻿using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.TestSubjects;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public ModelEntitySelectorViewModel RelatedModelEntitySelectorViewModel { get; }
 
-        public DiagramViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+        public DiagramViewModel(IModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
             :base(model, diagram)
         {

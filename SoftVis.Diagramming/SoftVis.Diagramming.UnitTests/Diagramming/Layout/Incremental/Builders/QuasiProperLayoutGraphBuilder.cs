@@ -1,5 +1,5 @@
-using Codartis.SoftVis.Diagramming.Graph.Layout.Incremental;
-using Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.Logic;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative.Logic;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
 {

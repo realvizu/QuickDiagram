@@ -4,13 +4,13 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
-    internal class RoslynBasedConnectorTypeResolver : DefaultConnectorTypeResolver
+    internal class RoslynBasedConnectorTypeResolver : IConnectorTypeResolver
     {
-        public override ConnectorType GetConnectorType(IModelRelationship modelRelationship)
+        public ConnectorType GetConnectorType(IModelRelationship modelRelationship)
         {
             return modelRelationship.Stereotype == RoslynBasedModelRelationshipStereotype.Implementation
                 ? RoslynBasedConnectorTypes.Implementation
-                : base.GetConnectorType(modelRelationship);
+                : ConnectorTypes.Generalization;
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
@@ -23,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public ShowRelatedNodeButtonViewModel(IModel model, Diagram diagram,
+        public ShowRelatedNodeButtonViewModel(IModel model, IDiagram diagram,
             double buttonRadius, RelatedEntityButtonDescriptor descriptor)
             : base(model, diagram, buttonRadius, descriptor.ButtonLocation)
         {
@@ -36,7 +35,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private RectRelativeLocation ButtonLocation => _descriptor.ButtonLocation;
         private RelationshipSpecification RelationshipSpecification => _descriptor.RelationshipSpecification;
         private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
-        private DiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
+        private IDiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
         private IModelEntity AssociatedModelEntity => AssociatedDiagramNode?.ModelEntity;
 
         public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)

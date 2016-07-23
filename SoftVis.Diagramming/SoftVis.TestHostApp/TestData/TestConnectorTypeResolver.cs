@@ -3,13 +3,13 @@ using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    internal class TestConnectorTypeResolver : DefaultConnectorTypeResolver
+    internal class TestConnectorTypeResolver : IConnectorTypeResolver
     {
-        public override ConnectorType GetConnectorType(IModelRelationship modelRelationship)
+        public ConnectorType GetConnectorType(IModelRelationship modelRelationship)
         {
             return modelRelationship.Stereotype == TestModelRelationshipStereotype.Implementation
                 ? TestConnectorTypes.Implementation
-                : base.GetConnectorType(modelRelationship);
+                : ConnectorTypes.Generalization;
         }
     }
 }

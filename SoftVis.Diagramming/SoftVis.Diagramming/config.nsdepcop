@@ -30,16 +30,18 @@
 
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="QuickGraph.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Graph.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Graph" To="Codartis.SoftVis.Diagramming.Graph.Layout.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Absolute.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Graph.Layout.Incremental.Relative" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="QuickGraph.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="Codartis.SoftVis.Graphs.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Implementation.Layout" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic" />
+
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Absolute" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative" />
 
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.UI.Geometry" />
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.*" />
+    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />

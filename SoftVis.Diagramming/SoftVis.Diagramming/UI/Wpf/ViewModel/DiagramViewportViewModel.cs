@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
@@ -19,7 +18,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
-        private readonly Map<DiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
+        private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
         private readonly DiagramButtonCollectionViewModel _diagramButtonCollectionViewModel;
 
@@ -48,11 +47,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action ViewportChanged;
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public DiagramViewportViewModel(IModel model, Diagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+        public DiagramViewportViewModel(IModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
             : base(model, diagram)
         {
-            _diagramShapeToViewModelMap = new Map<DiagramShape, DiagramShapeViewModelBase>();
+            _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(model, diagram, diagram.ConnectorTypeResolver);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
 
@@ -143,7 +142,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 showRelatedNodeButtonViewModel.EntitySelectorRequested += OnEntitySelectorRequested;
         }
 
-        private void AddDiagram(Diagram diagram)
+        private void AddDiagram(IDiagram diagram)
         {
             foreach (var diagramNode in diagram.Nodes)
                 OnShapeAdded(null, diagramNode);
@@ -154,7 +153,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateDiagramContentRect();
         }
 
-        private void OnShapeAdded(object sender, DiagramShape diagramShape)
+        private void OnShapeAdded(object sender, IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
             diagramShapeViewModel.GotFocus += OnShapeFocused;
@@ -168,7 +167,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RaiseViewportChanged();
         }
 
-        private void OnShapeMoved(object sender, DiagramShape diagramShape)
+        private void OnShapeMoved(object sender, IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
             diagramShapeViewModel.UpdateState();
@@ -177,7 +176,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RaiseViewportChanged();
         }
 
-        private void OnShapeRemoved(object sender, DiagramShape diagramShape)
+        private void OnShapeRemoved(object sender, IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
             if (diagramShapeViewModel == null)
@@ -204,7 +203,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RaiseViewportChanged();
         }
 
-        private void OnShapeRemoveRequested(DiagramShape diagramShape)
+        private void OnShapeRemoveRequested(IDiagramShape diagramShape)
         {
             Diagram.RemoveShape(diagramShape);
         }

@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Commands;
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; private set; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramButtonViewModelBase(IModel model, Diagram diagram, double buttonRadius, 
+        protected DiagramButtonViewModelBase(IModel model, IDiagram diagram, double buttonRadius, 
             RectRelativeLocation rectRelativeLocation)
             :base(model, diagram)
         {

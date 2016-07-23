@@ -1,6 +1,5 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Events;
 
@@ -13,10 +12,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     {
         private readonly RoslynBasedDiagramBuilder _diagramBuilder;
 
-        public Diagram Diagram { get; }
+        public IDiagram Diagram { get; }
 
         public event EventHandler PackageEvent;
-        public event EventHandler<DiagramShape> ShapeAddedToDiagram; 
+        public event EventHandler<IDiagramShape> ShapeAddedToDiagram; 
 
         public DiagramManager()
         {
@@ -44,21 +43,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             _diagramBuilder.ShowModelEntityWithRelatedEntities(modelEntity);
         }
 
-        private void OnShapeSelected(object sender, DiagramShape diagramShape)
+        private void OnShapeSelected(object sender, IDiagramShape diagramShape)
         {
             // TODO
         }
 
-        private void OnShapeActivated(object sender, DiagramShape diagramShape)
+        private void OnShapeActivated(object sender, IDiagramShape diagramShape)
         {
-            if (diagramShape is DiagramNode)
+            if (diagramShape is IDiagramNode)
             {
-                var eventArgs = new DiagramNodeActivatedEventArgs((DiagramNode) diagramShape);
+                var eventArgs = new DiagramNodeActivatedEventArgs((IDiagramNode) diagramShape);
                 PackageEvent?.Invoke(sender, eventArgs);
             }
         }
 
-        private void OnShapeAdded(object sender, DiagramShape diagramShape)
+        private void OnShapeAdded(object sender, IDiagramShape diagramShape)
         {
             ShapeAddedToDiagram?.Invoke(sender, diagramShape);
         }

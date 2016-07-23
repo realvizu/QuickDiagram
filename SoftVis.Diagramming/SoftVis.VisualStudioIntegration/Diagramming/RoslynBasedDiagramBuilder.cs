@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -10,9 +10,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     public class RoslynBasedDiagramBuilder
     {
-        private readonly Diagram _diagram;
+        private readonly IDiagram _diagram;
 
-        internal RoslynBasedDiagramBuilder(Diagram diagram)
+        internal RoslynBasedDiagramBuilder(IDiagram diagram)
         {
             _diagram = diagram;
         }

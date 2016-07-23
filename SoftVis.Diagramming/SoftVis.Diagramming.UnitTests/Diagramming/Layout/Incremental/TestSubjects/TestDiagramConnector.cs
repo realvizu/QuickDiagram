@@ -1,4 +1,6 @@
-﻿namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.TestSubjects
+﻿using Codartis.SoftVis.Diagramming.Implementation;
+
+namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.TestSubjects
 {
     internal sealed class TestDiagramConnector : DiagramConnector
     {

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Graph;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -10,16 +9,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase
     {
-        public DiagramNode DiagramNode { get; }
+        public IDiagramNode DiagramNode { get; }
 
-        public DiagramNodeViewModel(IModel model, Diagram diagram, DiagramNode diagramNode)
+        public DiagramNodeViewModel(IModel model, IDiagram diagram, IDiagramNode diagramNode)
               : base(model, diagram)
         {
             DiagramNode = diagramNode;
             UpdateState();
         }
 
-        public override DiagramShape DiagramShape => DiagramNode;
+        public override IDiagramShape DiagramShape => DiagramNode;
 
         public override void UpdateState()
         {

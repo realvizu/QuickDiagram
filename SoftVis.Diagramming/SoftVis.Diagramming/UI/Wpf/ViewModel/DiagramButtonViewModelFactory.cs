@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Diagramming.Graph;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly double _buttonRadius;
         private readonly double _buttonOverlap;
 
-        public DiagramButtonViewModelFactory(IModel model, Diagram diagram,
+        public DiagramButtonViewModelFactory(IModel model, IDiagram diagram,
             IDiagramBehaviourProvider diagramBehaviourProvider, double buttonRadius, double buttonOverlap)
             : base(model, diagram)
         {

@@ -5,9 +5,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Events
 {
     internal class DiagramNodeActivatedEventArgs : EventArgs
     {
-        public DiagramNode DiagramNode { get; }
+        public IDiagramNode DiagramNode { get; }
 
-        public DiagramNodeActivatedEventArgs(DiagramNode diagramNode)
+        public DiagramNodeActivatedEventArgs(IDiagramNode diagramNode)
         {
             DiagramNode = diagramNode;
         }
