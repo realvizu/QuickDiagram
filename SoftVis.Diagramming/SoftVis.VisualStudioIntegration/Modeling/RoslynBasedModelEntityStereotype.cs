@@ -7,11 +7,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal class RoslynBasedModelEntityStereotype : ModelEntityStereotype
     {
-        public static readonly ModelEntityStereotype Class = new RoslynBasedModelEntityStereotype("class");
-        public static readonly ModelEntityStereotype Interface = new RoslynBasedModelEntityStereotype("interface");
-        public static readonly ModelEntityStereotype Struct = new RoslynBasedModelEntityStereotype("struct");
-        public static readonly ModelEntityStereotype Enum = new RoslynBasedModelEntityStereotype("enum");
-        public static readonly ModelEntityStereotype Delegate = new RoslynBasedModelEntityStereotype("delegate");
+        public static readonly RoslynBasedModelEntityStereotype Class = new RoslynBasedModelEntityStereotype("class");
+        public static readonly RoslynBasedModelEntityStereotype Interface = new RoslynBasedModelEntityStereotype("interface");
+        public static readonly RoslynBasedModelEntityStereotype Struct = new RoslynBasedModelEntityStereotype("struct");
+        public static readonly RoslynBasedModelEntityStereotype Enum = new RoslynBasedModelEntityStereotype("enum");
+        public static readonly RoslynBasedModelEntityStereotype Delegate = new RoslynBasedModelEntityStereotype("delegate");
 
         private RoslynBasedModelEntityStereotype(string name)
             :base(name)

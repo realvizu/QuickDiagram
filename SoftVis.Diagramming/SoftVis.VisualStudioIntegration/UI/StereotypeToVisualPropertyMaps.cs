@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -12,8 +11,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private const string ImagePathTemplate = "/UI/Images/{0}.png";
 
-        public static readonly Dictionary<ModelEntityStereotype, string> StereotypeToImagePathMap =
-            new Dictionary<ModelEntityStereotype, string>
+        public static readonly Dictionary<RoslynBasedModelEntityStereotype, string> StereotypeToImagePathMap =
+            new Dictionary<RoslynBasedModelEntityStereotype, string>
             {
                 { RoslynBasedModelEntityStereotype.Class, string.Format(ImagePathTemplate, "Class")},
                 { RoslynBasedModelEntityStereotype.Interface, string.Format(ImagePathTemplate, "Interface")},
@@ -22,8 +21,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 { RoslynBasedModelEntityStereotype.Delegate, string.Format(ImagePathTemplate, "Delegate")}
             };
 
-        public static readonly Dictionary<ModelEntityStereotype, Brush> StereotypeToBackgroundBrushMap =
-            new Dictionary<ModelEntityStereotype, Brush>
+        public static readonly Dictionary<RoslynBasedModelEntityStereotype, Brush> StereotypeToBackgroundBrushMap =
+            new Dictionary<RoslynBasedModelEntityStereotype, Brush>
             {
                 { RoslynBasedModelEntityStereotype.Class, new SolidColorBrush(Color.FromArgb(0xFF, 0xF5, 0xE3, 0xD6))},
                 { RoslynBasedModelEntityStereotype.Interface, Brushes.LightGray},

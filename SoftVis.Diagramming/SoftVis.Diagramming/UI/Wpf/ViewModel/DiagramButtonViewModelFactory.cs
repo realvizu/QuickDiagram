@@ -16,9 +16,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly double _buttonRadius;
         private readonly double _buttonOverlap;
 
-        public DiagramButtonViewModelFactory(IModel model, IDiagram diagram,
+        public DiagramButtonViewModelFactory(IReadOnlyModel readOnlyModel, IDiagram diagram,
             IDiagramBehaviourProvider diagramBehaviourProvider, double buttonRadius, double buttonOverlap)
-            : base(model, diagram)
+            : base(readOnlyModel, diagram)
         {
             _diagramBehaviourProvider = diagramBehaviourProvider;
             _buttonRadius = buttonRadius;
@@ -36,12 +36,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var translate = new Point2D(-_buttonOverlap, _buttonOverlap);
             var buttonLocation = new RectRelativeLocation(RectAlignment.TopRight, translate);
-            return new CloseShapeButtonViewModel(Model, Diagram, _buttonRadius, buttonLocation);
+            return new CloseShapeButtonViewModel(ReadOnlyModel, Diagram, _buttonRadius, buttonLocation);
         }
 
         private ShowRelatedNodeButtonViewModel CreateShowRelatedEntityButton(RelatedEntityButtonDescriptor descriptor)
         {
-            return new ShowRelatedNodeButtonViewModel(Model, Diagram, _buttonRadius, descriptor);
+            return new ShowRelatedNodeButtonViewModel(ReadOnlyModel, Diagram, _buttonRadius, descriptor);
         }
     }
 }

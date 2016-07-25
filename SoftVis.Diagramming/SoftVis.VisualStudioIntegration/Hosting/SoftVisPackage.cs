@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
-using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.VisualStudioIntegration.Commands;
-using Codartis.SoftVis.VisualStudioIntegration.Commands.EventTriggered;
-using Codartis.SoftVis.VisualStudioIntegration.Commands.ShellTriggered;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Building;
-using Codartis.SoftVis.VisualStudioIntegration.UI;
-using Codartis.SoftVis.VisualStudioIntegration.WorkspaceContext;
+using Codartis.SoftVis.VisualStudioIntegration.App;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
@@ -33,22 +22,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(DiagramToolWindow))]
-    public sealed class SoftVisPackage : Package, IPackageServices, IHostServiceProvider
+    [ProvideToolWindow(typeof(DiagramHostToolWindow))]
+    public sealed class SoftVisPackage : Package, IPackageServices
     {
         private const string PackageGuidString = "198d9322-583a-4112-a2a8-61f4c0818966";
-        private const int SingletonToolWindowInstanceId = 0;
-
-        private readonly List<ShellTriggeredCommandBase> _shellTriggeredCommands = new List<ShellTriggeredCommandBase>();
-        private readonly Dictionary<Type, CommandBase> _eventTriggeredCommands = new Dictionary<Type, CommandBase>();
 
         private IVisualStudioServiceProvider _visualStudioServiceProvider;
         private IComponentModel _componentModel;
-        
-        private IWorkspaceServices _workspaceServices;
-        private IModelServices _modelBuilder;
-        private DiagramManager _diagramManager;
-        private DiagramToolWindow _diagramToolWindow;
+
+        /// <summary>
+        /// Keep a reference to the diagram tool so it won't get garbage collected.
+        /// </summary>
+        private DiagramTool _diagramTool;
 
         protected override void Initialize()
         {
@@ -65,34 +50,36 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             if (_componentModel == null)
                 throw new Exception("Unable to get IComponentModel.");
 
-            _workspaceServices = new WorkspaceServices(this);
-
-            _modelBuilder = new RoslynBasedModelBuilder(_workspaceServices);
-
-            _diagramManager = new DiagramManager();
-            _diagramManager.PackageEvent += OnPackageEvent;
-            _diagramManager.ShapeAddedToDiagram += OnShapeAddedToDiagram;
-
-            _diagramToolWindow = CreateToolWindow();
-            _diagramToolWindow.Initialize(_modelBuilder.Model, _diagramManager.Diagram);
-
-            InitializeShellTriggeredCommands();
-            InitializeEventTriggeredCommands();
+            var hostWorkspaceProvider = new HostWorkspaceProvider(this);
+            var hostUiServiceProvider = new HostUiServiceProvider(this);
+            _diagramTool = new DiagramTool(hostUiServiceProvider, hostWorkspaceProvider);
         }
-
-        public IWorkspaceServices GetWorkspaceServices() => _workspaceServices;
-        public IModelServices GetModelServices() => _modelBuilder;
-        public IDiagramServices GetDiagramServices() => _diagramManager;
-        public IUIServices GetUIServices() => _diagramToolWindow;
 
         public IVsRunningDocumentTable GetRunningDocumentTableService()
         {
             return GetVisualStudioService<IVsRunningDocumentTable, SVsRunningDocumentTable>();
         }
 
+        public OleMenuCommandService GetMenuCommandService()
+        {
+            var commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (commandService == null)
+                throw new Exception("Unable to get IMenuCommandService.");
+            return commandService;
+        }
+
         public VisualStudioWorkspace GetVisualStudioWorkspace()
         {
             return _componentModel.GetService<VisualStudioWorkspace>();
+        }
+
+        public TWindow CreateToolWindow<TWindow>(int instanceId = 0)
+            where TWindow : ToolWindowPane
+        {
+            var toolWindow = CreateToolWindow(typeof(TWindow), instanceId) as TWindow;
+            if (toolWindow?.Frame == null)
+                throw new NotSupportedException("Cannot create tool window.");
+            return toolWindow;
         }
 
         private TServiceInterface GetVisualStudioService<TServiceInterface, TService>()
@@ -124,79 +111,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 }
             }
             return obj;
-        }
-
-        private DiagramToolWindow CreateToolWindow()
-        {
-            var toolWindow = CreateToolWindow(typeof(DiagramToolWindow), SingletonToolWindowInstanceId) as DiagramToolWindow;
-            if (toolWindow?.Frame == null)
-                throw new NotSupportedException("Cannot create tool window.");
-            return toolWindow;
-        }
-
-        private void InitializeShellTriggeredCommands()
-        {
-            foreach (var commandType in DiscoverShellTriggeredCommandTypes())
-            {
-                var command = (ShellTriggeredCommandBase)Activator.CreateInstance(commandType, this);
-                AddMenuCommand(this, command);
-                _shellTriggeredCommands.Add(command);
-            }
-        }
-
-        private static IEnumerable<Type> DiscoverShellTriggeredCommandTypes()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(ShellTriggeredCommandBase)) && !i.IsAbstract);
-        }
-
-        private static void AddMenuCommand(IServiceProvider serviceProvider, ShellTriggeredCommandBase command)
-        {
-            var commandService = serviceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService == null)
-                throw new Exception("Unable to get IMenuCommandService.");
-
-            var menuCommandId = new CommandID(command.CommandSet, command.CommandId);
-            var menuItem = new OleMenuCommand(command.Execute, menuCommandId);
-            commandService.AddCommand(menuItem);
-        }
-
-        private void InitializeEventTriggeredCommands()
-        {
-            foreach (var commandType in DiscoverEventTriggeredCommandTypes())
-            {
-                var eventArgumentType = commandType.BaseType?.GenericTypeArguments.FirstOrDefault();
-                if (eventArgumentType == null)
-                    throw new Exception($"{commandType.Name} should have 1 type argument.");
-
-                var command = (CommandBase)Activator.CreateInstance(commandType, this);
-                _eventTriggeredCommands.Add(eventArgumentType, command);
-            }
-        }
-
-        private static IEnumerable<Type> DiscoverEventTriggeredCommandTypes()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            return assembly.DefinedTypes
-                .Where(i => i.BaseType != null
-                            && i.BaseType.IsConstructedGenericType
-                            && i.BaseType.GetGenericTypeDefinition() == typeof(EventTriggeredCommandBase<>)
-                            && !i.IsAbstract);
-        }
-
-        private void OnPackageEvent(object sender, EventArgs eventArgs)
-        {
-            var command = _eventTriggeredCommands[eventArgs.GetType()];
-            command?.Execute(sender, eventArgs);
-        }
-
-        private void OnShapeAddedToDiagram(object sender, IDiagramShape diagramShape)
-        {
-            var roslynBasedModelEntity = diagramShape.ModelItem as RoslynBasedModelEntity;
-            if (roslynBasedModelEntity == null)
-                return;
-
-            _modelBuilder.FindAndAddRelatedEntities(roslynBasedModelEntity);
         }
     }
 }

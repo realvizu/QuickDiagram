@@ -8,12 +8,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramViewModelBase: ViewModelBase
     {
-        protected readonly IModel Model;
+        protected readonly IReadOnlyModel ReadOnlyModel;
         protected readonly IDiagram Diagram;
 
-        protected DiagramViewModelBase(IModel model, IDiagram diagram)
+        protected DiagramViewModelBase(IReadOnlyModel readOnlyModel, IDiagram diagram)
         {
-            Model = model;
+            ReadOnlyModel = readOnlyModel;
             Diagram = diagram;
         }
     }

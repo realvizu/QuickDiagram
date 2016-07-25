@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
@@ -7,8 +7,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     public interface IDiagramServices
     {
-        void ShowModelEntity(IModelEntity modelEntity);
-        void ShowModelEntityWithRelatedEntities(IModelEntity modelEntity);
-        void ClearDiagram();
+        void ShowModelEntity(IRoslynBasedModelEntity modelEntity);
+        void ShowModelEntityWithRelatedEntities(IRoslynBasedModelEntity modelEntity);
+        void Clear();
     }
 }

@@ -47,13 +47,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action ViewportChanged;
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public DiagramViewportViewModel(IModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+        public DiagramViewportViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
-            : base(model, diagram)
+            : base(readOnlyModel, diagram)
         {
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(model, diagram, diagram.ConnectorTypeResolver);
-            _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
+            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(readOnlyModel, diagram, diagram.ConnectorTypeResolver);
+            _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(readOnlyModel, diagram, diagramBehaviourProvider);
 
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);
             _transitionedViewportTransform = TransitionedTransform.Identity;

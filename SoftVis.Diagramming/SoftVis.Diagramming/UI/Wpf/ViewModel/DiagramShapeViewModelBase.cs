@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramShapeViewModelBase : FocusableViewModelBase
     {
-        protected readonly IModel Model;
+        protected readonly IReadOnlyModel ReadOnlyModel;
         protected readonly IDiagram Diagram;
 
         private Point _position;
@@ -18,9 +18,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event Action<IDiagramShape> RemoveRequested;
 
-        protected DiagramShapeViewModelBase(IModel model, IDiagram diagram)
+        protected DiagramShapeViewModelBase(IReadOnlyModel readOnlyModel, IDiagram diagram)
         {
-            Model = model;
+            ReadOnlyModel = readOnlyModel;
             Diagram = diagram;
         }
 

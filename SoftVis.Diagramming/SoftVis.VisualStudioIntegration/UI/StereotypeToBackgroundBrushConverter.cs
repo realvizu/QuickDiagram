@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stereotype = value as ModelEntityStereotype;
+            var stereotype = value as RoslynBasedModelEntityStereotype;
             return stereotype == null 
                 ? null 
                 : StereotypeToVisualPropertyMaps.StereotypeToBackgroundBrushMap[stereotype];

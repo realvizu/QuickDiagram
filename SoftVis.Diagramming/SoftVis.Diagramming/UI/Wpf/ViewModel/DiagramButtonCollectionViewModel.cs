@@ -15,11 +15,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ObservableCollection<DiagramButtonViewModelBase> DiagramButtonViewModels { get; }
 
-        public DiagramButtonCollectionViewModel(IModel model, IDiagram diagram,
+        public DiagramButtonCollectionViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram,
             IDiagramBehaviourProvider diagramBehaviourProvider)
-            : base(model, diagram)
+            : base(readOnlyModel, diagram)
         {
-            _diagramButtonViewModelFactory = new DiagramButtonViewModelFactory(model, diagram,
+            _diagramButtonViewModelFactory = new DiagramButtonViewModelFactory(readOnlyModel, diagram,
                 diagramBehaviourProvider, DiagramDefaults.ButtonRadius, DiagramDefaults.ButtonOverlapParentBy);
 
             DiagramButtonViewModels = new ObservableCollection<DiagramButtonViewModelBase>();

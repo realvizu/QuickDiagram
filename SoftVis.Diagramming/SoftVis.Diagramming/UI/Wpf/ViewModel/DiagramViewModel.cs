@@ -22,13 +22,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public ModelEntitySelectorViewModel RelatedModelEntitySelectorViewModel { get; }
 
-        public DiagramViewModel(IModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
+        public DiagramViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
-            :base(model, diagram)
+            :base(readOnlyModel, diagram)
         {
             _diagramBehaviourProvider = diagramBehaviourProvider;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, _diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(readOnlyModel, diagram, _diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
 
             RelatedModelEntitySelectorViewModel = new ModelEntitySelectorViewModel(new Size(200, 100));
             RelatedModelEntitySelectorViewModel.ModelEntitySelected += AddModelEntityToDiagram;

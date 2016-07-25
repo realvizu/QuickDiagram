@@ -22,9 +22,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; private set; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramButtonViewModelBase(IModel model, IDiagram diagram, double buttonRadius, 
+        protected DiagramButtonViewModelBase(IReadOnlyModel readOnlyModel, IDiagram diagram, double buttonRadius, 
             RectRelativeLocation rectRelativeLocation)
-            :base(model, diagram)
+            :base(readOnlyModel, diagram)
         {
             _buttonRadius = buttonRadius;
             _rectRelativeLocation = rectRelativeLocation;

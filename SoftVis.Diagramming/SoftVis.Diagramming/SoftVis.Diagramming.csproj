@@ -198,7 +198,7 @@
     <Compile Include="Modeling\ModelEntityStereotype.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />
     <Compile Include="Modeling\ModelEntityType.cs" />
-    <Compile Include="Modeling\IModel.cs" />
+    <Compile Include="Modeling\IReadOnlyModel.cs" />
     <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
     <Compile Include="Modeling\Implementation\ModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

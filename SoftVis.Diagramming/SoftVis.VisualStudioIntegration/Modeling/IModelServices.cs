@@ -8,8 +8,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     public interface IModelServices
     {
-        IModel Model { get; }
-        IModelEntity GetOrAddRoslynSymbol(INamedTypeSymbol namedTypeSymbol);
-        void FindAndAddRelatedEntities(RoslynBasedModelEntity modelEntity);
+        IReadOnlyModel ReadOnlyModel { get; }
+
+        //TODO: ezek helyett builder/factory osztály?
+        IRoslynBasedModelEntity GetOrAddRoslynSymbol(INamedTypeSymbol namedTypeSymbol);
+        void FindAndAddRelatedEntities(IRoslynBasedModelEntity modelEntity);
     }
 }

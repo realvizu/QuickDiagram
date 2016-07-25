@@ -11,8 +11,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         public IDiagramNode DiagramNode { get; }
 
-        public DiagramNodeViewModel(IModel model, IDiagram diagram, IDiagramNode diagramNode)
-              : base(model, diagram)
+        public DiagramNodeViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram, IDiagramNode diagramNode)
+              : base(readOnlyModel, diagram)
         {
             DiagramNode = diagramNode;
             UpdateState();

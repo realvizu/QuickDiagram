@@ -22,9 +22,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public ShowRelatedNodeButtonViewModel(IModel model, IDiagram diagram,
+        public ShowRelatedNodeButtonViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram,
             double buttonRadius, RelatedEntityButtonDescriptor descriptor)
-            : base(model, diagram, buttonRadius, descriptor.ButtonLocation)
+            : base(readOnlyModel, diagram, buttonRadius, descriptor.ButtonLocation)
         {
             _descriptor = descriptor;
             SubscribeToModelEvents();
@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (AssociatedDiagramNode == null)
                 return;
 
-            _relatedEntities = Model.GetRelatedEntities(AssociatedModelEntity, RelationshipSpecification).ToList();
+            _relatedEntities = ReadOnlyModel.GetRelatedEntities(AssociatedModelEntity, RelationshipSpecification).ToList();
             _displayedRelatedEntities = _relatedEntities.Where(i => Diagram.Nodes.Any(j => j.ModelEntity == i)).ToList();
             _undisplayedRelatedEntities = _relatedEntities.Except(_displayedRelatedEntities).ToList();
 
@@ -79,10 +79,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToModelEvents()
         {
-            Model.EntityAdded += (o, e) => UpdateDisplayedEntityInfo();
-            Model.RelationshipAdded += (o, e) => UpdateDisplayedEntityInfo();
-            Model.EntityRemoved += (o, e) => UpdateDisplayedEntityInfo();
-            Model.RelationshipRemoved += (o, e) => UpdateDisplayedEntityInfo();
+            ReadOnlyModel.EntityAdded += (o, e) => UpdateDisplayedEntityInfo();
+            ReadOnlyModel.RelationshipAdded += (o, e) => UpdateDisplayedEntityInfo();
+            ReadOnlyModel.EntityRemoved += (o, e) => UpdateDisplayedEntityInfo();
+            ReadOnlyModel.RelationshipRemoved += (o, e) => UpdateDisplayedEntityInfo();
         }
 
         private static HandleOrientation CalculateHandleOrientation(RectRelativeLocation buttonLocation)
