@@ -23,11 +23,11 @@ namespace Codartis.SoftVis.TestHostApp
 
         public MainWindowViewModel()
         {
-            _testModel = TestModel.Create();
-            //_testModel = TestModel.CreateBig(40, 2);
+            _testModel = new TestModelBuilder().Create();
+            //_testModel = new BigTestModelBuilder().Create(4, 4);
 
             var diagramStyleProvider = new TestConnectorTypeResolver();
-            _testDiagram = new TestDiagram(diagramStyleProvider, _testModel);
+            _testDiagram = new TestDiagram(_testModel, diagramStyleProvider);
 
             var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
             DiagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider,
@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             //_testDiagram.Save(@"c:\big.xml");
 
-           // ZoomToContent();
+            ZoomToContent();
         }
 
         private void RemoveShapes()
@@ -71,6 +71,8 @@ namespace Codartis.SoftVis.TestHostApp
 
             _testDiagram.HideItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
             _nextToRemoveModelItemGroupIndex++;
+
+            ZoomToContent();
         }
 
         private void ZoomToContent() => DiagramViewModel.ZoomToContent();

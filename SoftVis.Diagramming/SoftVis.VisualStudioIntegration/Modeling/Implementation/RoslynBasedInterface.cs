@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -16,31 +16,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public override int Priority => 2;
 
-        public IEnumerable<RoslynBasedInterface> BaseInterfaces
+        public override IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol)
         {
-            get
-            {
-                return OutgoingRelationships.Where(i => i.IsGeneralization())
-                    .Select(i => i.Target).OfType<RoslynBasedInterface>();
-            }
+            EnsureSymbolTypeKind(roslynSymbol, TypeKind.Interface);
+
+            foreach (var baseSymbolRelation in GetBaseInterfaces(roslynSymbol))
+                yield return baseSymbolRelation;
+
+            foreach (var derivedSymbolRelation in GetDerivedInterfaces(roslynModelProvider, roslynSymbol))
+                yield return derivedSymbolRelation;
+
+            foreach (var implementingSymbolRelation in GetImplementingTypes(roslynModelProvider, roslynSymbol))
+                yield return implementingSymbolRelation;
         }
 
-        public IEnumerable<RoslynBasedInterface> DerivedInterfaces
+        private static IEnumerable<RoslynSymbolRelation> GetBaseInterfaces(INamedTypeSymbol interfaceSymbol)
         {
-            get
-            {
-                return IncomingRelationships.Where(i => i.IsGeneralization())
-                    .Select(i => i.Source).OfType<RoslynBasedInterface>();
-            }
-        }
-
-        public IEnumerable<RoslynBasedModelEntity> ImplementerTypes
-        {
-            get
-            {
-                return IncomingRelationships.Where(i => i.IsInterfaceImplementation())
-                    .Select(i => i.Source).OfType<RoslynBasedModelEntity>();
-            }
+            foreach (var implementedInterfaceSymbol in interfaceSymbol.Interfaces)
+                yield return new RoslynSymbolRelation(interfaceSymbol, implementedInterfaceSymbol, RelatedEntitySpecifications.BaseType);
         }
     }
 }

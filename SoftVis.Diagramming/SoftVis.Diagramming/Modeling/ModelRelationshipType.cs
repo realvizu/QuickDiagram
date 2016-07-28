@@ -8,6 +8,7 @@
     {
         Generalization,
         Dependency,
-        Association
+        Association,
+        Containment
     }
 }

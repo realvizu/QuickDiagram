@@ -4,7 +4,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     mc:Ignorable="d">
 
-    <Duration x:Key="DiagramShapeAnimationDuration">0:0:.3</Duration>
+    <Duration x:Key="DiagramShapeAnimationDuration">0:0:0.3</Duration>
     <Duration x:Key="FastPanAndZoomAnimationDuration">0:0:0.1</Duration>
     <Duration x:Key="SlowPanAndZoomAnimationDuration">0:0:0.5</Duration>
     <QuadraticEase x:Key="SlowPanAndZoomAnimationEasingFunction" EasingMode="EaseOut"/>

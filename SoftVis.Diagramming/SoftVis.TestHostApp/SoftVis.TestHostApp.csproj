@@ -67,9 +67,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="TestData\BigTestModelBuilder.cs" />
     <Compile Include="TestData\TestConnectorTypes.cs" />
     <Compile Include="TestData\TestDiagramBehaviourProvider.cs" />
     <Compile Include="TestData\TestConnectorTypeResolver.cs" />
+    <Compile Include="TestData\TestModelBuilder.cs" />
     <Compile Include="TestData\TestModelRelationshipStereotype.cs" />
     <Compile Include="TestData\TestDiagram.cs" />
     <Compile Include="TestData\TestClass.cs" />

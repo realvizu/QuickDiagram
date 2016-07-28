@@ -4,12 +4,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal static class TestRelationshipSpecifications
     {
-        public static readonly RelationshipSpecification ImplementedInterfaces =
-            new RelationshipSpecification(ModelRelationshipDirection.Outgoing, ModelRelationshipType.Generalization,
-                TestModelRelationshipStereotype.Implementation);
+        public static readonly RelatedEntitySpecification ImplementedInterfaces = new RelatedEntitySpecification(
+            ModelRelationshipType.Generalization,
+            TestModelRelationshipStereotypes.Implementation,
+            EntityRelationDirection.Outgoing);
 
-        public static readonly RelationshipSpecification ImplementerTypes =
-            new RelationshipSpecification(ModelRelationshipDirection.Incoming, ModelRelationshipType.Generalization,
-                TestModelRelationshipStereotype.Implementation);
+        public static readonly RelatedEntitySpecification ImplementerTypes = new RelatedEntitySpecification(
+            ModelRelationshipType.Generalization,
+            TestModelRelationshipStereotypes.Implementation,
+            EntityRelationDirection.Incoming);
     }
 }

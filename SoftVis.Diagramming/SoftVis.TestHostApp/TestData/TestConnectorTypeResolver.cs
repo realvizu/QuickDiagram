@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
     {
         public ConnectorType GetConnectorType(IModelRelationship modelRelationship)
         {
-            return modelRelationship.Stereotype == TestModelRelationshipStereotype.Implementation
+            return modelRelationship.Stereotype == TestModelRelationshipStereotypes.Implementation
                 ? TestConnectorTypes.Implementation
                 : ConnectorTypes.Generalization;
         }

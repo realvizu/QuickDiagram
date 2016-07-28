@@ -7,13 +7,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         public static bool IsGeneralization(this IModelRelationship relationship)
         {
             return relationship.Type == ModelRelationshipType.Generalization
-                   && relationship.Stereotype == null;
+                   && relationship.Stereotype == ModelRelationshipStereotype.None;
         }
 
         public static bool IsInterfaceImplementation(this IModelRelationship relationship)
         {
             return relationship.Type == ModelRelationshipType.Generalization
-                   && relationship.Stereotype == RoslynBasedModelRelationshipStereotype.Implementation;
+                   && relationship.Stereotype == ModelRelationshipStereotypes.Implementation;
         }
     }
 }

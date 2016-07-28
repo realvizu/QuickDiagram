@@ -12,6 +12,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     {
         INamedTypeSymbol RoslynSymbol { get; }
 
-        IEnumerable<RelatedRoslynSymbols> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol);
+        IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol);
     }
 }

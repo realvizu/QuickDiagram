@@ -72,9 +72,10 @@
     <Compile Include="Diagramming\IDiagramConnector.cs" />
     <Compile Include="Diagramming\IDiagram.cs" />
     <Compile Include="Diagramming\IDiagramShape.cs" />
-    <Compile Include="Modeling\Implementation\ModelBase.cs" />
-    <Compile Include="Modeling\RelationshipTypeSpecification.cs" />
-    <Compile Include="Modeling\RelationshipSpecifications.cs" />
+    <Compile Include="Modeling\Implementation\Model.cs" />
+    <Compile Include="Modeling\Implementation\ModelGraph.cs" />
+    <Compile Include="Modeling\ModelRelationshipTypeSpecification.cs" />
+    <Compile Include="Modeling\RelatedEntitySpecifications.cs" />
     <Compile Include="UI\Common\ZoomDirection.cs" />
     <Compile Include="UI\Geometry\VerticalAlignmentType.cs" />
     <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
@@ -107,7 +108,7 @@
     </Compile>
     <Compile Include="UI\Wpf\ViewModel\DiagramButtonActivatedEventArgs.cs" />
     <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />
-    <Compile Include="Modeling\RelationshipSpecification.cs" />
+    <Compile Include="Modeling\RelatedEntitySpecification.cs" />
     <Compile Include="Diagramming\Implementation\Diagram.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnector.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnectorAction.cs" />
@@ -193,7 +194,7 @@
     <Compile Include="Modeling\IModelItem.cs" />
     <Compile Include="Modeling\IModelEntity.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
-    <Compile Include="Modeling\ModelRelationshipDirection.cs" />
+    <Compile Include="Modeling\EntityRelationDirection.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
     <Compile Include="Modeling\ModelEntityStereotype.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />

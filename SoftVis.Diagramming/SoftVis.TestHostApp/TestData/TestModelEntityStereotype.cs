@@ -2,13 +2,8 @@
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    internal class TestModelEntityStereotype : ModelEntityStereotype
+    internal static class TestModelEntityStereotypes
     {
-        public static readonly ModelEntityStereotype Interface = new TestModelEntityStereotype("interface");
-
-        private TestModelEntityStereotype(string name)
-            :base(name)
-        {
-        }
+        public static readonly ModelEntityStereotype Interface = new ModelEntityStereotype("interface");
     }
 }

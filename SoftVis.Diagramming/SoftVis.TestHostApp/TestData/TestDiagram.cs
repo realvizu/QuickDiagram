@@ -11,8 +11,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
     {
         public List<List<IModelItem>> ModelItemGroups { get; }
 
-        public TestDiagram(IConnectorTypeResolver connectorTypeResolver, TestModel model) 
-            : base(connectorTypeResolver)
+        public TestDiagram(TestModel model, IConnectorTypeResolver connectorTypeResolver) 
+            : base(model, connectorTypeResolver)
         {
             ModelItemGroups = model.ItemGroups.ToList();
         }

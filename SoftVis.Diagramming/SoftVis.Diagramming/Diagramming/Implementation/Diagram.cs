@@ -19,11 +19,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// A diagram has a layout engine that calculates how to arrange nodes and connectors.
     /// The layout (relative positions and size) also conveys meaning.
     /// </summary>
-    [DebuggerDisplay("VertexCount={_graph.VertexCount}, EdgeCount={_graph.EdgeCount}")]
+    [DebuggerDisplay("NodeCount={_graph.VertexCount}, ConnectorCount={_graph.EdgeCount}")]
     public class Diagram : IArrangeableDiagram
     {
         public IConnectorTypeResolver ConnectorTypeResolver { get; }
 
+        private readonly IReadOnlyModel _model;
         private readonly DiagramGraph _graph;
         private readonly IIncrementalLayoutEngine _incrementalLayoutEngine;
         private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
@@ -36,11 +37,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event EventHandler<IDiagramShape> ShapeActivated;
         public event EventHandler Cleared;
 
-        public Diagram(IConnectorTypeResolver connectorTypeResolver)
+        public Diagram(IReadOnlyModel model, IConnectorTypeResolver connectorTypeResolver)
         {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
             if (connectorTypeResolver == null)
                 throw new ArgumentNullException(nameof(connectorTypeResolver));
 
+            _model = model;
             ConnectorTypeResolver = connectorTypeResolver;
 
             _graph = new DiagramGraph();
@@ -117,11 +121,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             HideItems(new[] { diagramShape.ModelItem });
         }
 
-        public IEnumerable<DiagramNode> GetRelatedNodes(DiagramNode diagramNode, RelationshipSpecification specification)
+        public IEnumerable<DiagramNode> GetRelatedNodes(DiagramNode diagramNode, RelatedEntitySpecification specification)
         {
             var typeSpecification = specification.TypeSpecification;
 
-            return specification.Direction == ModelRelationshipDirection.Incoming
+            return specification.Direction == EntityRelationDirection.Incoming
                 ? _graph.InEdges(diagramNode).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Source)
                 : _graph.OutEdges(diagramNode).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Target);
         }
@@ -264,7 +268,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowRelationshipsIfBothEndsAreVisible(IModelEntity modelEntity)
         {
-            foreach (var modelRelationship in modelEntity.AllRelationships)
+            foreach (var modelRelationship in _model.GetRelationships(modelEntity))
             {
                 if (NodeExists(modelRelationship.Source) &&
                     NodeExists(modelRelationship.Target))
@@ -336,34 +340,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
-        private void OnShapeAdded(IDiagramShape diagramShape)
-        {
-            ShapeAdded?.Invoke(this, diagramShape);
-        }
-
-        private void OnShapeMoved(IDiagramShape diagramShape)
-        {
-            ShapeMoved?.Invoke(this, diagramShape);
-        }
-
-        private void OnShapeRemoved(IDiagramShape diagramShape)
-        {
-            ShapeRemoved?.Invoke(this, diagramShape);
-        }
-
-        private void OnCleared()
-        {
-            Cleared?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnShapeSelected(IDiagramShape diagramShape)
-        {
-            ShapeSelected?.Invoke(this, diagramShape);
-        }
-
-        private void OnShapeActivated(IDiagramShape diagramShape)
-        {
-            ShapeActivated?.Invoke(this, diagramShape);
-        }
+        private void OnShapeAdded(IDiagramShape diagramShape) => ShapeAdded?.Invoke(this, diagramShape);
+        private void OnShapeMoved(IDiagramShape diagramShape) => ShapeMoved?.Invoke(this, diagramShape);
+        private void OnShapeRemoved(IDiagramShape diagramShape) => ShapeRemoved?.Invoke(this, diagramShape);
+        private void OnCleared() => Cleared?.Invoke(this, EventArgs.Empty);
+        private void OnShapeSelected(IDiagramShape diagramShape) => ShapeSelected?.Invoke(this, diagramShape);
+        private void OnShapeActivated(IDiagramShape diagramShape) => ShapeActivated?.Invoke(this, diagramShape);
     }
 }

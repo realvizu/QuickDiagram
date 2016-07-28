@@ -11,15 +11,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     internal class DiagramButtonActivatedEventArgs : EventArgs
     {
         public IModelEntity ModelEntity { get; }
-        public RelationshipSpecification RelationshipSpecification { get; }
+        public RelatedEntitySpecification RelatedEntitySpecification { get; }
         public Point AttachPoint { get; }
         public HandleOrientation HandleOrientation { get; }
 
-        public DiagramButtonActivatedEventArgs(IModelEntity modelEntity, RelationshipSpecification relationshipSpecification,
+        public DiagramButtonActivatedEventArgs(IModelEntity modelEntity, RelatedEntitySpecification relatedEntitySpecification,
             Point attachPoint, HandleOrientation handleOrientation)
         {
             ModelEntity = modelEntity;
-            RelationshipSpecification = relationshipSpecification;
+            RelatedEntitySpecification = relatedEntitySpecification;
             AttachPoint = attachPoint;
             HandleOrientation = handleOrientation;
         }

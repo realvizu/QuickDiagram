@@ -2,13 +2,8 @@
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
-    internal class TestModelRelationshipStereotype : ModelRelationshipStereotype
+    internal static class TestModelRelationshipStereotypes
     {
-        public static readonly ModelRelationshipStereotype Implementation = new TestModelRelationshipStereotype("implements");
-
-        private TestModelRelationshipStereotype(string name)
-            :base(name)
-        {
-        }
+        public static readonly ModelRelationshipStereotype Implementation = new ModelRelationshipStereotype("implements");
     }
 }

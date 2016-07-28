@@ -28,8 +28,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public string Name => DiagramNode.Name;
         public ModelEntityStereotype Stereotype => DiagramNode.ModelEntity.Stereotype;
-        public bool IsStereotypeVisible => Stereotype != null;
-        public string StereotypeText => $"<<{Stereotype?.Name.ToLower()}>>";
+        public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
+        public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
         public FontStyle FontStyle => DiagramNode.ModelEntity.IsAbstract ? FontStyles.Oblique : FontStyles.Normal;
         private IModelEntity ModelEntity => DiagramNode.ModelEntity;
     }

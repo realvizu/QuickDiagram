@@ -18,6 +18,6 @@
         /// </summary>
         ModelRelationshipStereotype Stereotype { get; }
 
-        bool IsOfType(RelationshipTypeSpecification typeSpecification);
+        bool IsOfType(ModelRelationshipTypeSpecification typeSpecification);
     }
 }

@@ -17,6 +17,6 @@ namespace Codartis.SoftVis.Diagramming
         ModelRelationshipType Type { get; }
         ModelRelationshipStereotype Stereotype { get; }
 
-        bool IsOfType(RelationshipTypeSpecification typeSpecification);
+        bool IsOfType(ModelRelationshipTypeSpecification typeSpecification);
     }
 }

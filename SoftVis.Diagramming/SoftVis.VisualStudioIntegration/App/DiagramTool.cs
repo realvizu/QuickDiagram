@@ -39,12 +39,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
             var roslynModelProvider = new RoslynModelProvider(hostWorkspaceServices);
             _modelBuilder = new RoslynBasedModelBuilder(roslynModelProvider);
-
-            _diagram = new RoslynBasedDiagram();
+            
+            _diagram = new RoslynBasedDiagram(_modelBuilder.Model);
             _diagram.ShapeActivated += OnDiagramShapeActivated;
             _diagram.ShapeAdded += OnShapeAddedToDiagram;
 
-            _diagramUi = new DiagramUi(_modelBuilder.ReadOnlyModel, _diagram);
+            _diagramUi = new DiagramUi(_modelBuilder.Model, _diagram);
 
             // The diagram control must be hosted in the window created by the host package.
             _hostUiServices.DiagramHostWindow.Initialize("Diagram", _diagramUi.ContentControl);
@@ -83,7 +83,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (roslynBasedModelEntity == null)
                 return;
 
-            _modelBuilder.FindAndAddRelatedEntities(roslynBasedModelEntity);
+            _modelBuilder.ExtendModelWithRelatedEntities(roslynBasedModelEntity);
         }
 
         private static void RegisterShellTriggeredCommands(IHostUiServices hostUiServices, IAppServices appServices)

@@ -79,7 +79,7 @@
     <Compile Include="Hosting\IPackageServices.cs" />
     <Compile Include="Hosting\HostUiServiceProvider.cs" />
     <Compile Include="Modeling\IRoslynModelProvider.cs" />
-    <Compile Include="Modeling\RelatedRoslynSymbols.cs" />
+    <Compile Include="Modeling\RoslynSymbolRelation.cs" />
     <Compile Include="Modeling\IRoslynBasedModelEntity.cs" />
     <Compile Include="UI\DiagramUi.cs" />
     <Compile Include="UI\IUiServices.cs" />
@@ -93,16 +93,16 @@
     <Compile Include="Modeling\IModelServices.cs" />
     <Compile Include="Modeling\ModelRelationshipExtensions.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedDelegate.cs" />
-    <Compile Include="Modeling\RoslynBasedModelRelationshipStereotype.cs" />
+    <Compile Include="Modeling\ModelRelationshipStereotypes.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedEnum.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedStruct.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedInterface.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelBuilder.cs" />
     <Compile Include="Diagramming\IDiagramServices.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelEntity.cs" />
-    <Compile Include="Modeling\RoslynBasedModelEntityStereotype.cs" />
+    <Compile Include="Modeling\ModelEntityStereotypes.cs" />
     <Compile Include="UI\CustomDiagramBehaviourProvider.cs" />
-    <Compile Include="Modeling\CustomRelationshipSpecifications.cs" />
+    <Compile Include="Modeling\RoslynRelatedEntitySpecifications.cs" />
     <Compile Include="Modeling\TypeKindExtensions.cs" />
     <Compile Include="VsctConstants.cs" />
     <Compile Include="App\IAppServices.cs" />
@@ -286,8 +286,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

@@ -14,8 +14,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private const int DiagramNodeMinWidth = 55;
         private const int DiagramNodeMinHeight = 50;
 
-        public RoslynBasedDiagram() 
-            : base(new RoslynBasedConnectorTypeResolver())
+        public RoslynBasedDiagram(IReadOnlyModel model) 
+            : base(model, new RoslynBasedConnectorTypeResolver())
         {
         }
 

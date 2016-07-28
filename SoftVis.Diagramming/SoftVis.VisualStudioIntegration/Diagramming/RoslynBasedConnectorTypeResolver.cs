@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     {
         public ConnectorType GetConnectorType(IModelRelationship modelRelationship)
         {
-            return modelRelationship.Stereotype == RoslynBasedModelRelationshipStereotype.Implementation
+            return modelRelationship.Stereotype == ModelRelationshipStereotypes.Implementation
                 ? RoslynBasedConnectorTypes.Implementation
                 : ConnectorTypes.Generalization;
         }

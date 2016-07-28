@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
         public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
 
-        public bool IsOfType(RelationshipTypeSpecification typeSpecification)
+        public bool IsOfType(ModelRelationshipTypeSpecification typeSpecification)
             => ModelRelationship.IsOfType(typeSpecification);
 
         private static Rect2D CalculateRect(Rect2D sourceRect, Rect2D targetRect, Route routePoints)

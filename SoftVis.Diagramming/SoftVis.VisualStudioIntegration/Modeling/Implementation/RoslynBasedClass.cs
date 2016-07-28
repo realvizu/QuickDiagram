@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -18,57 +17,25 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public override int Priority => 4;
         public override bool IsAbstract => RoslynSymbol.IsAbstract;
 
-        public RoslynBasedClass BaseClass
-        {
-            get
-            {
-                return OutgoingRelationships.FirstOrDefault(i => i.IsGeneralization())?.Target as RoslynBasedClass;
-            }
-        }
-
-        public IEnumerable<RoslynBasedInterface> ImplementedInterfaces
-        {
-            get
-            {
-                return OutgoingRelationships.Where(i => i.IsInterfaceImplementation())
-                    .Select(i => i.Target).OfType<RoslynBasedInterface>();
-            }
-        }
-
-        public IEnumerable<RoslynBasedClass> DerivedClasses
-        {
-            get
-            {
-                return IncomingRelationships.Where(i => i.IsGeneralization())
-                    .Select(i => i.Source).OfType<RoslynBasedClass>();
-            }
-        }
-
-        public override IEnumerable<RelatedRoslynSymbols> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol)
+        public override IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol)
         {
             EnsureSymbolTypeKind(roslynSymbol, TypeKind.Class);
 
-            return GetDerivedTypeSymbols(roslynModelProvider, roslynSymbol);
+            foreach (var baseSymbolRelation in GetBaseTypes(roslynSymbol))
+                yield return baseSymbolRelation;
+
+            foreach (var derivedSymbolRelation in GetDerivedTypes(roslynModelProvider, roslynSymbol))
+                yield return derivedSymbolRelation;
+
+            foreach (var implementedSymbolRelation in GetImplementedInterfaces(roslynSymbol))
+                yield return implementedSymbolRelation;
         }
 
-        private IEnumerable<RelatedRoslynSymbols> GetDerivedTypeSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol classSymbol)
+        private static IEnumerable<RoslynSymbolRelation> GetBaseTypes(INamedTypeSymbol roslynSymbol)
         {
-            var workspace = roslynModelProvider.GetWorkspace();
-            return FindDerivedTypesAsync(workspace, classSymbol);
+            var baseSymbol = roslynSymbol.BaseType;
+            if (baseSymbol != null)
+                yield return new RoslynSymbolRelation(roslynSymbol, baseSymbol, RelatedEntitySpecifications.BaseType);
         }
-
-        private static IEnumerable<RelatedRoslynSymbols> FindDerivedTypesAsync(Workspace workspace, INamedTypeSymbol classSymbol)
-        {
-            foreach (var project in workspace.CurrentSolution.Projects)
-            {
-                var compilation = project.GetCompilationAsync().Result;
-                var visitor = new DerivedTypesFinderVisitor(classSymbol);
-
-                compilation.Assembly.Accept(visitor);
-                foreach (var descendant in visitor.DerivedTypeSymbols)
-                    yield return new RelatedRoslynSymbols(classSymbol, descendant, RelationshipSpecifications.Subtype);
-            }
-        }
-
     }
 }

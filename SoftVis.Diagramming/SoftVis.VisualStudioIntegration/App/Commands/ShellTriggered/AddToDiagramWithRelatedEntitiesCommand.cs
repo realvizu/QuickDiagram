@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
             if (namedTypeSymbol == null)
                 return;
 
-            var modelEntity = ModelServices.GetOrAddRoslynSymbol(namedTypeSymbol);
+            var modelEntity = ModelServices.FindOrCreateModelEntity(namedTypeSymbol);
             if (modelEntity == null)
                 return;
 

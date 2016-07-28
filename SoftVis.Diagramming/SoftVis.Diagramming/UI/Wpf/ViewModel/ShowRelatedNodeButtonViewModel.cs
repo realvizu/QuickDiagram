@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ConnectorType ConnectorType => _descriptor.ConnectorType;
 
         private RectRelativeLocation ButtonLocation => _descriptor.ButtonLocation;
-        private RelationshipSpecification RelationshipSpecification => _descriptor.RelationshipSpecification;
+        private RelatedEntitySpecification RelatedEntitySpecification => _descriptor.RelatedEntitySpecification;
         private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
         private IDiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
         private IModelEntity AssociatedModelEntity => AssociatedDiagramNode?.ModelEntity;
@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (AssociatedDiagramNode == null)
                 return;
 
-            _relatedEntities = ReadOnlyModel.GetRelatedEntities(AssociatedModelEntity, RelationshipSpecification).ToList();
+            _relatedEntities = ReadOnlyModel.GetRelatedEntities(AssociatedModelEntity, RelatedEntitySpecification).ToList();
             _displayedRelatedEntities = _relatedEntities.Where(i => Diagram.Nodes.Any(j => j.ModelEntity == i)).ToList();
             _undisplayedRelatedEntities = _relatedEntities.Except(_displayedRelatedEntities).ToList();
 

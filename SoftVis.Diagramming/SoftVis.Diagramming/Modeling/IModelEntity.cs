@@ -30,20 +30,5 @@ namespace Codartis.SoftVis.Modeling
         int Priority { get; }
 
         bool IsAbstract { get; }
-
-        /// <summary>
-        /// All relationships within the model whose source entity is this.
-        /// </summary>
-        IEnumerable<IModelRelationship> OutgoingRelationships { get; }
-
-        /// <summary>
-        /// All relationships within the model whose target entity is this.
-        /// </summary>
-        IEnumerable<IModelRelationship> IncomingRelationships { get; }
-
-        /// <summary>
-        /// All relationships within the model whose source or target entity is this.
-        /// </summary>
-        IEnumerable<IModelRelationship> AllRelationships { get; }
     }
 }

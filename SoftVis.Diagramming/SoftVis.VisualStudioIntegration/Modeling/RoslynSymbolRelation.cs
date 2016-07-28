@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Describes the relationship of 2 roslyn type symbols.
     /// </summary>
-    public struct RelatedRoslynSymbols
+    public class RoslynSymbolRelation
     {
         /// <summary>
         /// A roslyn type symbol whose related symbol is described.
@@ -19,20 +19,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <summary>
         /// Specifies the relationship of the base and related symbols.
         /// </summary>
-        public RelationshipSpecification RelationshipSpecification { get; }
+        public RelatedEntitySpecification RelatedEntitySpecification { get; }
 
-        public RelatedRoslynSymbols(INamedTypeSymbol baseSymbol, INamedTypeSymbol relatedSymbol, RelationshipSpecification relationshipSpecification)
+        public RoslynSymbolRelation(INamedTypeSymbol baseSymbol, INamedTypeSymbol relatedSymbol, RelatedEntitySpecification relatedEntitySpecification)
         {
             BaseSymbol = baseSymbol;
             RelatedSymbol = relatedSymbol;
-            RelationshipSpecification = relationshipSpecification;
+            RelatedEntitySpecification = relatedEntitySpecification;
         }
+
+        public ModelRelationshipTypeSpecification TypeSpecification => RelatedEntitySpecification.TypeSpecification;
 
         /// <summary>
         /// The roslyn type symbol that is on the source side of the directed relationship.
         /// </summary>
         public INamedTypeSymbol SourceSymbol
-            => RelationshipSpecification.Direction == ModelRelationshipDirection.Outgoing
+            => RelatedEntitySpecification.Direction == EntityRelationDirection.Outgoing
                 ? BaseSymbol
                 : RelatedSymbol;
 
@@ -40,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// The roslyn type symbol that is on the target side of the directed relationship.
         /// </summary>
         public INamedTypeSymbol TargetSymbol
-            => RelationshipSpecification.Direction == ModelRelationshipDirection.Outgoing
+            => RelatedEntitySpecification.Direction == EntityRelationDirection.Outgoing
                 ? RelatedSymbol
                 : BaseSymbol;
     }
