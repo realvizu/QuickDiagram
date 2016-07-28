@@ -39,7 +39,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return AddEntityIfNotExists(namedTypeSymbol);
         }
 
-        // TODO: make it async
         /// <summary>
         /// Explores related symbols in the Roslyn model and adds them to the model.
         /// </summary>

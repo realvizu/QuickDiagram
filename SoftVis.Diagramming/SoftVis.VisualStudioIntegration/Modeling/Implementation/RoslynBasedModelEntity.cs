@@ -24,8 +24,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             RoslynSymbol = roslynSymbol;
         }
 
-        public string Id => RoslynSymbol.GetKey();
-
         public virtual IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol)
             => Enumerable.Empty<RoslynSymbolRelation>();
 

@@ -79,6 +79,7 @@
     <Compile Include="Hosting\IPackageServices.cs" />
     <Compile Include="Hosting\HostUiServiceProvider.cs" />
     <Compile Include="Modeling\IRoslynModelProvider.cs" />
+    <Compile Include="Modeling\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Modeling\RoslynSymbolRelation.cs" />
     <Compile Include="Modeling\IRoslynBasedModelEntity.cs" />
     <Compile Include="UI\DiagramUi.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="ImageExport\Dpi.cs" />
     <Compile Include="Modeling\Implementation\ImplementingTypesFinderVisitor.cs" />
     <Compile Include="Modeling\IModelServices.cs" />
-    <Compile Include="Modeling\ModelRelationshipExtensions.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedDelegate.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotypes.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedEnum.cs" />
@@ -110,7 +110,6 @@
     <Compile Include="App\IHostWorkspaceServices.cs" />
     <Compile Include="Hosting\DiagramHostToolWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modeling\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModel.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedClass.cs" />
     <Compile Include="Hosting\SoftVisPackage.cs" />

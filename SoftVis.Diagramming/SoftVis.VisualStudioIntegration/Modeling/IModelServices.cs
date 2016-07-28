@@ -26,5 +26,4 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="modelEntity">A model entity.</param>
         void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity);
     }
-
 }
