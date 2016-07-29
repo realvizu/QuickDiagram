@@ -17,9 +17,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTrigge
         {
             var roslynBasedModelEntity = diagramNode?.ModelEntity as RoslynBasedModelEntity;
             if (roslynBasedModelEntity != null)
-            {
                 HostWorkspaceServices.ShowSourceFile(roslynBasedModelEntity.RoslynSymbol);
-            }
+
+            HostUiServices.DiagramHostWindow.Show();
         }
     }
 }

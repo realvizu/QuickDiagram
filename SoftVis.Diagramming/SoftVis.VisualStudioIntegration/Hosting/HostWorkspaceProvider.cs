@@ -126,6 +126,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public void ShowSourceFile(ISymbol symbol)
         {
             var workspace = GetWorkspace();
+            //var sourceFilePath = symbol?.Locations.FirstOrDefault()?.SourceTree?.FilePath;
             var documentId = workspace?.CurrentSolution?.GetDocumentId(symbol?.Locations.FirstOrDefault()?.SourceTree);
 
             if (documentId != null)

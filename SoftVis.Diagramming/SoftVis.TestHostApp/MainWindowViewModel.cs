@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf.Commands;
@@ -28,6 +29,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             var diagramStyleProvider = new TestConnectorTypeResolver();
             _testDiagram = new TestDiagram(_testModel, diagramStyleProvider);
+            _testDiagram.ShapeActivated += (sender, shape) => Debug.WriteLine($"Activated: {shape.ModelItem.ToString()}");
 
             var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
             DiagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider,

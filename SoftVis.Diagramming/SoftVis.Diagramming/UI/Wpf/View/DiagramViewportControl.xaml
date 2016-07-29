@@ -23,7 +23,13 @@
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl 
                     FocusDiagramItemCommand="{Binding FocusCommand}"
-                    UnfocusDiagramItemCommand="{Binding UnfocusCommand}" />
+                    UnfocusDiagramItemCommand="{Binding UnfocusCommand}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding ActivateNodeCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </view:DiagramNodeControl>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
