@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTrigge
     /// </summary>
     internal class ShowSourceFileCommand : ExplicitCommandBase<IDiagramNode>
     {
-        public ShowSourceFileCommand(IAppServices appServices) 
+        public ShowSourceFileCommand(IAppServices appServices)
             : base(appServices)
         {
         }
@@ -19,7 +19,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTrigge
             if (roslynBasedModelEntity != null)
                 HostWorkspaceServices.ShowSourceFile(roslynBasedModelEntity.RoslynSymbol);
 
-            HostUiServices.DiagramHostWindow.Show();
+            var diagramHostWindow = HostUiServices.DiagramHostWindow;
+            if (diagramHostWindow.FrameMode != FrameMode.MdiChild)
+                diagramHostWindow.Show();
         }
     }
 }

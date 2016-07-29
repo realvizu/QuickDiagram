@@ -6,6 +6,7 @@
     public interface IHostWindow
     {
         void Initialize(string caption, object control);
+        FrameMode FrameMode { get; }
         void Show();
         void Hide();
     }

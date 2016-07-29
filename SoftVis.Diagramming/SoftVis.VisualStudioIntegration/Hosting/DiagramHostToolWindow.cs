@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     {
         private readonly ContentPresenter _contentPresenter;
 
-        public DiagramHostToolWindow() 
+        public DiagramHostToolWindow()
             : base(null)
         {
             ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
@@ -29,6 +29,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             Caption = caption;
             _contentPresenter.Content = control;
+        }
+
+        public FrameMode FrameMode
+        {
+            get
+            {
+                var windowFrame = (IVsWindowFrame)Frame;
+                object currentFrameMode;
+                windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
+                return FrameModeTranslator.Translate(currentFrameMode);
+            }
         }
 
         public void Show() => InvokeOnWindowFrame(i => i.Show());

@@ -68,6 +68,7 @@
     <Compile Include="App\Commands\ShellTriggered\IncreaseFontSizeCommand.cs" />
     <Compile Include="App\Commands\ShellTriggered\ShowDiagramWindowCommand.cs" />
     <Compile Include="App\Commands\ExplicitlyTriggered\ShowSourceFileCommand.cs" />
+    <Compile Include="App\FrameMode.cs" />
     <Compile Include="App\IHostUiServices.cs" />
     <Compile Include="App\IHostWindow.cs" />
     <Compile Include="App\RoslynModelProvider.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Diagramming\CustomConnectorTypes.cs" />
     <Compile Include="Diagramming\RoslynBasedDiagram.cs" />
     <Compile Include="App\DiagramTool.cs" />
+    <Compile Include="Hosting\FrameModeTranslator.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Hosting\IPackageServices.cs" />
     <Compile Include="Hosting\HostUiServiceProvider.cs" />
