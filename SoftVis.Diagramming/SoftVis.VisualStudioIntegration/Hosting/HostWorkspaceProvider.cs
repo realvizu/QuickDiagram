@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.App;
+using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -11,6 +12,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
+using Document = Microsoft.CodeAnalysis.Document;
 using TextSpan = Microsoft.CodeAnalysis.Text.TextSpan;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
@@ -96,14 +98,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static ISymbol GetSymbolForSyntaxNode(SemanticModel semanticModel, SyntaxNode node)
         {
-            if (node is TypeDeclarationSyntax || 
+            if (node is TypeDeclarationSyntax ||
                 node is EnumDeclarationSyntax ||
                 node is DelegateDeclarationSyntax)
                 return semanticModel.GetDeclaredSymbol(node);
 
             var identifierNode = FindSimpleNameSyntax(node);
-            return identifierNode == null 
-                ? null 
+            return identifierNode == null
+                ? null
                 : semanticModel.GetSymbolInfo(identifierNode).Symbol;
         }
 
@@ -126,11 +128,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public void ShowSourceFile(ISymbol symbol)
         {
             var workspace = GetWorkspace();
-            //var sourceFilePath = symbol?.Locations.FirstOrDefault()?.SourceTree?.FilePath;
-            var documentId = workspace?.CurrentSolution?.GetDocumentId(symbol?.Locations.FirstOrDefault()?.SourceTree);
 
-            if (documentId != null)
-                workspace.OpenDocument(documentId);
+            var location = symbol?.Locations.FirstOrDefault();
+            if (location == null)
+                return;
+
+            var documentId = workspace?.CurrentSolution?.GetDocumentId(location?.SourceTree);
+            if (documentId == null)
+                return;
+
+            workspace.OpenDocument(documentId);
+
+            var hostService = _packageServices.GetHostService();
+            var selection = hostService.ActiveDocument.Selection as TextSelection;
+            if (selection == null)
+                return;
+
+            var fileLinePositionSpan = location.GetLineSpan();
+            var start = fileLinePositionSpan.Span.Start;
+            selection.MoveTo(start.Line + 1, start.Character + 1, false);
+            var end = fileLinePositionSpan.Span.End;
+            selection.MoveTo(end.Line + 1, end.Character + 1, true);
         }
 
         private Document GetCurrentDocument()

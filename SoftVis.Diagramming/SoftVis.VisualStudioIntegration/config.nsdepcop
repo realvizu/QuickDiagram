@@ -22,6 +22,8 @@
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="EnvDTE.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="EnvDTE80.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Windows.Controls" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.App" />

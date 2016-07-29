@@ -1,15 +1,17 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.App;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Debugger = System.Diagnostics.Debugger;
 using IVisualStudioServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
@@ -53,6 +55,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var hostWorkspaceProvider = new HostWorkspaceProvider(this);
             var hostUiServiceProvider = new HostUiServiceProvider(this);
             _diagramTool = new DiagramTool(hostUiServiceProvider, hostWorkspaceProvider);
+        }
+
+        public DTE2 GetHostService()
+        {
+            var hostService = GetService(typeof(DTE)) as DTE2;
+            if (hostService == null)
+                throw new Exception("Unable to get DTE service.");
+            return hostService;
         }
 
         public IVsRunningDocumentTable GetRunningDocumentTableService()

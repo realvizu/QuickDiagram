@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.LanguageServices;
+﻿using EnvDTE80;
+using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -16,6 +17,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// <param name="instanceId">The instance id, for multi-instance tool windows. Omit for single-instance tool windows.</param>
         /// <returns>The created tool window.</returns>
         TWindow CreateToolWindow<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
+
+        /// <summary>
+        /// Return the host service.
+        /// </summary>
+        /// <returns>The host service.</returns>
+        DTE2 GetHostService();
 
         /// <summary>
         /// Returns the service of the host environment that can be used to access menu operations.
