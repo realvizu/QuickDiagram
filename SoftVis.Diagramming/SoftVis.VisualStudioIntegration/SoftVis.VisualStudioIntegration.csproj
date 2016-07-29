@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="App\ComboCommandType.cs" />
     <Compile Include="App\Commands\ExplicitlyTriggered\ExplicitCommandBase.cs" />
-    <Compile Include="App\Commands\ShellTriggered\AddToDiagramWithRelatedEntitiesCommand.cs" />
+    <Compile Include="App\Commands\ShellTriggered\AddToDiagramWithHierarchyCommand.cs" />
     <Compile Include="App\Commands\ShellTriggered\AddToDiagramCommand.cs" />
     <Compile Include="App\Commands\ShellTriggered\ClearDiagramCommand.cs" />
     <Compile Include="App\Commands\CommandBase.cs" />

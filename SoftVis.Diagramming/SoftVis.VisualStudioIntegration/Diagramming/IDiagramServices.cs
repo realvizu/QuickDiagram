@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     public interface IDiagramServices
     {
         void ShowModelEntity(IRoslynBasedModelEntity modelEntity);
-        void ShowModelEntityWithRelatedEntities(IRoslynBasedModelEntity modelEntity);
+        void ShowModelEntityWithHierarchy(IRoslynBasedModelEntity modelEntity);
         void Clear();
     }
 }

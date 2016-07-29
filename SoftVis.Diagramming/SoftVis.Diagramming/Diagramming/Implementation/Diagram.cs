@@ -22,9 +22,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     [DebuggerDisplay("NodeCount={_graph.VertexCount}, ConnectorCount={_graph.EdgeCount}")]
     public class Diagram : IArrangeableDiagram
     {
-        public IConnectorTypeResolver ConnectorTypeResolver { get; }
+        protected readonly IReadOnlyModel Model;
+        protected readonly IConnectorTypeResolver ConnectorTypeResolver;
 
-        private readonly IReadOnlyModel _model;
         private readonly DiagramGraph _graph;
         private readonly IIncrementalLayoutEngine _incrementalLayoutEngine;
         private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (connectorTypeResolver == null)
                 throw new ArgumentNullException(nameof(connectorTypeResolver));
 
-            _model = model;
+            Model = model;
             ConnectorTypeResolver = connectorTypeResolver;
 
             _graph = new DiagramGraph();
@@ -63,6 +63,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         IEnumerable<IDiagramShape> IDiagram.Shapes => Shapes;
 
         public Rect2D ContentRect => Shapes.Select(i => i.Rect).Union();
+
+        public ConnectorType GetConnectorType(IModelRelationship modelRelationship) 
+            => ConnectorTypeResolver.GetConnectorType(modelRelationship);
 
         /// <summary>
         /// Clear the diagram (that is, hide all nodes and connectors).
@@ -268,7 +271,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowRelationshipsIfBothEndsAreVisible(IModelEntity modelEntity)
         {
-            foreach (var modelRelationship in _model.GetRelationships(modelEntity))
+            foreach (var modelRelationship in Model.GetRelationships(modelEntity).ToList())
             {
                 if (NodeExists(modelRelationship.Source) &&
                     NodeExists(modelRelationship.Target))

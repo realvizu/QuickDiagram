@@ -19,6 +19,6 @@ namespace Codartis.SoftVis.Modeling
 
         IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipTypeSpecification typeSpecification);
         IEnumerable<IModelRelationship> GetRelationships(IModelEntity entity);
-        IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, RelatedEntitySpecification specification);
+        IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, RelatedEntitySpecification specification, bool recursive = false);
     }
 }

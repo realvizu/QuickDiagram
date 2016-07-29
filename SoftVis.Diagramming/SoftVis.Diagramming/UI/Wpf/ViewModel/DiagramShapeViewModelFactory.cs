@@ -9,12 +9,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-        private readonly IConnectorTypeResolver _connectorTypeResolver;
-
-        public DiagramShapeViewModelFactory(IReadOnlyModel readOnlyModel, IDiagram diagram, IConnectorTypeResolver connectorTypeResolver)
+        public DiagramShapeViewModelFactory(IReadOnlyModel readOnlyModel, IDiagram diagram)
               : base(readOnlyModel, diagram)
         {
-            _connectorTypeResolver = connectorTypeResolver;
         }
 
         public DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
@@ -25,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShape is IDiagramConnector)
             {
                 var diagramConnector = (IDiagramConnector) diagramShape;
-                var connectorType = _connectorTypeResolver.GetConnectorType(diagramConnector.ModelRelationship);
+                var connectorType = Diagram.GetConnectorType(diagramConnector.ModelRelationship);
                 return new DiagramConnectorViewModel(ReadOnlyModel, Diagram, diagramConnector, connectorType);
             }
 

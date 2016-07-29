@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Implementation;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -42,18 +43,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         /// <summary>
         /// Explores related symbols in the Roslyn model and adds them to the model.
         /// </summary>
-        /// <param name="modelEntity">A model entity.</param>
-        public void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity)
+        /// <param name="modelEntity">The starting model entity.</param>
+        /// <param name="relatedEntitySpecification">Optionally specifies what kind of relations should be explored.</param>
+        /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
+        public void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity,
+            RelatedEntitySpecification? relatedEntitySpecification = null, bool recursive = false)
         {
             var symbolRelations = modelEntity
-                .FindRelatedSymbols(_roslynModelProvider, modelEntity.RoslynSymbol)
+                .FindRelatedSymbols(_roslynModelProvider, relatedEntitySpecification)
                 .Where(i => !IsHidden(i.RelatedSymbol));
 
             foreach (var symbolRelation in symbolRelations)
             {
-                var sourceEntity = AddEntityIfNotExists(symbolRelation.SourceSymbol);
-                var targetEntity = AddEntityIfNotExists(symbolRelation.TargetSymbol);
-                _model.AddRelationshipIfNotExists(sourceEntity, targetEntity, symbolRelation.TypeSpecification);
+                var relatedEntity = AddEntityIfNotExists(symbolRelation.RelatedSymbol);
+                AddRelationshipIfNotExists(symbolRelation);
+
+                // TODO: loop detection?
+                if (recursive)
+                    ExtendModelWithRelatedEntities(relatedEntity, relatedEntitySpecification, recursive: true);
             }
         }
 
@@ -66,6 +73,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 _model.AddEntity(modelEntity);
             }
             return modelEntity;
+        }
+
+        private ModelRelationship AddRelationshipIfNotExists(RoslynSymbolRelation symbolRelation)
+        {
+            var sourceEntity = _model.GetModelEntity(symbolRelation.SourceSymbol);
+            var targetEntity = _model.GetModelEntity(symbolRelation.TargetSymbol);
+            return _model.AddRelationshipIfNotExists(sourceEntity, targetEntity, symbolRelation.TypeSpecification);
         }
 
         private static RoslynBasedModelEntity CreateModelEntity(INamedTypeSymbol namedTypeSymbol)

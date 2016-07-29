@@ -52,7 +52,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             : base(readOnlyModel, diagram)
         {
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(readOnlyModel, diagram, diagram.ConnectorTypeResolver);
+            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(readOnlyModel, diagram);
             _diagramButtonCollectionViewModel = new DiagramButtonCollectionViewModel(readOnlyModel, diagram, diagramBehaviourProvider);
 
             _viewport = new Viewport(minZoom, maxZoom, initialZoom);

@@ -14,19 +14,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private const int DiagramNodeMinWidth = 55;
         private const int DiagramNodeMinHeight = 50;
 
-        public RoslynBasedDiagram(IReadOnlyModel model) 
+        public RoslynBasedDiagram(IReadOnlyModel model)
             : base(model, new RoslynBasedConnectorTypeResolver())
         {
         }
 
         public void ShowModelEntity(IRoslynBasedModelEntity modelEntity)
         {
-            ShowItems(new[] { modelEntity });
+            ShowItem(modelEntity);
         }
 
-        public void ShowModelEntityWithRelatedEntities(IRoslynBasedModelEntity modelEntity)
+        public void ShowModelEntityWithHierarchy(IRoslynBasedModelEntity modelEntity)
         {
-            throw new NotImplementedException();
+            ShowItem(modelEntity);
+            ShowItems(Model.GetRelatedEntities(modelEntity, RelatedEntitySpecifications.BaseType, recursive: true));
+            ShowItems(Model.GetRelatedEntities(modelEntity, RelatedEntitySpecifications.Subtype, recursive: true));
         }
 
         protected override Size2D CalculateDiagramNodeSize(IModelEntity modelEntity)

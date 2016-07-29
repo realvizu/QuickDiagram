@@ -24,16 +24,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             RoslynSymbol = roslynSymbol;
         }
 
-        public virtual IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol)
-            => Enumerable.Empty<RoslynSymbolRelation>();
-
-        protected static void EnsureSymbolTypeKind(INamedTypeSymbol symbol, params TypeKind[] expectedTypeKinds)
-        {
-            if (expectedTypeKinds.Any(i => symbol.TypeKind == i))
-                return;
-
-            throw new InvalidOperationException($"Unexpected symbol type: {symbol.TypeKind}");
-        }
+        /// <summary>
+        /// Finds and returns related Roslyn symbols.
+        /// </summary>
+        /// <param name="roslynModelProvider">Query API for the Roslyn model.</param>
+        /// <param name="relatedEntitySpecification">Optionally specifies what kind of relations should be found. Null means all relations.</param>
+        /// <returns>Related Roslyn symbols.</returns>
+        public virtual IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
+            RelatedEntitySpecification? relatedEntitySpecification = null) => Enumerable.Empty<RoslynSymbolRelation>();
 
         protected static IEnumerable<RoslynSymbolRelation> GetImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)
         {
@@ -46,7 +44,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             IRoslynModelProvider roslynModelProvider, INamedTypeSymbol classSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
-            return FindDerivedTypesAsync(workspace, classSymbol).
+            return FindDerivedTypes(workspace, classSymbol).
                 Select(i=> new RoslynSymbolRelation(classSymbol, i, RelatedEntitySpecifications.Subtype));
         }
 
@@ -54,7 +52,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
-            return FindImplementingTypesAsync(workspace, interfaceSymbol)
+            return FindImplementingTypes(workspace, interfaceSymbol)
                 .Where(i => i.TypeKind != TypeKind.Interface)
                 .Select(i => new RoslynSymbolRelation(interfaceSymbol, i, RoslynRelatedEntitySpecifications.ImplementerType));
         }
@@ -63,13 +61,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
-            return FindImplementingTypesAsync(workspace, interfaceSymbol)
+            return FindImplementingTypes(workspace, interfaceSymbol)
                 .Where(i => i.TypeKind == TypeKind.Interface)
                 .Select(i => new RoslynSymbolRelation(interfaceSymbol, i, RelatedEntitySpecifications.Subtype));
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindDerivedTypesAsync(Workspace workspace, INamedTypeSymbol classSymbol)
+        private static IEnumerable<INamedTypeSymbol> FindDerivedTypes(Workspace workspace, INamedTypeSymbol classSymbol)
         {
+            //return SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution).Result;
+
             foreach (var compilation in GetCompilations(workspace))
             {
                 var visitor = new DerivedTypesFinderVisitor(classSymbol);
@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindImplementingTypesAsync(Workspace workspace, INamedTypeSymbol interfaceSymbol)
+        private static IEnumerable<INamedTypeSymbol> FindImplementingTypes(Workspace workspace, INamedTypeSymbol interfaceSymbol)
         {
             foreach (var compilation in GetCompilations(workspace))
             {

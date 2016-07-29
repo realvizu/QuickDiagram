@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -15,12 +16,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public override int Priority => 3;
 
-        public override IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol roslynSymbol)
+        /// <summary>
+        /// Finds and returns related Roslyn symbols.
+        /// </summary>
+        /// <param name="roslynModelProvider">Query API for the Roslyn model.</param>
+        /// <param name="relatedEntitySpecification">Optionally specifies what kind of relations should be found. Null means all relations.</param>
+        /// <returns>Related Roslyn symbols.</returns>
+        public override IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
+            RelatedEntitySpecification? relatedEntitySpecification = null)
         {
-            EnsureSymbolTypeKind(roslynSymbol, TypeKind.Struct);
-
-            foreach (var implementedSymbolRelation in GetImplementedInterfaces(roslynSymbol))
-                yield return implementedSymbolRelation;
+            if (RoslynRelatedEntitySpecifications.ImplementedInterface.IsSpecifiedBy(relatedEntitySpecification))
+                foreach (var implementedSymbolRelation in GetImplementedInterfaces(RoslynSymbol))
+                    yield return implementedSymbolRelation;
         }
     }
 }

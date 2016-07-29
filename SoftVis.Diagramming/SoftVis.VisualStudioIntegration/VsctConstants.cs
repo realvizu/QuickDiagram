@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration
 
         internal const int ShowDiagramWindowCommand = 100;
         internal const int AddToDiagramCommand = 101;
-        internal const int AddToDiagramWithRelatedEntitiesCommand = 102;
+        internal const int AddToDiagramWithHierarchyCommand = 102;
         internal const int ClearDiagramCommand = 103;
         internal const int IncreaseFontSizeCommand = 104;
         internal const int DecreaseFontSizeCommand = 105;

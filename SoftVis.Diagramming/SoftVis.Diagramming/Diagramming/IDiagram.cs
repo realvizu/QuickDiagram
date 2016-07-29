@@ -15,8 +15,6 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagram
     {
-        IConnectorTypeResolver ConnectorTypeResolver { get; }
-
         IEnumerable<IDiagramNode> Nodes { get; }
         IEnumerable<IDiagramConnector> Connectors { get; }
         IEnumerable<IDiagramShape> Shapes { get; }
@@ -29,6 +27,8 @@ namespace Codartis.SoftVis.Diagramming
         event EventHandler<IDiagramShape> ShapeSelected;
         event EventHandler<IDiagramShape> ShapeActivated;
         event EventHandler Cleared;
+
+        ConnectorType GetConnectorType(IModelRelationship modelRelationship);
 
         void Clear();
         void ShowItem(IModelItem modelItem);
