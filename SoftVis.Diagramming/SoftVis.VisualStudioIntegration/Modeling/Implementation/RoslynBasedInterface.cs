@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -40,7 +41,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private static IEnumerable<RoslynSymbolRelation> GetBaseInterfaces(INamedTypeSymbol interfaceSymbol)
         {
-            foreach (var implementedInterfaceSymbol in interfaceSymbol.Interfaces)
+            foreach (var implementedInterfaceSymbol in interfaceSymbol.AllInterfaces.Where(i => i.TypeKind == TypeKind.Interface))
                 yield return new RoslynSymbolRelation(interfaceSymbol, implementedInterfaceSymbol, RelatedEntitySpecifications.BaseType);
         }
     }

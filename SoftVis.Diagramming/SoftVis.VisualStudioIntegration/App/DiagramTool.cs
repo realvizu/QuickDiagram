@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered;
@@ -84,7 +83,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (roslynBasedModelEntity == null)
                 return;
 
-            Task.Run(() => _modelBuilder.ExtendModelWithRelatedEntities(roslynBasedModelEntity));
+            _modelBuilder.ExtendModelWithRelatedEntities(roslynBasedModelEntity);
         }
 
         private static void RegisterShellTriggeredCommands(IHostUiServices hostUiServices, IAppServices appServices)

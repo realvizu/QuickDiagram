@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public RoslynBasedModelEntity GetModelEntity(INamedTypeSymbol namedTypeSymbol)
         {
             return Entities.OfType<RoslynBasedModelEntity>()
-                .FirstOrDefault(i => Equals(i.RoslynSymbol, namedTypeSymbol));
+                .FirstOrDefault(i => namedTypeSymbol.SymbolEquals(i.RoslynSymbol));
         }
     }
 }

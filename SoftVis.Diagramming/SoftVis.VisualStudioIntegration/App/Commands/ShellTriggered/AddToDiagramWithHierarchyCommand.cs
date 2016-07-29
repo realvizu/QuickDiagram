@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -26,9 +25,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
             if (modelEntity == null)
                 return;
 
-            Parallel.Invoke(
-                () => ModelServices.ExtendModelWithRelatedEntities(modelEntity, RelatedEntitySpecifications.BaseType, recursive: true),
-                () => ModelServices.ExtendModelWithRelatedEntities(modelEntity, RelatedEntitySpecifications.Subtype, recursive: true));
+            ModelServices.ExtendModelWithRelatedEntities(modelEntity, RelatedEntitySpecifications.BaseType, recursive: true);
+            ModelServices.ExtendModelWithRelatedEntities(modelEntity, RelatedEntitySpecifications.Subtype, recursive: true);
 
             DiagramServices.ShowModelEntityWithHierarchy(modelEntity);
             HostUiServices.DiagramHostWindow.Show();

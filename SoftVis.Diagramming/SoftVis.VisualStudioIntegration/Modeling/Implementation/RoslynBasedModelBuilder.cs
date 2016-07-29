@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var symbolRelations = modelEntity
                 .FindRelatedSymbols(_roslynModelProvider, relatedEntitySpecification)
-                .Where(i => !IsHidden(i.RelatedSymbol));
+                .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
 
             foreach (var symbolRelation in symbolRelations)
             {

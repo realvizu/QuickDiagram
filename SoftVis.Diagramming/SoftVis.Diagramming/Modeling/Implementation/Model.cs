@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 ? _graph.InEdges(entity).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Source).Distinct()
                 : _graph.OutEdges(entity).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Target).Distinct();
 
-            foreach (var relatedEntity in relatedEntities)
+            foreach (var relatedEntity in relatedEntities.ToList())
             {
                 yield return relatedEntity;
 

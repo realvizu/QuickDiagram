@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private static IEnumerable<RoslynSymbolRelation> GetBaseTypes(INamedTypeSymbol roslynSymbol)
         {
             var baseSymbol = roslynSymbol.BaseType;
-            if (baseSymbol != null)
+            if (baseSymbol?.TypeKind == TypeKind.Class)
                 yield return new RoslynSymbolRelation(roslynSymbol, baseSymbol, RelatedEntitySpecifications.BaseType);
         }
     }

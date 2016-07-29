@@ -64,7 +64,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Rect2D ContentRect => Shapes.Select(i => i.Rect).Union();
 
-        public ConnectorType GetConnectorType(IModelRelationship modelRelationship) 
+        public ConnectorType GetConnectorType(IModelRelationship modelRelationship)
             => ConnectorTypeResolver.GetConnectorType(modelRelationship);
 
         /// <summary>
@@ -174,10 +174,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             var diagramNode = FindNode(modelEntity);
 
+            var connectedEntities = new HashSet<IModelEntity>();
             foreach (var edge in _graph.GetAllEdges(diagramNode).ToArray())
+            {
+                var connectedEntity = edge.GetOtherEnd(diagramNode).ModelEntity;
+                connectedEntities.Add(connectedEntity);
                 HideRelationshipCore(edge.ModelRelationship);
+            }
 
             RemoveDiagramNode(diagramNode);
+
+            foreach (var connectedEntity in connectedEntities)
+                ShowRelationshipsIfBothEndsAreVisible(connectedEntity);
         }
 
         /// <summary>

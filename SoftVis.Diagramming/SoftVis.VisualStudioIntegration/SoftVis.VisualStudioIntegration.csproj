@@ -76,8 +76,10 @@
     <Compile Include="Diagramming\CustomConnectorTypes.cs" />
     <Compile Include="Diagramming\RoslynBasedDiagram.cs" />
     <Compile Include="App\DiagramTool.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Hosting\IPackageServices.cs" />
     <Compile Include="Hosting\HostUiServiceProvider.cs" />
+    <Compile Include="Modeling\Implementation\ImplementingTypesFinderVisitor.cs" />
     <Compile Include="Modeling\IRoslynModelProvider.cs" />
     <Compile Include="Modeling\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Modeling\RoslynSymbolRelation.cs" />
@@ -90,7 +92,6 @@
     <Compile Include="UI\WpfHelpers.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="ImageExport\Dpi.cs" />
-    <Compile Include="Modeling\Implementation\ImplementingTypesFinderVisitor.cs" />
     <Compile Include="Modeling\IModelServices.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedDelegate.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotypes.cs" />
@@ -106,7 +107,6 @@
     <Compile Include="Modeling\TypeKindExtensions.cs" />
     <Compile Include="VsctConstants.cs" />
     <Compile Include="App\IAppServices.cs" />
-    <Compile Include="Modeling\Implementation\DerivedTypesFinderVisitor.cs" />
     <Compile Include="App\IHostWorkspaceServices.cs" />
     <Compile Include="Hosting\DiagramHostToolWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

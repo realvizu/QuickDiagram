@@ -4,6 +4,7 @@ using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
@@ -35,7 +36,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         protected static IEnumerable<RoslynSymbolRelation> GetImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)
         {
-            foreach (var implementedInterfaceSymbol in classOrStructSymbol.Interfaces)
+            foreach (var implementedInterfaceSymbol in classOrStructSymbol.AllInterfaces.Where(i => i.TypeKind == TypeKind.Interface))
                 yield return new RoslynSymbolRelation(classOrStructSymbol, implementedInterfaceSymbol,
                     RoslynRelatedEntitySpecifications.ImplementedInterface);
         }
@@ -44,8 +45,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             IRoslynModelProvider roslynModelProvider, INamedTypeSymbol classSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
-            return FindDerivedTypes(workspace, classSymbol).
-                Select(i=> new RoslynSymbolRelation(classSymbol, i, RelatedEntitySpecifications.Subtype));
+
+            return SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution).Result
+                .Where(i => classSymbol.SymbolEquals(i.BaseType) && i.TypeKind == TypeKind.Class)
+                .Select(i => new RoslynSymbolRelation(classSymbol, i, RelatedEntitySpecifications.Subtype));
         }
 
         protected static IEnumerable<RoslynSymbolRelation> GetImplementingTypes(
@@ -53,7 +56,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var workspace = roslynModelProvider.GetWorkspace();
             return FindImplementingTypes(workspace, interfaceSymbol)
-                .Where(i => i.TypeKind != TypeKind.Interface)
+                .Where(i => i.TypeKind.In(TypeKind.Class, TypeKind.Struct))
                 .Select(i => new RoslynSymbolRelation(interfaceSymbol, i, RoslynRelatedEntitySpecifications.ImplementerType));
         }
 
@@ -64,20 +67,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return FindImplementingTypes(workspace, interfaceSymbol)
                 .Where(i => i.TypeKind == TypeKind.Interface)
                 .Select(i => new RoslynSymbolRelation(interfaceSymbol, i, RelatedEntitySpecifications.Subtype));
-        }
-
-        private static IEnumerable<INamedTypeSymbol> FindDerivedTypes(Workspace workspace, INamedTypeSymbol classSymbol)
-        {
-            //return SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution).Result;
-
-            foreach (var compilation in GetCompilations(workspace))
-            {
-                var visitor = new DerivedTypesFinderVisitor(classSymbol);
-                compilation.Assembly.Accept(visitor);
-
-                foreach (var descendant in visitor.DerivedTypeSymbols)
-                    yield return descendant;
-            }
         }
 
         private static IEnumerable<INamedTypeSymbol> FindImplementingTypes(Workspace workspace, INamedTypeSymbol interfaceSymbol)
