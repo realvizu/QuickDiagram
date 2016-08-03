@@ -7,11 +7,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button for removing a shape from the diagram.
     /// </summary>
-    internal class CloseShapeButtonViewModel : DiagramButtonViewModelBase
+    internal class CloseShapeButtonViewModel : DiagramShapeButtonViewModelBase
     {
-        public CloseShapeButtonViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram,
+        public CloseShapeButtonViewModel(IReadOnlyModel model, IDiagram diagram,
             double buttonRadius, RectRelativeLocation buttonLocation)
-            : base(readOnlyModel, diagram, buttonRadius, buttonLocation)
+            : base(model, diagram, buttonRadius, buttonLocation)
         {
             IsEnabled = true;
         }

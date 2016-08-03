@@ -52,7 +52,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private DiagramNodeControl GetDiagramNodeControlForButton(DiagramButton diagramButton)
         {
-            var diagramButtonViewModel = diagramButton.DataContext as DiagramButtonViewModelBase;
+            var diagramButtonViewModel = diagramButton.DataContext as DiagramShapeButtonViewModelBase;
 
             var diagramNodeControls = _parentControl.FindChildren<DiagramNodeControl>(
                 i => i.DataContext == diagramButtonViewModel?.AssociatedDiagramShapeViewModel);

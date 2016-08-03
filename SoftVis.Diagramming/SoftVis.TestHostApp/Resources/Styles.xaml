@@ -15,4 +15,5 @@
         <Setter Property="DiagramStroke" Value="Black"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
     </Style>
+
 </ResourceDictionary>

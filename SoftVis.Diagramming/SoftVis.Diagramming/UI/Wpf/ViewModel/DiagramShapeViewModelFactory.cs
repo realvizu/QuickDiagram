@@ -1,6 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.UI.Extensibility;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -9,21 +10,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-        public DiagramShapeViewModelFactory(IReadOnlyModel readOnlyModel, IDiagram diagram)
-              : base(readOnlyModel, diagram)
+        private readonly IDiagramBehaviourProvider _diagramBehaviourProvider;
+
+        public DiagramShapeViewModelFactory(IReadOnlyModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+              : base(model, diagram)
         {
+            _diagramBehaviourProvider = diagramBehaviourProvider;
         }
 
         public DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
         {
             if (diagramShape is IDiagramNode)
-                return new DiagramNodeViewModel(ReadOnlyModel, Diagram, (IDiagramNode)diagramShape);
+                return new DiagramNodeViewModel(Model, Diagram, _diagramBehaviourProvider, (IDiagramNode)diagramShape);
 
             if (diagramShape is IDiagramConnector)
             {
                 var diagramConnector = (IDiagramConnector) diagramShape;
                 var connectorType = Diagram.GetConnectorType(diagramConnector.ModelRelationship);
-                return new DiagramConnectorViewModel(ReadOnlyModel, Diagram, diagramConnector, connectorType);
+                return new DiagramConnectorViewModel(Model, Diagram, diagramConnector, connectorType);
             }
 
             throw new NotImplementedException();

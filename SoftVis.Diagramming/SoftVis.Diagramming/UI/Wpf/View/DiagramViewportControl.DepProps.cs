@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -55,16 +55,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DecoratedDiagramNodeProperty, value); }
         }
 
-        public DiagramNodeControl DecoratedDiagramNodeControl
+        public UIElement DecoratedDiagramNodeControl
         {
-            get { return (DiagramNodeControl)GetValue(DecoratedDiagramNodeControlProperty); }
+            get { return (UIElement)GetValue(DecoratedDiagramNodeControlProperty); }
             set { SetValue(DecoratedDiagramNodeControlProperty, value); }
-        }
-
-        public ContentPresenter DecoratedDiagramShapeContainer
-        {
-            get { return (ContentPresenter)GetValue(DecoratedDiagramShapeContainerProperty); }
-            set { SetValue(DecoratedDiagramShapeContainerProperty, value); }
         }
 
         public VectorDelegateCommand WidgetPanCommand

@@ -9,8 +9,6 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseDiagramButton.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramButtonDataTemplates.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <ui:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
@@ -19,14 +17,17 @@
     <Style TargetType="{x:Type view:DiagramControl}">
         <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
+        <Setter Property="DiagramFill" Value="White"/>
+        <Setter Property="DiagramStroke" Value="Black"/>
     </Style>
 
-    <Style TargetType="{x:Type view:DiagramNodeControl}"
+    <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
+
                     <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
 							BorderThickness="1"
@@ -44,6 +45,7 @@
                                        Text="{Binding Path=Name, Mode=OneWay}" TextWrapping="Wrap"/>
                         </Grid>
                     </Border>
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

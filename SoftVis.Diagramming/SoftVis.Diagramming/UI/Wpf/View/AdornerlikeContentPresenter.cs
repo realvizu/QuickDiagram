@@ -76,7 +76,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(AdornedCanvasTransformProperty, value); }
         }
 
-        private void OnAdornedElementChanged()
+        protected virtual void OnAdornedElementChanged()
         {
             if (AdornedElement == null)
             {

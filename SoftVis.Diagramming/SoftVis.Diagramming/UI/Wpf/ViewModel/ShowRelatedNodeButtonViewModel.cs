@@ -13,18 +13,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A diagram button to choose related entities.
     /// </summary>
-    internal class ShowRelatedNodeButtonViewModel : DiagramButtonViewModelBase
+    internal class ShowRelatedNodeButtonViewModel : DiagramShapeButtonViewModelBase
     {
         private readonly RelatedEntityButtonDescriptor _descriptor;
-        private List<IModelEntity> _relatedEntities;
-        private List<IModelEntity> _displayedRelatedEntities;
-        private List<IModelEntity> _undisplayedRelatedEntities;
 
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public ShowRelatedNodeButtonViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram,
+        public ShowRelatedNodeButtonViewModel(IReadOnlyModel model, IDiagram diagram,
             double buttonRadius, RelatedEntityButtonDescriptor descriptor)
-            : base(readOnlyModel, diagram, buttonRadius, descriptor.ButtonLocation)
+            : base(model, diagram, buttonRadius, descriptor.ButtonLocation)
         {
             _descriptor = descriptor;
             SubscribeToModelEvents();
@@ -32,11 +29,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ConnectorType ConnectorType => _descriptor.ConnectorType;
 
+        private Rect RelativeRect => new Rect(RelativeTopLeft, Size);
         private RectRelativeLocation ButtonLocation => _descriptor.ButtonLocation;
         private RelatedEntitySpecification RelatedEntitySpecification => _descriptor.RelatedEntitySpecification;
         private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
         private IDiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
-        private IModelEntity AssociatedModelEntity => AssociatedDiagramNode?.ModelEntity;
 
         public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
@@ -46,23 +43,32 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnClick()
         {
-            if (_undisplayedRelatedEntities.Count == 1)
+            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(
+                AssociatedDiagramNode, RelatedEntitySpecification).ToList();
+
+            if (undisplayedRelatedEntities.Count == 1)
             {
-                Diagram.ShowItem(_undisplayedRelatedEntities.First());
+                Diagram.ShowItem(undisplayedRelatedEntities.First());
             }
-            else if (_undisplayedRelatedEntities.Count > 1)
+            else if (undisplayedRelatedEntities.Count > 1)
             {
-                RaiseEntitySelectorRequest();
+                RaiseEntitySelectorRequest(undisplayedRelatedEntities);
             }
         }
 
-        private void RaiseEntitySelectorRequest()
+        private void RaiseEntitySelectorRequest(IEnumerable<IModelEntity> undisplayedRelatedEntities)
         {
             var handleOrientation = CalculateHandleOrientation(ButtonLocation);
-            var parentNodePositionVector = (Vector) AssociatedDiagramNodeViewModel.Position;
+            var parentNodePositionVector = (Vector)AssociatedDiagramNodeViewModel.Position;
             var rectInDiagramSpace = RelativeRect.Add(parentNodePositionVector);
             var attachPointInDiagramSpace = CalculateAttachPoint(rectInDiagramSpace, handleOrientation);
-            EntitySelectorRequested?.Invoke(attachPointInDiagramSpace, handleOrientation, _undisplayedRelatedEntities);
+            EntitySelectorRequested?.Invoke(attachPointInDiagramSpace, handleOrientation, undisplayedRelatedEntities);
+        }
+
+        private void SubscribeToModelEvents()
+        {
+            Model.RelationshipAdded += (o, e) => UpdateDisplayedEntityInfo();
+            Model.RelationshipRemoved += (o, e) => UpdateDisplayedEntityInfo();
         }
 
         private void UpdateDisplayedEntityInfo()
@@ -70,19 +76,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (AssociatedDiagramNode == null)
                 return;
 
-            _relatedEntities = ReadOnlyModel.GetRelatedEntities(AssociatedModelEntity, RelatedEntitySpecification).ToList();
-            _displayedRelatedEntities = _relatedEntities.Where(i => Diagram.Nodes.Any(j => j.ModelEntity == i)).ToList();
-            _undisplayedRelatedEntities = _relatedEntities.Except(_displayedRelatedEntities).ToList();
-
-            IsEnabled = _undisplayedRelatedEntities.Count > 0;
-        }
-
-        private void SubscribeToModelEvents()
-        {
-            ReadOnlyModel.EntityAdded += (o, e) => UpdateDisplayedEntityInfo();
-            ReadOnlyModel.RelationshipAdded += (o, e) => UpdateDisplayedEntityInfo();
-            ReadOnlyModel.EntityRemoved += (o, e) => UpdateDisplayedEntityInfo();
-            ReadOnlyModel.RelationshipRemoved += (o, e) => UpdateDisplayedEntityInfo();
+            IsEnabled = Diagram.GetUndisplayedRelatedEntities(
+                AssociatedDiagramNode, RelatedEntitySpecification).Any();
         }
 
         private static HandleOrientation CalculateHandleOrientation(RectRelativeLocation buttonLocation)

@@ -21,9 +21,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
-        public DiagramConnectorViewModel(IReadOnlyModel readOnlyModel, IDiagram diagram,
+        public DiagramConnectorViewModel(IReadOnlyModel model, IDiagram diagram,
             IDiagramConnector diagramConnector, ConnectorType connectorType)
-            : base(readOnlyModel, diagram)
+            : base(model, diagram)
         {
             _diagramConnector = diagramConnector;
             _connectorType = connectorType;

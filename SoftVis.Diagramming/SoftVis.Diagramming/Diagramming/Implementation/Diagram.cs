@@ -124,13 +124,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             HideItems(new[] { diagramShape.ModelItem });
         }
 
-        public IEnumerable<DiagramNode> GetRelatedNodes(DiagramNode diagramNode, RelatedEntitySpecification specification)
+        public IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, 
+            RelatedEntitySpecification specification)
         {
-            var typeSpecification = specification.TypeSpecification;
-
-            return specification.Direction == EntityRelationDirection.Incoming
-                ? _graph.InEdges(diagramNode).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Source)
-                : _graph.OutEdges(diagramNode).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Target);
+            return Model
+                .GetRelatedEntities(diagramNode.ModelEntity, specification)
+                .Where(i => Nodes.All(j => j.ModelEntity != i));
         }
 
         /// <summary>

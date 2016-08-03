@@ -62,18 +62,22 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
 
+        /// <summary>
+        /// The diagram node view model that currently owns the decorators (mini buttons).
+        /// </summary>
         public static readonly DependencyProperty DecoratedDiagramNodeProperty =
             DependencyProperty.Register("DecoratedDiagramNode", typeof(DiagramNodeViewModel), typeof(DiagramViewportControl),
                 new PropertyMetadata(OnDecoratedDiagramNodeChanged));
 
         private static void OnDecoratedDiagramNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl) d).OnDecoratedDiagramNodeChanged();
+            => ((DiagramViewportControl)d).OnDecoratedDiagramNodeChanged();
 
+        /// <summary>
+        /// The control that presents the currently decorated diagram node.
+        /// Populated automatically when DecoratedDiagramNode changes.
+        /// </summary>
         public static readonly DependencyProperty DecoratedDiagramNodeControlProperty =
-            DependencyProperty.Register("DecoratedDiagramNodeControl", typeof(DiagramNodeControl), typeof(DiagramViewportControl));
-
-        public static readonly DependencyProperty DecoratedDiagramShapeContainerProperty =
-            DependencyProperty.Register("DecoratedDiagramShapeContainer", typeof(ContentPresenter), typeof(DiagramViewportControl));
+            DependencyProperty.Register("DecoratedDiagramNodeControl", typeof(UIElement), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty WidgetPanCommandProperty =
             DependencyProperty.Register("WidgetPanCommand", typeof(VectorDelegateCommand), typeof(DiagramViewportControl));
@@ -126,25 +130,25 @@ namespace Codartis.SoftVis.UI.Wpf.View
             InitializeComponent();
         }
 
-        private void OnKeyboardPan(Vector panVector) 
+        private void OnKeyboardPan(Vector panVector)
             => PanViewport(panVector, TransitionSpeed.Fast);
 
-        private void OnKeyboardZoom(ZoomDirection direction, double amount, Point center) 
+        private void OnKeyboardZoom(ZoomDirection direction, double amount, Point center)
             => ZoomTo(direction, amount, center, TransitionSpeed.Fast);
 
-        private void OnMousePan(Vector panVector) 
+        private void OnMousePan(Vector panVector)
             => PanViewport(panVector, TransitionSpeed.Instant);
 
-        private void OnMouseZoom(ZoomDirection direction, double amount, Point center) 
+        private void OnMouseZoom(ZoomDirection direction, double amount, Point center)
             => ZoomTo(direction, amount, center, TransitionSpeed.Fast);
 
-        private void OnWidgetPan(Vector panVector) 
+        private void OnWidgetPan(Vector panVector)
             => PanViewport(panVector, TransitionSpeed.Fast);
 
-        private void OnWidgetZoom(double newZoom) 
+        private void OnWidgetZoom(double newZoom)
             => ZoomTo(newZoom, TransitionSpeed.Fast);
 
-        private void OnWidgetZoomToContent() 
+        private void OnWidgetZoomToContent()
             => ZoomToContent(TransitionSpeed.Slow);
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -235,16 +239,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnDecoratedDiagramNodeChanged()
         {
-            if (DecoratedDiagramNode == null)
-            {
-                DecoratedDiagramNodeControl = null;
-                DecoratedDiagramShapeContainer = null;
-            }
-            else
-            {
-                DecoratedDiagramNodeControl = this.FindChildren<DiagramNodeControl>().First(i => i.DataContext == DecoratedDiagramNode);
-                DecoratedDiagramShapeContainer = DecoratedDiagramNodeControl.FindParent<ContentPresenter>();
-            }
+            DecoratedDiagramNodeControl =  
+                this.FindChildren<DiagramShapeItemsControl>().FirstOrDefault()?.GetPresenterOf(DecoratedDiagramNode);
         }
     }
 }

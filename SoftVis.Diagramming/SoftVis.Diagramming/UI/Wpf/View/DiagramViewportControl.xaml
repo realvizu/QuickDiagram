@@ -22,11 +22,13 @@
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl 
+                    Width="{Binding Path=Width}"
+                    Height="{Binding Path=Height}"
                     FocusDiagramItemCommand="{Binding FocusCommand}"
                     UnfocusDiagramItemCommand="{Binding UnfocusCommand}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
-                            <i:InvokeCommandAction Command="{Binding ActivateNodeCommand}"/>
+                            <i:InvokeCommandAction Command="{Binding DoubleClickCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </view:DiagramNodeControl>
@@ -34,18 +36,19 @@
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
                 <view:DiagramConnectorControl 
-                    AnimatedRoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"
-                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"/>
+                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"
+                    AnimatedRoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"/>
             </DataTemplate>
             
-            <Style x:Key="DiagramShapeContainerStyle" 
+            <Style x:Key="DiagramShapeItemContainerStyle" 
                    TargetType="{x:Type view:AnimatedContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">
+                <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
+                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
                 <Setter Property="Width" Value="{Binding Path=Width}"/>
                 <Setter Property="Height" Value="{Binding Path=Height}"/>
                 <Setter Property="AnimatedLeft" Value="{Binding Path=X}"/>
                 <Setter Property="AnimatedTop" Value="{Binding Path=Y}"/>
-                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
             </Style>
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
@@ -56,23 +59,22 @@
                         LongAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
             </ItemsPanelTemplate>
 
-            <Style x:Key="DiagramButtonContainerStyle" 
-                   TargetType="{x:Type view:AdornerlikeContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramButtonViewModelBase}}">
+            <Style x:Key="DiagramShapeButtonItemContainerStyle" 
+                   TargetType="{x:Type view:DiagramAdornerlikeContentPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
                 <Setter Property="Width" Value="{Binding Path=Width}"/>
                 <Setter Property="Height" Value="{Binding Path=Height}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=RelativeLeft}"/>
                 <Setter Property="Canvas.Top" Value="{Binding Path=RelativeTop}"/>
-                <Setter Property="AdornedElement" Value="{Binding Path=DecoratedDiagramShapeContainer, ElementName=ThisControl}"/>
+                <Setter Property="AdornedElement" Value="{Binding Path=DecoratedDiagramNodeControl, ElementName=ThisControl}"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <view:DiagramButton Style="{StaticResource EllipseDiagramButton}"
-                                                Width="{Binding Width}" 
+                            <!-- Warning: Width and height must be specified explicitly on DiagramButton because its content's datatemplates bind to it. -->
+                            <view:DiagramButton Width="{Binding Width}" 
                                                 Height="{Binding Height}"
                                                 IsEnabled="{Binding IsEnabled}"
                                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                DiagramFill="{Binding Path=DecoratedDiagramNodeControl.DiagramFill, ElementName=ThisControl}"
                                                 Content="{Binding}"
                                                 Command="{Binding ClickCommand}"/>
                         </DataTemplate>
@@ -80,7 +82,7 @@
                 </Setter>
             </Style>
 
-            <ItemsPanelTemplate x:Key="DiagramButtonItemsPanel">
+            <ItemsPanelTemplate x:Key="DiagramShapeButtonItemsPanel">
                 <Canvas/>
             </ItemsPanelTemplate>
 
@@ -91,11 +93,11 @@
         
         <view:DiagramShapeItemsControl ItemsSource="{Binding DiagramShapeViewModels}"
                                        ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
-                                       ItemContainerStyle="{StaticResource DiagramShapeContainerStyle}"/>
+                                       ItemContainerStyle="{StaticResource DiagramShapeItemContainerStyle}"/>
 
-        <view:DiagramButtonItemsControl ItemsSource="{Binding DiagramButtonViewModels}" 
-                                        ItemsPanel="{StaticResource DiagramButtonItemsPanel}"
-                                        ItemContainerStyle="{StaticResource DiagramButtonContainerStyle}"
+        <view:DiagramButtonItemsControl ItemsSource="{Binding DiagramShapeButtonViewModels}" 
+                                        ItemsPanel="{StaticResource DiagramShapeButtonItemsPanel}"
+                                        ItemContainerStyle="{StaticResource DiagramShapeButtonItemContainerStyle}"
                                         Background="{x:Null}" />
 
         <view:PanAndZoomControl Focusable="False"

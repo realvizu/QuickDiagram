@@ -39,5 +39,8 @@ namespace Codartis.SoftVis.Diagramming
         void SelectShape(IDiagramShape diagramShape);
         void ActivateShape(IDiagramShape diagramShape);
         void RemoveShape(IDiagramShape diagramShape);
+
+        IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, 
+            RelatedEntitySpecification specification);
     }
 }
