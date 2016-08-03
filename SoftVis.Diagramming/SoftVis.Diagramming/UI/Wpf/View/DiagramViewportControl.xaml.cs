@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -47,20 +46,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         /// <summary>
         /// Transforms DiagramSpace to ScreenSpace. Created by the Viewport class, used for rendering the diagram.
+        /// The type TransitionedTransform means that it also contains a hint for the animation's length.
         /// </summary>
         public static readonly DependencyProperty ViewportTransformProperty =
-            DependencyProperty.Register("ViewportTransform", typeof(Transform), typeof(DiagramViewportControl),
-                new PropertyMetadata(Transform.Identity));
-
-        /// <summary>
-        /// Same as ViewportTransform but also contains a hint for the animation's length.
-        /// </summary>
-        public static readonly DependencyProperty TransitionedViewportTransformProperty =
-            DependencyProperty.Register("TransitionedViewportTransform", typeof(TransitionedTransform), typeof(DiagramViewportControl),
-                new PropertyMetadata(TransitionedTransform.Identity, OnTransitionedViewportTransformChanged));
-
-        private static void OnTransitionedViewportTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl)d).ViewportTransform = ((TransitionedTransform)e.NewValue).Transform;
+            DependencyProperty.Register("ViewportTransform", typeof(TransitionedTransform), typeof(DiagramViewportControl),
+                new PropertyMetadata(TransitionedTransform.Identity));
 
         /// <summary>
         /// The diagram node view model that currently owns the decorators (mini buttons).

@@ -27,12 +27,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             _diagramConnector = diagramConnector;
             _connectorType = connectorType;
-            UpdateState();
+            UpdatePropertiesFromDiagramShape();
         }
 
         public override IDiagramShape DiagramShape => _diagramConnector;
 
-        public override void UpdateState()
+        public override void UpdatePropertiesFromDiagramShape()
         {
             var rect = _diagramConnector.Rect.ToWpf();
             Position = rect.Location;

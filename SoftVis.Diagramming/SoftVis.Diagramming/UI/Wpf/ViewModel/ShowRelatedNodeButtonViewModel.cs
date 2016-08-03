@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             base.AssociateWith(diagramShapeViewModel);
-            UpdateDisplayedEntityInfo();
+            UpdateEnabledState();
         }
 
         protected override void OnClick()
@@ -67,17 +67,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToModelEvents()
         {
-            Model.RelationshipAdded += (o, e) => UpdateDisplayedEntityInfo();
-            Model.RelationshipRemoved += (o, e) => UpdateDisplayedEntityInfo();
+            Model.RelationshipAdded += (o, e) => UpdateEnabledState();
+            Model.RelationshipRemoved += (o, e) => UpdateEnabledState();
         }
 
-        private void UpdateDisplayedEntityInfo()
+        private void UpdateEnabledState()
         {
             if (AssociatedDiagramNode == null)
                 return;
 
-            IsEnabled = Diagram.GetUndisplayedRelatedEntities(
-                AssociatedDiagramNode, RelatedEntitySpecification).Any();
+            IsEnabled = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, RelatedEntitySpecification).Any();
         }
 
         private static HandleOrientation CalculateHandleOrientation(RectRelativeLocation buttonLocation)

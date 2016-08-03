@@ -53,7 +53,7 @@
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
                 <view:AnimatedRenderTransformCanvas 
-                        AnimatedRenderTransform="{Binding Path=TransitionedViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                        AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
                         ShortAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
                         LongAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
                         LongAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>

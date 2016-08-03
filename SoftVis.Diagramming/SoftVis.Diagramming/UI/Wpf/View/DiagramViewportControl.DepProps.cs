@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
@@ -37,16 +36,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportZoomProperty, value); }
         }
 
-        public Transform ViewportTransform
+        public TransitionedTransform ViewportTransform
         {
-            get { return (Transform)GetValue(ViewportTransformProperty); }
+            get { return (TransitionedTransform)GetValue(ViewportTransformProperty); }
             set { SetValue(ViewportTransformProperty, value); }
-        }
-
-        public TransitionedTransform TransitionedViewportTransform
-        {
-            get { return (TransitionedTransform)GetValue(TransitionedViewportTransformProperty); }
-            set { SetValue(TransitionedViewportTransformProperty, value); }
         }
 
         public DiagramNodeViewModel DecoratedDiagramNode

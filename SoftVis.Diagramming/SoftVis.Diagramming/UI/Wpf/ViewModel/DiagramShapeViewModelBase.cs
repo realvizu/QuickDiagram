@@ -25,6 +25,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public abstract IDiagramShape DiagramShape { get; }
+        public abstract void UpdatePropertiesFromDiagramShape();
 
         public Point Position
         {
@@ -61,8 +62,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public double Width => Size.Width;
         public double Height => Size.Height;
-
-        public abstract void UpdateState();
 
         public void Remove() => RemoveRequested?.Invoke(DiagramShape);
     }

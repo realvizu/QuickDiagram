@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
@@ -22,8 +23,8 @@ namespace Codartis.SoftVis.UI.Wpf
         private const double InitialZoomDefault = 1;
         private static readonly Size ViewportSizeDefault = new Size(0, 0);
         private static readonly Point ViewportCenterDefault = new Point(0, 0);
-        private static readonly Rect ContentRectDefault = Rect.Empty;
 
+        private readonly IDiagram _diagram;
         private readonly double _minZoom;
         private readonly double _maxZoom;
         private readonly double _defaultExponentialZoom;
@@ -35,36 +36,33 @@ namespace Codartis.SoftVis.UI.Wpf
         private Transform _diagramSpaceToScreenSpaceTransform;
 
         public event Action<double> LinearZoomChanged;
-        public event Action<TransitionedTransform> TransitionedTransformChanged;
+        public event Action<TransitionedTransform> TransformChanged;
 
-        public Viewport(double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
-            : this(minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault, ContentRectDefault)
+        public Viewport(IDiagram diagram, double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
+            : this(diagram, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
         {
         }
 
-        private Viewport(double minZoom, double maxZoom, double initialZoom,
-            Size sizeInScreenSpace, Point centerInDiagramSpace, Rect contentRect)
+        private Viewport(IDiagram diagram, double minZoom, double maxZoom, double initialZoom,
+            Size sizeInScreenSpace, Point centerInDiagramSpace)
         {
+            _diagram = diagram;
             _minZoom = minZoom;
             _maxZoom = maxZoom;
             _defaultExponentialZoom = initialZoom;
             _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _contentRect = contentRect;
+            _contentRect = diagram.ContentRect.ToWpf();
 
             UpdateCalculatedProperties(TransitionSpeed.Instant);
+            SubscribeToDiagramEvents();
         }
 
         public void Resize(Size sizeInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Instant)
         {
             _sizeInScreenSpace = sizeInScreenSpace;
             UpdateCalculatedProperties(transitionSpeed);
-        }
-
-        public void UpdateContentRect(Rect newContentRect)
-        {
-            _contentRect = newContentRect;
         }
 
         public void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
@@ -122,7 +120,7 @@ namespace Codartis.SoftVis.UI.Wpf
         {
             _diagramSpaceToScreenSpaceTransform = CreateTransformToScreenSpace();
             var transitionedTransform = new TransitionedTransform(_diagramSpaceToScreenSpaceTransform, transitionSpeed);
-            TransitionedTransformChanged?.Invoke(transitionedTransform);
+            TransformChanged?.Invoke(transitionedTransform);
         }
 
         private double ToExponentialZoom(double linearZoom)
@@ -170,6 +168,19 @@ namespace Codartis.SoftVis.UI.Wpf
             transform.Children.Add(new TranslateTransform(translateVector.X, translateVector.Y));
             transform.Children.Add(new ScaleTransform(_exponentialZoom, _exponentialZoom));
             return transform;
+        }
+
+        private void SubscribeToDiagramEvents()
+        {
+            _diagram.ShapeAdded += (o, a) => UpdateContentRect();
+            _diagram.ShapeMoved += (o, a) => UpdateContentRect();
+            _diagram.ShapeRemoved += (o, a) => UpdateContentRect();
+            _diagram.Cleared += (o, a) => UpdateContentRect();
+        }
+
+        private void UpdateContentRect()
+        {
+            _contentRect = _diagram.ContentRect.ToWpf();
         }
 
         public class PanCommand : DelegateCommand<Vector, TransitionSpeed>

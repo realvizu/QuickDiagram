@@ -22,16 +22,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
               : base(model, diagram)
         {
             DiagramNode = diagramNode;
-            DoubleClickCommand = new DelegateCommand(OnDoubleClick);
-            UpdateState();
+            UpdatePropertiesFromDiagramShape();
 
+            DoubleClickCommand = new DelegateCommand(OnDoubleClick);
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels(diagramBehaviourProvider);
         }
 
         public override IDiagramShape DiagramShape => DiagramNode;
 
-        // TODO: replace Update method with event subscription (INotifyPropertyChanged?)
-        public override void UpdateState()
+        public override void UpdatePropertiesFromDiagramShape()
         {
             Position = DiagramNode.Position.ToWpf();
             Size = DiagramNode.Size.ToWpf();

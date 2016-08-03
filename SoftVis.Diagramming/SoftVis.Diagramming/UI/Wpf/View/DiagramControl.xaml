@@ -27,7 +27,7 @@
                                      MinZoom="{Binding Path=MinZoom}"
                                      MaxZoom="{Binding Path=MaxZoom}"
                                      ViewportZoom="{Binding Path=ViewportZoom}"
-                                     TransitionedViewportTransform="{Binding Path=TransitionedViewportTransform}"
+                                     ViewportTransform="{Binding Path=ViewportTransform}"
                                      ViewportResizeCommand="{Binding Path=ViewportResizeCommand}"
                                      ViewportPanCommand="{Binding Path=ViewportPanCommand}"
                                      ViewportZoomCommand="{Binding Path=ViewportZoomCommand}"

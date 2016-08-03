@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private readonly Viewport _viewport;
         private double _viewportZoom;
-        private TransitionedTransform _transitionedViewportTransform;
+        private TransitionedTransform _viewportTransform;
 
         /// <summary>The focused shape is the one that the user points to.</summary>
         private DiagramNodeViewModel _focusedDiagramNode;
@@ -55,8 +55,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(model, diagram, diagramBehaviourProvider);
             _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(model, diagram, diagramBehaviourProvider);
 
-            _viewport = new Viewport(minZoom, maxZoom, initialZoom);
-            _transitionedViewportTransform = TransitionedTransform.Identity;
+            _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
+            _viewportTransform = TransitionedTransform.Identity;
             _focusedDiagramNode = null;
             _isDecorationPinned = false;
             _decoratedDiagramNode = null;
@@ -72,6 +72,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
             SubscribeToDiagramShapeButtonEvents();
+
             AddDiagram(diagram);
         }
 
@@ -88,12 +89,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public TransitionedTransform TransitionedViewportTransform
+        public TransitionedTransform ViewportTransform
         {
-            get { return _transitionedViewportTransform; }
+            get { return _viewportTransform; }
             set
             {
-                _transitionedViewportTransform = value;
+                _viewportTransform = value;
                 OnPropertyChanged();
             }
         }
@@ -136,15 +137,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void SubscribeToViewportEvents()
         {
             _viewport.LinearZoomChanged += OnViewportLinearZoomChanged;
-            _viewport.TransitionedTransformChanged += OnViewportTransitionedTransformChanged;
+            _viewport.TransformChanged += OnViewportTransformChanged;
         }
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.ShapeAdded += OnShapeAdded;
-            Diagram.ShapeMoved += OnShapeMoved;
-            Diagram.ShapeRemoved += OnShapeRemoved;
-            Diagram.Cleared += OnDiagramCleared;
+            Diagram.ShapeAdded += (sender, shape) => OnShapeAdded(shape);
+            Diagram.ShapeMoved += (sender, shape) => OnShapeMoved(shape);
+            Diagram.ShapeRemoved += (sender, shape) => OnShapeRemoved(shape);
+            Diagram.Cleared += (sender, args) => OnDiagramCleared();
         }
 
         private void SubscribeToDiagramShapeButtonEvents()
@@ -156,15 +157,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void AddDiagram(IDiagram diagram)
         {
             foreach (var diagramNode in diagram.Nodes)
-                OnShapeAdded(null, diagramNode);
+                OnShapeAdded(diagramNode);
 
             foreach (var diagramConnector in diagram.Connectors)
-                OnShapeAdded(null, diagramConnector);
-
-            UpdateDiagramContentRect();
+                OnShapeAdded(diagramConnector);
         }
 
-        private void OnShapeAdded(object sender, IDiagramShape diagramShape)
+        private void OnShapeAdded(IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
             diagramShapeViewModel.GotFocus += OnShapeFocused;
@@ -173,21 +172,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramShapeViewModels.Add(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
-
-            UpdateDiagramContentRect();
-            RaiseViewportChanged();
         }
 
-        private void OnShapeMoved(object sender, IDiagramShape diagramShape)
+        private void OnShapeMoved(IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
-            diagramShapeViewModel.UpdateState();
-
-            UpdateDiagramContentRect();
-            RaiseViewportChanged();
+            diagramShapeViewModel.UpdatePropertiesFromDiagramShape();
         }
 
-        private void OnShapeRemoved(object sender, IDiagramShape diagramShape)
+        private void OnShapeRemoved(IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
             if (diagramShapeViewModel == null)
@@ -200,18 +193,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramShapeViewModels.Remove(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Remove(diagramShape);
-
-            UpdateDiagramContentRect();
-            RaiseViewportChanged();
         }
 
-        private void OnDiagramCleared(object sender, EventArgs e)
+        private void OnDiagramCleared()
         {
             DiagramShapeViewModels.Clear();
             _diagramShapeToViewModelMap.Clear();
-
-            UpdateDiagramContentRect();
-            RaiseViewportChanged();
         }
 
         private void OnShapeRemoveRequested(IDiagramShape diagramShape)
@@ -247,20 +234,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DecoratedDiagramNode = newlyDecoratedDiagramNodeViewModel;
         }
 
-        private void UpdateDiagramContentRect()
+        private void OnViewportLinearZoomChanged(double newViewportZoom)
         {
-            _viewport.UpdateContentRect(Diagram.ContentRect.ToWpf());
+            ViewportZoom = newViewportZoom;
         }
 
-        private void OnViewportLinearZoomChanged(double viewportZoom)
+        private void OnViewportTransformChanged(TransitionedTransform newTransform)
         {
-            ViewportZoom = viewportZoom;
-        }
-
-        private void OnViewportTransitionedTransformChanged(TransitionedTransform transitionedTransform)
-        {
-            TransitionedViewportTransform = transitionedTransform;
-            RaiseViewportChanged();
+            ViewportTransform = newTransform;
+            ViewportChanged?.Invoke();
         }
 
         private void OnEntitySelectorRequested(Point attachPointInDiagramSpace,
@@ -269,7 +251,5 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var attachPointInScreenSpace = _viewport.ProjectFromDiagramSpaceToScreenSpace(attachPointInDiagramSpace);
             EntitySelectorRequested?.Invoke(attachPointInScreenSpace, handleOrientation, modelEntities);
         }
-
-        private void RaiseViewportChanged() => ViewportChanged?.Invoke();
     }
 }
