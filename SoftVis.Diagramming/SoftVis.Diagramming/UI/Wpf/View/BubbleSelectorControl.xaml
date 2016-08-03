@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Codartis.SoftVis.UI.Wpf.View.ModelEntitySelectorControl"
+﻿<UserControl x:Class="Codartis.SoftVis.UI.Wpf.View.BubbleSelectorControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:ModelEntitySelectorViewModel}}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:BubbleSelectorViewModel}}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -31,9 +31,9 @@
                      Margin="2"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemsSource="{Binding ModelEntities}"
+                     ItemsSource="{Binding Items}"
                      SelectionMode="Single"
-                     SelectedItem="{Binding SelectedModelEntity, Mode=TwoWay}"
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                      SelectionChanged="ListBox_OnSelectionChanged">
             </ListBox>
         </Border>

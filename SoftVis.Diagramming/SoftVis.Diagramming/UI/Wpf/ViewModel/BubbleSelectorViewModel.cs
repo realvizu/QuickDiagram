@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// View model for selecting a model entity.
+    /// View model for a bubble selector.
     /// </summary>
-    public class ModelEntitySelectorViewModel : ViewModelBase
+    public class BubbleSelectorViewModel : ViewModelBase
     {
         private bool _isVisible;
         private double _width;
@@ -19,28 +18,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private double _top;
         private double _left;
         private HandleOrientation _handleOrientation;
-        private List<IModelEntity> _modelEntities;
-        private IModelEntity _selectedModelEntity;
+        private List<object> _items;
+        private object _selectedItem;
 
-        public ModelEntityDelegateCommand ModelEntitySelectedCommand { get; }
-        public event Action<IModelEntity> ModelEntitySelected;
+        public DelegateCommand<object> ItemSelectedCommand { get; protected set; }
 
-        public ModelEntitySelectorViewModel(Size size)
+        public BubbleSelectorViewModel(Size size)
         {
             _width = size.Width;
             _height = size.Height;
-
-            ModelEntitySelectedCommand = new ModelEntityDelegateCommand(i => ModelEntitySelected?.Invoke(i));
         }
 
-        public void Show(Point attachPoint, HandleOrientation handleOrientation, IEnumerable<IModelEntity> modelEntities)
+        public void Show(Point attachPoint, HandleOrientation handleOrientation, IEnumerable<object> items)
         {
             IsVisible = true;
             HandleOrientation = handleOrientation;
             Top = CalculateTop(attachPoint, handleOrientation);
             Left = CalculateLeft(attachPoint, handleOrientation);
-            ModelEntities = modelEntities.ToList();
-            SelectedModelEntity = null;
+            Items = items.ToList();
+            SelectedItem = null;
         }
 
         public void Hide()
@@ -108,22 +104,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public List<IModelEntity> ModelEntities
+        public List<object> Items
         {
-            get { return _modelEntities; }
+            get { return _items; }
             set
             {
-                _modelEntities = value;
+                _items = value;
                 OnPropertyChanged();
             }
         }
 
-        public IModelEntity SelectedModelEntity
+        public object SelectedItem
         {
-            get { return _selectedModelEntity; }
+            get { return _selectedItem; }
             set
             {
-                _selectedModelEntity = value;
+                _selectedItem = value;
                 OnPropertyChanged();
             }
         }
@@ -152,5 +148,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 default: throw new NotImplementedException();
             }
         }
+    }
+
+    /// <summary>
+    /// A typed wrapper around BubbleSelectorViewModel.
+    /// </summary>
+    public class BubbleSelectorViewModel<TItem> : BubbleSelectorViewModel
+        where TItem : class
+    {
+        public event Action<TItem> ItemSelected;
+
+        public BubbleSelectorViewModel(Size size)
+            : base(size)
+        {
+            ItemSelectedCommand = new DelegateCommand<object>(i => ItemSelected?.Invoke((TItem)i));
+        }
+
+        public void Show(Point attachPoint, HandleOrientation handleOrientation, IEnumerable<TItem> items) 
+            => base.Show(attachPoint, handleOrientation, items);
     }
 }

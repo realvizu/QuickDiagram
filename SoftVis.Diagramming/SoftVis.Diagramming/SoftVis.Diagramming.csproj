@@ -243,7 +243,7 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ModelEntitySelectorViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\BubbleSelectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewModelBase.cs" />
     <Compile Include="UI\Common\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\Converters\ConnectorTypeToGeometryConverter.cs" />
@@ -265,8 +265,8 @@
     <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
       <DependentUpon>DiagramViewportControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\ModelEntitySelectorControl.xaml.cs">
-      <DependentUpon>ModelEntitySelectorControl.xaml</DependentUpon>
+    <Compile Include="UI\Wpf\View\BubbleSelectorControl.xaml.cs">
+      <DependentUpon>BubbleSelectorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\View\PanAndZoomControl.xaml.cs">
@@ -331,7 +331,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\ModelEntitySelectorControl.xaml">
+    <Page Include="UI\Wpf\View\BubbleSelectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

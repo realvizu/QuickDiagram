@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
-        public ModelEntitySelectorViewModel RelatedModelEntitySelectorViewModel { get; }
+        public BubbleSelectorViewModel<IModelEntity> RelatedEntitySelectorViewModel { get; }
 
         public DiagramViewModel(IReadOnlyModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
             double minZoom, double maxZoom, double initialZoom)
@@ -30,8 +30,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramViewportViewModel = new DiagramViewportViewModel(model, diagram, _diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
 
-            RelatedModelEntitySelectorViewModel = new ModelEntitySelectorViewModel(new Size(200, 100));
-            RelatedModelEntitySelectorViewModel.ModelEntitySelected += AddModelEntityToDiagram;
+            RelatedEntitySelectorViewModel = new BubbleSelectorViewModel<IModelEntity>(new Size(200, 100));
+            RelatedEntitySelectorViewModel.ItemSelected += AddModelEntityToDiagram;
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -57,12 +57,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IEnumerable<IModelEntity> modelEntities)
         {
             DiagramViewportViewModel.PinDecoration();
-            RelatedModelEntitySelectorViewModel.Show(attachPointInScreenSpace, handleOrientation, modelEntities);
+            RelatedEntitySelectorViewModel.Show(attachPointInScreenSpace, handleOrientation, modelEntities);
         }
 
         private void HideRelatedEntitySelector()
         {
-            RelatedModelEntitySelectorViewModel.Hide();
+            RelatedEntitySelectorViewModel.Hide();
             DiagramViewportViewModel.UnpinDecoration();
         }
 

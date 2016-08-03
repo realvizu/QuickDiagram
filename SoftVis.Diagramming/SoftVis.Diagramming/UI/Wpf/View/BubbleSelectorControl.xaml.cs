@@ -1,30 +1,29 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for ModelEntitySelectorControl.xaml
+    /// Interaction logic for BubbleSelectorControl.xaml
     /// </summary>
-    public partial class ModelEntitySelectorControl : UserControl
+    public partial class BubbleSelectorControl : UserControl
     {
         private const HandleOrientation DefaultHandleOrientation = HandleOrientation.Bottom;
 
         public static readonly DependencyProperty HandleOrientationProperty =
-            DependencyProperty.Register("HandleOrientation", typeof(HandleOrientation), typeof(ModelEntitySelectorControl),
+            DependencyProperty.Register("HandleOrientation", typeof(HandleOrientation), typeof(BubbleSelectorControl),
                 new FrameworkPropertyMetadata(HandleOrientation.None, FrameworkPropertyMetadataOptions.None, 
                     HandleOrientationProperty_Changed));
 
         private static void HandleOrientationProperty_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e) 
-            => ((ModelEntitySelectorControl)d).SetHandleOrientation((HandleOrientation)e.NewValue);
+            => ((BubbleSelectorControl)d).SetHandleOrientation((HandleOrientation)e.NewValue);
 
-        public static readonly DependencyProperty ModelEntitySelectedCommandProperty =
-            DependencyProperty.Register("ModelEntitySelectedCommand", typeof(ModelEntityDelegateCommand), typeof(ModelEntitySelectorControl));
+        public static readonly DependencyProperty ItemSelectedCommandProperty =
+            DependencyProperty.Register("ItemSelectedCommand", typeof(DelegateCommand<object>), typeof(BubbleSelectorControl));
 
-        public ModelEntitySelectorControl()
+        public BubbleSelectorControl()
         {
             InitializeComponent();
             SetHandleOrientation(DefaultHandleOrientation);
@@ -36,10 +35,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(HandleOrientationProperty, value); }
         }
 
-        public ModelEntityDelegateCommand ModelEntitySelectedCommand
+        public DelegateCommand<object> ItemSelectedCommand
         {
-            get { return (ModelEntityDelegateCommand)GetValue(ModelEntitySelectedCommandProperty); }
-            set { SetValue(ModelEntitySelectedCommandProperty, value); }
+            get { return (DelegateCommand<object>)GetValue(ItemSelectedCommandProperty); }
+            set { SetValue(ItemSelectedCommandProperty, value); }
         }
 
         private void SetHandleOrientation(HandleOrientation handleOrientation)
@@ -55,7 +54,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void ListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ModelEntitySelectedCommand.Execute(ListBox.SelectedItem as IModelEntity);
+            ItemSelectedCommand.Execute(ListBox.SelectedItem);
         }
     }
 }
