@@ -6,10 +6,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     public static class TypeKindExtensions
     {
-        public static ModelEntityType ToModelEntityType(this TypeKind typeKind)
+        public static ModelEntityClassifier ToModelEntityType(this TypeKind typeKind)
         {
             // All symbol types are modeled with class entities just different stereotypes.
-            return ModelEntityType.Class;
+            return ModelEntityClassifier.Class;
         }
 
         public static ModelEntityStereotype ToModelEntityStereotype(this TypeKind typeKind)

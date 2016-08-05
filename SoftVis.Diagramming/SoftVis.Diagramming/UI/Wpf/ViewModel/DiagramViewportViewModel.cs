@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -46,13 +45,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action ViewportChanged;
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public DiagramViewportViewModel(IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
-            double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewportViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, diagramBehaviourProvider);
-            _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(diagram, diagramBehaviourProvider);
+            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram);
+            _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(diagram);
 
             _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
             _viewportTransform = TransitionedTransform.Identity;

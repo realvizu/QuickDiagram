@@ -17,6 +17,22 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         public IEnumerable<List<IModelItem>> ItemGroups => _modelItemGroups;
 
+        public override IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
+        {
+            foreach (var modelEntityStereotype in base.GetModelEntityStereotypes())
+                yield return modelEntityStereotype;
+
+            yield return TestModelEntityStereotypes.Interface;
+        }
+
+        public override IEnumerable<ModelRelationshipStereotype> GetModelRelationshipStereotypes()
+        {
+            foreach (var modelRelationshipStereotype in base.GetModelRelationshipStereotypes())
+                yield return modelRelationshipStereotype;
+            
+            yield return TestModelRelationshipStereotypes.Implementation;
+        }
+
         public override void AddEntity(ModelEntity testModelEntity)
         {
             base.AddEntity(testModelEntity);

@@ -3,7 +3,7 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
-    /// Default values fro diagram layout.
+    /// Default values for diagram layout.
     /// </summary>
     public static class DiagramDefaults
     {

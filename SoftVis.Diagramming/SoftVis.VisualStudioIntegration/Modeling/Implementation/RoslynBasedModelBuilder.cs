@@ -44,13 +44,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         /// Explores related symbols in the Roslyn model and adds them to the model.
         /// </summary>
         /// <param name="modelEntity">The starting model entity.</param>
-        /// <param name="relatedEntitySpecification">Optionally specifies what kind of relations should be explored.</param>
+        /// <param name="entityRelationType">Optionally specifies what kind of relations should be explored.</param>
         /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
         public void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity,
-            RelatedEntitySpecification? relatedEntitySpecification = null, bool recursive = false)
+            EntityRelationType? entityRelationType = null, bool recursive = false)
         {
             var symbolRelations = modelEntity
-                .FindRelatedSymbols(_roslynModelProvider, relatedEntitySpecification)
+                .FindRelatedSymbols(_roslynModelProvider, entityRelationType)
                 .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
 
             foreach (var symbolRelation in symbolRelations)
@@ -60,7 +60,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
                 // TODO: loop detection?
                 if (recursive)
-                    ExtendModelWithRelatedEntities(relatedEntity, relatedEntitySpecification, recursive: true);
+                    ExtendModelWithRelatedEntities(relatedEntity, entityRelationType, recursive: true);
             }
         }
 
@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var sourceEntity = _model.GetModelEntity(symbolRelation.SourceSymbol);
             var targetEntity = _model.GetModelEntity(symbolRelation.TargetSymbol);
-            return _model.AddRelationshipIfNotExists(sourceEntity, targetEntity, symbolRelation.TypeSpecification);
+            return _model.AddRelationshipIfNotExists(sourceEntity, targetEntity, symbolRelation.Type);
         }
 
         private static RoslynBasedModelEntity CreateModelEntity(INamedTypeSymbol namedTypeSymbol)

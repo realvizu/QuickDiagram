@@ -72,9 +72,7 @@
     <Compile Include="App\IHostUiServices.cs" />
     <Compile Include="App\IHostWindow.cs" />
     <Compile Include="App\RoslynModelProvider.cs" />
-    <Compile Include="Diagramming\RoslynBasedConnectorTypeResolver.cs" />
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />
-    <Compile Include="Diagramming\CustomConnectorTypes.cs" />
     <Compile Include="Diagramming\RoslynBasedDiagram.cs" />
     <Compile Include="App\DiagramTool.cs" />
     <Compile Include="Hosting\FrameModeTranslator.cs" />
@@ -102,8 +100,7 @@
     <Compile Include="Diagramming\IDiagramServices.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelEntity.cs" />
     <Compile Include="Modeling\ModelEntityStereotypes.cs" />
-    <Compile Include="UI\CustomDiagramBehaviourProvider.cs" />
-    <Compile Include="Modeling\RoslynRelatedEntitySpecifications.cs" />
+    <Compile Include="Modeling\RoslynEntityRelationTypes.cs" />
     <Compile Include="Modeling\TypeKindExtensions.cs" />
     <Compile Include="VsctConstants.cs" />
     <Compile Include="App\IAppServices.cs" />

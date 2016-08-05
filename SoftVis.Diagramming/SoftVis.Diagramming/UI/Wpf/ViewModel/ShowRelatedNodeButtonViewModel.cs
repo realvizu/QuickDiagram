@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Extensibility;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -12,27 +11,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class ShowRelatedNodeButtonViewModel : DiagramShapeButtonViewModelBase
     {
-        private readonly RelatedEntityDescriptor _descriptor;
+        private readonly EntityRelationType _descriptor;
 
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public ShowRelatedNodeButtonViewModel(IDiagram diagram, RelatedEntityDescriptor descriptor)
+        public ShowRelatedNodeButtonViewModel(IDiagram diagram, EntityRelationType descriptor)
             : base(diagram)
         {
             _descriptor = descriptor;
             SubscribeToModelEvents();
         }
 
-        public ConnectorType ConnectorType => _descriptor.ConnectorType;
+        public ConnectorType ConnectorType => Diagram.GetConnectorType(_descriptor.Type);
 
-        private RelatedEntitySpecification RelatedEntitySpecification => _descriptor.RelatedEntitySpecification;
+        private EntityRelationType EntityRelationType => _descriptor;
         private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
         private IDiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
 
         /// <summary>
         /// For related entity buttons the placement key is the RelatedEntitySpecification.
         /// </summary>
-        public override object PlacementKey => RelatedEntitySpecification;
+        public override object PlacementKey => EntityRelationType;
 
         public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
@@ -43,7 +42,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         protected override void OnClick()
         {
             var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(
-                AssociatedDiagramNode, RelatedEntitySpecification).ToList();
+                AssociatedDiagramNode, EntityRelationType).ToList();
 
             if (undisplayedRelatedEntities.Count == 1)
             {
@@ -77,7 +76,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (AssociatedDiagramNode == null)
                 return;
 
-            IsEnabled = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, RelatedEntitySpecification).Any();
+            IsEnabled = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, EntityRelationType).Any();
         }
 
         //private static HandleOrientation CalculateHandleOrientation(RectRelativePointSpecification buttonLocation)

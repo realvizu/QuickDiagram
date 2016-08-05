@@ -5,7 +5,7 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// A diagram shape is a representation of a model item on a diagram.
+    /// The common base type for all diagram shapes (nodes and connectors as well).
     /// </summary>
     public abstract class DiagramShape : IDiagramShape
     {

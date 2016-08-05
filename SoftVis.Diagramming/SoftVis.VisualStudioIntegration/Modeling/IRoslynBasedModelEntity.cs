@@ -19,9 +19,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// Finds and returns related Roslyn symbols.
         /// </summary>
         /// <param name="roslynModelProvider">Query API for the Roslyn model.</param>
-        /// <param name="relatedEntitySpecification">Optionally specifies what kind of relations should be found. Null means all relations.</param>
+        /// <param name="entityRelationType">Optionally specifies what kind of relations should be found. Null means all relations.</param>
         /// <returns>Related Roslyn symbols.</returns>
         IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, 
-            RelatedEntitySpecification? relatedEntitySpecification = null);
+            EntityRelationType? entityRelationType = null);
     }
 }

@@ -11,10 +11,26 @@ namespace Codartis.SoftVis.TestHostApp.TestData
     {
         public List<List<IModelItem>> ModelItemGroups { get; }
 
-        public TestDiagram(TestModel model, IConnectorTypeResolver connectorTypeResolver) 
-            : base(model, connectorTypeResolver)
+        public TestDiagram(TestModel model)
+            : base(model)
         {
             ModelItemGroups = model.ItemGroups.ToList();
+        }
+
+        public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
+        {
+            foreach (var entityRelationType in base.GetEntityRelationTypes())
+                yield return entityRelationType;
+
+            yield return TestEntityRelationTypes.ImplementedInterfaces;
+            yield return TestEntityRelationTypes.ImplementerTypes;
+        }
+
+        public override ConnectorType GetConnectorType(ModelRelationshipType type)
+        {
+            return type.Stereotype == TestModelRelationshipStereotypes.Implementation
+                ? TestConnectorTypes.Implementation
+                : ConnectorTypes.Generalization;
         }
 
         protected override Size2D CalculateDiagramNodeSize(IModelEntity modelEntity)

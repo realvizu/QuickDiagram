@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Codartis.SoftVis.Modeling
+﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// A model entity is model item that can have relationships to other model entites.
@@ -16,7 +14,7 @@ namespace Codartis.SoftVis.Modeling
         /// <summary>
         /// Provides a fixed set of entity categories.
         /// </summary>
-        ModelEntityType Type { get; }
+        ModelEntityClassifier Classifier { get; }
 
         /// <summary>
         /// Provides an extensible set of entity categories.

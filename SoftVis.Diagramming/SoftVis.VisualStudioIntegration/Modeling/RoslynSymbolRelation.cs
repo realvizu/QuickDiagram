@@ -19,22 +19,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <summary>
         /// Specifies the relationship of the base and related symbols.
         /// </summary>
-        public RelatedEntitySpecification RelatedEntitySpecification { get; }
+        public EntityRelationType EntityRelationType { get; }
 
-        public RoslynSymbolRelation(INamedTypeSymbol baseSymbol, INamedTypeSymbol relatedSymbol, RelatedEntitySpecification relatedEntitySpecification)
+        public RoslynSymbolRelation(INamedTypeSymbol baseSymbol, INamedTypeSymbol relatedSymbol, EntityRelationType entityRelationType)
         {
             BaseSymbol = baseSymbol;
             RelatedSymbol = relatedSymbol;
-            RelatedEntitySpecification = relatedEntitySpecification;
+            EntityRelationType = entityRelationType;
         }
 
-        public ModelRelationshipTypeSpecification TypeSpecification => RelatedEntitySpecification.TypeSpecification;
+        public ModelRelationshipType Type => EntityRelationType.Type;
 
         /// <summary>
         /// The roslyn type symbol that is on the source side of the directed relationship.
         /// </summary>
         public INamedTypeSymbol SourceSymbol
-            => RelatedEntitySpecification.Direction == EntityRelationDirection.Outgoing
+            => EntityRelationType.Direction == EntityRelationDirection.Outgoing
                 ? BaseSymbol
                 : RelatedSymbol;
 
@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// The roslyn type symbol that is on the target side of the directed relationship.
         /// </summary>
         public INamedTypeSymbol TargetSymbol
-            => RelatedEntitySpecification.Direction == EntityRelationDirection.Outgoing
+            => EntityRelationType.Direction == EntityRelationDirection.Outgoing
                 ? RelatedSymbol
                 : BaseSymbol;
     }

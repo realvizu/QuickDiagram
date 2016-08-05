@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Extensibility;
 using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -17,15 +16,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand DoubleClickCommand { get; }
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
 
-        public DiagramNodeViewModel(IReadOnlyModel model, IDiagram diagram,
-            IDiagramBehaviourProvider diagramBehaviourProvider, IDiagramNode diagramNode)
-              : base(model, diagram)
+        public DiagramNodeViewModel(IDiagram diagram, IDiagramNode diagramNode)
+              : base(diagram)
         {
             DiagramNode = diagramNode;
             UpdatePropertiesFromDiagramShape();
 
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
-            RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels(diagramBehaviourProvider);
+            RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
         }
 
         public override IDiagramShape DiagramShape => DiagramNode;
@@ -45,11 +43,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDoubleClick() => Diagram.ActivateShape(DiagramNode);
 
-        private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels(
-            IDiagramBehaviourProvider diagramBehaviourProvider)
+        private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()
         {
-            return diagramBehaviourProvider
-                .GetRelatedEntityButtonDescriptors()
+            return Diagram.GetEntityRelationTypes()
                 .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
                 .ToList();
         }

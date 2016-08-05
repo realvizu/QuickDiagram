@@ -3,7 +3,9 @@
     /// <summary>
     /// Provides an extensible categorization for model relationships.
     /// </summary>
-    /// <remarks>To extend the stereotypes just create new public static readonly instances in your class.</remarks>
+    /// <remarks>
+    /// To extend the stereotypes just create new public static readonly instances in your class.
+    /// </remarks>
     public struct ModelRelationshipStereotype
     {
         public static readonly ModelRelationshipStereotype None = new ModelRelationshipStereotype(string.Empty);

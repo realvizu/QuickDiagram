@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Extensibility;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -13,7 +12,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewModel : DiagramViewModelBase
     {
-        private readonly IDiagramBehaviourProvider _diagramBehaviourProvider;
         private Rect _diagramContentRect;
 
         public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
@@ -21,13 +19,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public BubbleSelectorViewModel<IModelEntity> RelatedEntitySelectorViewModel { get; }
 
-        public DiagramViewModel(IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider,
-            double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             :base(diagram)
         {
-            _diagramBehaviourProvider = diagramBehaviourProvider;
-
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, _diagramBehaviourProvider, minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
 
             RelatedEntitySelectorViewModel = new BubbleSelectorViewModel<IModelEntity>(new Size(200, 100));
             RelatedEntitySelectorViewModel.ItemSelected += AddModelEntityToDiagram;

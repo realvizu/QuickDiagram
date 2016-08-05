@@ -1,7 +1,7 @@
 ﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
-    /// Specifies the direction to navigate the relation between two entities.
+    /// Specifies the direction to navigate the relationship from an entity to another.
     /// </summary>
     public enum EntityRelationDirection
     {

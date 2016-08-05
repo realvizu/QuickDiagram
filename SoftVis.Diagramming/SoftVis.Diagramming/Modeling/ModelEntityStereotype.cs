@@ -3,7 +3,9 @@
     /// <summary>
     /// Provides an extensible categorization for model entities.
     /// </summary>
-    /// <remarks>To extend the stereotypes just create new public static readonly instances in your class.</remarks>
+    /// <remarks>
+    /// To extend the stereotypes just create new public static readonly instances in your class.
+    /// </remarks>
     public struct ModelEntityStereotype
     {
         public static readonly ModelEntityStereotype None = new ModelEntityStereotype(string.Empty);

@@ -11,13 +11,16 @@
         /// <summary>
         /// Provides a fixed set of relationship categories.
         /// </summary>
-        ModelRelationshipType Type { get; }
+        ModelRelationshipClassifier Classifier { get; }
 
         /// <summary>
         /// Provides an extensible set of relationship categories.
         /// </summary>
         ModelRelationshipStereotype Stereotype { get; }
 
-        bool IsOfType(ModelRelationshipTypeSpecification typeSpecification);
+        /// <summary>
+        /// Specifies the relationship type (classification + stereotype).
+        /// </summary>
+        ModelRelationshipType Type { get; }
     }
 }

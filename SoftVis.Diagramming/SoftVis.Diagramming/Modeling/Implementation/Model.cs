@@ -34,10 +34,19 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public virtual void AddEntity(ModelEntity entity) => _graph.AddVertex(entity);
         public virtual void AddRelationship(ModelRelationship relationship) => _graph.AddEdge(relationship);
 
-        public IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipTypeSpecification typeSpecification)
+        public IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type)
         {
-            return Relationships.FirstOrDefault(i => i.Source == source && i.Target == target &&
-                i.Type == typeSpecification.Type && i.Stereotype == typeSpecification.Stereotype);
+            return Relationships.FirstOrDefault(i => i.Source == source && i.Target == target && i.Type == type);
+        }
+
+        public virtual IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
+        {
+            yield return ModelEntityStereotype.None;
+        }
+
+        public virtual IEnumerable<ModelRelationshipStereotype> GetModelRelationshipStereotypes()
+        {
+            yield return ModelRelationshipStereotype.None;
         }
 
         public IEnumerable<IModelRelationship> GetRelationships(IModelEntity entity)
@@ -45,14 +54,12 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return Relationships.Where(i => i.Source == entity || i.Target == entity);
         }
 
-        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity,
-            RelatedEntitySpecification specification, bool recursive = false)
+        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, 
+            bool recursive = false)
         {
-            var typeSpecification = specification.TypeSpecification;
-
-            var relatedEntities = specification.Direction == EntityRelationDirection.Incoming
-                ? _graph.InEdges(entity).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Source).Distinct()
-                : _graph.OutEdges(entity).Where(i => i.IsOfType(typeSpecification)).Select(i => i.Target).Distinct();
+            var relatedEntities = relationType.Direction == EntityRelationDirection.Incoming
+                ? _graph.InEdges(entity).Where(i => i.Type == relationType.Type).Select(i => i.Source).Distinct()
+                : _graph.OutEdges(entity).Where(i => i.Type == relationType.Type).Select(i => i.Target).Distinct();
 
             foreach (var relatedEntity in relatedEntities.ToList())
             {
@@ -60,18 +67,18 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
                 // TODO: loop detection?
                 if (recursive)
-                    foreach (var nextRelatedEntity in GetRelatedEntities(relatedEntity, specification, recursive: true))
+                    foreach (var nextRelatedEntity in GetRelatedEntities(relatedEntity, relationType, recursive: true))
                         yield return nextRelatedEntity;
             }
         }
 
         public virtual ModelRelationship AddRelationshipIfNotExists(ModelEntity source, ModelEntity target,
-            ModelRelationshipTypeSpecification typeSpecification)
+            ModelRelationshipType type)
         {
-            var modelRelationship = GetRelationship(source, target, typeSpecification) as ModelRelationship;
+            var modelRelationship = GetRelationship(source, target, type) as ModelRelationship;
             if (modelRelationship == null)
             {
-                var newModelRelationship = new ModelRelationship(source, target, typeSpecification.Type, typeSpecification.Stereotype);
+                var newModelRelationship = new ModelRelationship(source, target, type);
                 AddRelationship(newModelRelationship);
             }
             return modelRelationship;

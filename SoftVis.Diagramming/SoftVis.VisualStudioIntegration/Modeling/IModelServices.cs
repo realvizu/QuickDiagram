@@ -24,9 +24,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// Explores related symbols in the Roslyn model and adds them to the model.
         /// </summary>
         /// <param name="modelEntity">The starting model entity.</param>
-        /// <param name="relatedEntitySpecification">Optionally specifies what kind of relations should be explored. Null means all relations.</param>
+        /// <param name="entityRelationType">Optionally specifies what kind of relations should be explored. Null means all relations.</param>
         /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
-        void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity, 
-            RelatedEntitySpecification? relatedEntitySpecification = null, bool recursive = false);
+        void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
+            bool recursive = false);
     }
 }

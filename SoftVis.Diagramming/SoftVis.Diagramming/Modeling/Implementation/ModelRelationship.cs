@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// <summary>
     /// An implementation of the IModelRelationship interface with a QuickGraph edge.
     /// </summary>
-    [DebuggerDisplay("{Source.Name}--{Type}/{Stereotype}-->{Target.Name}")]
+    [DebuggerDisplay("{Source.Name}--{Classifier}/{Stereotype}-->{Target.Name}")]
     public class ModelRelationship : IModelRelationship, IEdge<IModelEntity>
     {
         private readonly ModelEntity _source;
@@ -15,20 +15,21 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IModelEntity Source => _source;
         public IModelEntity Target => _target;
 
-        public ModelRelationshipType Type { get; }
+        public ModelRelationshipClassifier Classifier { get; }
         public ModelRelationshipStereotype Stereotype { get; }
+        public ModelRelationshipType Type => new ModelRelationshipType(Classifier , Stereotype );
 
-        public ModelRelationship(ModelEntity source, ModelEntity target, ModelRelationshipType type, ModelRelationshipStereotype stereotype)
+        public ModelRelationship(ModelEntity source, ModelEntity target, ModelRelationshipType type)
+            :this(source, target, type.Classifier, type.Stereotype)
+        { }
+
+        public ModelRelationship(ModelEntity source, ModelEntity target, 
+            ModelRelationshipClassifier classifier, ModelRelationshipStereotype stereotype)
         {
             _source = source;
             _target = target;
-            Type = type;
+            Classifier = classifier;
             Stereotype = stereotype;
-        }
-
-        public bool IsOfType(ModelRelationshipTypeSpecification typeSpecification)
-        {
-            return Type == typeSpecification.Type && Stereotype == typeSpecification.Stereotype;
         }
     }
 }

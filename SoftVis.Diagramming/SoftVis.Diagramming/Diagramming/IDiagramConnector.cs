@@ -14,9 +14,8 @@ namespace Codartis.SoftVis.Diagramming
         Route RoutePoints { get; set; }
 
         IModelRelationship ModelRelationship { get; }
-        ModelRelationshipType Type { get; }
+        ModelRelationshipClassifier Classifier { get; }
         ModelRelationshipStereotype Stereotype { get; }
-
-        bool IsOfType(ModelRelationshipTypeSpecification typeSpecification);
+        ModelRelationshipType Type { get; }
     }
 }

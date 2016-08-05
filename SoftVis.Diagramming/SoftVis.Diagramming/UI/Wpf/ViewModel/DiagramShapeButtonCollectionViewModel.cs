@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.UI.Extensibility;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -13,11 +12,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     { 
         public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramButtonViewModels { get; }
 
-        public DiagramShapeButtonCollectionViewModel(IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+        public DiagramShapeButtonCollectionViewModel(IDiagram diagram)
             : base(diagram)
         {
-            DiagramButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(
-                CreateButtons(diagram, diagramBehaviourProvider));
+            DiagramButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(CreateButtons());
         }
 
         public void AssignButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)
@@ -37,13 +35,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 buttonViewModel.Hide();
         }
 
-        private static IEnumerable<DiagramShapeButtonViewModelBase> CreateButtons(IDiagram diagram, 
-            IDiagramBehaviourProvider diagramBehaviourProvider)
+        private IEnumerable<DiagramShapeButtonViewModelBase> CreateButtons()
         {
-            yield return new CloseShapeButtonViewModel(diagram);
+            yield return new CloseShapeButtonViewModel(Diagram);
 
-            foreach (var descriptor in diagramBehaviourProvider.GetRelatedEntityButtonDescriptors())
-                yield return new ShowRelatedNodeButtonViewModel(diagram, descriptor);
+            foreach (var entityRelationType in Diagram.GetEntityRelationTypes())
+                yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
         }
     }
 }

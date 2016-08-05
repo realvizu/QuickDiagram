@@ -17,10 +17,10 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultUndisplayedEntityCuePlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynRelatedEntitySpecifications.ImplementedInterface}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,0.5"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynRelatedEntitySpecifications.ImplementerType}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
     </ext:Dictionary>
 
@@ -29,10 +29,10 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultDiagramShapeButtonPlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynRelatedEntitySpecifications.ImplementedInterface}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,3"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynRelatedEntitySpecifications.ImplementerType}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
     </ext:Dictionary>
     

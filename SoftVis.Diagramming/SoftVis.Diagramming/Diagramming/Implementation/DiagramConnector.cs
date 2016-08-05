@@ -31,12 +31,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
-        public ModelRelationshipType Type => ModelRelationship.Type;
+        public ModelRelationshipClassifier Classifier => ModelRelationship.Classifier;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
-        public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
+        public ModelRelationshipType Type => ModelRelationship.Type;
 
-        public bool IsOfType(ModelRelationshipTypeSpecification typeSpecification)
-            => ModelRelationship.IsOfType(typeSpecification);
+        public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
 
         private static Rect2D CalculateRect(Rect2D sourceRect, Rect2D targetRect, Route routePoints)
         {
@@ -51,7 +50,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public override string ToString()
         {
-            return Source + "---" + Type + "-->" + Target;
+            return Source + "---" + Classifier + "-->" + Target;
         }
     }
 }

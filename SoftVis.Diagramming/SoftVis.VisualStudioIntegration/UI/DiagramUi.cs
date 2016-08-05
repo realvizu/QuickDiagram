@@ -25,8 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             ImageExportDpi = Dpi.Default;
             
-            var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
-            _diagramViewModel = new DiagramViewModel(diagram, diagramBehaviourProvider, minZoom: .1, maxZoom: 10, initialZoom: 1);
+            _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
             _diagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};

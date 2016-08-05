@@ -17,10 +17,10 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultUndisplayedEntityCuePlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementedInterfaces}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementedInterfaces}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,0.5"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementerTypes}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementerTypes}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
     </ext:Dictionary>
 
@@ -29,10 +29,10 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultDiagramShapeButtonPlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementedInterfaces}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementedInterfaces}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,3"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementerTypes}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementerTypes}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
     </ext:Dictionary>
 

@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -21,12 +20,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
-        public DiagramConnectorViewModel(IReadOnlyModel model, IDiagram diagram,
-            IDiagramConnector diagramConnector, ConnectorType connectorType)
-            : base(model, diagram)
+        public DiagramConnectorViewModel(IDiagram diagram, IDiagramConnector diagramConnector)
+            : base(diagram)
         {
             _diagramConnector = diagramConnector;
-            _connectorType = connectorType;
+            _connectorType = Diagram.GetConnectorType(diagramConnector.Type);
             UpdatePropertiesFromDiagramShape();
         }
 

@@ -102,30 +102,30 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return _testModel;
         }
 
-        private TestModelBuilder AddEntity(string name, ModelEntityType type, ModelEntityStereotype stereotype, int size)
+        private TestModelBuilder AddEntity(string name, ModelEntityClassifier classifier, ModelEntityStereotype stereotype, int size)
         {
             if (_testModel.Entities.Any(i => i.Name == name))
                 return this;
 
             ModelEntity newEntity;
 
-            if (type == ModelEntityType.Class && stereotype == ModelEntityStereotype.None)
+            if (classifier == ModelEntityClassifier.Class && stereotype == ModelEntityStereotype.None)
                 newEntity = new TestClass(name, size);
-            else if (type == ModelEntityType.Class && stereotype == TestModelEntityStereotypes.Interface)
+            else if (classifier == ModelEntityClassifier.Class && stereotype == TestModelEntityStereotypes.Interface)
                 newEntity = new TestInterface(name, size);
             else
-                throw new ArgumentException($"Unexpected entity type: {type}, stereotype: {stereotype}");
+                throw new ArgumentException($"Unexpected entity type: {classifier}, stereotype: {stereotype}");
 
             _testModel.AddEntity(newEntity);
             return this;
         }
 
         private TestModelBuilder AddRelationship(string sourceName, string targetName,
-            ModelRelationshipType type, ModelRelationshipStereotype stereotype)
+            ModelRelationshipClassifier classifier, ModelRelationshipStereotype stereotype)
         {
             if (_testModel.Relationships
-                .Any(i => i.Source.Name == sourceName && i.Type == type && i.Stereotype == stereotype && i.Target.Name == targetName))
-                throw new InvalidOperationException($"Relationship already exists {sourceName}--{type}({stereotype})-->{targetName}.");
+                .Any(i => i.Source.Name == sourceName && i.Classifier == classifier && i.Stereotype == stereotype && i.Target.Name == targetName))
+                throw new InvalidOperationException($"Relationship already exists {sourceName}--{classifier}({stereotype})-->{targetName}.");
 
             var sourceEntity = _testModel.Entities.FirstOrDefault(i => i.Name == sourceName) as ModelEntity;
             if (sourceEntity == null)
@@ -135,7 +135,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             if (targetEntity == null)
                 throw new InvalidOperationException($"Entity with name {targetName} not found.");
 
-            var newRelationship = new ModelRelationship(sourceEntity, targetEntity, type, stereotype);
+            var newRelationship = new ModelRelationship(sourceEntity, targetEntity, classifier, stereotype);
             _testModel.AddRelationship(newRelationship);
 
             return this;
@@ -147,10 +147,10 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private TestModelBuilder AddEntityWithOptionalBase(string name, int size, ModelEntityType type, ModelEntityStereotype stereotype,
+        private TestModelBuilder AddEntityWithOptionalBase(string name, int size, ModelEntityClassifier classifier, ModelEntityStereotype stereotype,
             string baseName = null)
         {
-            var model = AddEntity(name, type, stereotype, size);
+            var model = AddEntity(name, classifier, stereotype, size);
 
             if (baseName != null)
                 AddBase(name, baseName);
@@ -160,22 +160,22 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         private TestModelBuilder AddInterface(string name, int size = 100, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, TestModelEntityStereotypes.Interface, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, TestModelEntityStereotypes.Interface, baseName);
         }
 
         private TestModelBuilder AddClass(string name, int size = 100, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, size, ModelEntityType.Class, ModelEntityStereotype.None, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, ModelEntityStereotype.None, baseName);
         }
 
         private TestModelBuilder AddBase(string name, string baseName = null)
         {
-            return AddRelationship(name, baseName, ModelRelationshipType.Generalization, ModelRelationshipStereotype.None);
+            return AddRelationship(name, baseName, ModelRelationshipClassifier.Generalization, ModelRelationshipStereotype.None);
         }
 
         private TestModelBuilder AddImplements(string name, string baseName = null)
         {
-            return AddRelationship(name, baseName, ModelRelationshipType.Generalization, TestModelRelationshipStereotypes.Implementation);
+            return AddRelationship(name, baseName, ModelRelationshipClassifier.Generalization, TestModelRelationshipStereotypes.Implementation);
         }
     }
 }

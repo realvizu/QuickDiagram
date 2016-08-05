@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
     internal sealed class TestModelRelationship : ModelRelationship
     {
         public TestModelRelationship() 
-            : base(null, null, ModelRelationshipType.Generalization, ModelRelationshipStereotype.None)
+            : base(null, null, ModelRelationshipClassifier.Generalization, ModelRelationshipStereotype.None)
         {
         }
     }

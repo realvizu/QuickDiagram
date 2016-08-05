@@ -17,8 +17,12 @@ namespace Codartis.SoftVis.Modeling
         event EventHandler<IModelRelationship> RelationshipAdded;
         event EventHandler<IModelRelationship> RelationshipRemoved;
 
-        IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipTypeSpecification typeSpecification);
+        IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type);
+
+        IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes();
+        IEnumerable<ModelRelationshipStereotype> GetModelRelationshipStereotypes();
+
         IEnumerable<IModelRelationship> GetRelationships(IModelEntity entity);
-        IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, RelatedEntitySpecification specification, bool recursive = false);
+        IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, bool recursive = false);
     }
 }

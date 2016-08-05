@@ -23,7 +23,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     public class Diagram : IArrangeableDiagram
     {
         public IReadOnlyModel Model { get; }
-        protected readonly IConnectorTypeResolver ConnectorTypeResolver;
 
         private readonly DiagramGraph _graph;
         private readonly IIncrementalLayoutEngine _incrementalLayoutEngine;
@@ -37,15 +36,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event EventHandler<IDiagramShape> ShapeActivated;
         public event EventHandler Cleared;
 
-        public Diagram(IReadOnlyModel model, IConnectorTypeResolver connectorTypeResolver)
+        public Diagram(IReadOnlyModel model)
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
-            if (connectorTypeResolver == null)
-                throw new ArgumentNullException(nameof(connectorTypeResolver));
 
             Model = model;
-            ConnectorTypeResolver = connectorTypeResolver;
 
             _graph = new DiagramGraph();
             _incrementalLayoutEngine = new IncrementalLayoutEngine();
@@ -64,8 +60,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Rect2D ContentRect => Shapes.Select(i => i.Rect).Union();
 
-        public ConnectorType GetConnectorType(IModelRelationship modelRelationship)
-            => ConnectorTypeResolver.GetConnectorType(modelRelationship);
+        public virtual IEnumerable<EntityRelationType> GetEntityRelationTypes()
+        {
+            yield return EntityRelationTypes.BaseType;
+            yield return EntityRelationTypes.Subtype;
+        }
+
+        public virtual ConnectorType GetConnectorType(ModelRelationshipType type) => ConnectorTypes.Generalization;
 
         /// <summary>
         /// Clear the diagram (that is, hide all nodes and connectors).
@@ -124,11 +125,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             HideItems(new[] { diagramShape.ModelItem });
         }
 
-        public IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, 
-            RelatedEntitySpecification specification)
+        public IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, EntityRelationType relationType)
         {
             return Model
-                .GetRelatedEntities(diagramNode.ModelEntity, specification)
+                .GetRelatedEntities(diagramNode.ModelEntity, relationType)
                 .Where(i => Nodes.All(j => j.ModelEntity != i));
         }
 

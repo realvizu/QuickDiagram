@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Extensibility;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -11,13 +10,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class RelatedEntityCueViewModel : DiagramShapeDecoratorViewModelBase
     {
         private readonly IDiagramNode _diagramNode;
-        private readonly RelatedEntitySpecification _relatedEntitySpecification;
+        private readonly EntityRelationType _entityRelationType;
 
-        public RelatedEntityCueViewModel(IDiagram diagram, IDiagramNode diagramNode, RelatedEntityDescriptor descriptor)
+        public RelatedEntityCueViewModel(IDiagram diagram, IDiagramNode diagramNode, EntityRelationType descriptor)
             : base(diagram)
         {
             _diagramNode = diagramNode;
-            _relatedEntitySpecification = descriptor.RelatedEntitySpecification;
+            _entityRelationType = descriptor;
 
             SubscribeToModelEvents();
             SubscribeToDiagramEvents();
@@ -27,7 +26,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// <summary>
         /// The placement key is the RelatedEntitySpecification.
         /// </summary>
-        public override object PlacementKey => _relatedEntitySpecification;
+        public override object PlacementKey => _entityRelationType;
 
         private void SubscribeToModelEvents()
         {
@@ -43,7 +42,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void RecalculateVisibility()
         {
-            IsVisible = Diagram.GetUndisplayedRelatedEntities(_diagramNode, _relatedEntitySpecification).Any();
+            IsVisible = Diagram.GetUndisplayedRelatedEntities(_diagramNode, _entityRelationType).Any();
         }
     }
 }

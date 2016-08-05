@@ -73,8 +73,8 @@
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Modeling\Implementation\Model.cs" />
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />
-    <Compile Include="Modeling\ModelRelationshipTypeSpecification.cs" />
-    <Compile Include="Modeling\RelatedEntitySpecifications.cs" />
+    <Compile Include="Modeling\ModelRelationshipType.cs" />
+    <Compile Include="Modeling\EntityRelationTypes.cs" />
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
@@ -97,8 +97,7 @@
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Extensibility\DefaultDiagramBehaviourProvider.cs" />
-    <Compile Include="Modeling\RelatedEntitySpecification.cs" />
+    <Compile Include="Modeling\EntityRelationType.cs" />
     <Compile Include="Diagramming\Implementation\Diagram.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnector.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnectorAction.cs" />
@@ -107,8 +106,6 @@
     <Compile Include="Diagramming\Implementation\DiagramPath.cs" />
     <Compile Include="Diagramming\Implementation\DiagramShapeAction.cs" />
     <Compile Include="Diagramming\Implementation\IArrangeableDiagram.cs" />
-    <Compile Include="UI\Extensibility\IDiagramBehaviourProvider.cs" />
-    <Compile Include="Diagramming\IConnectorTypeResolver.cs" />
     <Compile Include="Diagramming\Implementation\IReadOnlyDiagramGraph.cs" />
     <Compile Include="Diagramming\Implementation\Layout\Incremental\Absolute\AbsolutePositionCalculator.cs" />
     <Compile Include="Diagramming\Implementation\Layout\Incremental\DiagramNodeLayoutVertexToPointMap.cs" />
@@ -184,8 +181,8 @@
     <Compile Include="Modeling\EntityRelationDirection.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
     <Compile Include="Modeling\ModelEntityStereotype.cs" />
-    <Compile Include="Modeling\ModelRelationshipType.cs" />
-    <Compile Include="Modeling\ModelEntityType.cs" />
+    <Compile Include="Modeling\ModelRelationshipClassifier.cs" />
+    <Compile Include="Modeling\ModelEntityClassifier.cs" />
     <Compile Include="Modeling\IReadOnlyModel.cs" />
     <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
     <Compile Include="Modeling\Implementation\ModelEntity.cs" />
@@ -194,7 +191,6 @@
     <Compile Include="UI\Wpf\Size2DExtensions.cs" />
     <Compile Include="UI\Wpf\Point2DExtensions.cs" />
     <Compile Include="UI\Wpf\Rect2DExtensions.cs" />
-    <Compile Include="UI\Extensibility\RelatedEntityDescriptor.cs" />
     <Compile Include="UI\Wpf\View\DiagramNodeCoreControl.xaml.cs">
       <DependentUpon>DiagramNodeCoreControl.xaml</DependentUpon>
     </Compile>

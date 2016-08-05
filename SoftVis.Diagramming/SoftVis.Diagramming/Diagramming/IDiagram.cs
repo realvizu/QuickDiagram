@@ -30,7 +30,10 @@ namespace Codartis.SoftVis.Diagramming
         event EventHandler<IDiagramShape> ShapeActivated;
         event EventHandler Cleared;
 
-        ConnectorType GetConnectorType(IModelRelationship modelRelationship);
+        IEnumerable<EntityRelationType> GetEntityRelationTypes();
+
+        ConnectorType GetConnectorType(ModelRelationshipType type);
+        IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, EntityRelationType relationType);
 
         void Clear();
         void ShowItem(IModelItem modelItem);
@@ -41,8 +44,5 @@ namespace Codartis.SoftVis.Diagramming
         void SelectShape(IDiagramShape diagramShape);
         void ActivateShape(IDiagramShape diagramShape);
         void RemoveShape(IDiagramShape diagramShape);
-
-        IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, 
-            RelatedEntitySpecification specification);
     }
 }
