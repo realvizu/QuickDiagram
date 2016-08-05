@@ -56,8 +56,23 @@
     <Compile Include="Map.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />
+    <Compile Include="UI\Wpf\Controls\AnimatedContentPresenter.cs" />
+    <Compile Include="UI\Wpf\Controls\AnimatedItemsControl.cs" />
+    <Compile Include="UI\Wpf\Controls\AnimatedRenderTransformCanvas.cs" />
+    <Compile Include="UI\Wpf\Controls\BubbleSelectorControl.xaml.cs">
+      <DependentUpon>BubbleSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
+    <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
+    <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
+    <Compile Include="UI\Wpf\TransitionedTransform.cs" />
+    <Compile Include="UI\Wpf\ViewModels\BubbleSelectorViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\FocusableViewModelBase.cs" />
+    <Compile Include="UI\HandleOrientation.cs" />
+    <Compile Include="UI\Wpf\ViewModels\ViewModelBase.cs" />
     <Compile Include="UI\Wpf\DelegateCommand.cs" />
     <Compile Include="UI\Wpf\HitTesting\HitTester.cs" />
     <Compile Include="UI\Wpf\HitTesting\HitTesterInstance.cs" />
@@ -80,6 +95,13 @@
       <Link>Key.snk</Link>
     </None>
     <None Include="config.nsdepcop" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Page Include="UI\Wpf\Controls\BubbleSelectorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

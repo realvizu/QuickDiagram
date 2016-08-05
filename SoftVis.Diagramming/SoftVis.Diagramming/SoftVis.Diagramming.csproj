@@ -75,14 +75,12 @@
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />
     <Compile Include="Modeling\EntityRelationTypes.cs" />
-    <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ModelEntityDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ZoomDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\VectorDelegateCommand.cs" />
-    <Compile Include="UI\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
@@ -92,8 +90,6 @@
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityCueViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />
-    <Compile Include="UI\Wpf\View\CanvasChildDecoratorPanel.cs" />
-    <Compile Include="UI\Wpf\View\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
@@ -203,7 +199,6 @@
     <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
     <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
     <Compile Include="UI\PanDirection.cs" />
-    <Compile Include="UI\Wpf\ViewModel\FocusableViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonCollectionViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
@@ -214,9 +209,6 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\BubbleSelectorViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ViewModelBase.cs" />
-    <Compile Include="UI\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\View\ConnectorTypeToGeometryConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\View\DiagramButton.cs" />
@@ -226,9 +218,7 @@
     <Compile Include="UI\Wpf\View\DiagramControl.xaml.cs">
       <DependentUpon>DiagramControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\AnimatedContentPresenter.cs" />
     <Compile Include="UI\Wpf\View\DiagramShapeItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\AnimatedItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramNodeControl.xaml.cs">
       <DependentUpon>DiagramNodeControl.xaml</DependentUpon>
     </Compile>
@@ -236,14 +226,9 @@
     <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
       <DependentUpon>DiagramViewportControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\BubbleSelectorControl.xaml.cs">
-      <DependentUpon>BubbleSelectorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\View\PanAndZoomControl.xaml.cs">
       <DependentUpon>PanAndZoomControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\AnimatedRenderTransformCanvas.cs" />
     <Compile Include="UI\Wpf\Viewport.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -303,10 +288,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\DiagramViewportControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\BubbleSelectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Codartis.SoftVis.Util.UI.Wpf;
 
-namespace Codartis.SoftVis.UI.Wpf.View
+namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// This panel arranges its children relative to a chosen UI element (the decorated element).

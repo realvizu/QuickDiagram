@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+             xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
@@ -36,7 +37,7 @@
                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"
                                      DecoratedDiagramNode="{Binding Path=DecoratedDiagramNode}"/>
 
-        <view:BubbleSelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
+        <controls:BubbleSelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
                                     Width="{Binding Path=Width}" 
                                     Height="{Binding Path=Height}"
                                     Canvas.Top="{Binding Path=Top}" 

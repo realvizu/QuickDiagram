@@ -45,8 +45,11 @@
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.Wpf.*" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
 
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
+
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.Controls" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
 </NsDepCopConfig>

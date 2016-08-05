@@ -5,7 +5,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:roslynModeling="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling"
                     xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=SoftVis.Util"
-                    xmlns:wpf="clr-namespace:Codartis.SoftVis.UI.Wpf;assembly=SoftVis.Diagramming"
+                    xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=SoftVis.Util"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>

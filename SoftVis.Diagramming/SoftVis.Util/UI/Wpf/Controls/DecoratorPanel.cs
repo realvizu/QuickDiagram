@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using Codartis.SoftVis.Util.UI.Wpf;
 
-namespace Codartis.SoftVis.UI.Wpf.View
+namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// Arranges its child controls based on a placement specification that is relative to its parent control rectangle.

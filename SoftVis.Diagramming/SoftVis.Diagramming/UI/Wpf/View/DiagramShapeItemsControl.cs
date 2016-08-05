@@ -2,6 +2,7 @@
 using System.Windows;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Controls;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

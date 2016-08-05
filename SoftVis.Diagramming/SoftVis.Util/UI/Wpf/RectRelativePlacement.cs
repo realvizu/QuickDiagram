@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Codartis.SoftVis.UI.Wpf
+namespace Codartis.SoftVis.Util.UI.Wpf
 {
     /// <summary>
     /// Defines a position relative to a rectangle.

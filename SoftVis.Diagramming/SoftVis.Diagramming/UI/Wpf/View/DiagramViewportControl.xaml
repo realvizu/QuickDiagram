@@ -8,6 +8,7 @@
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
+             xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
@@ -41,7 +42,7 @@
             </DataTemplate>
             
             <Style x:Key="DiagramShapeItemContainerStyle" 
-                   TargetType="{x:Type view:AnimatedContentPresenter}" 
+                   TargetType="{x:Type controls:AnimatedContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
@@ -52,7 +53,7 @@
             </Style>
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
-                <view:AnimatedRenderTransformCanvas 
+                <controls:AnimatedRenderTransformCanvas 
                         AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
                         ShortAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
                         LongAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
@@ -66,7 +67,7 @@
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
                 <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}"/>
                 <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"/>
-                <Setter Property="view:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
+                <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>

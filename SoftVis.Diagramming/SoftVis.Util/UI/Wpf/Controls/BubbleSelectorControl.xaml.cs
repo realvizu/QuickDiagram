@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Codartis.SoftVis.Util.UI.Wpf;
 
-namespace Codartis.SoftVis.UI.Wpf.View
+namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// Interaction logic for BubbleSelectorControl.xaml

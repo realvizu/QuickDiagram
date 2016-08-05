@@ -6,7 +6,7 @@
                     xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=SoftVis.Util"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
                     xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"
-                    xmlns:wpf="clr-namespace:Codartis.SoftVis.UI.Wpf"
+                    xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=SoftVis.Util"
                     mc:Ignorable="d">
     
     <!-- Warning: If in the xmlns attributes above I specify the assembly for the same-assembly namespaces then compile error: MC3050 -->
