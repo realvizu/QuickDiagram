@@ -1,67 +1,27 @@
-﻿using System.Windows;
-using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// A widget on a diagram shape.
+    /// A widget on a diagram shape. 
+    /// Its placement is calculated by the view using the PlacementKey.
     /// </summary>
     public abstract class DiagramShapeDecoratorViewModelBase : DiagramViewModelBase
     {
-        protected readonly RectRelativeLocation RectRelativeLocation;
-
-        private Size _size;
-        private Point _relativeTopLeft;
         private bool _isVisible;
 
-        protected DiagramShapeDecoratorViewModelBase(IReadOnlyModel model, IDiagram diagram,
-            double width, double height, RectRelativeLocation rectRelativeLocation)
+        protected DiagramShapeDecoratorViewModelBase(IReadOnlyModel model, IDiagram diagram)
             : base(model, diagram)
         {
-            RectRelativeLocation = rectRelativeLocation;
-            _size = new Size(width, height);
             _isVisible = false;
         }
 
-        protected abstract Size ParentSize { get; }
-
-        public Size Size
-        {
-            get { return _size; }
-            set
-            {
-                if (_size != value)
-                {
-                    _size = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged("Width");
-                    OnPropertyChanged("Height");
-                }
-            }
-        }
-
-        public double Width => Size.Width;
-        public double Height => Size.Height;
-
-        public Point RelativeTopLeft
-        {
-            get { return _relativeTopLeft; }
-            set
-            {
-                if (_relativeTopLeft != value)
-                {
-                    _relativeTopLeft = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged("RelativeLeft");
-                    OnPropertyChanged("RelativeTop");
-                }
-            }
-        }
-
-        public double RelativeTop => RelativeTopLeft.Y;
-        public double RelativeLeft => RelativeTopLeft.X;
+        /// <summary>
+        /// An object that serves as the key when the view looks up the placement specification in a dictionary.
+        /// Its value is dependent on which kind of diagram shape button is it.
+        /// </summary>
+        public abstract object PlacementKey { get; }
 
         public bool IsVisible
         {
@@ -76,17 +36,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public virtual void Hide()
-        {
-            IsVisible = false;
-        }
-
-        protected virtual Point CalculateTopLeft()
-        {
-            var widgetCenterRelativeToParent = new Rect(ParentSize).GetRelativePoint(RectRelativeLocation);
-            var widgetCenterToWidgetTopLeft = new Vector(-Width / 2, -Height / 2);
-            var location = widgetCenterRelativeToParent + widgetCenterToWidgetTopLeft;
-            return location;
-        }
+        public virtual void Hide() => IsVisible = false;
     }
 }

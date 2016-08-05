@@ -1,9 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming">
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
+                    mc:Ignorable="d" >
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml"/>
+        <ResourceDictionary Source="/SoftVis.TestHostApp;component/Resources/DecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type view:DiagramControl}" >
@@ -14,6 +17,8 @@
         <Setter Property="DiagramFill" Value="Bisque"/>
         <Setter Property="DiagramStroke" Value="Black"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
+        <Setter Property="UndisplayedEntityCuePlacementDictionary" Value="{StaticResource UndisplayedEntityCuePlacementDictionary}"/>
+        <Setter Property="DiagramShapeButtonPlacementDictionary" Value="{StaticResource DiagramShapeButtonPlacementDictionary}"/>
     </Style>
-
+    
 </ResourceDictionary>

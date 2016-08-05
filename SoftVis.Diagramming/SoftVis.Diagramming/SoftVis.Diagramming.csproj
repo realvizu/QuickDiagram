@@ -77,8 +77,6 @@
     <Compile Include="Modeling\ModelRelationshipTypeSpecification.cs" />
     <Compile Include="Modeling\RelatedEntitySpecifications.cs" />
     <Compile Include="UI\Common\ZoomDirection.cs" />
-    <Compile Include="UI\Geometry\VerticalAlignmentType.cs" />
-    <Compile Include="UI\Geometry\HorizontalAlignmentType.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ModelEntityDelegateCommand.cs" />
@@ -92,6 +90,8 @@
     <Compile Include="UI\Wpf\Commands\DelegateCommand.cs" />
     <Compile Include="UI\Wpf\Converters\ThicknessMultiplierConverter.cs" />
     <Compile Include="UI\Wpf\Converters\ThicknessToDoubleConverter.cs" />
+    <Compile Include="UI\Wpf\DictionaryExtension.cs" />
+    <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\Wpf\TransformExtensions.cs" />
     <Compile Include="UI\Wpf\UIElementExtensions.cs" />
     <Compile Include="UI\Wpf\FrameworkElementExtensions.cs" />
@@ -104,8 +104,9 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityCueViewModel.cs" />
-    <Compile Include="UI\Wpf\View\DiagramAdornerlikeContentPresenter.cs" />
-    <Compile Include="UI\Wpf\View\DiagramButtonItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />
+    <Compile Include="UI\Wpf\View\CanvasChildDecoratorPanel.cs" />
+    <Compile Include="UI\Wpf\View\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
@@ -131,9 +132,7 @@
     <Compile Include="Diagramming\Implementation\Layout\Incremental\LayoutVertexBase.cs" />
     <Compile Include="Diagramming\Implementation\Layout\Incremental\Relative\IReadOnlyLayeredLayoutGraph.cs" />
     <Compile Include="Diagramming\LineType.cs" />
-    <Compile Include="UI\Geometry\RectRelativeLocation.cs" />
     <Compile Include="Diagramming\Implementation\ShapeActionType.cs" />
-    <Compile Include="UI\Geometry\RectAlignment.cs" />
     <Compile Include="Graphs\IReadOnlyLayeredGraph.cs" />
     <Compile Include="Graphs\LayeredGraph.cs" />
     <Compile Include="Diagramming\Implementation\Layout\Incremental\Relative\Logic\RelativeLayout.cs" />
@@ -214,9 +213,7 @@
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="UI\Wpf\PointExtensions.cs" />
     <Compile Include="UI\Wpf\RectExtensions.cs" />
-    <Compile Include="UI\Extensibility\RelatedEntityButtonDescriptor.cs" />
-    <Compile Include="UI\Wpf\View\AdornerlikeContentPresenter.cs" />
-    <Compile Include="UI\Wpf\View\AdornerlikeItemsControl.cs" />
+    <Compile Include="UI\Extensibility\RelatedEntityDescriptor.cs" />
     <Compile Include="UI\Wpf\View\DiagramNodeCoreControl.xaml.cs">
       <DependentUpon>DiagramNodeCoreControl.xaml</DependentUpon>
     </Compile>
@@ -233,7 +230,6 @@
     <Compile Include="UI\Wpf\Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="UI\Wpf\ViewModel\FocusableViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonCollectionViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonViewModelFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />

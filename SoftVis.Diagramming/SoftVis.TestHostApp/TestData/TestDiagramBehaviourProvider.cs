@@ -1,28 +1,22 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.UI.Extensibility;
-using Codartis.SoftVis.UI.Geometry;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal class TestDiagramBehaviourProvider : DefaultDiagramBehaviourProvider
     {
-        private const double ButtonShiftX = ButtonRadius * 1.1;
+        private static readonly RelatedEntityDescriptor ImplementedInterfacesDescriptor =
+            new RelatedEntityDescriptor(
+                TestRelationshipSpecifications.ImplementedInterfaces, TestConnectorTypes.Implementation);
 
-        private static readonly RelatedEntityButtonDescriptor ImplementedInterfacesDescriptor =
-            new RelatedEntityButtonDescriptor(
-                TestRelationshipSpecifications.ImplementedInterfaces, TestConnectorTypes.Implementation,
-                new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(ButtonShiftX, ButtonOverlapParentBy)));
+        private static readonly RelatedEntityDescriptor ImplementerTypesDescriptor =
+            new RelatedEntityDescriptor(
+                TestRelationshipSpecifications.ImplementerTypes, TestConnectorTypes.Implementation);
 
-        private static readonly RelatedEntityButtonDescriptor ImplementerTypesDescriptor =
-            new RelatedEntityButtonDescriptor(
-                TestRelationshipSpecifications.ImplementerTypes, TestConnectorTypes.Implementation,
-                new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(ButtonShiftX, -ButtonOverlapParentBy)));
-
-        public override IEnumerable<RelatedEntityButtonDescriptor> GetRelatedEntityButtonDescriptors()
+        public override IEnumerable<RelatedEntityDescriptor> GetRelatedEntityButtonDescriptors()
         {
-            yield return BaseTypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonShiftX, ButtonOverlapParentBy));
-            yield return SubtypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonShiftX, -ButtonOverlapParentBy));
+            yield return BaseTypesDescriptor;
+            yield return SubtypesDescriptor;
             yield return ImplementedInterfacesDescriptor;
             yield return ImplementerTypesDescriptor;
         }

@@ -29,6 +29,16 @@ namespace Codartis.SoftVis.Geometry
         {
         }
 
+        public Rect2D(Size2D size)
+            : this(new Point2D(0, 0), size)
+        {
+        }
+
+        public Rect2D(double width, double height)
+            : this(new Size2D(width, height))
+        {
+        }
+
         public double Top => TopLeft.Y;
         public double Bottom => TopLeft.Y + Size.Height;
         public double Left => TopLeft.X;

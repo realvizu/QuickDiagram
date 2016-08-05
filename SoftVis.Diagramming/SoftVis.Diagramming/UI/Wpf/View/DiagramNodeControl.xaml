@@ -17,22 +17,24 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <ItemsPanelTemplate x:Key="RelatedEntityCueItemsPanel">
-                <Canvas/>
+                <view:DecoratorPanel PlacementDictionary="{Binding UndisplayedEntityCuePlacementDictionary, 
+                    RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}"/>
             </ItemsPanelTemplate>
 
-            <DataTemplate x:Key="UndisplayedRelatedEntitiesCue"
-                          d:DataContext="{d:DesignInstance {x:Type viewModel:RelatedEntityCueViewModel}}">
-                <Ellipse Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                     Fill="{Binding Path=DiagramStroke, ElementName=ThisControl}" />
+            <DataTemplate x:Key="UndisplayedRelatedEntitiesCue" 
+                          DataType="{x:Type viewModel:RelatedEntityCueViewModel}">
+                <Ellipse Fill="{Binding Path=DiagramStroke, ElementName=ThisControl}"
+                         Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </DataTemplate>
-            
+
+            <Size x:Key="CueSize" Width="5" Height="5"/>
+
             <Style x:Key="RelatedEntityCueContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:RelatedEntityCueViewModel}}">
-                <Setter Property="Width" Value="{Binding Path=Width}"/>
-                <Setter Property="Height" Value="{Binding Path=Height}"/>
-                <Setter Property="Canvas.Left" Value="{Binding Path=RelativeLeft}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Path=RelativeTop}"/>
+                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource CueSize}}"/>
+                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource CueSize}}"/>
+                <Setter Property="view:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
                 <Setter Property="ContentTemplate" Value="{StaticResource UndisplayedRelatedEntitiesCue}"/>
             </Style>
 
@@ -40,9 +42,9 @@
     </UserControl.Resources>
 
     <Grid>
-
-        <view:DiagramNodeCoreControl />
         
+        <view:DiagramNodeCoreControl />
+
         <ItemsControl ItemsSource="{Binding RelatedEntityCueViewModels}" 
                       ItemsPanel="{StaticResource RelatedEntityCueItemsPanel}"
                       ItemContainerStyle="{StaticResource RelatedEntityCueContainerStyle}"

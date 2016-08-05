@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
@@ -10,20 +11,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Creates and manages the diagram button viewmodels.
     /// </summary>
     internal class DiagramShapeButtonCollectionViewModel : DiagramViewModelBase
-    {
-        private readonly DiagramShapeButtonViewModelFactory _diagramShapeButtonViewModelFactory;
-
+    { 
         public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramButtonViewModels { get; }
 
         public DiagramShapeButtonCollectionViewModel(IReadOnlyModel model, IDiagram diagram,
             IDiagramBehaviourProvider diagramBehaviourProvider)
             : base(model, diagram)
         {
-            _diagramShapeButtonViewModelFactory = new DiagramShapeButtonViewModelFactory(model, diagram,
-                diagramBehaviourProvider, DiagramDefaults.ButtonRadius, DiagramDefaults.ButtonOverlapParentBy);
-
-            DiagramButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>();
-            CreateButtons();
+            DiagramButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(
+                CreateButtons(model, diagram, diagramBehaviourProvider));
         }
 
         public void AssignButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)
@@ -43,10 +39,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 buttonViewModel.Hide();
         }
 
-        private void CreateButtons()
+        private static IEnumerable<DiagramShapeButtonViewModelBase> CreateButtons(
+            IReadOnlyModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
         {
-            foreach (var buttonViewModel in _diagramShapeButtonViewModelFactory.CreateButtons())
-                DiagramButtonViewModels.Add(buttonViewModel);
+            yield return new CloseShapeButtonViewModel(model, diagram);
+
+            foreach (var descriptor in diagramBehaviourProvider.GetRelatedEntityButtonDescriptors())
+                yield return new ShowRelatedNodeButtonViewModel(model, diagram, descriptor);
         }
     }
 }

@@ -5,22 +5,16 @@ using System.Windows.Media;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// This content presenter aligns to a chosen UI element, just like an adorner,
+    /// This panel works like the CanvasChildDecoratorPanel (aligns its children to a chosen canvas child UI element),
     /// and also binds to diagram related visual properties.
     /// </summary>    
-    internal class DiagramAdornerlikeContentPresenter : AdornerlikeContentPresenter
+    public class DiagramCanvasChildDecoratorPanel : CanvasChildDecoratorPanel
     {
-        static DiagramAdornerlikeContentPresenter()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DiagramAdornerlikeContentPresenter),
-                new FrameworkPropertyMetadata(typeof(DiagramAdornerlikeContentPresenter)));
-        }
-
         public static readonly DependencyProperty DiagramFillProperty =
-            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramAdornerlikeContentPresenter));
+             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramCanvasChildDecoratorPanel));
 
         public static readonly DependencyProperty DiagramStrokeProperty =
-            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramAdornerlikeContentPresenter));
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramCanvasChildDecoratorPanel));
 
         public Brush DiagramFill
         {
@@ -34,18 +28,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DiagramStrokeProperty, value); }
         }
 
-        protected override void OnAdornedElementChanged()
+        protected override void OnDecoratedElementChanged()
         {
-            base.OnAdornedElementChanged();
+            base.OnDecoratedElementChanged();
 
-            if (AdornedElement == null)
+            if (DecoratedElement == null)
             {
                 this.ClearBinding(DiagramFillProperty);
                 this.ClearBinding(DiagramStrokeProperty);
             }
             else
             {
-                var diagramVisualProvider = AdornedElement.FindChildren<UIElement>(i => i is IDiagramVisualProvider).FirstOrDefault();
+                var diagramVisualProvider = DecoratedElement.FindChildren<UIElement>(i => i is IDiagramVisualProvider).FirstOrDefault();
                 if (diagramVisualProvider != null)
                 {
                     this.SetBinding(DiagramFillProperty, diagramVisualProvider, DiagramVisual.DiagramFillProperty);

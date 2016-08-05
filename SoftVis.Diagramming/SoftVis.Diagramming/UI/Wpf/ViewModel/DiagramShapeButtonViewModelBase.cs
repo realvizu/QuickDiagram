@@ -1,7 +1,5 @@
-﻿using System.Windows;
-using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -16,15 +14,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramShapeButtonViewModelBase(IReadOnlyModel model, IDiagram diagram, double buttonRadius,
-            RectRelativeLocation rectRelativeLocation)
-            : base(model, diagram, buttonRadius * 2, buttonRadius * 2, rectRelativeLocation)
+        protected DiagramShapeButtonViewModelBase(IReadOnlyModel model, IDiagram diagram)
+            : base(model, diagram)
         {
             _isEnabled = true;
             ClickCommand = new DelegateCommand(OnClick);
         }
-
-        protected override Size ParentSize => AssociatedDiagramShapeViewModel?.Size ?? new Size();
 
         public bool IsEnabled
         {
@@ -42,7 +37,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public virtual void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             AssociatedDiagramShapeViewModel = diagramShapeViewModel;
-            RelativeTopLeft = CalculateTopLeft();
             IsVisible = true;
         }
 

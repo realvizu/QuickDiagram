@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.UI.Extensibility;
-using Codartis.SoftVis.UI.Geometry;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -12,22 +10,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     internal class CustomDiagramBehaviourProvider : DefaultDiagramBehaviourProvider
     {
-        private const double ButtonShiftX = ButtonRadius * 1.1;
+        private static readonly RelatedEntityDescriptor ImplementedInterfacesDescriptor =
+            new RelatedEntityDescriptor(
+                RoslynRelatedEntitySpecifications.ImplementedInterface, CustomConnectorTypes.Implementation);
 
-        private static readonly RelatedEntityButtonDescriptor ImplementedInterfacesDescriptor =
-            new RelatedEntityButtonDescriptor(
-                RoslynRelatedEntitySpecifications.ImplementedInterface, CustomConnectorTypes.Implementation,
-                new RectRelativeLocation(RectAlignment.TopMiddle, new Point2D(ButtonShiftX, ButtonOverlapParentBy)));
+        private static readonly RelatedEntityDescriptor ImplementerTypesDescriptor =
+            new RelatedEntityDescriptor(
+                RoslynRelatedEntitySpecifications.ImplementerType, CustomConnectorTypes.Implementation);
 
-        private static readonly RelatedEntityButtonDescriptor ImplementerTypesDescriptor =
-            new RelatedEntityButtonDescriptor(
-                RoslynRelatedEntitySpecifications.ImplementerType, CustomConnectorTypes.Implementation,
-                new RectRelativeLocation(RectAlignment.BottomMiddle, new Point2D(ButtonShiftX, -ButtonOverlapParentBy)));
-
-        public override IEnumerable<RelatedEntityButtonDescriptor> GetRelatedEntityButtonDescriptors()
+        public override IEnumerable<RelatedEntityDescriptor> GetRelatedEntityButtonDescriptors()
         {
-            yield return BaseTypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonShiftX, ButtonOverlapParentBy));
-            yield return SubtypesDescriptor.WithRelativeLocationTranslate(new Point2D(-ButtonShiftX, -ButtonOverlapParentBy));
+            yield return BaseTypesDescriptor;
+            yield return SubtypesDescriptor;
             yield return ImplementedInterfacesDescriptor;
             yield return ImplementerTypesDescriptor;
         }

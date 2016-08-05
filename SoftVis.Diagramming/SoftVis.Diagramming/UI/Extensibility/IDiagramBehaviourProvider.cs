@@ -7,6 +7,6 @@ namespace Codartis.SoftVis.UI.Extensibility
     /// </summary>
     public interface IDiagramBehaviourProvider
     {
-        IEnumerable<RelatedEntityButtonDescriptor> GetRelatedEntityButtonDescriptors();
+        IEnumerable<RelatedEntityDescriptor> GetRelatedEntityButtonDescriptors();
     }
 }

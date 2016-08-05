@@ -59,20 +59,20 @@
                         LongAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
             </ItemsPanelTemplate>
 
+            <Size x:Key="DiagramButtonSize" Width="16" Height="16"/>
+
             <Style x:Key="DiagramShapeButtonItemContainerStyle" 
-                   TargetType="{x:Type view:DiagramAdornerlikeContentPresenter}" 
+                   TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
-                <Setter Property="Width" Value="{Binding Path=Width}"/>
-                <Setter Property="Height" Value="{Binding Path=Height}"/>
-                <Setter Property="Canvas.Left" Value="{Binding Path=RelativeLeft}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Path=RelativeTop}"/>
-                <Setter Property="AdornedElement" Value="{Binding Path=DecoratedDiagramNodeControl, ElementName=ThisControl}"/>
+                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}"/>
+                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"/>
+                <Setter Property="view:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
                             <!-- Warning: Width and height must be specified explicitly on DiagramButton because its content's datatemplates bind to it. -->
-                            <view:DiagramButton Width="{Binding Width}" 
-                                                Height="{Binding Height}"
+                            <view:DiagramButton Width="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}" 
+                                                Height="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"
                                                 IsEnabled="{Binding IsEnabled}"
                                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                 Content="{Binding}"
@@ -83,7 +83,10 @@
             </Style>
 
             <ItemsPanelTemplate x:Key="DiagramShapeButtonItemsPanel">
-                <Canvas/>
+                <view:DiagramCanvasChildDecoratorPanel 
+                    DecoratedElement="{Binding Path=DecoratedDiagramNodeControl, ElementName=ThisControl}"
+                    PlacementDictionary="{Binding DiagramShapeButtonPlacementDictionary, 
+                        RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}"/>
             </ItemsPanelTemplate>
 
         </ResourceDictionary>
@@ -95,10 +98,10 @@
                                        ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
                                        ItemContainerStyle="{StaticResource DiagramShapeItemContainerStyle}"/>
 
-        <view:DiagramButtonItemsControl ItemsSource="{Binding DiagramShapeButtonViewModels}" 
-                                        ItemsPanel="{StaticResource DiagramShapeButtonItemsPanel}"
-                                        ItemContainerStyle="{StaticResource DiagramShapeButtonItemContainerStyle}"
-                                        Background="{x:Null}" />
+        <ItemsControl ItemsSource="{Binding DiagramShapeButtonViewModels}" 
+                      ItemsPanel="{StaticResource DiagramShapeButtonItemsPanel}"
+                      ItemContainerStyle="{StaticResource DiagramShapeButtonItemContainerStyle}"
+                      Background="{x:Null}" />
 
         <view:PanAndZoomControl Focusable="False"
                                 HorizontalAlignment="Left"

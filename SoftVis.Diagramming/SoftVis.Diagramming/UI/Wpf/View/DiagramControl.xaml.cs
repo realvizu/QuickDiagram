@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -25,6 +26,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DiagramViewportControl.PanAndZoomControlHeightProperty.AddOwner(typeof(DiagramControl));
 
+        public static readonly DependencyProperty UndisplayedEntityCuePlacementDictionaryProperty =
+            DependencyProperty.Register("UndisplayedEntityCuePlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
+
+        public static readonly DependencyProperty DiagramShapeButtonPlacementDictionaryProperty =
+            DependencyProperty.Register("DiagramShapeButtonPlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
+        
         public DiagramControl() : this(null)
         { }
 
@@ -55,6 +62,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(PanAndZoomControlHeightProperty); }
             set { SetValue(PanAndZoomControlHeightProperty, value); }
+        }
+
+        public IDictionary UndisplayedEntityCuePlacementDictionary
+        {
+            get { return (IDictionary)GetValue(UndisplayedEntityCuePlacementDictionaryProperty); }
+            set { SetValue(UndisplayedEntityCuePlacementDictionaryProperty, value); }
+        }
+
+        public IDictionary DiagramShapeButtonPlacementDictionary
+        {
+            get { return (IDictionary)GetValue(DiagramShapeButtonPlacementDictionaryProperty); }
+            set { SetValue(DiagramShapeButtonPlacementDictionaryProperty, value); }
         }
 
         public override void OnApplyTemplate()

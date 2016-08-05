@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:wpf="clr-namespace:Codartis.SoftVis.UI.Wpf;assembly=SoftVis.Diagramming"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=SoftVis.Diagramming"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming"
+                    xmlns:testData="clr-namespace:Codartis.SoftVis.TestHostApp.TestData"
+                    mc:Ignorable="d">
+
+    <wpf:Dictionary x:Key="UndisplayedEntityCuePlacementDictionary" 
+                    KeyType="{x:Type system:Object}" 
+                    ValueType="{x:Type wpf:RectRelativePlacement}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementedInterfaces}" 
+                                   Vertical="Top" Horizontal="Center" Translate="9,0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementerTypes}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
+    </wpf:Dictionary>
+
+    <wpf:Dictionary x:Key="DiagramShapeButtonPlacementDictionary" 
+                    KeyType="{x:Type system:Object}" 
+                    ValueType="{x:Type wpf:RectRelativePlacement}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Type viewModel:CloseShapeButtonViewModel}" 
+                                   Vertical="Top" Horizontal="Right" Translate="-3,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementedInterfaces}" 
+                                   Vertical="Top" Horizontal="Center" Translate="9,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestRelationshipSpecifications.ImplementerTypes}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
+    </wpf:Dictionary>
+
+</ResourceDictionary>
