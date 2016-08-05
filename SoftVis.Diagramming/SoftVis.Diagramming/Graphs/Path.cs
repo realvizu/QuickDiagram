@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Util;
 using MoreLinq;
 using QuickGraph;
 

@@ -3,8 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Codartis.SoftVis.UI.Common;
-using Codartis.SoftVis.UI.Wpf.Animations;
+using Codartis.SoftVis.Util.UI.Wpf.Animations;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

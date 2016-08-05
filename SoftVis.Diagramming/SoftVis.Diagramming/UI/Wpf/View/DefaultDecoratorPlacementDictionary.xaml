@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=SoftVis.Util"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"
+                    xmlns:wpf="clr-namespace:Codartis.SoftVis.UI.Wpf"
+                    mc:Ignorable="d">
+    
+    <!-- Warning: If in the xmlns attributes above I specify the assembly for the same-assembly namespaces then compile error: MC3050 -->
+
+    <ext:Dictionary x:Key="DefaultUndisplayedEntityCuePlacementDictionary" 
+                    KeyType="{x:Type system:Object}" 
+                    ValueType="{x:Type wpf:RectRelativePlacement}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5"/>
+    </ext:Dictionary>
+
+    <ext:Dictionary x:Key="DefaultDiagramShapeButtonPlacementDictionary" 
+                    KeyType="{x:Type system:Object}" 
+                    ValueType="{x:Type wpf:RectRelativePlacement}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Type viewModel:CloseShapeButtonViewModel}" 
+                                   Vertical="Top" Horizontal="Right" Translate="-3,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:RelatedEntitySpecifications.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3"/>
+    </ext:Dictionary>
+
+</ResourceDictionary>

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -27,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
             _diagramViewModel = new DiagramViewModel(model, diagram, diagramBehaviourProvider, minZoom: .1, maxZoom: 10, initialZoom: 1);
 
-            var resourceDictionary = WpfHelpers.GetResourceDictionary(DiagramStylesXaml);
+            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
             _diagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};
         }
 

@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Codartis.SoftVis.UI.Wpf.HitTesting;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.HitTesting;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

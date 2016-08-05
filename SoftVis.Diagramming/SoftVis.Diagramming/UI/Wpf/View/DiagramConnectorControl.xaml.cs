@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Codartis.SoftVis.UI.Wpf.Animations;
+using Codartis.SoftVis.Util.UI.Wpf.Animations;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

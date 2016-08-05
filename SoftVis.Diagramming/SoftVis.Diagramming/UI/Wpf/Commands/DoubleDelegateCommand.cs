@@ -1,4 +1,5 @@
 ﻿using System;
+using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.Commands
 {

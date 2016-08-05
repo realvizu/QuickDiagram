@@ -1,5 +1,4 @@
 ﻿using System.Windows.Media;
-using Codartis.SoftVis.UI.Common;
 
 namespace Codartis.SoftVis.UI.Wpf
 {

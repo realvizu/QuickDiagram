@@ -78,7 +78,6 @@
     <Compile Include="Diagramming\RoslynBasedDiagram.cs" />
     <Compile Include="App\DiagramTool.cs" />
     <Compile Include="Hosting\FrameModeTranslator.cs" />
-    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Hosting\IPackageServices.cs" />
     <Compile Include="Hosting\HostUiServiceProvider.cs" />
     <Compile Include="Modeling\Implementation\ImplementingTypesFinderVisitor.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="UI\StereotypeToBackgroundBrushConverter.cs" />
     <Compile Include="UI\StereotypeToImageUriConverter.cs" />
     <Compile Include="UI\StereotypeToVisualPropertyMaps.cs" />
-    <Compile Include="UI\WpfHelpers.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="ImageExport\Dpi.cs" />
     <Compile Include="Modeling\IModelServices.cs" />
@@ -341,6 +339,10 @@
     <ProjectReference Include="..\SoftVis.Diagramming\SoftVis.Diagramming.csproj">
       <Project>{9a600b8e-7c32-4dae-b61c-55fb78051f81}</Project>
       <Name>SoftVis.Diagramming</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj">
+      <Project>{04b8c468-787f-45b2-bd98-31e05c646099}</Project>
+      <Name>SoftVis.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

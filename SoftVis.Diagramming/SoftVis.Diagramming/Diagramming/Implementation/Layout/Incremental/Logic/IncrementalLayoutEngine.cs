@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Absolute;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic
 {

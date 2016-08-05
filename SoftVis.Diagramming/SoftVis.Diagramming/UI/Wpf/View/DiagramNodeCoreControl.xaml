@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-             xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Converters"
+             xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
@@ -16,7 +16,7 @@
         <ResourceDictionary>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+            <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>

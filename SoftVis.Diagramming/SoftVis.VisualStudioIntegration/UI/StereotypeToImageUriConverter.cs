@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
 using System.Windows.Data;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -13,7 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stereotype = (ModelEntityStereotype)value;
-            return WpfHelpers.CreateUri(StereotypeToVisualPropertyMaps.StereotypeToImagePathMap[stereotype]);
+            return ResourceHelpers.CreateUri(StereotypeToVisualPropertyMaps.StereotypeToImagePathMap[stereotype], Assembly.GetExecutingAssembly());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

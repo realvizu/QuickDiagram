@@ -18,6 +18,7 @@
     <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
     <Allowed From="*" To="MoreLinq" />
+    <Allowed From="*" To="Codartis.SoftVis.Util" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
@@ -40,6 +41,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.UI.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Util.UI.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Diagramming" />

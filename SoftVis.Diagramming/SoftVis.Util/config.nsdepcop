@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+    <Allowed From="*" To="System" />
+    <Allowed From="*" To="System.Collections.*" />
+    <Allowed From="*" To="System.Linq" />
+    <Allowed From="*" To="System.Globalization" />
+    <Allowed From="*" To="System.Reflection" />
+    <Allowed From="*" To="System.IO" />
+
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.ComponentModel" />
+</NsDepCopConfig>

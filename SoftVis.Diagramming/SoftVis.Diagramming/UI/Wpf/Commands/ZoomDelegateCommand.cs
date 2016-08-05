@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using Codartis.SoftVis.UI.Common;
+using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.Commands
 {

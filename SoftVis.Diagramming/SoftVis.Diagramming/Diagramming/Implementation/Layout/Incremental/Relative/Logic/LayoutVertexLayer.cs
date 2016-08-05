@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative.Logic
 {

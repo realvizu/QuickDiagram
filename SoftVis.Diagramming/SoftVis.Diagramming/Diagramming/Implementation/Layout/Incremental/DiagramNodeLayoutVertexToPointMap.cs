@@ -1,5 +1,5 @@
-﻿using Codartis.SoftVis.Common;
-using Codartis.SoftVis.Geometry;
+﻿using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental
 {

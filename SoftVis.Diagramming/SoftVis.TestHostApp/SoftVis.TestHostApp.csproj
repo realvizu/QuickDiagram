@@ -146,6 +146,10 @@
       <Project>{9a600b8e-7c32-4dae-b61c-55fb78051f81}</Project>
       <Name>SoftVis.Diagramming</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj">
+      <Project>{04b8c468-787f-45b2-bd98-31e05c646099}</Project>
+      <Name>SoftVis.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.TestHostApp", "SoftVis.TestHostApp\SoftVis.TestHostApp.csproj", "{E8E3E172-0A9D-493E-A932-531066699E35}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegration", "SoftVis.VisualStudioIntegration\SoftVis.VisualStudioIntegration.csproj", "{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.Diagramming.UnitTests", "SoftVis.Diagramming.UnitTests\SoftVis.Diagramming.UnitTests.csproj", "{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.Util", "SoftVis.Util\SoftVis.Util.csproj", "{04B8C468-787F-45B2-BD98-31E05C646099}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B8C468-787F-45B2-BD98-31E05C646099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B8C468-787F-45B2-BD98-31E05C646099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B8C468-787F-45B2-BD98-31E05C646099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B8C468-787F-45B2-BD98-31E05C646099}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

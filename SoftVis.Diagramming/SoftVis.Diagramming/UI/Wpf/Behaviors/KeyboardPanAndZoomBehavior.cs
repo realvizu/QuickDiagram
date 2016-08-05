@@ -2,8 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Codartis.SoftVis.Common;
-using Codartis.SoftVis.UI.Common;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.Behaviors
 {

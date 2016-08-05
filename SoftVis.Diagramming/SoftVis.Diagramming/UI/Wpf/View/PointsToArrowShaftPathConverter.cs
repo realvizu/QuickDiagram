@@ -5,7 +5,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Util;
+using Codartis.SoftVis.Util.UI.Wpf;
 using MoreLinq;
 
 namespace Codartis.SoftVis.UI.Wpf.View

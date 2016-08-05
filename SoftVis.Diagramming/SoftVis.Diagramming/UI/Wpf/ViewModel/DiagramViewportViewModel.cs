@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Codartis.SoftVis.Common;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Common;
 using Codartis.SoftVis.UI.Extensibility;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

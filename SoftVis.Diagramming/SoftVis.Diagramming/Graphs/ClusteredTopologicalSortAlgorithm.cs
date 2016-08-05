@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Common;
+using Codartis.SoftVis.Util;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs

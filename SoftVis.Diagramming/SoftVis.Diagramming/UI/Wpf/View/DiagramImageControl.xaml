@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
-             xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Converters"
+             xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
 
-            <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+            <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl />

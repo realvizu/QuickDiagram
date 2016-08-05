@@ -3,12 +3,12 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
-                    xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Converters"
+                    xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
                     mc:Ignorable="d">
 
-    <converters:ThicknessToDoubleConverter x:Key="ThicknessToDoubleConverter"/>
-    <converters:ThicknessMultiplierConverter x:Key="ThicknessMultiplierConverter"/>
-    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
+    <util:ThicknessToDoubleConverter x:Key="ThicknessToDoubleConverter"/>
+    <util:ThicknessMultiplierConverter x:Key="ThicknessMultiplierConverter"/>
+    <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
 
     <ControlTemplate x:Key="EllipseDiagramButton" TargetType="view:DiagramButton">
         <Grid>

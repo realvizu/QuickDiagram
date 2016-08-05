@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 using Codartis.SoftVis.TestHostApp.TestData;
-using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.TestHostApp
 {

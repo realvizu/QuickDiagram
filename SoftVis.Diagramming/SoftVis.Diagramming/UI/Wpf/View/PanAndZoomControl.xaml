@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:common="clr-namespace:Codartis.SoftVis.UI.Common"
-             xmlns:converters="clr-namespace:Codartis.SoftVis.UI.Wpf.Converters"
+             xmlns:common="clr-namespace:Codartis.SoftVis.UI"
+             xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <UserControl.Resources>
-        <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+        <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
         <Style x:Key="RepeatButtonStyleBase" TargetType="{x:Type RepeatButton}">
             <Setter Property="IsTabStop" Value="false" />

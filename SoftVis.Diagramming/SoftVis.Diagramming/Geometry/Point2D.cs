@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Common;
+﻿using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Geometry
 {
