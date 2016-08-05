@@ -13,9 +13,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly IDiagramNode _diagramNode;
         private readonly RelatedEntitySpecification _relatedEntitySpecification;
 
-        public RelatedEntityCueViewModel(IReadOnlyModel model, IDiagram diagram,
-            IDiagramNode diagramNode, RelatedEntityDescriptor descriptor)
-            : base(model, diagram)
+        public RelatedEntityCueViewModel(IDiagram diagram, IDiagramNode diagramNode, RelatedEntityDescriptor descriptor)
+            : base(diagram)
         {
             _diagramNode = diagramNode;
             _relatedEntitySpecification = descriptor.RelatedEntitySpecification;

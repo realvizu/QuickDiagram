@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -8,8 +7,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class CloseShapeButtonViewModel : DiagramShapeButtonViewModelBase
     {
-        public CloseShapeButtonViewModel(IReadOnlyModel model, IDiagram diagram)
-            : base(model, diagram)
+        public CloseShapeButtonViewModel(IDiagram diagram)
+            : base(diagram)
         {
             IsEnabled = true;
         }

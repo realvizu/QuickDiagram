@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -11,8 +10,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private bool _isVisible;
 
-        protected DiagramShapeDecoratorViewModelBase(IReadOnlyModel model, IDiagram diagram)
-            : base(model, diagram)
+        protected DiagramShapeDecoratorViewModelBase(IDiagram diagram)
+            : base(diagram)
         {
             _isVisible = false;
         }

@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -14,8 +13,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramShapeButtonViewModelBase(IReadOnlyModel model, IDiagram diagram)
-            : base(model, diagram)
+        protected DiagramShapeButtonViewModelBase(IDiagram diagram)
+            : base(diagram)
         {
             _isEnabled = true;
             ClickCommand = new DelegateCommand(OnClick);

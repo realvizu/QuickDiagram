@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
@@ -22,12 +21,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public Dpi ImageExportDpi { get; set; }
 
-        public DiagramUi(IReadOnlyModel model, IDiagram diagram)
+        public DiagramUi(IDiagram diagram)
         {
             ImageExportDpi = Dpi.Default;
             
             var diagramBehaviourProvider = new CustomDiagramBehaviourProvider();
-            _diagramViewModel = new DiagramViewModel(model, diagram, diagramBehaviourProvider, minZoom: .1, maxZoom: 10, initialZoom: 1);
+            _diagramViewModel = new DiagramViewModel(diagram, diagramBehaviourProvider, minZoom: .1, maxZoom: 10, initialZoom: 1);
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
             _diagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};

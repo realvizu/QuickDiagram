@@ -4,17 +4,18 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Abstract base class for those view models that store a model and a diagram reference.
+    /// Abstract base class for those view models that store a diagram reference.
+    /// The Model can also be accessed through the Diagram.
     /// </summary>
     public abstract class DiagramViewModelBase : ViewModelBase
     {
-        protected readonly IReadOnlyModel Model;
         protected readonly IDiagram Diagram;
 
-        protected DiagramViewModelBase(IReadOnlyModel model, IDiagram diagram)
+        protected DiagramViewModelBase(IDiagram diagram)
         {
-            Model = model;
             Diagram = diagram;
         }
+
+        protected IReadOnlyModel Model => Diagram.Model;
     }
 }

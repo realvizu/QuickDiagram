@@ -1,6 +1,5 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Extensibility;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -12,8 +11,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private readonly IDiagramBehaviourProvider _diagramBehaviourProvider;
 
-        public DiagramShapeViewModelFactory(IReadOnlyModel model, IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
-              : base(model, diagram)
+        public DiagramShapeViewModelFactory(IDiagram diagram, IDiagramBehaviourProvider diagramBehaviourProvider)
+              : base(diagram)
         {
             _diagramBehaviourProvider = diagramBehaviourProvider;
         }

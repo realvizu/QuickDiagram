@@ -15,6 +15,8 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagram
     {
+        IReadOnlyModel Model { get; }
+
         IEnumerable<IDiagramNode> Nodes { get; }
         IEnumerable<IDiagramConnector> Connectors { get; }
         IEnumerable<IDiagramShape> Shapes { get; }

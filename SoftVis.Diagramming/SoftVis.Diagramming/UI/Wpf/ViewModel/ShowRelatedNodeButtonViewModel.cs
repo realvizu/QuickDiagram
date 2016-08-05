@@ -16,9 +16,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public ShowRelatedNodeButtonViewModel(IReadOnlyModel model, IDiagram diagram,
-            RelatedEntityDescriptor descriptor)
-            : base(model, diagram)
+        public ShowRelatedNodeButtonViewModel(IDiagram diagram, RelatedEntityDescriptor descriptor)
+            : base(diagram)
         {
             _descriptor = descriptor;
             SubscribeToModelEvents();

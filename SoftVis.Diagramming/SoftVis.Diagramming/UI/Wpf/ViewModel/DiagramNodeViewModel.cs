@@ -50,7 +50,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             return diagramBehaviourProvider
                 .GetRelatedEntityButtonDescriptors()
-                .Select(i => new RelatedEntityCueViewModel(Model, Diagram, DiagramNode, i))
+                .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
                 .ToList();
         }
     }

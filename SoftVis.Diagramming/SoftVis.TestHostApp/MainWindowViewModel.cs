@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram.ShapeActivated += (sender, shape) => Debug.WriteLine($"Activated: {shape.ModelItem.ToString()}");
 
             var diagramBehaviourProvider = new TestDiagramBehaviourProvider();
-            DiagramViewModel = new DiagramViewModel(_testModel, _testDiagram, diagramBehaviourProvider,
+            DiagramViewModel = new DiagramViewModel(_testDiagram, diagramBehaviourProvider,
                 minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             
             AddCommand = new DelegateCommand(AddShapes);

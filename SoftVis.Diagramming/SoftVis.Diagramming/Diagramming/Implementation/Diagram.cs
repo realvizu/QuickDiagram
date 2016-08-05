@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     [DebuggerDisplay("NodeCount={_graph.VertexCount}, ConnectorCount={_graph.EdgeCount}")]
     public class Diagram : IArrangeableDiagram
     {
-        protected readonly IReadOnlyModel Model;
+        public IReadOnlyModel Model { get; }
         protected readonly IConnectorTypeResolver ConnectorTypeResolver;
 
         private readonly DiagramGraph _graph;

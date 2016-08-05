@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             _diagram.ShapeActivated += OnDiagramShapeActivated;
             _diagram.ShapeAdded += OnShapeAddedToDiagram;
 
-            _diagramUi = new DiagramUi(_modelBuilder.Model, _diagram);
+            _diagramUi = new DiagramUi(_diagram);
 
             // The diagram control must be hosted in the window created by the host package.
             _hostUiServices.DiagramHostWindow.Initialize("Diagram", _diagramUi.ContentControl);
