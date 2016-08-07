@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
+                    mc:Ignorable="d">
+
+    <Style TargetType="{x:Type view:DiagramNodeButton}">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{Binding Path=DiagramFill, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="BorderBrush" Value="{Binding Path=DiagramStroke, RelativeSource={RelativeSource Self}}"/>
+    </Style>
+
+</ResourceDictionary>

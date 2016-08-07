@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
@@ -47,6 +46,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event Action ViewportChanged;
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
+        public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
 
         public DiagramViewportViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
@@ -77,7 +77,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
-            => _diagramShapeButtonCollectionViewModel.DiagramButtonViewModels;
+            => _diagramShapeButtonCollectionViewModel.DiagramNodeButtonViewModels;
 
         public double ViewportZoom
         {
@@ -180,6 +180,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramShapeViewModel.UpdatePropertiesFromDiagramShape();
         }
 
+        private void OnShapeRemoveRequested(IDiagramShape diagramShape)
+        {
+            var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
+            if (diagramShapeViewModel == null)
+                return;
+
+            DiagramShapeRemoveRequested?.Invoke(diagramShapeViewModel);
+
+            Diagram.RemoveShape(diagramShape);
+        }
+
         private void OnShapeRemoved(IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
@@ -199,11 +210,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramShapeViewModels.Clear();
             _diagramShapeToViewModelMap.Clear();
-        }
-
-        private void OnShapeRemoveRequested(IDiagramShape diagramShape)
-        {
-            Diagram.RemoveShape(diagramShape);
         }
 
         private void OnShapeFocused(FocusableViewModelBase focusableViewModel)
@@ -245,11 +251,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ViewportChanged?.Invoke();
         }
 
-        private void OnEntitySelectorRequested(Point attachPointInDiagramSpace,
-            HandleOrientation handleOrientation, IEnumerable<IModelEntity> modelEntities)
+        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel,
+            IEnumerable<IModelEntity> modelEntities)
         {
-            var attachPointInScreenSpace = _viewport.ProjectFromDiagramSpaceToScreenSpace(attachPointInDiagramSpace);
-            EntitySelectorRequested?.Invoke(attachPointInScreenSpace, handleOrientation, modelEntities);
+            EntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
         }
     }
 }

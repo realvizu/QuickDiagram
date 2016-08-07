@@ -5,10 +5,10 @@ using System.Windows.Media;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// A special button used on diagrams. 
-    /// Fires bubbling mouse enter and leave events.
+    /// An abstract base for buttons used on diagrams.
+    /// Inherits diagram visual properties. 
     /// </summary>
-    public class DiagramButton : Button
+    public abstract class DiagramButton : Button
     {
         static DiagramButton()
         {
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty DiagramStrokeProperty =
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramButton));
 
-        public DiagramButton()
+        protected DiagramButton()
         {
             IsHitTestVisible = true;
         }

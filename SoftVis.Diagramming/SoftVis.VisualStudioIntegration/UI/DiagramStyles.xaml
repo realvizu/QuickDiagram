@@ -8,9 +8,9 @@
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=SoftVis.Diagramming">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
         <ResourceDictionary Source="/DiagramTool;component/UI/DecoratorPlacementDictionary.xaml" />
-
     </ResourceDictionary.MergedDictionaries>
 
     <ui:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />

@@ -23,6 +23,22 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .AddClass("2", 45, "1")
             .AddClass("5", 25, "1")
             .AddClass("4", 20, "1")
+            .AddClass("z1", 20, "1")
+            .AddClass("z2", 20, "1")
+            .AddClass("z3", 20, "1")
+            .AddClass("z4", 20, "1")
+            .AddClass("z5", 20, "1")
+            .AddClass("z6", 20, "1")
+            .AddClass("z7", 20, "1")
+            .AddClass("z8", 20, "1")
+            .AddClass("z11", 20, "1")
+            .AddClass("z21", 20, "1")
+            .AddClass("z31", 20, "1")
+            .AddClass("z41", 20, "1")
+            .AddClass("z51", 20, "1")
+            .AddClass("z61", 20, "1")
+            .AddClass("z71", 20, "1")
+            .AddClass("z81", 20, "1")
             .EndGroup()
 
             // Tree moves under parent
@@ -74,6 +90,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .AddClass("C0")
             .AddBase("C1", "C0")
             .EndGroup()
+
+                        .AddImplements("C1", "A1")
+                        .AddImplements("C1", "A2")
+                        .AddImplements("C1", "A4")
+                        .AddImplements("C1", "A5")
+                        .AddImplements("C1", "A6")
 
             // Gap removal
             .AddClass("G1", 40)

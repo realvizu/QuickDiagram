@@ -1,31 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// A diagram button to choose related entities.
     /// </summary>
-    internal class ShowRelatedNodeButtonViewModel : DiagramShapeButtonViewModelBase
+    public class ShowRelatedNodeButtonViewModel : DiagramShapeButtonViewModelBase
     {
-        private readonly EntityRelationType _descriptor;
+        private readonly EntityRelationType _relationType;
 
         public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
 
-        public ShowRelatedNodeButtonViewModel(IDiagram diagram, EntityRelationType descriptor)
+        public ShowRelatedNodeButtonViewModel(IDiagram diagram, EntityRelationType relationType)
             : base(diagram)
         {
-            _descriptor = descriptor;
+            _relationType = relationType;
             SubscribeToModelEvents();
         }
 
-        public ConnectorType ConnectorType => Diagram.GetConnectorType(_descriptor.Type);
+        public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationType.Type);
 
-        private EntityRelationType EntityRelationType => _descriptor;
+        private EntityRelationType EntityRelationType => _relationType;
         private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
         private IDiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
 
@@ -51,19 +48,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
             else if (undisplayedRelatedEntities.Count > 1)
             {
-                RaiseEntitySelectorRequest(undisplayedRelatedEntities);
+                EntitySelectorRequested?.Invoke(this, undisplayedRelatedEntities);
             }
-        }
-
-        private void RaiseEntitySelectorRequest(IEnumerable<IModelEntity> undisplayedRelatedEntities)
-        {
-            var handleOrientation = HandleOrientation.Bottom;// CalculateHandleOrientation(ButtonLocation);
-            var parentNodePositionVector = (Vector)AssociatedDiagramNodeViewModel.Position;
-           // var rectInDiagramSpace = RelativeRect.Add(parentNodePositionVector);
-           // var attachPointInDiagramSpace = CalculateAttachPoint(rectInDiagramSpace, handleOrientation);
-
-            // TODO: leave position calculation to view?
-            EntitySelectorRequested?.Invoke((Point)parentNodePositionVector, handleOrientation, undisplayedRelatedEntities);
         }
 
         private void SubscribeToModelEvents()
@@ -79,28 +65,5 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             IsEnabled = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, EntityRelationType).Any();
         }
-
-        //private static HandleOrientation CalculateHandleOrientation(RectRelativePointSpecification buttonLocation)
-        //{
-        //    switch (buttonLocation.Alignment.VerticalAlignment)
-        //    {
-        //        case VerticalAlignmentType.Top: return HandleOrientation.Bottom;
-        //        case VerticalAlignmentType.Bottom: return HandleOrientation.Top;
-
-        //        default: throw new NotImplementedException();
-        //    }
-        //}
-
-        //private static Point CalculateAttachPoint(Rect rect, HandleOrientation handleOrientation)
-        //{
-        //    switch (handleOrientation)
-        //    {
-        //        case HandleOrientation.Top: return rect.GetRelativePoint(RectAlignment.BottomMiddle);
-        //        case HandleOrientation.Bottom: return rect.GetRelativePoint(RectAlignment.TopMiddle);
-
-        //        default: throw new NotImplementedException();
-        //    }
-        //}
-
     }
 }

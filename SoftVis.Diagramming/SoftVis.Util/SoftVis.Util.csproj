@@ -62,14 +62,14 @@
     <Compile Include="UI\Wpf\Controls\AnimatedContentPresenter.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedItemsControl.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedRenderTransformCanvas.cs" />
-    <Compile Include="UI\Wpf\Controls\BubbleSelectorControl.xaml.cs">
-      <DependentUpon>BubbleSelectorControl.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="UI\Wpf\Controls\BubbleListBox.cs" />
     <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
+    <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
+    <Compile Include="UI\Wpf\DependencyObjectExtensions.cs" />
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />
-    <Compile Include="UI\Wpf\ViewModels\BubbleSelectorViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\BubbleListBoxViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\FocusableViewModelBase.cs" />
     <Compile Include="UI\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\ViewModels\ViewModelBase.cs" />
@@ -87,7 +87,6 @@
     <Compile Include="UI\Wpf\Converters\ThicknessMultiplierConverter.cs" />
     <Compile Include="UI\Wpf\Converters\ThicknessToDoubleConverter.cs" />
     <Compile Include="UI\Wpf\TransformExtensions.cs" />
-    <Compile Include="UI\Wpf\UIElementExtensions.cs" />
     <Compile Include="UI\Wpf\ResourceHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +95,8 @@
     </None>
     <None Include="config.nsdepcop" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Page Include="UI\Wpf\Controls\BubbleSelectorControl.xaml">
+    <Page Include="UI\Wpf\Controls\BubbleListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

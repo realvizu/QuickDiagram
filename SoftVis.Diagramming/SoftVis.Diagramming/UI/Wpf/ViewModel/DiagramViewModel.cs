@@ -4,8 +4,6 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -19,15 +17,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
-        public BubbleSelectorViewModel<IModelEntity> RelatedEntitySelectorViewModel { get; }
+        public RelatedEntityListBoxViewModel RelatedEntityListBoxViewModel { get; }
 
         public DiagramViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             :base(diagram)
         {
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
 
-            RelatedEntitySelectorViewModel = new BubbleSelectorViewModel<IModelEntity>(new Size(200, 100));
-            RelatedEntitySelectorViewModel.ItemSelected += AddModelEntityToDiagram;
+            RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel();
+            RelatedEntityListBoxViewModel.ItemSelected += AddModelEntityToDiagram;
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -47,18 +45,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramViewportViewModel.EntitySelectorRequested += ShowRelatedEntitySelector;
             DiagramViewportViewModel.ViewportChanged += HideRelatedEntitySelector;
+            DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
         }
 
-        private void ShowRelatedEntitySelector(Point attachPointInScreenSpace, HandleOrientation handleOrientation,
-            IEnumerable<IModelEntity> modelEntities)
+        private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
+        {
+            if (RelatedEntityListBoxViewModel.OwnerDiagramShape == diagramShapeViewModel)
+                HideRelatedEntitySelector();
+        }
+
+        private void ShowRelatedEntitySelector(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
         {
             DiagramViewportViewModel.PinDecoration();
-            RelatedEntitySelectorViewModel.Show(attachPointInScreenSpace, handleOrientation, modelEntities);
+            RelatedEntityListBoxViewModel.Show(diagramNodeButtonViewModel, modelEntities);
         }
 
         private void HideRelatedEntitySelector()
         {
-            RelatedEntitySelectorViewModel.Hide();
+            RelatedEntityListBoxViewModel.Hide();
             DiagramViewportViewModel.UnpinDecoration();
         }
 

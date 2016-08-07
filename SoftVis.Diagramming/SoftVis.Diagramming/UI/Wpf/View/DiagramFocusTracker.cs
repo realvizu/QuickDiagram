@@ -54,11 +54,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private DiagramNodeControl GetDiagramNodeControlForButton(DiagramButton diagramButton)
         {
             var diagramButtonViewModel = diagramButton.DataContext as DiagramShapeButtonViewModelBase;
+            var associatedDiagramShapeViewModel = diagramButtonViewModel?.AssociatedDiagramShapeViewModel;
 
-            var diagramNodeControls = _parentControl.FindChildren<DiagramNodeControl>(
-                i => i.DataContext == diagramButtonViewModel?.AssociatedDiagramShapeViewModel);
-
-            return diagramNodeControls.FirstOrDefault();
+            return associatedDiagramShapeViewModel == null
+                ? null
+                : _parentControl.FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == associatedDiagramShapeViewModel);
         }
 
         private static void Focus(DiagramNodeControl diagramNodeControl) => diagramNodeControl?.FocusDiagramItem();

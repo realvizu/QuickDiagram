@@ -230,8 +230,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnDecoratedDiagramNodeChanged()
         {
-            DecoratedDiagramNodeControl =  
-                this.FindChildren<DiagramShapeItemsControl>().FirstOrDefault()?.GetPresenterOf(DecoratedDiagramNode);
+            DecoratedDiagramNodeControl = this.FindFirstDescendant<DiagramShapeItemsControl>()?.GetPresenterOf(DecoratedDiagramNode);
         }
     }
 }

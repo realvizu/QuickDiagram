@@ -10,28 +10,28 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeButtonCollectionViewModel : DiagramViewModelBase
     { 
-        public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramButtonViewModels { get; }
+        public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
 
         public DiagramShapeButtonCollectionViewModel(IDiagram diagram)
             : base(diagram)
         {
-            DiagramButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(CreateButtons());
+            DiagramNodeButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(CreateButtons());
         }
 
         public void AssignButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            foreach (var buttonViewModel in DiagramButtonViewModels)
+            foreach (var buttonViewModel in DiagramNodeButtonViewModels)
                 buttonViewModel.AssociateWith(diagramShapeViewModel);
         }
 
         public bool AreButtonsAssignedTo(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            return DiagramButtonViewModels.Any(i => i.AssociatedDiagramShapeViewModel == diagramShapeViewModel);
+            return DiagramNodeButtonViewModels.Any(i => i.AssociatedDiagramShapeViewModel == diagramShapeViewModel);
         }
 
         public void HideButtons()
         {
-            foreach (var buttonViewModel in DiagramButtonViewModels)
+            foreach (var buttonViewModel in DiagramNodeButtonViewModels)
                 buttonViewModel.Hide();
         }
 

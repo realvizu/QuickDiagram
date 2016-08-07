@@ -37,13 +37,13 @@
                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"
                                      DecoratedDiagramNode="{Binding Path=DecoratedDiagramNode}"/>
 
-        <controls:BubbleSelectorControl DataContext="{Binding Path=RelatedEntitySelectorViewModel}"
-                                    Width="{Binding Path=Width}" 
-                                    Height="{Binding Path=Height}"
-                                    Canvas.Top="{Binding Path=Top}" 
-                                    Canvas.Left="{Binding Path=Left}"
-                                    Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    HandleOrientation="{Binding Path=HandleOrientation}"
-                                    ItemSelectedCommand="{Binding Path=ItemSelectedCommand}" />
+        <controls:BubbleListBox DataContext="{Binding Path=RelatedEntityListBoxViewModel}"
+                                OwnerViewModel="{Binding Path=OwnerButton}"
+                                CommonAncestorWithOwner="{Binding ElementName=ThisControl}"
+                                ItemsSource="{Binding Path=Items}"
+                                ItemSelectedCommand="{Binding Path=ItemSelectedCommand}"
+                                Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Width="200" 
+                                Height="100" />
     </Canvas>
 </UserControl>

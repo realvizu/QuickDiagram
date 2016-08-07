@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Controls;
@@ -16,11 +15,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// </summary>
         /// <param name="diagramShape">A diagram shape object.</param>
         /// <returns>The control that presents the given diagram shape.</returns>
-        public UIElement GetPresenterOf(object diagramShape)
+        public UIElement GetPresenterOf(DiagramShapeViewModelBase diagramShape)
         {
             return this.
-                FindChildren<DiagramNodeControl>(i => i.DataContext == diagramShape).FirstOrDefault()?.
-                FindParent<AnimatedContentPresenter>();
+                FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == diagramShape)?.
+                FindAncestor<AnimatedContentPresenter>();
         }
     }
 }

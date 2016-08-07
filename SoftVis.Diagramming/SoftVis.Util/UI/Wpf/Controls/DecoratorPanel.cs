@@ -22,6 +22,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         public static readonly DependencyProperty PlacementProperty =
             DependencyProperty.RegisterAttached("Placement", typeof(RectRelativePlacement), typeof(DecoratorPanel),
                 new FrameworkPropertyMetadata(RectRelativePlacement.Undefined,
+                    FrameworkPropertyMetadataOptions.Inherits |
                     FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             foreach (UIElement internalChild in InternalChildren)
                 internalChild?.Measure(constraint);
 
-            return constraint;
+            return Size.Empty;
         }
 
         /// <summary>
@@ -98,13 +99,13 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             }
         }
 
-        private RectRelativePlacement? GetChildPlacement(UIElement internalChild)
+        private RectRelativePlacement? GetChildPlacement(UIElement uiElement)
         {
-            var explicitPlacement = GetPlacement(internalChild);
+            var explicitPlacement = GetPlacement(uiElement);
             if (explicitPlacement != RectRelativePlacement.Undefined)
                 return explicitPlacement;
 
-            var placementKey = GetPlacementKey(internalChild);
+            var placementKey = GetPlacementKey(uiElement);
             if (PlacementDictionary == null || !PlacementDictionary.Contains(placementKey))
                 return null;
 
@@ -112,7 +113,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             if (dictionaryValue.GetType() != typeof(RectRelativePlacement))
                 return null;
 
-            return (RectRelativePlacement)dictionaryValue;
+            var rectRelativePlacement = (RectRelativePlacement)dictionaryValue;
+            SetPlacement(uiElement, rectRelativePlacement);
+
+            return rectRelativePlacement;
         }
 
         private static Point CalculateChildPosition(Rect decoratedRect, RectRelativePlacement childPlacement, Size childSize)

@@ -90,7 +90,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             }
             else
             {
-                var decoratedCanvas = DecoratedElement.FindParent<Canvas>();
+                var decoratedCanvas = DecoratedElement.FindAncestor<Canvas>();
                 if (decoratedCanvas != null)
                     this.SetBinding(DecoratedCanvasTransformProperty, decoratedCanvas, RenderTransformProperty);
 
