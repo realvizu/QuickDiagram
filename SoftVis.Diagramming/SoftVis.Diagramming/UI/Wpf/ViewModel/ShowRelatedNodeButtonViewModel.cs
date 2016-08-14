@@ -52,6 +52,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        protected override void OnDoubleClick()
+        {
+            var relatedEntities = Model.GetRelatedEntities(AssociatedDiagramNode.ModelEntity, _relationType);
+            Diagram.ShowItems(relatedEntities);
+        }
+
         private void SubscribeToModelEvents()
         {
             Model.RelationshipAdded += (o, e) => UpdateEnabledState();

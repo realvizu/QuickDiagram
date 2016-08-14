@@ -11,6 +11,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool _isEnabled;
 
         public DelegateCommand ClickCommand { get; }
+        public DelegateCommand DoubleClickCommand { get; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
         protected DiagramShapeButtonViewModelBase(IDiagram diagram)
@@ -18,6 +19,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             _isEnabled = true;
             ClickCommand = new DelegateCommand(OnClick);
+            DoubleClickCommand = new DelegateCommand(OnDoubleClick);
         }
 
         public bool IsEnabled
@@ -40,6 +42,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         protected abstract void OnClick();
+        protected virtual void OnDoubleClick() { }
 
         public override void Hide()
         {

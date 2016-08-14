@@ -77,7 +77,8 @@
                                                     IsEnabled="{Binding IsEnabled}"
                                                     Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                     Content="{Binding}"
-                                                    Command="{Binding ClickCommand}"/>
+                                                    Command="{Binding ClickCommand}"
+                                                    MouseDoubleClickCommand="{Binding DoubleClickCommand}"/>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
