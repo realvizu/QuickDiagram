@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         protected static IEnumerable<RoslynSymbolRelation> GetImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)
         {
-            foreach (var implementedInterfaceSymbol in classOrStructSymbol.AllInterfaces.Where(i => i.TypeKind == TypeKind.Interface))
+            foreach (var implementedInterfaceSymbol in classOrStructSymbol.Interfaces.Where(i => i.TypeKind == TypeKind.Interface))
                 yield return new RoslynSymbolRelation(classOrStructSymbol, implementedInterfaceSymbol,
                     RoslynEntityRelationTypes.ImplementedInterface);
         }
