@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -102,6 +101,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty ViewportZoomToContentCommandProperty =
             DependencyProperty.Register("ViewportZoomToContentCommand", typeof(Viewport.ZoomToContentCommand), typeof(DiagramViewportControl));
+
+        public static readonly DependencyProperty PreviewMouseDownCommandProperty =
+            DependencyProperty.Register("PreviewMouseDownCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
 
         public DiagramViewportControl()
         {
@@ -215,6 +217,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             _diagramFocusTracker.Unfocus();
+        }
+
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            PreviewMouseDownCommand?.Execute();
         }
 
         private void OnPanAndZoomControlMouseEnter(object sender, MouseEventArgs e)

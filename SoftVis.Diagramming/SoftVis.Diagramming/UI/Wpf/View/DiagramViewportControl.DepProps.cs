@@ -120,5 +120,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             get { return (Viewport.ZoomToContentCommand)GetValue(ViewportZoomToContentCommandProperty); }
             set { SetValue(ViewportZoomToContentCommandProperty, value); }
         }
+
+        public DelegateCommand PreviewMouseDownCommand
+        {
+            get { return (DelegateCommand)GetValue(PreviewMouseDownCommandProperty); }
+            set { SetValue(PreviewMouseDownCommandProperty, value); }
+        }
     }
 }
