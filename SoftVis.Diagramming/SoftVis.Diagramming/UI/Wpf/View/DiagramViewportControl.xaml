@@ -17,16 +17,16 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/EllipseDiagramNodeButton.xaml" />
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramNodeButtonDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl 
                     Width="{Binding Path=Width}"
                     Height="{Binding Path=Height}"
-                    FocusDiagramItemCommand="{Binding FocusCommand}"
-                    UnfocusDiagramItemCommand="{Binding UnfocusCommand}">
+                    FocusDiagramItemCommand="{Binding FocusCommand}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding DoubleClickCommand}"/>
@@ -60,25 +60,23 @@
                         LongAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
             </ItemsPanelTemplate>
 
-            <Size x:Key="DiagramNodeButtonSize" Width="16" Height="16"/>
-
+            <Size x:Key="DiagramButtonSize" Width="16" Height="16"/>
+            
             <Style x:Key="DiagramShapeButtonItemContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
-                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource DiagramNodeButtonSize}}"/>
-                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource DiagramNodeButtonSize}}"/>
+                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}"/>
+                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"/>
                 <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <!-- Warning: Width and height must be specified explicitly on DiagramNodeButton because its content's datatemplates bind to it. -->
-                            <view:DiagramNodeButton Width="{Binding Path=Width, Source={StaticResource DiagramNodeButtonSize}}" 
-                                                    Height="{Binding Path=Height, Source={StaticResource DiagramNodeButtonSize}}"
-                                                    IsEnabled="{Binding IsEnabled}"
-                                                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                    Content="{Binding}"
-                                                    Command="{Binding ClickCommand}"
-                                                    MouseDoubleClickCommand="{Binding DoubleClickCommand}"/>
+                            <view:DiagramButtonControl 
+                                Width="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}" 
+                                Height="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"
+                                Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                MouseClickCommand="{Binding ClickCommand}"
+                                MouseDoubleClickCommand="{Binding DoubleClickCommand}"/>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>

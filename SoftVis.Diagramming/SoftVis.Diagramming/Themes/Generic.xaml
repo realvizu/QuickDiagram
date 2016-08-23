@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramNodeButton.xaml" />
         <ResourceDictionary Source="/SoftVis.Util;component/UI/Wpf/Controls/BubbleListBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 

@@ -7,7 +7,6 @@ using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -18,22 +17,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
-        private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
-        private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
-        private readonly DiagramShapeButtonCollectionViewModel _diagramShapeButtonCollectionViewModel;
-
         private readonly Viewport _viewport;
         private double _viewportZoom;
         private TransitionedTransform _viewportTransform;
 
-        /// <summary>The focused shape is the one that the user points to.</summary>
-        private DiagramNodeViewModel _focusedDiagramNode;
+        private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
+        private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
+        private readonly DiagramShapeButtonCollectionViewModel _diagramShapeButtonCollectionViewModel;
+
+        private readonly DiagramFocusTracker _diagramFocusTracker;
 
         /// <summary>The decorated shape is the one that has the minibuttons attached.</summary>
         private DiagramNodeViewModel _decoratedDiagramNode;
-
-        /// <summary>The decoration is pinned of the minibuttons stay visible even when focus is lost from a shape.</summary>
-        private bool _isDecorationPinned;
 
         public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
         public double MinZoom { get; }
@@ -44,22 +39,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
         public Viewport.ZoomCommand ViewportZoomCommand { get; }
 
-        public event Action ViewportChanged;
-        public event EntitySelectorRequestedEventHandler EntitySelectorRequested;
+        public DelegateCommand UnfocusAllCommand { get; }
+        public DelegateCommand HideRelatedEntityListBoxCommand { get; }
+
+        public event EntitySelectorRequestedEventHandler ShowEntitySelectorRequested;
+        public event Action HideEntitySelectorRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
 
         public DiagramViewportViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
+            _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
+            _viewportTransform = TransitionedTransform.Identity;
+
+            _diagramFocusTracker = new DiagramFocusTracker();
+            _diagramFocusTracker.DecoratedNodeChanged += OnDecoratedNodeChanged;
+
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram);
             _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(diagram);
-
-            _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
-            _viewportTransform = TransitionedTransform.Identity;
-            _focusedDiagramNode = null;
-            _isDecorationPinned = false;
-            _decoratedDiagramNode = null;
 
             DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
             MinZoom = minZoom;
@@ -69,12 +67,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ViewportZoomToContentCommand = new Viewport.ZoomToContentCommand(_viewport);
             ViewportZoomCommand = new Viewport.ZoomCommand(_viewport);
 
+            UnfocusAllCommand = new DelegateCommand(_diagramFocusTracker.UnfocusAll);
+            HideRelatedEntityListBoxCommand = new DelegateCommand(HideRelatedEntitySelector);
+
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
             SubscribeToDiagramShapeButtonEvents();
 
             AddDiagram(diagram);
         }
+
 
         public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
             => _diagramShapeButtonCollectionViewModel.DiagramNodeButtonViewModels;
@@ -119,20 +121,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// Keeps the decorations (minibuttons) visible even when the shape loses focus.
         /// Used when a balloon selector is popped up.
         /// </summary>
-        public void PinDecoration()
-        {
-            _isDecorationPinned = true;
-        }
+        public void PinDecoration() => _diagramFocusTracker.PinDecoration();
 
         /// <summary>
         /// Lets the decorators (minibuttons) disappear when the shape loses focus.
         /// Exits the "pinned" mode.
         /// </summary>
-        public void UnpinDecoration()
-        {
-            _isDecorationPinned = false;
-            ChangeDecorationTo(_focusedDiagramNode);
-        }
+        public void UnpinDecoration() => _diagramFocusTracker.UnpinDecoration();
 
         private void SubscribeToViewportEvents()
         {
@@ -166,9 +161,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnShapeAdded(IDiagramShape diagramShape)
         {
             var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
-            diagramShapeViewModel.GotFocus += OnShapeFocused;
-            diagramShapeViewModel.LostFocus += OnShapeUnfocused;
             diagramShapeViewModel.RemoveRequested += OnShapeRemoveRequested;
+            diagramShapeViewModel.FocusRequested += _diagramFocusTracker.Focus;
 
             DiagramShapeViewModels.Add(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
@@ -197,10 +191,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeViewModel == null)
                 return;
 
-            OnShapeUnfocused(diagramShapeViewModel);
-            diagramShapeViewModel.GotFocus -= OnShapeFocused;
-            diagramShapeViewModel.LostFocus -= OnShapeUnfocused;
+            _diagramFocusTracker.Unfocus(diagramShapeViewModel);
             diagramShapeViewModel.RemoveRequested -= OnShapeRemoveRequested;
+            diagramShapeViewModel.FocusRequested -= _diagramFocusTracker.Focus;
 
             DiagramShapeViewModels.Remove(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Remove(diagramShape);
@@ -212,32 +205,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Clear();
         }
 
-        private void OnShapeFocused(FocusableViewModelBase focusableViewModel)
+        private void HideRelatedEntitySelector()
         {
-            ChangeFocusTo(focusableViewModel as DiagramNodeViewModel);
-        }
-
-        private void OnShapeUnfocused(FocusableViewModelBase focusableViewModel)
-        {
-            ChangeFocusTo(null);
-        }
-
-        private void ChangeFocusTo(DiagramNodeViewModel diagramNodeViewModel)
-        {
-            _focusedDiagramNode = diagramNodeViewModel;
-
-            if (!_isDecorationPinned)
-                ChangeDecorationTo(diagramNodeViewModel);
-        }
-
-        private void ChangeDecorationTo(DiagramNodeViewModel newlyDecoratedDiagramNodeViewModel)
-        {
-            if (newlyDecoratedDiagramNodeViewModel == null)
-                _diagramShapeButtonCollectionViewModel.HideButtons();
-            else
-                _diagramShapeButtonCollectionViewModel.AssignButtonsTo(newlyDecoratedDiagramNodeViewModel);
-
-            DecoratedDiagramNode = newlyDecoratedDiagramNodeViewModel;
+            HideEntitySelectorRequested?.Invoke();
         }
 
         private void OnViewportLinearZoomChanged(double newViewportZoom)
@@ -248,13 +218,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnViewportTransformChanged(TransitionedTransform newTransform)
         {
             ViewportTransform = newTransform;
-            ViewportChanged?.Invoke();
+            HideRelatedEntitySelector();
         }
 
         private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel,
             IEnumerable<IModelEntity> modelEntities)
         {
-            EntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
+            ShowEntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
+        }
+
+        private void OnDecoratedNodeChanged(DiagramNodeViewModel newlyDecoratedDiagramNodeViewModel)
+        {
+            if (newlyDecoratedDiagramNodeViewModel == null)
+                _diagramShapeButtonCollectionViewModel.HideButtons();
+            else
+                _diagramShapeButtonCollectionViewModel.AssignButtonsTo(newlyDecoratedDiagramNodeViewModel);
+
+            DecoratedDiagramNode = newlyDecoratedDiagramNodeViewModel;
         }
     }
 }

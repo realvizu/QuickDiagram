@@ -13,7 +13,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase
     {
         public IDiagramNode DiagramNode { get; }
+
+        public DelegateCommand FocusCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
+
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
 
         public DiagramNodeViewModel(IDiagram diagram, IDiagramNode diagramNode)
@@ -22,7 +25,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramNode = diagramNode;
             UpdatePropertiesFromDiagramShape();
 
+            FocusCommand = new DelegateCommand(Focus);
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
+
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
         }
 

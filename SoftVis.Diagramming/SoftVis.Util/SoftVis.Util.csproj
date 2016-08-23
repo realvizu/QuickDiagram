@@ -70,13 +70,9 @@
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\ViewModels\BubbleListBoxViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModels\FocusableViewModelBase.cs" />
     <Compile Include="UI\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\ViewModels\ViewModelBase.cs" />
     <Compile Include="UI\Wpf\DelegateCommand.cs" />
-    <Compile Include="UI\Wpf\HitTesting\HitTester.cs" />
-    <Compile Include="UI\Wpf\HitTesting\HitTesterInstance.cs" />
-    <Compile Include="UI\Wpf\HitTesting\IHitTester.cs" />
     <Compile Include="UI\Wpf\ImageRenderer.cs" />
     <Compile Include="UI\Wpf\MarkupExtensions\DictionaryExtension.cs" />
     <Compile Include="UI\Wpf\DispatcherObjectExtensions.cs" />

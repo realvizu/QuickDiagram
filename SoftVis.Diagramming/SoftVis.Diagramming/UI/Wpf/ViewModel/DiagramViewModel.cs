@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -19,7 +18,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public RelatedEntityListBoxViewModel RelatedEntityListBoxViewModel { get; }
-        public DelegateCommand HideRelatedEntityListBoxCommand { get; }
 
         public DiagramViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             :base(diagram)
@@ -29,7 +27,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel();
             RelatedEntityListBoxViewModel.ItemSelected += AddModelEntityToDiagram;
 
-            HideRelatedEntityListBoxCommand = new DelegateCommand(HideRelatedEntitySelector);
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
         }
@@ -46,8 +43,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToViewportEvents()
         {
-            DiagramViewportViewModel.EntitySelectorRequested += ShowRelatedEntitySelector;
-            DiagramViewportViewModel.ViewportChanged += HideRelatedEntitySelector;
+            DiagramViewportViewModel.ShowEntitySelectorRequested += ShowRelatedEntitySelector;
+            DiagramViewportViewModel.HideEntitySelectorRequested += HideRelatedEntitySelector;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
         }
 

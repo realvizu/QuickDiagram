@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.Util.UI.Wpf;
 
@@ -18,9 +19,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty FocusDiagramItemCommandProperty =
             DependencyProperty.Register("FocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
-
-        public static readonly DependencyProperty UnfocusDiagramItemCommandProperty =
-            DependencyProperty.Register("UnfocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
 
         public DiagramNodeControl()
         {
@@ -46,25 +44,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(FocusDiagramItemCommandProperty, value); }
         }
 
-        public DelegateCommand UnfocusDiagramItemCommand
-        {
-            get { return (DelegateCommand)GetValue(UnfocusDiagramItemCommandProperty); }
-            set { SetValue(UnfocusDiagramItemCommandProperty, value); }
-        }
-
-        public void FocusDiagramItem()
+        protected override void OnMouseMove(MouseEventArgs e)
         {
             FocusDiagramItemCommand?.Execute();
-        }
 
-        public void UnfocusDiagramItem()
-        {
-            UnfocusDiagramItemCommand?.Execute();
-        }
-
-        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
-        {
-            return new PointHitTestResult(this, hitTestParameters.HitPoint);
+            e.Handled = true;
         }
     }
 }

@@ -75,8 +75,11 @@
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />
     <Compile Include="Modeling\EntityRelationTypes.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityListBoxViewModel.cs" />
-    <Compile Include="UI\Wpf\View\DiagramNodeButton.cs" />
+    <Compile Include="UI\Wpf\View\DiagramButtonControl.xaml.cs">
+      <DependentUpon>DiagramButtonControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
@@ -212,8 +215,6 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
     <Compile Include="UI\Wpf\View\ConnectorTypeToGeometryConverter.cs" />
-    <Compile Include="UI\Wpf\View\DiagramFocusTracker.cs" />
-    <Compile Include="UI\Wpf\View\DiagramButton.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorControl.xaml.cs">
       <DependentUpon>DiagramConnectorControl.xaml</DependentUpon>
     </Compile>
@@ -249,9 +250,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="UI\Wpf\View\DiagramButtonControl.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\AnimationConstants.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -264,10 +265,6 @@
     <Page Include="UI\Wpf\View\DiagramNodeCoreControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\EllipseDiagramNodeButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\DiagramConnectorControl.xaml">
       <SubType>Designer</SubType>

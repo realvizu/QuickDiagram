@@ -34,8 +34,7 @@
 
                     <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-							BorderThickness="1"
-                            IsHitTestVisible="False">
+							BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="16"></RowDefinition>

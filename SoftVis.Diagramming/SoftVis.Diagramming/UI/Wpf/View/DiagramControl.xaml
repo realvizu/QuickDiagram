@@ -36,7 +36,8 @@
                                      Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"
                                      DecoratedDiagramNode="{Binding Path=DecoratedDiagramNode}"
-                                     PreviewMouseDownCommand="{Binding ElementName=ThisControl, Path=DataContext.HideRelatedEntityListBoxCommand}"/>
+                                     UnfocusAllCommand="{Binding Path=UnfocusAllCommand}"
+                                     PreviewMouseDownCommand="{Binding Path=HideRelatedEntityListBoxCommand}"/>
 
         <controls:BubbleListBox DataContext="{Binding Path=RelatedEntityListBoxViewModel}"
                                 OwnerViewModel="{Binding Path=OwnerButton}"

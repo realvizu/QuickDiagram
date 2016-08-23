@@ -8,7 +8,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-
         public DiagramShapeViewModelFactory(IDiagram diagram)
               : base(diagram)
         {

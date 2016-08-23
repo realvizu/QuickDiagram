@@ -18,7 +18,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double LargeZoomIncrementProportion = .1d;
         private const double PanAndZoomControlSizeDefault = 100;
 
-        private readonly DiagramFocusTracker _diagramFocusTracker;
         private bool _isViewportObscured;
 
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
@@ -102,12 +101,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty ViewportZoomToContentCommandProperty =
             DependencyProperty.Register("ViewportZoomToContentCommand", typeof(Viewport.ZoomToContentCommand), typeof(DiagramViewportControl));
 
+        public static readonly DependencyProperty UnfocusAllCommandProperty =
+            DependencyProperty.Register("UnfocusAllCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
+
         public static readonly DependencyProperty PreviewMouseDownCommandProperty =
             DependencyProperty.Register("PreviewMouseDownCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
 
         public DiagramViewportControl()
         {
-            _diagramFocusTracker = new DiagramFocusTracker(this);
             _isViewportObscured = false;
 
             KeyboardPanCommand = new VectorDelegateCommand(OnKeyboardPan);
@@ -150,14 +151,24 @@ namespace Codartis.SoftVis.UI.Wpf.View
             OnViewportResized(sizeInfo.NewSize);
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
-            OnViewportResized(RenderSize);
+            if (_isViewportObscured)
+                return;
+
+            UnfocusAllDiagramShapes();
+
+            e.Handled = true;
         }
 
-        private void OnViewportResized(Size newSize)
+        protected override void OnMouseLeave(MouseEventArgs e)
         {
-            ViewportResizeCommand?.Execute(newSize, TransitionSpeed.Instant);
+            UnfocusAllDiagramShapes();
+        }
+
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            PreviewMouseDownCommand?.Execute();
         }
 
         private void ZoomToContent(TransitionSpeed transitionSpeed)
@@ -203,31 +214,25 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return newLinearZoom;
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            OnViewportResized(RenderSize);
+        }
+
+        private void OnViewportResized(Size newSize)
+        {
+            ViewportResizeCommand?.Execute(newSize, TransitionSpeed.Instant);
+        }
+
         private void OnZoomIntervalChanged()
         {
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
         }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (!_isViewportObscured)
-                _diagramFocusTracker.TrackMouse(e);
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            _diagramFocusTracker.Unfocus();
-        }
-
-        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
-        {
-            PreviewMouseDownCommand?.Execute();
-        }
-
+        
         private void OnPanAndZoomControlMouseEnter(object sender, MouseEventArgs e)
         {
             _isViewportObscured = true;
-            _diagramFocusTracker.Unfocus();
+            UnfocusAllDiagramShapes();
         }
 
         private void OnPanAndZoomControlMouseLeave(object sender, MouseEventArgs e)
@@ -238,6 +243,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void OnDecoratedDiagramNodeChanged()
         {
             DecoratedDiagramNodeControl = this.FindFirstDescendant<DiagramShapeItemsControl>()?.GetPresenterOf(DecoratedDiagramNode);
+        }
+
+        private void UnfocusAllDiagramShapes()
+        {
+            UnfocusAllCommand?.Execute();
         }
     }
 }

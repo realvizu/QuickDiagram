@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Abstract base class for diagram shape view models. Defines position and size.
     /// </summary>
-    public abstract class DiagramShapeViewModelBase : FocusableViewModelBase
+    public abstract class DiagramShapeViewModelBase : DiagramViewModelBase
     {
-        protected readonly IDiagram Diagram;
-
         private Point _position;
         private Size _size;
 
         public event Action<IDiagramShape> RemoveRequested;
+        public event Action<DiagramShapeViewModelBase> FocusRequested;
 
         protected DiagramShapeViewModelBase(IDiagram diagram)
+            :base(diagram)
         {
-            Diagram = diagram;
         }
-
-        protected IReadOnlyModel Model => Diagram.Model;
 
         public abstract IDiagramShape DiagramShape { get; }
         public abstract void UpdatePropertiesFromDiagramShape();
@@ -65,5 +60,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double Height => Size.Height;
 
         public void Remove() => RemoveRequested?.Invoke(DiagramShape);
+        public void Focus() => FocusRequested?.Invoke(this);
     }
 }
