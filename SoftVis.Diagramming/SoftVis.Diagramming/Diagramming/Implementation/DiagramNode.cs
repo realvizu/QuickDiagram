@@ -26,6 +26,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IModelEntity ModelEntity => (IModelEntity)ModelItem;
         public string Name => ModelEntity.Name;
+        public string FullName => ModelEntity.FullName;
         public override Rect2D Rect => new Rect2D(Position, Size);
         public double Width => Size.Width;
         public double Height => Size.Height;

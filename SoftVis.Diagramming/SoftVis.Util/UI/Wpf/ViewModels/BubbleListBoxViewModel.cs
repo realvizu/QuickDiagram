@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
         protected void Show(IEnumerable<object> items)
         {
             IsVisible = true;
-            Items = items.ToList();
+            Items = items.OrderBy(i => i.ToString()).ToList();
             SelectedItem = null;
         }
 
@@ -69,8 +69,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
         public BubbleListBoxViewModel()
         {
             ItemSelectedCommand = new DelegateCommand<object>(i => ItemSelected?.Invoke((TItem)i));
+            ItemSelected += OnItemSelected;
         }
 
         public virtual void Show(IEnumerable<TItem> items) => base.Show(items);
+
+        protected virtual void OnItemSelected(TItem item)
+        { }
     }
 }

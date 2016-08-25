@@ -12,6 +12,11 @@
         string Name { get; }
 
         /// <summary>
+        /// Fully qualified name.
+        /// </summary>
+        string FullName { get; }
+
+        /// <summary>
         /// Provides a fixed set of entity categories.
         /// </summary>
         ModelEntityClassifier Classifier { get; }

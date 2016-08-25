@@ -103,8 +103,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private Point CalculateBubbleAttachPoint()
         {
-            var vectorX = Width / 2;
-            var vectorY = HandleOrientation == HandleOrientation.Top ? 0 : Height;
+            var vectorX = ActualWidth / 2;
+            var vectorY = HandleOrientation == HandleOrientation.Top ? 0 : ActualHeight;
             return new Point(vectorX, vectorY);
         }
     }

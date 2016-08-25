@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .AddClass("z51", 20, "1")
             .AddClass("z61", 20, "1")
             .AddClass("z71", 20, "1")
-            .AddClass("z81", 20, "1")
+            .AddClass("z123456", 80, "1")
             .EndGroup()
 
             // Tree moves under parent

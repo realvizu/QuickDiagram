@@ -40,6 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public string Name => DiagramNode.Name;
+        public string FullName => DiagramNode.FullName;
         public IModelEntity ModelEntity => DiagramNode.ModelEntity;
         public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
         public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;

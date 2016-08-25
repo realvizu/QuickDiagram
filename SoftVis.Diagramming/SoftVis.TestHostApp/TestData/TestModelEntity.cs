@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public int Size { get; }
 
         protected TestModelEntity(string name, int size, ModelEntityClassifier classifier, ModelEntityStereotype stereotype)
-            :base(name, classifier, stereotype)
+            : base(name, "FullName." + name, classifier, stereotype)
         {
             Size = size;
         }

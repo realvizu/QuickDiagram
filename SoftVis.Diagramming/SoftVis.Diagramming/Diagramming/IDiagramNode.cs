@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.Diagramming
     {
         IModelEntity ModelEntity { get; }
         string Name { get; }
+        string FullName { get; }
 
         Point2D Position { get; }
         Point2D Center { get; set; }

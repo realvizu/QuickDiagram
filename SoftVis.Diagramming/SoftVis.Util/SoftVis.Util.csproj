@@ -59,6 +59,7 @@
     <Compile Include="UI\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />
+    <Compile Include="UI\Wpf\ControlExtensions.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedContentPresenter.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedItemsControl.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedRenderTransformCanvas.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
     <Compile Include="UI\Wpf\DependencyObjectExtensions.cs" />
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
+    <Compile Include="UI\Wpf\StringExtensions.cs" />
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\ViewModels\BubbleListBoxViewModel.cs" />
     <Compile Include="UI\HandleOrientation.cs" />

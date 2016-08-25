@@ -9,6 +9,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             return namedTypeSymbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         }
 
+        public static string GetNamespaceQualifiedName(this INamedTypeSymbol namedTypeSymbol)
+        {
+            return namedTypeSymbol?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
+        }
+
         public static string GetMinimallyQualifiedName(this INamedTypeSymbol namedTypeSymbol)
         {
             return namedTypeSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);

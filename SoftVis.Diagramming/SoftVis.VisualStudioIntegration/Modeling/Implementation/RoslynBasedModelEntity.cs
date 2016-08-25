@@ -18,7 +18,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public INamedTypeSymbol RoslynSymbol { get; }
 
         protected RoslynBasedModelEntity(INamedTypeSymbol roslynSymbol, TypeKind typeKind)
-            : base(roslynSymbol.GetMinimallyQualifiedName(), typeKind.ToModelEntityType(), typeKind.ToModelEntityStereotype())
+            : base(roslynSymbol.GetMinimallyQualifiedName(), 
+                  roslynSymbol.GetNamespaceQualifiedName(),
+                  typeKind.ToModelEntityType(), 
+                  typeKind.ToModelEntityStereotype())
         {
             if (roslynSymbol.TypeKind != typeKind)
                 throw new ArgumentException($"{roslynSymbol.Name} must be a {typeKind}.");

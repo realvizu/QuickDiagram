@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -25,7 +27,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
 
             RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel();
-            RelatedEntityListBoxViewModel.ItemSelected += AddModelEntityToDiagram;
+            RelatedEntityListBoxViewModel.ItemSelected += OnRelatedEntitySelected;
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -89,9 +91,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramContentRect = Diagram.ContentRect.ToWpf();
         }
 
-        private void AddModelEntityToDiagram(IModelEntity selectedEntity)
+        private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
             Diagram.ShowItem(selectedEntity);
+
+            var remainingEntities = RelatedEntityListBoxViewModel.Items.Except(selectedEntity.ToEnumerable()).ToList();
+
+            if (remainingEntities.Any())
+                RelatedEntityListBoxViewModel.Items = remainingEntities;
+            else
+                HideRelatedEntitySelector();
         }
     }
 }
