@@ -157,8 +157,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 return;
 
             UnfocusAllDiagramShapes();
-
-            e.Handled = true;
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)

@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
 
             AssociatedObject.MouseLeftButtonDown += OnMouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp += OnMouseLeftButtonUp;
-            AssociatedObject.MouseMove += OnMouseMove;
+            AssociatedObject.PreviewMouseMove += OnMouseMove;
             AssociatedObject.LostMouseCapture += OnLostMouseCapture;
             AssociatedObject.MouseWheel += OnMouseWheel;
         }
@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
 
             AssociatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp -= OnMouseLeftButtonUp;
-            AssociatedObject.MouseMove -= OnMouseMove;
+            AssociatedObject.PreviewMouseMove -= OnMouseMove;
             AssociatedObject.LostMouseCapture -= OnLostMouseCapture;
             AssociatedObject.MouseWheel -= OnMouseWheel;
         }
