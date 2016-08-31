@@ -67,7 +67,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
+            if (e.AddedItems.Count == 0)
+                return;
+
+            ReleaseMouseCapture();
             ItemSelectedCommand.Execute(SelectedItem);
+            UnselectAll();
         }
 
         private void AttachToViewModel(ViewModelBase newOwnerViewModel)
