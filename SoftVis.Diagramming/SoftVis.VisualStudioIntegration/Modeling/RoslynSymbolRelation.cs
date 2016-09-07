@@ -45,5 +45,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             => EntityRelationType.Direction == EntityRelationDirection.Outgoing
                 ? RelatedSymbol
                 : BaseSymbol;
+
+        public RoslynSymbolRelation WithRelatedSymbol(INamedTypeSymbol newRelatedSymbol) 
+            => new RoslynSymbolRelation(BaseSymbol, newRelatedSymbol, EntityRelationType);
     }
 }

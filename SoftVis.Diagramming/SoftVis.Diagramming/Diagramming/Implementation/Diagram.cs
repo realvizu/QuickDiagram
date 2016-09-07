@@ -42,6 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 throw new ArgumentNullException(nameof(model));
 
             Model = model;
+            Model.RelationshipAdded += OnRelationshipAdded;
 
             _graph = new DiagramGraph();
             _incrementalLayoutEngine = new IncrementalLayoutEngine();
@@ -219,24 +220,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void MoveNode(IDiagramNode diagramNode, Point2D newCenter)
         {
-            var isFirstPosition = diagramNode.Center == Point2D.Empty;
             diagramNode.Center = newCenter;
-
-            if (isFirstPosition)
-                OnShapeAdded(diagramNode);
-            else
-                OnShapeMoved(diagramNode);
+            OnShapeMoved(diagramNode);
         }
 
         public void RerouteConnector(IDiagramConnector diagramConnector, Route newRoute)
         {
-            var isFirstRoute = diagramConnector.RoutePoints == null;
             diagramConnector.RoutePoints = newRoute;
-
-            if (isFirstRoute)
-                OnShapeAdded(diagramConnector);
-            else
-                OnShapeMoved(diagramConnector);
+            OnShapeMoved(diagramConnector);
         }
 
         private DiagramNode CreateDiagramNode(IModelEntity modelEntity)
@@ -276,16 +267,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
+        private void ShowRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship)
+        {
+            if (NodeExists(modelRelationship.Source) && NodeExists(modelRelationship.Target))
+                ShowRelationshipCore(modelRelationship);
+        }
+
         private void ShowRelationshipsIfBothEndsAreVisible(IModelEntity modelEntity)
         {
             foreach (var modelRelationship in Model.GetRelationships(modelEntity).ToList())
-            {
-                if (NodeExists(modelRelationship.Source) &&
-                    NodeExists(modelRelationship.Target))
-                {
-                    ShowRelationshipCore(modelRelationship);
-                }
-            }
+                ShowRelationshipIfBothEndsAreVisible(modelRelationship);
         }
 
         private void ApplyIncrementalLayoutChanges()
@@ -308,6 +299,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             _graph.AddVertex(diagramNode);
             _diagramShapeActionBuffer.Add(new DiagramNodeAction(diagramNode, ShapeActionType.Add));
+            OnShapeAdded(diagramNode);
         }
 
         private void RemoveDiagramNode(DiagramNode diagramNode)
@@ -321,6 +313,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             _graph.AddEdge(diagramConnector);
             _diagramShapeActionBuffer.Add(new DiagramConnectorAction(diagramConnector, ShapeActionType.Add));
+            OnShapeAdded(diagramConnector);
         }
 
         private void RemoveDiagramConnector(DiagramConnector diagramConnector)
@@ -356,5 +349,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private void OnCleared() => Cleared?.Invoke(this, EventArgs.Empty);
         private void OnShapeSelected(IDiagramShape diagramShape) => ShapeSelected?.Invoke(this, diagramShape);
         private void OnShapeActivated(IDiagramShape diagramShape) => ShapeActivated?.Invoke(this, diagramShape);
+
+        private void OnRelationshipAdded(object sender, IModelRelationship modelRelationship)
+        {
+            ShowRelationshipIfBothEndsAreVisible(modelRelationship);
+        }
     }
 }

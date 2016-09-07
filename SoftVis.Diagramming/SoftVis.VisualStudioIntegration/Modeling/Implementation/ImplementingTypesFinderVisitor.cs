@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -37,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
-            if (symbol.Interfaces.Contains(InterfaceSymbol))
+            if (symbol.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol))
                 ImplementingTypeSymbols.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())

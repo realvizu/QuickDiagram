@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var workspace = roslynModelProvider.GetWorkspace();
 
             return SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution).Result
-                .Where(i => classSymbol.SymbolEquals(i.BaseType) && i.TypeKind == TypeKind.Class)
+                .Where(i => classSymbol.SymbolEquals(i.BaseType.OriginalDefinition) && i.TypeKind == TypeKind.Class)
                 .Select(i => new RoslynSymbolRelation(classSymbol, i, EntityRelationTypes.Subtype));
         }
 

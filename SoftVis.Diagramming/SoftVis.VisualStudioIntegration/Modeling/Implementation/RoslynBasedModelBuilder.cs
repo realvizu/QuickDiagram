@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         /// <returns>The model entity that corresponds to the given Roslyn symbol.</returns>
         public IRoslynBasedModelEntity FindOrCreateModelEntity(INamedTypeSymbol namedTypeSymbol)
         {
-            return AddEntityIfNotExists(namedTypeSymbol);
+            return AddEntityIfNotExists(GetOriginalDefinition(namedTypeSymbol));
         }
 
         /// <summary>
@@ -51,6 +51,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var symbolRelations = modelEntity
                 .FindRelatedSymbols(_roslynModelProvider, entityRelationType)
+                .Select(GetOriginalDefinition)
                 .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
 
             foreach (var symbolRelation in symbolRelations)
@@ -62,6 +63,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 if (recursive)
                     ExtendModelWithRelatedEntities(relatedEntity, entityRelationType, recursive: true);
             }
+        }
+
+        private static RoslynSymbolRelation GetOriginalDefinition(RoslynSymbolRelation symbolRelation)
+        {
+            return symbolRelation.WithRelatedSymbol(GetOriginalDefinition(symbolRelation.RelatedSymbol));
+        }
+
+        private static INamedTypeSymbol GetOriginalDefinition(INamedTypeSymbol namedTypeSymbol)
+        {
+            return namedTypeSymbol.OriginalDefinition ?? namedTypeSymbol;
         }
 
         private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol)

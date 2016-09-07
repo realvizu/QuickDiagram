@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Position = rect.Location;
             Size = rect.Size;
             var rectRelativeTranslate = -(Vector)rect.TopLeft;
-            RoutePoints = _diagramConnector.RoutePoints.Select(i => i.ToWpf() + rectRelativeTranslate).ToArray();
+            RoutePoints = _diagramConnector.RoutePoints?.Select(i => i.ToWpf() + rectRelativeTranslate).ToArray();
         }
 
         public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;
