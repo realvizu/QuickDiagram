@@ -6,20 +6,20 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// Finds those types that implement the given interface symbol.
+    /// Finds those interfaces that derive from the given interface symbol.
     /// </summary>
-    internal class ImplementingTypesFinderVisitor : SymbolVisitor
+    internal class DerivedInterfacesFinderVisitor : SymbolVisitor
     {
         private INamedTypeSymbol InterfaceSymbol { get; }
-        public List<INamedTypeSymbol> ImplementingTypeSymbols { get; }
+        public List<INamedTypeSymbol> DerivedInterfaces { get; }
 
-        internal ImplementingTypesFinderVisitor(INamedTypeSymbol interfaceSymbol)
+        internal DerivedInterfacesFinderVisitor(INamedTypeSymbol interfaceSymbol)
         {
             if (interfaceSymbol.TypeKind != TypeKind.Interface)
                 throw new ArgumentException($"Interface expected but received {interfaceSymbol.TypeKind}.");
 
             InterfaceSymbol = interfaceSymbol;
-            ImplementingTypeSymbols = new List<INamedTypeSymbol>();
+            DerivedInterfaces = new List<INamedTypeSymbol>();
         }
 
         public override void VisitAssembly(IAssemblySymbol symbol)
@@ -38,8 +38,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
-            if (symbol.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol))
-                ImplementingTypeSymbols.Add(symbol);
+            if (symbol.TypeKind == TypeKind.Interface &&
+                symbol.OriginalDefinition.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol))
+                DerivedInterfaces.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())
                 Visit(namedTypeSymbol);

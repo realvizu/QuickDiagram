@@ -21,11 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 !(values[1] is ArrowHeadType) ||
                 !(values[2] is double) ||
                 !(values[3] is double))
-                throw new ArgumentException($"Expected parameters: " +
-                                            $"{typeof(IList<Point>)} routePoints, " +
-                                            $"{typeof(ArrowHeadType)} arrowHeadType, " +
-                                            $"{typeof(double)} arrowHeadSize, " +
-                                            $"{typeof(double)} arrowHeadLengthPerWidth");
+                return null;
 
             var routePoints = (IList<Point>)values[0];
             var arrowHeadType = (ArrowHeadType)values[1];

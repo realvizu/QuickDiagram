@@ -24,7 +24,12 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <DataTemplate x:Key="BubbleListBoxItemTemplate" DataType="modeling:IModelEntity">
-            <TextBlock Text="{Binding Name}"/>
+            <TextBlock x:Name="TextBlock" Text="{Binding Name}"/>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                    <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
         <Style x:Key="BubbleListBoxItemContainerStyle" TargetType="{x:Type ListBoxItem}"

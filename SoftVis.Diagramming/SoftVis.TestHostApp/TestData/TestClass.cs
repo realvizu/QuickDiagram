@@ -4,8 +4,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal class TestClass : TestModelEntity
     {
-        public TestClass(string name, int size)
-            : base(name, size, ModelEntityClassifier.Class, ModelEntityStereotype.None)
+        public TestClass(string name, int size, ModelOrigin origin)
+            : base(name, size, ModelEntityClassifier.Class, ModelEntityStereotype.None, origin)
         {
         }
 

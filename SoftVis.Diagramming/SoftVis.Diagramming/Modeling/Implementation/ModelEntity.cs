@@ -12,16 +12,19 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public string FullName { get; }
         public ModelEntityClassifier Classifier { get; }
         public ModelEntityStereotype Stereotype { get; }
+        public ModelOrigin Origin { get; }
+
         public virtual int Priority => 0;
         public virtual bool IsAbstract => false;
 
         protected ModelEntity(string name, string fullName,
-            ModelEntityClassifier classifier, ModelEntityStereotype stereotype)
+            ModelEntityClassifier classifier, ModelEntityStereotype stereotype, ModelOrigin origin)
         {
             Name = name;
             FullName = fullName;
             Classifier = classifier;
             Stereotype = stereotype;
+            Origin = origin;
         }
 
         public override string ToString()

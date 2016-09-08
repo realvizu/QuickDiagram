@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using Codartis.SoftVis.Modeling;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
@@ -17,6 +19,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         public static string GetMinimallyQualifiedName(this INamedTypeSymbol namedTypeSymbol)
         {
             return namedTypeSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        }
+
+        public static ModelOrigin GetOrigin(this INamedTypeSymbol namedTypeSymbol)
+        {
+            if (namedTypeSymbol == null)
+                return ModelOrigin.Unknown;
+
+            return namedTypeSymbol.Locations.Any(i => i.IsInSource)
+                ? ModelOrigin.SourceCode
+                : ModelOrigin.Metadata;
         }
 
         /// TODO: This is naive. Any way to make it smarter?

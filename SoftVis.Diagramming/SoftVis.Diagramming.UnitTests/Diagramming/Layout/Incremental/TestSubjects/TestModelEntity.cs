@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
     internal class TestModelEntity : ModelEntity
     {
         public TestModelEntity(string name = null)
-            :base(name, name, ModelEntityClassifier.Class, ModelEntityStereotype.None)
+            :base(name, name, ModelEntityClassifier.Class, ModelEntityStereotype.None, ModelOrigin.Unknown)
         {
         }
 

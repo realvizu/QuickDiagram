@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         private TestClass CreateAndAddClass(string name)
         {
-            var newEntity = new TestClass(name, 50);
+            var newEntity = new TestClass(name, 50, ModelOrigin.Unknown);
             _testModel.AddEntity(newEntity);
             return newEntity;
         }

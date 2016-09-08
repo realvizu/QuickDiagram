@@ -20,11 +20,11 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .EndGroup()
 
             // Siblings added (left, right, middle)
-            .AddClass("2", 45, "1")
+            .AddClass("2", 45, "1", ModelOrigin.SourceCode)
             .AddClass("5", 25, "1")
             .AddClass("4", 20, "1")
             .AddClass("z1", 20, "1")
-            .AddClass("z2", 20, "1")
+            .AddClass("z2", 20, "1",  ModelOrigin.SourceCode)
             .AddClass("z3", 20, "1")
             .AddClass("z4", 20, "1")
             .AddClass("z5", 20, "1")
@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .AddClass("z7", 20, "1")
             .AddClass("z8", 20, "1")
             .AddClass("z11", 20, "1")
-            .AddClass("z21", 20, "1")
+            .AddClass("z21", 20, "1", ModelOrigin.SourceCode)
             .AddClass("z31", 20, "1")
             .AddClass("z41", 20, "1")
             .AddClass("z51", 20, "1")
@@ -124,7 +124,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return _testModel;
         }
 
-        private TestModelBuilder AddEntity(string name, ModelEntityClassifier classifier, ModelEntityStereotype stereotype, int size)
+        private TestModelBuilder AddEntity(string name, ModelEntityClassifier classifier, ModelEntityStereotype stereotype, 
+            int size, ModelOrigin origin)
         {
             if (_testModel.Entities.Any(i => i.Name == name))
                 return this;
@@ -132,9 +133,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             ModelEntity newEntity;
 
             if (classifier == ModelEntityClassifier.Class && stereotype == ModelEntityStereotype.None)
-                newEntity = new TestClass(name, size);
+                newEntity = new TestClass(name, size, origin);
             else if (classifier == ModelEntityClassifier.Class && stereotype == TestModelEntityStereotypes.Interface)
-                newEntity = new TestInterface(name, size);
+                newEntity = new TestInterface(name, size, origin);
             else
                 throw new ArgumentException($"Unexpected entity type: {classifier}, stereotype: {stereotype}");
 
@@ -169,10 +170,10 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private TestModelBuilder AddEntityWithOptionalBase(string name, int size, ModelEntityClassifier classifier, ModelEntityStereotype stereotype,
-            string baseName = null)
+        private TestModelBuilder AddEntityWithOptionalBase(string name, int size, ModelEntityClassifier classifier,
+            ModelEntityStereotype stereotype, string baseName = null, ModelOrigin origin = ModelOrigin.Unknown)
         {
-            var model = AddEntity(name, classifier, stereotype, size);
+            var model = AddEntity(name, classifier, stereotype, size, origin);
 
             if (baseName != null)
                 AddBase(name, baseName);
@@ -185,9 +186,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, TestModelEntityStereotypes.Interface, baseName);
         }
 
-        private TestModelBuilder AddClass(string name, int size = 100, string baseName = null)
+        private TestModelBuilder AddClass(string name, int size = 100, string baseName = null, ModelOrigin origin = ModelOrigin.Unknown)
         {
-            return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, ModelEntityStereotype.None, baseName);
+            return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, ModelEntityStereotype.None, baseName, origin);
         }
 
         private TestModelBuilder AddBase(string name, string baseName = null)

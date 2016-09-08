@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
+             xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
@@ -18,26 +19,40 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
+                
+                <Border BorderThickness="1"
+                        BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                        Background="{Binding DiagramFill, ElementName=ThisControl}">
+                    <StackPanel Orientation="Vertical" 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <TextBlock Visibility="{Binding Path=IsStereotypeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   Text="{Binding Path=StereotypeText}" 
+                                   FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
+                                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
+                                   HorizontalAlignment="Center"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="TextBlock"
+                                       Text="{Binding Path=Name, Mode=OneWay}" 
+                                       HorizontalAlignment="Left" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding ModelEntity.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                        <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ModelEntity.IsAbstract}" Value="true">
+                        <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+                
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Border BorderThickness="1"
-            BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-            Background="{Binding DiagramFill, ElementName=ThisControl}">
-        <StackPanel Orientation="Vertical" 
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <TextBlock Visibility="{Binding Path=IsStereotypeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                       Text="{Binding Path=StereotypeText}" 
-                       FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
-                            Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
-                       HorizontalAlignment="Center"/>
-            <StackPanel HorizontalAlignment="Center">
-                <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
-                           HorizontalAlignment="Left"
-                           FontStyle="{Binding Path=FontStyle}" />
-            </StackPanel>
-        </StackPanel>
-    </Border>
-    
+    <ContentPresenter Content="{Binding}"/>
+
 </UserControl>

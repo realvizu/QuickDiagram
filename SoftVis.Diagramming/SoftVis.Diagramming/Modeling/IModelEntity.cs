@@ -27,6 +27,11 @@
         ModelEntityStereotype Stereotype { get; }
 
         /// <summary>
+        /// Specifies the source of the model information for this entity.
+        /// </summary>
+        ModelOrigin Origin { get; }
+
+        /// <summary>
         /// The relative importance of this model entity compared to others. Used for layout.
         /// Higher value means more important.
         /// </summary>

@@ -21,9 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             if (values.Length != 2 ||
                 !(values[0] is IList<Point>) ||
                 !(values[1] is double))
-                throw new ArgumentException($"Expected parameters: " +
-                                            $"{typeof(IList<Point>)} routePoints, " +
-                                            $"{typeof(double)} arrowHeadSize");
+                return null;
 
             var routePoints = (IList<Point>)values[0];
             var arrowHeadSize = (double)values[1];

@@ -78,7 +78,7 @@
     <Compile Include="Hosting\FrameModeTranslator.cs" />
     <Compile Include="Hosting\IPackageServices.cs" />
     <Compile Include="Hosting\HostUiServiceProvider.cs" />
-    <Compile Include="Modeling\Implementation\ImplementingTypesFinderVisitor.cs" />
+    <Compile Include="Modeling\Implementation\DerivedInterfacesFinderVisitor.cs" />
     <Compile Include="Modeling\IRoslynModelProvider.cs" />
     <Compile Include="Modeling\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Modeling\RoslynSymbolRelation.cs" />
