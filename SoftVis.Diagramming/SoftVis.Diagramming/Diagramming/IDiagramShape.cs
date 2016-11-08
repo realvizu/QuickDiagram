@@ -10,6 +10,8 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagramShape
     {
         IModelItem ModelItem { get; }
+
+        bool IsRectDefined { get; }
         Rect2D Rect { get; }
     }
 }

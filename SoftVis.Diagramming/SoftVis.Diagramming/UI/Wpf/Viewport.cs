@@ -24,26 +24,25 @@ namespace Codartis.SoftVis.UI.Wpf
         private static readonly Size ViewportSizeDefault = new Size(0, 0);
         private static readonly Point ViewportCenterDefault = new Point(0, 0);
 
-        private readonly IDiagram _diagram;
+        private readonly IArrangedDiagram _diagram;
         private readonly double _minZoom;
         private readonly double _maxZoom;
         private readonly double _defaultExponentialZoom;
         private double _exponentialZoom;
         private Size _sizeInScreenSpace;
         private Point _centerInDiagramSpace;
-        private Rect _contentRect;
 
         private Transform _diagramSpaceToScreenSpaceTransform;
 
         public event Action<double> LinearZoomChanged;
         public event Action<TransitionedTransform> TransformChanged;
 
-        public Viewport(IDiagram diagram, double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
+        public Viewport(IArrangedDiagram diagram, double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
             : this(diagram, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
         {
         }
 
-        private Viewport(IDiagram diagram, double minZoom, double maxZoom, double initialZoom,
+        private Viewport(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom,
             Size sizeInScreenSpace, Point centerInDiagramSpace)
         {
             _diagram = diagram;
@@ -53,10 +52,8 @@ namespace Codartis.SoftVis.UI.Wpf
             _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _contentRect = diagram.ContentRect.ToWpf();
 
             UpdateCalculatedProperties(TransitionSpeed.Instant);
-            SubscribeToDiagramEvents();
         }
 
         public void Resize(Size sizeInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Instant)
@@ -76,8 +73,9 @@ namespace Codartis.SoftVis.UI.Wpf
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
         {
-            _exponentialZoom = CalculateZoomForContent(_contentRect.Size);
-            _centerInDiagramSpace = _contentRect.GetCenter();
+            var contentRect = _diagram.ContentRect.ToWpf();
+            _exponentialZoom = CalculateZoomForContent(contentRect.Size);
+            _centerInDiagramSpace = contentRect.GetCenter();
             UpdateCalculatedProperties(transitionSpeed);
         }
 
@@ -101,7 +99,7 @@ namespace Codartis.SoftVis.UI.Wpf
 
         public Point ProjectFromScreenSpaceToDiagramSpace(Point pointInScreenSpace)
         {
-            return _diagramSpaceToScreenSpaceTransform.Inverse?.Transform(pointInScreenSpace) ?? PointExtensions.Extreme;
+            return _diagramSpaceToScreenSpaceTransform.Inverse?.Transform(pointInScreenSpace) ?? PointExtensions.Undefined;
         }
 
         private void UpdateCalculatedProperties(TransitionSpeed transitionSpeed)
@@ -168,19 +166,6 @@ namespace Codartis.SoftVis.UI.Wpf
             transform.Children.Add(new TranslateTransform(translateVector.X, translateVector.Y));
             transform.Children.Add(new ScaleTransform(_exponentialZoom, _exponentialZoom));
             return transform;
-        }
-
-        private void SubscribeToDiagramEvents()
-        {
-            _diagram.ShapeAdded += (o, a) => UpdateContentRect();
-            _diagram.ShapeMoved += (o, a) => UpdateContentRect();
-            _diagram.ShapeRemoved += (o, a) => UpdateContentRect();
-            _diagram.Cleared += (o, a) => UpdateContentRect();
-        }
-
-        private void UpdateContentRect()
-        {
-            _contentRect = _diagram.ContentRect.ToWpf();
         }
 
         public class PanCommand : DelegateCommand<Vector, TransitionSpeed>

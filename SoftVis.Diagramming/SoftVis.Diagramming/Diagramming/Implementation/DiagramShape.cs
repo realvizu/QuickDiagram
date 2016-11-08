@@ -19,6 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ModelItem = modelItem;
         }
 
+        public abstract bool IsRectDefined { get; }
         public abstract Rect2D Rect { get; }
     }
 }

@@ -7,9 +7,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf
 {
     public static class PointExtensions
     {
-        public static Point Extreme = new Point(double.NaN, double.NaN);
+        public static Point Undefined = new Point(double.NaN, double.NaN);
 
-        public static bool IsExtreme(this Point point)
+        public static bool IsUndefined(this Point point)
         {
             return double.IsNaN(point.X) || double.IsNaN(point.Y);
         }

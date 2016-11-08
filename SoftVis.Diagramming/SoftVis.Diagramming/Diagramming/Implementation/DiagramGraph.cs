@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// The graph formed by the nodes and connectors of a diagram.
     /// </summary>
-    internal sealed class DiagramGraph : BidirectionalGraph<DiagramNode, DiagramConnector>, IReadOnlyDiagramGraph
+    internal sealed class DiagramGraph : BidirectionalGraph<DiagramNode, DiagramConnector>
     {
         public DiagramGraph() 
             : base(allowParallelEdges: false)

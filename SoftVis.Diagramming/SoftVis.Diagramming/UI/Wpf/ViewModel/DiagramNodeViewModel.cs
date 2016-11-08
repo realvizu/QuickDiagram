@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI.Wpf;
 
@@ -18,11 +20,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
 
-        public DiagramNodeViewModel(IDiagram diagram, IDiagramNode diagramNode)
+        public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode)
               : base(diagram)
         {
             DiagramNode = diagramNode;
-            UpdatePropertiesFromDiagramShape();
+            DiagramNode.TopLeftChanged += DiagramNodeOnTopLeftChanged;
 
             FocusCommand = new DelegateCommand(Focus);
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
@@ -30,20 +32,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
         }
 
-        public override IDiagramShape DiagramShape => DiagramNode;
-
-        public override void UpdatePropertiesFromDiagramShape()
+        private void DiagramNodeOnTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
         {
-            Position = DiagramNode.Position.ToWpf();
-            Size = DiagramNode.Size.ToWpf();
+            TopLeft = newTopLeft.ToWpf();
         }
 
+        public override IDiagramShape DiagramShape => DiagramNode;
         public string Name => DiagramNode.Name;
         public string FullName => DiagramNode.FullName;
         public IModelEntity ModelEntity => DiagramNode.ModelEntity;
         public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
         public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
         public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
+
+        protected override void OnSizeChanged(Size newSize)
+        {
+            DiagramNode.Size = newSize.FromWpf();
+        }
 
         private void OnDoubleClick() => Diagram.ActivateShape(DiagramNode);
 

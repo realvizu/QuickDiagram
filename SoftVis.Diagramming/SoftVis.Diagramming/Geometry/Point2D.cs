@@ -10,13 +10,16 @@ namespace Codartis.SoftVis.Geometry
         public double X { get; }
         public double Y { get; }
 
-        public static Point2D Empty = new Point2D(double.NaN, double.NaN);
+        public static Point2D Undefined = new Point2D(double.NaN, double.NaN);
 
         public Point2D(double x, double y)
         {
             X = x;
             Y = y;
         }
+
+        public bool IsDefined => !IsUndefined;
+        public bool IsUndefined => double.IsNaN(X) || double.IsNaN(Y);
 
         public static bool Equals(Point2D point1, Point2D point2)
         {
@@ -83,11 +86,6 @@ namespace Codartis.SoftVis.Geometry
         public bool IsEqualWithTolerance(Point2D point)
         {
             return X.IsEqualWithTolerance(point.X) && Y.IsEqualWithTolerance(point.Y);
-        }
-
-        public static bool IsNaN(Point2D point)
-        {
-            return double.IsNaN(point.X) || double.IsNaN(point.Y);
         }
     }
 }

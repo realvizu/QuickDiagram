@@ -7,6 +7,7 @@
     <Allowed From="*" To="System.Globalization.*" />
     <Allowed From="*" To="System.ComponentModel" />
     <Allowed From="*" To="System.Runtime.*" />
+    <Allowed From="*" To="System.Threading.*" />
     <Allowed From="*" To="System.CodeDom.Compiler">
         <VisibleMembers>
             <Type Name="GeneratedCodeAttribute" />
@@ -33,12 +34,14 @@
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Implementation.Layout" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Layout" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
 
-    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Absolute" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Logic" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="QuickGraph.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Graphs.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative" />
 
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming" />

@@ -9,7 +9,9 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel}}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel}}"
+             Width="{Binding Size.Width}"
+             Height="{Binding Size.Height}">
 
     <UserControl.Resources>
         <view:PointsToArrowShaftPathConverter x:Key="PointsToArrowShaftPathConverter" />

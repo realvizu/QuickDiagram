@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Geometry;
+﻿using System;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -9,13 +10,15 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagramConnector : IDiagramShape
     {
-        IDiagramNode Source { get; }
-        IDiagramNode Target { get; }
-        Route RoutePoints { get; set; }
-
         IModelRelationship ModelRelationship { get; }
         ModelRelationshipClassifier Classifier { get; }
         ModelRelationshipStereotype Stereotype { get; }
         ModelRelationshipType Type { get; }
+
+        IDiagramNode Source { get; }
+        IDiagramNode Target { get; }
+        Route RoutePoints { get; set; }
+
+        event Action<IDiagramConnector, Route, Route> RouteChanged;
     }
 }

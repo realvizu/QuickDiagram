@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental;
-using Codartis.SoftVis.Diagramming.Implementation.Layout.Incremental.Relative.Logic;
+using Codartis.SoftVis.Diagramming.Layout.Incremental;
+using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
 using FluentAssertions;
 using Xunit;

@@ -17,9 +17,13 @@ namespace Codartis.SoftVis.Diagramming
         IModelEntity ModelEntity { get; }
         string Name { get; }
         string FullName { get; }
+        int Priority { get; }
 
-        Point2D Position { get; }
+        Point2D TopLeft { get; }
         Point2D Center { get; set; }
-        Size2D Size { get; }
+        Size2D Size { get; set; }
+
+        event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
+        event Action<IDiagramNode, Point2D, Point2D> TopLeftChanged;
     }
 }

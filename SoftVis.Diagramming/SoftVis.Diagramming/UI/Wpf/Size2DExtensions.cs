@@ -9,5 +9,10 @@ namespace Codartis.SoftVis.UI.Wpf
         {
             return new Size(size2D.Width, size2D.Height);
         }
+
+        public static Size2D FromWpf(this Size size)
+        {
+            return new Size2D(size.Width, size.Height);
+        }
     }
 }

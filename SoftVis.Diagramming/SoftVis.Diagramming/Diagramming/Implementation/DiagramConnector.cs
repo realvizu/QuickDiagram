@@ -1,6 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -12,13 +13,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public class DiagramConnector : DiagramShape, IDiagramConnector, IEdge<DiagramNode>
     {
+        private Route _routePoints;
+
         public DiagramNode Source { get; }
         IDiagramNode IDiagramConnector.Source => Source;
 
         public DiagramNode Target { get; }
         IDiagramNode IDiagramConnector.Target => Target;
 
-        public virtual Route RoutePoints { get; set; }
+        public event Action<IDiagramConnector, Route, Route> RouteChanged;
 
         public DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
             : base(relationship)
@@ -30,11 +33,26 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Target = target;
         }
 
+        public virtual Route RoutePoints
+        {
+            get { return _routePoints; }
+            set
+            {
+                if (!_routePoints.EmptyIfNullSequenceEqual(value))
+                {
+                    var oldRoute = _routePoints;
+                    _routePoints = value;
+                    RouteChanged?.Invoke(this, oldRoute, value);
+                }
+            }
+        }
+
         public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
         public ModelRelationshipClassifier Classifier => ModelRelationship.Classifier;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
         public ModelRelationshipType Type => ModelRelationship.Type;
 
+        public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && RoutePoints != null;
         public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
 
         private static Rect2D CalculateRect(Rect2D sourceRect, Rect2D targetRect, Route routePoints)

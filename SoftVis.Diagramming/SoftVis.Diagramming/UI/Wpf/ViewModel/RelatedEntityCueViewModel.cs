@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly IDiagramNode _diagramNode;
         private readonly EntityRelationType _entityRelationType;
 
-        public RelatedEntityCueViewModel(IDiagram diagram, IDiagramNode diagramNode, EntityRelationType descriptor)
+        public RelatedEntityCueViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, EntityRelationType descriptor)
             : base(diagram)
         {
             _diagramNode = diagramNode;
@@ -36,8 +36,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.ShapeAdded += (sender, shape) => RecalculateVisibility();
-            Diagram.ShapeRemoved += (sender, shape) => RecalculateVisibility();
+            Diagram.ShapeAdded += shape => RecalculateVisibility();
+            Diagram.ShapeRemoved += shape => RecalculateVisibility();
         }
 
         private void RecalculateVisibility()

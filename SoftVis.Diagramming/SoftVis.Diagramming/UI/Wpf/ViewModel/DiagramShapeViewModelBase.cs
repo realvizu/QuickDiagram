@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -9,28 +10,29 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramShapeViewModelBase : DiagramViewModelBase
     {
-        private Point _position;
+        private Point _topLeft;
         private Size _size;
 
         public event Action<IDiagramShape> RemoveRequested;
         public event Action<DiagramShapeViewModelBase> FocusRequested;
 
-        protected DiagramShapeViewModelBase(IDiagram diagram)
+        protected DiagramShapeViewModelBase(IArrangedDiagram diagram)
             :base(diagram)
         {
+            _topLeft = PointExtensions.Undefined;
+            _size = Size.Empty;
         }
 
         public abstract IDiagramShape DiagramShape { get; }
-        public abstract void UpdatePropertiesFromDiagramShape();
 
-        public Point Position
+        public Point TopLeft
         {
-            get { return _position; }
+            get { return _topLeft; }
             set
             {
-                if (_position != value)
+                if (_topLeft != value)
                 {
-                    _position = value;
+                    _topLeft = value;
                     OnPropertyChanged();
                     OnPropertyChanged("X");
                     OnPropertyChanged("Y");
@@ -38,8 +40,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public double X => Position.X;
-        public double Y => Position.Y;
+        public double X => TopLeft.X;
+        public double Y => TopLeft.Y;
 
         public Size Size
         {
@@ -50,16 +52,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 {
                     _size = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("Width");
-                    OnPropertyChanged("Height");
+                    OnSizeChanged(value);
                 }
             }
         }
 
-        public double Width => Size.Width;
-        public double Height => Size.Height;
-
         public void Remove() => RemoveRequested?.Invoke(DiagramShape);
         public void Focus() => FocusRequested?.Invoke(this);
+
+        protected virtual void OnSizeChanged(Size newSize) { }
     }
 }

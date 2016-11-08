@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     { 
         public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
 
-        public DiagramShapeButtonCollectionViewModel(IDiagram diagram)
+        public DiagramShapeButtonCollectionViewModel(IArrangedDiagram diagram)
             : base(diagram)
         {
             DiagramNodeButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(CreateButtons());

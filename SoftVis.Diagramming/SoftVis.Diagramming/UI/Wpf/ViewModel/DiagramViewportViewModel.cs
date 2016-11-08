@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action HideEntitySelectorRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
 
-        public DiagramViewportViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
             _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
@@ -137,10 +137,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.ShapeAdded += (sender, shape) => OnShapeAdded(shape);
-            Diagram.ShapeMoved += (sender, shape) => OnShapeMoved(shape);
-            Diagram.ShapeRemoved += (sender, shape) => OnShapeRemoved(shape);
-            Diagram.Cleared += (sender, args) => OnDiagramCleared();
+            Diagram.ShapeAdded += OnShapeAdded;
+            Diagram.ShapeRemoved += OnShapeRemoved;
+            Diagram.Cleared += OnDiagramCleared;
         }
 
         private void SubscribeToDiagramShapeButtonEvents()
@@ -166,12 +165,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramShapeViewModels.Add(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
-        }
-
-        private void OnShapeMoved(IDiagramShape diagramShape)
-        {
-            var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
-            diagramShapeViewModel.UpdatePropertiesFromDiagramShape();
         }
 
         private void OnShapeRemoveRequested(IDiagramShape diagramShape)

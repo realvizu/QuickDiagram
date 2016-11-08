@@ -5,6 +5,7 @@
     /// </summary>
     public struct Size2D
     {
+        public static readonly Size2D Undefined = new Size2D(double.NaN, double.NaN);
         public static readonly Size2D Zero = new Size2D(0, 0);
 
         public double Width { get; }
@@ -15,6 +16,9 @@
             Width = width;
             Height = height;
         }
+
+        public bool IsDefined => !IsUndefined;
+        public bool IsUndefined => double.IsNaN(Width) || double.IsNaN(Height);
 
         public static bool Equals(Size2D size1, Size2D size2)
         {

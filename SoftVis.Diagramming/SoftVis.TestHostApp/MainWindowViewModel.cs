@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.TestHostApp
             //_testModel = new BigTestModelBuilder().Create(4, 4);
 
             _testDiagram = new TestDiagram(_testModel);
-            _testDiagram.ShapeActivated += (sender, shape) => Debug.WriteLine($"Activated: {shape.ModelItem.ToString()}");
+            _testDiagram.ShapeActivated += shape => Debug.WriteLine($"Activated: {shape.ModelItem.ToString()}");
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             

@@ -21,8 +21,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public RelatedEntityListBoxViewModel RelatedEntityListBoxViewModel { get; }
 
-        public DiagramViewModel(IDiagram diagram, double minZoom, double maxZoom, double initialZoom)
-            :base(diagram)
+        public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
+            : base(diagram)
         {
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
 
@@ -80,10 +80,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.ShapeAdded += (o, e) => UpdateDiagramContentRect();
-            Diagram.ShapeMoved += (o, e) => UpdateDiagramContentRect();
-            Diagram.ShapeRemoved += (o, e) => UpdateDiagramContentRect();
-            Diagram.Cleared += (o, e) => UpdateDiagramContentRect();
+            Diagram.ShapeAdded += i => UpdateDiagramContentRect();
+            Diagram.ShapeRemoved += i => UpdateDiagramContentRect();
+            Diagram.Cleared += () => UpdateDiagramContentRect();
+            Diagram.NodeSizeChanged += (i, j, k) => UpdateDiagramContentRect();
+            Diagram.NodeTopLeftChanged += (i, j, k) => UpdateDiagramContentRect();
+            Diagram.ConnectorRouteChanged += (i, j, k) => UpdateDiagramContentRect();
         }
 
         private void UpdateDiagramContentRect()

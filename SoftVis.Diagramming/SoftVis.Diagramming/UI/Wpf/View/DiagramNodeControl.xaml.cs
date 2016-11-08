@@ -17,6 +17,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty DiagramStrokeProperty =
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeControl));
 
+        public static readonly DependencyProperty ActualSizeProperty =
+            DependencyProperty.Register("ActualSize", typeof(Size), typeof(DiagramNodeControl),
+                new FrameworkPropertyMetadata(Size.Empty));
+
         public static readonly DependencyProperty FocusDiagramItemCommandProperty =
             DependencyProperty.Register("FocusDiagramItemCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
 
@@ -38,6 +42,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DiagramStrokeProperty, value); }
         }
 
+        public Size ActualSize
+        {
+            get { return (Size)GetValue(ActualSizeProperty); }
+            set { SetValue(ActualSizeProperty, value); }
+        }
+
         public DelegateCommand FocusDiagramItemCommand
         {
             get { return (DelegateCommand)GetValue(FocusDiagramItemCommandProperty); }
@@ -49,6 +59,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             FocusDiagramItemCommand?.Execute();
 
             e.Handled = true;
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            ActualSize = new Size(ActualWidth, ActualHeight);
         }
     }
 }

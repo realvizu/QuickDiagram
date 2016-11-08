@@ -44,5 +44,18 @@ namespace Codartis.SoftVis.Util
             }
             return -1;
         }
+
+        /// <summary>
+        /// Returns a value indicating whether two sequences are equal compared item-by-item.
+        /// If any of the collections is null than it's treated as empty.
+        /// </summary>
+        /// <typeparam name="T">The type of the collections' items.</typeparam>
+        /// <param name="collection">A collection.</param>
+        /// <param name="otherCollection">A collection.</param>
+        /// <returns></returns>
+        public static bool EmptyIfNullSequenceEqual<T>(this IEnumerable<T> collection, IEnumerable<T> otherCollection)
+        {
+            return collection.EmptyIfNull().SequenceEqual(otherCollection.EmptyIfNull());
+        }
     }
 }

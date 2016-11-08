@@ -61,9 +61,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         /// <summary>
         /// When a shape is activated (eg. double-clicked) opens the corresponding source file.
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="diagramShape"></param>
-        private void OnDiagramShapeActivated(object sender, IDiagramShape diagramShape)
+        private void OnDiagramShapeActivated(IDiagramShape diagramShape)
         {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
@@ -75,9 +74,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         /// <summary>
         /// Whenever a shape is added to the diagram tries to expand the model with the related entities.
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="diagramShape">The shape that was added to the diagram.</param>
-        private void OnShapeAddedToDiagram(object sender, IDiagramShape diagramShape)
+        private void OnShapeAddedToDiagram(IDiagramShape diagramShape)
         {
             var roslynBasedModelEntity = diagramShape.ModelItem as RoslynBasedModelEntity;
             if (roslynBasedModelEntity == null)

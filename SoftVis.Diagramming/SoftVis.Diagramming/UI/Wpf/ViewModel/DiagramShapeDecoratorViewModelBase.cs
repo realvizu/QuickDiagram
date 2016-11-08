@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private bool _isVisible;
 
-        protected DiagramShapeDecoratorViewModelBase(IDiagram diagram)
+        protected DiagramShapeDecoratorViewModelBase(IArrangedDiagram diagram)
             : base(diagram)
         {
             _isVisible = false;

@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public Dpi ImageExportDpi { get; set; }
 
-        public DiagramUi(IDiagram diagram)
+        public DiagramUi(IArrangedDiagram diagram)
         {
             ImageExportDpi = Dpi.Default;
             

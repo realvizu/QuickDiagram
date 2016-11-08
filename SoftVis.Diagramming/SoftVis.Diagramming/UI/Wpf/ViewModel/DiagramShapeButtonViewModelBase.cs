@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand DoubleClickCommand { get; }
         public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
-        protected DiagramShapeButtonViewModelBase(IDiagram diagram)
+        protected DiagramShapeButtonViewModelBase(IArrangedDiagram diagram)
             : base(diagram)
         {
             _isEnabled = true;
