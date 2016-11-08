@@ -50,6 +50,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramNode.Size = newSize.FromWpf();
         }
 
+        public override string ToString() => DiagramNode.ToString();
+
         private void OnDoubleClick() => Diagram.ActivateShape(DiagramNode);
 
         private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()

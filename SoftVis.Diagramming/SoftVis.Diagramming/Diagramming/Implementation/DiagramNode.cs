@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public DiagramNode(IModelEntity modelEntity)
             : base(modelEntity)
         {
-            _size = Size2D.Undefined;
+            _size = Size2D.Zero;
             _topLeft = Point2D.Undefined;
         }
 
@@ -42,8 +42,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             {
                 if (_topLeft != value)
                 {
-                    var oldTopLeft = _topLeft;
-                    _topLeft = value;
+                    Point2D oldTopLeft;
+
+                    lock (this)
+                    {
+                         oldTopLeft = _topLeft;
+                        _topLeft = value;
+                    }
+
                     TopLeftChanged?.Invoke(this, oldTopLeft, value);
                 }
             }
@@ -56,9 +62,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             {
                 if (_size != value)
                 {
-                    var oldSize = _size;
-                    _size = value;
+                    Size2D oldSize;
+                    Point2D newTopLeft;
+
+                    lock (this)
+                    {
+                        oldSize = _size;
+                        _size = value;
+                        newTopLeft = AdjustTopLeftForNewSizeWithFixedCenter(oldSize, value);
+                    }
+
                     SizeChanged?.Invoke(this, oldSize, value);
+                    TopLeft = newTopLeft;
                 }
             }
         }
@@ -67,8 +82,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Point2D Center
         {
-            get { return Rect.Center; }
-            set { TopLeft = new Point2D(value.X - Width / 2, value.Y - Height / 2); }
+            get
+            {
+                lock (this)
+                    return TopLeftToCenter(TopLeft, Size);
+            }
+            set
+            {
+                lock (this)
+                    TopLeft = CenterToTopLeft(value, Size);
+            }
         }
 
         public int CompareTo(IDiagramNode otherNode)
@@ -79,6 +102,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public override string ToString()
         {
             return Name;
+        }
+
+        private Point2D AdjustTopLeftForNewSizeWithFixedCenter(Size2D oldSize, Size2D newSize)
+        {
+            var center = TopLeftToCenter(TopLeft, oldSize);
+            return CenterToTopLeft(center, newSize);
+        }
+
+        private static Point2D CenterToTopLeft(Point2D center, Size2D size)
+        {
+            return new Point2D(center.X - size.Width / 2, center.Y - size.Height / 2);
+        }
+
+        private static Point2D TopLeftToCenter(Point2D topLeft, Size2D size)
+        {
+            return new Point2D(topLeft.X + size.Width / 2, topLeft.Y + size.Height / 2);
         }
     }
 }

@@ -14,6 +14,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
     {
         private static readonly Duration AnimationDurationDefault = TimeSpan.FromMilliseconds(250);
 
+        private bool _isDisappearing;
+
         static AnimatedContentPresenter()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AnimatedContentPresenter),
@@ -101,6 +103,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         public void OnBeforeRemove(Action<ViewModelBase> readyToBeRemovedCallback)
         {
+            _isDisappearing = true;
+            StopAnimation(TargetPropertyForTop);
+            StopAnimation(TargetPropertyForLeft);
             AnimateDisappear(readyToBeRemovedCallback);
         }
 
@@ -116,11 +121,15 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void UpdatePosition(DependencyProperty property, double oldValue, double newValue)
         {
+            if (_isDisappearing)
+                return;
+
             var animateAppear = double.IsNaN(oldValue) && !double.IsNaN(newValue);
             if (animateAppear)
             {
                 SetValue(property, newValue);
                 AnimateAppear();
+                SetValue(VisibilityProperty, Visibility.Visible);
             }
 
             var animateMove = !double.IsNaN(oldValue) && !double.IsNaN(newValue);
@@ -134,7 +143,6 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         {
             var animation = new DoubleAnimation(0, 1, AnimationDuration);
             BeginAnimation(ScalingProperty, animation);
-            SetValue(VisibilityProperty, Visibility.Visible);
         }
 
         private void AnimateMove(DependencyProperty property, double value)
@@ -156,6 +164,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
             animation.Completed += onAnimationCompleted;
             BeginAnimation(ScalingProperty, animation);
+        }
+
+        private void StopAnimation(DependencyProperty property)
+        {
+            var animation = new DoubleAnimation {BeginTime = null};
+            BeginAnimation(property, animation);
         }
 
         private void OnScalingChanged()
