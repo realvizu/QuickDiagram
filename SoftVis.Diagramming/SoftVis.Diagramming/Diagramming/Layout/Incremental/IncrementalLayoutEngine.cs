@@ -52,32 +52,45 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _previousVertexCenters.Clear();
         }
 
-        public IEnumerable<ILayoutAction> GetLayoutActions(IEnumerable<DiagramShapeAction> diagramShapeActions)
+        public IEnumerable<ILayoutAction> CalculateLayoutActions(IEnumerable<DiagramAction> diagramActions)
         {
-            foreach (var diagramShapeAction in diagramShapeActions)
-                ProcessDiagramShapeAction(diagramShapeAction);
+            foreach (var diagramShapeAction in diagramActions)
+                ApplyDiagramActionToRelativeLayout(diagramShapeAction);
 
-            return CalculateLayoutActions();
+            return CalculateAbsoluteLayout();
         }
 
-        private void ProcessDiagramShapeAction(DiagramShapeAction diagramShapeAction)
+        private void ApplyDiagramActionToRelativeLayout(DiagramAction diagramAction)
         {
-            var diagramNodeAction = diagramShapeAction as DiagramNodeAction;
+            var diagramNodeAction = diagramAction as DiagramNodeAction;
             if (diagramNodeAction != null)
             {
-                if (diagramNodeAction.ActionType == ShapeActionType.Add)
-                    OnDiagramNodeAdded(diagramNodeAction.DiagramNode);
-                else
-                    OnDiagramNodeRemoved(diagramNodeAction.DiagramNode);
+                switch (diagramNodeAction.ActionType)
+                {
+                    case ShapeActionType.Add:
+                        OnDiagramNodeAdded(diagramNodeAction.DiagramNode);
+                        break;
+                    case ShapeActionType.Remove:
+                        OnDiagramNodeRemoved(diagramNodeAction.DiagramNode);
+                        break;
+                    case ShapeActionType.Resize:
+                        OnDiagramNodeResized(diagramNodeAction.DiagramNode);
+                        break;
+                }
             }
 
-            var diagramConnectorAction = diagramShapeAction as DiagramConnectorAction;
+            var diagramConnectorAction = diagramAction as DiagramConnectorAction;
             if (diagramConnectorAction != null)
             {
-                if (diagramConnectorAction.ActionType == ShapeActionType.Add)
-                    OnDiagramConnectorAdded(diagramConnectorAction.DiagramConnector);
-                else
-                    OnDiagramConnectorRemoved(diagramConnectorAction.DiagramConnector);
+                switch (diagramConnectorAction.ActionType)
+                {
+                    case ShapeActionType.Add:
+                        OnDiagramConnectorAdded(diagramConnectorAction.DiagramConnector);
+                        break;
+                    case ShapeActionType.Remove:
+                        OnDiagramConnectorRemoved(diagramConnectorAction.DiagramConnector);
+                        break;
+                }
             }
         }
 
@@ -101,6 +114,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
             _relativeLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex);
+        }
+
+        private void OnDiagramNodeResized(IDiagramNode diagramNode)
+        {
+            if (!_diagramNodeToLayoutVertexMap.Contains(diagramNode))
+                throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
+
+            var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
+            diagramNodeLayoutVertex.Resize(diagramNode.Size);
         }
 
         private void OnDiagramConnectorAdded(IDiagramConnector diagramConnector)
@@ -132,7 +154,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             return new LayoutPath(sourceVertex, targetVertex, diagramConnector);
         }
 
-        private IEnumerable<ILayoutAction> CalculateLayoutActions()
+        private IEnumerable<ILayoutAction> CalculateAbsoluteLayout()
         {
             var newVertexCenters = AbsolutePositionCalculator.GetVertexCenters(
                 _relativeLayoutCalculator.RelativeLayout, HorizontalGap, VerticalGap);
