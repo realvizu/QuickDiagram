@@ -125,6 +125,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void UpdatePosition(double oldValue, double newValue)
         {
+            if (_isDisappearing)
+                return;
+
             if (double.IsNaN(oldValue) && !double.IsNaN(newValue))
                 AnimateAppear();
 

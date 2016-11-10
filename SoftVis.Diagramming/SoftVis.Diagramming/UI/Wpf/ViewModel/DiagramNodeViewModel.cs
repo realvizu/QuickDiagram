@@ -13,6 +13,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase
     {
+        private Point _topLeft;
+        private Size _size;
+
         public IDiagramNode DiagramNode { get; }
 
         public DelegateCommand FocusCommand { get; }
@@ -21,10 +24,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
 
         public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode)
-              : base(diagram)
+              : base(diagram, diagramNode)
         {
+            _topLeft = PointExtensions.Undefined;
+            _size = Size.Empty;
+
             DiagramNode = diagramNode;
-            DiagramNode.TopLeftChanged += DiagramNodeOnTopLeftChanged;
+            DiagramNode.TopLeftChanged += OnTopLeftChanged;
 
             FocusCommand = new DelegateCommand(Focus);
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
@@ -32,12 +38,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
         }
 
-        private void DiagramNodeOnTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
-        {
-            TopLeft = newTopLeft.ToWpf();
-        }
-
-        public override IDiagramShape DiagramShape => DiagramNode;
         public string Name => DiagramNode.Name;
         public string FullName => DiagramNode.FullName;
         public IModelEntity ModelEntity => DiagramNode.ModelEntity;
@@ -45,14 +45,52 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
         public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
 
-        protected override void OnSizeChanged(Size newSize)
+        public Point TopLeft
+        {
+            get { return _topLeft; }
+            set
+            {
+                if (_topLeft != value)
+                {
+                    _topLeft = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("X");
+                    OnPropertyChanged("Y");
+                }
+            }
+        }
+
+        public double X => TopLeft.X;
+        public double Y => TopLeft.Y;
+
+        public Size Size
+        {
+            get { return _size; }
+            set
+            {
+                if (_size != value)
+                {
+                    _size = value;
+                    OnPropertyChanged();
+                    OnSizeChanged(value);
+                }
+            }
+        }
+
+        private void OnTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
+        {
+            TopLeft = newTopLeft.ToWpf();
+        }
+
+        private void OnSizeChanged(Size newSize)
         {
             DiagramNode.Size = newSize.FromWpf();
         }
 
-        public override string ToString() => DiagramNode.ToString();
-
-        private void OnDoubleClick() => Diagram.ActivateShape(DiagramNode);
+        private void OnDoubleClick()
+        {
+            Diagram.ActivateShape(DiagramNode);
+        }
 
         private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()
         {

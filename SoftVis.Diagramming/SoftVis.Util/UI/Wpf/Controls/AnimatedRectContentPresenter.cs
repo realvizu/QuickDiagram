@@ -14,8 +14,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         }
 
         public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof(Rect), typeof(AnimatedRectContentPresenter),
-                new FrameworkPropertyMetadata(Rect.Empty));
+            DependencyProperty.Register("Rect", typeof(Rect), typeof(AnimatedRectContentPresenter));
 
         public Rect Rect
         {

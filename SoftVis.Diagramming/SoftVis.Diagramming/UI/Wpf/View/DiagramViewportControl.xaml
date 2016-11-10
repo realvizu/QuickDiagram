@@ -58,8 +58,6 @@
                    TargetType="{x:Type view:DiagramShapeItemPresenter}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
-                <Setter Property="Left" Value="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Top" Value="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
             </Style>
@@ -95,8 +93,8 @@
                 </Setter>
                 <Setter Property="Width" Value="{Binding Path=Rect.Width, RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Height" Value="{Binding Path=Rect.Height, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Left" Value="{Binding Path=Rect.X, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Top" Value="{Binding Path=Rect.Y, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Left" Value="{Binding Path=Rect.Left, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Top" Value="{Binding Path=Rect.Top, RelativeSource={RelativeSource Self}}"/>
             </Style>
 
             <view:DiagramShapeItemContainerStyleSelector x:Key="DiagramShapeItemContainerStyleSelector"

@@ -45,7 +45,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void EnqueueDiagramAction(DiagramAction diagramAction)
         {
-            _diagramActionQueue.Enqueue(diagramAction);
+            lock (_diagramActionQueue)
+            {
+                _diagramActionQueue.Enqueue(diagramAction);
+            }
             _diagramActionArrivedEvent.Set();
         }
 

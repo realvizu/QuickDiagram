@@ -14,30 +14,29 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private static readonly DoubleCollection DashPattern = new DoubleCollection(new[] { 5d, 5d });
 
-        private readonly IDiagramConnector _diagramConnector;
-        private readonly DiagramNodeViewModel _sourceNode;
-        private readonly DiagramNodeViewModel _targetNode;
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
-        public DiagramConnectorViewModel(IArrangedDiagram diagram, IDiagramConnector diagramConnector,
-            DiagramNodeViewModel sourceNode, DiagramNodeViewModel targetNode)
-            : base(diagram)
-        {
-            _diagramConnector = diagramConnector;
-            _diagramConnector.RouteChanged += DiagramConnectorOnRouteChanged;
+        public IDiagramConnector DiagramConnector { get; }
+        public DiagramNodeViewModel SourceNodeViewModel { get; }
+        public DiagramNodeViewModel TargetNodeViewModel { get; }
 
-            _sourceNode = sourceNode;
-            _targetNode = targetNode;
+        public DiagramConnectorViewModel(IArrangedDiagram diagram, IDiagramConnector diagramConnector,
+            DiagramNodeViewModel sourceNodeViewModel, DiagramNodeViewModel targetNodeViewModel)
+            : base(diagram, diagramConnector)
+        {
+            DiagramConnector = diagramConnector;
+            DiagramConnector.RouteChanged += OnRouteChanged;
+
+            SourceNodeViewModel = sourceNodeViewModel;
+            TargetNodeViewModel = targetNodeViewModel;
+
             _connectorType = Diagram.GetConnectorType(diagramConnector.Type);
         }
 
-        public override IDiagramShape DiagramShape => _diagramConnector;
         public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;
         private bool IsDashed => _connectorType.ShaftLineType == LineType.Dashed;
         public DoubleCollection StrokeDashArray => IsDashed ? DashPattern : null;
-        public DiagramNodeViewModel SourceNode => _sourceNode;
-        public DiagramNodeViewModel TargetNode => _targetNode;
 
         public Point[] RoutePoints
         {
@@ -52,8 +51,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private void DiagramConnectorOnRouteChanged(IDiagramConnector diagramConnector, 
-            Route oldRoute, Route newRoute)
+        private void OnRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute)
         {
             RoutePoints = newRoute.Select(i => i.ToWpf()).ToArray();
         }

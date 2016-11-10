@@ -53,10 +53,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void OnDiagramConnectorViewModelChanged(DiagramConnectorViewModel diagramConnectorViewModel)
         {
             SourceRectProvider = this.FindAncestor<DiagramShapeItemsControl>()
-                .FindDescendantByDataContext<AnimatedRectContentPresenter>(diagramConnectorViewModel.SourceNode);
+                .FindDescendantByDataContext<AnimatedRectContentPresenter>(diagramConnectorViewModel.SourceNodeViewModel);
 
             TargetRectProvider = this.FindAncestor<DiagramShapeItemsControl>()
-                .FindDescendantByDataContext<AnimatedRectContentPresenter>(diagramConnectorViewModel.TargetNode);
+                .FindDescendantByDataContext<AnimatedRectContentPresenter>(diagramConnectorViewModel.TargetNodeViewModel);
         }
     }
 }
