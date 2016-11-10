@@ -8,6 +8,7 @@
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
+             xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
              xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -21,6 +22,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:RectUnionConverter x:Key="RectUnionConverter" />
+            <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
+            <view:PointsToRectRelativeConverter x:Key="PointsToRectRelativeConverter" />
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
@@ -38,20 +42,66 @@
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
                 <view:DiagramConnectorControl 
-                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"
-                    AnimatedRoutePoints="{Binding Path=RoutePoints, Mode=OneWay}"/>
+                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}">
+                    <view:DiagramConnectorControl.RoutePoints>
+                        <MultiBinding Converter="{StaticResource PointsToRectRelativeConverter}">
+                            <Binding Path="RoutePoints" Mode="OneWay"/>
+                            <Binding Path="Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                            <Binding Path="SourceRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                            <Binding Path="TargetRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                        </MultiBinding>
+                    </view:DiagramConnectorControl.RoutePoints>
+                </view:DiagramConnectorControl>
             </DataTemplate>
-            
-            <Style x:Key="DiagramShapeItemContainerStyle" 
-                   TargetType="{x:Type controls:AnimatedContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">
+
+            <Style x:Key="DiagramShapeItemContainerStyle"
+                   TargetType="{x:Type view:DiagramShapeItemPresenter}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
-                <Setter Property="TargetPropertyForLeft" Value="{x:Static Canvas.LeftProperty}"/>
-                <Setter Property="TargetPropertyForTop" Value="{x:Static Canvas.TopProperty}"/>
-                <Setter Property="AnimatedLeft" Value="{Binding Path=X}"/>
-                <Setter Property="AnimatedTop" Value="{Binding Path=Y}"/>
+                <Setter Property="Left" Value="{Binding Path=(Canvas.Left), RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Top" Value="{Binding Path=(Canvas.Top), RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
             </Style>
+
+            <Style x:Key="DiagramNodeItemContainerStyle" BasedOn="{StaticResource DiagramShapeItemContainerStyle}"
+                   TargetType="{x:Type view:DiagramShapeItemPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
+                <Setter Property="AnimatedLeft" Value="{Binding X}"/>
+                <Setter Property="AnimatedTop" Value="{Binding Y}"/>
+                <Setter Property="Rect">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="Left"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="Top"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight"/>
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="DiagramConnectorItemContainerStyle" BasedOn="{StaticResource DiagramShapeItemContainerStyle}"
+                   TargetType="{x:Type view:DiagramShapeItemPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel}}">
+                <Setter Property="DiagramConnectorViewModel" Value="{Binding}"/>
+                <Setter Property="Rect">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource RectUnionConverter}" Mode="OneWay">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="SourceRectProvider.Rect"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="TargetRectProvider.Rect"/>
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Width" Value="{Binding Path=Rect.Width, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Height" Value="{Binding Path=Rect.Height, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Left" Value="{Binding Path=Rect.X, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Top" Value="{Binding Path=Rect.Y, RelativeSource={RelativeSource Self}}"/>
+            </Style>
+
+            <view:DiagramShapeItemContainerStyleSelector x:Key="DiagramShapeItemContainerStyleSelector"
+                DiagramNodeStyle="{StaticResource DiagramNodeItemContainerStyle}"
+                DiagramConnectorStyle="{StaticResource DiagramConnectorItemContainerStyle}"/>
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
                 <controls:AnimatedRenderTransformCanvas 
@@ -62,7 +112,7 @@
             </ItemsPanelTemplate>
 
             <Size x:Key="DiagramButtonSize" Width="16" Height="16"/>
-            
+
             <Style x:Key="DiagramShapeButtonItemContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
@@ -94,10 +144,10 @@
     </UserControl.Resources>
 
     <Grid Background="Transparent">
-        
+
         <view:DiagramShapeItemsControl ItemsSource="{Binding DiagramShapeViewModels}"
                                        ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
-                                       ItemContainerStyle="{StaticResource DiagramShapeItemContainerStyle}"/>
+                                       ItemContainerStyleSelector="{StaticResource DiagramShapeItemContainerStyleSelector}"/>
 
         <ItemsControl ItemsSource="{Binding DiagramShapeButtonViewModels}" 
                       ItemsPanel="{StaticResource DiagramShapeButtonItemsPanel}"

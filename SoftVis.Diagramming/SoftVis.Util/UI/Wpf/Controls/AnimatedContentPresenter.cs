@@ -8,7 +8,7 @@ using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
     /// <summary>
-    /// Wraps an item that is positioned on a canvas and animates appear, move, disappear.
+    /// Wraps an item that is positioned on a panel and animates appear, move, disappear.
     /// </summary>
     public class AnimatedContentPresenter : ContentPresenter
     {
@@ -28,42 +28,56 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             SetValue(VisibilityProperty, Visibility.Hidden);
         }
 
+        public static readonly DependencyProperty LeftProperty =
+            DependencyProperty.Register("Left", typeof(double), typeof(AnimatedContentPresenter),
+                new FrameworkPropertyMetadata(double.NaN, OnLeftChanged));
+
+        private static void OnLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedContentPresenter)d).OnLeftChanged((double)e.OldValue, (double)e.NewValue);
+
+        public static readonly DependencyProperty TopProperty =
+            DependencyProperty.Register("Top", typeof(double), typeof(AnimatedContentPresenter),
+                new FrameworkPropertyMetadata(double.NaN, OnTopChanged));
+
+        private static void OnTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedContentPresenter)d).OnTopChanged((double)e.OldValue, (double)e.NewValue);
+
         public static readonly DependencyProperty AnimatedLeftProperty =
             DependencyProperty.Register("AnimatedLeft", typeof(double), typeof(AnimatedContentPresenter),
-                new FrameworkPropertyMetadata(double.NaN, 
-                    //FrameworkPropertyMetadataOptions.AffectsParentArrange,
-                    OnAnimatedLeftChanged));
+                new FrameworkPropertyMetadata(double.NaN, OnAnimatedLeftChanged));
 
         private static void OnAnimatedLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((AnimatedContentPresenter)d).OnAnimatedLeftChanged((double)e.OldValue, (double)e.NewValue);
 
         public static readonly DependencyProperty AnimatedTopProperty =
             DependencyProperty.Register("AnimatedTop", typeof(double), typeof(AnimatedContentPresenter),
-                new FrameworkPropertyMetadata(double.NaN, 
-                    //FrameworkPropertyMetadataOptions.AffectsParentArrange,
-                    OnAnimatedTopChanged));
+                new FrameworkPropertyMetadata(double.NaN, OnAnimatedTopChanged));
 
         private static void OnAnimatedTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((AnimatedContentPresenter)d).OnAnimatedTopChanged((double)e.OldValue, (double)e.NewValue);
 
-        public static readonly DependencyProperty TargetPropertyForLeftProperty =
-            DependencyProperty.Register("TargetPropertyForLeft", typeof(DependencyProperty), typeof(AnimatedContentPresenter));
-
-        public static readonly DependencyProperty TargetPropertyForTopProperty =
-            DependencyProperty.Register("TargetPropertyForTop", typeof(DependencyProperty), typeof(AnimatedContentPresenter));
-
         public static readonly DependencyProperty ScalingProperty =
             DependencyProperty.Register("Scaling", typeof(double), typeof(AnimatedContentPresenter),
-                new FrameworkPropertyMetadata(1d,
-                    //FrameworkPropertyMetadataOptions.AffectsParentArrange,
-                    OnScalingChanged));
+                new FrameworkPropertyMetadata(1d, OnScalingChanged));
 
         private static void OnScalingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((AnimatedContentPresenter) d).OnScalingChanged();
+            => ((AnimatedContentPresenter)d).OnScalingChanged();
 
         public static readonly DependencyProperty AnimationDurationProperty =
             DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(AnimatedContentPresenter),
                 new PropertyMetadata(AnimationDurationDefault));
+
+        public double Left
+        {
+            get { return (double)GetValue(LeftProperty); }
+            set { SetValue(LeftProperty, value); }
+        }
+
+        public double Top
+        {
+            get { return (double)GetValue(TopProperty); }
+            set { SetValue(TopProperty, value); }
+        }
 
         public double AnimatedLeft
         {
@@ -75,18 +89,6 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         {
             get { return (double)GetValue(AnimatedTopProperty); }
             set { SetValue(AnimatedTopProperty, value); }
-        }
-
-        public DependencyProperty TargetPropertyForLeft
-        {
-            get { return (DependencyProperty)GetValue(TargetPropertyForLeftProperty); }
-            set { SetValue(TargetPropertyForLeftProperty, value); }
-        }
-
-        public DependencyProperty TargetPropertyForTop
-        {
-            get { return (DependencyProperty)GetValue(TargetPropertyForTopProperty); }
-            set { SetValue(TargetPropertyForTopProperty, value); }
         }
 
         public double Scaling
@@ -104,39 +106,47 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         public void OnBeforeRemove(Action<ViewModelBase> readyToBeRemovedCallback)
         {
             _isDisappearing = true;
-            StopAnimation(TargetPropertyForTop);
-            StopAnimation(TargetPropertyForLeft);
+            StopAnimation(TopProperty);
+            StopAnimation(LeftProperty);
             AnimateDisappear(readyToBeRemovedCallback);
         }
 
+        private void OnLeftChanged(double oldValue, double newValue) 
+            => UpdatePosition(oldValue, newValue);
+
+        private void OnTopChanged(double oldValue, double newValue) 
+            => UpdatePosition(oldValue, newValue);
+
         private void OnAnimatedLeftChanged(double oldValue, double newValue)
-        {
-            UpdatePosition(TargetPropertyForLeft, oldValue, newValue);
-        }
+            => UpdateAnimatedPosition(LeftProperty, oldValue, newValue);
 
         private void OnAnimatedTopChanged(double oldValue, double newValue)
+            => UpdateAnimatedPosition(TopProperty, oldValue, newValue);
+
+        private void UpdatePosition(double oldValue, double newValue)
         {
-            UpdatePosition(TargetPropertyForTop, oldValue, newValue);
+            if (double.IsNaN(oldValue) && !double.IsNaN(newValue))
+                AnimateAppear();
+
+            SetVisibilityBasedOnPosition(newValue);
         }
 
-        private void UpdatePosition(DependencyProperty property, double oldValue, double newValue)
+        private void SetVisibilityBasedOnPosition(double newValue)
+        {
+            var newVisibility = double.IsNaN(newValue) ? Visibility.Hidden : Visibility.Visible;
+            SetValue(VisibilityProperty, newVisibility);
+        }
+
+        private void UpdateAnimatedPosition(DependencyProperty property, double oldValue, double newValue)
         {
             if (_isDisappearing)
                 return;
 
-            var animateAppear = double.IsNaN(oldValue) && !double.IsNaN(newValue);
-            if (animateAppear)
-            {
+            if (double.IsNaN(oldValue) && !double.IsNaN(newValue))
                 SetValue(property, newValue);
-                AnimateAppear();
-                SetValue(VisibilityProperty, Visibility.Visible);
-            }
 
-            var animateMove = !double.IsNaN(oldValue) && !double.IsNaN(newValue);
-            if (animateMove)
-            {
+            if (!double.IsNaN(oldValue) && !double.IsNaN(newValue))
                 AnimateMove(property, newValue);
-            }
         }
 
         private void AnimateAppear()
@@ -168,7 +178,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void StopAnimation(DependencyProperty property)
         {
-            var animation = new DoubleAnimation {BeginTime = null};
+            var animation = new DoubleAnimation { BeginTime = null };
             BeginAnimation(property, animation);
         }
 

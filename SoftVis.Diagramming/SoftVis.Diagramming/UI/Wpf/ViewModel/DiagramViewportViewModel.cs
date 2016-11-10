@@ -17,6 +17,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
+        public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
+        public double MinZoom { get; }
+        public double MaxZoom { get; }
+
         private readonly Viewport _viewport;
         private double _viewportZoom;
         private TransitionedTransform _viewportTransform;
@@ -29,10 +33,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         /// <summary>The decorated shape is the one that has the minibuttons attached.</summary>
         private DiagramNodeViewModel _decoratedDiagramNode;
-
-        public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
-        public double MinZoom { get; }
-        public double MaxZoom { get; }
 
         public Viewport.ResizeCommand ViewportResizeCommand { get; }
         public Viewport.PanCommand ViewportPanCommand { get; }
@@ -49,6 +49,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
+            DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
+            MinZoom = minZoom;
+            MaxZoom = maxZoom;
+
             _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
             _viewportTransform = TransitionedTransform.Identity;
 
@@ -56,12 +60,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramFocusTracker.DecoratedNodeChanged += OnDecoratedNodeChanged;
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram);
+            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramShapeViewModels);
             _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(diagram);
 
-            DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
-            MinZoom = minZoom;
-            MaxZoom = maxZoom;
             ViewportResizeCommand = new Viewport.ResizeCommand(_viewport);
             ViewportPanCommand = new Viewport.PanCommand(_viewport);
             ViewportZoomToContentCommand = new Viewport.ZoomToContentCommand(_viewport);

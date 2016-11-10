@@ -85,6 +85,9 @@
     <Compile Include="UI\Wpf\View\DiagramButtonControl.xaml.cs">
       <DependentUpon>DiagramButtonControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Wpf\View\PointsToRectRelativeConverter.cs" />
+    <Compile Include="UI\Wpf\View\DiagramShapeItemContainerStyleSelector.cs" />
+    <Compile Include="UI\Wpf\View\DiagramShapeItemPresenter.cs" />
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />

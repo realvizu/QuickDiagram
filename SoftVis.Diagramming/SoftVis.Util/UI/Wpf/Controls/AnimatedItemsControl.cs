@@ -13,6 +13,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
     /// Presents a collection of view model items with animated position changes.
     /// Creates a container for each view model and that container creates the proper control corresponding to the view model.
     /// </summary>
+    /// <typeparam name="TViewModel">The type of the view model.</typeparam>
+    /// <typeparam name="TContentPresenter">The type of the content presenter.</typeparam>
     /// <remarks>
     /// In order to implement fade out animation when removing an item, the source collection is duplicated.
     /// The original collection is kept and the view model keeps manipulating that, 
@@ -21,20 +23,21 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
     /// but in the case of a removal the item gets a chance to perform some action (eg. fade out animation) 
     /// before its actual removal from the presented collection.
     /// </remarks>
-    public abstract class AnimatedItemsControl<TViewModel> : ItemsControl
+    public abstract class AnimatedItemsControl<TViewModel, TContentPresenter> : ItemsControl
         where TViewModel : ViewModelBase
+        where TContentPresenter : AnimatedContentPresenter, new()
     {
         private ObservableCollection<TViewModel> _originalItemsSource;
         private ObservableCollection<TViewModel> _presentedItemsSource;
 
         protected override DependencyObject GetContainerForItemOverride()
         {
-            return new AnimatedContentPresenter();
+            return new TContentPresenter();
         }
 
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
-            return item is AnimatedContentPresenter;
+            return item is TContentPresenter;
         }
 
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
@@ -82,7 +85,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         {
             foreach (var oldItem in oldItems.OfType<TViewModel>().ToList())
             {
-                var container = ItemContainerGenerator.ContainerFromItem(oldItem) as AnimatedContentPresenter;
+                var container = ItemContainerGenerator.ContainerFromItem(oldItem) as TContentPresenter;
                 container?.OnBeforeRemove(OnItemReadyToBeRemoved);
             }
         }

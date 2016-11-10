@@ -60,6 +60,7 @@
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />
     <Compile Include="UI\Wpf\ControlExtensions.cs" />
+    <Compile Include="UI\Wpf\Controls\AnimatedRectContentPresenter.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedContentPresenter.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedItemsControl.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedRenderTransformCanvas.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
+    <Compile Include="UI\Wpf\Converters\RectCreatorConverter.cs" />
+    <Compile Include="UI\Wpf\Converters\RectUnionConverter.cs" />
     <Compile Include="UI\Wpf\DependencyObjectExtensions.cs" />
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\Wpf\StringExtensions.cs" />

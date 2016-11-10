@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
@@ -75,7 +77,17 @@ namespace Codartis.SoftVis.TestHostApp
             ZoomToContent();
         }
 
-        private void ZoomToContent() => DiagramViewModel.ZoomToContent();
+        private void ZoomToContent()
+        {
+            var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
+            timer.Tick += (s,o) =>
+            {
+                timer.Stop();
+                DiagramViewModel.ZoomToContent();
+            };
+            timer.Start();
+        }
+
         private void CopyToClipboard() => DiagramViewModel.GetDiagramImage(SelectedDpi, Clipboard.SetImage);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -8,9 +10,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-        public DiagramShapeViewModelFactory(IArrangedDiagram diagram)
+        private readonly ObservableCollection<DiagramShapeViewModelBase> _diagramShapeViewModels;
+
+        public DiagramShapeViewModelFactory(IArrangedDiagram diagram,
+            ObservableCollection<DiagramShapeViewModelBase> diagramShapeViewModels)
               : base(diagram)
         {
+            _diagramShapeViewModels = diagramShapeViewModels;
         }
 
         public DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
@@ -21,7 +27,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShape is IDiagramConnector)
             {
                 var diagramConnector = (IDiagramConnector) diagramShape;
-                return new DiagramConnectorViewModel(Diagram, diagramConnector);
+                var sourceNode = _diagramShapeViewModels.First(i => i.DiagramShape == diagramConnector.Source) as DiagramNodeViewModel;
+                var targetNode = _diagramShapeViewModels.First(i => i.DiagramShape == diagramConnector.Target) as DiagramNodeViewModel;
+                return new DiagramConnectorViewModel(Diagram, diagramConnector, sourceNode, targetNode);
             }
 
             throw new NotImplementedException();
