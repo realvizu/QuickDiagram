@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Util;
 using MoreLinq;
 
 namespace Codartis.SoftVis.Geometry
@@ -32,20 +33,19 @@ namespace Codartis.SoftVis.Geometry
             return GetEnumerator();
         }
 
-        public void Add(Point2D? point)
+        public void Add(Point2D point)
         {
-            if (point.HasValue && IsNewPointInRoute(point.Value))
-                _routePoints.Add(point.Value);
+            if (point.IsDefined && IsNewPointInRoute(point))
+                _routePoints.Add(point);
         }
 
         public void Add(IEnumerable<Point2D> points)
         {
-            if (points == null)
-                return;
-
-            foreach (var point in points)
+            foreach (var point in points.EmptyIfNull())
                 Add(point);
         }
+
+        public bool IsDefined => _routePoints.Any();
 
         private bool IsNewPointInRoute(Point2D point)
         {
@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.Geometry
 
         protected bool Equals(Route other)
         {
-            return _routePoints != null && _routePoints.SequenceEqual(other._routePoints);
+            return other != null && _routePoints.SequenceEqual(other._routePoints);
         }
 
         public override bool Equals(object obj)
@@ -62,12 +62,12 @@ namespace Codartis.SoftVis.Geometry
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Route) obj);
+            return Equals((Route)obj);
         }
 
         public override int GetHashCode()
         {
-            return (_routePoints != null ? _routePoints.GetHashCode() : 0);
+            return _routePoints.GetHashCode();
         }
 
         public static bool operator ==(Route left, Route right)

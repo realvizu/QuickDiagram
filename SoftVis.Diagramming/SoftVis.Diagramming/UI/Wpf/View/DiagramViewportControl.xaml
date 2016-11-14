@@ -24,7 +24,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:RectUnionConverter x:Key="RectUnionConverter" />
             <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
-            <view:PointsToRectRelativeConverter x:Key="PointsToRectRelativeConverter" />
+            <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
@@ -44,11 +44,11 @@
                 <view:DiagramConnectorControl 
                     AnimationDuration="{StaticResource DiagramShapeAnimationDuration}">
                     <view:DiagramConnectorControl.RoutePoints>
-                        <MultiBinding Converter="{StaticResource PointsToRectRelativeConverter}">
-                            <Binding Path="RoutePoints" Mode="OneWay"/>
-                            <Binding Path="Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                        <MultiBinding Converter="{StaticResource DiagramConnectorRouteCalculatorConverter}">
                             <Binding Path="SourceRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                            <Binding Path="InterimRoutePoints" Mode="OneWay"/>
                             <Binding Path="TargetRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                            <Binding Path="Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
                         </MultiBinding>
                     </view:DiagramConnectorControl.RoutePoints>
                 </view:DiagramConnectorControl>

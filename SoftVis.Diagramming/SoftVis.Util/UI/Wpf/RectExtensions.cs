@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
@@ -6,6 +7,11 @@ namespace Codartis.SoftVis.Util.UI.Wpf
 {
     public static class RectExtensions
     {
+        public static bool IsUndefined(this Rect rect)
+        {
+            return double.IsNaN(rect.Left) || double.IsNaN(rect.Top) || double.IsNaN(rect.Width) || double.IsNaN(rect.Height);
+        }
+
         public static Point GetCenter(this Rect rect)
         {
             return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
@@ -24,6 +30,31 @@ namespace Codartis.SoftVis.Util.UI.Wpf
                     new Point(rectList.Select(i => i.Left).Min(), rectList.Select(i => i.Top).Min()),
                     new Point(rectList.Select(i => i.Right).Max(), rectList.Select(i => i.Bottom).Max()))
                 : Rect.Empty;
+        }
+
+        public static Point GetPerimeterPointTowardOuterPoint(this Rect rect, Point outerPoint)
+        {
+            var center = rect.GetCenter();
+            var sides = new[]
+            {
+                (rect.Left - outerPoint.X)/(center.X - outerPoint.X),
+                (rect.Top - outerPoint.Y)/(center.Y - outerPoint.Y),
+                (rect.Right - outerPoint.X)/(center.X - outerPoint.X),
+                (rect.Bottom - outerPoint.Y)/(center.Y - outerPoint.Y)
+            };
+
+            var fi = Math.Max(0, sides.Where(i => i <= 1).Max());
+
+            return outerPoint + fi * (center - outerPoint);
+        }
+
+        public static Point[] ToRelativePoints(this Rect rect, Point[] points)
+        {
+            if (points == null || points.Any(i => i.IsUndefined()))
+                return null;
+
+            var rectRelativeTranslate = -(Vector)rect.TopLeft;
+            return points.Select(i => i + rectRelativeTranslate).ToArray();
         }
     }
 }

@@ -22,7 +22,7 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
-                <view:DiagramConnectorControl RoutePoints="{Binding Path=RoutePoints, Mode=OneWay}" />
+                <view:DiagramConnectorControl RoutePoints="{Binding Path=InterimRoutePoints, Mode=OneWay}" />
             </DataTemplate>
         
             <ItemsPanelTemplate x:Key="DiagramImageItemsPanel">

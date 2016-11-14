@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Util;
 using QuickGraph;
@@ -52,27 +51,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 Edges.Insert(atIndex + i, newEdges[i]);
 
             CheckAllInvariants();
-        }
-
-        public Route GetRoute(LayoutVertexToPointMap vertexCenters)
-        {
-            var sourceRect = vertexCenters.GetRect(Source);
-            var interimRoutePoints = InterimVertices.Select(vertexCenters.Get).ToArray();
-            var targetRect = vertexCenters.GetRect(Target);
-
-            var secondPoint = interimRoutePoints.Any()
-                ? interimRoutePoints.First()
-                : targetRect.Center;
-            var penultimatePoint = interimRoutePoints.Any()
-                ? interimRoutePoints.Last()
-                : sourceRect.Center;
-
-            return new Route
-            {
-                sourceRect.GetAttachPointToward(secondPoint),
-                interimRoutePoints,
-                targetRect.GetAttachPointToward(penultimatePoint)
-            };
         }
 
         private void CheckAllInvariants()
