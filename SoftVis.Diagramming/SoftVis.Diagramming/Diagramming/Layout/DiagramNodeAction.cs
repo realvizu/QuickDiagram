@@ -13,6 +13,8 @@
             DiagramNode = diagramNode;
         }
 
+        public override void Accept(IDiagramActionVisitor visitor) => visitor.Visit(this);
+
         public override string ToString() => $"DiagramNodeAction({DiagramNode}, {ActionType})";
     }
 }

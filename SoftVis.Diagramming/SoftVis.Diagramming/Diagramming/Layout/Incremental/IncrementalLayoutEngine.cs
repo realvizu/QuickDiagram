@@ -20,13 +20,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <para>If the source node has no siblings then it is placed between the children of the parent's preceding and following nodes.
     /// It ensures that there won't be any inheritance edge crossings.</para>
     /// </remarks>
-    internal sealed class IncrementalLayoutEngine : IIncrementalLayoutEngine
+    internal sealed class IncrementalLayoutEngine : IIncrementalLayoutEngine, IDiagramActionConsumer
     {
         private readonly Map<IDiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
         private readonly Map<IDiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
         private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
         private LayoutVertexToPointMap _previousVertexCenters;
         private readonly RelativeLayoutCalculator _relativeLayoutCalculator;
+        private readonly DiagramActionDispatcherVisitor _diagramActionDispatcherVisitor;
 
         private const double HorizontalGap = DiagramDefaults.HorizontalGap;
         private const double VerticalGap = DiagramDefaults.VerticalGap;
@@ -38,6 +39,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
             _previousVertexCenters = new LayoutVertexToPointMap();
             _relativeLayoutCalculator = new RelativeLayoutCalculator();
+            _diagramActionDispatcherVisitor = new DiagramActionDispatcherVisitor(this);
         }
 
         private IReadOnlyRelativeLayout RelativeLayout => _relativeLayoutCalculator.RelativeLayout;
@@ -54,47 +56,13 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public IEnumerable<ILayoutAction> CalculateLayoutActions(IEnumerable<DiagramAction> diagramActions)
         {
-            foreach (var diagramShapeAction in diagramActions)
-                ApplyDiagramActionToRelativeLayout(diagramShapeAction);
+            foreach (var diagramAction in diagramActions)
+                diagramAction.Accept(_diagramActionDispatcherVisitor);
 
             return CalculateAbsoluteLayout();
         }
 
-        private void ApplyDiagramActionToRelativeLayout(DiagramAction diagramAction)
-        {
-            var diagramNodeAction = diagramAction as DiagramNodeAction;
-            if (diagramNodeAction != null)
-            {
-                switch (diagramNodeAction.ActionType)
-                {
-                    case ShapeActionType.Add:
-                        OnDiagramNodeAdded(diagramNodeAction.DiagramNode);
-                        break;
-                    case ShapeActionType.Remove:
-                        OnDiagramNodeRemoved(diagramNodeAction.DiagramNode);
-                        break;
-                    case ShapeActionType.Resize:
-                        OnDiagramNodeResized(diagramNodeAction.DiagramNode);
-                        break;
-                }
-            }
-
-            var diagramConnectorAction = diagramAction as DiagramConnectorAction;
-            if (diagramConnectorAction != null)
-            {
-                switch (diagramConnectorAction.ActionType)
-                {
-                    case ShapeActionType.Add:
-                        OnDiagramConnectorAdded(diagramConnectorAction.DiagramConnector);
-                        break;
-                    case ShapeActionType.Remove:
-                        OnDiagramConnectorRemoved(diagramConnectorAction.DiagramConnector);
-                        break;
-                }
-            }
-        }
-
-        private void OnDiagramNodeAdded(IDiagramNode diagramNode)
+        public void AddDiagramNode(IDiagramNode diagramNode)
         {
             if (_diagramNodeToLayoutVertexMap.Contains(diagramNode))
                 throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
@@ -105,7 +73,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);
         }
 
-        private void OnDiagramNodeRemoved(IDiagramNode diagramNode)
+        public void RemoveDiagramNode(IDiagramNode diagramNode)
         {
             if (!_diagramNodeToLayoutVertexMap.Contains(diagramNode))
                 throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
@@ -116,7 +84,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _relativeLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex);
         }
 
-        private void OnDiagramNodeResized(IDiagramNode diagramNode)
+        public void ResizeDiagramNode(IDiagramNode diagramNode)
         {
             if (!_diagramNodeToLayoutVertexMap.Contains(diagramNode))
                 throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
@@ -125,7 +93,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             diagramNodeLayoutVertex.Resize(diagramNode.Size);
         }
 
-        private void OnDiagramConnectorAdded(IDiagramConnector diagramConnector)
+        public void AddDiagramConnector(IDiagramConnector diagramConnector)
         {
             if (_diagramConnectorToLayoutPathMap.Contains(diagramConnector))
                 throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
@@ -136,7 +104,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _relativeLayoutCalculator.OnDiagramConnectorAdded(layoutPath);
         }
 
-        private void OnDiagramConnectorRemoved(IDiagramConnector diagramConnector)
+        public void RemoveDiagramConnector(IDiagramConnector diagramConnector)
         {
             if (!_diagramConnectorToLayoutPathMap.Contains(diagramConnector))
                 throw new InvalidOperationException($"Diagram connector {diagramConnector} not found.");

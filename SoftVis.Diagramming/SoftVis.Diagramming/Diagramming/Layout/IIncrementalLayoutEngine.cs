@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
-    /// Publishes layout action events.
+    /// Converts diagram actions to layout actions.
     /// </summary>
     internal interface IIncrementalLayoutEngine
     {

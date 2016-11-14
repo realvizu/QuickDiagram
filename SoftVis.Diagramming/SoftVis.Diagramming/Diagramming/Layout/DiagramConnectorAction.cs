@@ -13,6 +13,8 @@
             DiagramConnector = diagramConnector;
         }
 
+        public override void Accept(IDiagramActionVisitor visitor) => visitor.Visit(this);
+
         public override string ToString() => $"DiagramConnectorAction({DiagramConnector}, {ActionType})";
     }
 }
