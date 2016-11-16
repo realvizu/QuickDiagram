@@ -40,5 +40,9 @@
                     break;
             }
         }
+
+        public void Visit(DiagramBatchAction diagramBatchAction)
+        {
+        }
     }
 }

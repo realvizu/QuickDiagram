@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .EndGroup()
 
             // Dummy vertex added
-            .AddInterface("14", 55, "12")
+            .AddInterface("14", 55)
             .AddInterface("15")
             .AddBase("14", "15")
             .EndGroup()
@@ -68,6 +68,11 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .AddInterface("20", 55)
             .AddBase("12", "20")
             .AddBase("20", "11")
+            .AddInterface("21-sdhfiwgzgwqe")
+            .AddBase("21-sdhfiwgzgwqe", "11")
+            .AddInterface("22-wzeuzwe")
+            .AddBase("22-wzeuzwe", "11")
+            .AddBase("14", "11")
             .EndGroup()
 
             // Path with 2 new dummy vertices

@@ -34,6 +34,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ShapeAdded += OnShapeAdded;
             ShapeRemoved += OnShapeRemoved;
             NodeSizeChanged += OnNodeSizeChanged;
+            BatchAddStarted += OnBatchStarted;
+            BatchAddFinished += OnBatchFinished;
+            BatchRemoveStarted += OnBatchStarted;
+            BatchRemoveFinished += OnBatchFinished;
 
             Task.Run(() => ProcessDiagramShapeActions(_automaticLayoutCancellation.Token));
         }
@@ -85,11 +89,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 EnqueueDiagramAction(new DiagramConnectorAction(diagramConnector, ShapeActionType.Remove));
         }
 
+        private void OnBatchStarted()
+        {
+            EnqueueDiagramAction(new DiagramBatchAction(BatchActionType.Start));
+        }
+
+        private void OnBatchFinished()
+        {
+            EnqueueDiagramAction(new DiagramBatchAction(BatchActionType.Finish));
+        }
+
         private void ProcessDiagramShapeActions(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)))
+                if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)) && NotInBatch(_diagramActionQueue))
                 {
                     var diagramActions = GetBatchFromQueue(_diagramActionQueue);
                     if (diagramActions.Any())
@@ -97,6 +111,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 }
             }
         }
+
+        private static bool NotInBatch(Queue<DiagramAction> diagramActionQueue)
+        {
+            lock (diagramActionQueue)
+            {
+                return diagramActionQueue.All(i => !IsBatchStart(i))
+                     || diagramActionQueue.Any(IsBatchFinish);
+            }
+        }
+
+        private static bool IsBatchStart(DiagramAction diagramAction) =>
+            diagramAction is DiagramBatchAction && ((DiagramBatchAction)diagramAction).Type == BatchActionType.Start;
+
+        private static bool IsBatchFinish(DiagramAction diagramAction) =>
+            diagramAction is DiagramBatchAction && ((DiagramBatchAction)diagramAction).Type == BatchActionType.Finish;
 
         private static List<DiagramAction> GetBatchFromQueue(Queue<DiagramAction> diagramActionQueue)
         {
@@ -124,25 +153,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private static IEnumerable<ILayoutAction> CombineLayoutAction(IEnumerable<ILayoutAction> layoutActions)
         {
             return layoutActions.GroupBy(i => i.DiagramShape).Select(j => j.Last());
-        }
-
-        // TODO: use for optimising diagramAction batching or delete
-        private static bool AddShapeHasMatchingResize(DiagramAction diagramAction, Queue<DiagramAction> queue)
-        {
-            var diagramNodeAction = diagramAction as DiagramNodeAction;
-            if (diagramNodeAction == null || diagramNodeAction.ActionType != ShapeActionType.Add)
-                return true;
-
-            return queue.Any(i => IsResizeOfShape(i, diagramNodeAction.DiagramNode));
-        }
-
-        // TODO: use for optimising diagramAction batching or delete
-        private static bool IsResizeOfShape(DiagramAction diagramAction, IDiagramNode diagramNode)
-        {
-            var diagramNodeAction = diagramAction as DiagramNodeAction;
-            return diagramNodeAction != null
-                   && diagramNodeAction.ActionType == ShapeActionType.Resize
-                   && diagramNodeAction.DiagramNode == diagramNode;
         }
     }
 }

@@ -28,6 +28,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramShape> ShapeActivated;
         public event Action Cleared;
 
+        public event Action BatchAddStarted;
+        public event Action BatchAddFinished;
+        public event Action BatchRemoveStarted;
+        public event Action BatchRemoveFinished;
+
         public event Action<IDiagramNode, Size2D, Size2D> NodeSizeChanged;
         public event Action<IDiagramNode, Point2D, Point2D> NodeTopLeftChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
@@ -83,6 +88,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public virtual void ShowItems(IEnumerable<IModelItem> modelItems)
         {
+            BatchAddStarted?.Invoke();
+
             foreach (var modelItem in modelItems)
             {
                 if (modelItem is IModelEntity)
@@ -91,10 +98,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 if (modelItem is IModelRelationship)
                     ShowRelationshipCore((IModelRelationship)modelItem);
             }
+
+            BatchAddFinished?.Invoke();
         }
 
         public virtual void HideItems(IEnumerable<IModelItem> modelItems)
         {
+            BatchRemoveStarted?.Invoke();
+
             foreach (var modelItem in modelItems)
             {
                 if (modelItem is IModelEntity)
@@ -103,6 +114,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 if (modelItem is IModelRelationship)
                     HideRelationshipCore((IModelRelationship)modelItem);
             }
+
+            BatchRemoveFinished?.Invoke();
         }
 
         public void SelectShape(IDiagramShape diagramShape)

@@ -73,11 +73,13 @@
     <Compile Include="Diagramming\IDiagram.cs" />
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Diagramming\Implementation\AutoArrangingDiagram.cs" />
+    <Compile Include="Diagramming\Layout\DiagramBatchAction.cs" />
     <Compile Include="Diagramming\Layout\DiagramAction.cs" />
     <Compile Include="Diagramming\Layout\FlushLayoutChangesAction.cs" />
     <Compile Include="Diagramming\Layout\IDiagramActionVisitor.cs" />
     <Compile Include="Diagramming\Layout\IDiagramActionConsumer.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramActionDispatcherVisitor.cs" />
+    <Compile Include="Diagramming\Layout\BatchActionType.cs" />
     <Compile Include="Modeling\Implementation\Model.cs" />
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />
