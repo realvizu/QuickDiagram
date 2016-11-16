@@ -10,13 +10,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-        private readonly ObservableCollection<DiagramShapeViewModelBase> _diagramShapeViewModels;
+        private readonly ObservableCollection<DiagramNodeViewModel> _diagramNodeViewModels;
 
         public DiagramShapeViewModelFactory(IArrangedDiagram diagram,
-            ObservableCollection<DiagramShapeViewModelBase> diagramShapeViewModels)
+            ObservableCollection<DiagramNodeViewModel> diagramNodeViewModels)
               : base(diagram)
         {
-            _diagramShapeViewModels = diagramShapeViewModels;
+            _diagramNodeViewModels = diagramNodeViewModels;
         }
 
         public DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
@@ -27,8 +27,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShape is IDiagramConnector)
             {
                 var diagramConnector = (IDiagramConnector) diagramShape;
-                var sourceNode = _diagramShapeViewModels.First(i => i.DiagramShape == diagramConnector.Source) as DiagramNodeViewModel;
-                var targetNode = _diagramShapeViewModels.First(i => i.DiagramShape == diagramConnector.Target) as DiagramNodeViewModel;
+                var sourceNode = _diagramNodeViewModels.First(i => i.DiagramShape == diagramConnector.Source);
+                var targetNode = _diagramNodeViewModels.First(i => i.DiagramShape == diagramConnector.Target);
                 return new DiagramConnectorViewModel(Diagram, diagramConnector, sourceNode, targetNode);
             }
 

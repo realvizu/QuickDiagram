@@ -17,7 +17,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
-        public ObservableCollection<DiagramShapeViewModelBase> DiagramShapeViewModels { get; }
+        public ObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public ObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
 
@@ -49,7 +50,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
-            DiagramShapeViewModels = new ObservableCollection<DiagramShapeViewModelBase>();
+            DiagramNodeViewModels = new ObservableCollection<DiagramNodeViewModel>();
+            DiagramConnectorViewModels = new ObservableCollection<DiagramConnectorViewModel>();
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
@@ -60,7 +62,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramFocusTracker.DecoratedNodeChanged += OnDecoratedNodeChanged;
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramShapeViewModels);
+            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramNodeViewModels);
             _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(diagram);
 
             ViewportResizeCommand = new Viewport.ResizeCommand(_viewport);
@@ -164,7 +166,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramShapeViewModel.RemoveRequested += OnShapeRemoveRequested;
             diagramShapeViewModel.FocusRequested += _diagramFocusTracker.Focus;
 
-            DiagramShapeViewModels.Add(diagramShapeViewModel);
+            AddToViewModels(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
         }
 
@@ -189,13 +191,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramShapeViewModel.RemoveRequested -= OnShapeRemoveRequested;
             diagramShapeViewModel.FocusRequested -= _diagramFocusTracker.Focus;
 
-            DiagramShapeViewModels.Remove(diagramShapeViewModel);
+            RemoveFromViewModels(diagramShapeViewModel);
             _diagramShapeToViewModelMap.Remove(diagramShape);
         }
 
         private void OnDiagramCleared()
         {
-            DiagramShapeViewModels.Clear();
+            DiagramConnectorViewModels.Clear();
+            DiagramNodeViewModels.Clear();
             _diagramShapeToViewModelMap.Clear();
         }
 
@@ -229,6 +232,30 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 _diagramShapeButtonCollectionViewModel.AssignButtonsTo(newlyDecoratedDiagramNodeViewModel);
 
             DecoratedDiagramNode = newlyDecoratedDiagramNodeViewModel;
+        }
+
+        private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
+        {
+            if (diagramShapeViewModel is DiagramNodeViewModel)
+                DiagramNodeViewModels.Add((DiagramNodeViewModel)diagramShapeViewModel);
+
+            else if (diagramShapeViewModel is DiagramConnectorViewModel)
+                DiagramConnectorViewModels.Add((DiagramConnectorViewModel)diagramShapeViewModel);
+
+            else
+                throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
+        }
+
+        private void RemoveFromViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
+        {
+            if (diagramShapeViewModel is DiagramNodeViewModel)
+                DiagramNodeViewModels.Remove((DiagramNodeViewModel)diagramShapeViewModel);
+
+            else if (diagramShapeViewModel is DiagramConnectorViewModel)
+                DiagramConnectorViewModels.Remove((DiagramConnectorViewModel)diagramShapeViewModel);
+
+            else
+                throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
         }
     }
 }

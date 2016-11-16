@@ -89,8 +89,8 @@
       <DependentUpon>DiagramButtonControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramConnectorRouteCalculatorConverter.cs" />
-    <Compile Include="UI\Wpf\View\DiagramShapeItemContainerStyleSelector.cs" />
-    <Compile Include="UI\Wpf\View\DiagramShapeItemPresenter.cs" />
+    <Compile Include="UI\Wpf\View\DiagramConnectorItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramConnectorItemPresenter.cs" />
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
@@ -230,7 +230,7 @@
     <Compile Include="UI\Wpf\View\DiagramControl.xaml.cs">
       <DependentUpon>DiagramControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\DiagramShapeItemsControl.cs" />
+    <Compile Include="UI\Wpf\View\DiagramNodeItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramNodeControl.xaml.cs">
       <DependentUpon>DiagramNodeControl.xaml</DependentUpon>
     </Compile>
