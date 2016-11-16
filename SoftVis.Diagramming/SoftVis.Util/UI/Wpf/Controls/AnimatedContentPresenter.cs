@@ -42,19 +42,19 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         private static void OnTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((AnimatedContentPresenter)d).OnTopChanged((double)e.OldValue, (double)e.NewValue);
 
-        public static readonly DependencyProperty AnimatedLeftProperty =
-            DependencyProperty.Register("AnimatedLeft", typeof(double), typeof(AnimatedContentPresenter),
-                new FrameworkPropertyMetadata(double.NaN, OnAnimatedLeftChanged));
+        public static readonly DependencyProperty LeftToAnimateProperty =
+            DependencyProperty.Register("LeftToAnimate", typeof(double), typeof(AnimatedContentPresenter),
+                new FrameworkPropertyMetadata(double.NaN, OnLeftToAnimateChanged));
 
-        private static void OnAnimatedLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((AnimatedContentPresenter)d).OnAnimatedLeftChanged((double)e.OldValue, (double)e.NewValue);
+        private static void OnLeftToAnimateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedContentPresenter)d).OnLeftToAnimateChanged((double)e.OldValue, (double)e.NewValue);
 
-        public static readonly DependencyProperty AnimatedTopProperty =
-            DependencyProperty.Register("AnimatedTop", typeof(double), typeof(AnimatedContentPresenter),
-                new FrameworkPropertyMetadata(double.NaN, OnAnimatedTopChanged));
+        public static readonly DependencyProperty TopToAnimateProperty =
+            DependencyProperty.Register("TopToAnimate", typeof(double), typeof(AnimatedContentPresenter),
+                new FrameworkPropertyMetadata(double.NaN, OnTopToAnimateChanged));
 
-        private static void OnAnimatedTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((AnimatedContentPresenter)d).OnAnimatedTopChanged((double)e.OldValue, (double)e.NewValue);
+        private static void OnTopToAnimateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedContentPresenter)d).OnTopToAnimateChanged((double)e.OldValue, (double)e.NewValue);
 
         public static readonly DependencyProperty ScalingProperty =
             DependencyProperty.Register("Scaling", typeof(double), typeof(AnimatedContentPresenter),
@@ -79,16 +79,16 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             set { SetValue(TopProperty, value); }
         }
 
-        public double AnimatedLeft
+        public double LeftToAnimate
         {
-            get { return (double)GetValue(AnimatedLeftProperty); }
-            set { SetValue(AnimatedLeftProperty, value); }
+            get { return (double)GetValue(LeftToAnimateProperty); }
+            set { SetValue(LeftToAnimateProperty, value); }
         }
 
-        public double AnimatedTop
+        public double TopToAnimate
         {
-            get { return (double)GetValue(AnimatedTopProperty); }
-            set { SetValue(AnimatedTopProperty, value); }
+            get { return (double)GetValue(TopToAnimateProperty); }
+            set { SetValue(TopToAnimateProperty, value); }
         }
 
         public double Scaling
@@ -117,10 +117,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         private void OnTopChanged(double oldValue, double newValue) 
             => UpdatePosition(oldValue, newValue);
 
-        private void OnAnimatedLeftChanged(double oldValue, double newValue)
+        private void OnLeftToAnimateChanged(double oldValue, double newValue)
             => UpdateAnimatedPosition(LeftProperty, oldValue, newValue);
 
-        private void OnAnimatedTopChanged(double oldValue, double newValue)
+        private void OnTopToAnimateChanged(double oldValue, double newValue)
             => UpdateAnimatedPosition(TopProperty, oldValue, newValue);
 
         private void UpdatePosition(double oldValue, double newValue)

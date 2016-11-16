@@ -66,8 +66,8 @@
             <Style x:Key="DiagramNodeItemContainerStyle" BasedOn="{StaticResource DiagramShapeItemContainerStyle}"
                    TargetType="{x:Type view:DiagramShapeItemPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
-                <Setter Property="AnimatedLeft" Value="{Binding X}"/>
-                <Setter Property="AnimatedTop" Value="{Binding Y}"/>
+                <Setter Property="LeftToAnimate" Value="{Binding X}"/>
+                <Setter Property="TopToAnimate" Value="{Binding Y}"/>
                 <Setter Property="Rect">
                     <Setter.Value>
                         <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">
