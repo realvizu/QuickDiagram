@@ -21,7 +21,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
-
             _diagram.RerouteConnector(layoutAction.DiagramConnector, layoutAction.NewRoute);
         }
     }

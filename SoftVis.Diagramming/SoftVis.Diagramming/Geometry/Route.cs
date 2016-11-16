@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Util;
@@ -46,6 +47,21 @@ namespace Codartis.SoftVis.Geometry
         }
 
         public bool IsDefined => _routePoints.Any();
+
+        /// <summary>
+        /// Modifies the first and last point of a route to attach to the suppied source and target rect's perimeter.
+        /// </summary>
+        /// <param name="sourceRect"></param>
+        /// <param name="targetRect"></param>
+        public void AttachToSourceRectAndTargetRect(Rect2D sourceRect, Rect2D targetRect)
+        {
+            var routePointCount = _routePoints.Count;
+            if (routePointCount < 2)
+                throw new InvalidOperationException("AttachToSourceRectAndTargetRect requires a route with at least 2 points.");
+
+            _routePoints[0] = sourceRect.GetAttachPointToward(_routePoints[1]);
+            _routePoints[routePointCount - 1] = targetRect.GetAttachPointToward(_routePoints[routePointCount - 2]);
+        }
 
         private bool IsNewPointInRoute(Point2D point)
         {

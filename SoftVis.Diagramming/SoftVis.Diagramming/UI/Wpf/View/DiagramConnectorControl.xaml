@@ -25,7 +25,7 @@
               StrokeDashArray="{Binding Path=StrokeDashArray}">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowShaftPathConverter}">
-                    <Binding Path="RoutePoints" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="DisplayedRoutePoints" ElementName="ThisControl" Mode="OneWay"/>
                     <Binding Source="{StaticResource ArrowHeadSize}"/>
                 </MultiBinding>
             </Path.Data>
@@ -35,7 +35,7 @@
               StrokeThickness="1">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowHeadPathConverter}">
-                    <Binding Path="RoutePoints" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="DisplayedRoutePoints" ElementName="ThisControl" Mode="OneWay"/>
                     <Binding Path="ArrowHeadType"/>
                     <Binding Source="{StaticResource ArrowHeadSize}"/>
                     <Binding Source="{StaticResource ArrowHeadLengthPerWidth}"/>

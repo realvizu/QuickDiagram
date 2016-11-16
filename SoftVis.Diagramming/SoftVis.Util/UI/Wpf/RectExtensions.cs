@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
                 : Rect.Empty;
         }
 
-        public static Point GetPerimeterPointTowardOuterPoint(this Rect rect, Point outerPoint)
+        public static Point GetPerimeterPointTowardPoint(this Rect rect, Point outerPoint)
         {
             var center = rect.GetCenter();
             var sides = new[]

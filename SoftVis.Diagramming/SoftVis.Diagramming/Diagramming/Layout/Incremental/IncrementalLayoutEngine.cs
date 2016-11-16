@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     {
         private readonly Map<IDiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
         private readonly Map<IDiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
-        private readonly Map<LayoutPath, Route> _layoutPathToPreviousInterimRouteMap;
+        private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
         private LayoutVertexToPointMap _previousVertexCenters;
         private readonly RelativeLayoutCalculator _relativeLayoutCalculator;
         private readonly DiagramActionDispatcherVisitor _diagramActionDispatcherVisitor;
@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             _diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>();
-            _layoutPathToPreviousInterimRouteMap = new Map<LayoutPath, Route>();
+            _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
             _previousVertexCenters = new LayoutVertexToPointMap();
             _relativeLayoutCalculator = new RelativeLayoutCalculator();
             _diagramActionDispatcherVisitor = new DiagramActionDispatcherVisitor(this);
@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             _relativeLayoutCalculator.OnDiagramCleared();
 
-            _layoutPathToPreviousInterimRouteMap.Clear();
+            _layoutPathToPreviousRouteMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
             _diagramNodeToLayoutVertexMap.Clear();
             _previousVertexCenters.Clear();
@@ -142,12 +142,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private void SaveCurrentLayoutPaths(LayoutVertexToPointMap newVertexCenters)
         {
-            _layoutPathToPreviousInterimRouteMap.Clear();
+            _layoutPathToPreviousRouteMap.Clear();
 
             foreach (var layoutPath in RelativeLayout.LayeredLayoutGraph.Edges)
             {
-                var currentInterimRoute = GetInterimPoints(layoutPath, newVertexCenters);
-                _layoutPathToPreviousInterimRouteMap.Set(layoutPath, currentInterimRoute);
+                var currentRoute = GetRoutePoints(layoutPath, newVertexCenters);
+                _layoutPathToPreviousRouteMap.Set(layoutPath, currentRoute);
             }
         }
 
@@ -175,20 +175,29 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             foreach (var layoutPath in RelativeLayout.LayeredLayoutGraph.Edges)
             {
-                var oldInterimRoute = _layoutPathToPreviousInterimRouteMap.Get(layoutPath);
-                var newInterimRoute = GetInterimPoints(layoutPath, newVertexCenters);
+                var oldRoute = _layoutPathToPreviousRouteMap.Get(layoutPath);
+                var newRoute = GetRoutePoints(layoutPath, newVertexCenters);
 
-                // Layout actions must be created for undefined interim routes too
-                // because the connector can exist even if its interim points have disappeared.
-                if (newInterimRoute != oldInterimRoute)
-                    yield return new ReroutePathLayoutAction(layoutPath, oldInterimRoute, newInterimRoute);
+                if (newRoute.IsDefined && newRoute != oldRoute)
+                    yield return new ReroutePathLayoutAction(layoutPath, oldRoute, newRoute);
             }
         }
 
-        private static Route GetInterimPoints(LayoutPath layoutPath, LayoutVertexToPointMap vertexCenters)
+        private static Route GetRoutePoints(LayoutPath layoutPath, LayoutVertexToPointMap vertexCenters)
         {
-            var interimPoints = layoutPath.InterimVertices.Select(vertexCenters.Get);
-            return new Route(interimPoints);
+            var sourceRect = vertexCenters.GetRect(layoutPath.PathSource);
+            var targetRect = vertexCenters.GetRect(layoutPath.PathTarget);
+
+            var routePoints = new Route
+            {
+                sourceRect.Center,
+                layoutPath.InterimVertices.Select(vertexCenters.Get),
+                targetRect.Center
+            };
+
+            routePoints.AttachToSourceRectAndTargetRect(sourceRect, targetRect);
+
+            return routePoints;
         }
 
         private static Point2D GetVertexCenterOrUndefined(LayoutVertexToPointMap vertexCenters, LayoutVertexBase vertex)

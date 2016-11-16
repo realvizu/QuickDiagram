@@ -22,19 +22,31 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty DiagramStrokeProperty =
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramConnectorControl));
 
+        /// <summary>
+        /// The original route points from the view model.
+        /// </summary>
+        public static readonly DependencyProperty RoutePointsToAnimateProperty =
+            DependencyProperty.Register("RoutePointsToAnimate", typeof(IList<Point>), typeof(DiagramConnectorControl),
+                new FrameworkPropertyMetadata(EmptyPointList, OnRoutePointsToAnimateChanged));
+
+        private static void OnRoutePointsToAnimateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramConnectorControl)d).OnRoutePointsToAnimateChanged((IList<Point>)e.OldValue, (IList<Point>)e.NewValue);
+
+        /// <summary>
+        /// Animated route points based on changes in the view mode.
+        /// </summary>
         public static readonly DependencyProperty AnimatedRoutePointsProperty =
-            DependencyProperty.Register("AnimatedRoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl),
-                new FrameworkPropertyMetadata(EmptyPointList, OnAnimatedRoutePointsChanged));
+            DependencyProperty.Register("AnimatedRoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl));
 
-        public static readonly DependencyProperty RoutePointsProperty =
-            DependencyProperty.Register("RoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl),
-                new FrameworkPropertyMetadata(EmptyPointList,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.AffectsParentArrange));
-
-        private static void OnAnimatedRoutePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramConnectorControl)d).OnAnimatedRoutePointsChanged((IList<Point>)e.OldValue, (IList<Point>)e.NewValue);
+        /// <summary>
+        /// The displayed route points are the animated route points adjusted to follow the SourceNode and TargetNode.
+        /// </summary>
+        public static readonly DependencyProperty DisplayedRoutePointsProperty =
+            DependencyProperty.Register("DisplayedRoutePoints", typeof(IList<Point>), typeof(DiagramConnectorControl),
+                 new FrameworkPropertyMetadata(EmptyPointList,
+                     FrameworkPropertyMetadataOptions.AffectsRender |
+                     FrameworkPropertyMetadataOptions.AffectsMeasure |
+                     FrameworkPropertyMetadataOptions.AffectsParentArrange));
 
         public static readonly DependencyProperty AnimationDurationProperty =
             DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(DiagramConnectorControl),
@@ -57,16 +69,21 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DiagramStrokeProperty, value); }
         }
 
-        public IList<Point> RoutePoints
+        public IList<Point> RoutePointsToAnimate
         {
-            get { return (IList<Point>)GetValue(RoutePointsProperty); }
-            set { SetValue(RoutePointsProperty, value); }
+            get { return (IList<Point>)GetValue(RoutePointsToAnimateProperty); }
+            set { SetValue(RoutePointsToAnimateProperty, value); }
         }
 
         public IList<Point> AnimatedRoutePoints
         {
             get { return (IList<Point>)GetValue(AnimatedRoutePointsProperty); }
             set { SetValue(AnimatedRoutePointsProperty, value); }
+        }
+        public IList<Point> DisplayedRoutePoints
+        {
+            get { return (IList<Point>)GetValue(DisplayedRoutePointsProperty); }
+            set { SetValue(DisplayedRoutePointsProperty, value); }
         }
 
         public Duration AnimationDuration
@@ -75,10 +92,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(AnimationDurationProperty, value); }
         }
 
-        private void OnAnimatedRoutePointsChanged(IList<Point> oldValue, IList<Point> newValue)
+        private void OnRoutePointsToAnimateChanged(IList<Point> oldValue, IList<Point> newValue)
         {
             if (oldValue == null || oldValue.Count == 0)
-                RoutePoints = newValue;
+                AnimatedRoutePoints = newValue;
             else
                 AnimateRoutePoints(oldValue, newValue);
         }
@@ -86,7 +103,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void AnimateRoutePoints(IList<Point> oldValue, IList<Point> newValue)
         {
             var animation = new PointArrayAnimation(oldValue.ToArray(), newValue.ToArray(), AnimationDuration);
-            BeginAnimation(RoutePointsProperty, animation);
+            BeginAnimation(AnimatedRoutePointsProperty, animation);
         }
     }
 }

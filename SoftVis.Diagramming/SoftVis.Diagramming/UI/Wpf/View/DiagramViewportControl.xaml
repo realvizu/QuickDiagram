@@ -41,16 +41,17 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
-                <view:DiagramConnectorControl 
-                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}">
-                    <view:DiagramConnectorControl.RoutePoints>
+                <view:DiagramConnectorControl
+                    AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"
+                    RoutePointsToAnimate="{Binding Path=RoutePoints, Mode=OneWay}">
+                    <view:DiagramConnectorControl.DisplayedRoutePoints>
                         <MultiBinding Converter="{StaticResource DiagramConnectorRouteCalculatorConverter}">
-                            <Binding Path="SourceRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
-                            <Binding Path="InterimRoutePoints" Mode="OneWay"/>
-                            <Binding Path="TargetRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
+                            <Binding Path="AnimatedRoutePoints" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+                            <Binding Path="SourceRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}" Mode="OneWay"/>
+                            <Binding Path="TargetRectProvider.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}" Mode="OneWay"/>
                             <Binding Path="Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramShapeItemPresenter}}"/>
                         </MultiBinding>
-                    </view:DiagramConnectorControl.RoutePoints>
+                    </view:DiagramConnectorControl.DisplayedRoutePoints>
                 </view:DiagramConnectorControl>
             </DataTemplate>
 

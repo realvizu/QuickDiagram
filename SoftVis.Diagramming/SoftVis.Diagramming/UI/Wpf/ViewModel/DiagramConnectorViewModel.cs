@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private static readonly DoubleCollection DashPattern = new DoubleCollection(new[] { 5d, 5d });
 
         private readonly ConnectorType _connectorType;
-        private Point[] _interimRoutePoints = new Point[0];
+        private Point[] _routePoints = new Point[0];
 
         public IDiagramConnector DiagramConnector { get; }
         public DiagramNodeViewModel SourceNodeViewModel { get; }
@@ -37,15 +37,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool IsDashed => _connectorType.ShaftLineType == LineType.Dashed;
         public DoubleCollection StrokeDashArray => IsDashed ? DashPattern : null;
 
-        public Point[] InterimRoutePoints
+        public Point[] RoutePoints
         {
-            get { return _interimRoutePoints; }
+            get { return _routePoints; }
             set
             {
                 var nonNullValue = value ?? new Point[0];
-                if (!_interimRoutePoints.SequenceEqual(nonNullValue))
+                if (!_routePoints.SequenceEqual(nonNullValue))
                 {
-                    _interimRoutePoints = nonNullValue;
+                    _routePoints = nonNullValue;
                     OnPropertyChanged();
                 }
             }
@@ -53,7 +53,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute)
         {
-            InterimRoutePoints = newRoute.Select(i => i.ToWpf()).ToArray();
+            RoutePoints = newRoute.Select(i => i.ToWpf()).ToArray();
         }
     }
 }
