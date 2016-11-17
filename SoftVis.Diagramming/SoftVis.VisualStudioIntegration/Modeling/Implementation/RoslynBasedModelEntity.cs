@@ -60,7 +60,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var workspace = roslynModelProvider.GetWorkspace();
             return FindImplementingTypes(workspace, interfaceSymbol)
-                .Where(i => i.TypeKind != TypeKind.Interface)
                 .Select(i => new RoslynSymbolRelation(interfaceSymbol, i, RoslynEntityRelationTypes.ImplementerType));
         }
 

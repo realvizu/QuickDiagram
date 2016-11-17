@@ -38,7 +38,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
-            if (symbol.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol))
+            if (symbol.TypeKind != TypeKind.Interface && 
+                symbol.OriginalDefinition.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol))
                 ImplementingTypeSymbols.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())
