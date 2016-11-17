@@ -60,6 +60,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var workspace = roslynModelProvider.GetWorkspace();
             return FindImplementingTypes(workspace, interfaceSymbol)
+                .Where(i => i.TypeKind != TypeKind.Interface)
                 .Select(i => new RoslynSymbolRelation(interfaceSymbol, i, RoslynEntityRelationTypes.ImplementerType));
         }
 
@@ -73,13 +74,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private static IEnumerable<INamedTypeSymbol> FindImplementingTypes(Workspace workspace, INamedTypeSymbol interfaceSymbol)
         {
-            var implementerSymbols = SymbolFinder.FindImplementationsAsync(interfaceSymbol, workspace.CurrentSolution).Result;
+            //
+            // For some reason SymbolFinder finds only implementer classes and not structs. So I fall back to a search visitor.
+            //
+            //var implementerSymbols = SymbolFinder.FindImplementationsAsync(interfaceSymbol, workspace.CurrentSolution).Result;
+            //foreach (var namedTypeSymbol in implementerSymbols.OfType<INamedTypeSymbol>())
+            //{
+            //    var interfaces = namedTypeSymbol.Interfaces.Select(i => i.OriginalDefinition);
+            //    if (interfaces.Any(i => i.SymbolEquals(interfaceSymbol)))
+            //        yield return namedTypeSymbol;
+            //}
 
-            foreach (var namedTypeSymbol in implementerSymbols.OfType<INamedTypeSymbol>())
+            foreach (var compilation in GetCompilations(workspace))
             {
-                var interfaces = namedTypeSymbol.Interfaces.Select(i => i.OriginalDefinition);
-                if (interfaces.Any(i => i.SymbolEquals(interfaceSymbol)))
-                    yield return namedTypeSymbol;
+                var visitor = new ImplementingTypesFinderVisitor(interfaceSymbol);
+                compilation.Assembly.Accept(visitor);
+
+                foreach (var descendant in visitor.ImplementingTypeSymbols)
+                    yield return descendant;
             }
         }
 

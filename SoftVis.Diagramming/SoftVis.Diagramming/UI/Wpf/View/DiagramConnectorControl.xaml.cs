@@ -94,6 +94,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnRoutePointsToAnimateChanged(IList<Point> oldValue, IList<Point> newValue)
         {
+            if (newValue == null || newValue.Count == 0)
+                return;
+
             if (oldValue == null || oldValue.Count == 0)
                 AnimatedRoutePoints = newValue;
             else
