@@ -74,23 +74,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private static IEnumerable<INamedTypeSymbol> FindImplementingTypes(Workspace workspace, INamedTypeSymbol interfaceSymbol)
         {
-            //
-            // For some reason SymbolFinder finds only implementer classes and not structs. So I fall back to a search visitor.
-            //
-            //var implementerSymbols = SymbolFinder.FindImplementationsAsync(interfaceSymbol, workspace.CurrentSolution).Result;
-            //foreach (var namedTypeSymbol in implementerSymbols.OfType<INamedTypeSymbol>())
-            //{
-            //    var interfaces = namedTypeSymbol.Interfaces.Select(i => i.OriginalDefinition);
-            //    if (interfaces.Any(i => i.SymbolEquals(interfaceSymbol)))
-            //        yield return namedTypeSymbol;
-            //}
+            var implementerSymbols = SymbolFinder.FindImplementationsAsync(interfaceSymbol, workspace.CurrentSolution).Result;
+            foreach (var namedTypeSymbol in implementerSymbols.OfType<INamedTypeSymbol>())
+            {
+                var interfaces = namedTypeSymbol.Interfaces.Select(i => i.OriginalDefinition);
+                if (interfaces.Any(i => i.SymbolEquals(interfaceSymbol)))
+                    yield return namedTypeSymbol;
+            }
+
+            // For some reason SymbolFinder does not find implementer structs. So we also make a search with a visitor.
 
             foreach (var compilation in GetCompilations(workspace))
             {
                 var visitor = new ImplementingTypesFinderVisitor(interfaceSymbol);
                 compilation.Assembly.Accept(visitor);
 
-                foreach (var descendant in visitor.ImplementingTypeSymbols)
+                foreach (var descendant in visitor.ImplementingTypeSymbols.Where(i => i.TypeKind == TypeKind.Struct))
                     yield return descendant;
             }
         }
