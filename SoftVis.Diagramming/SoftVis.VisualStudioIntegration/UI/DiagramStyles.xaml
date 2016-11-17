@@ -19,9 +19,10 @@
 
     <Style TargetType="{x:Type view:DiagramControl}">
         <Setter Property="Background" Value="WhiteSmoke"/>
-        <Setter Property="PanAndZoomControlHeight" Value="120"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="DiagramFill" Value="White"/>
         <Setter Property="DiagramStroke" Value="Black"/>
+        <Setter Property="PanAndZoomControlHeight" Value="120"/>
         <Setter Property="UndisplayedEntityCuePlacementDictionary" Value="{StaticResource UndisplayedEntityCuePlacementDictionary}"/>
         <Setter Property="DiagramShapeButtonPlacementDictionary" Value="{StaticResource DiagramShapeButtonPlacementDictionary}"/>
     </Style>

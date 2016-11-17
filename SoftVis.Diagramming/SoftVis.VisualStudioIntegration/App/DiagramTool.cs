@@ -41,13 +41,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             _modelBuilder = new RoslynBasedModelBuilder(roslynModelProvider);
             
             _diagram = new RoslynBasedDiagram(_modelBuilder.Model);
-            _diagram.ShapeActivated += OnDiagramShapeActivated;
-            _diagram.ShapeAdded += OnShapeAddedToDiagram;
-
             _diagramUi = new DiagramUi(_diagram);
 
             // The diagram control must be hosted in the window created by the host package.
             _hostUiServices.DiagramHostWindow.Initialize("Diagram", _diagramUi.ContentControl);
+
+            // It is important to subscribe to diagram events after the DiagramUi is created 
+            // because DiagramUi also subscribes to diagram events and must be executed before DiagramTool event handlers.
+            SubscribeToDiagramEvents();
 
             RegisterShellTriggeredCommands(hostUiServices, this);
         }
@@ -57,6 +58,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         public IModelServices GetModelServices() => _modelBuilder;
         public IDiagramServices GetDiagramServices() => _diagram;
         public IUiServices GetUiServices() => _diagramUi;
+
+        private void SubscribeToDiagramEvents()
+        {
+            _diagram.ShapeActivated += OnDiagramShapeActivated;
+            _diagram.ShapeAdded += OnShapeAddedToDiagram;
+        }
 
         /// <summary>
         /// When a shape is activated (eg. double-clicked) opens the corresponding source file.
