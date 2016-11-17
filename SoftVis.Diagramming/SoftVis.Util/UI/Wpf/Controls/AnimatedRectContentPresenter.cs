@@ -14,12 +14,20 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         }
 
         public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof(Rect), typeof(AnimatedRectContentPresenter));
+            DependencyProperty.Register("Rect", typeof(Rect), typeof(AnimatedRectContentPresenter),
+                new FrameworkPropertyMetadata(OnRectChanged));
+
+        private static void OnRectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((AnimatedRectContentPresenter) d).OnRectChanged((Rect) e.OldValue, (Rect) e.NewValue);
 
         public Rect Rect
         {
             get { return (Rect)GetValue(RectProperty); }
             set { SetValue(RectProperty, value); }
+        }
+
+        protected virtual void OnRectChanged(Rect oldValue, Rect newValue)
+        {
         }
     }
 }

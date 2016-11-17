@@ -48,7 +48,7 @@
                             <Binding Path="AnimatedRoutePoints" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
                             <Binding Path="SourceNodePresenter.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramConnectorItemPresenter}}" Mode="OneWay"/>
                             <Binding Path="TargetNodePresenter.Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramConnectorItemPresenter}}" Mode="OneWay"/>
-                            <Binding Path="Rect" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramConnectorItemPresenter}}"/>
+                            <Binding Path="Center" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type view:DiagramConnectorItemPresenter}}"/>
                         </MultiBinding>
                     </view:DiagramConnectorControl.DisplayedRoutePoints>
                 </view:DiagramConnectorControl>
@@ -104,12 +104,11 @@
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Width" Value="{Binding Path=Rect.Width, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Height" Value="{Binding Path=Rect.Height, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Left" Value="{Binding Path=Rect.Left, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Top" Value="{Binding Path=Rect.Top, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Left" Value="{Binding Path=Center.X, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Top" Value="{Binding Path=Center.Y, RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
+                <!-- No need to set Height and Width, those will adjust automatically to the content -->
             </Style>
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">

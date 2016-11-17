@@ -49,7 +49,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ItemsControl ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramShapeViewModels}"
+    <ItemsControl ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramNodeViewModels}"
                   ItemsPanel="{StaticResource DiagramImageItemsPanel}"
                   ItemContainerStyle="{StaticResource DiagramImageItemContainerStyle}"/>
 </UserControl>

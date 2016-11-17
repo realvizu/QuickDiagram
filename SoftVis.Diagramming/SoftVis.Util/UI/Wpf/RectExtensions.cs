@@ -47,14 +47,5 @@ namespace Codartis.SoftVis.Util.UI.Wpf
 
             return outerPoint + fi * (center - outerPoint);
         }
-
-        public static Point[] ToRelativePoints(this Rect rect, Point[] points)
-        {
-            if (points == null || points.Any(i => i.IsUndefined()))
-                return null;
-
-            var rectRelativeTranslate = -(Vector)rect.TopLeft;
-            return points.Select(i => i + rectRelativeTranslate).ToArray();
-        }
     }
 }

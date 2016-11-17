@@ -21,6 +21,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf
             return new PathFigure(enumerable.First(), segments, closed);
         }
 
+        public static Rect ToRect(this Point point) => new Rect(point, new Size(0, 0));
+
         public static Rect BoundingRect(this IEnumerable<Point> points)
         {
             if (points == null)
@@ -37,6 +39,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf
             var bottom = pointArray.Select(i => i.Y).Max();
 
             return new Rect(new Point(left, top), new Point(right, bottom));
+        }
+
+        public static Point[] MakeRelativeTo(this IEnumerable<Point> points, Point refrencePoint)
+        {
+            var translate = -(Vector)refrencePoint;
+            return points.Select(i => i + translate).ToArray();
         }
     }
 }

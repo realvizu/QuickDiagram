@@ -11,50 +11,68 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         public TestModel Create()
         {
+            // Connector goes out of the rect union of source and target (on the right side)
+            AddInterface("R1")
+            .AddInterface("R2", "R1")
+            .AddInterface("R4")
+            .AddInterface("R5", "R4")
+            .AddInterface("R6", "R2")
+            .AddBase("R6", "R4")
+            .EndGroup()
+
+            // Connector goes out of the rect union of source and target (on the left side)
+            .AddInterface("L1")
+            .AddInterface("L2", "L1")
+            .AddInterface("L0", "L1")
+            .AddInterface("L4")
+            .AddInterface("L5", "L4")
+            .AddBase("L0", "L5")
+            .EndGroup()
+
             // Single node
-            AddClass("1", 40)
+            .AddClass("1")
             .EndGroup()
 
             // Single connector
-            .AddClass("3", 30, "1")
+            .AddClass("3", "1")
             .EndGroup()
 
             // Siblings added (left, right, middle)
-            .AddClass("2", 45, "1", ModelOrigin.SourceCode)
-            .AddClass("5", 25, "1")
-            .AddClass("4", 20, "1")
-            .AddClass("z1azgd uzgwzdu", 20, "1")
-            .AddClass("z2wedwnebbiw", 20, "1",  ModelOrigin.SourceCode)
-            .AddClass("z3sahbahs,.sjd.wed", 20, "1")
-            .AddClass("z4", 20, "1")
-            .AddClass("z5", 20, "1")
-            .AddClass("z6", 20, "1")
-            .AddClass("z7", 20, "1")
-            .AddClass("z8", 20, "1")
-            .AddClass("z11wedhwbehhwebfqweuvufvwuvftw", 20, "1")
-            .AddClass("z21", 20, "1", ModelOrigin.SourceCode)
-            .AddClass("z3134456674566723456475634t4556", 20, "1")
-            .AddClass("z41", 20, "1")
-            .AddClass("z51", 20, "1")
-            .AddClass("z61", 20, "1")
-            .AddClass("z71", 20, "1")
-            .AddClass("z123456", 80, "1")
+            .AddClass("2", "1", ModelOrigin.SourceCode)
+            .AddClass("5", "1")
+            .AddClass("4", "1")
+            .AddClass("z1azgd uzgwzdu", "1")
+            .AddClass("z2wedwnebbiw", "1",  ModelOrigin.SourceCode)
+            .AddClass("z3sahbahs,.sjd.wed", "1")
+            .AddClass("z4", "1")
+            .AddClass("z5", "1")
+            .AddClass("z6", "1")
+            .AddClass("z7", "1")
+            .AddClass("z8", "1")
+            .AddClass("z11wedhwbehhwebfqweuvufvwuvftw", "1")
+            .AddClass("z21", "1", ModelOrigin.SourceCode)
+            .AddClass("z3134456674566723456475634t4556", "1")
+            .AddClass("z41", "1")
+            .AddClass("z51", "1")
+            .AddClass("z61", "1")
+            .AddClass("z71", "1")
+            .AddClass("z123456", "1")
             .EndGroup()
 
             // Tree moves under parent
-            .AddClass("0", 20)
+            .AddClass("0")
             .AddBase("1", "0")
             .EndGroup()
 
             // Placing child with no siblings
-            .AddClass("10", 40)
-            .AddInterface("11", 50)
-            .AddInterface("12", 45, "11")
-            .AddClass("13", 40, "10")
+            .AddClass("10")
+            .AddInterface("11")
+            .AddInterface("12", "11")
+            .AddClass("13", "10")
             .EndGroup()
 
             // Dummy vertex added
-            .AddInterface("14", 55)
+            .AddInterface("14")
             .AddInterface("15")
             .AddBase("14", "15")
             .EndGroup()
@@ -65,7 +83,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             .EndGroup()
 
             // Redundant edge removed
-            .AddInterface("20", 55)
+            .AddInterface("20")
             .AddBase("12", "20")
             .AddBase("20", "11")
             .AddInterface("21-sdhfiwgzgwqe")
@@ -83,43 +101,43 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             // Regression test: layer-assignment of dummy vertices should be finished before positioning, 
             // otherwise it causes an infinite cycle in the layout logic
             .AddInterface("A1")
-            .AddInterface("A2", 50, "A1")
-            .AddInterface("A3", 50, "A2")
-            .AddInterface("A4", 50, "A2")
-            .AddInterface("A5", 50, "A2")
-            .AddInterface("A6", 50, "A5")
+            .AddInterface("A2", "A1")
+            .AddInterface("A3", "A2")
+            .AddInterface("A4", "A2")
+            .AddInterface("A5", "A2")
+            .AddInterface("A6", "A5")
             .AddClass("C1")
-            .AddClass("C2", 50, "C1")
-            .AddClass("C3", 50, "C1")
+            .AddClass("C2", "C1")
+            .AddClass("C3", "C1")
             .AddImplements("C1", "A3")
             .AddClass("C0")
             .AddBase("C1", "C0")
             .EndGroup()
 
-                        .AddImplements("C1", "A1")
-                        .AddImplements("C1", "A2")
-                        .AddImplements("C1", "A4")
-                        .AddImplements("C1", "A5")
-                        .AddImplements("C1", "A6")
+            .AddImplements("C1", "A1")
+            .AddImplements("C1", "A2")
+            .AddImplements("C1", "A4")
+            .AddImplements("C1", "A5")
+            .AddImplements("C1", "A6")
 
             // Gap removal
-            .AddClass("G1", 40)
-            .AddClass("G2", 40, "G1")
-            .AddClass("G3", 40, "G1")
-            .AddClass("G4", 200, "G3")
+            .AddClass("G1")
+            .AddClass("G2", "G1")
+            .AddClass("G3", "G1")
+            .AddClass("G4", "G3")
             .EndGroup()
 
             // Overlap removal
-            .AddClass("O1", 40)
-            .AddClass("O2", 40, "O1")
+            .AddClass("O1")
+            .AddClass("O2", "O1")
             .AddInterface("O3")
-            .AddInterface("O4", 40, "O3")
-            .AddInterface("O5", 40, "O3")
-            .AddInterface("O6", 40, "O4")
-            .AddInterface("O7", 40, "O5")
-            .AddInterface("O8", 40, "O5")
-            .AddInterface("O9", 40, "O7")
-            .AddInterface("O10", 40, "O8")
+            .AddInterface("O4", "O3")
+            .AddInterface("O5", "O3")
+            .AddInterface("O6", "O4")
+            .AddInterface("O7", "O5")
+            .AddInterface("O8", "O5")
+            .AddInterface("O9", "O7")
+            .AddInterface("O10", "O8")
             .AddImplements("O2", "O6")
             .AddImplements("O2", "O9")
             .AddImplements("O2", "O10")
@@ -130,7 +148,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         }
 
         private TestModelBuilder AddEntity(string name, ModelEntityClassifier classifier, ModelEntityStereotype stereotype, 
-            int size, ModelOrigin origin)
+             ModelOrigin origin)
         {
             if (_testModel.Entities.Any(i => i.Name == name))
                 return this;
@@ -138,9 +156,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             ModelEntity newEntity;
 
             if (classifier == ModelEntityClassifier.Class && stereotype == ModelEntityStereotype.None)
-                newEntity = new TestClass(name, size, origin);
+                newEntity = new TestClass(name, origin);
             else if (classifier == ModelEntityClassifier.Class && stereotype == TestModelEntityStereotypes.Interface)
-                newEntity = new TestInterface(name, size, origin);
+                newEntity = new TestInterface(name, origin);
             else
                 throw new ArgumentException($"Unexpected entity type: {classifier}, stereotype: {stereotype}");
 
@@ -175,10 +193,10 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private TestModelBuilder AddEntityWithOptionalBase(string name, int size, ModelEntityClassifier classifier,
+        private TestModelBuilder AddEntityWithOptionalBase(string name, ModelEntityClassifier classifier,
             ModelEntityStereotype stereotype, string baseName = null, ModelOrigin origin = ModelOrigin.Unknown)
         {
-            var model = AddEntity(name, classifier, stereotype, size, origin);
+            var model = AddEntity(name, classifier, stereotype, origin);
 
             if (baseName != null)
                 AddBase(name, baseName);
@@ -186,14 +204,14 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return model;
         }
 
-        private TestModelBuilder AddInterface(string name, int size = 100, string baseName = null)
+        private TestModelBuilder AddInterface(string name, string baseName = null)
         {
-            return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, TestModelEntityStereotypes.Interface, baseName);
+            return AddEntityWithOptionalBase(name, ModelEntityClassifier.Class, TestModelEntityStereotypes.Interface, baseName);
         }
 
-        private TestModelBuilder AddClass(string name, int size = 100, string baseName = null, ModelOrigin origin = ModelOrigin.Unknown)
+        private TestModelBuilder AddClass(string name, string baseName = null, ModelOrigin origin = ModelOrigin.Unknown)
         {
-            return AddEntityWithOptionalBase(name, size, ModelEntityClassifier.Class, ModelEntityStereotype.None, baseName, origin);
+            return AddEntityWithOptionalBase(name, ModelEntityClassifier.Class, ModelEntityStereotype.None, baseName, origin);
         }
 
         private TestModelBuilder AddBase(string name, string baseName = null)
