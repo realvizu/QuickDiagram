@@ -82,10 +82,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             Diagram.ShapeAdded += i => UpdateDiagramContentRect();
             Diagram.ShapeRemoved += i => UpdateDiagramContentRect();
-            Diagram.Cleared += () => UpdateDiagramContentRect();
+            Diagram.Cleared += OnCleared;
             Diagram.NodeSizeChanged += (i, j, k) => UpdateDiagramContentRect();
             Diagram.NodeTopLeftChanged += (i, j, k) => UpdateDiagramContentRect();
             Diagram.ConnectorRouteChanged += (i, j, k) => UpdateDiagramContentRect();
+        }
+
+        private void OnCleared()
+        {
+            RelatedEntityListBoxViewModel.Hide();
+            UpdateDiagramContentRect();
         }
 
         private void UpdateDiagramContentRect()
