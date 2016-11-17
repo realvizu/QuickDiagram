@@ -18,6 +18,8 @@
     <ui:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
 
     <Style TargetType="{x:Type view:DiagramControl}">
+        <Setter Property="FontFamily" Value="Ariel"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="DiagramFill" Value="White"/>
@@ -25,6 +27,12 @@
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
         <Setter Property="UndisplayedEntityCuePlacementDictionary" Value="{StaticResource UndisplayedEntityCuePlacementDictionary}"/>
         <Setter Property="DiagramShapeButtonPlacementDictionary" Value="{StaticResource DiagramShapeButtonPlacementDictionary}"/>
+    </Style>
+
+    <Style TargetType="{x:Type view:DiagramNodeControl}">
+        <Setter Property="Height" Value="46"/>
+        <Setter Property="MinWidth" Value="50"/>
+        <Setter Property="MaxWidth" Value="250"/>
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
@@ -48,7 +56,7 @@
                                    Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
                             <TextBlock x:Name="TextBlock"
                                        Grid.Row="1" 
-                                       Margin="2,0,2,0" 
+                                       Margin="4,0,4,0" 
                                        VerticalAlignment="Top" 
                                        HorizontalAlignment="Center"
                                        Text="{Binding Path=Name, Mode=OneWay}" 

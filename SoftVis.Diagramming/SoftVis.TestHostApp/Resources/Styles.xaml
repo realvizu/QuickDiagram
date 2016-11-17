@@ -21,5 +21,11 @@
         <Setter Property="UndisplayedEntityCuePlacementDictionary" Value="{StaticResource UndisplayedEntityCuePlacementDictionary}"/>
         <Setter Property="DiagramShapeButtonPlacementDictionary" Value="{StaticResource DiagramShapeButtonPlacementDictionary}"/>
     </Style>
+
+    <Style TargetType="{x:Type view:DiagramNodeControl}">
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinWidth" Value="50"/>
+        <Setter Property="MaxWidth" Value="250"/>
+    </Style>
     
 </ResourceDictionary>

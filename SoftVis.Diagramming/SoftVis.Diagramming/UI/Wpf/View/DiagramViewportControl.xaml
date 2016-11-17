@@ -30,8 +30,6 @@
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                     ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                    MinWidth="50" MaxWidth="250"
-                    Height="32"
                     FocusDiagramItemCommand="{Binding FocusCommand}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
