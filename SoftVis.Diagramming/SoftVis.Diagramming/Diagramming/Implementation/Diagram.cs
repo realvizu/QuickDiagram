@@ -299,8 +299,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship)
         {
-            if (NodeExists(modelRelationship.Source) && NodeExists(modelRelationship.Target))
+            if (NodeExists(modelRelationship.Source) && 
+                NodeExists(modelRelationship.Target) &&
+                !ConnectorWouldBeRedundant(modelRelationship))
+            {
                 ShowRelationshipCore(modelRelationship);
+            }
+        }
+
+        private bool ConnectorWouldBeRedundant(IModelRelationship modelRelationship)
+        {
+            var sourceNode = FindNode(modelRelationship.Source);
+            var targetNode = FindNode(modelRelationship.Target);
+            var paths = _graph.GetShortestPaths(sourceNode, targetNode, 1).ToList();
+            return paths.Any();
         }
 
         private void ShowRelationshipsIfBothEndsAreVisible(IModelEntity modelEntity)

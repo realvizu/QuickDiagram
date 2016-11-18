@@ -17,13 +17,13 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public ModelRelationshipClassifier Classifier { get; }
         public ModelRelationshipStereotype Stereotype { get; }
-        public ModelRelationshipType Type => new ModelRelationshipType(Classifier , Stereotype );
+        public ModelRelationshipType Type => new ModelRelationshipType(Classifier, Stereotype);
 
         public ModelRelationship(ModelEntity source, ModelEntity target, ModelRelationshipType type)
-            :this(source, target, type.Classifier, type.Stereotype)
+            : this(source, target, type.Classifier, type.Stereotype)
         { }
 
-        public ModelRelationship(ModelEntity source, ModelEntity target, 
+        public ModelRelationship(ModelEntity source, ModelEntity target,
             ModelRelationshipClassifier classifier, ModelRelationshipStereotype stereotype)
         {
             _source = source;
@@ -31,5 +31,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             Classifier = classifier;
             Stereotype = stereotype;
         }
+
+        public override string ToString() => $"{Source.Name}--{Classifier}/{Stereotype}-->{Target.Name}";
     }
 }
