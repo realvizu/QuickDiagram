@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Wpf.View;
@@ -24,11 +25,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public DiagramUi(IArrangedDiagram diagram)
         {
             ImageExportDpi = Dpi.Default;
-            
+
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-            _diagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};
+            _diagramControl = new DiagramControl(resourceDictionary) { DataContext = _diagramViewModel };
         }
 
         public object ContentControl => _diagramControl;
@@ -39,10 +40,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             set { _diagramControl.FontSize = value; }
         }
 
-        public void FitDiagramToView() 
+        public void FitDiagramToView()
             => _diagramViewModel.ZoomToContent();
 
-        public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback) 
+        public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
             => _diagramViewModel.GetDiagramImage(ImageExportDpi.Value, imageCreatedCallback);
+
+        public void MessageBox(string message)
+        {
+            System.Windows.MessageBox.Show(message, "Diagram Tool");
+        }
+
+        public string SelectSaveFilename(string title, string filter)
+        {
+            var saveFileDialog1 = new SaveFileDialog { Title = title, Filter = filter };
+            saveFileDialog1.ShowDialog();
+            return saveFileDialog1.FileName;
+        }
     }
 }

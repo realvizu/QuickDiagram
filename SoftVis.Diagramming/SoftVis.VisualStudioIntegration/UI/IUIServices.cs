@@ -14,5 +14,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         void FitDiagramToView();
         void GetDiagramImage(Action<BitmapSource> imageCreatedCallback);
+
+        void MessageBox(string message);
+        string SelectSaveFilename(string title, string filter);
     }
 }

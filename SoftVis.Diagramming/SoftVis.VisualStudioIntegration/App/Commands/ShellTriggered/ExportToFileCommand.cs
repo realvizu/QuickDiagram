@@ -15,10 +15,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
-            // TODO: choose filename, save
+            var filename = UiServices.SelectSaveFilename("Save Diagram Image to File", "PNG Image|*.png");
+            if (string.IsNullOrWhiteSpace(filename))
+                return;
+
+            if (filename.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase))
+            {
+                UiServices.GetDiagramImage(i => SaveBitmapAsPng(i, filename));
+                return;
+            }
+
+            UiServices.MessageBox("Only PNG file format is supported. Please select a file with .png extension.");
         }
 
-        public static void SaveBitmapAsPng(BitmapSource bitmapSource, string filename)
+        private static void SaveBitmapAsPng(BitmapSource bitmapSource, string filename)
         {
             var pngBitmapEncoder = new PngBitmapEncoder();
             pngBitmapEncoder.Frames.Add(BitmapFrame.Create(bitmapSource));
