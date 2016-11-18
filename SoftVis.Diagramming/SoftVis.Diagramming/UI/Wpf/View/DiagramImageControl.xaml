@@ -9,13 +9,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
-             Width="{Binding Path=DiagramContentRect.Width}"
-             Height="{Binding Path=DiagramContentRect.Height}">
+             Width="{Binding Path=ExportImageRect.Width}"
+             Height="{Binding Path=ExportImageRect.Height}">
 
     <UserControl.Resources>
         <ResourceDictionary>
 
             <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+            <util:DoubleEnsureNumberConverter x:Key="DoubleEnsureNumberConverter" />
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeCoreControl />
@@ -29,9 +30,9 @@
                 <Canvas>
                     <Canvas.RenderTransform>
                         <TranslateTransform 
-                            X="{Binding Path=DiagramContentRect.Left, 
+                            X="{Binding Path=ExportImageRect.Left, 
                                 Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"
-                            Y="{Binding Path=DiagramContentRect.Top, 
+                            Y="{Binding Path=ExportImageRect.Top, 
                                 Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"/>
                     </Canvas.RenderTransform>
                 </Canvas>
@@ -40,8 +41,8 @@
             <Style x:Key="DiagramNodeContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
-                <Setter Property="Width" Value="{Binding Path=Width}"/>
-                <Setter Property="Height" Value="{Binding Path=Height}"/>
+                <Setter Property="Width" Value="{Binding Path=Width, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
+                <Setter Property="Height" Value="{Binding Path=Height, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
                 <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
             </Style>

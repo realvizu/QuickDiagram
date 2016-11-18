@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty DiagramShapeButtonPlacementDictionaryProperty =
             DependencyProperty.Register("DiagramShapeButtonPlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
-        
+
         public DiagramControl() : this(null)
         { }
 
@@ -96,12 +96,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _diagramImageControl.DataContext = DataContext;
         }
 
-        private void OnDiagramImageExportRequested(double dpi, Action<BitmapSource> imageCreatedCallback)
+        private void OnDiagramImageExportRequested(Rect bounds, double dpi, Action<BitmapSource> imageCreatedCallback)
         {
             UpdateDiagramImageControlProperties();
 
-            var boundsTranslatedToOrigo = new Rect(_diagramViewModel.DiagramContentRect.Size);
-            var bitmapSource = _diagramImageControl.GetImage(boundsTranslatedToOrigo, dpi);
+            var bitmapSource = _diagramImageControl.GetImage(bounds, dpi);
             imageCreatedCallback?.Invoke(bitmapSource);
         }
 

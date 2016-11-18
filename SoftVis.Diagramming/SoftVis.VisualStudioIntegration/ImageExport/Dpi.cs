@@ -7,8 +7,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.ImageExport
     /// </summary>
     public struct Dpi
     {
-        private static readonly Dpi Dpi96 = new Dpi(96, "96 dpi", "Low density screen");
-        private static readonly Dpi Dpi150 = new Dpi(150, "150 dpi", "High density screen");
+        private static readonly Dpi Dpi96 = new Dpi(96, "96 dpi", "Low resolution screen");
+        private static readonly Dpi Dpi150 = new Dpi(150, "150 dpi", "High resolution screen");
         private static readonly Dpi Dpi300 = new Dpi(300, "300 dpi", "Low quality print");
         private static readonly Dpi Dpi600 = new Dpi(600, "600 dpi", "Normal quality print");
         private static readonly Dpi Dpi1200 = new Dpi(1200, "1200 dpi", "High quality print");

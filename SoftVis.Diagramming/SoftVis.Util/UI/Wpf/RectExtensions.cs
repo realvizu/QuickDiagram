@@ -7,6 +7,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf
 {
     public static class RectExtensions
     {
+        public static Rect Zero = new Rect(0, 0, 0, 0);
+
         public static bool IsUndefined(this Rect rect)
         {
             return double.IsNaN(rect.Left) || double.IsNaN(rect.Top) || double.IsNaN(rect.Width) || double.IsNaN(rect.Height);

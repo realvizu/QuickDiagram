@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         private const double DefaultDpi = 96d;
         private const int RenderingTileSize = 64;
 
-        public static BitmapSource RenderUIElementToBitmap(UIElement uiElement, Rect bounds, double targetDpi)
+        public static BitmapSource RenderUiElementToBitmap(UIElement uiElement, Rect bounds, double targetDpi)
         {
             var scale = targetDpi / DefaultDpi;
 

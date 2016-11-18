@@ -68,10 +68,12 @@
     <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
+    <Compile Include="UI\Wpf\Converters\DoubleEnsureNumberConverter.cs" />
     <Compile Include="UI\Wpf\Converters\RectCreatorConverter.cs" />
     <Compile Include="UI\Wpf\Converters\FindControlByDataContextConverter.cs" />
     <Compile Include="UI\Wpf\Converters\RectUnionConverter.cs" />
     <Compile Include="UI\Wpf\DependencyObjectExtensions.cs" />
+    <Compile Include="UI\Wpf\SizeExtensions.cs" />
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\Wpf\StringExtensions.cs" />
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />

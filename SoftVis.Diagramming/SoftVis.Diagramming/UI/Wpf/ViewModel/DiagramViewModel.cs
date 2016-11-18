@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class DiagramViewModel : DiagramViewModelBase
     {
         private Rect _diagramContentRect;
+        private Rect _exportImageRect;
 
         public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
 
@@ -39,6 +40,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             set
             {
                 _diagramContentRect = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Rect ExportImageRect
+        {
+            get { return _exportImageRect; }
+            set
+            {
+                _exportImageRect = value;
                 OnPropertyChanged();
             }
         }
@@ -73,9 +84,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ZoomToContent();
         }
 
-        public void GetDiagramImage(double dpi, Action<BitmapSource> imageCreatedCallback)
+        public void GetDiagramImage(double dpi, double margin, Action<BitmapSource> imageCreatedCallback)
         {
-            DiagramImageExportRequested?.Invoke(dpi, imageCreatedCallback);
+            ExportImageRect = CalculateExportImageRect(DiagramContentRect, margin);
+
+            var exportRectInDiagramImageControl = new Rect(ExportImageRect.Size);
+            DiagramImageExportRequested?.Invoke(exportRectInDiagramImageControl, dpi, imageCreatedCallback);
         }
 
         private void SubscribeToDiagramEvents()
@@ -109,6 +123,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 RelatedEntityListBoxViewModel.Items = remainingEntities;
             else
                 HideRelatedEntitySelector();
+        }
+
+        private static Rect CalculateExportImageRect(Rect diagramContextRect, double margin)
+        {
+            var diagramContentSize = diagramContextRect.Size;
+            var size = new Size(diagramContentSize.Width + 2 * margin, diagramContentSize.Height + 2 * margin);
+            var location = new Point(diagramContextRect.Left - margin, diagramContextRect.Top - margin);
+            return new Rect(location, size);
         }
     }
 }

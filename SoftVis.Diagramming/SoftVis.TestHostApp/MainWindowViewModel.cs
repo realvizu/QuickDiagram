@@ -88,6 +88,6 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Start();
         }
 
-        private void CopyToClipboard() => DiagramViewModel.GetDiagramImage(SelectedDpi, Clipboard.SetImage);
+        private void CopyToClipboard() => DiagramViewModel.GetDiagramImage(SelectedDpi, 0, Clipboard.SetImage);
     }
 }

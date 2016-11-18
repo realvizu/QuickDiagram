@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public BitmapSource GetImage(Rect bounds, double dpi)
         {
             EnsureUpToDateDiagramForExport();
-            return ImageRenderer.RenderUIElementToBitmap(this, bounds, dpi);
+            return ImageRenderer.RenderUiElementToBitmap(this, bounds, dpi);
         }
 
         private void EnsureUpToDateDiagramForExport()

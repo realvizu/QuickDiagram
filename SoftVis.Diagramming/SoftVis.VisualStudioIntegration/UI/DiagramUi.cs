@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     public sealed class DiagramUi : IUiServices
     {
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
+        private const double ExportedImageMargin = 10;
 
         private readonly DiagramControl _diagramControl;
         private readonly DiagramViewModel _diagramViewModel;
@@ -38,7 +39,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             => _diagramViewModel.ZoomToContent();
 
         public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
-            => _diagramViewModel.GetDiagramImage(ImageExportDpi.Value, imageCreatedCallback);
+            => _diagramViewModel.GetDiagramImage(ImageExportDpi.Value, ExportedImageMargin, imageCreatedCallback);
 
         public void MessageBox(string message)
         {
