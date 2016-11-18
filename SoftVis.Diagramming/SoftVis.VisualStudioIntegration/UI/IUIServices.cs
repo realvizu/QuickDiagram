@@ -9,7 +9,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     public interface IUiServices
     {
-        int FontSize { get; set; }
         Dpi ImageExportDpi { get; set; }
 
         void FitDiagramToView();

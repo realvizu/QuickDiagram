@@ -60,12 +60,9 @@
     <Compile Include="App\Commands\CommandBase.cs" />
     <Compile Include="App\Commands\ShellTriggered\ShellTriggeredCommandBase.cs" />
     <Compile Include="App\Commands\ShellTriggered\CopyToClipboardCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\DecreaseFontSizeCommand.cs" />
     <Compile Include="App\Commands\ShellTriggered\ExportToFileCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\FontSizeCommandBase.cs" />
     <Compile Include="App\Commands\ShellTriggered\ImageDpiComboCommand.cs" />
     <Compile Include="App\Commands\ShellTriggered\ImageDpiComboGetItemsCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\IncreaseFontSizeCommand.cs" />
     <Compile Include="App\Commands\ShellTriggered\ShowDiagramWindowCommand.cs" />
     <Compile Include="App\Commands\ExplicitlyTriggered\ShowSourceFileCommand.cs" />
     <Compile Include="App\FrameMode.cs" />

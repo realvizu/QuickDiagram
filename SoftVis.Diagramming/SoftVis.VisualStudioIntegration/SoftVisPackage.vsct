@@ -29,7 +29,6 @@
             <Group guid="SoftVisCommandSetGuid" id="CodeEditorCommandGroup"/>
             <Group guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup"/>
             <Group guid="SoftVisCommandSetGuid" id="ToolbarCommonGroup"/>
-            <Group guid="SoftVisCommandSetGuid" id="ToolbarFontGroup"/>
             <Group guid="SoftVisCommandSetGuid" id="ToolbarImageGroup"/>
         </Groups>
 
@@ -64,18 +63,6 @@
                 <Icon guid="guidImages" id="bmpPicSearch" />
                 <Strings>
                     <ButtonText>&amp;Show Diagram Window</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="SoftVisCommandSetGuid" id="IncreaseFontSizeCommand" priority="2" type="Button">
-                <Icon guid="guidImages" id="bmpPic1" />
-                <Strings>
-                    <ButtonText>Increase Font Size</ButtonText>
-                </Strings>
-            </Button>
-            <Button guid="SoftVisCommandSetGuid" id="DecreaseFontSizeCommand" priority="3" type="Button">
-                <Icon guid="guidImages" id="bmpPic2" />
-                <Strings>
-                    <ButtonText>Decrease Font Size</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" priority="1" type="Button">
@@ -135,9 +122,6 @@
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarCommonGroup" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
         </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarFontGroup" priority="2">
-            <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
-        </CommandPlacement>
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarImageGroup" priority="3">
             <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
         </CommandPlacement>
@@ -145,14 +129,6 @@
         <!-- DiagramToolWindow toolbar command group 1 -->
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ToolbarCommonGroup" />
-        </CommandPlacement>
-
-        <!-- DiagramToolWindow toolbar command group 2 -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="IncreaseFontSizeCommand" priority="1">
-            <Parent guid="SoftVisCommandSetGuid" id="ToolbarFontGroup" />
-        </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="DecreaseFontSizeCommand" priority="2">
-            <Parent guid="SoftVisCommandSetGuid" id="ToolbarFontGroup" />
         </CommandPlacement>
 
         <!-- DiagramToolWindow toolbar command group 3 -->
@@ -187,15 +163,12 @@
             <IDSymbol name="CodeEditorCommandGroup" value="51" />
             <IDSymbol name="ExportImageCommandGroup" value="52" />
             <IDSymbol name="ToolbarCommonGroup" value="53" />
-            <IDSymbol name="ToolbarFontGroup" value="54" />
             <IDSymbol name="ToolbarImageGroup" value="55" />
 
             <IDSymbol name="ShowDiagramWindowCommand" value="100"/>
             <IDSymbol name="AddToDiagramCommand" value="101" />
             <IDSymbol name="AddToDiagramWithHierarchyCommand" value="102" />
             <IDSymbol name="ClearDiagramCommand" value="103"/>
-            <IDSymbol name="IncreaseFontSizeCommand" value="104"/>
-            <IDSymbol name="DecreaseFontSizeCommand" value="105"/>
             <IDSymbol name="CopyToClipboardCommand" value="106"/>
             <IDSymbol name="ExportToFileCommand" value="107"/>
             <IDSymbol name="ImageDpiComboCommand" value="108" />

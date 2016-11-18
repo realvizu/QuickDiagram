@@ -34,12 +34,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public object ContentControl => _diagramControl;
 
-        public int FontSize
-        {
-            get { return (int)_diagramControl.FontSize; }
-            set { _diagramControl.FontSize = value; }
-        }
-
         public void FitDiagramToView()
             => _diagramViewModel.ZoomToContent();
 
