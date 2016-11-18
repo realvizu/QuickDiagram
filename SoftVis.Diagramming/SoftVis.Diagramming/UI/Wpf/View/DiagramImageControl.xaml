@@ -18,7 +18,7 @@
             <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
-                <view:DiagramNodeControl />
+                <view:DiagramNodeCoreControl />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
