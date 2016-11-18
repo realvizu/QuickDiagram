@@ -87,9 +87,21 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void GetDiagramImage(double dpi, double margin, Action<BitmapSource> imageCreatedCallback)
         {
             ExportImageRect = CalculateExportImageRect(DiagramContentRect, margin);
+            if (!IsValidForImageExport(ExportImageRect))
+                throw new InvalidOperationException($"ExportImageRect is invalid: {ExportImageRect}");
 
             var exportRectInDiagramImageControl = new Rect(ExportImageRect.Size);
             DiagramImageExportRequested?.Invoke(exportRectInDiagramImageControl, dpi, imageCreatedCallback);
+        }
+
+        private static bool IsValidForImageExport(Rect rect)
+        {
+            var size = rect.Size;
+
+            return size.Width > 0 
+                && size.Height > 0 
+                && !double.IsInfinity(size.Width) 
+                && !double.IsInfinity(size.Height);
         }
 
         private void SubscribeToDiagramEvents()
