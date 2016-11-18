@@ -73,9 +73,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     _size = value;
                     OnPropertyChanged();
                     OnSizeChanged(value);
+                    OnPropertyChanged("Width");
+                    OnPropertyChanged("Height");
                 }
             }
         }
+
+        public double Width => Size.Width;
+        public double Height => Size.Height;
 
         private void OnTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
         {

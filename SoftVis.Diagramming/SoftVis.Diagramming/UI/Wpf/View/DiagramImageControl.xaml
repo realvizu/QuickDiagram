@@ -24,7 +24,7 @@
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
                 <view:DiagramConnectorControl DisplayedRoutePoints="{Binding Path=RoutePoints, Mode=OneWay}" />
             </DataTemplate>
-        
+
             <ItemsPanelTemplate x:Key="DiagramImageItemsPanel">
                 <Canvas>
                     <Canvas.RenderTransform>
@@ -37,19 +37,27 @@
                 </Canvas>
             </ItemsPanelTemplate>
 
-            <Style x:Key="DiagramImageItemContainerStyle" 
+            <Style x:Key="DiagramNodeContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeViewModelBase}}">
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
                 <Setter Property="Width" Value="{Binding Path=Width}"/>
                 <Setter Property="Height" Value="{Binding Path=Height}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
                 <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
             </Style>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ItemsControl ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramNodeViewModels}"
-                  ItemsPanel="{StaticResource DiagramImageItemsPanel}"
-                  ItemContainerStyle="{StaticResource DiagramImageItemContainerStyle}"/>
+    <Grid Background="Transparent">
+
+        <ItemsControl
+            ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramConnectorViewModels}"
+            ItemsPanel="{StaticResource DiagramImageItemsPanel}"/>
+
+        <ItemsControl
+            ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramNodeViewModels}"
+            ItemsPanel="{StaticResource DiagramImageItemsPanel}"
+            ItemContainerStyle="{StaticResource DiagramNodeContainerStyle}"/>
+    </Grid>
 </UserControl>
