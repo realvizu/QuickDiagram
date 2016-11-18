@@ -35,11 +35,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public object ContentControl => _diagramControl;
 
-        public void FitDiagramToView()
-            => _diagramViewModel.ZoomToContent();
+        public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
 
         public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
-            => _diagramViewModel.GetDiagramImage(ImageExportDpi.Value, ExportedImageMargin, imageCreatedCallback);
+        {
+            try
+            {
+                _diagramViewModel.GetDiagramImage(ImageExportDpi.Value, ExportedImageMargin, imageCreatedCallback);
+            }
+            catch (OutOfMemoryException)
+            {
+                MessageBox("Cannot export the image because it is too large. Please select a smaller DPI value.");
+            }
+        }
 
         public void MessageBox(string message)
         {
