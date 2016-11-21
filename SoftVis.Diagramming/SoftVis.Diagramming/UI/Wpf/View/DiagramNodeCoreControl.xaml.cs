@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// Interaction logic for DiagramNodeCoreControl.xaml
     /// </summary>
-    public partial class DiagramNodeCoreControl : UserControl, IDiagramVisualProvider
+    public partial class DiagramNodeCoreControl : UserControl, IDiagramStlyeProvider
     {
         public static readonly DependencyProperty DiagramFillProperty =
             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramNodeCoreControl));

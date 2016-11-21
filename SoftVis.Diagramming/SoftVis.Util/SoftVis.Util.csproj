@@ -68,6 +68,9 @@
     <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
+    <Compile Include="UI\Wpf\Controls\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Wpf\Converters\DoubleEnsureNumberConverter.cs" />
     <Compile Include="UI\Wpf\Converters\RectCreatorConverter.cs" />
     <Compile Include="UI\Wpf\Converters\FindControlByDataContextConverter.cs" />
@@ -76,9 +79,12 @@
     <Compile Include="UI\Wpf\SizeExtensions.cs" />
     <Compile Include="UI\Wpf\RectRelativePlacement.cs" />
     <Compile Include="UI\Wpf\StringExtensions.cs" />
+    <Compile Include="UI\Wpf\TaskExtensions.cs" />
     <Compile Include="UI\Wpf\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\ViewModels\BubbleListBoxViewModel.cs" />
     <Compile Include="UI\HandleOrientation.cs" />
+    <Compile Include="UI\Wpf\ViewModels\ProgressWindowViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\ShowHideViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModels\ViewModelBase.cs" />
     <Compile Include="UI\Wpf\DelegateCommand.cs" />
     <Compile Include="UI\Wpf\ImageRenderer.cs" />
@@ -101,6 +107,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Wpf\Controls\BubbleListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\Controls\ProgressWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

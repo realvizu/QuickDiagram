@@ -1,11 +1,19 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.TestHostApp.TestData;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Controls;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -14,6 +22,8 @@ namespace Codartis.SoftVis.TestHostApp
     {
         private readonly TestModel _testModel;
         private readonly TestDiagram _testDiagram;
+
+        public MainWindow Window { get; set; }
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
@@ -25,6 +35,12 @@ namespace Codartis.SoftVis.TestHostApp
         public ICommand ZoomToContentCommand { get; }
         public ICommand CopyToClipboardCommand { get; }
 
+        public IDiagramStlyeProvider DiagramStlyeProvider { get; set; }
+
+        private ProgressWindowViewModel _progressViewModel;
+        private ProgressWindow _progressWindow;
+        private CancellationTokenSource _imageExportCancellationTokenSource;
+
         public MainWindowViewModel()
         {
             _testModel = new TestModelBuilder().Create();
@@ -34,7 +50,7 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram.ShapeActivated += shape => Debug.WriteLine($"Activated: {shape.ModelItem.ToString()}");
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
-            
+
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
             ZoomToContentCommand = new DelegateCommand(ZoomToContent);
@@ -79,8 +95,8 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void ZoomToContent()
         {
-            var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
-            timer.Tick += (s,o) =>
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            timer.Tick += (s, o) =>
             {
                 timer.Stop();
                 DiagramViewModel.ZoomToContent();
@@ -88,6 +104,103 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Start();
         }
 
-        private void CopyToClipboard() => DiagramViewModel.GetDiagramImage(SelectedDpi, 0, Clipboard.SetImage);
+        private void CopyToClipboard()
+        {
+            CreateDiagramImageAsync()
+                .ContinueInCurrentContext(task =>
+                {
+                    if (task.IsCompleted && !task.IsCanceled && !task.IsFaulted)
+                        Clipboard.SetImage(task.Result);
+
+                    CloseNonBlockingModal(_progressWindow);
+                });
+        }
+
+        private async Task<BitmapSource> CreateDiagramImageAsync()
+        {
+            CreateProgressWindow();
+            ShowNonBlockingModal(_progressWindow);
+
+            try
+            {
+                var diagramImageCreator = new ThreadIndependentDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
+                return await Task.Factory.StartSTA(() =>
+                {
+                    var progress = new Progress<double>(SetProgress);
+                    var cancellationToken = _imageExportCancellationTokenSource.Token;
+                    return diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress);
+                });
+            }
+            catch (OutOfMemoryException)
+            {
+                MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
+                throw;
+            }
+            finally
+            {
+                CloseNonBlockingModal(_progressWindow);
+            }
+        }
+
+        private void CreateProgressWindow()
+        {
+            _imageExportCancellationTokenSource = new CancellationTokenSource();
+
+            _progressViewModel = new ProgressWindowViewModel
+            {
+                Title = "TestHostApp",
+                Text = "Generating image..",
+            };
+            _progressWindow = new ProgressWindow
+            {
+                DataContext = _progressViewModel,
+                Owner = Window
+            };
+            _progressWindow.Closed += ProgressWindowOnClosed;
+        }
+
+        private void ProgressWindowOnClosed(object sender, EventArgs eventArgs)
+        {
+            _progressWindow.Closed -= ProgressWindowOnClosed;
+            _imageExportCancellationTokenSource.Cancel();
+            _imageExportCancellationTokenSource.Dispose();
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+
+        private static void EnableWindow(Window window, bool enable)
+        {
+            var handle = new WindowInteropHelper(window).Handle;
+            EnableWindow(handle, enable);
+        }
+
+        private static void ShowNonBlockingModal(Window window)
+        {
+            EnableWindow(window.Owner, false);
+
+            window.Closing += SpecialDialogWindow_Closing;
+            window.Show();
+        }
+
+        private static void SpecialDialogWindow_Closing(object sender, CancelEventArgs e)
+        {
+            var window = (Window)sender;
+            window.Closing -= SpecialDialogWindow_Closing;
+
+            var owner = window.Owner;
+            EnableWindow(owner, true);
+            owner.Activate();
+        }
+
+        private static void CloseNonBlockingModal(Window window)
+        {
+            window.Close();
+        }
+
+        private void SetProgress(double progress)
+        {
+            _progressViewModel.ProgressValue = progress;
+        }
     }
 }

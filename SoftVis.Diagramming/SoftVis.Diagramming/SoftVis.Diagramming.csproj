@@ -86,6 +86,7 @@
     <Compile Include="Modeling\EntityRelationTypes.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramFocusTracker.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityListBoxViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramButtonControl.xaml.cs">
       <DependentUpon>DiagramButtonControl.xaml</DependentUpon>
@@ -93,6 +94,9 @@
     <Compile Include="UI\Wpf\View\DiagramConnectorRouteCalculatorConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorItemPresenter.cs" />
+    <Compile Include="UI\Wpf\View\ThreadIndependentDiagramImageCreator.cs" />
+    <Compile Include="UI\Wpf\View\DiagramImageCreator.cs" />
+    <Compile Include="UI\Wpf\View\DiagramStyleCache.cs" />
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
@@ -102,7 +106,6 @@
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramImageRequestedEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeDecoratorViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
@@ -206,7 +209,7 @@
     <Compile Include="UI\Wpf\View\DiagramNodeCoreControl.xaml.cs">
       <DependentUpon>DiagramNodeCoreControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\View\IDiagramVisualProvider.cs" />
+    <Compile Include="UI\Wpf\View\IDiagramStlyeProvider.cs" />
     <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
     <Compile Include="UI\Wpf\View\PathControl.xaml.cs">

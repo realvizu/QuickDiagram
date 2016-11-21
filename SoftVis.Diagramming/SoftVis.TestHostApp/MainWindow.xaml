@@ -7,8 +7,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
         Title="MainWindow" Height="600" Width="1200"
-        DataContext="{StaticResource MainWindowViewModel}">
+        d:DataContext="{d:DesignInstance {x:Type testHostApp:MainWindowViewModel}}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -60,6 +61,7 @@
                             <ComboBox.Items>
                                 <system:Double>96</system:Double>
                                 <system:Double>300</system:Double>
+                                <system:Double>600</system:Double>
                                 <system:Double>1200</system:Double>
                             </ComboBox.Items>
                         </ComboBox>
@@ -68,7 +70,8 @@
             </StackPanel>
         </Border>
         
-        <view:DiagramControl Grid.Row="1" 
+        <view:DiagramControl x:Name="DiagramControl"
+                             Grid.Row="1" 
                              DataContext="{Binding DiagramViewModel}"/>
     </Grid>
 

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
@@ -15,9 +13,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class DiagramViewModel : DiagramViewModelBase
     {
         private Rect _diagramContentRect;
-        private Rect _exportImageRect;
-
-        public event DiagramImageRequestedEventHandler DiagramImageExportRequested;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public RelatedEntityListBoxViewModel RelatedEntityListBoxViewModel { get; }
@@ -34,22 +29,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             SubscribeToViewportEvents();
         }
 
+        public IEnumerable<DiagramNodeViewModel> DiagramNodeViewModels => DiagramViewportViewModel.DiagramNodeViewModels;
+        public IEnumerable<DiagramConnectorViewModel> DiagramConnectorViewModelsModels => DiagramViewportViewModel.DiagramConnectorViewModels;
+
         public Rect DiagramContentRect
         {
             get { return _diagramContentRect; }
             set
             {
                 _diagramContentRect = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Rect ExportImageRect
-        {
-            get { return _exportImageRect; }
-            set
-            {
-                _exportImageRect = value;
                 OnPropertyChanged();
             }
         }
@@ -84,26 +72,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ZoomToContent();
         }
 
-        public void GetDiagramImage(double dpi, double margin, Action<BitmapSource> imageCreatedCallback)
-        {
-            ExportImageRect = CalculateExportImageRect(DiagramContentRect, margin);
-            if (!IsValidForImageExport(ExportImageRect))
-                throw new InvalidOperationException($"ExportImageRect is invalid: {ExportImageRect}");
-
-            var exportRectInDiagramImageControl = new Rect(ExportImageRect.Size);
-            DiagramImageExportRequested?.Invoke(exportRectInDiagramImageControl, dpi, imageCreatedCallback);
-        }
-
-        private static bool IsValidForImageExport(Rect rect)
-        {
-            var size = rect.Size;
-
-            return size.Width > 0 
-                && size.Height > 0 
-                && !double.IsInfinity(size.Width) 
-                && !double.IsInfinity(size.Height);
-        }
-
         private void SubscribeToDiagramEvents()
         {
             Diagram.ShapeAdded += i => UpdateDiagramContentRect();
@@ -135,14 +103,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 RelatedEntityListBoxViewModel.Items = remainingEntities;
             else
                 HideRelatedEntitySelector();
-        }
-
-        private static Rect CalculateExportImageRect(Rect diagramContextRect, double margin)
-        {
-            var diagramContentSize = diagramContextRect.Size;
-            var size = new Size(diagramContentSize.Width + 2 * margin, diagramContentSize.Height + 2 * margin);
-            var location = new Point(diagramContextRect.Left - margin, diagramContextRect.Top - margin);
-            return new Rect(location, size);
         }
     }
 }

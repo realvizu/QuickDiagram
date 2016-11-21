@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -46,16 +45,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
             base.OnApplyTemplate();
         }
 
-        public BitmapSource GetImage(Rect bounds, double dpi)
-        {
-            EnsureUpToDateDiagramForExport();
-            return ImageRenderer.RenderUiElementToBitmap(this, bounds, dpi);
-        }
-
-        private void EnsureUpToDateDiagramForExport()
+        public void EnsureUpToDate()
         {
             Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             Arrange(new Rect(DesiredSize));
+
             this.EnsureThatDelayedRenderingOperationsAreCompleted();
         }
     }

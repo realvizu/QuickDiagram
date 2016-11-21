@@ -7,35 +7,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// <summary>
     /// Abstract base view model for a bubble selector.
     /// </summary>
-    public abstract class BubbleListBoxViewModel : ViewModelBase
+    public abstract class BubbleListBoxViewModel : ShowHideViewModelBase
     {
-        private bool _isVisible;
         private List<object> _items;
         private object _selectedItem;
 
         public DelegateCommand<object> ItemSelectedCommand { get; protected set; }
-
-        protected void Show(IEnumerable<object> items)
-        {
-            IsVisible = true;
-            Items = items.OrderBy(i => i.ToString()).ToList();
-            SelectedItem = null;
-        }
-
-        public virtual void Hide()
-        {
-            IsVisible = false;
-        }
-
-        public bool IsVisible
-        {
-            get { return _isVisible; }
-            set
-            {
-                _isVisible = value;
-                OnPropertyChanged();
-            }
-        }
 
         public List<object> Items
         {
@@ -56,6 +33,14 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        protected void Show(IEnumerable<object> items)
+        {
+            base.Show();
+            Items = items.OrderBy(i => i.ToString()).ToList();
+            SelectedItem = null;
+        }
+
     }
 
     /// <summary>

@@ -7,7 +7,13 @@
     {
         public MainWindow()
         {
+            var viewModel = new MainWindowViewModel();
+            DataContext = viewModel;
+
             InitializeComponent();
+
+            viewModel.Window = this;
+            viewModel.DiagramStlyeProvider = DiagramControl;
         }
     }
 }

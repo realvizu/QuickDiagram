@@ -8,9 +8,9 @@
              xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
-             Width="{Binding Path=ExportImageRect.Width}"
-             Height="{Binding Path=ExportImageRect.Height}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramImageViewModel}}"
+             Width="{Binding Path=Rect.Width}"
+             Height="{Binding Path=Rect.Height}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,9 +30,9 @@
                 <Canvas>
                     <Canvas.RenderTransform>
                         <TranslateTransform 
-                            X="{Binding Path=ExportImageRect.Left, 
+                            X="{Binding Path=Rect.Left, 
                                 Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"
-                            Y="{Binding Path=ExportImageRect.Top, 
+                            Y="{Binding Path=Rect.Top, 
                                 Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"/>
                     </Canvas.RenderTransform>
                 </Canvas>
@@ -53,11 +53,11 @@
     <Grid Background="Transparent">
 
         <ItemsControl
-            ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramConnectorViewModels}"
+            ItemsSource="{Binding Path=DiagramConnectorViewModels}"
             ItemsPanel="{StaticResource DiagramImageItemsPanel}"/>
 
         <ItemsControl
-            ItemsSource="{Binding Path=DiagramViewportViewModel.DiagramNodeViewModels}"
+            ItemsSource="{Binding Path=DiagramNodeViewModels}"
             ItemsPanel="{StaticResource DiagramImageItemsPanel}"
             ItemContainerStyle="{StaticResource DiagramNodeContainerStyle}"/>
     </Grid>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
@@ -11,7 +12,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of a diagram node.
     /// </summary>
-    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase
+    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, ICloneable
     {
         private Point _topLeft;
         private Size _size;
@@ -102,6 +103,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return Diagram.GetEntityRelationTypes()
                 .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
                 .ToList();
+        }
+
+        public object Clone()
+        {
+            return new DiagramNodeViewModel(Diagram, DiagramNode)
+            {
+                _size = _size,
+                _topLeft = _topLeft,
+            };
         }
     }
 }

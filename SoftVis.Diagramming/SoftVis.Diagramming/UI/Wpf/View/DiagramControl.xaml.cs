@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -12,11 +9,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// Interaction logic for DiagramControl.xaml
     /// </summary>
-    public partial class DiagramControl : UserControl
+    public partial class DiagramControl : UserControl, IDiagramStlyeProvider
     {
         private readonly ResourceDictionary _additionalResourceDictionary;
-        private readonly DiagramImageControl _diagramImageControl;
-        private DiagramViewModel _diagramViewModel;
 
         public static readonly DependencyProperty DiagramFillProperty =
             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramControl));
@@ -39,10 +34,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public DiagramControl(ResourceDictionary additionalResourceDictionary = null)
         {
             _additionalResourceDictionary = additionalResourceDictionary;
-
-            _diagramImageControl = new DiagramImageControl(_additionalResourceDictionary);
-
-            DataContextChanged += OnDataContextChanged;
 
             InitializeComponent();
         }
@@ -83,38 +74,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 this.AddResourceDictionary(_additionalResourceDictionary);
 
             base.OnApplyTemplate();
-        }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(DataContext is DiagramViewModel))
-                return;
-
-            _diagramViewModel = (DiagramViewModel)DataContext;
-            _diagramViewModel.DiagramImageExportRequested += OnDiagramImageExportRequested;
-
-            _diagramImageControl.DataContext = DataContext;
-        }
-
-        private void OnDiagramImageExportRequested(Rect bounds, double dpi, Action<BitmapSource> imageCreatedCallback)
-        {
-            UpdateDiagramImageControlProperties();
-
-            var bitmapSource = _diagramImageControl.GetImage(bounds, dpi);
-            imageCreatedCallback?.Invoke(bitmapSource);
-        }
-
-        private void UpdateDiagramImageControlProperties()
-        {
-            _diagramImageControl.Background = Background;
-            _diagramImageControl.Foreground = Foreground;
-            _diagramImageControl.DiagramFill = DiagramFill;
-            _diagramImageControl.DiagramStroke = DiagramStroke;
-            _diagramImageControl.FontStyle = FontStyle;
-            _diagramImageControl.FontSize = FontSize;
-            _diagramImageControl.FontFamily = FontFamily;
-            _diagramImageControl.FontStretch = FontStretch;
-            _diagramImageControl.FontWeight = FontWeight;
         }
     }
 }

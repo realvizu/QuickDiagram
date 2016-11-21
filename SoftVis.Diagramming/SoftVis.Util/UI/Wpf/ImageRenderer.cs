@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -12,34 +14,48 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         private const double DefaultDpi = 96d;
         private const int RenderingTileSize = 64;
 
-        public static BitmapSource RenderUiElementToBitmap(UIElement uiElement, Rect bounds, double targetDpi)
+        public static BitmapSource RenderUiElementToBitmap(UIElement uiElement, Rect bounds, double targetDpi,
+            CancellationToken cancellationToken = default(CancellationToken),
+            IProgress<double> progress = null)
         {
-            var scale = targetDpi / DefaultDpi;
+            progress?.Report(0);
 
             var drawingVisual = new DrawingVisual();
             using (var drawingContext = drawingVisual.RenderOpen())
             {
-                DrawContentTiles(uiElement, bounds, drawingContext, RenderingTileSize, RenderingTileSize);
+                DrawContentTiles(uiElement, bounds, drawingContext, RenderingTileSize, RenderingTileSize, cancellationToken, progress);
             }
 
+            var scale = targetDpi / DefaultDpi;
             var imageWidth = bounds.Width * scale;
             var imageHeight = bounds.Height * scale;
 
             var renderTargetBitmap = new RenderTargetBitmap((int)imageWidth, (int)imageHeight, targetDpi, targetDpi, PixelFormats.Pbgra32);
             renderTargetBitmap.Render(drawingVisual);
+            renderTargetBitmap.Freeze();
 
+            progress?.Report(1);
             return renderTargetBitmap;
         }
 
-        private static void DrawContentTiles(Visual visual, Rect bounds, DrawingContext drawingContext, int tileWidth, int tileHeight)
-        {
+        private static void DrawContentTiles(Visual visual, Rect bounds, DrawingContext drawingContext, int tileWidth, int tileHeight,
+            CancellationToken cancellationToken, IProgress<double> progress)
+        { 
             var contentWidth = bounds.Width;
             var contentHeight = bounds.Height;
 
-            for (var i = 0; i <= contentHeight / tileHeight; i++)
+            var horizontalTileCount = (int)Math.Ceiling(contentWidth / tileWidth);
+            var verticalTileCount = (int)Math.Ceiling(contentHeight / tileHeight);
+
+            var iterationCount = 0;
+            var iterationTarget = horizontalTileCount * verticalTileCount;
+
+            for (var i = 0; i < verticalTileCount; i++)
             {
-                for (var j = 0; j <= contentWidth / tileWidth; j++)
+                for (var j = 0; j < horizontalTileCount; j++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     var targetX = j * tileWidth;
                     var targetY = i * tileHeight;
                     var sourceX = bounds.Left + targetX;
@@ -62,8 +78,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf
                         Viewport = new Rect(targetX, targetY, width, height),
                         ViewportUnits = BrushMappingMode.Absolute
                     };
-
                     drawingContext.DrawRectangle(contentBrush, null, new Rect(targetX, targetY, width, height));
+
+                    iterationCount++;
+                    progress?.Report((double)iterationCount / iterationTarget);
                 }
             }
         }

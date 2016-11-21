@@ -5,7 +5,6 @@
              StartupUri="MainWindow.xaml">
     
     <Application.Resources>
-        <testHostApp:MainWindowViewModel x:Key="MainWindowViewModel"/>
     </Application.Resources>
     
 </Application>

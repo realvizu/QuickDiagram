@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
@@ -9,9 +10,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of diagram connectors.
     /// </summary>
-    public sealed class DiagramConnectorViewModel : DiagramShapeViewModelBase
+    public sealed class DiagramConnectorViewModel : DiagramShapeViewModelBase, ICloneable
     {
-        private static readonly DoubleCollection DashPattern = new DoubleCollection(new[] { 5d, 5d });
+        // This member cannot be static because it will be bound to UI elements created on different threads.
+        private readonly DoubleCollection _dashPattern = new DoubleCollection(new[] { 5d, 5d });
 
         private readonly ConnectorType _connectorType;
         private Point[] _routePoints = new Point[0];
@@ -35,7 +37,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;
         private bool IsDashed => _connectorType.ShaftLineType == LineType.Dashed;
-        public DoubleCollection StrokeDashArray => IsDashed ? DashPattern : null;
+        public DoubleCollection StrokeDashArray => IsDashed ? _dashPattern : null;
 
         public Point[] RoutePoints
         {
@@ -54,6 +56,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute)
         {
             RoutePoints = newRoute.Select(i => i.ToWpf()).ToArray();
+        }
+
+        public object Clone()
+        {
+            return new DiagramConnectorViewModel(Diagram, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel)
+            {
+                _routePoints = _routePoints,
+            };
         }
     }
 }
