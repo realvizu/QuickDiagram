@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private readonly DiagramControl _diagramControl;
         private readonly DiagramViewModel _diagramViewModel;
-        private readonly ThreadIndependentDiagramImageCreator _diagramImageCreator;
+        private readonly IDiagramImageCreator _diagramImageCreator;
         private readonly ProgressWindow _progressWindow;
         private readonly ProgressWindowViewModel _progressViewModel;
 
@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
             _diagramControl = new DiagramControl(resourceDictionary) { DataContext = _diagramViewModel };
-            _diagramImageCreator = new ThreadIndependentDiagramImageCreator(_diagramViewModel, _diagramControl, resourceDictionary);
+            _diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, resourceDictionary);
 
             _progressViewModel = new ProgressWindowViewModel();
             _progressWindow = new ProgressWindow {DataContext = _progressViewModel};

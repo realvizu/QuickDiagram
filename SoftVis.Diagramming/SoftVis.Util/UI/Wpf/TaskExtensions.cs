@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
-            var thread = new Thread(() => 
+            var thread = new Thread(() =>
             {
                 try
                 {
@@ -38,12 +38,28 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         /// <typeparam name="T">The return type of the task.</typeparam>
         /// <param name="task">A task.</param>
         /// <param name="action">The continuation action.</param>
+        /// <param name="taskContinuationOptions">Optional task continuation options.</param>
         /// <returns>The task object to enable the fluent interface style.</returns>
-        public static Task<T> ContinueInCurrentContext<T>(this Task<T> task,  Action<Task<T>> action)
+        public static Task ContinueInCurrentContext<T>(this Task<T> task, Action<Task<T>> action, 
+            TaskContinuationOptions taskContinuationOptions = TaskContinuationOptions.None)
         {
             var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            task.ContinueWith(action, scheduler);
-            return task;
+            return task.ContinueWith(action, CancellationToken.None, taskContinuationOptions, scheduler);
+        }
+
+        /// <summary>
+        /// Adds a continuation that will execute in the  current SynchronizationContext.
+        /// </summary>
+        /// <typeparam name="T">The return type of the task.</typeparam>
+        /// <param name="task">A task.</param>
+        /// <param name="action">The continuation action.</param>
+        /// <param name="taskContinuationOptions">Optional task continuation options.</param>
+        /// <returns>The task object to enable the fluent interface style.</returns>
+        public static Task ContinueInCurrentContext(this Task task, Action<Task> action, 
+            TaskContinuationOptions taskContinuationOptions = TaskContinuationOptions.None)
+        {
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            return task.ContinueWith(action, CancellationToken.None, taskContinuationOptions, scheduler);
         }
     }
 }

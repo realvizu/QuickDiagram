@@ -4,12 +4,12 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
 {
     /// <summary>
     /// Static helper class that renders WPF UI into bitmap.
     /// </summary>
-    public static class ImageRenderer
+    public static class UiToBitmapRenderer
     {
         private const double DefaultDpi = 96d;
         private const int RenderingTileSize = 64;

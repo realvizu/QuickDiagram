@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Media.Imaging;
+using Codartis.SoftVis.Util.UI.Wpf.Imaging;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 {
@@ -30,13 +31,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         private static void SaveBitmapAsPng(BitmapSource bitmapSource, string filename)
         {
-            var pngBitmapEncoder = new PngBitmapEncoder();
-            pngBitmapEncoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-
-            using (var stream = File.Create(filename))
-            {
-                pngBitmapEncoder.Save(stream);
-            }
+            using (var fileStream = File.Create(filename))
+                bitmapSource.ToPng(fileStream);
         }
     }
 }

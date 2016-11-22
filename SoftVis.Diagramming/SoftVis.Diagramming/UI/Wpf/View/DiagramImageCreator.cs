@@ -4,14 +4,14 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Imaging;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
     /// Creates diagram images by setting up a DiagramImageControl and rendering it to a bitmap.
     /// </summary>
-    public class DiagramImageCreator
+    public class DiagramImageCreator : IDiagramImageCreator
     {
         private readonly IEnumerable<DiagramNodeViewModel> _diagramNodeViewModels;
         private readonly IEnumerable<DiagramConnectorViewModel> _diagramConnectorViewModels;
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             diagramImageControl.EnsureUpToDate();
 
             var bounds = new Rect(0, 0, diagramImageControl.ActualWidth, diagramImageControl.ActualHeight);
-            return ImageRenderer.RenderUiElementToBitmap(diagramImageControl, bounds, dpi, cancellationToken, progress);
+            return UiToBitmapRenderer.RenderUiElementToBitmap(diagramImageControl, bounds, dpi, cancellationToken, progress);
         }
 
         private static void ApplyVisualProperties(DiagramImageControl diagramImageControl, IDiagramStlyeProvider diagramStlyeProvider)

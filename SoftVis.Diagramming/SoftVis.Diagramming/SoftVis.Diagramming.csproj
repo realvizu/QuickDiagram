@@ -94,7 +94,8 @@
     <Compile Include="UI\Wpf\View\DiagramConnectorRouteCalculatorConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorItemsControl.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorItemPresenter.cs" />
-    <Compile Include="UI\Wpf\View\ThreadIndependentDiagramImageCreator.cs" />
+    <Compile Include="UI\Wpf\View\IDiagramImageCreator.cs" />
+    <Compile Include="UI\Wpf\View\DataCloningDiagramImageCreator.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageCreator.cs" />
     <Compile Include="UI\Wpf\View\DiagramStyleCache.cs" />
     <Compile Include="UI\ZoomDirection.cs" />

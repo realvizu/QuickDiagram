@@ -9,19 +9,16 @@ using Codartis.SoftVis.UI.Wpf.ViewModel;
 namespace Codartis.SoftVis.UI.Wpf.View
 {
     /// <summary>
-    /// Creates diagram images. Can be called on other than the main UI thread.
+    /// Creates diagram images by first cloning all necessary data (view models and visual properties) 
+    /// so it can be executed other than the main UI thread.
     /// </summary>
-    /// <remarks>
-    /// Wraps a DiagramImageCreator and ensures that all necessary data (view model and UI elements)
-    /// are cloned for execution on a thread that is different from the main UI thread. 
-    /// </remarks>
-    public class ThreadIndependentDiagramImageCreator
+    public class DataCloningDiagramImageCreator : IDiagramImageCreator
     {
         private readonly DiagramViewModel _diagramViewModel;
         private readonly ResourceDictionary _resourceDictionary;
         private readonly IDiagramStlyeProvider _diagramStlyeProvider;
 
-        public ThreadIndependentDiagramImageCreator(DiagramViewModel diagramViewModel, IDiagramStlyeProvider diagramStlyeProvider,
+        public DataCloningDiagramImageCreator(DiagramViewModel diagramViewModel, IDiagramStlyeProvider diagramStlyeProvider,
             ResourceDictionary resourceDictionary = null)
         {
             _diagramViewModel = diagramViewModel;

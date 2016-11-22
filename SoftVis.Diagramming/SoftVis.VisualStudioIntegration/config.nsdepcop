@@ -18,7 +18,7 @@
     <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
     <Allowed From="*" To="MoreLinq" />
-    <Allowed From="*" To="Codartis.SoftVis.Util" />
+    <Allowed From="*" To="Codartis.SoftVis.Util.*" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 

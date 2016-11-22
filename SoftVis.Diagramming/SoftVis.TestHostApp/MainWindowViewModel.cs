@@ -95,7 +95,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void ZoomToContent()
         {
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
@@ -106,24 +106,18 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void CopyToClipboard()
         {
-            CreateDiagramImageAsync()
-                .ContinueInCurrentContext(task =>
-                {
-                    if (task.IsCompleted && !task.IsCanceled && !task.IsFaulted)
-                        Clipboard.SetImage(task.Result);
+            ShowProgressWindow();
 
-                    CloseNonBlockingModal(_progressWindow);
-                });
+            CreateDiagramImageAsync()
+                .ContinueInCurrentContext(SetImageToClipboard)
+                .ContinueInCurrentContext(i => CloseProgressWindow());
         }
 
         private async Task<BitmapSource> CreateDiagramImageAsync()
         {
-            CreateProgressWindow();
-            ShowNonBlockingModal(_progressWindow);
-
             try
             {
-                var diagramImageCreator = new ThreadIndependentDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
                 return await Task.Factory.StartSTA(() =>
                 {
                     var progress = new Progress<double>(SetProgress);
@@ -133,16 +127,40 @@ namespace Codartis.SoftVis.TestHostApp
             }
             catch (OutOfMemoryException)
             {
-                MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
+                HandleOutOfMemory();
                 throw;
             }
-            finally
+            catch (Exception e)
             {
-                CloseNonBlockingModal(_progressWindow);
+                Debug.WriteLine($"Exception in CreateDiagramImageAsync: {e}");
+                throw;
             }
         }
 
-        private void CreateProgressWindow()
+        private static void SetImageToClipboard(Task<BitmapSource> task)
+        {
+            try
+            {
+                if (task.Status == TaskStatus.RanToCompletion)
+                    Clipboard.SetImage(task.Result);
+            }
+            catch (OutOfMemoryException)
+            {
+                HandleOutOfMemory();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Exception in SetImageToClipboard: {e}");
+                throw;
+            }
+        }
+
+        private static void HandleOutOfMemory()
+        {
+            MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
+        }
+
+        private void ShowProgressWindow()
         {
             _imageExportCancellationTokenSource = new CancellationTokenSource();
 
@@ -157,6 +175,13 @@ namespace Codartis.SoftVis.TestHostApp
                 Owner = Window
             };
             _progressWindow.Closed += ProgressWindowOnClosed;
+
+            ShowNonBlockingModal(_progressWindow);
+        }
+
+        private void CloseProgressWindow()
+        {
+            CloseNonBlockingModal(_progressWindow);
         }
 
         private void ProgressWindowOnClosed(object sender, EventArgs eventArgs)
