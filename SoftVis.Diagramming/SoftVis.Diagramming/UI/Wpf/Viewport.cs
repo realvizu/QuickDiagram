@@ -5,6 +5,8 @@ using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.SoftVis.Util.UI.Wpf.Transforms;
 
 namespace Codartis.SoftVis.UI.Wpf
 {

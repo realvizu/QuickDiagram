@@ -7,8 +7,8 @@ using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Controls;
+using Codartis.SoftVis.Util.UI.Wpf.Resources;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Controls;
 
 namespace Codartis.SoftVis.UI.Wpf.View

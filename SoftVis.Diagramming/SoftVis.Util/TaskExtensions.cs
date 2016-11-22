@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.SoftVis.Util
 {
     public static class TaskExtensions
     {

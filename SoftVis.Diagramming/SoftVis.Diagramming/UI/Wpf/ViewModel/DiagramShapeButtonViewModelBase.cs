@@ -1,5 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

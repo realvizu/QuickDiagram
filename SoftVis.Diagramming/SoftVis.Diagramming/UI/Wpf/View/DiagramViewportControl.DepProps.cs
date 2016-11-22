@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.SoftVis.Util.UI.Wpf.Transforms;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

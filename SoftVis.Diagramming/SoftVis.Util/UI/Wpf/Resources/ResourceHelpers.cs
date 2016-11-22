@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.SoftVis.Util.UI.Wpf.Resources
 {
     public static class ResourceHelpers
     {

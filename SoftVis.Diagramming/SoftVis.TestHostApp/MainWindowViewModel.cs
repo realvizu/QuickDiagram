@@ -1,19 +1,16 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
-using Codartis.SoftVis.Util.UI.Wpf.Controls;
+using Codartis.SoftVis.Util;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -22,8 +19,6 @@ namespace Codartis.SoftVis.TestHostApp
     {
         private readonly TestModel _testModel;
         private readonly TestDiagram _testDiagram;
-
-        public MainWindow Window { get; set; }
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
@@ -35,11 +30,8 @@ namespace Codartis.SoftVis.TestHostApp
         public ICommand ZoomToContentCommand { get; }
         public ICommand CopyToClipboardCommand { get; }
 
+        public MainWindow Window { get; set; }
         public IDiagramStlyeProvider DiagramStlyeProvider { get; set; }
-
-        private ProgressWindowViewModel _progressViewModel;
-        private ProgressWindow _progressWindow;
-        private CancellationTokenSource _imageExportCancellationTokenSource;
 
         public MainWindowViewModel()
         {
@@ -106,29 +98,34 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void CopyToClipboard()
         {
-            ShowProgressWindow();
+            var progressDialog = new ProgressDialog(Window, "Generating image..", "TestHostApp");
+            progressDialog.Show();
 
-            CreateDiagramImageAsync()
+            CreateDiagramImageAsync(progressDialog)
                 .ContinueInCurrentContext(SetImageToClipboard)
-                .ContinueInCurrentContext(i => CloseProgressWindow());
+                .ContinueInCurrentContext(i => progressDialog.Close());
         }
 
-        private async Task<BitmapSource> CreateDiagramImageAsync()
+        private async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog)
         {
             try
             {
                 var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
                 return await Task.Factory.StartSTA(() =>
                 {
-                    var progress = new Progress<double>(SetProgress);
-                    var cancellationToken = _imageExportCancellationTokenSource.Token;
+                    var progress = new Progress<double>(progressDialog.SetProgress);
+                    var cancellationToken = progressDialog.CancellationToken;
                     return diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress);
                 });
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
             }
             catch (OutOfMemoryException)
             {
                 HandleOutOfMemory();
-                throw;
+                return null;
             }
             catch (Exception e)
             {
@@ -141,7 +138,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             try
             {
-                if (task.Status == TaskStatus.RanToCompletion)
+                if (task.Status == TaskStatus.RanToCompletion && task.Result != null)
                     Clipboard.SetImage(task.Result);
             }
             catch (OutOfMemoryException)
@@ -158,74 +155,6 @@ namespace Codartis.SoftVis.TestHostApp
         private static void HandleOutOfMemory()
         {
             MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
-        }
-
-        private void ShowProgressWindow()
-        {
-            _imageExportCancellationTokenSource = new CancellationTokenSource();
-
-            _progressViewModel = new ProgressWindowViewModel
-            {
-                Title = "TestHostApp",
-                Text = "Generating image..",
-            };
-            _progressWindow = new ProgressWindow
-            {
-                DataContext = _progressViewModel,
-                Owner = Window
-            };
-            _progressWindow.Closed += ProgressWindowOnClosed;
-
-            ShowNonBlockingModal(_progressWindow);
-        }
-
-        private void CloseProgressWindow()
-        {
-            CloseNonBlockingModal(_progressWindow);
-        }
-
-        private void ProgressWindowOnClosed(object sender, EventArgs eventArgs)
-        {
-            _progressWindow.Closed -= ProgressWindowOnClosed;
-            _imageExportCancellationTokenSource.Cancel();
-            _imageExportCancellationTokenSource.Dispose();
-        }
-
-        [DllImport("user32.dll")]
-        private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
-
-        private static void EnableWindow(Window window, bool enable)
-        {
-            var handle = new WindowInteropHelper(window).Handle;
-            EnableWindow(handle, enable);
-        }
-
-        private static void ShowNonBlockingModal(Window window)
-        {
-            EnableWindow(window.Owner, false);
-
-            window.Closing += SpecialDialogWindow_Closing;
-            window.Show();
-        }
-
-        private static void SpecialDialogWindow_Closing(object sender, CancelEventArgs e)
-        {
-            var window = (Window)sender;
-            window.Closing -= SpecialDialogWindow_Closing;
-
-            var owner = window.Owner;
-            EnableWindow(owner, true);
-            owner.Activate();
-        }
-
-        private static void CloseNonBlockingModal(Window window)
-        {
-            window.Close();
-        }
-
-        private void SetProgress(double progress)
-        {
-            _progressViewModel.ProgressValue = progress;
         }
     }
 }
