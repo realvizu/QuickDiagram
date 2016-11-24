@@ -39,12 +39,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
             var roslynModelProvider = new RoslynModelProvider(hostWorkspaceServices);
             _modelBuilder = new RoslynBasedModelBuilder(roslynModelProvider);
-            
             _diagram = new RoslynBasedDiagram(_modelBuilder.Model);
-            _diagramUi = new DiagramUi(_diagram);
+
+            _diagramUi = new DiagramUi(hostUiServices, _diagram);
 
             // The diagram control must be hosted in the window created by the host package.
-            _hostUiServices.DiagramHostWindow.Initialize("Diagram", _diagramUi.ContentControl);
+            var diagramHostWindow = hostUiServices.DiagramHostWindow;
+            diagramHostWindow.Initialize("Diagram", _diagramUi.ContentControl);
 
             // It is important to subscribe to diagram events after the DiagramUi is created 
             // because DiagramUi also subscribes to diagram events and must be executed before DiagramTool event handlers.

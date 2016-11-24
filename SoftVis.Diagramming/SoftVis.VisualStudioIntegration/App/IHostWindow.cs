@@ -5,8 +5,9 @@
     /// </summary>
     public interface IHostWindow
     {
-        void Initialize(string caption, object control);
         FrameMode FrameMode { get; }
+
+        void Initialize(string caption, object control);
         void Show();
         void Hide();
     }

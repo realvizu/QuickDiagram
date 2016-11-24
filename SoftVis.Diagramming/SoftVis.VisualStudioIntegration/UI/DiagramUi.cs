@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Windows;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf.Controls;
+using Codartis.SoftVis.Util;
+using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -21,87 +23,81 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
         private const double ExportedImageMargin = 10;
+        private const string DialogTitle = "Diagram Tool";
 
+        private readonly IHostUiServices _hostUiServices;
         private readonly DiagramControl _diagramControl;
         private readonly DiagramViewModel _diagramViewModel;
-        private readonly IDiagramImageCreator _diagramImageCreator;
-        private readonly ProgressWindow _progressWindow;
-        private readonly ProgressWindowViewModel _progressViewModel;
 
         public Dpi ImageExportDpi { get; set; }
 
-        public DiagramUi(IArrangedDiagram diagram)
+        public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
         {
-            ImageExportDpi = Dpi.Default;
+            _hostUiServices = hostUiServices;
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
             _diagramControl = new DiagramControl(resourceDictionary) { DataContext = _diagramViewModel };
-            _diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, resourceDictionary);
 
-            _progressViewModel = new ProgressWindowViewModel();
-            _progressWindow = new ProgressWindow {DataContext = _progressViewModel};
-            // TODO: set Owner
+            ImageExportDpi = Dpi.Default;
         }
 
         public object ContentControl => _diagramControl;
 
         public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
 
-        public void GetDiagramImage(Action<BitmapSource> imageCreatedCallback)
+        public void MessageBox(string message)
         {
-            ShowProgressWindow("Generating diagram image...", null);
+            System.Windows.MessageBox.Show(message, DialogTitle);
+        }
 
+        public async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog = null)
+        {
             try
             {
-                //_diagramViewModel.GetDiagramImage(ImageExportDpi.Value, ExportedImageMargin,
-                //    imageCreatedCallback, SetProgress);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl);
+                return await Task.Factory.StartSTA(() =>
+                {
+                    var progress = progressDialog == null ? null : new Progress<double>(i => progressDialog.SetProgress(i * .9));
+                    var cancellationToken = progressDialog?.CancellationToken ?? CancellationToken.None;
+                    return diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress);
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
             }
             catch (OutOfMemoryException)
             {
-                MessageBox("Cannot export the image because it is too large. Please select a smaller DPI value.");
+                HandleOutOfMemory();
+                return null;
             }
-            finally
+            catch (Exception e)
             {
-                HideProgressWindow();
+                Debug.WriteLine($"Exception in CreateDiagramImageAsync: {e}");
+                throw;
             }
         }
 
-        public void MessageBox(string message)
+        public ProgressDialog ShowProgressDialog(string text)
         {
-            System.Windows.MessageBox.Show(message, "Diagram Tool");
-        }
-
-        public void ShowProgressWindow(string text, Action cancelAction, double progress = 0)
-        {
-            _progressViewModel.Title = "Diagram Tool";
-            _progressViewModel.Text = text;
-            _progressViewModel.ProgressValue = progress;
-            _progressWindow.Show();
-        }
-
-        private void OnProgressWindowCanceled(Action cancelAction)
-        {
-            HideProgressWindow();
-            cancelAction?.Invoke();
-        }
-
-        public void SetProgress(double progress)
-        {
-            _progressViewModel.ProgressValue = progress;
-        }
-
-        public void HideProgressWindow()
-        {
-            _progressWindow.Hide();
+            var hostMainWindow = _hostUiServices.GetHostMainWindow();
+            var progressDialog = new ProgressDialog(hostMainWindow, text, DialogTitle);
+            progressDialog.Show();
+            return progressDialog;
         }
 
         public string SelectSaveFilename(string title, string filter)
         {
-            var saveFileDialog1 = new SaveFileDialog { Title = title, Filter = filter };
-            saveFileDialog1.ShowDialog();
-            return saveFileDialog1.FileName;
+            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
+            saveFileDialog.ShowDialog();
+            return saveFileDialog.FileName;
+        }
+
+        private void HandleOutOfMemory()
+        {
+            MessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
         }
     }
 }

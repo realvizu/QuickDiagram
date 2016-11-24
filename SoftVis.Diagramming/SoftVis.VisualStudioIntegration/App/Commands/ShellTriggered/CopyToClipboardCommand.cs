@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 {
@@ -14,7 +18,35 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
-            UiServices.GetDiagramImage(Clipboard.SetImage);
+            var progressDialog = UiServices.ShowProgressDialog("Generating image..");
+            progressDialog.Show();
+
+            UiServices.CreateDiagramImageAsync(progressDialog)
+                .ContinueInCurrentContext(SetImageToClipboard)
+                .ContinueInCurrentContext(i => progressDialog.Close());
+        }
+
+        private void SetImageToClipboard(Task<BitmapSource> task)
+        {
+            try
+            {
+                if (task.Status == TaskStatus.RanToCompletion && task.Result != null)
+                    Clipboard.SetImage(task.Result);
+            }
+            catch (OutOfMemoryException)
+            {
+                HandleOutOfMemory();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Exception in SetImageToClipboard: {e}");
+                throw;
+            }
+        }
+
+        private void HandleOutOfMemory()
+        {
+            UiServices.MessageBox("Cannot create the image because it is too large. Please select a smaller DPI value.");
         }
     }
 }

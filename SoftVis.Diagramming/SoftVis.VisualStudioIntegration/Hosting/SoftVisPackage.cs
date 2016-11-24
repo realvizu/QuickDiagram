@@ -57,7 +57,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             _diagramTool = new DiagramTool(hostUiServiceProvider, hostWorkspaceProvider);
         }
 
-        public DTE2 GetHostService()
+        public DTE GetHostService()
+        {
+            var hostService = GetService(typeof(DTE)) as DTE;
+            if (hostService == null)
+                throw new Exception("Unable to get DTE service.");
+            return hostService;
+        }
+
+        public DTE2 GetHostService2()
         {
             var hostService = GetService(typeof(DTE)) as DTE2;
             if (hostService == null)

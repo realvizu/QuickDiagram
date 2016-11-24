@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App
 {
@@ -12,6 +13,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         /// Gets the window that hosts the diagram control.
         /// </summary>
         IHostWindow DiagramHostWindow { get; }
+
+        /// <summary>
+        /// Returns the main window of the host process.
+        /// </summary>
+        /// <returns>The main window of the host process.</returns>
+        Window GetHostMainWindow();
 
         /// <summary>
         /// Adds a menu command item to Visual Studio.
@@ -32,7 +39,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         /// Returns a value indicating what type of combo box command is represented in the parameter event args.
         /// </summary>
         /// <param name="e">The event args of the command received from the host environment.</param>
-        /// <returns>The type od command requested by the host.</returns>
+        /// <returns>The type of command requested by the host.</returns>
         ComboCommandType GetComboCommandType(EventArgs e);
 
         /// <summary>

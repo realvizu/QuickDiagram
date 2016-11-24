@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Microsoft.VisualStudio.Shell;
 
@@ -20,6 +22,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             _packageServices = packageServices;
             DiagramHostWindow = _packageServices.CreateToolWindow<DiagramHostToolWindow>();
+        }
+
+        public Window GetHostMainWindow()
+        {
+            var hostService = _packageServices.GetHostService();
+            var parentWindowHandle = new IntPtr(hostService.MainWindow.HWnd);
+            var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
+            return (Window)hwndSource?.RootVisual;
         }
 
         public void AddMenuCommand(Guid commandSet, int commandId, EventHandler commandDelegate)

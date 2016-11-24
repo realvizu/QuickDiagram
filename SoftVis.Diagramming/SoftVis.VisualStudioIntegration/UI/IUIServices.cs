@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -12,14 +13,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         Dpi ImageExportDpi { get; set; }
 
         void FitDiagramToView();
-        void GetDiagramImage(Action<BitmapSource> imageCreatedCallback);
-
         void MessageBox(string message);
 
-        void ShowProgressWindow(string text, Action cancelAction, double progress = 0);
-        void SetProgress(double progress);
-        void HideProgressWindow();
-
+        Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog = null);
+        ProgressDialog ShowProgressDialog(string text);
         string SelectSaveFilename(string title, string filter);
     }
 }

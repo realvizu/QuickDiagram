@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
             if (filename.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase))
             {
-                UiServices.GetDiagramImage(i => SaveBitmapAsPng(i, filename));
+                //UiServices.GetDiagramImage(i => SaveBitmapAsPng(i, filename));
                 return;
             }
 

@@ -37,8 +37,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf
 
         public static void SetEnableState(this Window window, bool enable)
         {
-            var handle = new WindowInteropHelper(window).Handle;
-            EnableWindow(handle, enable);
+            EnableWindow(window.GetHandle(), enable);
+        }
+
+        public static IntPtr GetHandle(this Window window)
+        {
+            return new WindowInteropHelper(window).Handle;
         }
     }
 }

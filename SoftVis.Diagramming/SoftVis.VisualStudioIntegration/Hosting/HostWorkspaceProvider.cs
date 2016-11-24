@@ -139,7 +139,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             workspace.OpenDocument(documentId);
 
-            var hostService = _packageServices.GetHostService();
+            var hostService = _packageServices.GetHostService2();
             var selection = hostService.ActiveDocument.Selection as TextSelection;
             if (selection == null)
                 return;

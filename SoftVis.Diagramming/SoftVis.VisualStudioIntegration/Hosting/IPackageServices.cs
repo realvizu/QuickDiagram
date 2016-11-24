@@ -1,4 +1,5 @@
-﻿using EnvDTE80;
+﻿using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -22,7 +23,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// Return the host service.
         /// </summary>
         /// <returns>The host service.</returns>
-        DTE2 GetHostService();
+        // TODO: find meaningful name!
+        DTE GetHostService();
+
+        /// <summary>
+        /// Return the host service.
+        /// </summary>
+        /// <returns>The host service.</returns>
+        // TODO: find meaningful name!
+        DTE2 GetHostService2();
 
         /// <summary>
         /// Returns the service of the host environment that can be used to access menu operations.
