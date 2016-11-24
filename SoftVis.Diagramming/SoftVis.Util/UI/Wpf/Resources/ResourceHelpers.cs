@@ -28,6 +28,11 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Resources
         public static ResourceDictionary GetResourceDictionary(string resourceDictionaryFilename, Assembly assembly)
         {
             var uri = CreateUri(resourceDictionaryFilename, assembly);
+            return GetResourceDictionary(uri);
+        }
+
+        public static ResourceDictionary GetResourceDictionary(Uri uri)
+        {
             return (ResourceDictionary)Application.LoadComponent(uri);
         }
     }

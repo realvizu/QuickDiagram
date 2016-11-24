@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
@@ -26,6 +27,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private const string DialogTitle = "Diagram Tool";
 
         private readonly IHostUiServices _hostUiServices;
+        private readonly ResourceDictionary _resourceDictionary;
         private readonly DiagramControl _diagramControl;
         private readonly DiagramViewModel _diagramViewModel;
 
@@ -35,10 +37,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             _hostUiServices = hostUiServices;
 
-            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+            _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
-            _diagramControl = new DiagramControl(resourceDictionary) { DataContext = _diagramViewModel };
+            _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             ImageExportDpi = Dpi.Default;
         }
@@ -56,7 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             try
             {
-                var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, _resourceDictionary);
                 return await Task.Factory.StartSTA(() =>
                 {
                     var progress = progressDialog == null ? null : new Progress<double>(i => progressDialog.SetProgress(i * .9));

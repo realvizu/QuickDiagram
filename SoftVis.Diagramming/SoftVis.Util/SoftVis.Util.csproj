@@ -59,6 +59,7 @@
     <Compile Include="UI\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />
+    <Compile Include="UI\Wpf\ColorExtensions.cs" />
     <Compile Include="UI\Wpf\ControlExtensions.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedRectContentPresenter.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedContentPresenter.cs" />
