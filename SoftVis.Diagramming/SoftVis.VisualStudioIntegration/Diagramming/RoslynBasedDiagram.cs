@@ -11,8 +11,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynBasedDiagram : AutoArrangingDiagram, IDiagramServices
     {
-        public RoslynBasedDiagram(IReadOnlyModel model)
-            : base(model)
+        public RoslynBasedDiagram(IModelServices modelService)
+            : base(modelService.Model)
         {
         }
 

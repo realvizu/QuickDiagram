@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 {
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         static ImageDpiComboGetItemsCommand()
         {
-            ComboItems = ImageExport.Dpi.DpiChoices.Select(i => i.Name).ToArray();
+            ComboItems = Dpi.DpiChoices.Select(i => i.Name).ToArray();
         }
 
         public ImageDpiComboGetItemsCommand(IAppServices appServices)
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
-            HostUiServices.FillCombo(e, ComboItems);
+            UiServices.FillCombo(e, ComboItems);
         }
     }
 }

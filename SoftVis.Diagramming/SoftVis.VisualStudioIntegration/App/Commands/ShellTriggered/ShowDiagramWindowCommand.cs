@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
-            HostUiServices.DiagramHostWindow.Show();
+            UiServices.ShowDiagramWindow();
         }
     }
 }

@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -35,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// <summary>
         /// Keep a reference to the diagram tool so it won't get garbage collected.
         /// </summary>
-        private DiagramTool _diagramTool;
+        private DiagramToolApplication _diagramToolApplication;
 
         protected override void Initialize()
         {
@@ -52,20 +55,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             if (_componentModel == null)
                 throw new Exception("Unable to get IComponentModel.");
 
-            var hostWorkspaceProvider = new HostWorkspaceProvider(this);
-            var hostUiServiceProvider = new HostUiServiceProvider(this);
-            _diagramTool = new DiagramTool(hostUiServiceProvider, hostWorkspaceProvider);
+            var hostWorkspaceGateway = new HostWorkspaceGateway(this);
+            var hostUiGateway = new HostUiGateway(this);
+
+            var modelServices = new RoslynBasedModelBuilder(hostWorkspaceGateway);
+            var diagramServices = new RoslynBasedDiagram(modelServices);
+            var uiServices = new DiagramUi(hostUiGateway, diagramServices);
+
+            _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices);
         }
 
-        public DTE GetHostService()
-        {
-            var hostService = GetService(typeof(DTE)) as DTE;
-            if (hostService == null)
-                throw new Exception("Unable to get DTE service.");
-            return hostService;
-        }
-
-        public DTE2 GetHostService2()
+        public DTE2 GetHostEnvironmentService()
         {
             var hostService = GetService(typeof(DTE)) as DTE2;
             if (hostService == null)

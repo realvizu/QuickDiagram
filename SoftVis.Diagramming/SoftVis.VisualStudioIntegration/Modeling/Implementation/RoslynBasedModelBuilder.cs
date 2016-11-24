@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 using Microsoft.CodeAnalysis;
@@ -30,26 +31,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public IReadOnlyModel Model => _model;
 
-        /// <summary>
-        /// Gets a model entity from a Roslyn symbol. Creates the entity if not yet exists in the model.
-        /// </summary>
-        /// <param name="namedTypeSymbol">A Roslyn symbol.</param>
-        /// <returns>The model entity that corresponds to the given Roslyn symbol.</returns>
-        public IRoslynBasedModelEntity FindOrCreateModelEntity(INamedTypeSymbol namedTypeSymbol)
+        public async Task<IRoslynBasedModelEntity> AddCurrentSymbolAsync()
         {
+            var namedTypeSymbol = await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
+            if (namedTypeSymbol == null)
+                return null;
+
             return AddEntityIfNotExists(GetOriginalDefinition(namedTypeSymbol));
         }
 
-        /// <summary>
-        /// Explores related symbols in the Roslyn model and adds them to the model.
-        /// </summary>
-        /// <param name="modelEntity">The starting model entity.</param>
-        /// <param name="entityRelationType">Optionally specifies what kind of relations should be explored.</param>
-        /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
-        public void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity,
+        public void ExtendModelWithRelatedEntities(IModelEntity modelEntity,
             EntityRelationType? entityRelationType = null, bool recursive = false)
         {
-            var symbolRelations = modelEntity
+            var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
+            if (roslynBasedModelEntity == null)
+                return;
+
+            var symbolRelations = roslynBasedModelEntity
                 .FindRelatedSymbols(_roslynModelProvider, entityRelationType)
                 .Select(GetOriginalDefinition)
                 .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
@@ -63,6 +61,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 if (recursive)
                     ExtendModelWithRelatedEntities(relatedEntity, entityRelationType, recursive: true);
             }
+        }
+
+        public void ShowSource(IModelEntity modelEntity)
+        {
+            var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;
+            if (roslyBasedModelEntity == null)
+                return;
+
+            _roslynModelProvider.ShowSource(roslyBasedModelEntity.RoslynSymbol);
         }
 
         private static RoslynSymbolRelation GetOriginalDefinition(RoslynSymbolRelation symbolRelation)

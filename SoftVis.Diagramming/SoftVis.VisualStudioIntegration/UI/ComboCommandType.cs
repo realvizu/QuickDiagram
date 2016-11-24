@@ -1,8 +1,9 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App
+﻿namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
     /// <summary>
     /// Enumerates the different command types that the host environment can send for a combo box.
     /// </summary>
+    // TODO: this should be moved to Hosting because it's VS-specific plumbing.
     public enum ComboCommandType
     {
         /// <summary>

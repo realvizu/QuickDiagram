@@ -12,17 +12,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         /// <summary>
         /// The command can consume package services via this interface.
         /// </summary>
-        protected IAppServices AppServices { get; }
+        private readonly IAppServices _appServices;
 
-        protected IHostUiServices HostUiServices => AppServices.GetHostUiServices();
-        protected IHostWorkspaceServices HostWorkspaceServices => AppServices.GetHostWorkspaceServices();
-        protected IModelServices ModelServices => AppServices.GetModelServices();
-        protected IDiagramServices DiagramServices => AppServices.GetDiagramServices();
-        protected IUiServices UiServices => AppServices.GetUiServices();
+        protected IModelServices ModelServices => _appServices.ModelServices;
+        protected IDiagramServices DiagramServices => _appServices.DiagramServices;
+        protected IUiServices UiServices => _appServices.UiServices;
 
         protected CommandBase(IAppServices appServices)
         {
-            AppServices = appServices;
+            _appServices = appServices;
         }
     }
 }

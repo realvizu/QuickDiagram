@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 {
@@ -15,15 +15,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
 
         public override void Execute(object sender, EventArgs e)
         {
-            switch (HostUiServices.GetComboCommandType(e))
+            switch (UiServices.GetComboCommandType(e))
             {
                 case ComboCommandType.CurrentItemRequested:
                     var currentDpiName = UiServices.ImageExportDpi.Name;
-                    HostUiServices.SetCurrentComboItem(e, currentDpiName);
+                    UiServices.SetCurrentComboItem(e, currentDpiName);
                     break;
 
                 case ComboCommandType.SelectedItemChanged:
-                    var selectedString = HostUiServices.GetSelectedComboItem(e);
+                    var selectedString = UiServices.GetSelectedComboItem(e);
                     var selectedDpi = Dpi.DpiChoices.First(i => i.Name == selectedString);
                     UiServices.ImageExportDpi = selectedDpi;
                     break;

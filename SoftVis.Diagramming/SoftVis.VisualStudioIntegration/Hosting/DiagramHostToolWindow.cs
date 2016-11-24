@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
-using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// Implements a Visual Studio tool window that hosts a diagram control.
     /// </summary>
     [Guid("02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e")]
-    public sealed class DiagramHostToolWindow : ToolWindowPane, IHostWindow
+    public sealed class DiagramHostToolWindow : ToolWindowPane
     {
         private readonly ContentPresenter _contentPresenter;
 

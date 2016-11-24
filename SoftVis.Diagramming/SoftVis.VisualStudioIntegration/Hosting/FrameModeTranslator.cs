@@ -1,4 +1,4 @@
-using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting

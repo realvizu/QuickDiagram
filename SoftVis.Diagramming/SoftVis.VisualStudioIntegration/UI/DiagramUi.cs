@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -12,8 +13,6 @@ using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
-using Codartis.SoftVis.VisualStudioIntegration.App;
-using Codartis.SoftVis.VisualStudioIntegration.ImageExport;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -22,38 +21,46 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     public sealed class DiagramUi : IUiServices
     {
+        private const string DialogTitle = "Diagram Tool";
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
         private const double ExportedImageMargin = 10;
-        private const string DialogTitle = "Diagram Tool";
 
         private readonly IHostUiServices _hostUiServices;
         private readonly ResourceDictionary _resourceDictionary;
-        private readonly DiagramControl _diagramControl;
         private readonly DiagramViewModel _diagramViewModel;
+        private readonly DiagramControl _diagramControl;
 
         public Dpi ImageExportDpi { get; set; }
 
         public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
         {
             _hostUiServices = hostUiServices;
-
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
+            hostUiServices.HostDiagram(_diagramControl);
+
             ImageExportDpi = Dpi.Default;
         }
 
-        public object ContentControl => _diagramControl;
+        public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
 
         public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
+
+        // TODO: move VS specific command ids to Hosting?
+        public void AddMenuCommand(Guid commandSet, int commandId, EventHandler commandDelegate)
+        {
+            _hostUiServices.AddMenuCommand(commandSet, commandId, commandDelegate);
+        }
 
         public void MessageBox(string message)
         {
             System.Windows.MessageBox.Show(message, DialogTitle);
         }
 
+        // TODO: change signature to (CancellationToken, IProgress)
         public async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog = null)
         {
             try
@@ -82,9 +89,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
+        public void FillCombo(EventArgs e, IEnumerable<string> items)
+        {
+            _hostUiServices.FillCombo(e, items);
+        }
+
+        public ComboCommandType GetComboCommandType(EventArgs e)
+        {
+            return _hostUiServices.GetComboCommandType(e);
+        }
+
+        public void SetCurrentComboItem(EventArgs e, string item)
+        {
+            _hostUiServices.SetCurrentComboItem(e, item);
+        }
+
+        public string GetSelectedComboItem(EventArgs e)
+        {
+            return _hostUiServices.GetSelectedComboItem(e);
+        }
+
         public ProgressDialog ShowProgressDialog(string text)
         {
-            var hostMainWindow = _hostUiServices.GetHostMainWindow();
+            var hostMainWindow = _hostUiServices.GetMainWindow();
             var progressDialog = new ProgressDialog(hostMainWindow, text, DialogTitle);
             progressDialog.Show();
             return progressDialog;

@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App
+﻿namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
     /// <summary>
     /// The frame modes of the host window.

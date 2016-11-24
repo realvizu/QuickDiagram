@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTriggered
 {
@@ -15,13 +14,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTrigge
 
         public override void Execute(IDiagramNode diagramNode)
         {
-            var roslynBasedModelEntity = diagramNode?.ModelEntity as RoslynBasedModelEntity;
-            if (roslynBasedModelEntity != null)
-                HostWorkspaceServices.ShowSourceFile(roslynBasedModelEntity.RoslynSymbol);
-
-            var diagramHostWindow = HostUiServices.DiagramHostWindow;
-            if (diagramHostWindow.FrameMode != FrameMode.MdiChild)
-                diagramHostWindow.Show();
+            var modelEntity = diagramNode?.ModelEntity;
+            if (modelEntity != null)
+                ModelServices.ShowSource(modelEntity);
         }
     }
 }

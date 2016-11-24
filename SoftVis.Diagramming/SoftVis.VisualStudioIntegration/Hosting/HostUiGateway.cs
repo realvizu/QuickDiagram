@@ -3,30 +3,40 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
-using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio.Shell;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
     /// <summary>
-    /// Implements the host's UI operations that can be used by the application.
+    /// A gateway to access host UI operations.
     /// </summary>
-    public sealed class HostUiServiceProvider : IHostUiServices
+    public sealed class HostUiGateway : IHostUiServices
     {
         private readonly IPackageServices _packageServices;
+        private readonly DiagramHostToolWindow _diagramHostWindow;
 
-        public IHostWindow DiagramHostWindow { get; }
-
-        public HostUiServiceProvider(IPackageServices packageServices)
+        public HostUiGateway(IPackageServices packageServices)
         {
             _packageServices = packageServices;
-            DiagramHostWindow = _packageServices.CreateToolWindow<DiagramHostToolWindow>();
+            _diagramHostWindow = _packageServices.CreateToolWindow<DiagramHostToolWindow>();
         }
 
-        public Window GetHostMainWindow()
+        public void HostDiagram(ContentControl diagramControl)
         {
-            var hostService = _packageServices.GetHostService();
+            _diagramHostWindow.Initialize("Diagram", diagramControl);
+        }
+
+        public void ShowDiagramWindow()
+        {
+            _diagramHostWindow.Show();
+        }
+
+        public Window GetMainWindow()
+        {
+            var hostService = _packageServices.GetHostEnvironmentService();
             var parentWindowHandle = new IntPtr(hostService.MainWindow.HWnd);
             var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
             return (Window)hwndSource?.RootVisual;

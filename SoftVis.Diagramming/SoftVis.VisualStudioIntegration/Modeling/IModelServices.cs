@@ -1,5 +1,5 @@
-﻿using Codartis.SoftVis.Modeling;
-using Microsoft.CodeAnalysis;
+﻿using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
@@ -14,19 +14,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         IReadOnlyModel Model { get; }
 
         /// <summary>
-        /// Gets a model entity from a Roslyn symbol. Creates the entity if not yet exists in the model.
+        /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.
         /// </summary>
-        /// <param name="namedTypeSymbol">A Roslyn symbol.</param>
-        /// <returns>The model entity that corresponds to the given Roslyn symbol.</returns>
-        IRoslynBasedModelEntity FindOrCreateModelEntity(INamedTypeSymbol namedTypeSymbol);
+        /// <returns>The model entity that corresponds to the current Roslyn symbol.</returns>
+        Task<IRoslynBasedModelEntity> AddCurrentSymbolAsync();
 
         /// <summary>
-        /// Explores related symbols in the Roslyn model and adds them to the model.
+        /// Explores related entities and adds them to the model.
         /// </summary>
-        /// <param name="modelEntity">The starting model entity.</param>
+        /// <param name="modelEntity">The starting model item.</param>
         /// <param name="entityRelationType">Optionally specifies what kind of relations should be explored. Null means all relations.</param>
         /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
-        void ExtendModelWithRelatedEntities(IRoslynBasedModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
+        void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
             bool recursive = false);
+
+        /// <summary>
+        /// Shows the source in the host environment that corresponds to the given model entity.
+        /// </summary>
+        /// <param name="modelEntity">A model entity.</param>
+        void ShowSource(IModelEntity modelEntity);
     }
 }

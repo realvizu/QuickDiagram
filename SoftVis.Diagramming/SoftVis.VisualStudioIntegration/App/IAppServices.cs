@@ -9,10 +9,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </summary>
     public interface IAppServices
     {
-        IHostUiServices GetHostUiServices();
-        IHostWorkspaceServices GetHostWorkspaceServices();
-        IModelServices GetModelServices();
-        IDiagramServices GetDiagramServices();
-        IUiServices GetUiServices();
+        IModelServices ModelServices { get; }
+        IDiagramServices DiagramServices { get; }
+        IUiServices UiServices { get; }
     }
 }

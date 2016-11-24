@@ -1,5 +1,4 @@
-﻿using EnvDTE;
-using EnvDTE80;
+﻿using EnvDTE80;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -12,26 +11,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     public interface IPackageServices
     {
         /// <summary>
-        /// Creates a tool window of the given type.
+        /// Return the host environment service.
         /// </summary>
-        /// <typeparam name="TWindow">The type that implements the tool window. Must be a subclass of ToolWindowPane.</typeparam>
-        /// <param name="instanceId">The instance id, for multi-instance tool windows. Omit for single-instance tool windows.</param>
-        /// <returns>The created tool window.</returns>
-        TWindow CreateToolWindow<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
-
-        /// <summary>
-        /// Return the host service.
-        /// </summary>
-        /// <returns>The host service.</returns>
-        // TODO: find meaningful name!
-        DTE GetHostService();
-
-        /// <summary>
-        /// Return the host service.
-        /// </summary>
-        /// <returns>The host service.</returns>
-        // TODO: find meaningful name!
-        DTE2 GetHostService2();
+        /// <returns>The host environment service.</returns>
+        DTE2 GetHostEnvironmentService();
 
         /// <summary>
         /// Returns the service of the host environment that can be used to access menu operations.
@@ -50,5 +33,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// </summary>
         /// <returns>The Roslyn workspace of the current solution.</returns>
         VisualStudioWorkspace GetVisualStudioWorkspace();
+
+        /// <summary>
+        /// Creates a tool window of the given type.
+        /// </summary>
+        /// <typeparam name="TWindow">The type that implements the tool window. Must be a subclass of ToolWindowPane.</typeparam>
+        /// <param name="instanceId">The instance id, for multi-instance tool windows. Omit for single-instance tool windows.</param>
+        /// <returns>The created tool window.</returns>
+        TWindow CreateToolWindow<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// <summary>
     /// Gets information from Visual Studio about the current solution, projects, source documents.
     /// </summary>
-    internal class HostWorkspaceProvider : IHostWorkspaceServices, IVsRunningDocTableEvents, IDisposable
+    internal class HostWorkspaceGateway : IRoslynModelProvider, IVsRunningDocTableEvents, IDisposable
     {
         private const string CSharpContentTypeName = "CSharp";
 
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private IVsRunningDocumentTable _runningDocumentTable;
         private IWpfTextView _activeWpfTextView;
 
-        internal HostWorkspaceProvider(IPackageServices packageServices)
+        internal HostWorkspaceGateway(IPackageServices packageServices)
         {
             _packageServices = packageServices;
             InitializeRunningDocumentTable();
@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return _packageServices.GetVisualStudioWorkspace();
         }
 
-        public async Task<ISymbol> GetCurrentSymbol()
+        public async Task<ISymbol> GetCurrentSymbolAsync()
         {
             var document = GetCurrentDocument();
             if (document == null)
@@ -125,7 +125,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return simpleNameSyntax;
         }
 
-        public void ShowSourceFile(ISymbol symbol)
+        public void ShowSource(ISymbol symbol)
         {
             var workspace = GetWorkspace();
 
@@ -139,7 +139,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             workspace.OpenDocument(documentId);
 
-            var hostService = _packageServices.GetHostService2();
+            var hostService = _packageServices.GetHostEnvironmentService();
             var selection = hostService.ActiveDocument.Selection as TextSelection;
             if (selection == null)
                 return;
