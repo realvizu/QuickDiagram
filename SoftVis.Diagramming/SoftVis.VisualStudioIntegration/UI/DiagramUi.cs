@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -74,26 +73,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 Debug.WriteLine($"Exception in CreateDiagramImageAsync: {e}");
                 throw;
             }
-        }
-
-        public void FillCombo(EventArgs e, IEnumerable<string> items)
-        {
-            _hostUiServices.FillCombo(e, items);
-        }
-
-        public ComboCommandType GetComboCommandType(EventArgs e)
-        {
-            return _hostUiServices.GetComboCommandType(e);
-        }
-
-        public void SetCurrentComboItem(EventArgs e, string item)
-        {
-            _hostUiServices.SetCurrentComboItem(e, item);
-        }
-
-        public string GetSelectedComboItem(EventArgs e)
-        {
-            return _hostUiServices.GetSelectedComboItem(e);
         }
 
         public ProgressDialog ShowProgressDialog(string text)

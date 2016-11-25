@@ -2,7 +2,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+namespace Codartis.SoftVis.VisualStudioIntegration.App
 {
     /// <summary>
     /// Base class for all commands. Commands are the application logic of the package.

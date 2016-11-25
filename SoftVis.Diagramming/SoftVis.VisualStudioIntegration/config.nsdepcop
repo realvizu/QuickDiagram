@@ -23,16 +23,16 @@
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.VisualStudio.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="EnvDTE.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="EnvDTE80.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="System.Windows.*" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.App" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.UI" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
-    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Microsoft.VisualStudio.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="EnvDTE.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="EnvDTE80.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.App.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.UI" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App" To="Codartis.SoftVis.VisualStudioIntegration.App.Commands.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.Modeling" />

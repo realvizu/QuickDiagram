@@ -1,19 +1,17 @@
-﻿using System;
-
-namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
+﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Adds the current symbol (the one at the caret) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
-    internal sealed class AddToDiagramCommand : ShellTriggeredCommandBase
+    internal sealed class AddToDiagramCommand : ParameterlessCommandBase
     {
         public AddToDiagramCommand(IAppServices appServices)
-            :base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.AddToDiagramCommand, appServices)
+            :base(appServices)
         {
         }
 
-        public override async void Execute(object sender, EventArgs e)
+        public override async void Execute()
         {
             var modelEntity = await ModelServices.AddCurrentSymbolAsync();
             if (modelEntity == null)

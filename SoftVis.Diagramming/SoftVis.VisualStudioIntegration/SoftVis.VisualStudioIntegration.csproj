@@ -52,19 +52,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="UI\ComboCommandType.cs" />
-    <Compile Include="App\Commands\ExplicitlyTriggered\ExplicitCommandBase.cs" />
-    <Compile Include="App\Commands\ShellTriggered\AddToDiagramWithHierarchyCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\AddToDiagramCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\ClearDiagramCommand.cs" />
-    <Compile Include="App\Commands\CommandBase.cs" />
-    <Compile Include="App\Commands\ShellTriggered\ShellTriggeredCommandBase.cs" />
-    <Compile Include="App\Commands\ShellTriggered\CopyToClipboardCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\ExportToFileCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\ImageDpiComboCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\ImageDpiComboGetItemsCommand.cs" />
-    <Compile Include="App\Commands\ShellTriggered\ShowDiagramWindowCommand.cs" />
-    <Compile Include="App\Commands\ExplicitlyTriggered\ShowSourceFileCommand.cs" />
+    <Compile Include="App\Selectors\DpiSelector.cs" />
+    <Compile Include="App\Selectors\ISelector.cs" />
+    <Compile Include="Hosting\ComboAdapters\ComboAdapter.cs" />
+    <Compile Include="Hosting\CommandRegistration\CommandRegistrator.cs" />
+    <Compile Include="Hosting\CommandRegistration\ComboSpecification.cs" />
+    <Compile Include="Hosting\ComboAdapters\DpiComboAdapter.cs" />
+    <Compile Include="Hosting\ComboAdapters\ComboCommandType.cs" />
+    <Compile Include="App\Commands\ParameterizedCommandBase.cs" />
+    <Compile Include="App\Commands\AddToDiagramWithHierarchyCommand.cs" />
+    <Compile Include="App\Commands\AddToDiagramCommand.cs" />
+    <Compile Include="App\Commands\ClearDiagramCommand.cs" />
+    <Compile Include="App\CommandBase.cs" />
+    <Compile Include="App\Commands\ParameterlessCommandBase.cs" />
+    <Compile Include="App\Commands\CopyToClipboardCommand.cs" />
+    <Compile Include="App\Commands\ExportToFileCommand.cs" />
+    <Compile Include="App\Commands\ShowDiagramWindowCommand.cs" />
+    <Compile Include="App\Commands\ShowSourceFileCommand.cs" />
+    <Compile Include="Hosting\ComboAdapters\IComboAdapter.cs" />
+    <Compile Include="Hosting\CommandRegistration\IComboSpecification.cs" />
+    <Compile Include="Hosting\CommandRegistration\ICommandSpecification.cs" />
+    <Compile Include="Hosting\CommandRegistration\CommandSpecification.cs" />
+    <Compile Include="Hosting\ShellCommands.cs" />
     <Compile Include="UI\FrameMode.cs" />
     <Compile Include="UI\IHostUiServices.cs" />
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />

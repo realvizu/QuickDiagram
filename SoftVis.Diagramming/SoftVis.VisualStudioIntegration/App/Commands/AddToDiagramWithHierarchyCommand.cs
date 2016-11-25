@@ -1,20 +1,19 @@
-﻿using System;
-using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Adds the current symbol (the one at the caret) and its hierarchy (base type and subtypes) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
-    internal sealed class AddToDiagramWithHierarchyCommand : ShellTriggeredCommandBase
+    internal sealed class AddToDiagramWithHierarchyCommand : ParameterlessCommandBase
     {
         public AddToDiagramWithHierarchyCommand(IAppServices appServices)
-            :base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.AddToDiagramWithHierarchyCommand, appServices)
+            :base(appServices)
         {
         }
 
-        public override async void Execute(object sender, EventArgs e)
+        public override async void Execute()
         {
             var modelEntity = await ModelServices.AddCurrentSymbolAsync();
             if (modelEntity == null)

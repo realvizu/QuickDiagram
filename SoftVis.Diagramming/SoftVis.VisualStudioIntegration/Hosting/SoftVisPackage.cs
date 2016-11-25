@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.App;
-using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using EnvDTE;
@@ -38,10 +35,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private IVisualStudioServiceProvider _visualStudioServiceProvider;
         private IComponentModel _componentModel;
-
-        /// <summary>
-        /// Keep a reference to the diagram tool so it won't get garbage collected.
-        /// </summary>
         private DiagramToolApplication _diagramToolApplication;
 
         protected override void Initialize()
@@ -68,7 +61,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices);
 
-            RegisterShellTriggeredCommands(hostUiGateway, _diagramToolApplication);
+            RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
 
         public DTE2 GetHostEnvironmentService()
@@ -137,19 +130,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return obj;
         }
 
-        private static void RegisterShellTriggeredCommands(IHostUiServices hostUiServices, IAppServices appServices)
+        private static void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
         {
-            foreach (var commandType in DiscoverShellTriggeredCommandTypes())
-            {
-                var command = (ShellTriggeredCommandBase)Activator.CreateInstance(commandType, appServices);
-                hostUiServices.AddMenuCommand(command.CommandSet, command.CommandId, command.Execute);
-            }
-        }
-
-        private static IEnumerable<Type> DiscoverShellTriggeredCommandTypes()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(ShellTriggeredCommandBase)) && !i.IsAbstract);
+            var commandSetGuid = VsctConstants.SoftVisCommandSetGuid;
+            var commandRegistrator = new CommandRegistrator(menuCommandService, appServices);
+            commandRegistrator.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
+            commandRegistrator.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
         }
     }
 }

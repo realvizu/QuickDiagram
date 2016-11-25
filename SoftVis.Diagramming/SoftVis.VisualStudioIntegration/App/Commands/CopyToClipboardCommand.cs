@@ -5,18 +5,18 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Util;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Copies the current diagram to the clipboard.
     /// </summary>
-    internal sealed class CopyToClipboardCommand : ShellTriggeredCommandBase
+    internal sealed class CopyToClipboardCommand : ParameterlessCommandBase
     {
         public CopyToClipboardCommand(IAppServices appServices)
-            : base(VsctConstants.SoftVisCommandSetGuid, VsctConstants.CopyToClipboradCommand, appServices)
+            : base(appServices)
         { }
 
-        public override void Execute(object sender, EventArgs e)
+        public override void Execute()
         {
             var progressDialog = UiServices.ShowProgressDialog("Generating image..");
             progressDialog.Show();

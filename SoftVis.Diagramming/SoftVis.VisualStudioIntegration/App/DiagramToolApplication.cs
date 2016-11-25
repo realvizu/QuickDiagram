@@ -1,5 +1,5 @@
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTriggered;
+using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;

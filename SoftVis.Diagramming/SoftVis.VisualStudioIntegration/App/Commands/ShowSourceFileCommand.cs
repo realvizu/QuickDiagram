@@ -1,11 +1,11 @@
 ﻿using Codartis.SoftVis.Diagramming;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTriggered
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Activates the source code editor window for a given Symbol.
     /// </summary>
-    internal class ShowSourceFileCommand : ExplicitCommandBase<IDiagramNode>
+    internal class ShowSourceFileCommand : ParameterizedCommandBase<IDiagramNode>
     {
         public ShowSourceFileCommand(IAppServices appServices)
             : base(appServices)
