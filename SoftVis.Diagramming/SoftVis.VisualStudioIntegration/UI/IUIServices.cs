@@ -13,7 +13,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         Dpi ImageExportDpi { get; set; }
 
-        void AddMenuCommand(Guid commandSet, int commandId, EventHandler commandDelegate);
         void MessageBox(string message);
         ProgressDialog ShowProgressDialog(string text);
         string SelectSaveFilename(string title, string filter);

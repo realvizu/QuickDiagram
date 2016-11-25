@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ExplicitlyTriggered;
-using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App
-{ 
+{
     /// <summary>
     /// The diagram tool application.
     /// </summary>
@@ -32,8 +27,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             ModelServices = modelServices;
             DiagramServices = diagramServices;
             UiServices = uiServices;
-
-            RegisterShellTriggeredCommands(uiServices, this);
 
             SubscribeToDiagramEvents(diagramServices);
         }
@@ -68,21 +61,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
                 return;
 
             ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity);
-        }
-
-        private static void RegisterShellTriggeredCommands(IUiServices uiServices, IAppServices appServices)
-        {
-            foreach (var commandType in DiscoverShellTriggeredCommandTypes())
-            {
-                var command = (ShellTriggeredCommandBase)Activator.CreateInstance(commandType, appServices);
-                uiServices.AddMenuCommand(command.CommandSet, command.CommandId, command.Execute);
-            }
-        }
-
-        private static IEnumerable<Type> DiscoverShellTriggeredCommandTypes()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(ShellTriggeredCommandBase)) && !i.IsAbstract);
         }
     }
 }

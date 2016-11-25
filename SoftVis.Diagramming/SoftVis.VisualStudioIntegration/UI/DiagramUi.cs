@@ -46,19 +46,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         }
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
-
         public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
-
-        // TODO: move VS specific command ids to Hosting?
-        public void AddMenuCommand(Guid commandSet, int commandId, EventHandler commandDelegate)
-        {
-            _hostUiServices.AddMenuCommand(commandSet, commandId, commandDelegate);
-        }
-
-        public void MessageBox(string message)
-        {
-            System.Windows.MessageBox.Show(message, DialogTitle);
-        }
+        public void MessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
 
         // TODO: change signature to (CancellationToken, IProgress)
         public async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog = null)

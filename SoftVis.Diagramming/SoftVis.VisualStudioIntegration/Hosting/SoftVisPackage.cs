@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -63,6 +67,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var uiServices = new DiagramUi(hostUiGateway, diagramServices);
 
             _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices);
+
+            RegisterShellTriggeredCommands(hostUiGateway, _diagramToolApplication);
         }
 
         public DTE2 GetHostEnvironmentService()
@@ -129,6 +135,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 }
             }
             return obj;
+        }
+
+        private static void RegisterShellTriggeredCommands(IHostUiServices hostUiServices, IAppServices appServices)
+        {
+            foreach (var commandType in DiscoverShellTriggeredCommandTypes())
+            {
+                var command = (ShellTriggeredCommandBase)Activator.CreateInstance(commandType, appServices);
+                hostUiServices.AddMenuCommand(command.CommandSet, command.CommandId, command.Execute);
+            }
+        }
+
+        private static IEnumerable<Type> DiscoverShellTriggeredCommandTypes()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            return assembly.DefinedTypes.Where(i => i.IsSubclassOf(typeof(ShellTriggeredCommandBase)) && !i.IsAbstract);
         }
     }
 }
