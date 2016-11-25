@@ -49,18 +49,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
         public void MessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
 
-        // TODO: change signature to (CancellationToken, IProgress)
-        public async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog = null)
+        public async Task<BitmapSource> CreateDiagramImageAsync(
+            CancellationToken cancellationToken = default(CancellationToken), 
+            IProgress<double> progress = null)
         {
             try
             {
                 var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, _resourceDictionary);
+
                 return await Task.Factory.StartSTA(() =>
-                {
-                    var progress = progressDialog == null ? null : new Progress<double>(i => progressDialog.SetProgress(i * .9));
-                    var cancellationToken = progressDialog?.CancellationToken ?? CancellationToken.None;
-                    return diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress);
-                });
+                    diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress));
             }
             catch (OperationCanceledException)
             {

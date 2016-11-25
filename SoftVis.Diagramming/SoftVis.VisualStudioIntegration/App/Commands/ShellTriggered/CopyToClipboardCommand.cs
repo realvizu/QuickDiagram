@@ -21,7 +21,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.ShellTriggered
             var progressDialog = UiServices.ShowProgressDialog("Generating image..");
             progressDialog.Show();
 
-            UiServices.CreateDiagramImageAsync(progressDialog)
+            var progress = new Progress<double>(i => progressDialog.SetProgress(i * .9));
+
+            UiServices.CreateDiagramImageAsync(progressDialog.CancellationToken, progress)
                 .ContinueInCurrentContext(SetImageToClipboard)
                 .ContinueInCurrentContext(i => progressDialog.Close());
         }

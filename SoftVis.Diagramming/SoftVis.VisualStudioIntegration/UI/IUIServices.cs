@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
@@ -19,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         void ShowDiagramWindow();
         void FitDiagramToView();
-        Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog = null);
+        Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), IProgress<double> progress = null);
 
         /// <summary>
         /// Provides combo items to fill a combo box in response to a command from the host environment.
