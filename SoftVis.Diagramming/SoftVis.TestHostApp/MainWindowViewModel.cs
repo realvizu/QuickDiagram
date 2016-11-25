@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.TestHostApp
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
             ZoomToContentCommand = new DelegateCommand(ZoomToContent);
-            CopyToClipboardCommand = new DelegateCommand(CopyToClipboard);
+            CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
 
             SelectedDpi = 300;
         }
@@ -87,7 +87,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void ZoomToContent()
         {
-            var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
@@ -96,14 +96,20 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Start();
         }
 
-        private void CopyToClipboard()
+        private async void CopyToClipboardAsync()
         {
             var progressDialog = new ProgressDialog(Window, "Generating image..", "TestHostApp");
             progressDialog.Show();
 
-            CreateDiagramImageAsync(progressDialog)
-                .ContinueInCurrentContext(SetImageToClipboard)
-                .ContinueInCurrentContext(i => progressDialog.Close());
+            try
+            {
+                var bitmapSource = await CreateDiagramImageAsync(progressDialog);
+                SetImageToClipboard(bitmapSource);
+            }
+            finally
+            {
+                progressDialog.Close();
+            }
         }
 
         private async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog)
@@ -111,12 +117,10 @@ namespace Codartis.SoftVis.TestHostApp
             try
             {
                 var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
-                return await Task.Factory.StartSTA(() =>
-                {
-                    var progress = new Progress<double>(progressDialog.SetProgress);
-                    var cancellationToken = progressDialog.CancellationToken;
-                    return diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress);
-                });
+                var progress = new Progress<double>(progressDialog.SetProgress);
+                var cancellationToken = progressDialog.CancellationToken;
+
+                return await Task.Factory.StartSTA(() => diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress));
             }
             catch (OperationCanceledException)
             {
@@ -134,22 +138,10 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
-        private static void SetImageToClipboard(Task<BitmapSource> task)
+        private static void SetImageToClipboard(BitmapSource bitmapSource)
         {
-            try
-            {
-                if (task.Status == TaskStatus.RanToCompletion && task.Result != null)
-                    Clipboard.SetImage(task.Result);
-            }
-            catch (OutOfMemoryException)
-            {
-                HandleOutOfMemory();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Exception in SetImageToClipboard: {e}");
-                throw;
-            }
+            if (bitmapSource != null)
+                Clipboard.SetImage(bitmapSource);
         }
 
         private static void HandleOutOfMemory()

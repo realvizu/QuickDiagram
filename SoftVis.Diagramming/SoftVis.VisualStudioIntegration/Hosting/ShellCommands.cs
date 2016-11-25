@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// </summary>
     internal static class ShellCommands
     {
-        public static readonly IEnumerable<ICommandSpecification> CommandSpecifications =
+        public static readonly List<ICommandSpecification> CommandSpecifications =
             new List<ICommandSpecification>
             {
                 new CommandSpecification<AddToDiagramCommand>(VsctConstants.AddToDiagramCommand),
@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 new CommandSpecification<ShowDiagramWindowCommand>(VsctConstants.ShowDiagramWindowCommand),
             };
 
-        public static readonly IEnumerable<IComboSpecification> ComboSpecifications =
+        public static readonly List<IComboSpecification> ComboSpecifications =
             new List<IComboSpecification>
             {
                 new ComboSpecification<DpiComboAdapter>(VsctConstants.ImageDpiComboGetItemsCommand, VsctConstants.ImageDpiComboCommand),

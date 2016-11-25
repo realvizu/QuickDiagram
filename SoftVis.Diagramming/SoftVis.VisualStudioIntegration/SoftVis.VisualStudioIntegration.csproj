@@ -52,7 +52,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="App\Commands\DiagramImageCommandBase.cs" />
+    <Compile Include="App\Commands\DiagramImageCreatorCommandBase.cs" />
+    <Compile Include="App\Commands\AsyncCommandBase.cs" />
     <Compile Include="App\Selectors\DpiSelector.cs" />
     <Compile Include="App\Selectors\ISelector.cs" />
     <Compile Include="Hosting\ComboAdapters\ComboAdapter.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="App\Commands\AddToDiagramCommand.cs" />
     <Compile Include="App\Commands\ClearDiagramCommand.cs" />
     <Compile Include="App\CommandBase.cs" />
-    <Compile Include="App\Commands\ParameterlessCommandBase.cs" />
+    <Compile Include="App\Commands\SyncCommandBase.cs" />
     <Compile Include="App\Commands\CopyToClipboardCommand.cs" />
     <Compile Include="App\Commands\ExportToFileCommand.cs" />
     <Compile Include="App\Commands\ShowDiagramWindowCommand.cs" />

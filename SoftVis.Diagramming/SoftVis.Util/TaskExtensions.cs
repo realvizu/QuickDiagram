@@ -7,20 +7,41 @@ namespace Codartis.SoftVis.Util
     public static class TaskExtensions
     {
         /// <summary>
-        /// Creates a task that executes on an STA thread.
+        /// Creates a task that executes on an STA thread and does not return a result.
+        /// </summary>
+        /// <param name="taskFactory">Not used, it just enables the extension method syntax.</param>
+        /// <param name="action">The action to be executed by the task.</param>
+        /// <returns>The task representing the async work.</returns>
+        public static Task StartSTA(this TaskFactory taskFactory, Action action)
+        {
+            var taskCompletionSource = new TaskCompletionSource<object>();
+            return ExecuteOnSTAThread(taskCompletionSource, i =>
+            {
+                action.Invoke();
+                i.SetResult(null);
+            });
+        }
+
+        /// <summary>
+        /// Creates a task that executes on an STA thread and returns a result.
         /// </summary>
         /// <typeparam name="T">The return type of the task.</typeparam>
         /// <param name="taskFactory">Not used, it just enables the extension method syntax.</param>
         /// <param name="func">The func to be executed by the task.</param>
-        /// <returns>A task created from the given func.</returns>
+        /// <returns>The task representing the async work and providing the result.</returns>
         public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
+            return ExecuteOnSTAThread(taskCompletionSource, i => i.SetResult(func()));
+        }
+
+        private static Task<T> ExecuteOnSTAThread<T>(TaskCompletionSource<T> taskCompletionSource, Action<TaskCompletionSource<T>> action)
+        {
             var thread = new Thread(() =>
             {
                 try
                 {
-                    taskCompletionSource.SetResult(func());
+                    action(taskCompletionSource);
                 }
                 catch (Exception e)
                 {
@@ -30,36 +51,6 @@ namespace Codartis.SoftVis.Util
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             return taskCompletionSource.Task;
-        }
-
-        /// <summary>
-        /// Adds a continuation that will execute in the  current SynchronizationContext.
-        /// </summary>
-        /// <typeparam name="T">The return type of the task.</typeparam>
-        /// <param name="task">A task.</param>
-        /// <param name="action">The continuation action.</param>
-        /// <param name="taskContinuationOptions">Optional task continuation options.</param>
-        /// <returns>The task object to enable the fluent interface style.</returns>
-        public static Task ContinueInCurrentContext<T>(this Task<T> task, Action<Task<T>> action, 
-            TaskContinuationOptions taskContinuationOptions = TaskContinuationOptions.None)
-        {
-            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            return task.ContinueWith(action, CancellationToken.None, taskContinuationOptions, scheduler);
-        }
-
-        /// <summary>
-        /// Adds a continuation that will execute in the  current SynchronizationContext.
-        /// </summary>
-        /// <typeparam name="T">The return type of the task.</typeparam>
-        /// <param name="task">A task.</param>
-        /// <param name="action">The continuation action.</param>
-        /// <param name="taskContinuationOptions">Optional task continuation options.</param>
-        /// <returns>The task object to enable the fluent interface style.</returns>
-        public static Task ContinueInCurrentContext(this Task task, Action<Task> action, 
-            TaskContinuationOptions taskContinuationOptions = TaskContinuationOptions.None)
-        {
-            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            return task.ContinueWith(action, CancellationToken.None, taskContinuationOptions, scheduler);
         }
     }
 }

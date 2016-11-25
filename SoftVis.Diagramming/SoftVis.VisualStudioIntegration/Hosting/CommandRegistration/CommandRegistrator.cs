@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.ComboAdapters;
@@ -22,12 +23,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
             _appServices = appServices;
         }
 
-        public void RegisterCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
+        public void RegisterCommands(Guid commandSetGuid, List<ICommandSpecification> commandSpecifications)
+        {
+            RegisterSyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(SyncCommandBase))));
+            RegisterAsyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(AsyncCommandBase))));
+        }
+
+        private void RegisterSyncCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (ParameterlessCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (SyncCommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
                 AddMenuCommand(commandSetGuid, commandSpecification.CommandId, (o, e) => command.Execute());
+            }
+        }
+
+        private void RegisterAsyncCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
+        {
+            foreach (var commandSpecification in commandSpecifications)
+            {
+                var command = (AsyncCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                AddMenuCommand(commandSetGuid, commandSpecification.CommandId, (o, e) => command.ExecuteAsync());
             }
         }
 

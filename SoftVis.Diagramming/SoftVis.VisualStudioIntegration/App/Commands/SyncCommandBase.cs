@@ -3,9 +3,9 @@
     /// <summary>
     /// Base class for commands that can be invoked without a parameter.
     /// </summary>
-    internal abstract class ParameterlessCommandBase : CommandBase
+    internal abstract class SyncCommandBase : CommandBase
     {
-        protected ParameterlessCommandBase(IAppServices appServices)
+        protected SyncCommandBase(IAppServices appServices)
             : base(appServices)
         {
         }
