@@ -1,16 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Util;
+﻿using System.Windows;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Copies the current diagram to the clipboard.
     /// </summary>
-    internal sealed class CopyToClipboardCommand : ParameterlessCommandBase
+    internal sealed class CopyToClipboardCommand : DiagramImageCommandBase
     {
         public CopyToClipboardCommand(IAppServices appServices)
             : base(appServices)
@@ -18,37 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override void Execute()
         {
-            var progressDialog = UiServices.ShowProgressDialog("Generating image..");
-            progressDialog.Show();
-
-            var progress = new Progress<double>(i => progressDialog.SetProgress(i * .9));
-
-            UiServices.CreateDiagramImageAsync(progressDialog.CancellationToken, progress)
-                .ContinueInCurrentContext(SetImageToClipboard)
-                .ContinueInCurrentContext(i => progressDialog.Close());
-        }
-
-        private void SetImageToClipboard(Task<BitmapSource> task)
-        {
-            try
-            {
-                if (task.Status == TaskStatus.RanToCompletion && task.Result != null)
-                    Clipboard.SetImage(task.Result);
-            }
-            catch (OutOfMemoryException)
-            {
-                HandleOutOfMemory();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Exception in SetImageToClipboard: {e}");
-                throw;
-            }
-        }
-
-        private void HandleOutOfMemory()
-        {
-            UiServices.MessageBox("Cannot create the image because it is too large. Please select a smaller DPI value.");
+            CreateDiagramImage(Clipboard.SetImage, "Adding image to clipboard...");
         }
     }
 }

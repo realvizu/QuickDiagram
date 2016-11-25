@@ -40,8 +40,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             hostUiServices.HostDiagram(_diagramControl);
-
-            ImageExportDpi = Dpi.Default;
         }
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();

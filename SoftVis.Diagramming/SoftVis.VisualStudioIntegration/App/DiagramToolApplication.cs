@@ -28,6 +28,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             DiagramServices = diagramServices;
             UiServices = uiServices;
 
+            UiServices.ImageExportDpi = Dpi.Dpi150;
+
             SubscribeToDiagramEvents(diagramServices);
         }
 

@@ -40,6 +40,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
         public void Show() => _window.ShowNonBlockingModal();
         public void Close() => _window.Close();
         public void SetProgress(double progress) => _viewModel.ProgressValue = progress;
+        public void SetText(string text) => _viewModel.Text = text;
 
         private void WindowOnClosed(object sender, EventArgs eventArgs)
         {

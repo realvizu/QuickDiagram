@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Exports the current diagram to a file.
     /// </summary>
-    internal sealed class ExportToFileCommand : ParameterlessCommandBase
+    internal sealed class ExportToFileCommand : DiagramImageCommandBase
     {
         public ExportToFileCommand(IAppServices appServices)
             : base(appServices)
@@ -20,13 +20,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (string.IsNullOrWhiteSpace(filename))
                 return;
 
-            if (filename.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase))
+            if (!filename.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase))
             {
-                //UiServices.GetDiagramImage(i => SaveBitmapAsPng(i, filename));
+                UiServices.MessageBox("Only PNG file format is supported. Please select a file with .png extension.");
                 return;
             }
 
-            UiServices.MessageBox("Only PNG file format is supported. Please select a file with .png extension.");
+            CreateDiagramImage(i => SaveBitmapAsPng(i, filename), "Saving image file...");
         }
 
         private static void SaveBitmapAsPng(BitmapSource bitmapSource, string filename)
