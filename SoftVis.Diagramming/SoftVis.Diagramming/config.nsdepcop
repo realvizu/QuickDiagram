@@ -7,6 +7,7 @@
     <Allowed From="*" To="System.Globalization.*" />
     <Allowed From="*" To="System.ComponentModel" />
     <Allowed From="*" To="System.Runtime.*" />
+    <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="System.Threading.*" />
     <Allowed From="*" To="System.CodeDom.Compiler">
         <VisibleMembers>

@@ -85,6 +85,7 @@
     <Compile Include="Modeling\ModelRelationshipType.cs" />
     <Compile Include="Modeling\EntityRelationTypes.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
+    <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityListBoxViewModel.cs" />

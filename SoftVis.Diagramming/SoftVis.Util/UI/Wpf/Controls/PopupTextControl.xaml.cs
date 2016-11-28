@@ -1,6 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Controls;
 
 namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
@@ -12,20 +10,6 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         public PopupTextControl()
         {
             InitializeComponent();
-        }
-
-        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if ((bool) e.NewValue == false)
-                return;
-
-            var parentCanvas = Parent as Canvas;
-            if (parentCanvas == null)
-                return;
-
-            var position = Mouse.GetPosition(parentCanvas);
-            SetValue(Canvas.LeftProperty, position.X);
-            SetValue(Canvas.TopProperty, position.Y);
         }
     }
 }

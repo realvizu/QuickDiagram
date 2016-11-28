@@ -8,6 +8,8 @@
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
              xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"
+             xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
@@ -64,10 +66,18 @@
                                 Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
         <controls:PopupTextControl DataContext="{Binding PopupTextViewModel}"
+                                   Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                    IsHitTestVisible="False">
+            
             <controls:PopupTextControl.Effect>
                 <DropShadowEffect Direction="315" ShadowDepth="2" BlurRadius="3" RenderingBias="Performance" />
             </controls:PopupTextControl.Effect>
+
+            <i:Interaction.Behaviors>
+                <behaviors:CopyMousePositionBehavior OnEventName="IsVisibleChanged"
+                                                     TopProperty="{x:Static Canvas.TopProperty}"
+                                                     LeftProperty="{x:Static Canvas.LeftProperty}" />
+            </i:Interaction.Behaviors>
         </controls:PopupTextControl>
     </Canvas>
 </UserControl>

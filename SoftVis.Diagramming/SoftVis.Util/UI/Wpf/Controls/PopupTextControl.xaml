@@ -5,14 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewModels:PopupTextViewModel}}"
-             Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-             IsVisibleChanged="OnIsVisibleChanged">
-
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </UserControl.Resources>
-
+             d:DataContext="{d:DesignInstance {x:Type viewModels:PopupTextViewModel}}">
+    
     <Border BorderThickness="1"
             BorderBrush="#D5D7E1" 
             Background="#F6F6F6">
