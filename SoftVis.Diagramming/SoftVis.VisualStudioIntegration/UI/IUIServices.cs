@@ -13,7 +13,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         Dpi ImageExportDpi { get; set; }
 
-        void MessageBox(string message);
+        void ShowMessageBox(string message);
+        void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
         ProgressDialog ShowProgressDialog(string text);
         string SelectSaveFilename(string title, string filter);
 

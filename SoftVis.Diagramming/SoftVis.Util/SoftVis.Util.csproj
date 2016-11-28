@@ -69,6 +69,9 @@
     <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
+    <Compile Include="UI\Wpf\Controls\PopupTextControl.xaml.cs">
+      <DependentUpon>PopupTextControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Wpf\Controls\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
@@ -86,6 +89,8 @@
     <Compile Include="UI\Wpf\Transforms\TransitionedTransform.cs" />
     <Compile Include="UI\Wpf\ViewModels\BubbleListBoxViewModel.cs" />
     <Compile Include="UI\HandleOrientation.cs" />
+    <Compile Include="UI\Wpf\ViewModels\AutoHidePopupTextViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\PopupTextViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\ProgressWindowViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\ShowHideViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModels\ViewModelBase.cs" />
@@ -111,6 +116,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Wpf\Controls\BubbleListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Wpf\Controls\PopupTextControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

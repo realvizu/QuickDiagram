@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             if (!filename.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase))
             {
-                UiServices.MessageBox("Only PNG file format is supported. Please select a file with .png extension.");
+                UiServices.ShowMessageBox("Only PNG file format is supported. Please select a file with .png extension.");
                 return;
             }
 

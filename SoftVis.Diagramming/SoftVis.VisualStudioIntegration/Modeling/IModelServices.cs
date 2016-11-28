@@ -29,6 +29,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             bool recursive = false);
 
         /// <summary>
+        /// Returns a value indicating whether a model entity has source code.
+        /// </summary>
+        /// <param name="modelEntity">A model entity.</param>
+        /// <remarks>True if the model entity has source code, false otherwise.</remarks>
+        bool HasSource(IModelEntity modelEntity);
+
+        /// <summary>
         /// Shows the source in the host environment that corresponds to the given model entity.
         /// </summary>
         /// <param name="modelEntity">A model entity.</param>

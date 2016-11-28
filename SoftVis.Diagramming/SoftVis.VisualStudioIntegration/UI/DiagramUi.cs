@@ -44,7 +44,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
         public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
-        public void MessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
+        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
+        public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan)) => _diagramViewModel.ShowPopupMessage(message, hideAfter);
 
         public async Task<BitmapSource> CreateDiagramImageAsync(
             CancellationToken cancellationToken = default(CancellationToken), 
@@ -90,7 +91,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private void HandleOutOfMemory()
         {
-            MessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
+            ShowMessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
         }
     }
 }

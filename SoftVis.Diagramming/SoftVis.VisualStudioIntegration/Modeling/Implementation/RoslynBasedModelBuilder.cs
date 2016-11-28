@@ -63,6 +63,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
+        public bool HasSource(IModelEntity modelEntity)
+        {
+            var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;
+            if (roslyBasedModelEntity == null)
+                return false;
+
+            return _roslynModelProvider.HasSource(roslyBasedModelEntity.RoslynSymbol);
+        }
+
         public void ShowSource(IModelEntity modelEntity)
         {
             var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;

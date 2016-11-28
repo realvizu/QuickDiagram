@@ -21,9 +21,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         Task<ISymbol> GetCurrentSymbolAsync();
 
         /// <summary>
+        /// Returns a value indicating whether a Roslyn symbol has source code.
+        /// </summary>
+        /// <param name="symbol">A Roslyn symbol.</param>
+        /// <remarks>True if the Roslyn symbol has source code, false otherwise.</remarks>
+        bool HasSource(ISymbol symbol);
+
+        /// <summary>
         /// Shows the source file in the host environment that corresponds to the given Roslyn symbol.
         /// </summary>
-        /// <param name="symbol">A symbol from the source file to be shown.</param>
+        /// <param name="symbol">A Roslyn symbol from the source file to be shown.</param>
         void ShowSource(ISymbol symbol);
     }
 }

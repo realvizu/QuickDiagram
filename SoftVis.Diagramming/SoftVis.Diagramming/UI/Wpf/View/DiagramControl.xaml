@@ -62,5 +62,12 @@
                                 ItemContainerStyle="{StaticResource BubbleListBoxItemContainerStyle}"
                                 ItemSelectedCommand="{Binding Path=ItemSelectedCommand}"
                                 Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+        <controls:PopupTextControl DataContext="{Binding PopupTextViewModel}"
+                                   IsHitTestVisible="False">
+            <controls:PopupTextControl.Effect>
+                <DropShadowEffect Direction="315" ShadowDepth="2" BlurRadius="3" RenderingBias="Performance" />
+            </controls:PopupTextControl.Effect>
+        </controls:PopupTextControl>
     </Canvas>
 </UserControl>

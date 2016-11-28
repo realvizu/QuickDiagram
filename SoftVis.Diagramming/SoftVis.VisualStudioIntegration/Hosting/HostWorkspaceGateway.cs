@@ -125,30 +125,36 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return simpleNameSyntax;
         }
 
+        public bool HasSource(ISymbol symbol)
+        {
+            return GetDocumentId(symbol) != null;
+        }
+
         public void ShowSource(ISymbol symbol)
         {
-            var workspace = GetWorkspace();
-
             var location = symbol?.Locations.FirstOrDefault();
             if (location == null)
                 return;
 
-            var documentId = workspace?.CurrentSolution?.GetDocumentId(location?.SourceTree);
+            var documentId = GetDocumentId(symbol);
             if (documentId == null)
                 return;
 
-            workspace.OpenDocument(documentId);
+            var workspace = GetWorkspace();
+            workspace.OpenDocument(documentId, activate: true);
 
+            SelectSourceLocation(location.GetLineSpan().Span);
+        }
+
+        private void SelectSourceLocation(LinePositionSpan span)
+        {
             var hostService = _packageServices.GetHostEnvironmentService();
             var selection = hostService.ActiveDocument.Selection as TextSelection;
             if (selection == null)
                 return;
 
-            var fileLinePositionSpan = location.GetLineSpan();
-            var start = fileLinePositionSpan.Span.Start;
-            selection.MoveTo(start.Line + 1, start.Character + 1, false);
-            var end = fileLinePositionSpan.Span.End;
-            selection.MoveTo(end.Line + 1, end.Character + 1, true);
+            selection.MoveTo(span.Start.Line + 1, span.Start.Character + 1, Extend: false);
+            selection.MoveTo(span.End.Line + 1, span.End.Character + 1, Extend: true);
         }
 
         private Document GetCurrentDocument()
@@ -163,6 +169,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             var document = currentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
             return document;
+        }
+
+        private DocumentId GetDocumentId(ISymbol symbol)
+        {
+            var workspace = GetWorkspace();
+
+            var location = symbol?.Locations.FirstOrDefault();
+            if (location == null)
+                return null;
+
+            return workspace?.CurrentSolution?.GetDocumentId(location.SourceTree);
         }
 
         private TextSpan GetSelection()

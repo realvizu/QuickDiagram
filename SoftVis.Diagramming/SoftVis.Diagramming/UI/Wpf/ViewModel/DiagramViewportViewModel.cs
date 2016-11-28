@@ -44,8 +44,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand UnfocusAllCommand { get; }
         public DelegateCommand HideRelatedEntityListBoxCommand { get; }
 
+        public event Action InputReceived;
         public event EntitySelectorRequestedEventHandler ShowEntitySelectorRequested;
-        public event Action HideEntitySelectorRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
 
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
@@ -72,7 +72,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ViewportZoomCommand = new Viewport.ZoomCommand(_viewport);
 
             UnfocusAllCommand = new DelegateCommand(_diagramFocusTracker.UnfocusAll);
-            HideRelatedEntityListBoxCommand = new DelegateCommand(HideRelatedEntitySelector);
+            HideRelatedEntityListBoxCommand = new DelegateCommand(OnInputReceived);
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
@@ -203,9 +203,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Clear();
         }
 
-        private void HideRelatedEntitySelector()
+        private void OnInputReceived()
         {
-            HideEntitySelectorRequested?.Invoke();
+            InputReceived?.Invoke();
         }
 
         private void OnViewportLinearZoomChanged(double newViewportZoom)
@@ -216,7 +216,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnViewportTransformChanged(TransitionedTransform newTransform)
         {
             ViewportTransform = newTransform;
-            HideRelatedEntitySelector();
+            OnInputReceived();
         }
 
         private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel,
