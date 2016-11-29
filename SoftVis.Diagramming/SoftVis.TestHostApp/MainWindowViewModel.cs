@@ -117,10 +117,10 @@ namespace Codartis.SoftVis.TestHostApp
             try
             {
                 var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
-                var progress = new Progress<double>(progressDialog.SetProgress);
                 var cancellationToken = progressDialog.CancellationToken;
+                var progress = new Progress<double>(progressDialog.SetProgressPercentage);
 
-                return await Task.Factory.StartSTA(() => diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress));
+                return await Task.Factory.StartSTA(() => diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress), cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -130,11 +130,6 @@ namespace Codartis.SoftVis.TestHostApp
             {
                 HandleOutOfMemory();
                 return null;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Exception in CreateDiagramImageAsync: {e}");
-                throw;
             }
         }
 

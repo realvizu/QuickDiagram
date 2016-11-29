@@ -5,19 +5,47 @@
     /// </summary>
     public class ProgressWindowViewModel : ViewModelBase
     {
-        private double _progressValue;
+        private ProgressMode _progressMode;
+        private double _progressPercentage;
+        private int _progressCount;
         private string _text;
         private string _title;
 
-        public double ProgressValue
+        public ProgressMode ProgressMode
         {
-            get { return _progressValue; }
+            get { return _progressMode; }
+            set
+            {
+                if (_progressMode != value)
+                {
+                    _progressMode = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public double ProgressPercentage
+        {
+            get { return _progressPercentage; }
             set
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (_progressValue != value)
+                if (_progressPercentage != value)
                 {
-                    _progressValue = value;
+                    _progressPercentage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int ProgressCount
+        {
+            get { return _progressCount; }
+            set
+            {
+                if (_progressCount != value)
+                {
+                    _progressCount = value;
                     OnPropertyChanged();
                 }
             }

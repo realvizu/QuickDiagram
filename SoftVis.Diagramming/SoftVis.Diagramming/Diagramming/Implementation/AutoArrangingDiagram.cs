@@ -45,6 +45,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void Dispose()
         {
             _automaticLayoutCancellation.Cancel();
+            _automaticLayoutCancellation.Dispose();
         }
 
         private void EnqueueDiagramAction(DiagramAction diagramAction)

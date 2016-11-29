@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
@@ -37,11 +39,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             ShowItem(modelEntity);
         }
 
-        public void ShowModelEntityWithHierarchy(IRoslynBasedModelEntity modelEntity)
+        public void ShowModelEntityWithHierarchy(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IProgress<int> progress)
         {
             ShowItem(modelEntity);
-            ShowItems(Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true));
-            ShowItems(Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true));
+
+            var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
+            ShowItems(baseTypes, cancellationToken, progress);
+
+            var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
+            ShowItems(subtypes, cancellationToken, progress);
         }
     }
 }

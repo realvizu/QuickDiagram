@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
@@ -40,8 +41,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return AddEntityIfNotExists(GetOriginalDefinition(namedTypeSymbol));
         }
 
-        public void ExtendModelWithRelatedEntities(IModelEntity modelEntity,
-            EntityRelationType? entityRelationType = null, bool recursive = false)
+        public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
+            CancellationToken cancellationToken = default(CancellationToken), IProgress<int> progress = null, bool recursive = false)
         {
             var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
             if (roslynBasedModelEntity == null)
@@ -54,12 +55,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             foreach (var symbolRelation in symbolRelations)
             {
-                var relatedEntity = AddEntityIfNotExists(symbolRelation.RelatedSymbol);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var relatedEntity = AddEntityIfNotExists(symbolRelation.RelatedSymbol, progress);
                 AddRelationshipIfNotExists(symbolRelation);
 
                 // TODO: loop detection?
                 if (recursive)
-                    ExtendModelWithRelatedEntities(relatedEntity, entityRelationType, recursive: true);
+                    ExtendModelWithRelatedEntities(relatedEntity, entityRelationType, cancellationToken, progress, recursive: true);
             }
         }
 
@@ -91,13 +94,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return namedTypeSymbol.OriginalDefinition ?? namedTypeSymbol;
         }
 
-        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol)
+        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol, IProgress<int> progress = null )
         {
             var modelEntity = _model.GetModelEntity(namedTypeSymbol);
             if (modelEntity == null)
             {
                 modelEntity = CreateModelEntity(namedTypeSymbol);
                 _model.AddEntity(modelEntity);
+
+                progress?.Report(1);
             }
             return modelEntity;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Data;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
@@ -22,6 +23,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
+
+        private readonly object _diagramNodeViewModelsLock = new object();
+        private readonly object _diagramConnectorViewModelsLock = new object();
 
         private readonly Viewport _viewport;
         private double _viewportZoom;
@@ -52,7 +56,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             : base(diagram)
         {
             DiagramNodeViewModels = new ObservableCollection<DiagramNodeViewModel>();
+            BindingOperations.EnableCollectionSynchronization(DiagramNodeViewModels, _diagramNodeViewModelsLock);
+
             DiagramConnectorViewModels = new ObservableCollection<DiagramConnectorViewModel>();
+            BindingOperations.EnableCollectionSynchronization(DiagramConnectorViewModels, _diagramConnectorViewModelsLock);
+
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 

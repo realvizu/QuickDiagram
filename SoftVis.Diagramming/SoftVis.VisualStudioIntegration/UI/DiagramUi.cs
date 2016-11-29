@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +11,7 @@ using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -47,8 +47,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
         public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan)) => _diagramViewModel.ShowPopupMessage(message, hideAfter);
 
-        public async Task<BitmapSource> CreateDiagramImageAsync(
-            CancellationToken cancellationToken = default(CancellationToken), 
+        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
             IProgress<double> progress = null)
         {
             try
@@ -56,7 +55,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, _resourceDictionary);
 
                 return await Task.Factory.StartSTA(() =>
-                    diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress));
+                    diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress), cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -67,17 +66,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 HandleOutOfMemory();
                 return null;
             }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Exception in CreateDiagramImageAsync: {e}");
-                throw;
-            }
         }
 
-        public ProgressDialog ShowProgressDialog(string text)
+        public ProgressDialog ShowProgressDialog(string text, ProgressMode progressMode = ProgressMode.Percentage)
         {
             var hostMainWindow = _hostUiServices.GetMainWindow();
-            var progressDialog = new ProgressDialog(hostMainWindow, text, DialogTitle);
+            var progressDialog = new ProgressDialog(hostMainWindow, text, DialogTitle, progressMode);
             progressDialog.Show();
             return progressDialog;
         }

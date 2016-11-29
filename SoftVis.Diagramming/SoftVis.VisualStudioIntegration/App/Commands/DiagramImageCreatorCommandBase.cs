@@ -21,12 +21,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             var progressDialog = UiServices.ShowProgressDialog("Generating image..");
             progressDialog.Show();
 
-            var progress = new Progress<double>(i => progressDialog.SetProgress(i * .9));
+            var cancellationToken = progressDialog.CancellationToken;
+            var progress = new Progress<double>(i => progressDialog.SetProgressPercentage(i * .9));
 
             try
             {
-                var bitmapSource = await UiServices.CreateDiagramImageAsync(progressDialog.CancellationToken, progress);
-                await Task.Factory.StartSTA(() => ProcessDiagramImage(bitmapSource, imageProcessingAction, progressDialog, imageProcessingMessage));
+                var bitmapSource = await UiServices.CreateDiagramImageAsync(cancellationToken, progress);
+                await Task.Factory.StartSTA(() =>
+                    ProcessDiagramImage(bitmapSource, imageProcessingAction, progressDialog, imageProcessingMessage), cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
             }
             finally
             {
@@ -41,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             {
                 progressDialog.SetText(imageProcessingMessage);
                 imageProcessingAction(bitmapSource);
-                progressDialog.SetProgress(1);
+                progressDialog.SetProgressPercentage(1);
             }
         }
     }

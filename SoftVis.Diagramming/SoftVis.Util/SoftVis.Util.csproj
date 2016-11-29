@@ -91,6 +91,7 @@
     <Compile Include="UI\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\ViewModels\AutoHidePopupTextViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\PopupTextViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\ProgressMode.cs" />
     <Compile Include="UI\Wpf\ViewModels\ProgressWindowViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\ShowHideViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModels\ViewModelBase.cs" />

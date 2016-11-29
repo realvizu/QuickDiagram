@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Converters
         {
             if (!values.Any() ||
                 !values.All(i => i is Rect || i is IEnumerable<Point>))
-                return null;
+                return Rect.Empty;
 
             return values.OfType<IEnumerable<Point>>().Select(i => i.BoundingRect())
                 .Concat(values.OfType<Rect>())

@@ -16,10 +16,39 @@
         d:DataContext="{d:DesignInstance {x:Type viewModels:ProgressWindowViewModel}}">
 
     <DockPanel Margin="5">
-        <TextBlock DockPanel.Dock="Top" Text="{Binding Text}" MinWidth="300" MaxWidth="600"/>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" MinWidth="300" MaxWidth="600">
+            <TextBlock Text="{Binding Text}" Margin="0,0,5,0"/>
+            <TextBlock Text="{Binding ProgressCount}" >
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Count}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Percentage}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
         <ProgressBar DockPanel.Dock="Top" Margin="0,5,0,5"
                      Height="5"
-                     Minimum="0" Maximum="1" Value="{Binding ProgressValue}"/>
+                     Minimum="0" Maximum="1" Value="{Binding ProgressPercentage}">
+            <ProgressBar.Style>
+                <Style TargetType="{x:Type ProgressBar}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Count}">
+                            <Setter Property="IsIndeterminate" Value="True"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Percentage}">
+                            <Setter Property="IsIndeterminate" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button  Width="100" Click="Cancel_OnClick">Cancel</Button>
         </StackPanel>

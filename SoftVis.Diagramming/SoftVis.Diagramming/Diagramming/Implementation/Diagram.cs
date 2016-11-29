@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
@@ -86,20 +87,29 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void ShowItem(IModelItem modelItem) => ShowItems(new[] { modelItem });
         public void HideItem(IModelItem modelItem) => HideItems(new[] { modelItem });
 
-        public virtual void ShowItems(IEnumerable<IModelItem> modelItems)
+        public virtual void ShowItems(IEnumerable<IModelItem> modelItems,
+            CancellationToken cancellationToken = default(CancellationToken), 
+            IProgress<int> progress = null)
         {
             BatchAddStarted?.Invoke();
 
             foreach (var modelItem in modelItems)
             {
+                if (cancellationToken.IsCancellationRequested)
+                    break;
+
                 if (modelItem is IModelEntity)
                     ShowEntityCore((IModelEntity)modelItem);
 
                 if (modelItem is IModelRelationship)
                     ShowRelationshipCore((IModelRelationship)modelItem);
+
+                progress?.Report(1);
             }
 
             BatchAddFinished?.Invoke();
+
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         public virtual void HideItems(IEnumerable<IModelItem> modelItems)

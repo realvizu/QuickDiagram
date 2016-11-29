@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.Util.UI.Wpf.Controls
@@ -29,6 +30,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
     {
         private ObservableCollection<TViewModel> _originalItemsSource;
         private ObservableCollection<TViewModel> _presentedItemsSource;
+        private readonly object _presentedItemsSourceLock = new object();
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -54,6 +56,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             ((INotifyCollectionChanged)_originalItemsSource).CollectionChanged += OnOriginalCollectionChanged;
 
             _presentedItemsSource = new ObservableCollection<TViewModel>(_originalItemsSource);
+            BindingOperations.EnableCollectionSynchronization(_presentedItemsSource, _presentedItemsSourceLock);
+
             ItemsSource = _presentedItemsSource;
         }
 

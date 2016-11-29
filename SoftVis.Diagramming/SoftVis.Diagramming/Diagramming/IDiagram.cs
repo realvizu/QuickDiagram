@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -29,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming
 
         void ShowItem(IModelItem modelItem);
         void HideItem(IModelItem modelItem);
-        void ShowItems(IEnumerable<IModelItem> modelItems);
+        void ShowItems(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken = default(CancellationToken), IProgress<int> progress = null);
         void HideItems(IEnumerable<IModelItem> modelItems);
         void Clear();
 

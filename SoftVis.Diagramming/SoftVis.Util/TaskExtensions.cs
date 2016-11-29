@@ -11,15 +11,17 @@ namespace Codartis.SoftVis.Util
         /// </summary>
         /// <param name="taskFactory">Not used, it just enables the extension method syntax.</param>
         /// <param name="action">The action to be executed by the task.</param>
+        /// <param name="cancellationToken">Optional cancellation toke.n</param>
         /// <returns>The task representing the async work.</returns>
-        public static Task StartSTA(this TaskFactory taskFactory, Action action)
+        public static Task StartSTA(this TaskFactory taskFactory, Action action,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var taskCompletionSource = new TaskCompletionSource<object>();
-            return ExecuteOnSTAThread(taskCompletionSource, i =>
+            return ExecuteOnNewSTAThread(taskCompletionSource, i =>
             {
                 action.Invoke();
                 i.SetResult(null);
-            });
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -28,20 +30,28 @@ namespace Codartis.SoftVis.Util
         /// <typeparam name="T">The return type of the task.</typeparam>
         /// <param name="taskFactory">Not used, it just enables the extension method syntax.</param>
         /// <param name="func">The func to be executed by the task.</param>
+        /// <param name="cancellationToken">Optional cancellation toke.n</param>
         /// <returns>The task representing the async work and providing the result.</returns>
-        public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func)
+        public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
-            return ExecuteOnSTAThread(taskCompletionSource, i => i.SetResult(func()));
+            return ExecuteOnNewSTAThread(taskCompletionSource, i => i.SetResult(func()), cancellationToken);
         }
 
-        private static Task<T> ExecuteOnSTAThread<T>(TaskCompletionSource<T> taskCompletionSource, Action<TaskCompletionSource<T>> action)
+        private static Task<T> ExecuteOnNewSTAThread<T>(TaskCompletionSource<T> taskCompletionSource,
+            Action<TaskCompletionSource<T>> action, CancellationToken cancellationToken)
         {
             var thread = new Thread(() =>
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     action(taskCompletionSource);
+                }
+                catch (OperationCanceledException)
+                {
+                    taskCompletionSource.SetCanceled();
                 }
                 catch (Exception e)
                 {
