@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Util.UI.Wpf.Collections;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -10,10 +10,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-        private readonly ObservableCollection<DiagramNodeViewModel> _diagramNodeViewModels;
+        private readonly ObservableImmutableList<DiagramNodeViewModel> _diagramNodeViewModels;
 
-        public DiagramShapeViewModelFactory(IArrangedDiagram diagram,
-            ObservableCollection<DiagramNodeViewModel> diagramNodeViewModels)
+        public DiagramShapeViewModelFactory(IArrangedDiagram diagram, ObservableImmutableList<DiagramNodeViewModel> diagramNodeViewModels)
               : base(diagram)
         {
             _diagramNodeViewModels = diagramNodeViewModels;

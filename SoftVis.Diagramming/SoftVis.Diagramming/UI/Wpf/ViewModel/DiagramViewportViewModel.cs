@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Data;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
+using Codartis.SoftVis.Util.UI.Wpf.Collections;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Transforms;
 
@@ -19,13 +18,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
-        public ObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
-        public ObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
+        public ObservableImmutableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public ObservableImmutableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
-
-        private readonly object _diagramNodeViewModelsLock = new object();
-        private readonly object _diagramConnectorViewModelsLock = new object();
 
         private readonly Viewport _viewport;
         private double _viewportZoom;
@@ -55,11 +51,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
-            DiagramNodeViewModels = new ObservableCollection<DiagramNodeViewModel>();
-            BindingOperations.EnableCollectionSynchronization(DiagramNodeViewModels, _diagramNodeViewModelsLock);
+            DiagramNodeViewModels = new ObservableImmutableList<DiagramNodeViewModel>();
 
-            DiagramConnectorViewModels = new ObservableCollection<DiagramConnectorViewModel>();
-            BindingOperations.EnableCollectionSynchronization(DiagramConnectorViewModels, _diagramConnectorViewModelsLock);
+            DiagramConnectorViewModels = new ObservableImmutableList<DiagramConnectorViewModel>();
 
             MinZoom = minZoom;
             MaxZoom = maxZoom;
@@ -89,8 +83,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             AddDiagram(diagram);
         }
 
-
-        public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
+        public ObservableImmutableList<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
             => _diagramShapeButtonCollectionViewModel.DiagramNodeButtonViewModels;
 
         public double ViewportZoom
@@ -246,10 +239,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             if (diagramShapeViewModel is DiagramNodeViewModel)
-                DiagramNodeViewModels.Add((DiagramNodeViewModel)diagramShapeViewModel);
+                DiagramNodeViewModels.DoAdd(i => (DiagramNodeViewModel)diagramShapeViewModel);
 
             else if (diagramShapeViewModel is DiagramConnectorViewModel)
-                DiagramConnectorViewModels.Add((DiagramConnectorViewModel)diagramShapeViewModel);
+                DiagramConnectorViewModels.DoAdd(i => (DiagramConnectorViewModel)diagramShapeViewModel);
 
             else
                 throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
@@ -258,10 +251,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void RemoveFromViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             if (diagramShapeViewModel is DiagramNodeViewModel)
-                DiagramNodeViewModels.Remove((DiagramNodeViewModel)diagramShapeViewModel);
+                DiagramNodeViewModels.DoRemove(i => (DiagramNodeViewModel)diagramShapeViewModel);
 
             else if (diagramShapeViewModel is DiagramConnectorViewModel)
-                DiagramConnectorViewModels.Remove((DiagramConnectorViewModel)diagramShapeViewModel);
+                DiagramConnectorViewModels.DoRemove(i => (DiagramConnectorViewModel)diagramShapeViewModel);
 
             else
                 throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");

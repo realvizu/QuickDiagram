@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             Task.Run(() => ProcessDiagramShapeActions(_automaticLayoutCancellation.Token));
         }
-
+        
         public void Dispose()
         {
             _automaticLayoutCancellation.Cancel();

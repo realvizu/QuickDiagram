@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using Codartis.SoftVis.Util.UI.Wpf.Collections;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.Util.UI.Wpf.Controls
@@ -28,9 +27,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         where TViewModel : ViewModelBase
         where TContentPresenter : AnimatedContentPresenter, new()
     {
-        private ObservableCollection<TViewModel> _originalItemsSource;
-        private ObservableCollection<TViewModel> _presentedItemsSource;
-        private readonly object _presentedItemsSourceLock = new object();
+        private ObservableImmutableList<TViewModel> _originalItemsSource;
+        private ObservableImmutableList<TViewModel> _presentedItemsSource;
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -47,16 +45,15 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             if (ReferenceEquals(newValue, _presentedItemsSource))
                 return;
 
-            SetUpDuplicatedItemsSource((ObservableCollection<TViewModel>)newValue);
+            SetUpDuplicatedItemsSource((ObservableImmutableList<TViewModel>)newValue);
         }
 
-        private void SetUpDuplicatedItemsSource(ObservableCollection<TViewModel> viewModels)
+        private void SetUpDuplicatedItemsSource(ObservableImmutableList<TViewModel> viewModels)
         {
             _originalItemsSource = viewModels;
             ((INotifyCollectionChanged)_originalItemsSource).CollectionChanged += OnOriginalCollectionChanged;
 
-            _presentedItemsSource = new ObservableCollection<TViewModel>(_originalItemsSource);
-            BindingOperations.EnableCollectionSynchronization(_presentedItemsSource, _presentedItemsSourceLock);
+            _presentedItemsSource = new ObservableImmutableList<TViewModel>(_originalItemsSource);
 
             ItemsSource = _presentedItemsSource;
         }
@@ -82,7 +79,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         private void AddItemsToPresentedCollection(IList newItems)
         {
             foreach (var newItem in newItems)
-                _presentedItemsSource.Add((TViewModel)newItem);
+                _presentedItemsSource.DoAdd(i => (TViewModel)newItem);
         }
 
         private void RemoveItemsFromPresentedCollection(IList oldItems)
@@ -96,7 +93,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void OnItemReadyToBeRemoved(ViewModelBase viewModel)
         {
-            _presentedItemsSource.Remove(viewModel as TViewModel);
+            _presentedItemsSource.DoRemove(i => viewModel as TViewModel);
         }
     }
 }

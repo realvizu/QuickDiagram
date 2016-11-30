@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Util.UI.Wpf.Collections;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -10,12 +10,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeButtonCollectionViewModel : DiagramViewModelBase
     { 
-        public ObservableCollection<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
+        public ObservableImmutableList<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
 
         public DiagramShapeButtonCollectionViewModel(IArrangedDiagram diagram)
             : base(diagram)
         {
-            DiagramNodeButtonViewModels = new ObservableCollection<DiagramShapeButtonViewModelBase>(CreateButtons());
+            DiagramNodeButtonViewModels = new ObservableImmutableList<DiagramShapeButtonViewModelBase>(CreateButtons());
         }
 
         public void AssignButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)

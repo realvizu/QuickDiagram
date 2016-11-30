@@ -88,7 +88,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void HideItem(IModelItem modelItem) => HideItems(new[] { modelItem });
 
         public virtual void ShowItems(IEnumerable<IModelItem> modelItems,
-            CancellationToken cancellationToken = default(CancellationToken), 
+            CancellationToken cancellationToken = default(CancellationToken),
             IProgress<int> progress = null)
         {
             BatchAddStarted?.Invoke();
@@ -235,48 +235,52 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void AddDiagramNode(DiagramNode diagramNode)
         {
+            diagramNode.SizeChanged += OnDiagramNodeSizeChanged;
+            diagramNode.TopLeftChanged += OnDiagramNodeTopLeftChanged;
+
             lock (this)
             {
-                diagramNode.SizeChanged += OnDiagramNodeSizeChanged;
-                diagramNode.TopLeftChanged += OnDiagramNodeTopLeftChanged;
-
                 _graph.AddVertex(diagramNode);
-                OnShapeAdded(diagramNode);
             }
+
+            OnShapeAdded(diagramNode);
         }
 
         private void RemoveDiagramNode(DiagramNode diagramNode)
         {
+            diagramNode.SizeChanged -= OnDiagramNodeSizeChanged;
+            diagramNode.TopLeftChanged -= OnDiagramNodeTopLeftChanged;
+
             lock (this)
             {
-                diagramNode.SizeChanged -= OnDiagramNodeSizeChanged;
-                diagramNode.TopLeftChanged -= OnDiagramNodeTopLeftChanged;
-
                 _graph.RemoveVertex(diagramNode);
-                OnShapeRemoved(diagramNode);
             }
+
+            OnShapeRemoved(diagramNode);
         }
 
         private void AddDiagramConnector(DiagramConnector diagramConnector)
         {
+            diagramConnector.RouteChanged += OnDiagramConnectorRouteChanged;
+
             lock (this)
             {
-                diagramConnector.RouteChanged += OnDiagramConnectorRouteChanged;
-
                 _graph.AddEdge(diagramConnector);
-                OnShapeAdded(diagramConnector);
             }
+
+            OnShapeAdded(diagramConnector);
         }
 
         private void RemoveDiagramConnector(DiagramConnector diagramConnector)
         {
+            diagramConnector.RouteChanged -= OnDiagramConnectorRouteChanged;
+
             lock (this)
             {
-                diagramConnector.RouteChanged -= OnDiagramConnectorRouteChanged;
-
                 _graph.RemoveEdge(diagramConnector);
-                OnShapeRemoved(diagramConnector);
             }
+
+            OnShapeRemoved(diagramConnector);
         }
 
         private static DiagramNode CreateDiagramNode(IModelEntity modelEntity)
@@ -309,7 +313,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship)
         {
-            if (NodeExists(modelRelationship.Source) && 
+            if (NodeExists(modelRelationship.Source) &&
                 NodeExists(modelRelationship.Target) &&
                 !ConnectorWouldBeRedundant(modelRelationship))
             {
