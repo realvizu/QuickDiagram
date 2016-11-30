@@ -10,12 +10,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeButtonCollectionViewModel : DiagramViewModelBase
     { 
-        public ObservableImmutableList<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
+        public ThreadSafeObservableList<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
 
         public DiagramShapeButtonCollectionViewModel(IArrangedDiagram diagram)
             : base(diagram)
         {
-            DiagramNodeButtonViewModels = new ObservableImmutableList<DiagramShapeButtonViewModelBase>(CreateButtons());
+            DiagramNodeButtonViewModels = new ThreadSafeObservableList<DiagramShapeButtonViewModelBase>(CreateButtons());
         }
 
         public void AssignButtonsTo(DiagramShapeViewModelBase diagramShapeViewModel)

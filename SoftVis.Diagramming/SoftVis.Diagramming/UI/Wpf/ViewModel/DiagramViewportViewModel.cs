@@ -18,8 +18,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase
     {
-        public ObservableImmutableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
-        public ObservableImmutableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
+        public ThreadSafeObservableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public ThreadSafeObservableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
 
@@ -51,9 +51,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
-            DiagramNodeViewModels = new ObservableImmutableList<DiagramNodeViewModel>();
+            DiagramNodeViewModels = new ThreadSafeObservableList<DiagramNodeViewModel>();
 
-            DiagramConnectorViewModels = new ObservableImmutableList<DiagramConnectorViewModel>();
+            DiagramConnectorViewModels = new ThreadSafeObservableList<DiagramConnectorViewModel>();
 
             MinZoom = minZoom;
             MaxZoom = maxZoom;
@@ -83,7 +83,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             AddDiagram(diagram);
         }
 
-        public ObservableImmutableList<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
+        public ThreadSafeObservableList<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
             => _diagramShapeButtonCollectionViewModel.DiagramNodeButtonViewModels;
 
         public double ViewportZoom
@@ -142,9 +142,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.ShapeAdded += OnShapeAdded;
-            Diagram.ShapeRemoved += OnShapeRemoved;
-            Diagram.Cleared += OnDiagramCleared;
+            Diagram.ShapeAdded += i => EnsureUiThread(() => OnShapeAdded(i));
+            Diagram.ShapeRemoved += i => EnsureUiThread(() => OnShapeRemoved(i));
+            Diagram.Cleared += () => EnsureUiThread(OnDiagramCleared);
         }
 
         private void SubscribeToDiagramShapeButtonEvents()
@@ -239,10 +239,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             if (diagramShapeViewModel is DiagramNodeViewModel)
-                DiagramNodeViewModels.DoAdd(i => (DiagramNodeViewModel)diagramShapeViewModel);
+                DiagramNodeViewModels.Add((DiagramNodeViewModel)diagramShapeViewModel);
 
             else if (diagramShapeViewModel is DiagramConnectorViewModel)
-                DiagramConnectorViewModels.DoAdd(i => (DiagramConnectorViewModel)diagramShapeViewModel);
+                DiagramConnectorViewModels.Add((DiagramConnectorViewModel)diagramShapeViewModel);
 
             else
                 throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
@@ -251,10 +251,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void RemoveFromViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             if (diagramShapeViewModel is DiagramNodeViewModel)
-                DiagramNodeViewModels.DoRemove(i => (DiagramNodeViewModel)diagramShapeViewModel);
+                DiagramNodeViewModels.Remove((DiagramNodeViewModel)diagramShapeViewModel);
 
             else if (diagramShapeViewModel is DiagramConnectorViewModel)
-                DiagramConnectorViewModels.DoRemove(i => (DiagramConnectorViewModel)diagramShapeViewModel);
+                DiagramConnectorViewModels.Remove((DiagramConnectorViewModel)diagramShapeViewModel);
 
             else
                 throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");

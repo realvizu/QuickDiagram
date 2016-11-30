@@ -27,8 +27,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         where TViewModel : ViewModelBase
         where TContentPresenter : AnimatedContentPresenter, new()
     {
-        private ObservableImmutableList<TViewModel> _originalItemsSource;
-        private ObservableImmutableList<TViewModel> _presentedItemsSource;
+        private ThreadSafeObservableList<TViewModel> _originalItemsSource;
+        private ThreadSafeObservableList<TViewModel> _presentedItemsSource;
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -45,15 +45,15 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             if (ReferenceEquals(newValue, _presentedItemsSource))
                 return;
 
-            SetUpDuplicatedItemsSource((ObservableImmutableList<TViewModel>)newValue);
+            SetUpDuplicatedItemsSource((ThreadSafeObservableList<TViewModel>)newValue);
         }
 
-        private void SetUpDuplicatedItemsSource(ObservableImmutableList<TViewModel> viewModels)
+        private void SetUpDuplicatedItemsSource(ThreadSafeObservableList<TViewModel> viewModels)
         {
             _originalItemsSource = viewModels;
             ((INotifyCollectionChanged)_originalItemsSource).CollectionChanged += OnOriginalCollectionChanged;
 
-            _presentedItemsSource = new ObservableImmutableList<TViewModel>(_originalItemsSource);
+            _presentedItemsSource = new ThreadSafeObservableList<TViewModel>(_originalItemsSource);
 
             ItemsSource = _presentedItemsSource;
         }
@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         private void AddItemsToPresentedCollection(IList newItems)
         {
             foreach (var newItem in newItems)
-                _presentedItemsSource.DoAdd(i => (TViewModel)newItem);
+                _presentedItemsSource.Add((TViewModel)newItem);
         }
 
         private void RemoveItemsFromPresentedCollection(IList oldItems)
@@ -93,7 +93,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void OnItemReadyToBeRemoved(ViewModelBase viewModel)
         {
-            _presentedItemsSource.DoRemove(i => viewModel as TViewModel);
+            _presentedItemsSource.Remove((TViewModel)viewModel);
         }
     }
 }
