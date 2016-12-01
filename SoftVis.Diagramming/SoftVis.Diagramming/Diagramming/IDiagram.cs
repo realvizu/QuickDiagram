@@ -22,20 +22,20 @@ namespace Codartis.SoftVis.Diagramming
         event Action<IDiagramShape> ShapeAdded;
         event Action<IDiagramShape> ShapeRemoved;
         event Action<IDiagramShape> ShapeSelected;
-        event Action<IDiagramShape> ShapeActivated;
-        event Action Cleared;
+        event Action<IDiagramShape> ShowSourceRequested;
+        event Action DiagramCleared;
 
         IEnumerable<EntityRelationType> GetEntityRelationTypes();
         ConnectorType GetConnectorType(ModelRelationshipType type);
 
         void ShowItem(IModelItem modelItem);
+        void ShowItems(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken = default(CancellationToken), IProgress<double> progress = null);
         void HideItem(IModelItem modelItem);
-        void ShowItems(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken = default(CancellationToken), IProgress<int> progress = null);
         void HideItems(IEnumerable<IModelItem> modelItems);
         void Clear();
 
         void SelectShape(IDiagramShape diagramShape);
-        void ActivateShape(IDiagramShape diagramShape);
+        void ShowSource(IDiagramShape diagramShape);
         void RemoveShape(IDiagramShape diagramShape);
 
         IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, EntityRelationType relationType);

@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
@@ -35,15 +38,25 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         private void SubscribeToDiagramEvents(IDiagramServices diagramServices)
         {
-            diagramServices.ShapeActivated += OnDiagramShapeActivated;
-            diagramServices.ShapeAdded += OnShapeAddedToDiagram;
+            diagramServices.ShapeAdded += OnShapeAdded;
+            diagramServices.ShowSourceRequested += OnShowSourceRequested;
+            diagramServices.ShowItemsRequested += OnShowItemsRequested;
         }
 
         /// <summary>
-        /// When a shape is activated (i.e. double-clicked) opens the corresponding source file.
+        /// Whenever a shape is added to the diagram we try to proactively expand the model with the related entities.
         /// </summary>
-        /// <param name="diagramShape"></param>
-        private void OnDiagramShapeActivated(IDiagramShape diagramShape)
+        /// <param name="diagramShape">The shape that was added to the diagram.</param>
+        private void OnShapeAdded(IDiagramShape diagramShape)
+        {
+            var diagramNode = diagramShape as IDiagramNode;
+            if (diagramNode == null)
+                return;
+
+            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity);
+        }
+
+        private void OnShowSourceRequested(IDiagramShape diagramShape)
         {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
@@ -52,17 +65,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        /// <summary>
-        /// Whenever a shape is added to the diagram tries to expand the model with the related entities.
-        /// </summary>
-        /// <param name="diagramShape">The shape that was added to the diagram.</param>
-        private void OnShapeAddedToDiagram(IDiagramShape diagramShape)
+        private async void OnShowItemsRequested(List<IModelItem> modelItems)
         {
-            var diagramNode = diagramShape as IDiagramNode;
-            if (diagramNode == null)
+            if (!modelItems.Any())
                 return;
 
-            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity);
+            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelItems);
         }
+
     }
 }

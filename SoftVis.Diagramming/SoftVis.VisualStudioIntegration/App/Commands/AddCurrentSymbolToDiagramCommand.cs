@@ -6,9 +6,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Adds the current symbol (the one at the caret) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
-    internal sealed class AddToDiagramCommand : AsyncCommandBase
+    internal sealed class AddCurrentSymbolToDiagramCommand : AsyncCommandBase
     {
-        public AddToDiagramCommand(IAppServices appServices)
+        public AddCurrentSymbolToDiagramCommand(IAppServices appServices)
             :base(appServices)
         {
         }
@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (modelEntity == null)
                 return;
 
-            DiagramServices.ShowModelEntity(modelEntity);
+            DiagramServices.ShowEntity(modelEntity);
             UiServices.ShowDiagramWindow();
             UiServices.FitDiagramToView();
         }

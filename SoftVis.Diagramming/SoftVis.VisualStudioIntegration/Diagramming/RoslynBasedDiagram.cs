@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
@@ -13,6 +14,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynBasedDiagram : AutoArrangingDiagram, IDiagramServices
     {
+        public event Action<List<IModelItem>> ShowItemsRequested;
+
         public RoslynBasedDiagram(IModelServices modelService)
             : base(modelService.Model)
         {
@@ -34,20 +37,35 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
                 : ConnectorTypes.Generalization;
         }
 
-        public void ShowModelEntity(IRoslynBasedModelEntity modelEntity)
+        public override void ShowItems(IEnumerable<IModelItem> modelItems,
+            CancellationToken cancellationToken = new CancellationToken(),
+            IProgress<double> progress = null)
+        {
+            var modelItemList = modelItems.ToList();
+
+            if (progress == null && modelItemList.Count > 1)
+                ShowItemsRequested?.Invoke(modelItemList);
+            else
+                ShowItemsWithProgress(modelItemList, cancellationToken, progress);
+        }
+
+        public void ShowItemsWithProgress(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken, IProgress<double> progress)
+        {
+            base.ShowItems(modelItems, cancellationToken, progress);
+        }
+
+        public void ShowEntity(IRoslynBasedModelEntity modelEntity)
         {
             ShowItem(modelEntity);
         }
 
-        public void ShowModelEntityWithHierarchy(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IProgress<int> progress)
+        public void ShowEntityWithHierarchy(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IProgress<double> progress)
         {
-            ShowItem(modelEntity);
-
             var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
-            ShowItems(baseTypes, cancellationToken, progress);
-
             var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
-            ShowItems(subtypes, cancellationToken, progress);
+
+            var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
+            ShowItems(entities, cancellationToken, progress);
         }
     }
 }

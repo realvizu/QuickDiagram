@@ -11,9 +11,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Adds the current symbol (the one at the caret) and its hierarchy (base type and subtypes) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
-    internal sealed class AddToDiagramWithHierarchyCommand : AsyncCommandBase
+    internal sealed class AddCurrentSymbolToDiagramWithHierarchyCommand : AsyncCommandBase
     {
-        public AddToDiagramWithHierarchyCommand(IAppServices appServices)
+        public AddCurrentSymbolToDiagramWithHierarchyCommand(IAppServices appServices)
             : base(appServices)
         {
         }
@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             progressDialog.Show();
 
             var cancellationToken = progressDialog.CancellationToken;
-            var progress = new Progress<int>(i => progressDialog.AddProgressCount(i));
+            var progress = new Progress<double>(i => progressDialog.AddProgressCount((int)i));
 
             try
             {
@@ -56,15 +56,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             }
         }
 
-        private void ExtendModelWithRelatedEntities(IModelEntity modelEntity, CancellationToken cancellationToken, IProgress<int> progress)
+        private void ExtendModelWithRelatedEntities(IModelEntity modelEntity, CancellationToken cancellationToken, IProgress<double> progress)
         {
             ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.BaseType, cancellationToken, progress, recursive: true);
             ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.Subtype, cancellationToken, progress, recursive: true);
         }
 
-        private void ExtendDiagram(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IProgress<int> progress)
+        private void ExtendDiagram(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IProgress<double> progress)
         {
-            DiagramServices.ShowModelEntityWithHierarchy(modelEntity, cancellationToken, progress);
+            DiagramServices.ShowEntityWithHierarchy(modelEntity, cancellationToken, progress);
         }
     }
 }

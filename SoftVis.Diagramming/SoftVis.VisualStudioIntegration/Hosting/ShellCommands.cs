@@ -13,8 +13,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public static readonly List<ICommandSpecification> CommandSpecifications =
             new List<ICommandSpecification>
             {
-                new CommandSpecification<AddToDiagramCommand>(VsctConstants.AddToDiagramCommand),
-                new CommandSpecification<AddToDiagramWithHierarchyCommand>(VsctConstants.AddToDiagramWithHierarchyCommand),
+                new CommandSpecification<AddCurrentSymbolToDiagramCommand>(VsctConstants.AddToDiagramCommand),
+                new CommandSpecification<AddCurrentSymbolToDiagramWithHierarchyCommand>(VsctConstants.AddToDiagramWithHierarchyCommand),
                 new CommandSpecification<ClearDiagramCommand>(VsctConstants.ClearDiagramCommand),
                 new CommandSpecification<CopyToClipboardCommand>(VsctConstants.CopyToClipboardCommand),
                 new CommandSpecification<ExportToFileCommand>(VsctConstants.ExportToFileCommand),

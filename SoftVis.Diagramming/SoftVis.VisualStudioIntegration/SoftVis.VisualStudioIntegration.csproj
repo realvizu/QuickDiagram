@@ -52,6 +52,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="App\Commands\AddItemsToDiagramCommand.cs" />
+    <Compile Include="App\Commands\AsyncCommandWithParameterBase.cs" />
     <Compile Include="App\Commands\DiagramImageCreatorCommandBase.cs" />
     <Compile Include="App\Commands\AsyncCommandBase.cs" />
     <Compile Include="App\Selectors\DpiSelector.cs" />
@@ -61,9 +63,9 @@
     <Compile Include="Hosting\CommandRegistration\ComboSpecification.cs" />
     <Compile Include="Hosting\ComboAdapters\DpiComboAdapter.cs" />
     <Compile Include="Hosting\ComboAdapters\ComboCommandType.cs" />
-    <Compile Include="App\Commands\ParameterizedCommandBase.cs" />
-    <Compile Include="App\Commands\AddToDiagramWithHierarchyCommand.cs" />
-    <Compile Include="App\Commands\AddToDiagramCommand.cs" />
+    <Compile Include="App\Commands\SyncCommandWithParameterBase.cs" />
+    <Compile Include="App\Commands\AddCurrentSymbolToDiagramWithHierarchyCommand.cs" />
+    <Compile Include="App\Commands\AddCurrentSymbolToDiagramCommand.cs" />
     <Compile Include="App\Commands\ClearDiagramCommand.cs" />
     <Compile Include="App\CommandBase.cs" />
     <Compile Include="App\Commands\SyncCommandBase.cs" />

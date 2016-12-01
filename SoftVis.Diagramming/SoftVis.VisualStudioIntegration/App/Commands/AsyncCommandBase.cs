@@ -3,7 +3,7 @@
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
-    /// Base class for commands that can be invoked asynchronously and without a parameter.
+    /// Base class for commands that can be invoked asynchronously without a parameter.
     /// </summary>
     internal abstract class AsyncCommandBase : CommandBase
     {

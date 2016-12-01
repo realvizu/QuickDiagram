@@ -1,12 +1,12 @@
 ﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
-    /// Base class for commands that are executed with a parameter.
+    /// Base class for commands that are executed synchronously with a parameter.
     /// </summary>
     /// <typeparam name="T">The type of the command's parameter.</typeparam>
-    internal abstract class ParameterizedCommandBase<T> : CommandBase
+    internal abstract class ParameterizedSyncCommandBase<T> : CommandBase
     {
-        protected ParameterizedCommandBase(IAppServices appServices)
+        protected ParameterizedSyncCommandBase(IAppServices appServices)
             : base(appServices)
         {
         }

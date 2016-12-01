@@ -26,8 +26,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramShape> ShapeAdded;
         public event Action<IDiagramShape> ShapeRemoved;
         public event Action<IDiagramShape> ShapeSelected;
-        public event Action<IDiagramShape> ShapeActivated;
-        public event Action Cleared;
+        public event Action<IDiagramShape> ShowSourceRequested;
+
+        public event Action DiagramCleared;
 
         public event Action<IDiagramNode, Size2D, Size2D> NodeSizeChanged;
         public event Action<IDiagramNode, Point2D, Point2D> NodeTopLeftChanged;
@@ -76,7 +77,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public virtual void Clear()
         {
             _graph.Clear();
-            OnCleared();
+            OnDiagramCleared();
         }
 
         public void ShowItem(IModelItem modelItem) => ShowItems(new[] { modelItem });
@@ -84,7 +85,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public virtual void ShowItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = default(CancellationToken),
-            IProgress<int> progress = null)
+            IProgress<double> progress = null)
         {
             foreach (var modelItem in modelItems)
             {
@@ -115,15 +116,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void SelectShape(IDiagramShape diagramShape)
-        {
-            OnShapeSelected(diagramShape);
-        }
-
-        public void ActivateShape(IDiagramShape diagramShape)
-        {
-            OnShapeActivated(diagramShape);
-        }
+        public void SelectShape(IDiagramShape diagramShape) => OnShapeSelected(diagramShape);
+        public void ShowSource(IDiagramShape diagramShape) => OnShowSourceRequested(diagramShape);
 
         public void RemoveShape(IDiagramShape diagramShape)
         {
@@ -156,7 +150,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        protected virtual void ShowEntityCore(IModelEntity modelEntity)
+        private void ShowEntityCore(IModelEntity modelEntity)
         {
             if (NodeExists(modelEntity))
                 return;
@@ -170,7 +164,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// Show a connector on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A relationship model item.</param>
-        protected virtual void ShowRelationshipCore(IModelRelationship modelRelationship)
+        private void ShowRelationshipCore(IModelRelationship modelRelationship)
         {
             if (ConnectorExists(modelRelationship) ||
                 !NodeExists(modelRelationship.Source) ||
@@ -186,7 +180,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// Hide a node from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        protected virtual void HideEntityCore(IModelEntity modelEntity)
+        private void HideEntityCore(IModelEntity modelEntity)
         {
             if (!NodeExists(modelEntity))
                 return;
@@ -211,7 +205,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// Hides a connector from the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A modelRelationship model item.</param>
-        protected virtual void HideRelationshipCore(IModelRelationship modelRelationship)
+        private void HideRelationshipCore(IModelRelationship modelRelationship)
         {
             if (!ConnectorExists(modelRelationship))
                 return;
@@ -342,37 +336,24 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
-        private void OnShapeAdded(IDiagramShape diagramShape)
-        {
-            //Debug.WriteLine($"Firing ShapeAdded({diagramShape}).");
-            ShapeAdded?.Invoke(diagramShape);
-        }
-
-        private void OnShapeRemoved(IDiagramShape diagramShape)
-        {
-            //Debug.WriteLine($"Firing ShapeRemoved({diagramShape}).");
-            ShapeRemoved?.Invoke(diagramShape);
-        }
-
-        private void OnCleared() => Cleared?.Invoke();
+        private void OnShapeAdded(IDiagramShape diagramShape) => ShapeAdded?.Invoke(diagramShape);
+        private void OnShapeRemoved(IDiagramShape diagramShape) => ShapeRemoved?.Invoke(diagramShape);
+        private void OnDiagramCleared() => DiagramCleared?.Invoke();
         private void OnShapeSelected(IDiagramShape diagramShape) => ShapeSelected?.Invoke(diagramShape);
-        private void OnShapeActivated(IDiagramShape diagramShape) => ShapeActivated?.Invoke(diagramShape);
+        private void OnShowSourceRequested(IDiagramShape diagramShape) => ShowSourceRequested?.Invoke(diagramShape);
 
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize)
         {
-            //Debug.WriteLine($"Firing NodeResized({diagramNode}, {oldSize}, {newSize}.");
             NodeSizeChanged?.Invoke(diagramNode, oldSize, newSize);
         }
 
         private void OnDiagramNodeTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
         {
-            //Debug.WriteLine($"Firing NodeMoved({diagramNode}, {oldTopLeft}, {newTopLeft}.");
             NodeTopLeftChanged?.Invoke(diagramNode, oldTopLeft, newTopLeft);
         }
 
         private void OnDiagramConnectorRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute)
         {
-            //Debug.WriteLine($"Firing ConnectorRerouted({diagramConnector}, {oldRoute}, {newRoute}.");
             ConnectorRouteChanged?.Invoke(diagramConnector, oldRoute, newRoute);
         }
 

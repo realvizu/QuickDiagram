@@ -147,13 +147,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             Diagram.ShapeAdded += i => EnsureUiThread(() => OnShapeAdded(i));
             Diagram.ShapeRemoved += i => EnsureUiThread(() => OnShapeRemoved(i));
-            Diagram.Cleared += () => EnsureUiThread(OnDiagramCleared);
+            Diagram.DiagramCleared += () => EnsureUiThread(OnDiagramCleared);
         }
 
         private void SubscribeToDiagramShapeButtonEvents()
         {
             foreach (var showRelatedNodeButtonViewModel in DiagramShapeButtonViewModels.OfType<ShowRelatedNodeButtonViewModel>())
+            {
                 showRelatedNodeButtonViewModel.EntitySelectorRequested += OnEntitySelectorRequested;
+            }
         }
 
         private void AddDiagram(IDiagram diagram)

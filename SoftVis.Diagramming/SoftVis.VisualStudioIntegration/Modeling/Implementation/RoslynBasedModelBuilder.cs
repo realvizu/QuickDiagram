@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
-            CancellationToken cancellationToken = default(CancellationToken), IProgress<int> progress = null, bool recursive = false)
+            CancellationToken cancellationToken = default(CancellationToken), IProgress<double> progress = null, bool recursive = false)
         {
             var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
             if (roslynBasedModelEntity == null)
@@ -94,7 +94,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return namedTypeSymbol.OriginalDefinition ?? namedTypeSymbol;
         }
 
-        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol, IProgress<int> progress = null )
+        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol, IProgress<double> progress = null )
         {
             var modelEntity = _model.GetModelEntity(namedTypeSymbol);
             if (modelEntity == null)

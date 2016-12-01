@@ -96,7 +96,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDoubleClick()
         {
-            Diagram.ActivateShape(DiagramNode);
+            Diagram.ShowSource(DiagramNode);
         }
 
         private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()

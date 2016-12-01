@@ -1,7 +1,7 @@
 ﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
-    /// Base class for commands that can be invoked without a parameter.
+    /// Base class for commands that can be invoked synchronously without a parameter.
     /// </summary>
     internal abstract class SyncCommandBase : CommandBase
     {

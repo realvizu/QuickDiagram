@@ -54,8 +54,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnDoubleClick()
         {
-            var relatedEntities = Model.GetRelatedEntities(AssociatedDiagramNode.ModelEntity, _relationType);
-            Diagram.ShowItems(relatedEntities);
+            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, EntityRelationType);
+            Diagram.ShowItems(undisplayedRelatedEntities);
         }
 
         private void SubscribeToModelEvents()
