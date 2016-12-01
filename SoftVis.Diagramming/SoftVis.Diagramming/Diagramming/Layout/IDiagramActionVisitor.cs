@@ -7,6 +7,5 @@
     {
         void Visit(DiagramNodeAction diagramNodeAction);
         void Visit(DiagramConnectorAction diagramConnectorAction);
-        void Visit(DiagramBatchAction diagramBatchAction);
     }
 }

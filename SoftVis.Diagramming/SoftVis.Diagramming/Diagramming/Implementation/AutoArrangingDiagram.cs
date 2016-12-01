@@ -34,14 +34,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ShapeAdded += OnShapeAdded;
             ShapeRemoved += OnShapeRemoved;
             NodeSizeChanged += OnNodeSizeChanged;
-            BatchAddStarted += OnBatchStarted;
-            BatchAddFinished += OnBatchFinished;
-            BatchRemoveStarted += OnBatchStarted;
-            BatchRemoveFinished += OnBatchFinished;
 
             Task.Run(() => ProcessDiagramShapeActions(_automaticLayoutCancellation.Token));
         }
-        
+
         public void Dispose()
         {
             _automaticLayoutCancellation.Cancel();
@@ -90,22 +86,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 EnqueueDiagramAction(new DiagramConnectorAction(diagramConnector, ShapeActionType.Remove));
         }
 
-        private void OnBatchStarted()
-        {
-            EnqueueDiagramAction(new DiagramBatchAction(BatchActionType.Start));
-        }
-
-        private void OnBatchFinished()
-        {
-            EnqueueDiagramAction(new DiagramBatchAction(BatchActionType.Finish));
-        }
-
-        private void ProcessDiagramShapeActions(CancellationToken cancellationToken)
+        private async void ProcessDiagramShapeActions(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)) && NotInBatch(_diagramActionQueue))
+                if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)))
                 {
+                    await AwaitSuccessiveEventsToReduceLayoutCalculationRounds();
+
                     var diagramActions = GetBatchFromQueue(_diagramActionQueue);
                     if (diagramActions.Any())
                         ApplyDiagramActions(diagramActions);
@@ -113,20 +101,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        private static bool NotInBatch(Queue<DiagramAction> diagramActionQueue)
+        private static async Task AwaitSuccessiveEventsToReduceLayoutCalculationRounds()
         {
-            lock (diagramActionQueue)
-            {
-                return diagramActionQueue.All(i => !IsBatchStart(i))
-                     || diagramActionQueue.Any(IsBatchFinish);
-            }
+            await Task.Delay(TimeSpan.FromMilliseconds(10));
         }
-
-        private static bool IsBatchStart(DiagramAction diagramAction) =>
-            diagramAction is DiagramBatchAction && ((DiagramBatchAction)diagramAction).Type == BatchActionType.Start;
-
-        private static bool IsBatchFinish(DiagramAction diagramAction) =>
-            diagramAction is DiagramBatchAction && ((DiagramBatchAction)diagramAction).Type == BatchActionType.Finish;
 
         private static List<DiagramAction> GetBatchFromQueue(Queue<DiagramAction> diagramActionQueue)
         {
