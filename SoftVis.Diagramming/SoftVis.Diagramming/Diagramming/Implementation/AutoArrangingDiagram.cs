@@ -92,7 +92,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             {
                 if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)))
                 {
-                    await AwaitSuccessiveEventsToReduceLayoutCalculationRounds();
+                    while (await AreEventsArrivingInRapidSuccession())
+                    { }
 
                     var diagramActions = GetBatchFromQueue(_diagramActionQueue);
                     if (diagramActions.Any())
@@ -101,9 +102,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        private static async Task AwaitSuccessiveEventsToReduceLayoutCalculationRounds()
+        private async Task<bool> AreEventsArrivingInRapidSuccession()
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(10));
+            var queueLengthBeforeWait = GetDiagramActionQueueLength();
+            await Task.Delay(TimeSpan.FromMilliseconds(5));
+            var queueLengthAfterWait = GetDiagramActionQueueLength();
+
+            return queueLengthAfterWait > queueLengthBeforeWait;
+        }
+
+        private int GetDiagramActionQueueLength()
+        {
+            lock (_diagramActionQueue)
+                return _diagramActionQueue.Count;
         }
 
         private static List<DiagramAction> GetBatchFromQueue(Queue<DiagramAction> diagramActionQueue)
