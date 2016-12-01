@@ -142,6 +142,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
+            // Ensure that all diagram-induced view model manipulation occurs on the UI thread to avoid certain race conditions.
+            // (E.g. avoid the case when creating a connector view model precedes the creation of its source and target node view models.)
+
             Diagram.ShapeAdded += i => EnsureUiThread(() => OnShapeAdded(i));
             Diagram.ShapeRemoved += i => EnsureUiThread(() => OnShapeRemoved(i));
             Diagram.Cleared += () => EnsureUiThread(OnDiagramCleared);

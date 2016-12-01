@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             if (Thread.CurrentThread == _dispatcher.Thread)
                 action();
             else
-                _dispatcher.Invoke(action);
+                _dispatcher.BeginInvoke(action, DispatcherPriority.Normal);
         }
     }
 }
