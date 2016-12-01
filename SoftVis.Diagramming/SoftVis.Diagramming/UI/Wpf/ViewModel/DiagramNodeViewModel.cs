@@ -28,9 +28,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode)
               : base(diagram, diagramNode)
         {
-            _topLeft = PointExtensions.Undefined;
-            _size = Size.Empty;
-
             DiagramNode = diagramNode;
             DiagramNode.TopLeftChanged += OnTopLeftChanged;
 
@@ -38,6 +35,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
+
+            _topLeft = PointExtensions.Undefined;
+            _size = Size.Empty;
         }
 
         public string Name => DiagramNode.Name;

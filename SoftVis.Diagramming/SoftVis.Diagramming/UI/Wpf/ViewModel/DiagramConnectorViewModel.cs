@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -16,7 +17,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly DoubleCollection _dashPattern = new DoubleCollection(new[] { 5d, 5d });
 
         private readonly ConnectorType _connectorType;
-        private Point[] _routePoints = new Point[0];
+        private Point[] _routePoints;
 
         public IDiagramConnector DiagramConnector { get; }
         public DiagramNodeViewModel SourceNodeViewModel { get; }
@@ -33,6 +34,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             TargetNodeViewModel = targetNodeViewModel;
 
             _connectorType = Diagram.GetConnectorType(diagramConnector.Type);
+
+            _routePoints = RouteToWpf(diagramConnector.RoutePoints);
         }
 
         public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;
@@ -55,7 +58,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute)
         {
-            RoutePoints = newRoute.Select(i => i.ToWpf()).ToArray();
+            RoutePoints = RouteToWpf(newRoute);
+        }
+
+        private static Point[] RouteToWpf(Route newRoute)
+        {
+            return newRoute.EmptyIfNull().Select(i => i.ToWpf()).ToArray();
         }
 
         public object Clone()
