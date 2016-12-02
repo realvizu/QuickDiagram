@@ -5,6 +5,7 @@ using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
@@ -39,7 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public override void ShowItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = new CancellationToken(),
-            IProgress<double> progress = null)
+            IIncrementalProgress progress = null)
         {
             var modelItemList = modelItems.ToList();
 
@@ -49,7 +50,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
                 ShowItemsWithProgress(modelItemList, cancellationToken, progress);
         }
 
-        public void ShowItemsWithProgress(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken, IProgress<double> progress)
+        public void ShowItemsWithProgress(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             base.ShowItems(modelItems, cancellationToken, progress);
         }
@@ -59,7 +60,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             ShowItem(modelEntity);
         }
 
-        public void ShowEntityWithHierarchy(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IProgress<double> progress)
+        public void ShowEntityWithHierarchy(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
             var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);

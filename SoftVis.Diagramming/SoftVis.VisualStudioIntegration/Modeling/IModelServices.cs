@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
         void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
-            CancellationToken cancellationToken = default(CancellationToken), IProgress<double> progress = null, bool recursive = false);
+            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
 
         /// <summary>
         /// Returns a value indicating whether a model entity has source code.

@@ -98,7 +98,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private async void CopyToClipboardAsync()
         {
-            var progressDialog = new ProgressDialog(Window, "Generating image..", "TestHostApp");
+            var progressDialog = new ProgressDialog(Window, "TestHostApp", "Generating image..");
             progressDialog.Show();
 
             try
@@ -118,9 +118,9 @@ namespace Codartis.SoftVis.TestHostApp
             {
                 var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
                 var cancellationToken = progressDialog.CancellationToken;
-                var progress = new Progress<double>(progressDialog.SetProgressPercentage);
 
-                return await Task.Factory.StartSTA(() => diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progress), cancellationToken);
+                return await Task.Factory.StartSTA(() =>
+                    diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progressDialog.Progress), cancellationToken);
             }
             catch (OperationCanceledException)
             {

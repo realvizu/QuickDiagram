@@ -6,6 +6,7 @@ using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -85,7 +86,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public virtual void ShowItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = default(CancellationToken),
-            IProgress<double> progress = null)
+            IIncrementalProgress progress = null)
         {
             foreach (var modelItem in modelItems)
             {

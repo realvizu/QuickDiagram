@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -26,15 +25,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         private async Task ShowProgressAndAddItems(List<IModelItem> modelItems)
         {
-            var progressDialog = UiServices.ShowProgressDialog("Adding model items...");
+            var progressDialog = UiServices.CreateProgressDialog("Adding model items:", modelItems.Count);
             progressDialog.Show();
-
-            var cancellationToken = progressDialog.CancellationToken;
-            var progress = new PercentCalculatorProgress(i => progressDialog.SetProgressPercentage(i), modelItems.Count);
 
             try
             {
-                await Task.Run(() => DiagramServices.ShowItemsWithProgress(modelItems, cancellationToken, progress), cancellationToken);
+                var cancellationToken = progressDialog.CancellationToken;
+                await Task.Run(() => DiagramServices.ShowItemsWithProgress(modelItems, cancellationToken, progressDialog.Progress), cancellationToken);
             }
             catch (OperationCanceledException)
             {

@@ -11,7 +11,6 @@ using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -48,14 +47,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan)) => _diagramViewModel.ShowPopupMessage(message, hideAfter);
 
         public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
-            IProgress<double> progress = null)
+            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             try
             {
+                // The image creator must be created on the UI thread so it can read the necessary view and view model data.
                 var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, _resourceDictionary);
 
                 return await Task.Factory.StartSTA(() =>
-                    diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress), cancellationToken);
+                    diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress, maxProgress), cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -68,12 +68,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
-        public ProgressDialog ShowProgressDialog(string text, ProgressMode progressMode = ProgressMode.Percentage)
+        public ProgressDialog CreateProgressDialog(string text, int maxProgress = 0)
         {
             var hostMainWindow = _hostUiServices.GetMainWindow();
-            var progressDialog = new ProgressDialog(hostMainWindow, text, DialogTitle, progressMode);
-            progressDialog.Show();
-            return progressDialog;
+            return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
         public string SelectSaveFilename(string title, string filter)

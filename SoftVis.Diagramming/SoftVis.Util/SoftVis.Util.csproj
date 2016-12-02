@@ -59,7 +59,8 @@
     <Compile Include="HashSetExtensions.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="ObjectExtensions.cs" />
-    <Compile Include="PercentCalculatorProgress.cs" />
+    <Compile Include="IIncrementalProgress.cs" />
+    <Compile Include="ProgressAccumulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />

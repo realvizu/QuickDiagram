@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Imaging;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -34,7 +35,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public BitmapSource CreateImage(double dpi, double margin = 0, 
             CancellationToken cancellationToken = default(CancellationToken), 
-            IProgress<double> progress = null)
+            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             var diagramImageViewModel = new DiagramImageViewModel(_diagramNodeViewModels, _diagramConnectorViewModels, _diagramRect, margin);
 
@@ -43,7 +44,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             diagramImageControl.EnsureUpToDate();
 
             var bounds = new Rect(0, 0, diagramImageControl.ActualWidth, diagramImageControl.ActualHeight);
-            return UiToBitmapRenderer.RenderUiElementToBitmap(diagramImageControl, bounds, dpi, cancellationToken, progress);
+            return UiToBitmapRenderer.RenderUiElementToBitmap(diagramImageControl, bounds, dpi, cancellationToken, progress, maxProgress);
         }
 
         private static void ApplyVisualProperties(DiagramImageControl diagramImageControl, IDiagramStlyeProvider diagramStlyeProvider)

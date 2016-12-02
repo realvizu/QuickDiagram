@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -29,7 +30,8 @@ namespace Codartis.SoftVis.Diagramming
         ConnectorType GetConnectorType(ModelRelationshipType type);
 
         void ShowItem(IModelItem modelItem);
-        void ShowItems(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken = default(CancellationToken), IProgress<double> progress = null);
+        void ShowItems(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken = default(CancellationToken),
+            IIncrementalProgress progress = null);
         void HideItem(IModelItem modelItem);
         void HideItems(IEnumerable<IModelItem> modelItems);
         void Clear();

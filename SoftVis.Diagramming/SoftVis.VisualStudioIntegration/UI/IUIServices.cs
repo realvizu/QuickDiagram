@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -16,11 +16,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         void ShowMessageBox(string message);
         void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
-        ProgressDialog ShowProgressDialog(string text, ProgressMode progressMode = ProgressMode.Percentage);
+        ProgressDialog CreateProgressDialog(string text, int maxProgress = 0);
         string SelectSaveFilename(string title, string filter);
 
         void ShowDiagramWindow();
         void FitDiagramToView();
-        Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), IProgress<double> progress = null);
+        Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
+            IIncrementalProgress progress = null, IProgress<int> maxProgress = null);
     }
 }

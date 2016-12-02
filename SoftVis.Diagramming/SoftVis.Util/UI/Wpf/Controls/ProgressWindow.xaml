@@ -18,36 +18,46 @@
     <DockPanel Margin="5">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" MinWidth="300" MaxWidth="600">
             <TextBlock Text="{Binding Text}" Margin="0,0,5,0"/>
-            <TextBlock Text="{Binding ProgressCount}" >
-                <TextBlock.Style>
-                    <Style TargetType="{x:Type TextBlock}">
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Progress}" />
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="/" />
+                    <TextBlock Text="{Binding MaxProgress}" />
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsIndeterminate}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsIndeterminate}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                </StackPanel>
+
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Count}">
+                            <DataTrigger Binding="{Binding Path=ShowProgressNumber}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Percentage}">
+                            <DataTrigger Binding="{Binding Path=ShowProgressNumber}" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBlock.Style>
-            </TextBlock>
+                </StackPanel.Style>
+            </StackPanel>
+
         </StackPanel>
         <ProgressBar DockPanel.Dock="Top" Margin="0,5,0,5"
                      Height="5"
-                     Minimum="0" Maximum="1" Value="{Binding ProgressPercentage}">
-            <ProgressBar.Style>
-                <Style TargetType="{x:Type ProgressBar}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Count}">
-                            <Setter Property="IsIndeterminate" Value="True"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=ProgressMode}" Value="{x:Static viewModels:ProgressMode.Percentage}">
-                            <Setter Property="IsIndeterminate" Value="False"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ProgressBar.Style>
+                     Minimum="0" Maximum="{Binding MaxProgress}" Value="{Binding Progress}"
+                     IsIndeterminate="{Binding IsIndeterminate}">
         </ProgressBar>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button  Width="100" Click="Cancel_OnClick">Cancel</Button>

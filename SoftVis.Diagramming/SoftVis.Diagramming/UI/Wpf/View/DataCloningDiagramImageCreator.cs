@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -28,7 +29,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public BitmapSource CreateImage(double dpi, double margin = 0, 
             CancellationToken cancellationToken = default(CancellationToken),
-            IProgress<double> progress = null)
+            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             var diagramImageCreator = new DiagramImageCreator(
                 Clone(_diagramViewModel.DiagramNodeViewModels),
@@ -37,7 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 _diagramStlyeProvider,
                 _resourceDictionary);
 
-            return diagramImageCreator.CreateImage(dpi, margin, cancellationToken, progress);
+            return diagramImageCreator.CreateImage(dpi, margin, cancellationToken, progress, maxProgress);
         }
 
         private static IEnumerable<DiagramNodeViewModel> Clone(IEnumerable<DiagramNodeViewModel> diagramNodeViewModels)

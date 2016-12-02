@@ -16,14 +16,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
 
         public static BitmapSource RenderUiElementToBitmap(UIElement uiElement, Rect bounds, double targetDpi,
             CancellationToken cancellationToken = default(CancellationToken),
-            IProgress<double> progress = null)
+            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
-            progress?.Report(0);
-
             var drawingVisual = new DrawingVisual();
             using (var drawingContext = drawingVisual.RenderOpen())
             {
-                DrawContentTiles(uiElement, bounds, drawingContext, RenderingTileSize, RenderingTileSize, cancellationToken, progress);
+                DrawContentTiles(uiElement, bounds, drawingContext, RenderingTileSize, RenderingTileSize, cancellationToken, progress, maxProgress);
             }
 
             var scale = targetDpi / DefaultDpi;
@@ -34,21 +32,18 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
             renderTargetBitmap.Render(drawingVisual);
             renderTargetBitmap.Freeze();
 
-            progress?.Report(1);
             return renderTargetBitmap;
         }
 
         private static void DrawContentTiles(Visual visual, Rect bounds, DrawingContext drawingContext, int tileWidth, int tileHeight,
-            CancellationToken cancellationToken, IProgress<double> progress)
-        { 
+            CancellationToken cancellationToken, IIncrementalProgress progress, IProgress<int> maxProgress)
+        {
             var contentWidth = bounds.Width;
             var contentHeight = bounds.Height;
 
             var horizontalTileCount = (int)Math.Ceiling(contentWidth / tileWidth);
             var verticalTileCount = (int)Math.Ceiling(contentHeight / tileHeight);
-
-            var iterationCount = 0;
-            var iterationTarget = horizontalTileCount * verticalTileCount;
+            maxProgress?.Report(horizontalTileCount * verticalTileCount);
 
             for (var i = 0; i < verticalTileCount; i++)
             {
@@ -80,8 +75,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
                     };
                     drawingContext.DrawRectangle(contentBrush, null, new Rect(targetX, targetY, width, height));
 
-                    iterationCount++;
-                    progress?.Report((double)iterationCount / iterationTarget);
+                    progress?.Report(1);
                 }
             }
         }
