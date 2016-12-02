@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         void ShowDiagramWindow();
         void FitDiagramToView();
+        void EnsureDiagramContentVisible();
         Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null);
     }

@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             await ShowProgressAndAddItems(modelItems);
 
             UiServices.ShowDiagramWindow();
-            UiServices.FitDiagramToView();
+            UiServices.EnsureDiagramContentVisible();
         }
 
         private async Task ShowProgressAndAddItems(List<IModelItem> modelItems)

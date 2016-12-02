@@ -104,6 +104,13 @@ namespace Codartis.SoftVis.UI.Wpf
             return _diagramSpaceToScreenSpaceTransform.Inverse?.Transform(pointInScreenSpace) ?? PointExtensions.Undefined;
         }
 
+        public bool IsDiagramRectVisible()
+        {
+            var diagramRect = _diagram.ContentRect.ToWpf();
+            var viewportRect = ProjectViewportIntoDiagramSpace();
+            return viewportRect.IntersectsWith(diagramRect);
+        }
+
         private void UpdateCalculatedProperties(TransitionSpeed transitionSpeed)
         {
             UpdateLinearZoom();

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
@@ -39,6 +40,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnClick()
         {
+            if (AssociatedDiagramNode == null)
+            {
+                // TODO: find out how this happens
+                Debugger.Break();
+                return;
+            }
+
             var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(
                 AssociatedDiagramNode, EntityRelationType).ToList();
 

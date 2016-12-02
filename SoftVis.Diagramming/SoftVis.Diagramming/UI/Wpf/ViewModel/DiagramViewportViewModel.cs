@@ -119,8 +119,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
-            => _viewport.ZoomToContent(transitionSpeed);
+        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => _viewport.ZoomToContent(transitionSpeed);
+        public bool IsDiagramContentVisible() => _viewport.IsDiagramRectVisible();
 
         /// <summary>
         /// Keeps the decorations (minibuttons) visible even when the shape loses focus.

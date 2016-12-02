@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             DiagramServices.ShowEntity(modelEntity);
             UiServices.ShowDiagramWindow();
-            UiServices.FitDiagramToView();
+            UiServices.EnsureDiagramContentVisible();
         }
     }
 }

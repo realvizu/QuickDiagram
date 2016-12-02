@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -43,10 +44,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
         public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
-        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
-        public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan)) => _diagramViewModel.ShowPopupMessage(message, hideAfter);
 
-        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
+        public void EnsureDiagramContentVisible()
+        {
+            InvokeOnIdleUi(() =>
+            {
+                if (!_diagramViewModel.IsDiagramContentVisible())
+                    _diagramViewModel.ZoomToContent();
+            });
+        }
+
+        public void ShowMessageBox(string message)
+        {
+            System.Windows.MessageBox.Show(message, DialogTitle);
+        }
+
+        public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan))
+        {
+            _diagramViewModel.ShowPopupMessage(message, hideAfter);
+        }
+
+        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken),
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             try
@@ -84,6 +102,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private void HandleOutOfMemory()
         {
             ShowMessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
+        }
+
+        private static void InvokeOnIdleUi(Action action)
+        {
+            Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
         }
     }
 }

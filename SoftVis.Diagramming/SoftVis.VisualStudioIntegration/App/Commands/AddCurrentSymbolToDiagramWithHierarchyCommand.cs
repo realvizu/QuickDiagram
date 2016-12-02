@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             await ShowProgressAndExtendModel(modelEntity);
 
             UiServices.ShowDiagramWindow();
-            UiServices.FitDiagramToView();
+            UiServices.EnsureDiagramContentVisible();
         }
 
         private async Task ShowProgressAndExtendModel(IRoslynBasedModelEntity modelEntity)

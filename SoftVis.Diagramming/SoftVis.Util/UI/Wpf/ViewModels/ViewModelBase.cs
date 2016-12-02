@@ -25,12 +25,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected void EnsureUiThread(Action action)
+        protected void EnsureUiThread(Action action, DispatcherPriority dispatcherPriority = DispatcherPriority.Send)
         {
             if (Thread.CurrentThread == _dispatcher.Thread)
                 action();
             else
-                _dispatcher.Invoke(action);
+                _dispatcher.Invoke(action, dispatcherPriority);
         }
     }
 }
