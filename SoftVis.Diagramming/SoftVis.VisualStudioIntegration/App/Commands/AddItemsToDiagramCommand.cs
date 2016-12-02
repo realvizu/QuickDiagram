@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         private async Task ShowProgressAndAddItems(List<IModelItem> modelItems)
         {
             var progressDialog = UiServices.CreateProgressDialog("Adding model items:", modelItems.Count);
-            progressDialog.Show();
+            progressDialog.ShowWithDelayAsync();
 
             try
             {

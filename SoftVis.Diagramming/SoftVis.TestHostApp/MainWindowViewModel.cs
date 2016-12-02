@@ -99,7 +99,7 @@ namespace Codartis.SoftVis.TestHostApp
         private async void CopyToClipboardAsync()
         {
             var progressDialog = new ProgressDialog(Window, "TestHostApp", "Generating image..");
-            progressDialog.Show();
+            progressDialog.ShowWithDelayAsync();
 
             try
             {

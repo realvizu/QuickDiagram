@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             // Using int.MaxValue for max progress because the real max value is not yet known.
             var progressDialog = UiServices.CreateProgressDialog("Generating image..", int.MaxValue);
             progressDialog.ShowProgressNumber = false;
-            progressDialog.Show();
+            progressDialog.ShowWithDelayAsync();
 
             try
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Codartis.SoftVis.Util.UI.Wpf.Controls;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
@@ -50,8 +51,22 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             set { _viewModel.ShowProgressNumber = value; }
         }
 
-        public void Show() => _window.ShowNonBlockingModal();
-        public void Close() => _window.Close();
+        public async void ShowWithDelayAsync(int delayMillisec = 500)
+        {
+            try
+            {
+                await Task.Delay(delayMillisec, CancellationToken);
+                _window.ShowNonBlockingModal();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
+
+        public void Close()
+        {
+            _window.Close();
+        }
 
         private void WindowOnClosed(object sender, EventArgs eventArgs)
         {

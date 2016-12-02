@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         private async Task ShowProgressAndExtendModel(IRoslynBasedModelEntity modelEntity)
         {
             var progressDialog = UiServices.CreateProgressDialog("Extending model with entities:");
-            progressDialog.Show();
+            progressDialog.ShowWithDelayAsync();
 
             try
             {
