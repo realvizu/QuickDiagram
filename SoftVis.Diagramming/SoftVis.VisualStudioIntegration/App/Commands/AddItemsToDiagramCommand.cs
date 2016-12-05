@@ -33,13 +33,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                 var cancellationToken = progressDialog.CancellationToken;
                 await Task.Run(() => DiagramServices.ShowItemsWithProgress(modelItems, cancellationToken, progressDialog.Progress), cancellationToken);
             }
-            catch (OperationCanceledException)
-            {
-            }
-            finally
-            {
-                progressDialog.Close();
-            }
+            catch (OperationCanceledException) { }
+            finally { progressDialog.Close(); }
         }
     }
 }

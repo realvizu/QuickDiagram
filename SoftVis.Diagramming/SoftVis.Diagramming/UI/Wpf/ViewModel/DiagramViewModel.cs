@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Top level view model of the diagram control.
     /// </summary>
-    public class DiagramViewModel : DiagramViewModelBase
+    public class DiagramViewModel : DiagramViewModelBase, IDisposable
     {
         private Rect _diagramContentRect;
 
@@ -32,6 +33,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
+        }
+
+        public void Dispose()
+        {
+            RelatedEntityListBoxViewModel.ItemSelected -= OnRelatedEntitySelected;
+
+            UnsubscribeFromDiagramEvents();
+            UnsubscribeFromViewportEvents();
+
+            DiagramViewportViewModel.Dispose();
         }
 
         public IEnumerable<DiagramNodeViewModel> DiagramNodeViewModels => DiagramViewportViewModel.DiagramNodeViewModels;
@@ -62,6 +73,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.InputReceived += OnViewportInputReceived;
             DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
+        }
+
+        private void UnsubscribeFromViewportEvents()
+        {
+            DiagramViewportViewModel.InputReceived -= OnViewportInputReceived;
+            DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
+            DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
         }
 
         private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
@@ -106,19 +124,35 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             PopupTextViewModel.Hide();
         }
 
-        private void SubscribeToDiagramEvents()
-        {
-            Diagram.ShapeAdded += i => UpdateDiagramContentRect();
-            Diagram.ShapeRemoved += i => UpdateDiagramContentRect();
-            Diagram.DiagramCleared += OnCleared;
-            Diagram.NodeSizeChanged += (i, j, k) => UpdateDiagramContentRect();
-            Diagram.NodeTopLeftChanged += (i, j, k) => UpdateDiagramContentRect();
-            Diagram.ConnectorRouteChanged += (i, j, k) => UpdateDiagramContentRect();
-        }
-
         private void UpdateDiagramContentRect()
         {
             DiagramContentRect = Diagram.ContentRect.ToWpf();
+        }
+
+        private void OnDiagramShapeAdded(IDiagramShape diagramShape) => UpdateDiagramContentRect();
+        private void OnDiagramShapeRemoved(IDiagramShape diagramShape) => UpdateDiagramContentRect();
+        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize) => UpdateDiagramContentRect();
+        private void OnDiagramNodeTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft) => UpdateDiagramContentRect();
+        private void OnDiagramConnectorRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute) => UpdateDiagramContentRect();
+
+        private void SubscribeToDiagramEvents()
+        {
+            Diagram.ShapeAdded += OnDiagramShapeAdded;
+            Diagram.ShapeRemoved += OnDiagramShapeRemoved;
+            Diagram.DiagramCleared += OnCleared;
+            Diagram.NodeSizeChanged += OnDiagramNodeSizeChanged;
+            Diagram.NodeTopLeftChanged += OnDiagramNodeTopLeftChanged;
+            Diagram.ConnectorRouteChanged += OnDiagramConnectorRouteChanged;
+        }
+
+        private void UnsubscribeFromDiagramEvents()
+        {
+            Diagram.ShapeAdded -= OnDiagramShapeAdded;
+            Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
+            Diagram.DiagramCleared -= OnCleared;
+            Diagram.NodeSizeChanged -= OnDiagramNodeSizeChanged;
+            Diagram.NodeTopLeftChanged -= OnDiagramNodeTopLeftChanged;
+            Diagram.ConnectorRouteChanged -= OnDiagramConnectorRouteChanged;
         }
     }
 }

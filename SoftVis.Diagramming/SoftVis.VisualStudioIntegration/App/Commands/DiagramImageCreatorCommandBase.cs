@@ -33,13 +33,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                     await Task.Factory.StartSTA(() => imageProcessingAction(bitmapSource), cancellationToken);
                 }
             }
-            catch (OperationCanceledException)
-            {
-            }
-            finally
-            {
-                progressDialog.Close();
-            }
+            catch (OperationCanceledException) { }
+            finally { progressDialog.Close(); }
         }
     }
 }

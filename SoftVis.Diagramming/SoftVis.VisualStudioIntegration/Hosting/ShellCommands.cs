@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 new CommandSpecification<AddCurrentSymbolToDiagramCommand>(VsctConstants.AddToDiagramCommand),
                 new CommandSpecification<AddCurrentSymbolToDiagramWithHierarchyCommand>(VsctConstants.AddToDiagramWithHierarchyCommand),
                 new CommandSpecification<ClearDiagramCommand>(VsctConstants.ClearDiagramCommand),
+                new CommandSpecification<UpdateModelFromSourceCommand>(VsctConstants.UpdateModelFromCodeCommand),
                 new CommandSpecification<CopyToClipboardCommand>(VsctConstants.CopyToClipboardCommand),
                 new CommandSpecification<ExportToFileCommand>(VsctConstants.ExportToFileCommand),
                 new CommandSpecification<ShowDiagramWindowCommand>(VsctConstants.ShowDiagramWindowCommand),

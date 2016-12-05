@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -7,7 +8,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a control used for generating diagram image.
     /// </summary>
-    public class DiagramImageViewModel : ViewModelBase
+    public class DiagramImageViewModel : ViewModelBase, IDisposable
     {
         public IEnumerable<DiagramNodeViewModel> DiagramNodeViewModels { get; }
         public IEnumerable<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
@@ -20,6 +21,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramNodeViewModels = diagramNodeViewModels;
             DiagramConnectorViewModels = diagramConnectorViewModels;
             Rect = CalculateExportImageRect(contentRect, margin);
+        }
+
+        public void Dispose()
+        {
+            foreach (var diagramNodeViewModel in DiagramNodeViewModels)
+                diagramNodeViewModel.Dispose();
+
+            foreach (var diagramConnectorViewModel in DiagramConnectorViewModels)
+                diagramConnectorViewModel.Dispose();
         }
 
         private static Rect CalculateExportImageRect(Rect diagramContentRect, double margin)

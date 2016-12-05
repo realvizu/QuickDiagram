@@ -45,13 +45,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
                 await Task.Run(() => ExtendDiagram(modelEntity, cancellationToken, progressDialog.Progress), cancellationToken);
             }
-            catch (OperationCanceledException)
-            {
-            }
-            finally
-            {
-                progressDialog.Close();
-            }
+            catch (OperationCanceledException) { }
+            finally { progressDialog.Close(); }
         }
 
         private void ExtendModelWithRelatedEntities(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)

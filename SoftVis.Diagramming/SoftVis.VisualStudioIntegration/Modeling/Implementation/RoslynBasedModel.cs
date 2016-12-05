@@ -36,5 +36,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return Entities.OfType<RoslynBasedModelEntity>()
                 .FirstOrDefault(i => namedTypeSymbol.SymbolEquals(i.RoslynSymbol));
         }
+
+        public void UpdateEntity(RoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
+        {
+            entity.UpdateRoslynSymbol(roslynSymbol);
+            UpdateEntity(entity, roslynSymbol.GetMinimallyQualifiedName(), roslynSymbol.GetFullyQualifiedName());
+        }
     }
 }

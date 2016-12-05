@@ -21,6 +21,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             SubscribeToModelEvents();
         }
 
+        public override void Dispose()
+        {
+            UnsubscribeFromModelEvents();
+        }
+
         public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationType.Type);
 
         private EntityRelationType EntityRelationType => _relationType;
@@ -43,7 +48,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (AssociatedDiagramNode == null)
             {
                 // TODO: find out how this happens
-                Debugger.Break();
+                //Debugger.Break();
                 return;
             }
 
@@ -66,10 +71,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShowItems(undisplayedRelatedEntities);
         }
 
+        private void OnModelRelationshipAdded(object sender, IModelRelationship relationship) => UpdateEnabledState();
+        private void OnModelRelationshipRemoved(object sender, IModelRelationship relationship) => UpdateEnabledState();
+
         private void SubscribeToModelEvents()
         {
-            Model.RelationshipAdded += (o, e) => UpdateEnabledState();
-            Model.RelationshipRemoved += (o, e) => UpdateEnabledState();
+            Model.RelationshipAdded +=  OnModelRelationshipAdded;
+            Model.RelationshipRemoved += OnModelRelationshipRemoved;
+        }
+
+        private void UnsubscribeFromModelEvents()
+        {
+            Model.RelationshipAdded -= OnModelRelationshipAdded;
+            Model.RelationshipRemoved -= OnModelRelationshipRemoved;
         }
 
         private void UpdateEnabledState()

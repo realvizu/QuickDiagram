@@ -37,14 +37,15 @@ namespace Codartis.SoftVis.UI.Wpf.View
             CancellationToken cancellationToken = default(CancellationToken), 
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
-            var diagramImageViewModel = new DiagramImageViewModel(_diagramNodeViewModels, _diagramConnectorViewModels, _diagramRect, margin);
+            using (var diagramImageViewModel = new DiagramImageViewModel(_diagramNodeViewModels, _diagramConnectorViewModels, _diagramRect, margin))
+            {
+                var diagramImageControl = new DiagramImageControl(_resourceDictionary) {DataContext = diagramImageViewModel};
+                ApplyVisualProperties(diagramImageControl, _diagramStlyeProvider);
+                diagramImageControl.EnsureUpToDate();
 
-            var diagramImageControl = new DiagramImageControl(_resourceDictionary) { DataContext = diagramImageViewModel };
-            ApplyVisualProperties(diagramImageControl, _diagramStlyeProvider);
-            diagramImageControl.EnsureUpToDate();
-
-            var bounds = new Rect(0, 0, diagramImageControl.ActualWidth, diagramImageControl.ActualHeight);
-            return UiToBitmapRenderer.RenderUiElementToBitmap(diagramImageControl, bounds, dpi, cancellationToken, progress, maxProgress);
+                var bounds = new Rect(0, 0, diagramImageControl.ActualWidth, diagramImageControl.ActualHeight);
+                return UiToBitmapRenderer.RenderUiElementToBitmap(diagramImageControl, bounds, dpi, cancellationToken, progress, maxProgress);
+            }
         }
 
         private static void ApplyVisualProperties(DiagramImageControl diagramImageControl, IDiagramStlyeProvider diagramStlyeProvider)

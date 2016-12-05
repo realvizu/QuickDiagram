@@ -15,11 +15,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynBasedDiagram : AutoArrangingDiagram, IDiagramServices
     {
+        private readonly IModelServices _modelServices;
+
         public event Action<List<IModelItem>> ShowItemsRequested;
 
-        public RoslynBasedDiagram(IModelServices modelService)
-            : base(modelService.Model)
+        public RoslynBasedDiagram(IModelServices modelServices)
+            : base(modelServices.Model)
         {
+            _modelServices = modelServices;
         }
 
         public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
@@ -67,6 +70,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
             var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
             ShowItems(entities, cancellationToken, progress);
+        }
+
+        public void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            foreach (var diagramNode in Nodes.ToArray())
+            {
+                _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity, cancellationToken: cancellationToken);
+                progress?.Report(1);
+            }
         }
     }
 }

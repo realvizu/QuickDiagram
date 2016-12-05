@@ -52,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="App\Commands\UpdateModelFromSourceCommand.cs" />
     <Compile Include="App\Commands\AddItemsToDiagramCommand.cs" />
     <Compile Include="App\Commands\AsyncCommandWithParameterBase.cs" />
     <Compile Include="App\Commands\DiagramImageCreatorCommandBase.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Hosting\CommandRegistration\ICommandSpecification.cs" />
     <Compile Include="Hosting\CommandRegistration\CommandSpecification.cs" />
     <Compile Include="Hosting\ShellCommands.cs" />
+    <Compile Include="Modeling\Implementation\RoslynBasedModelUpdater.cs" />
     <Compile Include="UI\FrameMode.cs" />
     <Compile Include="UI\IHostUiServices.cs" />
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />

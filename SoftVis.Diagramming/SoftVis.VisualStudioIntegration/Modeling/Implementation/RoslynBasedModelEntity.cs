@@ -14,7 +14,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     public abstract class RoslynBasedModelEntity : ModelEntity, IRoslynBasedModelEntity
     {
-        public INamedTypeSymbol RoslynSymbol { get; }
+        private readonly TypeKind _typeKind;
+
+        public INamedTypeSymbol RoslynSymbol { get; private set; }
 
         protected RoslynBasedModelEntity(INamedTypeSymbol roslynSymbol, TypeKind typeKind)
             : base(roslynSymbol.GetMinimallyQualifiedName(),
@@ -23,8 +25,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                   typeKind.ToModelEntityStereotype(),
                   roslynSymbol.GetOrigin())
         {
-            if (roslynSymbol.TypeKind != typeKind)
-                throw new ArgumentException($"{roslynSymbol.Name} must be a {typeKind}.");
+            _typeKind = typeKind;
+            UpdateRoslynSymbol(roslynSymbol);
+        }
+
+        public void UpdateRoslynSymbol(INamedTypeSymbol roslynSymbol)
+        {
+            if (roslynSymbol.TypeKind != _typeKind)
+                throw new ArgumentException($"{roslynSymbol.Name} must be a {_typeKind}.");
 
             RoslynSymbol = roslynSymbol;
         }

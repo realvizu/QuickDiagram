@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of diagram connectors.
     /// </summary>
-    public sealed class DiagramConnectorViewModel : DiagramShapeViewModelBase, ICloneable
+    public sealed class DiagramConnectorViewModel : DiagramShapeViewModelBase, ICloneable, IDisposable
     {
         // This member cannot be static because it will be bound to UI elements created on different threads.
         private readonly DoubleCollection _dashPattern = new DoubleCollection(new[] { 5d, 5d });
@@ -28,14 +28,26 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             : base(diagram, diagramConnector)
         {
             DiagramConnector = diagramConnector;
-            DiagramConnector.RouteChanged += OnRouteChanged;
-
             SourceNodeViewModel = sourceNodeViewModel;
             TargetNodeViewModel = targetNodeViewModel;
 
             _connectorType = Diagram.GetConnectorType(diagramConnector.Type);
-
             _routePoints = RouteToWpf(diagramConnector.RoutePoints);
+
+            DiagramConnector.RouteChanged += OnRouteChanged;
+        }
+
+        public void Dispose()
+        {
+            DiagramConnector.RouteChanged -= OnRouteChanged;
+        }
+
+        public object Clone()
+        {
+            return new DiagramConnectorViewModel(Diagram, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel)
+            {
+                _routePoints = _routePoints,
+            };
         }
 
         public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;
@@ -64,14 +76,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private static Point[] RouteToWpf(Route newRoute)
         {
             return newRoute.EmptyIfNull().Select(i => i.ToWpf()).ToArray();
-        }
-
-        public object Clone()
-        {
-            return new DiagramConnectorViewModel(Diagram, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel)
-            {
-                _routePoints = _routePoints,
-            };
         }
     }
 }

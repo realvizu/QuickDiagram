@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
@@ -7,7 +8,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a visual cue that indicates the availability of related entities that are not on the diagram yet.
     /// </summary>
-    public class RelatedEntityCueViewModel : DiagramShapeDecoratorViewModelBase
+    public class RelatedEntityCueViewModel : DiagramShapeDecoratorViewModelBase, IDisposable
     {
         private readonly IDiagramNode _diagramNode;
         private readonly EntityRelationType _entityRelationType;
@@ -23,26 +24,50 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RecalculateVisibility();
         }
 
+        public void Dispose()
+        {
+            UnsubscribeFromModelEvents();
+            UnsubscribeFromDiagramEvents();
+        }
+
         /// <summary>
         /// The placement key is the RelatedEntitySpecification.
         /// </summary>
         public override object PlacementKey => _entityRelationType;
 
+        private void RecalculateVisibility()
+        {
+            IsVisible = Diagram.GetUndisplayedRelatedEntities(_diagramNode, _entityRelationType).Any();
+        }
+
+        private void OnModelRelationshipRemoved(object sender, IModelRelationship relationship) => RecalculateVisibility();
+        private void OnModelRelationshipAdded(object sender, IModelRelationship relationship) => RecalculateVisibility();
+
+        private void OnDiagramShapeRemoved(IDiagramShape shape) => RecalculateVisibility();
+        private void OnDiagramShapeAdded(IDiagramShape shape) => RecalculateVisibility();
+
         private void SubscribeToModelEvents()
         {
-            Model.RelationshipAdded += (sender, relationship) => RecalculateVisibility();
-            Model.RelationshipRemoved += (sender, relationship) => RecalculateVisibility();
+            Model.RelationshipAdded += OnModelRelationshipAdded;
+            Model.RelationshipRemoved += OnModelRelationshipRemoved;
+        }
+
+        private void UnsubscribeFromModelEvents()
+        {
+            Model.RelationshipAdded -= OnModelRelationshipAdded;
+            Model.RelationshipRemoved -= OnModelRelationshipRemoved;
         }
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.ShapeAdded += shape => RecalculateVisibility();
-            Diagram.ShapeRemoved += shape => RecalculateVisibility();
+            Diagram.ShapeAdded += OnDiagramShapeAdded;
+            Diagram.ShapeRemoved += OnDiagramShapeRemoved;
         }
 
-        private void RecalculateVisibility()
+        private void UnsubscribeFromDiagramEvents()
         {
-            IsVisible = Diagram.GetUndisplayedRelatedEntities(_diagramNode, _entityRelationType).Any();
+            Diagram.ShapeAdded -= OnDiagramShapeAdded;
+            Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
         }
     }
 }

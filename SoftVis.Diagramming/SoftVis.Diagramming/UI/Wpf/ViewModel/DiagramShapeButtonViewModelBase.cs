@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using System;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -6,7 +7,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button on a diagram shape.
     /// </summary>
-    public abstract class DiagramShapeButtonViewModelBase : DiagramShapeDecoratorViewModelBase
+    public abstract class DiagramShapeButtonViewModelBase : DiagramShapeDecoratorViewModelBase, IDisposable
     {
         private bool _isEnabled;
 
@@ -21,6 +22,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ClickCommand = new DelegateCommand(OnClick);
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
         }
+
+        public virtual void Dispose() { }
 
         public bool IsEnabled
         {

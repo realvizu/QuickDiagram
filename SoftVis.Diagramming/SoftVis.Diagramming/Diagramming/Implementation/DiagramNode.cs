@@ -16,24 +16,36 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         private Size2D _size;
         private Point2D _topLeft;
+        private string _name;
+        private string _fullName;
 
         public event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         public event Action<IDiagramNode, Point2D, Point2D> TopLeftChanged;
+        public event Action<IDiagramNode, string, string> Renamed;
 
         public DiagramNode(IModelEntity modelEntity)
             : base(modelEntity)
         {
             _size = Size2D.Zero;
             _topLeft = Point2D.Undefined;
+            _name = modelEntity.Name;
+            _fullName = modelEntity.FullName;
         }
 
         public IModelEntity ModelEntity => (IModelEntity)ModelItem;
-        public string Name => ModelEntity.Name;
-        public string FullName => ModelEntity.FullName;
+        public string Name => _name;
+        public string FullName => _fullName;
         public override bool IsRectDefined => Size.IsDefined && TopLeft.IsDefined;
         public override Rect2D Rect => new Rect2D(TopLeft, Size);
         public double Width => Size.Width;
         public double Height => Size.Height;
+
+        public void Rename(string name, string fullName)
+        {
+            _name = name;
+            _fullName = fullName;
+            Renamed?.Invoke(this, name, fullName);
+        }
 
         public virtual Point2D TopLeft
         {
@@ -46,7 +58,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
                     lock (this)
                     {
-                         oldTopLeft = _topLeft;
+                        oldTopLeft = _topLeft;
                         _topLeft = value;
                     }
 

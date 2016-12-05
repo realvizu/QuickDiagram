@@ -7,6 +7,7 @@ using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Util;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
@@ -17,6 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         private readonly RoslynBasedModel _model;
         private readonly IRoslynModelProvider _roslynModelProvider;
+        //private readonly RoslynBasedModelUpdater _roslynBasedModelUpdater;
 
         private static readonly List<string> TrivialBaseSymbolNames =
             new List<string>
@@ -29,6 +31,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             _roslynModelProvider = roslynModelProvider;
             _model = new RoslynBasedModel();
+
+            //var workspace = _roslynModelProvider.GetWorkspace();
+            //_roslynBasedModelUpdater = new RoslynBasedModelUpdater(_model, workspace);
         }
 
         public IReadOnlyModel Model => _model;
@@ -42,7 +47,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return AddEntityIfNotExists(GetOriginalDefinition(namedTypeSymbol));
         }
 
-        public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
+        public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false)
         {
             var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
@@ -85,6 +90,36 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             _roslynModelProvider.ShowSource(roslyBasedModelEntity.RoslynSymbol);
         }
 
+        public void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            var workspace = _roslynModelProvider.GetWorkspace();
+            var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken)).Select(i => i.Result).ToArray();
+
+            foreach (var roslynBasedModelEntity in _model.Entities.OfType<RoslynBasedModelEntity>().ToArray())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var namedTypeSymbol = roslynBasedModelEntity.RoslynSymbol;
+                var newVersionOfSymbol = FindSymbolInCompilations(namedTypeSymbol, compilations, cancellationToken);
+
+                if (newVersionOfSymbol == null)
+                    _model.RemoveEntity(roslynBasedModelEntity);
+                else
+                    _model.UpdateEntity(roslynBasedModelEntity, newVersionOfSymbol);
+
+                progress?.Report(1);
+            }
+        }
+
+        private static INamedTypeSymbol FindSymbolInCompilations(INamedTypeSymbol namedTypeSymbol, IEnumerable<Compilation> compilations, 
+            CancellationToken cancellationToken)
+        {
+            var symbols = compilations.SelectMany(i => SymbolFinder.FindSimilarSymbols(namedTypeSymbol, i, cancellationToken)).ToArray();
+            return symbols.Length == 1
+                ? symbols[0] 
+                : null;
+        }
+
         private static RoslynSymbolRelation GetOriginalDefinition(RoslynSymbolRelation symbolRelation)
         {
             return symbolRelation.WithRelatedSymbol(GetOriginalDefinition(symbolRelation.RelatedSymbol));
@@ -95,7 +130,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return namedTypeSymbol.OriginalDefinition ?? namedTypeSymbol;
         }
 
-        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null )
+        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null)
         {
             var modelEntity = _model.GetModelEntity(namedTypeSymbol);
             if (modelEntity == null)

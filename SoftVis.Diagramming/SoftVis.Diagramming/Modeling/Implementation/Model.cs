@@ -17,6 +17,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public event EventHandler<IModelRelationship> RelationshipAdded;
         public event EventHandler<IModelEntity> EntityRemoved;
         public event EventHandler<IModelRelationship> RelationshipRemoved;
+        public event Action<IModelEntity, string, string> EntityRenamed;
 
         public Model()
         {
@@ -31,8 +32,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IEnumerable<IModelEntity> Entities => _graph.Vertices;
         public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
 
-        public virtual void AddEntity(ModelEntity entity) => _graph.AddVertex(entity);
+        public virtual void AddEntity(IModelEntity entity) => _graph.AddVertex(entity);
         public virtual void AddRelationship(ModelRelationship relationship) => _graph.AddEdge(relationship);
+        public virtual void RemoveEntity(IModelEntity entity) => _graph.RemoveVertex(entity);
+        public virtual void RemoveRelationship(ModelRelationship relationship) => _graph.RemoveEdge(relationship);
+
+        public virtual void UpdateEntity(IModelEntity entity, string name, string fullName)
+        {
+            entity.UpdateName(name, fullName);
+            EntityRenamed?.Invoke(entity, name, fullName);
+        }
 
         public IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type)
         {
@@ -57,6 +66,9 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, 
             bool recursive = false)
         {
+            if (!_graph.ContainsVertex(entity))
+                yield break;
+
             var relatedEntities = relationType.Direction == EntityRelationDirection.Incoming
                 ? _graph.InEdges(entity).Where(i => i.Type == relationType.Type).Select(i => i.Source).Distinct()
                 : _graph.OutEdges(entity).Where(i => i.Type == relationType.Type).Select(i => i.Target).Distinct();

@@ -41,7 +41,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 throw new ArgumentNullException(nameof(model));
 
             Model = model;
+            Model.EntityRenamed += OnEntityRenamed;
             Model.RelationshipAdded += OnRelationshipAdded;
+            Model.EntityRemoved += OnEntityRemoved;
+            Model.RelationshipRemoved += OnRelationshipRemoved;
 
             _graph = new DiagramGraph();
         }
@@ -361,6 +364,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private void OnRelationshipAdded(object sender, IModelRelationship modelRelationship)
         {
             ShowRelationshipIfBothEndsAreVisible(modelRelationship);
+        }
+
+        private void OnEntityRemoved(object sender, IModelEntity modelEntity)
+        {
+            HideItem(modelEntity);
+        }
+
+        private void OnRelationshipRemoved(object sender, IModelRelationship modelRelationship)
+        {
+            HideItem(modelRelationship);
+        }
+
+        private void OnEntityRenamed(IModelEntity modelEntity, string name, string fullName)
+        {
+            var diagramNode = FindNode(modelEntity);
+            diagramNode?.Rename(name, fullName);
         }
     }
 }

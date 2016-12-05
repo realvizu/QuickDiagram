@@ -38,5 +38,7 @@
         int Priority { get; }
 
         bool IsAbstract { get; }
+
+        void UpdateName(string name, string fullName);
     }
 }

@@ -8,8 +8,8 @@ namespace Codartis.SoftVis.Modeling.Implementation
     [DebuggerDisplay("{Name} ({Classifier}/{Stereotype})")]
     public class ModelEntity : IModelEntity
     {
-        public string Name { get; }
-        public string FullName { get; }
+        public string Name { get; private set; }
+        public string FullName { get; private set; }
         public ModelEntityClassifier Classifier { get; }
         public ModelEntityStereotype Stereotype { get; }
         public ModelOrigin Origin { get; }
@@ -20,11 +20,17 @@ namespace Codartis.SoftVis.Modeling.Implementation
         protected ModelEntity(string name, string fullName,
             ModelEntityClassifier classifier, ModelEntityStereotype stereotype, ModelOrigin origin)
         {
-            Name = name;
-            FullName = fullName;
+            UpdateName(name, fullName);
+
             Classifier = classifier;
             Stereotype = stereotype;
             Origin = origin;
+        }
+
+        public void UpdateName(string name, string fullName)
+        {
+            Name = name;
+            FullName = fullName;
         }
 
         public override string ToString()

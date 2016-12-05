@@ -13,10 +13,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of a diagram node.
     /// </summary>
-    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, ICloneable
+    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, ICloneable, IDisposable
     {
         private Point _topLeft;
         private Size _size;
+        private string _name;
+        private string _fullName;
 
         public IDiagramNode DiagramNode { get; }
 
@@ -29,23 +31,60 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
               : base(diagram, diagramNode)
         {
             DiagramNode = diagramNode;
-            DiagramNode.TopLeftChanged += OnTopLeftChanged;
+
+            _topLeft = PointExtensions.Undefined;
+            _size = Size.Empty;
+            _name = diagramNode.Name;
+            _fullName = diagramNode.FullName;
 
             FocusCommand = new DelegateCommand(Focus);
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
 
-            _topLeft = PointExtensions.Undefined;
-            _size = Size.Empty;
+            DiagramNode.TopLeftChanged += OnTopLeftChanged;
+            DiagramNode.Renamed += OnRenamed;
         }
 
-        public string Name => DiagramNode.Name;
-        public string FullName => DiagramNode.FullName;
+        public void Dispose()
+        {
+            DiagramNode.TopLeftChanged -= OnTopLeftChanged;
+            DiagramNode.Renamed -= OnRenamed;
+
+            foreach (var relatedEntityCueViewModel in RelatedEntityCueViewModels)
+                relatedEntityCueViewModel.Dispose();
+        }
+
         public IModelEntity ModelEntity => DiagramNode.ModelEntity;
         public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
         public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
         public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string FullName
+        {
+            get { return _fullName; }
+            set
+            {
+                if (_fullName != value)
+                {
+                    _fullName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public Point TopLeft
         {
@@ -84,6 +123,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double Width => Size.Width;
         public double Height => Size.Height;
 
+        public object Clone()
+        {
+            return new DiagramNodeViewModel(Diagram, DiagramNode)
+            {
+                _size = _size,
+                _topLeft = _topLeft,
+            };
+        }
+
         private void OnTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
         {
             TopLeft = newTopLeft.ToWpf();
@@ -92,6 +140,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnSizeChanged(Size newSize)
         {
             DiagramNode.Size = newSize.FromWpf();
+        }
+
+        private void OnRenamed(IDiagramNode diagramNode, string name, string fullName)
+        {
+            Name = name;
+            FullName = fullName;
         }
 
         private void OnDoubleClick()
@@ -104,15 +158,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return Diagram.GetEntityRelationTypes()
                 .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
                 .ToList();
-        }
-
-        public object Clone()
-        {
-            return new DiagramNodeViewModel(Diagram, DiagramNode)
-            {
-                _size = _size,
-                _topLeft = _topLeft,
-            };
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             yield return TestModelRelationshipStereotypes.Implementation;
         }
 
-        public override void AddEntity(ModelEntity testModelEntity)
+        public override void AddEntity(IModelEntity testModelEntity)
         {
             base.AddEntity(testModelEntity);
             _modelItemGroups.Last().Add(testModelEntity);
