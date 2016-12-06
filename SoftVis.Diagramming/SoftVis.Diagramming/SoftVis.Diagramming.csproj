@@ -112,7 +112,7 @@
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeDecoratorViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\EntitySelectorRequestedEventHandler.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityCueViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">

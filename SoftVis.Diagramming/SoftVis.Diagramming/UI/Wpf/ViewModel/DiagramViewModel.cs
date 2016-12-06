@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -26,8 +26,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
 
-            RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel();
+            RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel(diagram);
             RelatedEntityListBoxViewModel.ItemSelected += OnRelatedEntitySelected;
+            RelatedEntityListBoxViewModel.Items.CollectionChanged += OnRelatedEntityCollectionChanged;
 
             PopupTextViewModel = new AutoHidePopupTextViewModel();
 
@@ -38,6 +39,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void Dispose()
         {
             RelatedEntityListBoxViewModel.ItemSelected -= OnRelatedEntitySelected;
+            RelatedEntityListBoxViewModel.Items.CollectionChanged -= OnRelatedEntityCollectionChanged;
+            RelatedEntityListBoxViewModel.Dispose();
 
             UnsubscribeFromDiagramEvents();
             UnsubscribeFromViewportEvents();
@@ -72,6 +75,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramViewportViewModel.InputReceived += OnViewportInputReceived;
             DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
+            DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
         }
 
@@ -79,6 +83,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramViewportViewModel.InputReceived -= OnViewportInputReceived;
             DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
+            DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
         }
 
@@ -92,6 +97,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramViewportViewModel.PinDecoration();
             RelatedEntityListBoxViewModel.Show(diagramNodeButtonViewModel, modelEntities);
+        }
+
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
+        {
+            HideRelatedEntityListBox();
+            Diagram.ShowItems(modelEntities);
         }
 
         private void OnViewportInputReceived()
@@ -108,19 +119,28 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
             Diagram.ShowItem(selectedEntity);
+        }
 
-            var remainingEntities = RelatedEntityListBoxViewModel.Items.Except(selectedEntity.ToEnumerable()).ToList();
+        private void OnRelatedEntityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    if (!RelatedEntityListBoxViewModel.Items.Any())
+                        HideRelatedEntityListBox();
+                    break;
+            }
+        }
 
-            if (remainingEntities.Any())
-                RelatedEntityListBoxViewModel.Items = remainingEntities;
-            else
-                HideAllWidgets();
+        private void HideRelatedEntityListBox()
+        {
+            DiagramViewportViewModel.UnpinDecoration();
+            RelatedEntityListBoxViewModel.Hide();
         }
 
         private void HideAllWidgets()
         {
-            DiagramViewportViewModel.UnpinDecoration();
-            RelatedEntityListBoxViewModel.Hide();
+            HideRelatedEntityListBox();
             PopupTextViewModel.Hide();
         }
 

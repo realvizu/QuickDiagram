@@ -42,10 +42,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Viewport.ZoomCommand ViewportZoomCommand { get; }
 
         public DelegateCommand UnfocusAllCommand { get; }
-        public DelegateCommand HideRelatedEntityListBoxCommand { get; }
+        public DelegateCommand MouseDownCommand { get; }
 
         public event Action InputReceived;
-        public event EntitySelectorRequestedEventHandler ShowEntitySelectorRequested;
+        public event ShowRelatedNodeButtonEventHandler ShowEntitySelectorRequested;
+        public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
 
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
@@ -73,7 +74,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ViewportZoomCommand = new Viewport.ZoomCommand(_viewport);
 
             UnfocusAllCommand = new DelegateCommand(_diagramFocusTracker.UnfocusAll);
-            HideRelatedEntityListBoxCommand = new DelegateCommand(OnInputReceived);
+            MouseDownCommand = new DelegateCommand(OnMouseDown);
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
@@ -185,13 +186,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void SubscribeToDiagramShapeButtonEvents()
         {
             foreach (var showRelatedNodeButtonViewModel in DiagramShapeButtonViewModels.OfType<ShowRelatedNodeButtonViewModel>())
+            {
                 showRelatedNodeButtonViewModel.EntitySelectorRequested += OnEntitySelectorRequested;
+                showRelatedNodeButtonViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
+            }
         }
 
         private void UnsubscribeFromDiagramShapeButtonEvents()
         {
             foreach (var showRelatedNodeButtonViewModel in DiagramShapeButtonViewModels.OfType<ShowRelatedNodeButtonViewModel>())
+            {
                 showRelatedNodeButtonViewModel.EntitySelectorRequested -= OnEntitySelectorRequested;
+                showRelatedNodeButtonViewModel.ShowRelatedEntitiesRequested -= OnShowRelatedEntitiesRequested;
+            }
         }
 
         private void AddDiagram(IDiagram diagram)
@@ -245,6 +252,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Clear();
         }
 
+        private void OnMouseDown()
+        {
+            OnInputReceived();
+        }
+
         private void OnInputReceived()
         {
             InputReceived?.Invoke();
@@ -261,10 +273,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             OnInputReceived();
         }
 
-        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel,
-            IEnumerable<IModelEntity> modelEntities)
+        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
         {
             ShowEntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
+        }
+
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
+        {
+            ShowRelatedEntitiesRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
         }
 
         private void OnDecoratedNodeChanged(DiagramNodeViewModel newlyDecoratedDiagramNodeViewModel)

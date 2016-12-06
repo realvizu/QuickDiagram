@@ -91,9 +91,15 @@ namespace Codartis.SoftVis.UI.Wpf.View
             e.Handled = true;
         }
 
-        protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
+        private void OnClick(object sender, RoutedEventArgs e)
+        {
+            MouseClickCommand?.Execute();
+        }
+
+        private void OnDoubleClick(object sender, MouseButtonEventArgs e)
         {
             MouseDoubleClickCommand?.Execute();
+            e.Handled = true;
         }
     }
 }

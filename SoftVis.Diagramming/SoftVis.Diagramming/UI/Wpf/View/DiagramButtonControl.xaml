@@ -22,7 +22,8 @@
             BorderBrush="{Binding Path=DiagramStroke, ElementName=ThisControl}"
             BorderThickness="1"
             IsEnabled="{Binding IsEnabled}"
-            Command="{Binding ElementName=ThisControl, Path=MouseClickCommand}"
+            Click="OnClick"
+            MouseDoubleClick="OnDoubleClick"
             Content="{Binding}">
 
         <Button.Template>

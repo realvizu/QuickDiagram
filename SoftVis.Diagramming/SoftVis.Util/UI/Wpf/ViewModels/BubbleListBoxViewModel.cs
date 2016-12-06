@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Util.UI.Wpf.Collections;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
@@ -10,12 +11,17 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// </summary>
     public abstract class BubbleListBoxViewModel : ShowHideViewModelBase
     {
-        private List<object> _items;
+        private ThreadSafeObservableList<object> _items;
         private object _selectedItem;
 
         public DelegateCommand<object> ItemSelectedCommand { get; protected set; }
 
-        public List<object> Items
+        protected BubbleListBoxViewModel()
+        {
+            Items = new ThreadSafeObservableList<object>();
+        }
+
+        public ThreadSafeObservableList<object> Items
         {
             get { return _items; }
             set
@@ -37,11 +43,14 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
 
         protected void Show(IEnumerable<object> items)
         {
-            base.Show();
-            Items = items.OrderBy(i => i.ToString()).ToList();
             SelectedItem = null;
-        }
+            Items.Clear();
 
+            foreach (var item in items.OrderBy(i => i.ToString()))
+                Items.Add(item);
+
+            base.Show();
+        }
     }
 
     /// <summary>
