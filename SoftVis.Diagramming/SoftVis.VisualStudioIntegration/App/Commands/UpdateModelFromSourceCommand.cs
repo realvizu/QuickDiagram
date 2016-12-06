@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         private async Task ShowProgressAndUpdateModel()
         {
-            var progressDialog = UiServices.CreateProgressDialog("Updating model entities:", ModelServices.Model.Entities.Count());
+            var progressDialog = UiServices.CreateProgressDialog("Updating model entities:");
             progressDialog.ShowWithDelayAsync();
 
             try

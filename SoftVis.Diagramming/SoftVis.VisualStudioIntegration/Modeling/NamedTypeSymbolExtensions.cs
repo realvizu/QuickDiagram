@@ -34,7 +34,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// TODO: This is naive. Any way to make it smarter?
         public static bool SymbolEquals(this INamedTypeSymbol namedTypeSymbol1, INamedTypeSymbol namedTypeSymbol2)
         {
-            return namedTypeSymbol1?.GetFullyQualifiedName() == namedTypeSymbol2?.GetFullyQualifiedName();
+            return namedTypeSymbol1?.TypeKind == namedTypeSymbol2.TypeKind
+                && namedTypeSymbol1.GetFullyQualifiedName() == namedTypeSymbol2.GetFullyQualifiedName();
         }
     }
 }

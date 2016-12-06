@@ -92,8 +92,40 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
+            UpdateEntitiesFromCode(cancellationToken, progress);
+            UpdateRelationshipsFromCode(cancellationToken, progress);
+        }
+
+        private void UpdateRelationshipsFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var allSymbolRelations = _model.Entities.OfType<RoslynBasedModelEntity>()
+                .SelectMany(i =>
+                {
+                    progress?.Report(1);
+                    return i.FindRelatedSymbols(_roslynModelProvider);
+                })
+                .Distinct().ToArray();
+
+            foreach (var relationship in _model.Relationships.OfType<ModelRelationship>().ToArray())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (allSymbolRelations.All(i => !i.Matches(relationship)))
+                    _model.RemoveRelationship(relationship);
+
+                progress?.Report(1);
+            }
+        }
+
+        private void UpdateEntitiesFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var workspace = _roslynModelProvider.GetWorkspace();
-            var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken)).Select(i => i.Result).ToArray();
+            var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken))
+                .Select(i => i.Result).ToArray();
 
             foreach (var roslynBasedModelEntity in _model.Entities.OfType<RoslynBasedModelEntity>().ToArray())
             {
@@ -111,13 +143,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        private static INamedTypeSymbol FindSymbolInCompilations(INamedTypeSymbol namedTypeSymbol, IEnumerable<Compilation> compilations, 
+        private static INamedTypeSymbol FindSymbolInCompilations(INamedTypeSymbol namedTypeSymbol, IEnumerable<Compilation> compilations,
             CancellationToken cancellationToken)
         {
-            var symbols = compilations.SelectMany(i => SymbolFinder.FindSimilarSymbols(namedTypeSymbol, i, cancellationToken)).ToArray();
-            return symbols.Length == 1
-                ? symbols[0] 
-                : null;
+            return compilations.SelectMany(i => SymbolFinder.FindSimilarSymbols(namedTypeSymbol, i, cancellationToken))
+                .Where(i => i.TypeKind == namedTypeSymbol.TypeKind)
+                .OrderByDescending(i => i.Locations.Any(j => j.IsInSource))
+                .FirstOrDefault();
         }
 
         private static RoslynSymbolRelation GetOriginalDefinition(RoslynSymbolRelation symbolRelation)

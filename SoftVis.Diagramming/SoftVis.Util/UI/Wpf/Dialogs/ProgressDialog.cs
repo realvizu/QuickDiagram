@@ -56,7 +56,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             try
             {
                 await Task.Delay(delayMillisec, CancellationToken);
-                _window.ShowNonBlockingModal();
+                _window.ShowNonBlockingModal(CancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -70,12 +70,15 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
 
         private void WindowOnClosed(object sender, EventArgs eventArgs)
         {
-            _window.Closed -= WindowOnClosed;
+            lock (_window)
+            {
+                _window.Closed -= WindowOnClosed;
 
-            // The window might have been closed while in progress so a cancellation could be required.
-            _cancellationTokenSource.Cancel();
+                // The window might have been closed while in progress so a cancellation could be required.
+                _cancellationTokenSource.Cancel();
 
-            _cancellationTokenSource.Dispose();
+                _cancellationTokenSource.Dispose();
+            }
         }
 
         public void Reset(string text, int maxProgress = 0, bool showProgressNumber = true)

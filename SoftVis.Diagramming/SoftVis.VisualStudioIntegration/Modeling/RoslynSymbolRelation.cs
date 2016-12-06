@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Implementation;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -48,5 +49,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         public RoslynSymbolRelation WithRelatedSymbol(INamedTypeSymbol newRelatedSymbol) 
             => new RoslynSymbolRelation(BaseSymbol, newRelatedSymbol, EntityRelationType);
+
+        public bool Matches(ModelRelationship relationship)
+        {
+            return relationship.Type == Type
+                   && SourceSymbol.OriginalDefinition.SymbolEquals(((IRoslynBasedModelEntity) relationship.Source).RoslynSymbol.OriginalDefinition)
+                   && TargetSymbol.OriginalDefinition.SymbolEquals(((IRoslynBasedModelEntity) relationship.Target).RoslynSymbol.OriginalDefinition);
+        }
     }
 }
