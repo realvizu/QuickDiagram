@@ -132,8 +132,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var compilationArray = compilations as Compilation[] ?? compilations.ToArray();
 
-            return FindSymbolInCompilationsByName(namedTypeSymbol, compilationArray, cancellationToken)
-                ?? FindSymbolInCompilationsByLocation(namedTypeSymbol, compilationArray);
+            return FindSymbolInCompilationsByName(namedTypeSymbol, compilationArray, cancellationToken);
+
+            // TODO: find better way to detect type rename. Location-based detection is too fragile.
+            // ?? FindSymbolInCompilationsByLocation(namedTypeSymbol, compilationArray);
         }
 
         private static INamedTypeSymbol FindSymbolInCompilationsByName(INamedTypeSymbol namedTypeSymbol, Compilation[] compilationArray, CancellationToken cancellationToken)
