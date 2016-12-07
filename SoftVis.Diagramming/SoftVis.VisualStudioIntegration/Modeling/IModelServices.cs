@@ -45,6 +45,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="modelEntity">A model entity.</param>
         void ShowSource(IModelEntity modelEntity);
 
-        void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress);
+        /// <summary>
+        /// Updates the model from the current source code.
+        /// </summary>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <param name="progress">Optional progress reporting object.</param>
+        void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+
+        /// <summary>
+        /// Clears the model.
+        /// </summary>
+        void Clear();
     }
 }

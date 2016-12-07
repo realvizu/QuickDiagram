@@ -52,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="App\Commands\ClearModelCommand.cs" />
     <Compile Include="App\Commands\UpdateModelFromSourceCommand.cs" />
     <Compile Include="App\Commands\AddItemsToDiagramCommand.cs" />
     <Compile Include="App\Commands\AsyncCommandWithParameterBase.cs" />

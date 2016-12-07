@@ -18,6 +18,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public event EventHandler<IModelEntity> EntityRemoved;
         public event EventHandler<IModelRelationship> RelationshipRemoved;
         public event Action<IModelEntity, string, string> EntityRenamed;
+        public event Action ModelCleared;
 
         public Model()
         {
@@ -27,6 +28,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             _graph.VertexRemoved += i => EntityRemoved?.Invoke(this, i);
             _graph.EdgeAdded += i => RelationshipAdded?.Invoke(this, i);
             _graph.EdgeRemoved += i => RelationshipRemoved?.Invoke(this, i);
+            _graph.Cleared += (i, j) => ModelCleared?.Invoke();
         }
 
         public IEnumerable<IModelEntity> Entities => _graph.Vertices;
@@ -36,6 +38,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public virtual void AddRelationship(ModelRelationship relationship) => _graph.AddEdge(relationship);
         public virtual void RemoveEntity(IModelEntity entity) => _graph.RemoveVertex(entity);
         public virtual void RemoveRelationship(ModelRelationship relationship) => _graph.RemoveEdge(relationship);
+
+        public void Clear()
+        {
+            _graph.Clear();
+        }
 
         public virtual void UpdateEntity(IModelEntity entity, string name, string fullName)
         {
@@ -63,7 +70,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return Relationships.Where(i => i.Source == entity || i.Target == entity);
         }
 
-        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, 
+        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType,
             bool recursive = false)
         {
             if (!_graph.ContainsVertex(entity))

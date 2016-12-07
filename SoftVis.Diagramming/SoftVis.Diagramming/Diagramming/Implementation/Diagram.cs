@@ -45,6 +45,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Model.RelationshipAdded += OnRelationshipAdded;
             Model.EntityRemoved += OnEntityRemoved;
             Model.RelationshipRemoved += OnRelationshipRemoved;
+            Model.ModelCleared += OnModelCleared;
 
             _graph = new DiagramGraph();
         }
@@ -380,6 +381,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             var diagramNode = FindNode(modelEntity);
             diagramNode?.Rename(name, fullName);
+        }
+
+        private void OnModelCleared()
+        {
+            Clear();
         }
     }
 }

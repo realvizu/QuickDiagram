@@ -92,10 +92,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             _roslynModelProvider.ShowSource(roslyBasedModelEntity.RoslynSymbol);
         }
 
-        public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
+        public void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
         {
             UpdateEntitiesFromSource(cancellationToken, progress);
             UpdateRelationshipsFromSource(cancellationToken, progress);
+        }
+
+        public void Clear()
+        {
+            _model.Clear();
         }
 
         private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)

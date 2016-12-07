@@ -54,10 +54,15 @@
                     <ButtonText>Add to Diagram With &amp;Hierarchy</ButtonText>
                 </Strings>
             </Button>
-            <Button guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" type="Button">
+            <Button guid="SoftVisCommandSetGuid" id="ClearModelCommand" type="Button">
                 <Icon guid="guidImages" id="bmpPicX" />
                 <Strings>
-                    <ButtonText>&amp;Clear Diagram</ButtonText>
+                    <ButtonText>&amp;Clear Model</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" type="Button">
+                <Strings>
+                    <ButtonText>Clear Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" type="Button">
@@ -92,7 +97,7 @@
     <KeyBindings>
         <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="a" mod2="Shift Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="h" mod2="Shift Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="c" mod2="Shift Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearModelCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="c" mod2="Shift Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="u" mod2="Shift Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="s" mod2="Shift Control"/>
     </KeyBindings>
@@ -110,10 +115,13 @@
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
         </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="2">
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearModelCommand" priority="2">
             <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
         </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" priority="3">
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="3">
+            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" priority="4">
             <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
         </CommandPlacement>
 
@@ -154,7 +162,7 @@
         </CommandPlacement>
 
         <!-- DiagramToolWindow toolbar command group 3 -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="1">
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearModelCommand" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup3" />
         </CommandPlacement>
 
@@ -188,8 +196,9 @@
             <IDSymbol name="ShowDiagramWindowCommand" value="100"/>
             <IDSymbol name="AddToDiagramCommand" value="101" />
             <IDSymbol name="AddToDiagramWithHierarchyCommand" value="102" />
-            <IDSymbol name="ClearDiagramCommand" value="103"/>
-            <IDSymbol name="UpdateModelFromSourceCommand" value="104"/>
+            <IDSymbol name="ClearModelCommand" value="103"/>
+            <IDSymbol name="ClearDiagramCommand" value="104"/>
+            <IDSymbol name="UpdateModelFromSourceCommand" value="105"/>
             <IDSymbol name="CopyToClipboardCommand" value="106"/>
             <IDSymbol name="ExportToFileCommand" value="107"/>
             <IDSymbol name="ImageDpiComboCommand" value="108" />

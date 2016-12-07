@@ -17,6 +17,7 @@ namespace Codartis.SoftVis.Modeling
         event EventHandler<IModelRelationship> RelationshipAdded;
         event EventHandler<IModelRelationship> RelationshipRemoved;
         event Action<IModelEntity, string, string> EntityRenamed;
+        event Action ModelCleared;
 
         IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type);
 
