@@ -18,10 +18,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             _model = model;
             _workspace = workspace;
 
-            _workspace.WorkspaceChanged += UpdateModel;
+            _workspace.WorkspaceChanged += UpdateModelAsync;
         }
 
-        private async void UpdateModel(object sender, WorkspaceChangeEventArgs workspaceChangeEventArgs)
+        private async void UpdateModelAsync(object sender, WorkspaceChangeEventArgs workspaceChangeEventArgs)
         {
             Debug.WriteLine(workspaceChangeEventArgs.Kind);
 

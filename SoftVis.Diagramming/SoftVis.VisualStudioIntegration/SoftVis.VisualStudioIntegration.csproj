@@ -52,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="App\Commands\ZoomToDiagramCommand.cs" />
     <Compile Include="App\Commands\ClearModelCommand.cs" />
     <Compile Include="App\Commands\UpdateModelFromSourceCommand.cs" />
     <Compile Include="App\Commands\AddItemsToDiagramCommand.cs" />
@@ -81,6 +82,11 @@
     <Compile Include="Hosting\CommandRegistration\CommandSpecification.cs" />
     <Compile Include="Hosting\ShellCommands.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelUpdater.cs" />
+    <Compile Include="SoftVisPackage.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SoftVisPackage.vsct</DependentUpon>
+    </Compile>
     <Compile Include="UI\FrameMode.cs" />
     <Compile Include="UI\IHostUiServices.cs" />
     <Compile Include="Diagramming\RoslynBasedConnectorTypes.cs" />
@@ -114,7 +120,6 @@
     <Compile Include="Modeling\ModelEntityStereotypes.cs" />
     <Compile Include="Modeling\RoslynEntityRelationTypes.cs" />
     <Compile Include="Modeling\TypeKindExtensions.cs" />
-    <Compile Include="VsctConstants.cs" />
     <Compile Include="App\IAppServices.cs" />
     <Compile Include="Hosting\DiagramHostToolWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -146,10 +151,19 @@
     <Resource Include="UI\Images\Enum.png" />
     <Resource Include="UI\Images\Interface.png" />
     <Resource Include="UI\Images\Struct.png" />
-    <Content Include="Resources\DiagramToolWindowCommand.png" />
+    <Content Include="Resources\AddClause_16x16.png" />
+    <Content Include="Resources\AddToDependancyGraph_16x16.png" />
+    <Content Include="Resources\AutoSizeOptimize_16x16.png" />
+    <Content Include="Resources\Cancel_16x16.png" />
+    <Content Include="Resources\Copy_16x16.png" />
+    <Content Include="Resources\DependancyGraph_16x16.png" />
+    <Content Include="Resources\Refresh_16x16.png" />
+    <Content Include="Resources\Save_16x16.png" />
     <Content Include="Resources\SoftVisPackage.ico" />
     <VSCTCompile Include="SoftVisPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>SoftVisPackage.cs</LastGenOutput>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>

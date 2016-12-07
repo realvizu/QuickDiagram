@@ -132,7 +132,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
         {
-            var commandSetGuid = VsctConstants.SoftVisCommandSetGuid;
+            var commandSetGuid = PackageGuids.SoftVisCommandSetGuid;
             var commandRegistrator = new CommandRegistrator(menuCommandService, appServices);
             commandRegistrator.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
             commandRegistrator.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);

@@ -17,6 +17,7 @@
                 </Strings>
             </Menu>
             <Menu guid="SoftVisCommandSetGuid" id="ExportImageMenuController" type="MenuController">
+                <CommandFlag>IconAndText</CommandFlag>
                 <CommandFlag>TextIsAnchorCommand</CommandFlag>
                 <Strings>
                     <ButtonText>ExportImage MenuController</ButtonText>
@@ -45,17 +46,19 @@
 
         <Buttons>
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" type="Button">
+                <Icon guid="AddToDiagramImageGuid" id="AddToDiagramImageId" />
                 <Strings>
                     <ButtonText>&amp;Add to Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" type="Button">
+                <Icon guid="AddToDiagramWithHierarchyImageGuid" id="AddToDiagramWithHierarchyImageId" />
                 <Strings>
                     <ButtonText>Add to Diagram With &amp;Hierarchy</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ClearModelCommand" type="Button">
-                <Icon guid="guidImages" id="bmpPicX" />
+                <Icon guid="DeleteImageGuid" id="DeleteImageId" />
                 <Strings>
                     <ButtonText>&amp;Clear Model</ButtonText>
                 </Strings>
@@ -66,63 +69,67 @@
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" type="Button">
-                <Icon guid="guidImages" id="bmpPicArrows" />
+                <Icon guid="RefreshImageGuid" id="RefreshImageId" />
                 <Strings>
                     <ButtonText>&amp;Update Diagram From Code</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1" type="Button">
-                <Icon guid="guidImages" id="bmpPicSearch" />
+                <Icon guid="DiagramImageGuid" id="DiagramImageId" />
                 <Strings>
-                    <ButtonText>&amp;Show Diagram Window</ButtonText>
+                    <ButtonText>&amp;Diagram Window</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" priority="1" type="Button">
+                <Icon guid="CopyImageGuid" id="CopyImageId" />
                 <Strings>
                     <ButtonText>Copy to Clipboard</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ExportToFileCommand" priority="2" type="Button">
+                <Icon guid="SaveImageGuid" id="SaveImageId" />
                 <Strings>
-                    <ButtonText>Export to File...</ButtonText>
+                    <ButtonText>Save to File...</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" type="Button">
+                <Icon guid="AutoSizeImageGuid" id="AutoSizeImageId" />
+                <Strings>
+                    <ButtonText>&amp;Fit Diagram to Window</ButtonText>
                 </Strings>
             </Button>
         </Buttons>
 
         <Bitmaps>
-            <Bitmap guid="guidImages" href="Resources\DiagramToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+            <Bitmap guid="AutoSizeImageGuid" href="Resources\AutoSizeOptimize_16x16.png" />
+            <Bitmap guid="CopyImageGuid" href="Resources\Copy_16x16.png" />
+            <Bitmap guid="DeleteImageGuid" href="Resources\Cancel_16x16.png" />
+            <Bitmap guid="DiagramImageGuid" href="Resources\DependancyGraph_16x16.png" />
+            <Bitmap guid="RefreshImageGuid" href="Resources\Refresh_16x16.png" />
+            <Bitmap guid="SaveImageGuid" href="Resources\Save_16x16.png" />
+            <Bitmap guid="AddToDiagramImageGuid" href="Resources\AddClause_16x16.png" />
+            <Bitmap guid="AddToDiagramWithHierarchyImageGuid" href="Resources\AddToDependancyGraph_16x16.png" />
         </Bitmaps>
     </Commands>
 
     <KeyBindings>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="a" mod2="Shift Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" editor="guidSourceCodeTextEditor" key1="d" mod1="Shift Control" key2="h" mod2="Shift Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearModelCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="c" mod2="Shift Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="u" mod2="Shift Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="d" mod1="Shift Control" key2="s" mod2="Shift Control"/>
+        <!-- Global -->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="D" mod1="Shift Control" key2="D" mod2="Shift Control"/>
+        <!-- SourceCodeTextEditor -->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="A" mod2="Shift Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="H" mod2="Shift Control"/>
+        <!-- DiagramToolWindow -->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" editor="DiagramToolWindowGuid" key1="F" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ExportToFileCommand" editor="DiagramToolWindowGuid" key1="S" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="DiagramToolWindowGuid" key1="U" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearModelCommand" editor="DiagramToolWindowGuid" key1="VK_DELETE" mod1="Control"/>
     </KeyBindings>
 
     <CommandPlacements>
-        <!-- MainMenu DIAGRAM item -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="DiagramMainMenu" priority="0x1000">
-            <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
-        </CommandPlacement>
-
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" priority="1">
-            <Parent guid="SoftVisCommandSetGuid" id="DiagramMainMenu" />
-        </CommandPlacement>
-
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1">
-            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
-        </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearModelCommand" priority="2">
-            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
-        </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" priority="3">
-            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
-        </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" priority="4">
-            <Parent guid="SoftVisCommandSetGuid" id="MainMenuCommandGroup" />
+        <!-- View Menu / Other Windows -->
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="0x1000">
+            <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS4" />
         </CommandPlacement>
 
         <!-- CodeEditor context menu -->
@@ -149,7 +156,7 @@
         </CommandPlacement>
 
         <!-- DiagramToolWindow toolbar command group 1 -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" priority="1">
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup1" />
         </CommandPlacement>
 
@@ -162,7 +169,10 @@
         </CommandPlacement>
 
         <!-- DiagramToolWindow toolbar command group 3 -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearModelCommand" priority="1">
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" priority="1">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup3" />
+        </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearModelCommand" priority="2">
             <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup3" />
         </CommandPlacement>
 
@@ -181,6 +191,8 @@
     <Symbols>
         <GuidSymbol name="SoftVisPackageGuid" value="{198d9322-583a-4112-a2a8-61f4c0818966}" />
 
+        <GuidSymbol name="DiagramToolWindowGuid" value="{02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e}" />
+        
         <GuidSymbol name="SoftVisCommandSetGuid" value="{D45A1864-AB94-44FD-81CA-2602753B60D3}" >
             <IDSymbol name="ToolWindowToolbar" value="1" />
             <IDSymbol name="DiagramMainMenu" value="2" />
@@ -203,17 +215,34 @@
             <IDSymbol name="ExportToFileCommand" value="107"/>
             <IDSymbol name="ImageDpiComboCommand" value="108" />
             <IDSymbol name="ImageDpiComboGetItemsCommand" value="109" />
+            <IDSymbol name="ZoomToDiagramCommand" value="110" />
         </GuidSymbol>
 
-        <GuidSymbol name="guidImages" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">
-            <IDSymbol name="bmpPic1" value="1" />
-            <IDSymbol name="bmpPic2" value="2" />
-            <IDSymbol name="bmpPicSearch" value="3" />
-            <IDSymbol name="bmpPicX" value="4" />
-            <IDSymbol name="bmpPicArrows" value="5" />
-            <IDSymbol name="bmpPicStrikethrough" value="6" />
+        <GuidSymbol name="AutoSizeImageGuid" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">
+            <IDSymbol name="AutoSizeImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="CopyImageGuid" value="{59E1B98A-0B42-4C39-A23F-E3B7B02E5F10}" >
+            <IDSymbol name="CopyImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="DeleteImageGuid" value="{D3A2883A-16C1-44ED-82D6-7EB18C4B0B15}" >
+            <IDSymbol name="DeleteImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="DiagramImageGuid" value="{0D784288-3295-4ACD-B754-1CAE3713A02E}" >
+            <IDSymbol name="DiagramImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="RefreshImageGuid" value="{F88B78F7-AC5D-421D-8EB4-BA2B72A99A4B}" >
+            <IDSymbol name="RefreshImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="SaveImageGuid" value="{6CD2D9B8-33F6-40B7-800E-F4228CD0418A}" >
+            <IDSymbol name="SaveImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="AddToDiagramImageGuid" value="{77EAFD6D-6780-473E-BBA7-592B13E61B79}" >
+            <IDSymbol name="AddToDiagramImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="AddToDiagramWithHierarchyImageGuid" value="{CB459C8B-1AA2-4882-B92B-10F6F5F8A074}" >
+            <IDSymbol name="AddToDiagramWithHierarchyImageId" value="1" />
         </GuidSymbol>
 
-        <GuidSymbol name ="guidSourceCodeTextEditor" value="{8b382828-6202-11d1-8870-0000f87579d2}" />
+        <GuidSymbol name="SourceCodeTextEditorGuid" value="{8b382828-6202-11d1-8870-0000f87579d2}" />
     </Symbols>
 </CommandTable>

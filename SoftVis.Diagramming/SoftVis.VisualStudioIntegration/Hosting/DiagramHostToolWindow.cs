@@ -12,7 +12,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// <summary>
     /// Implements a Visual Studio tool window that hosts a diagram control.
     /// </summary>
-    [Guid("02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e")]
+    [Guid(PackageGuids.DiagramToolWindowGuidString)]
+    [ProvideKeyBindingTable(PackageGuids.DiagramToolWindowGuidString, 115)]
     public sealed class DiagramHostToolWindow : ToolWindowPane
     {
         private readonly ContentPresenter _contentPresenter;
@@ -20,26 +21,28 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public DiagramHostToolWindow()
             : base(null)
         {
-            ToolBar = new CommandID(VsctConstants.SoftVisCommandSetGuid, VsctConstants.ToolWindowToolbar);
+            ToolBar = new CommandID(PackageGuids.SoftVisCommandSetGuid, PackageIds.ToolWindowToolbar);
             _contentPresenter = new ContentPresenter();
             Content = _contentPresenter;
         }
 
-        public void Initialize(string caption, object control)
-        {
-            Caption = caption;
-            _contentPresenter.Content = control;
-        }
+        private IVsWindowFrame WindowFrame => (IVsWindowFrame)Frame;
 
         public FrameMode FrameMode
         {
             get
             {
-                var windowFrame = (IVsWindowFrame)Frame;
                 object currentFrameMode;
-                windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
+                WindowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
                 return FrameModeTranslator.Translate(currentFrameMode);
             }
+        }
+
+        public void Initialize(string caption, object control)
+        {
+            WindowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, PackageGuids.DiagramToolWindowGuidString);
+            Caption = caption;
+            _contentPresenter.Content = control;
         }
 
         public void Show() => InvokeOnWindowFrame(i => i.Show());
@@ -47,8 +50,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private void InvokeOnWindowFrame(Func<IVsWindowFrame, int> windowFrameAction)
         {
-            var windowFrame = (IVsWindowFrame)Frame;
-            ErrorHandler.ThrowOnFailure(windowFrameAction.Invoke(windowFrame));
+            ErrorHandler.ThrowOnFailure(windowFrameAction.Invoke(WindowFrame));
         }
     }
 }

@@ -13,20 +13,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public static readonly List<ICommandSpecification> CommandSpecifications =
             new List<ICommandSpecification>
             {
-                new CommandSpecification<AddCurrentSymbolToDiagramCommand>(VsctConstants.AddToDiagramCommand),
-                new CommandSpecification<AddCurrentSymbolToDiagramWithHierarchyCommand>(VsctConstants.AddToDiagramWithHierarchyCommand),
-                new CommandSpecification<ClearModelCommand>(VsctConstants.ClearModelCommand),
-                new CommandSpecification<ClearDiagramCommand>(VsctConstants.ClearDiagramCommand),
-                new CommandSpecification<UpdateModelFromSourceCommand>(VsctConstants.UpdateModelFromSourceCommand),
-                new CommandSpecification<CopyToClipboardCommand>(VsctConstants.CopyToClipboardCommand),
-                new CommandSpecification<ExportToFileCommand>(VsctConstants.ExportToFileCommand),
-                new CommandSpecification<ShowDiagramWindowCommand>(VsctConstants.ShowDiagramWindowCommand),
+                new CommandSpecification<AddCurrentSymbolToDiagramCommand>(PackageIds.AddToDiagramCommand),
+                new CommandSpecification<AddCurrentSymbolToDiagramWithHierarchyCommand>(PackageIds.AddToDiagramWithHierarchyCommand),
+                new CommandSpecification<ClearModelCommand>(PackageIds.ClearModelCommand),
+                new CommandSpecification<ClearDiagramCommand>(PackageIds.ClearDiagramCommand),
+                new CommandSpecification<UpdateModelFromSourceCommand>(PackageIds.UpdateModelFromSourceCommand),
+                new CommandSpecification<CopyToClipboardCommand>(PackageIds.CopyToClipboardCommand),
+                new CommandSpecification<ExportToFileCommand>(PackageIds.ExportToFileCommand),
+                new CommandSpecification<ShowDiagramWindowCommand>(PackageIds.ShowDiagramWindowCommand),
+                new CommandSpecification<ZoomToDiagramCommand>(PackageIds.ZoomToDiagramCommand),
             };
 
         public static readonly List<IComboSpecification> ComboSpecifications =
             new List<IComboSpecification>
             {
-                new ComboSpecification<DpiComboAdapter>(VsctConstants.ImageDpiComboGetItemsCommand, VsctConstants.ImageDpiComboCommand),
+                new ComboSpecification<DpiComboAdapter>(PackageIds.ImageDpiComboGetItemsCommand, PackageIds.ImageDpiComboCommand),
             };
     }
 }
