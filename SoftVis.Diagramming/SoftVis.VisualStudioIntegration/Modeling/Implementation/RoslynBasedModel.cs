@@ -2,6 +2,7 @@
 using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.Util.Roslyn;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -11,6 +12,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModel : Model
     {
+        public IEnumerable<RoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<RoslynBasedModelEntity>();
+
         public override IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
         {
             foreach (var modelEntityStereotype in base.GetModelEntityStereotypes())
@@ -33,14 +36,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public RoslynBasedModelEntity GetModelEntity(INamedTypeSymbol namedTypeSymbol)
         {
-            return Entities.OfType<RoslynBasedModelEntity>()
-                .FirstOrDefault(i => namedTypeSymbol.SymbolEquals(i.RoslynSymbol));
+            return RoslynBasedEntities.FirstOrDefault(i => namedTypeSymbol.SymbolEquals(i.RoslynSymbol));
         }
 
-        public void UpdateEntity(RoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
+        public void UpdateEntity(IRoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
         {
-            entity.UpdateRoslynSymbol(roslynSymbol);
-            UpdateEntity(entity, roslynSymbol.GetMinimallyQualifiedName(), roslynSymbol.GetFullyQualifiedName());
+            entity.RoslynSymbol = roslynSymbol;
+            base.UpdateEntity(entity, roslynSymbol.GetMinimallyQualifiedName(), roslynSymbol.GetFullyQualifiedName());
+        }
+
+        public IRoslynBasedModelEntity FindEntityByLocation(INamedTypeSymbol roslynSymbol)
+        {
+            var symbolLocation = roslynSymbol.Locations.FirstOrDefault()?.GetMappedLineSpan();
+            if (symbolLocation == null)
+                return null;
+
+            foreach (var roslynBasedModelEntity in RoslynBasedEntities)
+            {
+                var entityLocation = roslynBasedModelEntity.RoslynSymbol?.Locations.FirstOrDefault()?.GetMappedLineSpan();
+                if (entityLocation != null && entityLocation.Value.Overlaps(symbolLocation.Value))
+                    return roslynBasedModelEntity;
+            }
+
+            return null;
         }
     }
 }

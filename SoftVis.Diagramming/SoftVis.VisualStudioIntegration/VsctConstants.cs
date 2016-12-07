@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration
         internal const int AddToDiagramCommand = 101;
         internal const int AddToDiagramWithHierarchyCommand = 102;
         internal const int ClearDiagramCommand = 103;
-        internal const int UpdateModelFromCodeCommand = 104;
+        internal const int UpdateModelFromSourceCommand = 104;
         internal const int CopyToClipboardCommand = 106;
         internal const int ExportToFileCommand = 107;
         internal const int ImageDpiComboCommand = 108;

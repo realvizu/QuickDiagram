@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Util;
+using Codartis.SoftVis.Util.Roslyn;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -90,36 +92,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             _roslynModelProvider.ShowSource(roslyBasedModelEntity.RoslynSymbol);
         }
 
-        public void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            UpdateEntitiesFromCode(cancellationToken, progress);
-            UpdateRelationshipsFromCode(cancellationToken, progress);
+            UpdateEntitiesFromSource(cancellationToken, progress);
+            UpdateRelationshipsFromSource(cancellationToken, progress);
         }
 
-        private void UpdateRelationshipsFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var allSymbolRelations = _model.Entities.OfType<RoslynBasedModelEntity>()
-                .SelectMany(i =>
-                {
-                    progress?.Report(1);
-                    return i.FindRelatedSymbols(_roslynModelProvider);
-                })
-                .Distinct().ToArray();
-
-            foreach (var relationship in _model.Relationships.OfType<ModelRelationship>().ToArray())
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (allSymbolRelations.All(i => !i.Matches(relationship)))
-                    _model.RemoveRelationship(relationship);
-
-                progress?.Report(1);
-            }
-        }
-
-        private void UpdateEntitiesFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -146,10 +125,59 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private static INamedTypeSymbol FindSymbolInCompilations(INamedTypeSymbol namedTypeSymbol, IEnumerable<Compilation> compilations,
             CancellationToken cancellationToken)
         {
-            return compilations.SelectMany(i => SymbolFinder.FindSimilarSymbols(namedTypeSymbol, i, cancellationToken))
+            var compilationArray = compilations as Compilation[] ?? compilations.ToArray();
+
+            return FindSymbolInCompilationsByName(namedTypeSymbol, compilationArray, cancellationToken)
+                ?? FindSymbolInCompilationsByLocation(namedTypeSymbol, compilationArray);
+        }
+
+        private static INamedTypeSymbol FindSymbolInCompilationsByName(INamedTypeSymbol namedTypeSymbol, Compilation[] compilationArray, CancellationToken cancellationToken)
+        {
+            var symbolMatchByName = compilationArray.SelectMany(i => SymbolFinder.FindSimilarSymbols(namedTypeSymbol, i, cancellationToken))
                 .Where(i => i.TypeKind == namedTypeSymbol.TypeKind)
                 .OrderByDescending(i => i.Locations.Any(j => j.IsInSource))
                 .FirstOrDefault();
+
+            return symbolMatchByName;
+        }
+
+        private static INamedTypeSymbol FindSymbolInCompilationsByLocation(INamedTypeSymbol namedTypeSymbol, Compilation[] compilationArray)
+        {
+            var syntaxReference = namedTypeSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+            if (syntaxReference == null)
+                return null;
+
+            var compilation = compilationArray.FirstOrDefault(i => i.SyntaxTrees.Any(j => j.FilePath == syntaxReference.SyntaxTree.FilePath));
+            var newSyntaxTree = compilation?.SyntaxTrees.FirstOrDefault(i => i.FilePath == syntaxReference.SyntaxTree.FilePath);
+            var typeDeclarationSyntax = newSyntaxTree?.GetRoot().DescendantNodes(syntaxReference.Span).OfType<TypeDeclarationSyntax>().LastOrDefault();
+            if (typeDeclarationSyntax == null)
+                return null;
+
+            var symbolMatchByLocation = compilation.GetSemanticModel(newSyntaxTree).GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
+            return symbolMatchByLocation;
+        }
+
+        private void UpdateRelationshipsFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var allSymbolRelations = _model.Entities.OfType<RoslynBasedModelEntity>()
+                .SelectMany(i =>
+                {
+                    progress?.Report(1);
+                    return i.FindRelatedSymbols(_roslynModelProvider);
+                })
+                .Distinct().ToArray();
+
+            foreach (var relationship in _model.Relationships.OfType<ModelRelationship>().ToArray())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (allSymbolRelations.All(i => !i.Matches(relationship)))
+                    _model.RemoveRelationship(relationship);
+
+                progress?.Report(1);
+            }
         }
 
         private static RoslynSymbolRelation GetOriginalDefinition(RoslynSymbolRelation symbolRelation)

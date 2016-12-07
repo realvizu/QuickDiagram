@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <summary>
         /// Gets the Roslyn symbol associated with this entity.
         /// </summary>
-        INamedTypeSymbol RoslynSymbol { get; }
+        INamedTypeSymbol RoslynSymbol { get; set; }
 
         /// <summary>
         /// Finds and returns related Roslyn symbols.

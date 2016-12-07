@@ -32,11 +32,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             {
                 var cancellationToken = progressDialog.CancellationToken;
 
-                await Task.Run(() => ModelServices.UpdateFromCode(cancellationToken, progressDialog.Progress), cancellationToken);
+                await Task.Run(() => ModelServices.UpdateFromSource(cancellationToken, progressDialog.Progress), cancellationToken);
 
                 progressDialog.Reset("Updating diagram nodes:", DiagramServices.Nodes.Count());
 
-                await Task.Run(() => DiagramServices.UpdateFromCode(cancellationToken, progressDialog.Progress), cancellationToken);
+                await Task.Run(() => DiagramServices.UpdateFromSource(cancellationToken, progressDialog.Progress), cancellationToken);
             }
             catch (OperationCanceledException) { }
             finally { progressDialog.Close(); }

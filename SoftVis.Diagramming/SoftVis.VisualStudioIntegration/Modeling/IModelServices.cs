@@ -45,6 +45,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="modelEntity">A model entity.</param>
         void ShowSource(IModelEntity modelEntity);
 
-        void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress);
+        void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.Util.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 
@@ -15,8 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     public abstract class RoslynBasedModelEntity : ModelEntity, IRoslynBasedModelEntity
     {
         private readonly TypeKind _typeKind;
-
-        public INamedTypeSymbol RoslynSymbol { get; private set; }
+        private INamedTypeSymbol _roslynSymbol;
 
         protected RoslynBasedModelEntity(INamedTypeSymbol roslynSymbol, TypeKind typeKind)
             : base(roslynSymbol.GetMinimallyQualifiedName(),
@@ -26,15 +26,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                   roslynSymbol.GetOrigin())
         {
             _typeKind = typeKind;
-            UpdateRoslynSymbol(roslynSymbol);
+            RoslynSymbol = roslynSymbol;
         }
 
-        public void UpdateRoslynSymbol(INamedTypeSymbol roslynSymbol)
+        public INamedTypeSymbol RoslynSymbol
         {
-            if (roslynSymbol.TypeKind != _typeKind)
-                throw new ArgumentException($"{roslynSymbol.Name} must be a {_typeKind}.");
+            get { return _roslynSymbol; }
+            set
+            {
+                if (value.TypeKind != _typeKind)
+                    throw new ArgumentException($"{value.Name} must be a {_typeKind}.");
 
-            RoslynSymbol = roslynSymbol;
+                _roslynSymbol = value;
+            }
         }
 
         /// <summary>

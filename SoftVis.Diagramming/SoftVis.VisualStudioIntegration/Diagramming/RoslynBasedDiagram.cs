@@ -72,7 +72,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             ShowItems(entities, cancellationToken, progress);
         }
 
-        public void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress)
+        public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             foreach (var diagramNode in Nodes.ToArray())
             {

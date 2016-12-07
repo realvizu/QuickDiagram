@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.Util.Roslyn;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling

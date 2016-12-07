@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Codartis.SoftVis.Util.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -32,6 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     await ProcessDocumentChangedEvent(workspaceChangeEventArgs);
                     break;
                 case WorkspaceChangeKind.DocumentRemoved:
+                    // TODO
                     break;
             }
         }
@@ -43,36 +43,38 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             foreach (var declaredTypeSymbol in declaredTypeSymbols)
             {
-                var roslynBasedModelEntity = _model.Entities.OfType<IRoslynBasedModelEntity>()
-                    .FirstOrDefault(i => ReferenceEquals(i.RoslynSymbol, declaredTypeSymbol));
+                // Match by name
+                var matchingEntityByName = _model.RoslynBasedEntities.FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
+                if (matchingEntityByName != null)
+                {
+                    Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by name.");
+                    _model.UpdateEntity(matchingEntityByName, declaredTypeSymbol);
+                    continue;
+                }
 
-                if (roslynBasedModelEntity != null)
-                    Debug.WriteLine($"Entity {roslynBasedModelEntity} found for symbol.");
-                else
-                    Debug.WriteLine($"Entity not found for symbol {declaredTypeSymbol.GetFullyQualifiedName()}");
+                // Match by location
+                var mathingEntityByLocation = _model.FindEntityByLocation(declaredTypeSymbol);
+                if (mathingEntityByLocation != null)
+                {
+                    Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by location.");
+                    _model.UpdateEntity(mathingEntityByLocation, declaredTypeSymbol);
+                    
+                    continue;
+                }
             }
         }
 
         private static async Task<List<INamedTypeSymbol>> GetDeclaredTypeSymbols(Solution solution, ProjectId projectId, DocumentId documentId)
         {
-            var project = solution.GetProject(projectId);
-            var compilation = await project.GetCompilationAsync();
-
             var document = solution.GetDocument(documentId);
             var syntaxTree = await document.GetSyntaxTreeAsync();
             var typeDeclarationSyntaxNodes = syntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>();
 
+            var project = solution.GetProject(projectId);
+            var compilation = await project.GetCompilationAsync();
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
 
-            var result = new List<INamedTypeSymbol>();
-            foreach (var typeDeclarationSyntax in typeDeclarationSyntaxNodes)
-            {
-                var namedTypeSymbol = semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-                if (namedTypeSymbol != null)
-                    result.Add(namedTypeSymbol);
-            }
-
-            return result;
+            return typeDeclarationSyntaxNodes.Select(i => semanticModel.GetDeclaredSymbol(i)).OfType<INamedTypeSymbol>().ToList();
         }
     }
 }

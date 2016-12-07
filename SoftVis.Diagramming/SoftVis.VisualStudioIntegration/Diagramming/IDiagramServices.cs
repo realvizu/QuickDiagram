@@ -31,6 +31,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         void ShowItemsWithProgress(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken, IIncrementalProgress progress);
 
         void Clear();
-        void UpdateFromCode(CancellationToken cancellationToken, IIncrementalProgress progress);
+        void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress);
     }
 }
