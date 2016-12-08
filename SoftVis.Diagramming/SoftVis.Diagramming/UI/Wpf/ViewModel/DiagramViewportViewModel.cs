@@ -19,33 +19,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase, IDisposable
     {
-        public ThreadSafeObservableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
-        public ThreadSafeObservableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public double MinZoom { get; }
         public double MaxZoom { get; }
-
-        private readonly Viewport _viewport;
-        private double _viewportZoom;
-        private TransitionedTransform _viewportTransform;
+        public ViewportCalculatorViewModel Viewport { get; }
+        public ThreadSafeObservableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public ThreadSafeObservableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
+        private readonly DiagramShapeButtonCollectionViewModel _diagramShapeButtonCollectionViewModel;
 
         private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
-        private readonly DiagramShapeButtonCollectionViewModel _diagramShapeButtonCollectionViewModel;
-
         private readonly DiagramFocusTracker _diagramFocusTracker;
 
         /// <summary>The decorated shape is the one that has the minibuttons attached.</summary>
         private DiagramNodeViewModel _decoratedDiagramNode;
 
-        public Viewport.ResizeCommand ViewportResizeCommand { get; }
-        public Viewport.PanCommand ViewportPanCommand { get; }
-        public Viewport.ZoomToContentCommand ViewportZoomToContentCommand { get; }
-        public Viewport.ZoomCommand ViewportZoomCommand { get; }
-
         public DelegateCommand UnfocusAllCommand { get; }
         public DelegateCommand MouseDownCommand { get; }
 
-        public event Action InputReceived;
+        public event Action ViewportManipulationStarted;
         public event ShowRelatedNodeButtonEventHandler ShowEntitySelectorRequested;
         public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
@@ -53,14 +44,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
-            DiagramNodeViewModels = new ThreadSafeObservableList<DiagramNodeViewModel>();
-            DiagramConnectorViewModels = new ThreadSafeObservableList<DiagramConnectorViewModel>();
-
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
-            _viewport = new Viewport(diagram, minZoom, maxZoom, initialZoom);
-            _viewportTransform = TransitionedTransform.Identity;
+            Viewport = new ViewportCalculatorViewModel(diagram, minZoom, maxZoom, initialZoom);
+            DiagramNodeViewModels = new ThreadSafeObservableList<DiagramNodeViewModel>();
+            DiagramConnectorViewModels = new ThreadSafeObservableList<DiagramConnectorViewModel>();
 
             _diagramFocusTracker = new DiagramFocusTracker();
             _diagramFocusTracker.DecoratedNodeChanged += OnDecoratedNodeChanged;
@@ -68,11 +57,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramNodeViewModels);
             _diagramShapeButtonCollectionViewModel = new DiagramShapeButtonCollectionViewModel(diagram);
-
-            ViewportResizeCommand = new Viewport.ResizeCommand(_viewport);
-            ViewportPanCommand = new Viewport.PanCommand(_viewport);
-            ViewportZoomToContentCommand = new Viewport.ZoomToContentCommand(_viewport);
-            ViewportZoomCommand = new Viewport.ZoomCommand(_viewport);
 
             UnfocusAllCommand = new DelegateCommand(_diagramFocusTracker.UnfocusAll);
             MouseDownCommand = new DelegateCommand(OnMouseDown);
@@ -104,26 +88,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ThreadSafeObservableList<DiagramShapeButtonViewModelBase> DiagramShapeButtonViewModels
             => _diagramShapeButtonCollectionViewModel.DiagramNodeButtonViewModels;
 
-        public double ViewportZoom
-        {
-            get { return _viewportZoom; }
-            set
-            {
-                _viewportZoom = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public TransitionedTransform ViewportTransform
-        {
-            get { return _viewportTransform; }
-            set
-            {
-                _viewportTransform = value;
-                OnPropertyChanged();
-            }
-        }
-
         /// <summary>
         /// Designates the diagram node that has the minibuttons associated with it.
         /// </summary>
@@ -137,9 +101,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => _viewport.ZoomToContent(transitionSpeed);
-        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => _viewport.ZoomToRect(rect, transitionSpeed);
-        public bool IsDiagramContentVisible() => _viewport.IsDiagramRectVisible();
+        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => Viewport.ZoomToContent(transitionSpeed);
+        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => Viewport.ZoomToRect(rect, transitionSpeed);
+        public bool IsDiagramContentVisible() => Viewport.IsDiagramRectVisible();
 
         /// <summary>
         /// Keeps the decorations (minibuttons) visible even when the shape loses focus.
@@ -155,14 +119,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToViewportEvents()
         {
-            _viewport.LinearZoomChanged += OnViewportLinearZoomChanged;
-            _viewport.TransformChanged += OnViewportTransformChanged;
+            Viewport.TransformChanged += OnViewportTransformChanged;
         }
 
         private void UnsubscribeFromViewportEvents()
         {
-            _viewport.LinearZoomChanged -= OnViewportLinearZoomChanged;
-            _viewport.TransformChanged -= OnViewportTransformChanged;
+            Viewport.TransformChanged -= OnViewportTransformChanged;
         }
 
         // All diagram-induced view model manipulation must occur on the UI thread to avoid certain race conditions.
@@ -256,23 +218,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnMouseDown()
         {
-            OnInputReceived();
-        }
-
-        private void OnInputReceived()
-        {
-            InputReceived?.Invoke();
-        }
-
-        private void OnViewportLinearZoomChanged(double newViewportZoom)
-        {
-            ViewportZoom = newViewportZoom;
+            ViewportManipulationStarted?.Invoke();
         }
 
         private void OnViewportTransformChanged(TransitionedTransform newTransform)
         {
-            ViewportTransform = newTransform;
-            OnInputReceived();
+            ViewportManipulationStarted?.Invoke();
         }
 
         private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)

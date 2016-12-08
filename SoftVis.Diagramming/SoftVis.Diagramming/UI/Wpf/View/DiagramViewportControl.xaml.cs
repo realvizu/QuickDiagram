@@ -92,16 +92,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("KeyboardZoomCommand", typeof(ZoomDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportResizeCommandProperty =
-            DependencyProperty.Register("ViewportResizeCommand", typeof(Viewport.ResizeCommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportResizeCommand", typeof(ViewportCalculatorViewModel.ResizeDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportPanCommandProperty =
-            DependencyProperty.Register("ViewportPanCommand", typeof(Viewport.PanCommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportPanCommand", typeof(ViewportCalculatorViewModel.PanDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportZoomCommandProperty =
-            DependencyProperty.Register("ViewportZoomCommand", typeof(Viewport.ZoomCommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportZoomCommand", typeof(ViewportCalculatorViewModel.ZoomDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportZoomToContentCommandProperty =
-            DependencyProperty.Register("ViewportZoomToContentCommand", typeof(Viewport.ZoomToContentCommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportZoomToContentCommand", typeof(ViewportCalculatorViewModel.ZoomToContentDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty UnfocusAllCommandProperty =
             DependencyProperty.Register("UnfocusAllCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));

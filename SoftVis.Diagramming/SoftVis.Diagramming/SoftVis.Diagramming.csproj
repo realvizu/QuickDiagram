@@ -250,7 +250,7 @@
     <Compile Include="UI\Wpf\View\PanAndZoomControl.xaml.cs">
       <DependentUpon>PanAndZoomControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Wpf\Viewport.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ViewportCalculatorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Key.snk">

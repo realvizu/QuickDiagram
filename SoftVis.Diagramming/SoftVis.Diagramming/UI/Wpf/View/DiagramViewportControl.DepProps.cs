@@ -98,27 +98,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(KeyboardZoomCommandProperty, value); }
         }
 
-        public Viewport.ResizeCommand ViewportResizeCommand
+        public ViewportCalculatorViewModel.ResizeDelegateCommand ViewportResizeCommand
         {
-            get { return (Viewport.ResizeCommand)GetValue(ViewportResizeCommandProperty); }
+            get { return (ViewportCalculatorViewModel.ResizeDelegateCommand)GetValue(ViewportResizeCommandProperty); }
             set { SetValue(ViewportResizeCommandProperty, value); }
         }
 
-        public Viewport.PanCommand ViewportPanCommand
+        public ViewportCalculatorViewModel.PanDelegateCommand ViewportPanCommand
         {
-            get { return (Viewport.PanCommand)GetValue(ViewportPanCommandProperty); }
+            get { return (ViewportCalculatorViewModel.PanDelegateCommand)GetValue(ViewportPanCommandProperty); }
             set { SetValue(ViewportPanCommandProperty, value); }
         }
 
-        public Viewport.ZoomCommand ViewportZoomCommand
+        public ViewportCalculatorViewModel.ZoomDelegateCommand ViewportZoomCommand
         {
-            get { return (Viewport.ZoomCommand)GetValue(ViewportZoomCommandProperty); }
+            get { return (ViewportCalculatorViewModel.ZoomDelegateCommand)GetValue(ViewportZoomCommandProperty); }
             set { SetValue(ViewportZoomCommandProperty, value); }
         }
 
-        public Viewport.ZoomToContentCommand ViewportZoomToContentCommand
+        public ViewportCalculatorViewModel.ZoomToContentDelegateCommand ViewportZoomToContentCommand
         {
-            get { return (Viewport.ZoomToContentCommand)GetValue(ViewportZoomToContentCommandProperty); }
+            get { return (ViewportCalculatorViewModel.ZoomToContentDelegateCommand)GetValue(ViewportZoomToContentCommandProperty); }
             set { SetValue(ViewportZoomToContentCommandProperty, value); }
         }
 

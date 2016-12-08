@@ -19,8 +19,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramShape = diagramShape;
         }
 
-        public void Remove() => RemoveRequested?.Invoke(DiagramShape);
-        public void Focus() => FocusRequested?.Invoke(this);
+        public void RequestRemove() => RemoveRequested?.Invoke(DiagramShape);
+        public void RequestFocus() => FocusRequested?.Invoke(this);
 
         public override string ToString() => DiagramShape.ToString();
     }

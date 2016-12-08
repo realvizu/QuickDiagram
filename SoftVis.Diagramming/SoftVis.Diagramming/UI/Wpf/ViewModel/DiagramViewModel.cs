@@ -74,7 +74,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToViewportEvents()
         {
-            DiagramViewportViewModel.InputReceived += OnViewportInputReceived;
+            DiagramViewportViewModel.ViewportManipulationStarted += OnViewportManipulationStarted;
             DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
             DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
@@ -82,7 +82,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UnsubscribeFromViewportEvents()
         {
-            DiagramViewportViewModel.InputReceived -= OnViewportInputReceived;
+            DiagramViewportViewModel.ViewportManipulationStarted -= OnViewportManipulationStarted;
             DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
             DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
@@ -91,7 +91,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
         {
             if (RelatedEntityListBoxViewModel.OwnerDiagramShape == diagramShapeViewModel)
-                OnViewportInputReceived();
+                HideRelatedEntityListBox();
         }
 
         private void OnShowRelatedEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
@@ -106,7 +106,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShowItems(modelEntities);
         }
 
-        private void OnViewportInputReceived()
+        private void OnViewportManipulationStarted()
         {
             HideAllWidgets();
         }
@@ -160,20 +160,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             Diagram.ShapeAdded += OnDiagramShapeAdded;
             Diagram.ShapeRemoved += OnDiagramShapeRemoved;
-            Diagram.DiagramCleared += OnCleared;
             Diagram.NodeSizeChanged += OnDiagramNodeSizeChanged;
             Diagram.NodeTopLeftChanged += OnDiagramNodeTopLeftChanged;
             Diagram.ConnectorRouteChanged += OnDiagramConnectorRouteChanged;
+            Diagram.DiagramCleared += OnCleared;
         }
 
         private void UnsubscribeFromDiagramEvents()
         {
             Diagram.ShapeAdded -= OnDiagramShapeAdded;
             Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
-            Diagram.DiagramCleared -= OnCleared;
             Diagram.NodeSizeChanged -= OnDiagramNodeSizeChanged;
             Diagram.NodeTopLeftChanged -= OnDiagramNodeTopLeftChanged;
             Diagram.ConnectorRouteChanged -= OnDiagramConnectorRouteChanged;
+            Diagram.DiagramCleared -= OnCleared;
         }
     }
 }

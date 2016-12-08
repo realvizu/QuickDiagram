@@ -8,9 +8,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// </summary>
     public class AutoHidePopupTextViewModel : PopupTextViewModel
     {
-        private int _autoHideInProgressCount;
-
         private TimeSpan _autoHideAfter;
+        private int _autoHideInProgressCount;
 
         public TimeSpan AutoHideAfter
         {
@@ -29,10 +28,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             if (_autoHideAfter == default(TimeSpan) || _autoHideAfter <= TimeSpan.Zero)
                 return;
 
-            SetUpAutoHide();
+            SetUpAutoHideAsync();
         }
 
-        private async void SetUpAutoHide()
+        private async void SetUpAutoHideAsync()
         {
             // No need to synchronize access to this counter because all code that accesses it run on the UI thread.
             _autoHideInProgressCount++;

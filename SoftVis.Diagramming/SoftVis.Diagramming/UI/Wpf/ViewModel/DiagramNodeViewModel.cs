@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramNode DiagramNode { get; }
 
-        public DelegateCommand FocusCommand { get; }
+        public DelegateCommand FocusRequestedCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
 
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
@@ -37,8 +37,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _name = diagramNode.Name;
             _fullName = diagramNode.FullName;
 
-            FocusCommand = new DelegateCommand(Focus);
-            DoubleClickCommand = new DelegateCommand(OnDoubleClick);
+            FocusRequestedCommand = new DelegateCommand(RequestFocus);
+            DoubleClickCommand = new DelegateCommand(RequestShowSource);
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
 
@@ -148,7 +148,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             FullName = fullName;
         }
 
-        private void OnDoubleClick()
+        private void RequestShowSource()
         {
             Diagram.ShowSource(DiagramNode);
         }
