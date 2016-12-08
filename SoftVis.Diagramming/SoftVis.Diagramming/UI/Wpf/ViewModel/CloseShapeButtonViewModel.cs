@@ -18,6 +18,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// </summary>
         public override object PlacementKey => this.GetType();
 
-        protected override void OnClick() => AssociatedDiagramShapeViewModel.RequestRemove();
+        protected override void OnClick() => HostViewModel.RequestRemove();
     }
 }

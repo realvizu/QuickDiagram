@@ -88,7 +88,6 @@
     <Compile Include="Modeling\EntityRelationTypes.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramFocusTracker.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedEntityListBoxViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramButtonControl.xaml.cs">
@@ -222,7 +221,6 @@
     <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
     <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
     <Compile Include="UI\PanDirection.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonCollectionViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />

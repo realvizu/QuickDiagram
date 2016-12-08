@@ -29,30 +29,29 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationType.Type);
 
         private EntityRelationType EntityRelationType => _relationType;
-        private DiagramNodeViewModel AssociatedDiagramNodeViewModel => (DiagramNodeViewModel)AssociatedDiagramShapeViewModel;
-        private IDiagramNode AssociatedDiagramNode => AssociatedDiagramNodeViewModel?.DiagramNode;
+        private IDiagramNode HostDiagramNode => HostViewModel?.DiagramNode;
 
         /// <summary>
         /// For related entity buttons the placement key is the RelatedEntitySpecification.
         /// </summary>
         public override object PlacementKey => EntityRelationType;
 
-        public override void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
+        public override void AssociateWith(DiagramNodeViewModel diagramNodeViewModel)
         {
-            base.AssociateWith(diagramShapeViewModel);
+            base.AssociateWith(diagramNodeViewModel);
             UpdateEnabledState();
         }
 
         protected override void OnClick()
         {
-            if (AssociatedDiagramNode == null)
+            if (HostDiagramNode == null)
             {
                 // TODO: find out how this happens
                 //Debugger.Break();
                 return;
             }
 
-            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, EntityRelationType).ToList();
+            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(HostDiagramNode, EntityRelationType).ToList();
 
             if (undisplayedRelatedEntities.Count == 1)
             {
@@ -66,7 +65,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnDoubleClick()
         {
-            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, EntityRelationType);
+            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(HostDiagramNode, EntityRelationType);
             ShowRelatedEntitiesRequested?.Invoke(this, undisplayedRelatedEntities);
         }
 
@@ -87,10 +86,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateEnabledState()
         {
-            if (AssociatedDiagramNode == null)
+            if (HostDiagramNode == null)
                 return;
 
-            IsEnabled = Diagram.GetUndisplayedRelatedEntities(AssociatedDiagramNode, EntityRelationType).Any();
+            IsEnabled = Diagram.GetUndisplayedRelatedEntities(HostDiagramNode, EntityRelationType).Any();
         }
     }
 }

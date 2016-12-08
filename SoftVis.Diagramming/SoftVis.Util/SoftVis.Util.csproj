@@ -112,6 +112,8 @@
     <Compile Include="UI\Wpf\ViewModels\BubbleListBoxViewModel.cs" />
     <Compile Include="UI\HandleOrientation.cs" />
     <Compile Include="UI\Wpf\ViewModels\AutoHidePopupTextViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\DecorationManagerViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModels\IDecoratorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\PopupTextViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModels\ProgressMode.cs" />
     <Compile Include="UI\Wpf\ViewModels\ProgressWindowViewModel.cs" />

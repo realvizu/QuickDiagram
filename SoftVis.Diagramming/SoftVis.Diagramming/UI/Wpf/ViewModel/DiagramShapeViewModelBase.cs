@@ -11,7 +11,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public IDiagramShape DiagramShape { get; }
 
         public event Action<IDiagramShape> RemoveRequested;
-        public event Action<DiagramShapeViewModelBase> FocusRequested;
 
         protected DiagramShapeViewModelBase(IArrangedDiagram diagram, IDiagramShape diagramShape)
             :base(diagram)
@@ -20,7 +19,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public void RequestRemove() => RemoveRequested?.Invoke(DiagramShape);
-        public void RequestFocus() => FocusRequested?.Invoke(this);
 
         public override string ToString() => DiagramShape.ToString();
     }

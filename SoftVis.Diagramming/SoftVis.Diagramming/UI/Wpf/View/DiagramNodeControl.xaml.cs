@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -22,7 +23,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(Size.Empty));
 
         public static readonly DependencyProperty FocusRequestedCommandProperty =
-            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand), typeof(DiagramNodeControl));
+            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<DiagramNodeViewModel>), typeof(DiagramNodeControl));
 
         public DiagramNodeControl()
         {
@@ -48,15 +49,15 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ActualSizeProperty, value); }
         }
 
-        public DelegateCommand FocusRequestedCommand
+        public DelegateCommand<DiagramNodeViewModel> FocusRequestedCommand
         {
-            get { return (DelegateCommand)GetValue(FocusRequestedCommandProperty); }
+            get { return (DelegateCommand<DiagramNodeViewModel>)GetValue(FocusRequestedCommandProperty); }
             set { SetValue(FocusRequestedCommandProperty, value); }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            FocusRequestedCommand?.Execute();
+            FocusRequestedCommand?.Execute(DataContext as DiagramNodeViewModel);
 
             e.Handled = true;
         }

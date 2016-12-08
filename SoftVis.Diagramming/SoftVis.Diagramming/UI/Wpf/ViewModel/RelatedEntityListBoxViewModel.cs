@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public DiagramShapeViewModelBase OwnerDiagramShape => _ownerButton?.AssociatedDiagramShapeViewModel;
+        public DiagramShapeViewModelBase OwnerDiagramShape => _ownerButton?.HostViewModel;
 
         public void Show(ShowRelatedNodeButtonViewModel ownerButton, IEnumerable<IModelEntity> items)
         {

@@ -13,7 +13,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DelegateCommand ClickCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
-        public DiagramShapeViewModelBase AssociatedDiagramShapeViewModel { get; private set; }
 
         protected DiagramShapeButtonViewModelBase(IArrangedDiagram diagram)
             : base(diagram)
@@ -38,19 +37,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public virtual void AssociateWith(DiagramShapeViewModelBase diagramShapeViewModel)
-        {
-            AssociatedDiagramShapeViewModel = diagramShapeViewModel;
-            IsVisible = true;
-        }
-
         protected abstract void OnClick();
         protected virtual void OnDoubleClick() { }
-
-        public override void Hide()
-        {
-            base.Hide();
-            AssociatedDiagramShapeViewModel = null;
-        }
     }
 }

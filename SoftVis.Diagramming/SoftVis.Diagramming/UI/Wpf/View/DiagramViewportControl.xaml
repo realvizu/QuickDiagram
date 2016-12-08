@@ -30,7 +30,7 @@
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                     ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                    FocusRequestedCommand="{Binding FocusRequestedCommand}">
+                    FocusRequestedCommand="{Binding Path=DataContext.DecorationManager.FocusCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramViewportControl}}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding DoubleClickCommand}"/>
@@ -121,7 +121,7 @@
 
             <Size x:Key="DiagramButtonSize" Width="16" Height="16"/>
 
-            <Style x:Key="DiagramShapeButtonItemContainerStyle" 
+            <Style x:Key="DiagramNodeButtonItemContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
                 <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}"/>
@@ -141,7 +141,7 @@
                 </Setter>
             </Style>
 
-            <ItemsPanelTemplate x:Key="DiagramShapeButtonItemsPanel">
+            <ItemsPanelTemplate x:Key="DiagramNodeButtonItemsPanel">
                 <view:DiagramCanvasChildDecoratorPanel 
                     DecoratedElement="{Binding Path=DecoratedDiagramNodeControl, ElementName=ThisControl}"
                     PlacementDictionary="{Binding DiagramShapeButtonPlacementDictionary, 
@@ -162,9 +162,9 @@
                                       ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
                                       ItemContainerStyle="{StaticResource DiagramNodeItemContainerStyle}"/>
 
-        <ItemsControl ItemsSource="{Binding DiagramShapeButtonViewModels}" 
-                      ItemsPanel="{StaticResource DiagramShapeButtonItemsPanel}"
-                      ItemContainerStyle="{StaticResource DiagramShapeButtonItemContainerStyle}"
+        <ItemsControl ItemsSource="{Binding DiagramNodeButtonViewModels}" 
+                      ItemsPanel="{StaticResource DiagramNodeButtonItemsPanel}"
+                      ItemContainerStyle="{StaticResource DiagramNodeButtonItemContainerStyle}"
                       Background="{x:Null}" />
 
         <view:PanAndZoomControl Focusable="False"

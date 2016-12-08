@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -6,9 +7,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// A widget on a diagram shape. 
     /// Its placement is calculated by the view using the PlacementKey.
     /// </summary>
-    public abstract class DiagramShapeDecoratorViewModelBase : DiagramViewModelBase
+    public abstract class DiagramShapeDecoratorViewModelBase : DiagramViewModelBase, IDecoratorViewModel<DiagramNodeViewModel>
     {
         private bool _isVisible;
+
+        public DiagramNodeViewModel HostViewModel { get; private set; }
 
         protected DiagramShapeDecoratorViewModelBase(IArrangedDiagram diagram)
             : base(diagram)
@@ -35,6 +38,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public virtual void Hide() => IsVisible = false;
+        public virtual void AssociateWith(DiagramNodeViewModel diagramNodeViewModel)
+        {
+            HostViewModel = diagramNodeViewModel;
+            IsVisible = true;
+        }
+
+        public virtual void Hide()
+        {
+            HostViewModel = null;
+            IsVisible = false;
+        }
     }
 }
