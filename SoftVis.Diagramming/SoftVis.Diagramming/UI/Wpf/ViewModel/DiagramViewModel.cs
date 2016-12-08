@@ -62,6 +62,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public void ZoomToContent() => DiagramViewportViewModel.ZoomToContent();
+        public void ZoomToRect(Rect rect) => DiagramViewportViewModel.ZoomToRect(rect);
         public bool IsDiagramContentVisible() => DiagramViewportViewModel.IsDiagramContentVisible();
 
         public void ShowPopupMessage(string text, TimeSpan hideAfter = default(TimeSpan))

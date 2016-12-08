@@ -12,7 +12,7 @@
         public override void Execute()
         {
             UiServices.ShowDiagramWindow();
-            UiServices.FitDiagramToView();
+            UiServices.ZoomToDiagram();
         }
     }
 }

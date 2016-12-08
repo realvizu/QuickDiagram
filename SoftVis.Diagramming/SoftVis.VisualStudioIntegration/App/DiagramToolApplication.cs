@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (!modelItems.Any())
                 return;
 
-            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelItems);
+            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelItems.OfType<IModelEntity>().ToList());
         }
 
     }

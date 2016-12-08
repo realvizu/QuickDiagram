@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,9 +9,12 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
+using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
 
@@ -43,25 +48,49 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         }
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
-        public void FitDiagramToView() => _diagramViewModel.ZoomToContent();
-
-        public void EnsureDiagramContentVisible()
-        {
-            InvokeOnIdleUi(() =>
-            {
-                if (!_diagramViewModel.IsDiagramContentVisible())
-                    _diagramViewModel.ZoomToContent();
-            });
-        }
 
         public void ShowMessageBox(string message)
-        {
-            System.Windows.MessageBox.Show(message, DialogTitle);
-        }
+            => System.Windows.MessageBox.Show(message, DialogTitle);
 
         public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan))
+            => _diagramViewModel.ShowPopupMessage(message, hideAfter);
+
+        public string SelectSaveFilename(string title, string filter)
         {
-            _diagramViewModel.ShowPopupMessage(message, hideAfter);
+            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
+            saveFileDialog.ShowDialog();
+            return saveFileDialog.FileName;
+        }
+
+        public void ExecuteWhenUiIsIdle(Action action)
+            => Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
+
+        public void ZoomToDiagram() => _diagramViewModel.ZoomToContent();
+
+        public void ZoomToDiagramNode(IDiagramNode diagramNode)
+        {
+            var rect = diagramNode.Rect.ToWpf();
+            if (rect.IsDefined())
+                _diagramViewModel.ZoomToRect(rect);
+        }
+
+        public void ZoomToDiagramNodes(IEnumerable<IDiagramNode> diagramNodes)
+        {
+            var rect = diagramNodes.Select(i => i.Rect).Where(i => i.IsDefined()).Union().ToWpf();
+            if (rect.IsDefined())
+                _diagramViewModel.ZoomToRect(rect);
+        }
+
+        public void EnsureDiagramVisible()
+        {
+            if (!_diagramViewModel.IsDiagramContentVisible())
+                _diagramViewModel.ZoomToContent();
+        }
+
+        public ProgressDialog CreateProgressDialog(string text, int maxProgress = 0)
+        {
+            var hostMainWindow = _hostUiServices.GetMainWindow();
+            return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
         public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken),
@@ -86,27 +115,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
-        public ProgressDialog CreateProgressDialog(string text, int maxProgress = 0)
-        {
-            var hostMainWindow = _hostUiServices.GetMainWindow();
-            return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
-        }
-
-        public string SelectSaveFilename(string title, string filter)
-        {
-            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
-            saveFileDialog.ShowDialog();
-            return saveFileDialog.FileName;
-        }
-
         private void HandleOutOfMemory()
         {
             ShowMessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
-        }
-
-        private static void InvokeOnIdleUi(Action action)
-        {
-            Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
         }
     }
 }

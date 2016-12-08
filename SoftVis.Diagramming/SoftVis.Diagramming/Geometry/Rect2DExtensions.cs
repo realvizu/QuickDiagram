@@ -5,6 +5,13 @@ namespace Codartis.SoftVis.Geometry
 {
     public static class Rect2DExtensions
     {
+        public static bool IsUndefined(this Rect2D rect)
+        {
+            return double.IsNaN(rect.Left) || double.IsNaN(rect.Top) || double.IsNaN(rect.Width) || double.IsNaN(rect.Height);
+        }
+
+        public static bool IsDefined(this Rect2D rect) => !rect.IsUndefined();
+
         public static Rect2D Union(this Rect2D rect1, Rect2D rect2)
         {
             return Rect2D.Union(rect1, rect2);

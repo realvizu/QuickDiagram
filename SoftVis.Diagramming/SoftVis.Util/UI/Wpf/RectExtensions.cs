@@ -14,6 +14,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf
             return double.IsNaN(rect.Left) || double.IsNaN(rect.Top) || double.IsNaN(rect.Width) || double.IsNaN(rect.Height);
         }
 
+        public static bool IsDefined(this Rect rect) => !rect.IsUndefined();
+
         public static Point GetCenter(this Rect rect)
         {
             return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);

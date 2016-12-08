@@ -41,35 +41,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
                 : ConnectorTypes.Generalization;
         }
 
-        public override void ShowItems(IEnumerable<IModelItem> modelItems,
-            CancellationToken cancellationToken = new CancellationToken(),
-            IIncrementalProgress progress = null)
+        public IDiagramNode ShowEntity(IModelEntity modelEntity)
         {
-            var modelItemList = modelItems.ToList();
-
-            if (progress == null && modelItemList.Count > 1)
-                ShowItemsRequested?.Invoke(modelItemList);
-            else
-                ShowItemsWithProgress(modelItemList, cancellationToken, progress);
+            return ShowItem(modelEntity) as IDiagramNode;
         }
 
-        public void ShowItemsWithProgress(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken, IIncrementalProgress progress)
+        public List<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            base.ShowItems(modelItems, cancellationToken, progress);
+            return ShowItems(modelEntities, cancellationToken, progress).OfType<IDiagramNode>().ToList();
         }
 
-        public void ShowEntity(IRoslynBasedModelEntity modelEntity)
-        {
-            ShowItem(modelEntity);
-        }
-
-        public void ShowEntityWithHierarchy(IRoslynBasedModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
+        public List<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
             var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
-
             var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
-            ShowItems(entities, cancellationToken, progress);
+
+             return ShowItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToList();
         }
 
         public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)

@@ -64,7 +64,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             get
             {
                 lock (this)
-                    return Shapes.Where(i => i.IsRectDefined).Select(i => i.Rect).Union();
+                    return Shapes.Select(i => i.Rect).Where(i => i.IsDefined()).Union();
             }
         }
 
@@ -85,39 +85,53 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             OnDiagramCleared();
         }
 
-        public void ShowItem(IModelItem modelItem) => ShowItems(new[] { modelItem });
+        public IDiagramShape ShowItem(IModelItem modelItem) => ShowItems(new[] { modelItem }).FirstOrDefault();
         public void HideItem(IModelItem modelItem) => HideItems(new[] { modelItem });
 
-        public virtual void ShowItems(IEnumerable<IModelItem> modelItems,
+        public virtual List<IDiagramShape> ShowItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = default(CancellationToken),
             IIncrementalProgress progress = null)
         {
+            var diagramShapes = new List<IDiagramShape>();
+
             foreach (var modelItem in modelItems)
             {
                 if (cancellationToken.IsCancellationRequested)
                     break;
 
                 if (modelItem is IModelEntity)
-                    ShowEntityCore((IModelEntity)modelItem);
+                {
+                    var diagramNode = ShowEntityCore((IModelEntity)modelItem);
+                    diagramShapes.Add(diagramNode);
+                }
 
                 if (modelItem is IModelRelationship)
-                    ShowRelationshipCore((IModelRelationship)modelItem);
+                {
+                    var diagramConnector = ShowRelationshipCore((IModelRelationship)modelItem);
+                    diagramShapes.Add(diagramConnector);
+                }
 
                 progress?.Report(1);
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
+            return diagramShapes;
         }
 
-        public virtual void HideItems(IEnumerable<IModelItem> modelItems)
+        public virtual void HideItems(IEnumerable<IModelItem> modelItems,
+            CancellationToken cancellationToken = default(CancellationToken),
+            IIncrementalProgress progress = null)
         {
             foreach (var modelItem in modelItems)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (modelItem is IModelEntity)
                     HideEntityCore((IModelEntity)modelItem);
 
                 if (modelItem is IModelRelationship)
                     HideRelationshipCore((IModelRelationship)modelItem);
+
+                progress?.Report(1);
             }
         }
 
@@ -131,9 +145,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, EntityRelationType relationType)
         {
-            return Model
-                .GetRelatedEntities(diagramNode.ModelEntity, relationType)
-                .Where(i => Nodes.All(j => j.ModelEntity != i));
+            lock (this)
+                return Model
+                    .GetRelatedEntities(diagramNode.ModelEntity, relationType)
+                    .Where(i => Nodes.All(j => j.ModelEntity != i));
         }
 
         public void ResizeNode(IDiagramNode diagramNode, Size2D newSize)
@@ -155,30 +170,43 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// Show a node on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelEntity">A type or package model element.</param>
-        private void ShowEntityCore(IModelEntity modelEntity)
+        /// <returns>The node that corresponds to the model entity.</returns>
+        private IDiagramNode ShowEntityCore(IModelEntity modelEntity)
         {
-            if (NodeExists(modelEntity))
-                return;
+            var diagramNode = FindNode(modelEntity);
+            if (diagramNode != null)
+                return diagramNode;
 
-            var diagramNode = CreateDiagramNode(modelEntity);
+            diagramNode = CreateDiagramNode(modelEntity);
             AddDiagramNode(diagramNode);
             ShowRelationshipsIfBothEndsAreVisible(modelEntity);
+
+            return diagramNode;
         }
 
         /// <summary>
         /// Show a connector on the diagram that represents the given model element.
         /// </summary>
         /// <param name="modelRelationship">A relationship model item.</param>
-        private void ShowRelationshipCore(IModelRelationship modelRelationship)
+        /// <returns>
+        /// The node that corresponds to the model relationship. 
+        /// Null if it does not exist and cannot be created because its source or target node does not exist.
+        /// </returns>
+        private IDiagramConnector ShowRelationshipCore(IModelRelationship modelRelationship)
         {
-            if (ConnectorExists(modelRelationship) ||
-                !NodeExists(modelRelationship.Source) ||
-                !NodeExists(modelRelationship.Target))
-                return;
+            var diagramConnector = FindConnector(modelRelationship);
+            if (diagramConnector != null)
+                return diagramConnector;
 
-            var diagramConnector = CreateDiagramConnector(modelRelationship);
+            if (!NodeExists(modelRelationship.Source) ||
+                !NodeExists(modelRelationship.Target))
+                return null;
+
+            diagramConnector = CreateDiagramConnector(modelRelationship);
             AddDiagramConnector(diagramConnector);
             HideRedundantDirectEdges();
+
+            return diagramConnector;
         }
 
         /// <summary>
@@ -225,9 +253,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             diagramNode.TopLeftChanged += OnDiagramNodeTopLeftChanged;
 
             lock (this)
-            {
                 _graph.AddVertex(diagramNode);
-            }
 
             OnShapeAdded(diagramNode);
         }
@@ -238,9 +264,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             diagramNode.TopLeftChanged -= OnDiagramNodeTopLeftChanged;
 
             lock (this)
-            {
                 _graph.RemoveVertex(diagramNode);
-            }
 
             OnShapeRemoved(diagramNode);
         }
@@ -250,9 +274,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             diagramConnector.RouteChanged += OnDiagramConnectorRouteChanged;
 
             lock (this)
-            {
                 _graph.AddEdge(diagramConnector);
-            }
 
             OnShapeAdded(diagramConnector);
         }
@@ -262,9 +284,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             diagramConnector.RouteChanged -= OnDiagramConnectorRouteChanged;
 
             lock (this)
-            {
                 _graph.RemoveEdge(diagramConnector);
-            }
 
             OnShapeRemoved(diagramConnector);
         }
@@ -283,9 +303,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void HideRedundantDirectEdges()
         {
-            // TODO: should only hide same-type connectors!!!
+            List<DiagramConnector> connectors;
+            lock (this)
+                connectors = Connectors.ToList();
 
-            foreach (var connector in Connectors.ToList())
+            // TODO: should only hide same-type connectors!!!
+            foreach (var connector in connectors)
             {
                 var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).ToList();
                 if (paths.Count > 1)
@@ -323,22 +346,26 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private DiagramNode FindNode(IModelEntity modelEntity)
         {
-            return Nodes.FirstOrDefault(i => Equals(i.ModelEntity, modelEntity));
+            lock (this)
+                return Nodes.FirstOrDefault(i => Equals(i.ModelEntity, modelEntity));
         }
 
         private bool NodeExists(IModelEntity modelEntity)
         {
-            return Nodes.Any(i => Equals(i.ModelEntity, modelEntity));
+            lock (this)
+                return Nodes.Any(i => Equals(i.ModelEntity, modelEntity));
         }
 
         private DiagramConnector FindConnector(IModelRelationship modelRelationship)
         {
-            return Connectors.FirstOrDefault(i => Equals(i.ModelRelationship, modelRelationship));
+            lock (this)
+                return Connectors.FirstOrDefault(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
         private bool ConnectorExists(IModelRelationship modelRelationship)
         {
-            return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
+            lock (this)
+                return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
         private void OnShapeAdded(IDiagramShape diagramShape) => ShapeAdded?.Invoke(diagramShape);

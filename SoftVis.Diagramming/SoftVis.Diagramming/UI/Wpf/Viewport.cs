@@ -75,9 +75,16 @@ namespace Codartis.SoftVis.UI.Wpf
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
         {
-            var contentRect = _diagram.ContentRect.ToWpf();
-            _exponentialZoom = CalculateZoomForContent(contentRect.Size);
-            _centerInDiagramSpace = contentRect.GetCenter();
+            ZoomToRect(_diagram.ContentRect.ToWpf(), transitionSpeed);
+        }
+
+        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed)
+        {
+            if (rect.IsUndefined())
+                return;
+
+            _exponentialZoom = CalculateZoomForContent(rect.Size);
+            _centerInDiagramSpace = rect.GetCenter();
             UpdateCalculatedProperties(transitionSpeed);
         }
 

@@ -29,11 +29,16 @@ namespace Codartis.SoftVis.Diagramming
         IEnumerable<EntityRelationType> GetEntityRelationTypes();
         ConnectorType GetConnectorType(ModelRelationshipType type);
 
-        void ShowItem(IModelItem modelItem);
-        void ShowItems(IEnumerable<IModelItem> modelItems, CancellationToken cancellationToken = default(CancellationToken),
-            IIncrementalProgress progress = null);
+        IDiagramShape ShowItem(IModelItem modelItem);
+
+        List<IDiagramShape> ShowItems(IEnumerable<IModelItem> modelItems,
+            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+
         void HideItem(IModelItem modelItem);
-        void HideItems(IEnumerable<IModelItem> modelItems);
+
+        void HideItems(IEnumerable<IModelItem> modelItems,
+            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+
         void Clear();
 
         void SelectShape(IDiagramShape diagramShape);

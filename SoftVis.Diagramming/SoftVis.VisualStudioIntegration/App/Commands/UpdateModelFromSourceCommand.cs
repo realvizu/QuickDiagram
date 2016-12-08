@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             await ShowProgressAndUpdateModel();
 
             UiServices.ShowDiagramWindow();
-            UiServices.EnsureDiagramContentVisible();
+            UiServices.ZoomToDiagram();
         }
 
         private async Task ShowProgressAndUpdateModel()

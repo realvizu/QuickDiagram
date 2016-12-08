@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
@@ -137,6 +138,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => _viewport.ZoomToContent(transitionSpeed);
+        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => _viewport.ZoomToRect(rect, transitionSpeed);
         public bool IsDiagramContentVisible() => _viewport.IsDiagramRectVisible();
 
         /// <summary>
