@@ -59,6 +59,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             FocusRequestedCommand?.Execute(DataContext as DiagramNodeViewModel);
 
+            // Must stop the event from bubbling up because if its viewport parent receives MouseMove then it forces the node to lose focus.
             e.Handled = true;
         }
 

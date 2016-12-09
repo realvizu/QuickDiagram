@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
     internal class MousePanAndZoomBehavior : PanAndZoomBehaviorBase
     {
         private Point _lastMousePosition;
+        private bool _isPreparedForPanning;
         private bool _isPanning;
         private Cursor _cursorBeforePanning;
 
@@ -42,9 +43,11 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         {
             base.OnAttached();
 
+            // Handled MouseMove events must be captured too otherwise focus tracking interferes with panning.
+            // (Focus tracking stops mouse move event bubbling when moving inside a node.)
+            AssociatedObject.AddHandler(UIElement.MouseMoveEvent, (MouseEventHandler)OnMouseMove, handledEventsToo: true);
             AssociatedObject.MouseLeftButtonDown += OnMouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp += OnMouseLeftButtonUp;
-            AssociatedObject.PreviewMouseMove += OnMouseMove;
             AssociatedObject.LostMouseCapture += OnLostMouseCapture;
             AssociatedObject.MouseWheel += OnMouseWheel;
         }
@@ -53,42 +56,38 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         {
             base.OnDetaching();
 
+            AssociatedObject.RemoveHandler(UIElement.MouseMoveEvent, (MouseEventHandler)OnMouseMove);
             AssociatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp -= OnMouseLeftButtonUp;
-            AssociatedObject.PreviewMouseMove -= OnMouseMove;
             AssociatedObject.LostMouseCapture -= OnLostMouseCapture;
             AssociatedObject.MouseWheel -= OnMouseWheel;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!_isPanning)
-            {
-                _isPanning = true;
-                _cursorBeforePanning = AssociatedObject.Cursor;
-                AssociatedObject.Cursor = PanCursor;
-                Mouse.Capture(AssociatedObject);
-            }
+            // Don't start panning yet, just after the mouse was moved while holding down the mouse button.
+            _isPreparedForPanning = true;
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isPanning)
-            {
-                _isPanning = false;
-                AssociatedObject.Cursor = _cursorBeforePanning;
-                Mouse.Capture(null);
-            }
+            _isPreparedForPanning = false;
+            StopPanning();
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
+            // Start panning only if the mouse button was already pushed but the panning has not started yet.
+            if (_isPreparedForPanning && !_isPanning)
+                StartPanning();
+
             var position = e.GetPosition(AssociatedObject);
             if (_isPanning && _lastMousePosition != position)
             {
                 var panVector = position - _lastMousePosition;
                 PanCommand?.Execute(panVector);
             }
+
             _lastMousePosition = position;
         }
 
@@ -105,6 +104,27 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
             {
                 var zoomAmount = Math.Abs(e.Delta / Mouse.MouseWheelDeltaForOneLine) * ZoomAmountPerWheelClick;
                 Zoom(zoomDirection, zoomAmount, e.GetPosition(AssociatedObject));
+            }
+        }
+
+        private void StartPanning()
+        {
+            if (!_isPanning)
+            {
+                _isPanning = true;
+                _cursorBeforePanning = AssociatedObject.Cursor;
+                AssociatedObject.Cursor = PanCursor;
+                Mouse.Capture(AssociatedObject);
+            }
+        }
+
+        private void StopPanning()
+        {
+            if (_isPanning)
+            {
+                _isPanning = false;
+                AssociatedObject.Cursor = _cursorBeforePanning;
+                Mouse.Capture(null);
             }
         }
     }
