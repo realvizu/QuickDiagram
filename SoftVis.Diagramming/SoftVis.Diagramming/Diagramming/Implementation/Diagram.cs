@@ -27,7 +27,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramShape> ShapeAdded;
         public event Action<IDiagramShape> ShapeRemoved;
         public event Action<IDiagramShape> ShapeSelected;
-        public event Action<IDiagramShape> ShowSourceRequested;
 
         public event Action DiagramCleared;
 
@@ -136,7 +135,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public void SelectShape(IDiagramShape diagramShape) => OnShapeSelected(diagramShape);
-        public void ShowSource(IDiagramShape diagramShape) => OnShowSourceRequested(diagramShape);
 
         public void RemoveShape(IDiagramShape diagramShape)
         {
@@ -372,7 +370,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private void OnShapeRemoved(IDiagramShape diagramShape) => ShapeRemoved?.Invoke(diagramShape);
         private void OnDiagramCleared() => DiagramCleared?.Invoke();
         private void OnShapeSelected(IDiagramShape diagramShape) => ShapeSelected?.Invoke(diagramShape);
-        private void OnShowSourceRequested(IDiagramShape diagramShape) => ShowSourceRequested?.Invoke(diagramShape);
 
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize)
         {

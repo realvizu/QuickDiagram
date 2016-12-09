@@ -25,6 +25,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand PreviewMouseDownCommand { get; }
         public DelegateCommand MouseDownCommand { get; }
 
+        public event Action<IDiagramShape> ShowSourceRequested;
+
         public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
@@ -85,6 +87,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
             DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
+            DiagramViewportViewModel.ShowSourceRequested += OnShowSourceRequested;
         }
 
         private void UnsubscribeFromViewportEvents()
@@ -93,6 +96,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
             DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
+            DiagramViewportViewModel.ShowSourceRequested -= OnShowSourceRequested;
         }
 
         private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
@@ -116,6 +120,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
             Diagram.ShowItem(selectedEntity);
+        }
+
+        private void OnShowSourceRequested(IDiagramShape diagramShape)
+        {
+            ShowSourceRequested?.Invoke(diagramShape);
         }
 
         private void OnRelatedEntityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

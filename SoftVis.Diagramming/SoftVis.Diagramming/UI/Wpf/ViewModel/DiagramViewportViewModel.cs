@@ -7,6 +7,7 @@ using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf.Collections;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Transforms;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -34,6 +35,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event ShowRelatedNodeButtonEventHandler ShowEntitySelectorRequested;
         public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
+        public event Action<IDiagramShape> ShowSourceRequested;
+
+        public DelegateCommand<IDiagramShape> ShowSourceCommand { get; }
 
         public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
@@ -49,6 +53,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramNodeViewModels);
+
+            ShowSourceCommand = new DelegateCommand<IDiagramShape>(OnShowSourceCommand);
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
@@ -192,6 +198,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
         {
             ShowRelatedEntitiesRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
+        }
+
+        private void OnShowSourceCommand(IDiagramShape diagramShape)
+        {
+            ShowSourceRequested?.Invoke(diagramShape);
         }
 
         private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)

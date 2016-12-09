@@ -29,11 +29,12 @@
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
-                    ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                    FocusRequestedCommand="{Binding Path=DataContext.DecorationManager.FocusCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramViewportControl}}}">
+                                         ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
+                                         FocusRequestedCommand="{Binding Path=DataContext.DecorationManager.FocusCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramViewportControl}}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
-                            <i:InvokeCommandAction Command="{Binding DoubleClickCommand}"/>
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowSourceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramViewportControl}}}"
+                                                   CommandParameter="{Binding DiagramShape}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </view:DiagramNodeControl>

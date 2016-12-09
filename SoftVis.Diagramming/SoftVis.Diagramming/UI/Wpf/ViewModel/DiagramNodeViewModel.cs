@@ -6,7 +6,6 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI.Wpf;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -24,8 +23,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
 
-        public DelegateCommand DoubleClickCommand { get; }
-
         public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode)
               : base(diagram, diagramNode)
         {
@@ -37,8 +34,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _fullName = diagramNode.FullName;
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
-
-            DoubleClickCommand = new DelegateCommand(RequestShowSource);
 
             DiagramNode.TopLeftChanged += OnTopLeftChanged;
             DiagramNode.Renamed += OnRenamed;
@@ -144,11 +139,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             Name = name;
             FullName = fullName;
-        }
-
-        private void RequestShowSource()
-        {
-            Diagram.ShowSource(DiagramNode);
         }
 
         private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()

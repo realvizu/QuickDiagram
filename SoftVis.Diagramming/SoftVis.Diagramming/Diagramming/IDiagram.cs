@@ -23,7 +23,6 @@ namespace Codartis.SoftVis.Diagramming
         event Action<IDiagramShape> ShapeAdded;
         event Action<IDiagramShape> ShapeRemoved;
         event Action<IDiagramShape> ShapeSelected;
-        event Action<IDiagramShape> ShowSourceRequested;
         event Action DiagramCleared;
 
         IEnumerable<EntityRelationType> GetEntityRelationTypes();
@@ -42,7 +41,6 @@ namespace Codartis.SoftVis.Diagramming
         void Clear();
 
         void SelectShape(IDiagramShape diagramShape);
-        void ShowSource(IDiagramShape diagramShape);
         void RemoveShape(IDiagramShape diagramShape);
 
         IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, EntityRelationType relationType);

@@ -36,6 +36,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public Dpi ImageExportDpi { get; set; }
 
+        public event Action<IDiagramShape> ShowSourceRequested;
+
         public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
         {
             _hostUiServices = hostUiServices;
@@ -45,6 +47,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             hostUiServices.HostDiagram(_diagramControl);
+
+            SubscribeToDiagramViewModelEvents(_diagramViewModel);
         }
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
@@ -118,6 +122,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private void HandleOutOfMemory()
         {
             ShowMessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
+        }
+
+        private void SubscribeToDiagramViewModelEvents(DiagramViewModel diagramViewModel)
+        {
+            diagramViewModel.ShowSourceRequested += i => ShowSourceRequested?.Invoke(i);
         }
     }
 }

@@ -22,7 +22,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         event Action<IDiagramShape> ShapeSelected;
         event Action DiagramCleared;
 
-        event Action<IDiagramShape> ShowSourceRequested;
         event Action<List<IModelItem>> ShowItemsRequested;
 
         IDiagramNode ShowEntity(IModelEntity modelEntity);

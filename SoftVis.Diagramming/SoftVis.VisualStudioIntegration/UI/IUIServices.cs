@@ -16,6 +16,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         Dpi ImageExportDpi { get; set; }
 
+        event Action<IDiagramShape> ShowSourceRequested;
+
         void ShowDiagramWindow();
         void ShowMessageBox(string message);
         void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));

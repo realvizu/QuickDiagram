@@ -34,13 +34,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             UiServices.ImageExportDpi = Dpi.Dpi150;
 
             SubscribeToDiagramEvents(diagramServices);
+            SubscribeToUiEvents(uiServices);
         }
 
         private void SubscribeToDiagramEvents(IDiagramServices diagramServices)
         {
             diagramServices.ShapeAdded += OnShapeAdded;
-            diagramServices.ShowSourceRequested += OnShowSourceRequested;
-            diagramServices.ShowItemsRequested += OnShowItemsRequested;
+            diagramServices.ShowItemsRequested += OnShowItemsRequestedAsync;
+        }
+
+        private void SubscribeToUiEvents(IUiServices uiServices)
+        {
+            uiServices.ShowSourceRequested += OnShowSourceRequested;
         }
 
         /// <summary>
@@ -65,12 +70,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        private async void OnShowItemsRequested(List<IModelItem> modelItems)
+        private async void OnShowItemsRequestedAsync(List<IModelItem> modelItems)
         {
             if (!modelItems.Any())
                 return;
 
-            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelItems.OfType<IModelEntity>().ToList());
+            var modelEntities = modelItems.OfType<IModelEntity>().ToList();
+            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelEntities);
         }
 
     }
