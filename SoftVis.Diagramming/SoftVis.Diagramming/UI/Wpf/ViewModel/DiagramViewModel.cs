@@ -23,6 +23,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public AutoHidePopupTextViewModel PopupTextViewModel { get; }
 
         public DelegateCommand PreviewMouseDownCommand { get; }
+        public DelegateCommand MouseDownCommand { get; }
 
         public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
@@ -35,7 +36,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             PopupTextViewModel = new AutoHidePopupTextViewModel();
 
-            PreviewMouseDownCommand = new DelegateCommand(OnPreviewMouseDown);
+            PreviewMouseDownCommand = new DelegateCommand(OnAnyMouseDownEvent);
+            MouseDownCommand = new DelegateCommand(OnUnhandledMouseDownEvent);
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -111,22 +113,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShowItems(modelEntities);
         }
 
-        private void OnPreviewMouseDown()
-        {
-            HidePopupText();
-        }
-
-        private void OnViewportManipulationStarted()
-        {
-            HideAllWidgets();
-        }
-
-        private void OnCleared()
-        {
-            HideAllWidgets();
-            UpdateDiagramContentRect();
-        }
-
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
             Diagram.ShowItem(selectedEntity);
@@ -141,6 +127,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                         HideRelatedEntityListBox();
                     break;
             }
+        }
+
+        private void OnAnyMouseDownEvent()
+        {
+            HidePopupText();
+        }
+
+        private void OnUnhandledMouseDownEvent()
+        {
+            HideRelatedEntityListBox();
+        }
+
+        private void OnViewportManipulationStarted()
+        {
+            HideAllWidgets();
+        }
+
+        private void OnCleared()
+        {
+            HideAllWidgets();
+            UpdateDiagramContentRect();
         }
 
         private void HideRelatedEntityListBox()

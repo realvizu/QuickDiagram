@@ -84,5 +84,8 @@
         <i:EventTrigger EventName="PreviewMouseDown">
             <i:InvokeCommandAction Command="{Binding PreviewMouseDownCommand}"/>
         </i:EventTrigger>
+        <i:EventTrigger EventName="MouseDown">
+            <i:InvokeCommandAction Command="{Binding MouseDownCommand}"/>
+        </i:EventTrigger>
     </i:Interaction.Triggers>
 </UserControl>
