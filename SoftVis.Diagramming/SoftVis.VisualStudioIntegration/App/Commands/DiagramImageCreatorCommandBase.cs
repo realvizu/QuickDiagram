@@ -18,23 +18,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         protected async Task CreateAndProcessDiagramImageAsync(Action<BitmapSource> imageProcessingAction, string imageProcessingMessage)
         {
             // Using int.MaxValue for max progress because the real max value is not yet known.
-            var progressDialog = UiServices.CreateProgressDialog("Generating image..", int.MaxValue);
-            progressDialog.ShowProgressNumber = false;
-            progressDialog.ShowWithDelayAsync();
-
-            try
+            using (var progressDialog = UiServices.CreateProgressDialog("Generating image..", int.MaxValue))
             {
-                var cancellationToken = progressDialog.CancellationToken;
+                progressDialog.ShowProgressNumber = false;
+                progressDialog.ShowWithDelayAsync();
 
-                var bitmapSource = await UiServices.CreateDiagramImageAsync(cancellationToken, progressDialog.Progress, progressDialog.MaxProgress);
-                if (bitmapSource != null)
+                try
                 {
-                    progressDialog.Reset(imageProcessingMessage, showProgressNumber: false);
-                    await Task.Factory.StartSTA(() => imageProcessingAction(bitmapSource), cancellationToken);
+                    var bitmapSource = await UiServices.CreateDiagramImageAsync(progressDialog.CancellationToken, 
+                        progressDialog.Progress, progressDialog.MaxProgress);
+
+                    if (bitmapSource != null)
+                    {
+                        progressDialog.Reset(imageProcessingMessage, showProgressNumber: false);
+                        await Task.Factory.StartSTA(() => imageProcessingAction(bitmapSource), progressDialog.CancellationToken);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
                 }
             }
-            catch (OperationCanceledException) { }
-            finally { progressDialog.Close(); }
         }
     }
 }

@@ -106,9 +106,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty UnfocusAllCommandProperty =
             DependencyProperty.Register("UnfocusAllCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
 
-        public static readonly DependencyProperty MouseDownCommandProperty =
-            DependencyProperty.Register("MouseDownCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
-
         public DiagramViewportControl()
         {
             _isViewportObscured = false;
@@ -164,11 +161,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             UnfocusAllDiagramShapes();
-        }
-
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            MouseDownCommand?.Execute();
         }
 
         private void ZoomToContent(TransitionSpeed transitionSpeed)

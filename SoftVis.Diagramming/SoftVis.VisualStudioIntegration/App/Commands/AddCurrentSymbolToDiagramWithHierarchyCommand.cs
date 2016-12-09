@@ -26,33 +26,42 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (modelEntity == null)
                 return;
 
-            var diagramNodes = await ExtendModelAndDiagram(modelEntity);
+            var diagramNodes = await ExtendModelAndDiagramAsync(modelEntity);
+            if (diagramNodes == null)
+                return;
 
             UiServices.ShowDiagramWindow();
             UiServices.ExecuteWhenUiIsIdle(() => UiServices.ZoomToDiagramNodes(diagramNodes));
         }
 
-        private async Task<List<IDiagramNode>> ExtendModelAndDiagram(IRoslynBasedModelEntity modelEntity)
+        private async Task<List<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelEntity modelEntity)
         {
             List<IDiagramNode> diagramNodes = null;
 
-            var progressDialog = UiServices.CreateProgressDialog("Extending model with entities:");
-            progressDialog.ShowWithDelayAsync();
-
-            try
+            using (var progressDialog = UiServices.CreateProgressDialog("Extending model with entities:"))
             {
-                var cancellationToken = progressDialog.CancellationToken;
+                progressDialog.ShowWithDelayAsync();
 
-                await Task.Run(() => ExtendModelWithRelatedEntities(modelEntity, cancellationToken, progressDialog.Progress), cancellationToken);
+                try
+                {
+                    await ExtendModelWithRelatedEntitiesAsync(modelEntity, progressDialog.CancellationToken, progressDialog.Progress);
 
-                progressDialog.Reset("Adding diagram nodes:");
+                    progressDialog.Reset("Adding diagram nodes:");
 
-                diagramNodes = await Task.Run(() => ExtendDiagram(modelEntity, cancellationToken, progressDialog.Progress), cancellationToken);
+                    diagramNodes = await ExtendDiagramAsync(modelEntity, progressDialog.CancellationToken, progressDialog.Progress);
+                }
+                catch (OperationCanceledException)
+                {
+                }
             }
-            catch (OperationCanceledException) { }
-            finally { progressDialog.Close(); }
 
             return diagramNodes;
+        }
+
+        private async Task ExtendModelWithRelatedEntitiesAsync(IModelEntity modelEntity, 
+            CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            await Task.Run(() => ExtendModelWithRelatedEntities(modelEntity, cancellationToken, progress), cancellationToken);
         }
 
         private void ExtendModelWithRelatedEntities(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
@@ -61,10 +70,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.Subtype, cancellationToken, progress, recursive: true);
         }
 
-        private List<IDiagramNode> ExtendDiagram(IRoslynBasedModelEntity modelEntity, 
+        private async Task<List<IDiagramNode>> ExtendDiagramAsync(IRoslynBasedModelEntity modelEntity, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return DiagramServices.ShowEntityWithHierarchy(modelEntity, cancellationToken, progress);
+            return await Task.Run(() => DiagramServices.ShowEntityWithHierarchy(modelEntity, cancellationToken, progress), cancellationToken);
         }
     }
 }

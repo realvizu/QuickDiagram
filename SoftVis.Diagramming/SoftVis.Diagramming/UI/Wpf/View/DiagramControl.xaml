@@ -52,7 +52,6 @@
                                      ViewportZoomToContentCommand="{Binding Path=ViewportCalculator.ZoomToContentCommand}"
                                      DecoratedDiagramNode="{Binding Path=DecorationManager.DecoratedHost}"
                                      UnfocusAllCommand="{Binding Path=DecorationManager.UnfocusAllCommand}"
-                                     MouseDownCommand="{Binding Path=MouseDownCommand}"
                                      Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"/>
 
@@ -68,7 +67,7 @@
         <controls:PopupTextControl DataContext="{Binding PopupTextViewModel}"
                                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                    IsHitTestVisible="False">
-            
+
             <controls:PopupTextControl.Effect>
                 <DropShadowEffect Direction="315" ShadowDepth="2" BlurRadius="3" RenderingBias="Performance" />
             </controls:PopupTextControl.Effect>
@@ -80,4 +79,10 @@
             </i:Interaction.Behaviors>
         </controls:PopupTextControl>
     </Canvas>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="PreviewMouseDown">
+            <i:InvokeCommandAction Command="{Binding PreviewMouseDownCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 </UserControl>

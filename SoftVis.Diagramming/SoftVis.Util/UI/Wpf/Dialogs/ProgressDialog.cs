@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
     /// <summary>
     /// A modal popup window that shows the progress of a process while not blocking the execution thread.
     /// </summary>
-    public class ProgressDialog
+    public class ProgressDialog : IDisposable
     {
         private readonly ProgressWindow _window;
         private readonly ProgressWindowViewModel _viewModel;
@@ -41,6 +41,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             _window.Closed += WindowOnClosed;
         }
 
+        public void Dispose()
+        {
+            Close();
+            _cancellationTokenSource.Dispose();
+        }
+
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
         public IIncrementalProgress Progress => _progressAccumulator;
         public IProgress<int> MaxProgress => _maxProgress;
@@ -56,6 +62,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             try
             {
                 await Task.Delay(delayMillisec, CancellationToken);
+
+                CancellationToken.ThrowIfCancellationRequested();
+
                 _window.ShowNonBlockingModal(CancellationToken);
             }
             catch (OperationCanceledException)
@@ -63,22 +72,17 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             }
         }
 
-        public void Close()
+        private void Close()
         {
             _window.Close();
         }
 
         private void WindowOnClosed(object sender, EventArgs eventArgs)
         {
-            lock (_window)
-            {
-                _window.Closed -= WindowOnClosed;
+            _window.Closed -= WindowOnClosed;
 
-                // The window might have been closed while in progress so a cancellation could be required.
-                _cancellationTokenSource.Cancel();
-
-                _cancellationTokenSource.Dispose();
-            }
+            // The window might have been closed while in progress so a cancellation could be required.
+            _cancellationTokenSource.Cancel();
         }
 
         public void Reset(string text, int maxProgress = 0, bool showProgressNumber = true)

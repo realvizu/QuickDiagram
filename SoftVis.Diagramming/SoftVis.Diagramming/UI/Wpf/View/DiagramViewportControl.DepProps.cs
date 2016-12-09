@@ -127,11 +127,5 @@ namespace Codartis.SoftVis.UI.Wpf.View
             get { return (DelegateCommand)GetValue(UnfocusAllCommandProperty); }
             set { SetValue(UnfocusAllCommandProperty, value); }
         }
-
-        public DelegateCommand MouseDownCommand
-        {
-            get { return (DelegateCommand)GetValue(MouseDownCommandProperty); }
-            set { SetValue(MouseDownCommandProperty, value); }
-        }
     }
 }

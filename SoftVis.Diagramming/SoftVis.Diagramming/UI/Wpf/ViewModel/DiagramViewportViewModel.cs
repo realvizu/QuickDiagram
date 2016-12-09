@@ -7,7 +7,6 @@ using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf.Collections;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Transforms;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -31,8 +30,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
 
-        public DelegateCommand MouseDownCommand { get; }
-
         public event Action ViewportManipulationStarted;
         public event ShowRelatedNodeButtonEventHandler ShowEntitySelectorRequested;
         public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
@@ -52,8 +49,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
             _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramNodeViewModels);
-
-            MouseDownCommand = new DelegateCommand(OnMouseDown);
 
             SubscribeToViewportEvents();
             SubscribeToDiagramEvents();
@@ -182,11 +177,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramConnectorViewModels.Clear();
             DiagramNodeViewModels.Clear();
             _diagramShapeToViewModelMap.Clear();
-        }
-
-        private void OnMouseDown()
-        {
-            ViewportManipulationStarted?.Invoke();
         }
 
         private void OnViewportTransformChanged(TransitionedTransform newTransform)

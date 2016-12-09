@@ -6,6 +6,7 @@ using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -21,6 +22,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public RelatedEntityListBoxViewModel RelatedEntityListBoxViewModel { get; }
         public AutoHidePopupTextViewModel PopupTextViewModel { get; }
 
+        public DelegateCommand PreviewMouseDownCommand { get; }
+
         public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
@@ -31,6 +34,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityListBoxViewModel.Items.CollectionChanged += OnRelatedEntityCollectionChanged;
 
             PopupTextViewModel = new AutoHidePopupTextViewModel();
+
+            PreviewMouseDownCommand = new DelegateCommand(OnPreviewMouseDown);
 
             SubscribeToDiagramEvents();
             SubscribeToViewportEvents();
@@ -106,6 +111,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShowItems(modelEntities);
         }
 
+        private void OnPreviewMouseDown()
+        {
+            HidePopupText();
+        }
+
         private void OnViewportManipulationStarted()
         {
             HideAllWidgets();
@@ -139,10 +149,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityListBoxViewModel.Hide();
         }
 
+        private void HidePopupText()
+        {
+            PopupTextViewModel.Hide();
+        }
+
         private void HideAllWidgets()
         {
             HideRelatedEntityListBox();
-            PopupTextViewModel.Hide();
+            HidePopupText();
         }
 
         private void UpdateDiagramContentRect()

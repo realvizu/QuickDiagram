@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -18,28 +20,36 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync(List<IModelEntity> modelEntities)
         {
-            await ShowProgressAndAddItems(modelEntities);
+            await ShowProgressAndAddItemsAsync(modelEntities);
 
             UiServices.ShowDiagramWindow();
             UiServices.EnsureDiagramVisible();
         }
 
-        private async Task<List<IDiagramNode>> ShowProgressAndAddItems(List<IModelEntity> modelEntities)
+        private async Task<List<IDiagramNode>> ShowProgressAndAddItemsAsync(List<IModelEntity> modelEntities)
         {
             List<IDiagramNode> diagramNodes = null;
 
-            var progressDialog = UiServices.CreateProgressDialog("Adding model items:", modelEntities.Count);
-            progressDialog.ShowWithDelayAsync();
-
-            try
+            using (var progressDialog = UiServices.CreateProgressDialog("Adding model items:", modelEntities.Count))
             {
-                var cancellationToken = progressDialog.CancellationToken;
-                diagramNodes= await Task.Run(() => DiagramServices.ShowEntities(modelEntities, cancellationToken, progressDialog.Progress), cancellationToken);
+                progressDialog.ShowWithDelayAsync();
+
+                try
+                {
+                    diagramNodes = await ShowEntitiesAsync(modelEntities, progressDialog.CancellationToken, progressDialog.Progress);
+                }
+                catch (OperationCanceledException)
+                {
+                }
             }
-            catch (OperationCanceledException) { }
-            finally { progressDialog.Close(); }
 
             return diagramNodes;
+        }
+
+        private async Task<List<IDiagramNode>> ShowEntitiesAsync(List<IModelEntity> modelEntities, 
+            CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            return await Task.Run(() => DiagramServices.ShowEntities(modelEntities, cancellationToken, progress), cancellationToken);
         }
     }
 }
