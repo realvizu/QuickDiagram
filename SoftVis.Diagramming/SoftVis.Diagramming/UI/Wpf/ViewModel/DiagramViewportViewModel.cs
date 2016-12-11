@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
         private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
 
-        public event Action ViewportManipulationStarted;
+        public event Action ViewportManipulation;
         public event ShowRelatedNodeButtonEventHandler ShowEntitySelectorRequested;
         public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
@@ -185,25 +185,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramShapeToViewModelMap.Clear();
         }
 
-        private void OnViewportTransformChanged(TransitionedTransform newTransform)
-        {
-            ViewportManipulationStarted?.Invoke();
-        }
+        private void OnViewportTransformChanged(TransitionedTransform newTransform) 
+            => ViewportManipulation?.Invoke();
 
-        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
-        {
-            ShowEntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
-        }
+        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, List<IModelEntity> modelEntities) 
+            => ShowEntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
 
-        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
-        {
-            ShowRelatedEntitiesRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
-        }
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, List<IModelEntity> modelEntities) 
+            => ShowRelatedEntitiesRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
 
-        private void OnShowSourceCommand(IDiagramShape diagramShape)
-        {
-            ShowSourceRequested?.Invoke(diagramShape);
-        }
+        private void OnShowSourceCommand(IDiagramShape diagramShape) 
+            => ShowSourceRequested?.Invoke(diagramShape);
 
         private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {

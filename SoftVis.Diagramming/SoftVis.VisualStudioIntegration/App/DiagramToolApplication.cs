@@ -40,12 +40,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private void SubscribeToDiagramEvents(IDiagramServices diagramServices)
         {
             diagramServices.ShapeAdded += OnShapeAdded;
-            diagramServices.ShowItemsRequested += OnShowItemsRequestedAsync;
         }
 
         private void SubscribeToUiEvents(IUiServices uiServices)
         {
             uiServices.ShowSourceRequested += OnShowSourceRequested;
+            uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
         }
 
         /// <summary>
@@ -70,14 +70,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        private async void OnShowItemsRequestedAsync(List<IModelItem> modelItems)
+        private async void OnShowItemsRequestedAsync(List<IModelEntity> modelEntities)
         {
-            if (!modelItems.Any())
+            if (!modelEntities.Any())
                 return;
 
-            var modelEntities = modelItems.OfType<IModelEntity>().ToList();
             await new AddItemsToDiagramCommand(this).ExecuteAsync(modelEntities);
         }
-
     }
 }

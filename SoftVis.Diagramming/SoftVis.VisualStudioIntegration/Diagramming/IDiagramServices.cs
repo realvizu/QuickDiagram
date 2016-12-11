@@ -22,8 +22,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         event Action<IDiagramShape> ShapeSelected;
         event Action DiagramCleared;
 
-        event Action<List<IModelItem>> ShowItemsRequested;
-
         IDiagramNode ShowEntity(IModelEntity modelEntity);
         List<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress);
         List<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress);

@@ -26,6 +26,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand MouseDownCommand { get; }
 
         public event Action<IDiagramShape> ShowSourceRequested;
+        public event Action<List<IModelEntity>> ShowModelItemsRequested;
 
         public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
@@ -83,7 +84,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToViewportEvents()
         {
-            DiagramViewportViewModel.ViewportManipulationStarted += OnViewportManipulationStarted;
+            DiagramViewportViewModel.ViewportManipulation += OnViewportManipulation;
             DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
             DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
@@ -92,9 +93,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UnsubscribeFromViewportEvents()
         {
-            DiagramViewportViewModel.ViewportManipulationStarted -= OnViewportManipulationStarted;
+            DiagramViewportViewModel.ViewportManipulation -= OnViewportManipulation;
             DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
-            DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
+            DiagramViewportViewModel.ShowRelatedEntitiesRequested -= OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
             DiagramViewportViewModel.ShowSourceRequested -= OnShowSourceRequested;
         }
@@ -111,10 +112,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityListBoxViewModel.Show(diagramNodeButtonViewModel, modelEntities);
         }
 
-        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, List<IModelEntity> modelEntities)
         {
-            HideRelatedEntityListBox();
-            Diagram.ShowItems(modelEntities);
+            switch (modelEntities.Count)
+            {
+                case 0:
+                    return;
+                case 1:
+                    Diagram.ShowItems(modelEntities);
+                    break;
+                default:
+                    HideRelatedEntityListBox();
+                    ShowModelItemsRequested?.Invoke(modelEntities);
+                    break;
+            }
         }
 
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
@@ -148,7 +159,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             HideRelatedEntityListBox();
         }
 
-        private void OnViewportManipulationStarted()
+        private void OnViewportManipulation()
         {
             HideAllWidgets();
         }

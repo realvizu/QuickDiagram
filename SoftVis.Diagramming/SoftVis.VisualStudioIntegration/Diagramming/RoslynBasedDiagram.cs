@@ -17,8 +17,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     {
         private readonly IModelServices _modelServices;
 
-        public event Action<List<IModelItem>> ShowItemsRequested;
-
         public RoslynBasedDiagram(IModelServices modelServices)
             : base(modelServices.Model)
         {

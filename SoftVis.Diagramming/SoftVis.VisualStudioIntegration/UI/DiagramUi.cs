@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -37,6 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public Dpi ImageExportDpi { get; set; }
 
         public event Action<IDiagramShape> ShowSourceRequested;
+        public event Action<List<IModelEntity>> ShowModelItemsRequested;
 
         public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
         {
@@ -127,6 +129,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private void SubscribeToDiagramViewModelEvents(DiagramViewModel diagramViewModel)
         {
             diagramViewModel.ShowSourceRequested += i => ShowSourceRequested?.Invoke(i);
+            diagramViewModel.ShowModelItemsRequested += i => ShowModelItemsRequested?.Invoke(i);
         }
     }
 }
