@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.Modeling.Implementation
     [DebuggerDisplay("{Source.Name}--{Classifier}/{Stereotype}-->{Target.Name}")]
     public class ModelRelationship : IModelRelationship, IEdge<IModelEntity>
     {
-        private readonly ModelEntity _source;
-        private readonly ModelEntity _target;
+        private readonly IModelEntity _source;
+        private readonly IModelEntity _target;
 
         public IModelEntity Source => _source;
         public IModelEntity Target => _target;
@@ -19,11 +19,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public ModelRelationshipStereotype Stereotype { get; }
         public ModelRelationshipType Type => new ModelRelationshipType(Classifier, Stereotype);
 
-        public ModelRelationship(ModelEntity source, ModelEntity target, ModelRelationshipType type)
+        public ModelRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type)
             : this(source, target, type.Classifier, type.Stereotype)
         { }
 
-        public ModelRelationship(ModelEntity source, ModelEntity target,
+        public ModelRelationship(IModelEntity source, IModelEntity target,
             ModelRelationshipClassifier classifier, ModelRelationshipStereotype stereotype)
         {
             _source = source;

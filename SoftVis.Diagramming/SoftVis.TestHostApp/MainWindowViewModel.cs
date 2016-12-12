@@ -41,7 +41,8 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagram = new TestDiagram(_testModel);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
-            DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"Activated: {shape.ModelItem.ToString()}");
+            DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");
+            DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowItems(i);
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);

@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public virtual int Priority => 0;
         public virtual bool IsAbstract => false;
 
-        protected ModelEntity(string name, string fullName,
+        public ModelEntity(string name, string fullName,
             ModelEntityClassifier classifier, ModelEntityStereotype stereotype, ModelOrigin origin)
         {
             UpdateName(name, fullName);

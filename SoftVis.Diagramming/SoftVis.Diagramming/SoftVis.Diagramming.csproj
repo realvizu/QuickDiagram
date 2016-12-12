@@ -82,6 +82,7 @@
     <Compile Include="Diagramming\Layout\IDiagramActionVisitor.cs" />
     <Compile Include="Diagramming\Layout\IDiagramActionConsumer.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramActionDispatcherVisitor.cs" />
+    <Compile Include="Graphs\ConcurrentBidirectionalGraph.cs" />
     <Compile Include="Modeling\Implementation\Model.cs" />
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />
     <Compile Include="Modeling\ModelRelationshipType.cs" />

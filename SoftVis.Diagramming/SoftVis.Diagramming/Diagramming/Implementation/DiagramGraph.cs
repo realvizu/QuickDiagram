@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QuickGraph;
+using Codartis.SoftVis.Graphs;
 using QuickGraph.Algorithms;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// The graph formed by the nodes and connectors of a diagram.
     /// </summary>
-    internal sealed class DiagramGraph : BidirectionalGraph<DiagramNode, DiagramConnector>
+    internal sealed class DiagramGraph : ConcurrentBidirectionalGraph<DiagramNode, DiagramConnector>
     {
         public DiagramGraph() 
             : base(allowParallelEdges: false)

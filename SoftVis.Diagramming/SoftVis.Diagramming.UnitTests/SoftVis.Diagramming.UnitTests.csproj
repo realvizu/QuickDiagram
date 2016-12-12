@@ -93,17 +93,17 @@
     <Compile Include="Diagramming\Layout\Incremental\LayoutPathTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\LayeredLayoutGraphTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\QuasiProperLayoutGraphTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\LayoutVertexLayersTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\VerticesInLayerComparerTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDiagramConnector.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestModelRelationship.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDiagramNode.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestDummyLayoutVertex.cs" />
+    <Compile Include="TestSubjects\TestDiagramConnector.cs" />
+    <Compile Include="TestSubjects\TestModelRelationship.cs" />
+    <Compile Include="TestSubjects\TestDiagramNode.cs" />
+    <Compile Include="TestSubjects\TestDummyLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\QuasiProperLayoutGraphBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\TestSubjects\TestModelEntity.cs" />
+    <Compile Include="TestSubjects\TestLayoutVertex.cs" />
+    <Compile Include="TestSubjects\TestModelEntity.cs" />
+    <Compile Include="Graphs\ConcurrentBidirectionalGraphTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +123,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
