@@ -122,8 +122,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 case 0:
                     return;
                 case 1:
-                    var diagramNodes = Diagram.ShowItems(modelEntities);
-                    FollowDiagramNodes(diagramNodes.OfType<IDiagramNode>());
+                    StopFollowingDiagramNodes();
+                    Diagram.ShowItems(modelEntities);
                     break;
                 default:
                     HideRelatedEntityListBox();
