@@ -14,6 +14,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </remarks>
     public class DiagramNode : DiagramShape, IDiagramNode
     {
+        private readonly object _lockObject = new object();
+
         private Size2D _size;
         private Point2D _topLeft;
         private string _name;
@@ -56,7 +58,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 {
                     Point2D oldTopLeft;
 
-                    lock (this)
+                    lock (_lockObject)
                     {
                         oldTopLeft = _topLeft;
                         _topLeft = value;
@@ -77,7 +79,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                     Size2D oldSize;
                     Point2D newTopLeft;
 
-                    lock (this)
+                    lock (_lockObject)
                     {
                         oldSize = _size;
                         _size = value;
@@ -96,12 +98,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             get
             {
-                lock (this)
+                lock (_lockObject)
                     return TopLeftToCenter(TopLeft, Size);
             }
             set
             {
-                lock (this)
+                lock (_lockObject)
                     TopLeft = CenterToTopLeft(value, Size);
             }
         }

@@ -58,14 +58,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IEnumerable<DiagramShape> Shapes => Nodes.OfType<DiagramShape>().Union(Connectors);
         IEnumerable<IDiagramShape> IDiagram.Shapes => Shapes;
 
-        public Rect2D ContentRect
-        {
-            get
-            {
-                lock (this)
-                    return Shapes.Select(i => i.Rect).Where(i => i.IsDefined()).Union();
-            }
-        }
+        public Rect2D ContentRect => Shapes.Select(i => i.Rect).Where(i => i.IsDefined()).Union();
 
         public virtual IEnumerable<EntityRelationType> GetEntityRelationTypes()
         {
@@ -143,10 +136,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IEnumerable<IModelEntity> GetUndisplayedRelatedEntities(IDiagramNode diagramNode, EntityRelationType relationType)
         {
-            lock (this)
-                return Model
-                    .GetRelatedEntities(diagramNode.ModelEntity, relationType)
-                    .Where(i => Nodes.All(j => j.ModelEntity != i));
+            return Model
+                .GetRelatedEntities(diagramNode.ModelEntity, relationType)
+                .Where(i => Nodes.All(j => j.ModelEntity != i));
         }
 
         public void ResizeNode(IDiagramNode diagramNode, Size2D newSize)
@@ -250,8 +242,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             diagramNode.SizeChanged += OnDiagramNodeSizeChanged;
             diagramNode.TopLeftChanged += OnDiagramNodeTopLeftChanged;
 
-            lock (this)
-                _graph.AddVertex(diagramNode);
+            _graph.AddVertex(diagramNode);
 
             OnShapeAdded(diagramNode);
         }
@@ -261,8 +252,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             diagramNode.SizeChanged -= OnDiagramNodeSizeChanged;
             diagramNode.TopLeftChanged -= OnDiagramNodeTopLeftChanged;
 
-            lock (this)
-                _graph.RemoveVertex(diagramNode);
+            _graph.RemoveVertex(diagramNode);
 
             OnShapeRemoved(diagramNode);
         }
@@ -271,8 +261,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             diagramConnector.RouteChanged += OnDiagramConnectorRouteChanged;
 
-            lock (this)
-                _graph.AddEdge(diagramConnector);
+            _graph.AddEdge(diagramConnector);
 
             OnShapeAdded(diagramConnector);
         }
@@ -281,8 +270,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             diagramConnector.RouteChanged -= OnDiagramConnectorRouteChanged;
 
-            lock (this)
-                _graph.RemoveEdge(diagramConnector);
+            _graph.RemoveEdge(diagramConnector);
 
             OnShapeRemoved(diagramConnector);
         }
@@ -301,12 +289,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void HideRedundantDirectEdges()
         {
-            List<DiagramConnector> connectors;
-            lock (this)
-                connectors = Connectors.ToList();
-
             // TODO: should only hide same-type connectors!!!
-            foreach (var connector in connectors)
+            foreach (var connector in Connectors)
             {
                 var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).ToList();
                 if (paths.Count > 1)
@@ -344,26 +328,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private DiagramNode FindNode(IModelEntity modelEntity)
         {
-            lock (this)
-                return Nodes.FirstOrDefault(i => Equals(i.ModelEntity, modelEntity));
+            return Nodes.FirstOrDefault(i => Equals(i.ModelEntity, modelEntity));
         }
 
         private bool NodeExists(IModelEntity modelEntity)
         {
-            lock (this)
-                return Nodes.Any(i => Equals(i.ModelEntity, modelEntity));
+            return Nodes.Any(i => Equals(i.ModelEntity, modelEntity));
         }
 
         private DiagramConnector FindConnector(IModelRelationship modelRelationship)
         {
-            lock (this)
-                return Connectors.FirstOrDefault(i => Equals(i.ModelRelationship, modelRelationship));
+            return Connectors.FirstOrDefault(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
         private bool ConnectorExists(IModelRelationship modelRelationship)
         {
-            lock (this)
-                return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
+            return Connectors.Any(i => Equals(i.ModelRelationship, modelRelationship));
         }
 
         private void OnShapeAdded(IDiagramShape diagramShape) => ShapeAdded?.Invoke(diagramShape);

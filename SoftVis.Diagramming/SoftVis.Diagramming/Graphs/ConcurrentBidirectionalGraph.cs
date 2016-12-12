@@ -12,6 +12,8 @@ namespace Codartis.SoftVis.Graphs
     public class ConcurrentBidirectionalGraph<TVertex, TEdge> : BidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        private readonly object _lockObject = new object();
+
         public ConcurrentBidirectionalGraph(bool allowParallelEdges = true) 
             : base(allowParallelEdges)
         {
@@ -19,37 +21,37 @@ namespace Codartis.SoftVis.Graphs
 
         public override bool AddVertex(TVertex v)
         {
-            lock (this)
+            lock (_lockObject)
                 return base.AddVertex(v);
         }
 
         public override bool AddEdge(TEdge e)
         {
-            lock (this)
+            lock (_lockObject)
                 return base.AddEdge(e);
         }
 
         public override int AddVertexRange(IEnumerable<TVertex> vertices)
         {
-            lock (this)
+            lock (_lockObject)
                 return base.AddVertexRange(vertices);
         }
 
         public override bool AddVerticesAndEdge(TEdge e)
         {
-            lock (this)
+            lock (_lockObject)
                 return base.AddVerticesAndEdge(e);
         }
 
         public override bool RemoveVertex(TVertex v)
         {
-            lock (this)
+            lock (_lockObject)
                 return base.RemoveVertex(v);
         }
 
         public override bool RemoveEdge(TEdge e)
         {
-            lock (this)
+            lock (_lockObject)
                 return base.RemoveEdge(e);
         }
 
@@ -57,7 +59,7 @@ namespace Codartis.SoftVis.Graphs
         {
             get
             {
-                lock (this)
+                lock (_lockObject)
                     return base.Vertices.ToArray();
             }
         }
@@ -66,7 +68,7 @@ namespace Codartis.SoftVis.Graphs
         {
             get
             {
-                lock (this)
+                lock (_lockObject)
                     return base.Edges.ToArray();
             }
         }
