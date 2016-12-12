@@ -71,6 +71,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes) => DiagramViewportViewModel.FollowDiagramNodes(diagramNodes);
+        public void StopFollowingDiagramNodes() => DiagramViewportViewModel.StopFollowingDiagramNodes();
         public void ZoomToContent() => DiagramViewportViewModel.ZoomToContent();
         public void ZoomToRect(Rect rect) => DiagramViewportViewModel.ZoomToRect(rect);
         public bool IsDiagramContentVisible() => DiagramViewportViewModel.IsDiagramContentVisible();
@@ -102,6 +104,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
         {
+            DiagramViewportViewModel.StopFollowingDiagramNodes();
             if (RelatedEntityListBoxViewModel.OwnerDiagramShape == diagramShapeViewModel)
                 HideRelatedEntityListBox();
         }
@@ -119,7 +122,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 case 0:
                     return;
                 case 1:
-                    Diagram.ShowItems(modelEntities);
+                    var diagramNodes = Diagram.ShowItems(modelEntities);
+                    FollowDiagramNodes(diagramNodes.OfType<IDiagramNode>());
                     break;
                 default:
                     HideRelatedEntityListBox();
@@ -130,6 +134,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
+            DiagramViewportViewModel.StopFollowingDiagramNodes();
             Diagram.ShowItem(selectedEntity);
         }
 

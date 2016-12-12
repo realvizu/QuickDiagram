@@ -71,6 +71,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void ExecuteWhenUiIsIdle(Action action)
             => Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
 
+        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes) => _diagramViewModel.FollowDiagramNodes(diagramNodes);
+        public void StopFollowingDiagramNodes() => _diagramViewModel.StopFollowingDiagramNodes();
         public void ZoomToDiagram() => _diagramViewModel.ZoomToContent();
 
         public void ZoomToDiagramNode(IDiagramNode diagramNode)

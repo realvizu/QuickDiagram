@@ -8,7 +8,8 @@ namespace Codartis.SoftVis.Geometry
     /// </summary>
     public struct Rect2D
     {
-        public static readonly Rect2D Empty = new Rect2D(0, 0, 0, 0);
+        public static readonly Rect2D Empty = new Rect2D(double.NaN, double.NaN, double.NaN, double.NaN);
+        public static readonly Rect2D Zero = new Rect2D(0, 0, 0, 0);
 
         public Point2D TopLeft { get; }
         public Size2D Size { get; }

@@ -20,10 +20,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync(List<IModelEntity> modelEntities)
         {
-            await ShowProgressAndAddItemsAsync(modelEntities);
+            var diagramNodes = await ShowProgressAndAddItemsAsync(modelEntities);
 
             UiServices.ShowDiagramWindow();
-            UiServices.EnsureDiagramVisible();
+
+            if (diagramNodes.Count > 1)
+                UiServices.FollowDiagramNodes(diagramNodes);
         }
 
         private async Task<List<IDiagramNode>> ShowProgressAndAddItemsAsync(List<IModelEntity> modelEntities)
@@ -46,7 +48,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             return diagramNodes;
         }
 
-        private async Task<List<IDiagramNode>> ShowEntitiesAsync(List<IModelEntity> modelEntities, 
+        private async Task<List<IDiagramNode>> ShowEntitiesAsync(List<IModelEntity> modelEntities,
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             return await Task.Run(() => DiagramServices.ShowEntities(modelEntities, cancellationToken, progress), cancellationToken);

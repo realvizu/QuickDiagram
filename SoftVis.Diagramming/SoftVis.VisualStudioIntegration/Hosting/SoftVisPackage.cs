@@ -42,7 +42,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             base.Initialize();
 
             // This is needed otherwise VS catches the exception and shows no stack trace.
-            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) => { Debugger.Break(); };
+            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) =>
+            {
+#if DEBUG
+                Debugger.Break();
+#else
+                return;
+#endif
+            };
 
             _visualStudioServiceProvider = GetGlobalService(typeof(IVisualStudioServiceProvider)) as IVisualStudioServiceProvider;
             if (_visualStudioServiceProvider == null)

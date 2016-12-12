@@ -26,6 +26,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         string SelectSaveFilename(string title, string filter);
 
         void ExecuteWhenUiIsIdle(Action action);
+        void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes);
+        void StopFollowingDiagramNodes();
         void ZoomToDiagram();
         void ZoomToDiagramNode(IDiagramNode diagramNode);
         void ZoomToDiagramNodes(IEnumerable<IDiagramNode> diagramNodes);

@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         public double MinZoom { get; }
         public double MaxZoom { get; }
-        public ViewportCalculatorViewModel ViewportCalculator { get; }
+        public AutoZoomViewportViewModel ViewportCalculator { get; }
         public ThreadSafeObservableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
         public ThreadSafeObservableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public ThreadSafeObservableList<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
@@ -45,7 +45,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
-            ViewportCalculator = new ViewportCalculatorViewModel(diagram, minZoom, maxZoom, initialZoom);
+            ViewportCalculator = new AutoZoomViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
             DiagramNodeViewModels = new ThreadSafeObservableList<DiagramNodeViewModel>();
             DiagramConnectorViewModels = new ThreadSafeObservableList<DiagramConnectorViewModel>();
             DiagramNodeButtonViewModels = new ThreadSafeObservableList<DiagramShapeButtonViewModelBase>(CreateDiagramNodeButtons());
@@ -69,6 +69,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UnsubscribeFromDiagramEvents();
             UnsubscribeFromDiagramShapeButtonEvents();
 
+            ViewportCalculator.Dispose();
+
             foreach (var diagramNodeViewModel in DiagramNodeViewModels)
                 diagramNodeViewModel.Dispose();
 
@@ -79,8 +81,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 diagramShapeButtonViewModel.Dispose();
         }
 
-        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => ViewportCalculator.ZoomToContent(transitionSpeed);
-        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Slow) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
+        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed = TransitionSpeed.Slow) 
+            => ViewportCalculator.FollowDiagramNodes(diagramNodes, transitionSpeed);
+        public void StopFollowingDiagramNodes() => ViewportCalculator.StopFollowingDiagramNodes();
+
+        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToContent(transitionSpeed);
+        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
         public bool IsDiagramContentVisible() => ViewportCalculator.IsDiagramRectVisible();
 
         public void PinDecoration() => DecorationManager.PinDecoration();
@@ -234,6 +240,5 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             foreach (var entityRelationType in Diagram.GetEntityRelationTypes())
                 yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
         }
-
     }
 }

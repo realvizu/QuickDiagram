@@ -18,5 +18,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Transforms
             Transform = transform;
             TransitionSpeed = transitionSpeed;
         }
+
+        public override string ToString()
+        {
+            return $"[{Transform.Value.OffsetX},{Transform.Value.OffsetY} x{Transform.Value.M11} ({TransitionSpeed})]";
+        }
     }
 }

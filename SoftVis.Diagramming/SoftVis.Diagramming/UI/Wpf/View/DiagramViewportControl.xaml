@@ -114,10 +114,12 @@
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
                 <controls:AnimatedRenderTransformCanvas 
-                        AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
-                        ShortAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
-                        LongAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
-                        LongAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
+                    AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                    FastAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
+                    MediumAnimationDuration="{StaticResource MediumPanAndZoomAnimationDuration}"
+                    SlowAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
+                    MediumAnimationEasingFunction="{StaticResource MediumPanAndZoomAnimationEasingFunction}"
+                    SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
             </ItemsPanelTemplate>
 
             <Size x:Key="DiagramButtonSize" Width="16" Height="16"/>

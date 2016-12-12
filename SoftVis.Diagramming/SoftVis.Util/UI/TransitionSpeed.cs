@@ -4,6 +4,7 @@
     {
         Instant,
         Fast,
+        Medium,
         Slow
     }
 }

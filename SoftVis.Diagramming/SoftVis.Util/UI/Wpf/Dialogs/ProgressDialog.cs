@@ -70,6 +70,11 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             catch (OperationCanceledException)
             {
             }
+            catch (ObjectDisposedException)
+            {
+                // Happens when the CancellationToken was already disposed.
+                // TODO: how to make sure it does not happen?
+            }
         }
 
         private void Close()

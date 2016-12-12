@@ -14,8 +14,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
     public class AnimatedRenderTransformCanvas : Canvas
     {
         private const int FrameRate = 30;
-        private static readonly Duration ShortAnimationDurationDefault = TimeSpan.FromMilliseconds(200);
-        private static readonly Duration LongAnimationDurationDefault = TimeSpan.FromMilliseconds(500);
+        private static readonly Duration FastAnimationDurationDefault = TimeSpan.FromMilliseconds(200);
+        private static readonly Duration MediumAnimationDurationDefault = TimeSpan.FromMilliseconds(500);
+        private static readonly Duration SlowAnimationDurationDefault = TimeSpan.FromMilliseconds(1000);
 
         static AnimatedRenderTransformCanvas()
         {
@@ -25,23 +26,30 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         public static readonly DependencyProperty AnimatedRenderTransformProperty =
             DependencyProperty.Register("AnimatedRenderTransform", typeof(TransitionedTransform), typeof(AnimatedRenderTransformCanvas),
-                new FrameworkPropertyMetadata(TransitionedTransform.Identity, 
+                new FrameworkPropertyMetadata(TransitionedTransform.Identity,
                     FrameworkPropertyMetadataOptions.AffectsRender,
                     OnTransitionedTransformChanged));
 
         private static void OnTransitionedTransformChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((AnimatedRenderTransformCanvas) d).TransitionTransform((TransitionedTransform) e.OldValue, (TransitionedTransform) e.NewValue);
+            => ((AnimatedRenderTransformCanvas)d).TransitionTransform((TransitionedTransform)e.OldValue, (TransitionedTransform)e.NewValue);
 
-        public static readonly DependencyProperty ShortAnimationDurationProperty =
-            DependencyProperty.Register("ShortAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
-                new PropertyMetadata(ShortAnimationDurationDefault));
+        public static readonly DependencyProperty FastAnimationDurationProperty =
+            DependencyProperty.Register("FastAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
+                new PropertyMetadata(FastAnimationDurationDefault));
 
-        public static readonly DependencyProperty LongAnimationDurationProperty =
-            DependencyProperty.Register("LongAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
-                new PropertyMetadata(LongAnimationDurationDefault));
+        public static readonly DependencyProperty MediumAnimationDurationProperty =
+            DependencyProperty.Register("MediumAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
+                new PropertyMetadata(MediumAnimationDurationDefault));
 
-        public static readonly DependencyProperty LongAnimationEasingFunctionProperty =
-            DependencyProperty.Register("LongAnimationEasingFunction", typeof(EasingFunctionBase), typeof(AnimatedRenderTransformCanvas));
+        public static readonly DependencyProperty SlowAnimationDurationProperty =
+            DependencyProperty.Register("SlowAnimationDuration", typeof(Duration), typeof(AnimatedRenderTransformCanvas),
+                new PropertyMetadata(SlowAnimationDurationDefault));
+
+        public static readonly DependencyProperty MediumAnimationEasingFunctionProperty =
+            DependencyProperty.Register("MediumAnimationEasingFunction", typeof(EasingFunctionBase), typeof(AnimatedRenderTransformCanvas));
+
+        public static readonly DependencyProperty SlowAnimationEasingFunctionProperty =
+            DependencyProperty.Register("SlowAnimationEasingFunction", typeof(EasingFunctionBase), typeof(AnimatedRenderTransformCanvas));
 
         public AnimatedRenderTransformCanvas()
         {
@@ -54,37 +62,42 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             set { SetValue(AnimatedRenderTransformProperty, value); }
         }
 
-        public Duration ShortAnimationDuration
+        public Duration FastAnimationDuration
         {
-            get { return (Duration)GetValue(ShortAnimationDurationProperty); }
-            set { SetValue(ShortAnimationDurationProperty, value); }
+            get { return (Duration)GetValue(FastAnimationDurationProperty); }
+            set { SetValue(FastAnimationDurationProperty, value); }
         }
 
-        public Duration LongAnimationDuration
+        public Duration MediumAnimationDuration
         {
-            get { return (Duration)GetValue(LongAnimationDurationProperty); }
-            set { SetValue(LongAnimationDurationProperty, value); }
+            get { return (Duration)GetValue(MediumAnimationDurationProperty); }
+            set { SetValue(MediumAnimationDurationProperty, value); }
         }
 
-        public EasingFunctionBase LongAnimationEasingFunction
+        public Duration SlowAnimationDuration
         {
-            get { return (EasingFunctionBase)GetValue(LongAnimationEasingFunctionProperty); }
-            set { SetValue(LongAnimationEasingFunctionProperty, value); }
+            get { return (Duration)GetValue(SlowAnimationDurationProperty); }
+            set { SetValue(SlowAnimationDurationProperty, value); }
+        }
+
+        public EasingFunctionBase MediumAnimationEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(MediumAnimationEasingFunctionProperty); }
+            set { SetValue(MediumAnimationEasingFunctionProperty, value); }
+        }
+
+        public EasingFunctionBase SlowAnimationEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(SlowAnimationEasingFunctionProperty); }
+            set { SetValue(SlowAnimationEasingFunctionProperty, value); }
         }
 
         private void TransitionTransform(TransitionedTransform oldTransitionedTransform, TransitionedTransform newTransitionedTransform)
         {
-            if (oldTransitionedTransform.Transform.Value == newTransitionedTransform.Transform.Value)
-                return;
-
             if (newTransitionedTransform.TransitionSpeed == TransitionSpeed.Instant)
-            {
                 DontAnimate(newTransitionedTransform.Transform);
-            }
             else
-            {
-                Animate(oldTransitionedTransform.Transform, newTransitionedTransform.Transform, newTransitionedTransform.TransitionSpeed);
-            }
+                Animate(newTransitionedTransform.Transform, newTransitionedTransform.TransitionSpeed);
         }
 
         private void DontAnimate(Transform newTransform)
@@ -93,18 +106,31 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             ((MatrixTransform)RenderTransform).Matrix = newTransform.Value;
         }
 
-        private void Animate(Transform oldValue, Transform newValue, TransitionSpeed transitionSpeed)
+        private void Animate(Transform newValue, TransitionSpeed transitionSpeed)
         {
             var duration = TransitionSpeedToDuration(transitionSpeed);
 
-            var matrixAnimation = new MatrixAnimation(oldValue.Value, newValue.Value, duration, FillBehavior.HoldEnd);
-
-            if (transitionSpeed == TransitionSpeed.Slow)
-                matrixAnimation.EasingFunction = LongAnimationEasingFunction;
+            var matrixAnimation = new MatrixAnimation(newValue.Value, duration, FillBehavior.HoldEnd)
+            {
+                EasingFunction = GetEasingFunction(transitionSpeed)
+            };
 
             Timeline.SetDesiredFrameRate(matrixAnimation, FrameRate);
 
             RenderTransform.BeginAnimation(MatrixTransform.MatrixProperty, matrixAnimation, HandoffBehavior.SnapshotAndReplace);
+        }
+
+        private EasingFunctionBase GetEasingFunction(TransitionSpeed transitionSpeed)
+        {
+            switch (transitionSpeed)
+            {
+                case TransitionSpeed.Medium:
+                    return MediumAnimationEasingFunction;
+                case TransitionSpeed.Slow:
+                    return SlowAnimationEasingFunction;
+                default:
+                    return null;
+            }
         }
 
         private Duration TransitionSpeedToDuration(TransitionSpeed transitionSpeed)
@@ -112,8 +138,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             switch (transitionSpeed)
             {
                 case TransitionSpeed.Instant: return TimeSpan.Zero;
-                case TransitionSpeed.Fast: return ShortAnimationDuration;
-                case TransitionSpeed.Slow: return LongAnimationDuration;
+                case TransitionSpeed.Fast: return FastAnimationDuration;
+                case TransitionSpeed.Medium: return MediumAnimationDuration;
+                case TransitionSpeed.Slow: return SlowAnimationDuration;
                 default: throw new NotImplementedException($"Unexpected TransitionSpeed:{transitionSpeed}");
             }
         }

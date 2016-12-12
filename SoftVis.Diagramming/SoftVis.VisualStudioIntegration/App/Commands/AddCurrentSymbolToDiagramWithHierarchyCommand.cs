@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                 return;
 
             UiServices.ShowDiagramWindow();
-            UiServices.ExecuteWhenUiIsIdle(() => UiServices.ZoomToDiagramNodes(diagramNodes));
+            UiServices.FollowDiagramNodes(diagramNodes);
         }
 
         private async Task<List<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelEntity modelEntity)

@@ -6,7 +6,9 @@
 
     <Duration x:Key="DiagramShapeAnimationDuration">0:0:0.3</Duration>
     <Duration x:Key="FastPanAndZoomAnimationDuration">0:0:0.1</Duration>
-    <Duration x:Key="SlowPanAndZoomAnimationDuration">0:0:0.5</Duration>
+    <Duration x:Key="MediumPanAndZoomAnimationDuration">0:0:0.5</Duration>
+    <Duration x:Key="SlowPanAndZoomAnimationDuration">0:0:.75</Duration>
+    <QuadraticEase x:Key="MediumPanAndZoomAnimationEasingFunction" EasingMode="EaseOut"/>
     <QuadraticEase x:Key="SlowPanAndZoomAnimationEasingFunction" EasingMode="EaseOut"/>
 
 </ResourceDictionary>

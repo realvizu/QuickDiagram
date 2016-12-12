@@ -8,7 +8,6 @@ using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Transforms;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -20,15 +19,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Internally the zoom values change on an exponential scale to give a feel of depth.
     /// But externally the zoom values are converted to/from a linear scale for easy linear manipulation.
     /// </remarks>
-    public class ViewportCalculatorViewModel : ViewModelBase
+    public class ViewportCalculatorViewModel : DiagramViewModelBase
     {
-        private const double MinZoomDefault = 0.1;
-        private const double MaxZoomDefault = 10;
-        private const double InitialZoomDefault = 1;
         private static readonly Size ViewportSizeDefault = new Size(0, 0);
         private static readonly Point ViewportCenterDefault = new Point(0, 0);
 
-        private readonly IArrangedDiagram _diagram;
         private readonly double _minZoom;
         private readonly double _maxZoom;
         private readonly double _defaultExponentialZoom;
@@ -46,15 +41,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event Action<TransitionedTransform> TransformChanged;
 
-        public ViewportCalculatorViewModel(IArrangedDiagram diagram, double minZoom = MinZoomDefault, double maxZoom = MaxZoomDefault, double initialZoom = InitialZoomDefault)
+        public ViewportCalculatorViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : this(diagram, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
         {
         }
 
         private ViewportCalculatorViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom,
             Size sizeInScreenSpace, Point centerInDiagramSpace)
+            :base(diagram)
         {
-            _diagram = diagram;
             _minZoom = minZoom;
             _maxZoom = maxZoom;
             _defaultExponentialZoom = initialZoom;
@@ -90,13 +85,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public void Resize(Size sizeInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Instant)
+        public virtual void Resize(Size sizeInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Instant)
         {
             _sizeInScreenSpace = sizeInScreenSpace;
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
+        public virtual void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
         {
             var viewportMoveVectorInScreenSpace = panVectorInScreenSpace * -1;
             var viewportMoveVectorInDiagramSpace = viewportMoveVectorInScreenSpace / _exponentialZoom;
@@ -105,22 +100,28 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
+        public virtual void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium)
         {
-            ZoomToRect(_diagram.ContentRect.ToWpf(), transitionSpeed);
+            ZoomToRect(Diagram.ContentRect.ToWpf(), transitionSpeed);
         }
 
-        public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed)
+        public virtual void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed)
         {
             if (rect.IsUndefined())
+            {
+#if DEBUG
                 Debugger.Break();
+#else
+                return;
+#endif
+            }
 
             _exponentialZoom = CalculateZoomForContent(rect.Size);
             _centerInDiagramSpace = rect.GetCenter();
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace,
+        public virtual void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace,
             TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
         {
             var oldExponentialZoom = _exponentialZoom;
@@ -135,7 +136,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public bool IsDiagramRectVisible()
         {
-            var diagramRect = _diagram.ContentRect.ToWpf();
+            var diagramRect = Diagram.ContentRect.ToWpf();
             var viewportRect = ProjectViewportIntoDiagramSpace();
             return viewportRect.IntersectsWith(diagramRect);
         }

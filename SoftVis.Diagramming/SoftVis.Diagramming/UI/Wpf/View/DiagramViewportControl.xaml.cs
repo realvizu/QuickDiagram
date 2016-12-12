@@ -142,7 +142,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             => ZoomTo(newZoom, TransitionSpeed.Fast);
 
         private void OnWidgetZoomToContent()
-            => ZoomToContent(TransitionSpeed.Slow);
+            => ZoomToContent(TransitionSpeed.Medium);
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {

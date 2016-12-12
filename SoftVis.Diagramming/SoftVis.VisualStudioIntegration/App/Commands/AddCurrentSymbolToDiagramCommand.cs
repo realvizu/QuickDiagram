@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             var diagramNode = DiagramServices.ShowEntity(modelEntity);
             UiServices.ShowDiagramWindow();
-            UiServices.ExecuteWhenUiIsIdle(() => UiServices.ZoomToDiagramNode(diagramNode));
+            UiServices.FollowDiagramNodes(diagramNode.ToEnumerable());
         }
     }
 }
