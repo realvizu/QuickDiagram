@@ -53,7 +53,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 }
 
                 // Match by location
-                var mathingEntityByLocation = _model.FindEntityByLocation(declaredTypeSymbol);
+                var mathingEntityByLocation = _model.GetEntityByLocation(declaredTypeSymbol.Locations.FirstOrDefault());
                 if (mathingEntityByLocation != null)
                 {
                     Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by location.");

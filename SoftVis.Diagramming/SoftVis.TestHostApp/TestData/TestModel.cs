@@ -33,16 +33,16 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             yield return TestModelRelationshipStereotypes.Implementation;
         }
 
-        public override void AddEntity(IModelEntity testModelEntity)
+        public override IModelEntity GetOrAddEntity(IModelEntity testModelEntity)
         {
-            base.AddEntity(testModelEntity);
             _modelItemGroups.Last().Add(testModelEntity);
+            return base.GetOrAddEntity(testModelEntity);
         }
 
-        public override void AddRelationship(ModelRelationship modelRelationship)
+        public override ModelRelationship GetOrAddRelationship(ModelRelationship modelRelationship)
         {
-            base.AddRelationship(modelRelationship);
             _modelItemGroups.Last().Add(modelRelationship);
+            return base.GetOrAddRelationship(modelRelationship);
         }
 
         public void EndGroup()

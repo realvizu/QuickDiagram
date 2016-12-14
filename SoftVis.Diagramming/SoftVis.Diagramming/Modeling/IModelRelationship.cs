@@ -1,9 +1,11 @@
-﻿namespace Codartis.SoftVis.Modeling
+﻿using System;
+
+namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// A model relationship is a directed, typed connection between two model entites.
     /// </summary>
-    public interface IModelRelationship : IModelItem
+    public interface IModelRelationship : IModelItem, IEquatable<IModelRelationship>
     {
         IModelEntity Source { get; }
         IModelEntity Target { get; }

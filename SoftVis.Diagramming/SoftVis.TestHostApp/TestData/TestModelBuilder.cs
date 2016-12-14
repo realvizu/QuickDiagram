@@ -162,7 +162,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             else
                 throw new ArgumentException($"Unexpected entity type: {classifier}, stereotype: {stereotype}");
 
-            _testModel.AddEntity(newEntity);
+            _testModel.GetOrAddEntity(newEntity);
             return this;
         }
 
@@ -182,7 +182,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 throw new InvalidOperationException($"Entity with name {targetName} not found.");
 
             var newRelationship = new ModelRelationship(sourceEntity, targetEntity, classifier, stereotype);
-            _testModel.AddRelationship(newRelationship);
+            _testModel.GetOrAddRelationship(newRelationship);
 
             return this;
         }

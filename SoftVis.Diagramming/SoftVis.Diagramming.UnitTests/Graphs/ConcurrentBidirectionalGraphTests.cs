@@ -25,14 +25,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Graphs
             Task.WaitAll(tasks.ToArray());
         }
 
-        private static void ReadAndWriteGraph(IMutableVertexAndEdgeSet<int, Edge<int>> graph, int repeat, int instance)
+        private static void ReadAndWriteGraph(ConcurrentBidirectionalGraph<int, Edge<int>> graph, int repeat, int instance)
         {
             var vertex1 = instance;
             graph.AddVertex(vertex1);
 
             for (int i = 0; i < repeat; i++)
             {
-                var vertex2 = (i + repeat*instance);
+                var vertex2 = i + repeat * instance;
                 graph.AddVertex(vertex2);
                 Debug.WriteLine($"Vertices={graph.VertexCount}");
 

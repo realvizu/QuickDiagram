@@ -96,6 +96,7 @@
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\VerticesInLayerComparerTests.cs" />
+    <Compile Include="Modeling\Implementation\ModelTests.cs" />
     <Compile Include="TestSubjects\TestDiagramConnector.cs" />
     <Compile Include="TestSubjects\TestModelRelationship.cs" />
     <Compile Include="TestSubjects\TestDiagramNode.cs" />
@@ -110,6 +111,10 @@
     <ProjectReference Include="..\SoftVis.Diagramming\SoftVis.Diagramming.csproj">
       <Project>{9a600b8e-7c32-4dae-b61c-55fb78051f81}</Project>
       <Name>SoftVis.Diagramming</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj">
+      <Project>{04b8c468-787f-45b2-bd98-31e05c646099}</Project>
+      <Name>SoftVis.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

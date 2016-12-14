@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModel : Model
     {
-        public IEnumerable<RoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<RoslynBasedModelEntity>();
+        public IEnumerable<IRoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<IRoslynBasedModelEntity>();
 
         public override IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
         {
@@ -34,31 +35,42 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             yield return ModelRelationshipStereotypes.Implementation;
         }
 
-        public RoslynBasedModelEntity GetModelEntity(INamedTypeSymbol namedTypeSymbol)
+        public IRoslynBasedModelEntity GetOrAddEntity(Func<IRoslynBasedModelEntity, bool> entityPredicate, Func<IRoslynBasedModelEntity> createEntityFunc)
         {
-            return RoslynBasedEntities.FirstOrDefault(i => namedTypeSymbol.SymbolEquals(i.RoslynSymbol));
+            return base.GetOrAddEntity(i => entityPredicate((IRoslynBasedModelEntity) i), createEntityFunc) as IRoslynBasedModelEntity;
+        }
+
+        public IRoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol roslynSymbol, Func<IRoslynBasedModelEntity> createEntityFunc)
+        {
+            return this.GetOrAddEntity(i => i.SymbolEquals(roslynSymbol), createEntityFunc);
+        }
+
+        public IRoslynBasedModelEntity GetEntityBySymbol(INamedTypeSymbol namedTypeSymbol)
+        {
+            return RoslynBasedEntities.FirstOrDefault(i => i.SymbolEquals(namedTypeSymbol));
+        }
+
+        public IRoslynBasedModelEntity GetEntityByLocation(Location location)
+        {
+            if (location == null)
+                return null;
+
+            var fileLinePositionSpan = location.GetMappedLineSpan();
+
+            foreach (var roslynBasedModelEntity in RoslynBasedEntities)
+            {
+                var entityLocation = roslynBasedModelEntity.RoslynSymbol?.Locations.FirstOrDefault()?.GetMappedLineSpan();
+                if (entityLocation != null && entityLocation.Value.Overlaps(fileLinePositionSpan))
+                    return roslynBasedModelEntity;
+            }
+
+            return null;
         }
 
         public void UpdateEntity(IRoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
         {
             entity.RoslynSymbol = roslynSymbol;
             base.UpdateEntity(entity, roslynSymbol.GetMinimallyQualifiedName(), roslynSymbol.GetFullyQualifiedName());
-        }
-
-        public IRoslynBasedModelEntity FindEntityByLocation(INamedTypeSymbol roslynSymbol)
-        {
-            var symbolLocation = roslynSymbol.Locations.FirstOrDefault()?.GetMappedLineSpan();
-            if (symbolLocation == null)
-                return null;
-
-            foreach (var roslynBasedModelEntity in RoslynBasedEntities)
-            {
-                var entityLocation = roslynBasedModelEntity.RoslynSymbol?.Locations.FirstOrDefault()?.GetMappedLineSpan();
-                if (entityLocation != null && entityLocation.Value.Overlaps(symbolLocation.Value))
-                    return roslynBasedModelEntity;
-            }
-
-            return null;
         }
     }
 }

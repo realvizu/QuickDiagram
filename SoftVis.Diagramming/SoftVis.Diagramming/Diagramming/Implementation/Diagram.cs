@@ -211,7 +211,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var diagramNode = FindNode(modelEntity);
 
             var connectedEntities = new HashSet<IModelEntity>();
-            foreach (var edge in _graph.GetAllEdges(diagramNode).ToArray())
+            foreach (var edge in _graph.GetEdgesByVertex(diagramNode).ToArray())
             {
                 var connectedEntity = edge.GetOtherEnd(diagramNode).ModelEntity;
                 connectedEntities.Add(connectedEntity);

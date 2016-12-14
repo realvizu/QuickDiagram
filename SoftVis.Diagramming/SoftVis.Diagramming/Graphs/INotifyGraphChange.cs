@@ -6,8 +6,8 @@ namespace Codartis.SoftVis.Graphs
     /// <summary>
     /// Publishes notification events about graph changes.
     /// </summary>
-    /// <typeparam name="TVertex"></typeparam>
-    /// <typeparam name="TEdge"></typeparam>
+    /// <typeparam name="TVertex">The type of the vertices.</typeparam>
+    /// <typeparam name="TEdge">The type of the edges.</typeparam>
     public interface INotifyGraphChange<TVertex, TEdge>
         where TEdge: IEdge<TVertex>
     {

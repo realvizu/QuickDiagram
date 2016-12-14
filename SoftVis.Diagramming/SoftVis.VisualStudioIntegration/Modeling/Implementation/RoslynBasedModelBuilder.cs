@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             if (namedTypeSymbol == null)
                 return null;
 
-            return AddEntityIfNotExists(GetOriginalDefinition(namedTypeSymbol));
+            return GetOrAddEntity(GetOriginalDefinition(namedTypeSymbol));
         }
 
         public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var relatedEntity = AddEntityIfNotExists(symbolRelation.RelatedSymbol, progress);
+                var relatedEntity = GetOrAddEntity(symbolRelation.RelatedSymbol, progress);
                 AddRelationshipIfNotExists(symbolRelation);
 
                 // TODO: loop detection?
@@ -197,24 +197,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return namedTypeSymbol.OriginalDefinition ?? namedTypeSymbol;
         }
 
-        private RoslynBasedModelEntity AddEntityIfNotExists(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null)
+        private IRoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null)
         {
-            var modelEntity = _model.GetModelEntity(namedTypeSymbol);
-            if (modelEntity == null)
-            {
-                modelEntity = CreateModelEntity(namedTypeSymbol);
-                _model.AddEntity(modelEntity);
-
-                progress?.Report(1);
-            }
+            var modelEntity = _model.GetOrAddEntity(i => i.RoslynSymbol.SymbolEquals(namedTypeSymbol), () => CreateModelEntity(namedTypeSymbol));
+            progress?.Report(1);
             return modelEntity;
         }
 
         private ModelRelationship AddRelationshipIfNotExists(RoslynSymbolRelation symbolRelation)
         {
-            var sourceEntity = _model.GetModelEntity(symbolRelation.SourceSymbol);
-            var targetEntity = _model.GetModelEntity(symbolRelation.TargetSymbol);
-            return _model.AddRelationshipIfNotExists(sourceEntity, targetEntity, symbolRelation.Type);
+            var sourceEntity = _model.GetEntityBySymbol(symbolRelation.SourceSymbol);
+            var targetEntity = _model.GetEntityBySymbol(symbolRelation.TargetSymbol);
+            var relationship = new ModelRelationship(sourceEntity, targetEntity, symbolRelation.Type);
+            return _model.GetOrAddRelationship(relationship);
         }
 
         private static RoslynBasedModelEntity CreateModelEntity(INamedTypeSymbol namedTypeSymbol)

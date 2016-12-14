@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.Graphs
     /// </remarks>
     /// <typeparam name="TVertex">The type of the vertices.</typeparam>
     /// <typeparam name="TEdge">The type of the edges.</typeparam>
-    internal class LayeredGraph<TVertex, TEdge> : ConcurrentBidirectionalGraph<TVertex, TEdge>,
+    internal class LayeredGraph<TVertex, TEdge> : BidirectionalGraph<TVertex, TEdge>,
         IReadOnlyLayeredGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

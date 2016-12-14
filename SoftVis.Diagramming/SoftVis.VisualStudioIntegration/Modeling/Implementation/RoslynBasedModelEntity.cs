@@ -41,6 +41,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
+        public bool SymbolEquals(INamedTypeSymbol roslynSymbol) => RoslynSymbol.SymbolEquals(roslynSymbol);
+
         /// <summary>
         /// Finds and returns related Roslyn symbols.
         /// </summary>

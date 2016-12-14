@@ -186,8 +186,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void ClearViewport()
         {
-            DiagramConnectorViewModels.Clear();
-            DiagramNodeViewModels.Clear();
+            foreach (var diagramConnectorViewModel in DiagramConnectorViewModels.ToArray())
+                RemoveFromViewModels(diagramConnectorViewModel);
+
+            foreach (var diagramNodeViewModel in DiagramNodeViewModels.ToArray())
+                RemoveFromViewModels(diagramNodeViewModel);
+            
             _diagramShapeToViewModelMap.Clear();
         }
 

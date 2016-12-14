@@ -90,6 +90,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void ZoomToDiagramNodes()
         {
+            if (_followedDiagramNodes == null)
+                return;
+
             var rect = _followedDiagramNodes.Select(i => i.Rect).Where(i => i.IsDefined()).Union().ToWpf();
             if (rect.IsDefined())
                 ZoomToRect(rect, _followDiagramNodesTransitionSpeed);

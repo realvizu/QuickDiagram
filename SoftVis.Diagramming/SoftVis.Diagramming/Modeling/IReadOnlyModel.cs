@@ -19,8 +19,6 @@ namespace Codartis.SoftVis.Modeling
         event Action<IModelEntity, string, string> EntityRenamed;
         event Action ModelCleared;
 
-        IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type);
-
         IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes();
         IEnumerable<ModelRelationshipStereotype> GetModelRelationshipStereotypes();
 

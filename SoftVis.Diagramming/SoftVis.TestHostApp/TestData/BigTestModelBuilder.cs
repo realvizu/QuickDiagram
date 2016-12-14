@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         private TestClass CreateAndAddClass(string name)
         {
             var newEntity = new TestClass(name, ModelOrigin.Unknown);
-            _testModel.AddEntity(newEntity);
+            _testModel.GetOrAddEntity(newEntity);
             return newEntity;
         }
 
@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 var newEntity = CreateAndAddClass($"{parent.Name}-{i}");
 
                 var newRelationship = new ModelRelationship(newEntity, parent, ModelRelationshipClassifier.Generalization, ModelRelationshipStereotype.None);
-                _testModel.AddRelationship(newRelationship);
+                _testModel.GetOrAddRelationship(newRelationship);
 
                 CreateChildren(newEntity, childCount, currentLevel + 1, maxLevel);
             }

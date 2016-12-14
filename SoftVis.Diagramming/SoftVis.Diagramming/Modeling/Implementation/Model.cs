@@ -34,27 +34,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IEnumerable<IModelEntity> Entities => _graph.Vertices;
         public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
 
-        public virtual void AddEntity(IModelEntity entity) => _graph.AddVertex(entity);
-        public virtual void AddRelationship(ModelRelationship relationship) => _graph.AddEdge(relationship);
-        public virtual void RemoveEntity(IModelEntity entity) => _graph.RemoveVertex(entity);
-        public virtual void RemoveRelationship(ModelRelationship relationship) => _graph.RemoveEdge(relationship);
-
-        public void Clear()
-        {
-            _graph.Clear();
-        }
-
-        public virtual void UpdateEntity(IModelEntity entity, string name, string fullName)
-        {
-            entity.UpdateName(name, fullName);
-            EntityRenamed?.Invoke(entity, name, fullName);
-        }
-
-        public IModelRelationship GetRelationship(IModelEntity source, IModelEntity target, ModelRelationshipType type)
-        {
-            return Relationships.FirstOrDefault(i => i.Source == source && i.Target == target && i.Type == type);
-        }
-
         public virtual IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
         {
             yield return ModelEntityStereotype.None;
@@ -70,37 +49,37 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return Relationships.Where(i => i.Source == entity || i.Target == entity);
         }
 
-        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType,
-            bool recursive = false)
+        public virtual IModelEntity GetOrAddEntity(Func<IModelEntity, bool> entityPredicate, Func<IModelEntity> createEntityFunc)
+            => _graph.GetOrAddVertex(i => entityPredicate(i), createEntityFunc);
+
+        public virtual IModelEntity GetOrAddEntity(IModelEntity entity)
+            => this.GetOrAddEntity(i => i.Equals(entity), () => entity);
+
+        public virtual ModelRelationship GetOrAddRelationship(ModelRelationship relationship)
+            => _graph.GetOrAddEdge(i => i == relationship, () => relationship);
+
+        public virtual ModelRelationship GetOrAddRelationship(IModelEntity sourceEntity, IModelEntity targetEntity, ModelRelationshipType relationType)
         {
-            if (!_graph.ContainsVertex(entity))
-                yield break;
-
-            var relatedEntities = relationType.Direction == EntityRelationDirection.Incoming
-                ? _graph.InEdges(entity).Where(i => i.Type == relationType.Type).Select(i => i.Source).Distinct()
-                : _graph.OutEdges(entity).Where(i => i.Type == relationType.Type).Select(i => i.Target).Distinct();
-
-            foreach (var relatedEntity in relatedEntities.ToList())
-            {
-                yield return relatedEntity;
-
-                // TODO: loop detection?
-                if (recursive)
-                    foreach (var nextRelatedEntity in GetRelatedEntities(relatedEntity, relationType, recursive: true))
-                        yield return nextRelatedEntity;
-            }
+            var relationship = new ModelRelationship(sourceEntity, targetEntity, relationType);
+            return this.GetOrAddRelationship(relationship);
         }
 
-        public virtual ModelRelationship AddRelationshipIfNotExists(ModelEntity source, ModelEntity target,
-            ModelRelationshipType type)
+        public virtual void RemoveEntity(IModelEntity entity) => _graph.RemoveVertex(entity);
+        public virtual void RemoveRelationship(ModelRelationship relationship) => _graph.RemoveEdge(relationship);
+        public void Clear() => _graph.Clear();
+
+        public virtual void UpdateEntity(IModelEntity entity, string name, string fullName)
         {
-            var modelRelationship = GetRelationship(source, target, type) as ModelRelationship;
-            if (modelRelationship == null)
-            {
-                var newModelRelationship = new ModelRelationship(source, target, type);
-                AddRelationship(newModelRelationship);
-            }
-            return modelRelationship;
+            entity.UpdateName(name, fullName);
+            EntityRenamed?.Invoke(entity, name, fullName);
+        }
+
+        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, bool recursive = false)
+        {
+            return _graph.GetConnectedVertices(entity,
+                (otherEntity, relationship) => relationship.Type == relationType.Type &&
+                relationship.IsEntityInRelationship(otherEntity, relationType.Direction),
+                recursive);
         }
     }
 }

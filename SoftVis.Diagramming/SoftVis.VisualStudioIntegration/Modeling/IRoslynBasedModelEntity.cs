@@ -16,6 +16,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         INamedTypeSymbol RoslynSymbol { get; set; }
 
         /// <summary>
+        /// Returns a value indicating whether this entity represents the same roslyn symbol as the one given as parameter,
+        /// </summary>
+        bool SymbolEquals(INamedTypeSymbol roslynSymbol);
+
+        /// <summary>
         /// Finds and returns related Roslyn symbols.
         /// </summary>
         /// <param name="roslynModelProvider">Query API for the Roslyn model.</param>
