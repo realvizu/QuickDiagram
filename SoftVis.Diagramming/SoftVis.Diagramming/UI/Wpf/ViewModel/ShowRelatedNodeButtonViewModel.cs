@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
@@ -51,7 +52,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 return;
             }
 
-            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(HostDiagramNode, EntityRelationType).ToList();
+            var undisplayedRelatedEntities = GetUndisplayedRelatedModelEntities();
 
             if (undisplayedRelatedEntities.Count == 1)
             {
@@ -65,12 +66,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnDoubleClick()
         {
-            var undisplayedRelatedEntities = Diagram.GetUndisplayedRelatedEntities(HostDiagramNode, EntityRelationType).ToList();
+            var undisplayedRelatedEntities = GetUndisplayedRelatedModelEntities();
             ShowRelatedEntitiesRequested?.Invoke(this, undisplayedRelatedEntities);
         }
 
-        private void OnModelRelationshipAdded(object sender, IModelRelationship relationship) => UpdateEnabledState();
-        private void OnModelRelationshipRemoved(object sender, IModelRelationship relationship) => UpdateEnabledState();
+        private void OnModelRelationshipAdded(IModelRelationship relationship) => UpdateEnabledState();
+        private void OnModelRelationshipRemoved(IModelRelationship relationship) => UpdateEnabledState();
 
         private void SubscribeToModelEvents()
         {
@@ -89,7 +90,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (HostDiagramNode == null)
                 return;
 
-            IsEnabled = Diagram.GetUndisplayedRelatedEntities(HostDiagramNode, EntityRelationType).Any();
+            IsEnabled = GetUndisplayedRelatedModelEntities().Any();
         }
+
+        private IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities()
+            => Diagram.GetUndisplayedRelatedModelEntities(HostDiagramNode, EntityRelationType);
     }
 }

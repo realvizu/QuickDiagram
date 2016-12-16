@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ShapeRemoved += OnShapeRemoved;
             NodeSizeChanged += OnNodeSizeChanged;
 
-            Task.Run(() => ProcessDiagramShapeActions(_automaticLayoutCancellation.Token));
+            Task.Run(() => ProcessDiagramShapeActionsAsync(_automaticLayoutCancellation.Token));
         }
 
         public void Dispose()
@@ -86,13 +86,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 EnqueueDiagramAction(new DiagramConnectorAction(diagramConnector, ShapeActionType.Remove));
         }
 
-        private async void ProcessDiagramShapeActions(CancellationToken cancellationToken)
+        private async void ProcessDiagramShapeActionsAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)))
                 {
-                    while (await AreEventsArrivingInRapidSuccession())
+                    while (await AreEventsArrivingInRapidSuccessionAsync())
                     { }
 
                     var diagramActions = GetBatchFromQueue(_diagramActionQueue);
@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        private async Task<bool> AreEventsArrivingInRapidSuccession()
+        private async Task<bool> AreEventsArrivingInRapidSuccessionAsync()
         {
             var queueLengthBeforeWait = GetDiagramActionQueueLength();
             await Task.Delay(TimeSpan.FromMilliseconds(5));

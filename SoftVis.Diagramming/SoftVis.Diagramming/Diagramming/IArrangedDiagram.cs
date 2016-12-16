@@ -13,9 +13,9 @@ namespace Codartis.SoftVis.Diagramming
     {
         Rect2D ContentRect { get; }
 
-        void ResizeNode(IDiagramNode diagramNode, Size2D newSize);
-        void MoveNodeCenter(IDiagramNode diagramNode, Point2D newCenter);
-        void RerouteConnector(IDiagramConnector diagramConnector, Route newRoute);
+        void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize);
+        void MoveDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter);
+        void RerouteDiagramConnector(IDiagramConnector diagramConnector, Route newRoute);
 
         event Action<IDiagramNode, Size2D, Size2D> NodeSizeChanged;
         event Action<IDiagramNode, Point2D, Point2D> NodeTopLeftChanged;

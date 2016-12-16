@@ -68,6 +68,8 @@
   <ItemGroup>
     <Compile Include="DoubleHelper.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="GetOrAddAction.cs" />
+    <Compile Include="GetOrAddResult.cs" />
     <Compile Include="HashSetExtensions.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="ObjectExtensions.cs" />

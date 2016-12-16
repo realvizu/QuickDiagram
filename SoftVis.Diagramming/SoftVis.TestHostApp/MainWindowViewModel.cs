@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");
-            DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowItems(i);
+            DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowModelItems(i);
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
@@ -67,7 +67,7 @@ namespace Codartis.SoftVis.TestHostApp
             if (_modelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
                 return;
 
-            _testDiagram.ShowItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
+            _testDiagram.ShowModelItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
             _modelItemGroupIndex++;
 
             //_testDiagram.Save(@"c:\big.xml");
@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.TestHostApp
             if (_nextToRemoveModelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
                 return;
 
-            _testDiagram.HideItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
+            _testDiagram.HideModelItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
             _nextToRemoveModelItemGroupIndex++;
 
             ZoomToContent();

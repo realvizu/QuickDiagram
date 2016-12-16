@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Util;
@@ -35,7 +34,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                 {
                     await UpdateModelAsync(progressDialog.CancellationToken, progressDialog.Progress);
 
-                    progressDialog.Reset("Updating diagram nodes:", DiagramServices.Nodes.Count());
+                    progressDialog.Reset("Updating diagram nodes:", DiagramServices.Nodes.Count);
 
                     await UpdateDiagramAsync(progressDialog.CancellationToken, progressDialog.Progress);
                 }

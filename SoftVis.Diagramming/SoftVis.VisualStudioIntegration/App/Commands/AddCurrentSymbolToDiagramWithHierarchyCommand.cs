@@ -34,9 +34,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             UiServices.FollowDiagramNodes(diagramNodes);
         }
 
-        private async Task<List<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelEntity modelEntity)
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelEntity modelEntity)
         {
-            List<IDiagramNode> diagramNodes = null;
+            IReadOnlyList<IDiagramNode> diagramNodes = null;
 
             using (var progressDialog = UiServices.CreateProgressDialog("Extending model with entities:"))
             {
@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.Subtype, cancellationToken, progress, recursive: true);
         }
 
-        private async Task<List<IDiagramNode>> ExtendDiagramAsync(IRoslynBasedModelEntity modelEntity, 
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynBasedModelEntity modelEntity, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             return await Task.Run(() => DiagramServices.ShowEntityWithHierarchy(modelEntity, cancellationToken, progress), cancellationToken);

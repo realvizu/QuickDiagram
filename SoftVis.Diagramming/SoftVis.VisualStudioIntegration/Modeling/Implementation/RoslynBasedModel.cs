@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModel : Model
     {
-        public IEnumerable<IRoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<IRoslynBasedModelEntity>();
+        public IReadOnlyList<IRoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<IRoslynBasedModelEntity>().ToArray();
 
         public override IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
         {

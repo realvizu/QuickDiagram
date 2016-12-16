@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Util;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs
@@ -10,11 +11,12 @@ namespace Codartis.SoftVis.Graphs
     /// </summary>
     /// <typeparam name="TVertex">The type of the vertices.</typeparam>
     /// <typeparam name="TEdge">The type of the edges.</typeparam>
-    public class ConcurrentBidirectionalGraph<TVertex, TEdge> : INotifyGraphChange<TVertex, TEdge>, IDisposable
+    public class ConcurrentBidirectionalGraph<TVertex, TEdge> : INotifyGraphChange<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly object _lockObject = new object();
         protected readonly BidirectionalGraph<TVertex, TEdge> Graph;
+
+        public object SyncRoot { get; }
 
         public event VertexAction<TVertex> VertexAdded;
         public event VertexAction<TVertex> VertexRemoved;
@@ -25,70 +27,117 @@ namespace Codartis.SoftVis.Graphs
         public ConcurrentBidirectionalGraph(bool allowParallelEdges = true)
         {
             Graph = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
-            SubscribeToGraphEvents();
+            SyncRoot = new object();
         }
 
-        public void Dispose()
+        public bool AddVertex(TVertex vertex)
         {
-            UnsubscribeFromGraphEvents();
+            bool vertexWasAdded;
+
+            lock (SyncRoot)
+                vertexWasAdded = Graph.AddVertex(vertex);
+
+            if (vertexWasAdded)
+                VertexAdded?.Invoke(vertex);
+
+            return vertexWasAdded;
         }
 
-        public bool AddVertex(TVertex v)
+        public bool AddEdge(TEdge edge)
         {
-            lock (_lockObject)
-                return Graph.AddVertex(v);
+            bool edgeWasAdded;
+
+            lock (SyncRoot)
+                edgeWasAdded = Graph.AddEdge(edge);
+
+            if (edgeWasAdded)
+                EdgeAdded?.Invoke(edge);
+
+            return edgeWasAdded;
         }
 
-        public bool AddEdge(TEdge e)
+        public RemoveVertexResult<TVertex, TEdge> RemoveVertex(TVertex vertex)
         {
-            lock (_lockObject)
-                return Graph.AddEdge(e);
+            bool vertexWasRemoved;
+            TEdge[] edgesOfRemovedVertex;
+
+            lock (SyncRoot)
+            {
+                edgesOfRemovedVertex = Graph.GetAllEdges(vertex).ToArray();
+                vertexWasRemoved = Graph.RemoveVertex(vertex);
+            }
+
+            if (!vertexWasRemoved)
+                return RemoveVertexResult<TVertex, TEdge>.Empty;
+
+            foreach (var edge in edgesOfRemovedVertex)
+                EdgeRemoved?.Invoke(edge);
+
+            VertexRemoved?.Invoke(vertex);
+
+            return new RemoveVertexResult<TVertex, TEdge>(vertex, edgesOfRemovedVertex);
         }
 
-        public int AddVertexRange(IEnumerable<TVertex> vertices)
+        public RemoveVertexResult<TVertex, TEdge> RemoveVertex(VertexPredicate<TVertex> vertexPredicate)
         {
-            lock (_lockObject)
-                return Graph.AddVertexRange(vertices);
+            TVertex vertex;
+            lock (SyncRoot)
+                vertex = Graph.Vertices.FirstOrDefault(i => vertexPredicate(i));
+
+            if (vertex == null)
+                return RemoveVertexResult<TVertex, TEdge>.Empty;
+
+            return this.RemoveVertex(vertex);
         }
 
-        public bool AddVerticesAndEdge(TEdge e)
+        public bool RemoveEdge(TEdge edge)
         {
-            lock (_lockObject)
-                return Graph.AddVerticesAndEdge(e);
+            bool edgeWasRemoved;
+
+            lock (SyncRoot)
+                edgeWasRemoved = Graph.RemoveEdge(edge);
+
+            if (edgeWasRemoved)
+                EdgeRemoved?.Invoke(edge);
+
+            return edgeWasRemoved;
         }
 
-        public bool RemoveVertex(TVertex v)
+        public bool RemoveEdge(EdgePredicate<TVertex, TEdge> edgePredicate)
         {
-            lock (_lockObject)
-                return Graph.RemoveVertex(v);
-        }
+            TEdge edge;
 
-        public bool RemoveEdge(TEdge e)
-        {
-            lock (_lockObject)
-                return Graph.RemoveEdge(e);
+            lock (SyncRoot)
+                edge = Graph.Edges.FirstOrDefault(i => edgePredicate(i));
+
+            if (edge == null)
+                return false;
+
+            return this.RemoveEdge(edge);
         }
 
         public void Clear()
         {
-            lock (_lockObject)
+            lock (SyncRoot)
                 Graph.Clear();
+
+            Cleared?.Invoke(this, EventArgs.Empty);
         }
 
-        public TVertex[] Vertices
+        public IReadOnlyList<TVertex> Vertices
         {
             get
             {
-                lock (_lockObject)
+                lock (SyncRoot)
                     return Graph.Vertices.ToArray();
             }
         }
 
-        public TEdge[] Edges
+        public IReadOnlyList<TEdge> Edges
         {
             get
             {
-                lock (_lockObject)
+                lock (SyncRoot)
                     return Graph.Edges.ToArray();
             }
         }
@@ -97,7 +146,7 @@ namespace Codartis.SoftVis.Graphs
         {
             get
             {
-                lock (_lockObject)
+                lock (SyncRoot)
                     return Graph.VertexCount;
             }
         }
@@ -106,48 +155,58 @@ namespace Codartis.SoftVis.Graphs
         {
             get
             {
-                lock (_lockObject)
+                lock (SyncRoot)
                     return Graph.EdgeCount;
             }
         }
 
-        public TVertex GetOrAddVertex(VertexPredicate<TVertex> vertexPredicate, Func<TVertex> createVertexFunc)
+        public GetOrAddResult<TVertex> GetOrAddVertex(VertexPredicate<TVertex> vertexPredicate, Func<TVertex> createVertexFunc)
         {
-            lock (_lockObject)
+            TVertex vertex;
+
+            lock (SyncRoot)
             {
-                var vertex = Graph.Vertices.FirstOrDefault(i => vertexPredicate(i));
+                vertex = Graph.Vertices.FirstOrDefault(i => vertexPredicate(i));
                 if (vertex != null)
-                    return vertex;
+                    return new GetOrAddResult<TVertex>(vertex, GetOrAddAction.Get);
 
                 vertex = createVertexFunc();
-                AddVertex(vertex);
-                return vertex;
+                Graph.AddVertex(vertex);
             }
+
+            VertexAdded?.Invoke(vertex);
+
+            return new GetOrAddResult<TVertex>(vertex, GetOrAddAction.Add);
         }
 
-        public TEdge GetOrAddEdge(EdgePredicate<TVertex, TEdge> edgePredicate, Func<TEdge> createEdgeFunc)
+        public GetOrAddResult<TEdge> GetOrAddEdge(EdgePredicate<TVertex, TEdge> edgePredicate, Func<TEdge> createEdgeFunc)
         {
-            lock (_lockObject)
+            TEdge edge;
+
+            lock (SyncRoot)
             {
-                var edge = Graph.Edges.FirstOrDefault(i => edgePredicate(i));
+                edge = Graph.Edges.FirstOrDefault(i => edgePredicate(i));
                 if (edge != null)
-                    return edge;
+                    return new GetOrAddResult<TEdge>(edge, GetOrAddAction.Get);
 
                 edge = createEdgeFunc();
-                AddEdge(edge);
-                return edge;
+                Graph.AddEdge(edge);
             }
+
+            EdgeAdded?.Invoke(edge);
+
+            return new GetOrAddResult<TEdge>(edge, GetOrAddAction.Add);
         }
 
-        public TEdge[] GetEdgesByVertex(TVertex vertex)
+        public IReadOnlyList<TEdge> GetEdgesByVertex(TVertex vertex)
         {
-            lock (_lockObject)
+            lock (SyncRoot)
                 return Graph.GetAllEdges(vertex).ToArray();
         }
 
-        public TVertex[] GetConnectedVertices(TVertex vertex, Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
+        public IReadOnlyList<TVertex> GetConnectedVertices(TVertex vertex, Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
         {
-            lock (_lockObject)
+            lock (SyncRoot)
             {
                 if (!Graph.ContainsVertex(vertex))
                     return new TVertex[0];
@@ -173,29 +232,5 @@ namespace Codartis.SoftVis.Graphs
                         yield return nextConnectedVertex;
             }
         }
-
-        private void SubscribeToGraphEvents()
-        {
-            Graph.VertexAdded += PropagateVertexAdded;
-            Graph.VertexRemoved += PropagateVertexRemoved;
-            Graph.EdgeAdded += PropagateEdgeAdded;
-            Graph.EdgeRemoved += PropagateEdgeRemoved;
-            Graph.Cleared += PropagateCleared;
-        }
-
-        private void UnsubscribeFromGraphEvents()
-        {
-            Graph.VertexAdded -= PropagateVertexAdded;
-            Graph.VertexRemoved -= PropagateVertexRemoved;
-            Graph.EdgeAdded -= PropagateEdgeAdded;
-            Graph.EdgeRemoved -= PropagateEdgeRemoved;
-            Graph.Cleared -= PropagateCleared;
-        }
-
-        private void PropagateVertexAdded(TVertex vertex) => VertexAdded?.Invoke(vertex);
-        private void PropagateVertexRemoved(TVertex vertex) => VertexRemoved?.Invoke(vertex);
-        private void PropagateEdgeAdded(TEdge edge) => EdgeAdded?.Invoke(edge);
-        private void PropagateEdgeRemoved(TEdge edge) => EdgeRemoved?.Invoke(edge);
-        private void PropagateCleared(object s, EventArgs e) => Cleared?.Invoke(s, e);
     }
 }

@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand MouseDownCommand { get; }
 
         public event Action<IDiagramShape> ShowSourceRequested;
-        public event Action<List<IModelEntity>> ShowModelItemsRequested;
+        public event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
 
         public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
@@ -115,7 +115,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedEntityListBoxViewModel.Show(diagramNodeButtonViewModel, modelEntities);
         }
 
-        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, List<IModelEntity> modelEntities)
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities)
         {
             switch (modelEntities.Count)
             {
@@ -123,7 +123,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     return;
                 case 1:
                     StopFollowingDiagramNodes();
-                    Diagram.ShowItems(modelEntities);
+                    Diagram.ShowModelItems(modelEntities);
                     break;
                 default:
                     HideRelatedEntityListBox();
@@ -135,7 +135,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
             DiagramViewportViewModel.StopFollowingDiagramNodes();
-            Diagram.ShowItem(selectedEntity);
+            Diagram.ShowModelItem(selectedEntity);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)

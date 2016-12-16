@@ -16,12 +16,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
-            _diagram.MoveNodeCenter(layoutAction.DiagramNode, layoutAction.To);
+            _diagram.MoveDiagramNodeCenter(layoutAction.DiagramNode, layoutAction.To);
         }
 
         public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
-            _diagram.RerouteConnector(layoutAction.DiagramConnector, layoutAction.NewRoute);
+            _diagram.RerouteDiagramConnector(layoutAction.DiagramConnector, layoutAction.NewRoute);
         }
     }
 }

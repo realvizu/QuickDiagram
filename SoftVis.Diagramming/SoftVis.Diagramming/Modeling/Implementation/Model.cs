@@ -13,10 +13,10 @@ namespace Codartis.SoftVis.Modeling.Implementation
     {
         private readonly ModelGraph _graph;
 
-        public event EventHandler<IModelEntity> EntityAdded;
-        public event EventHandler<IModelRelationship> RelationshipAdded;
-        public event EventHandler<IModelEntity> EntityRemoved;
-        public event EventHandler<IModelRelationship> RelationshipRemoved;
+        public event Action<IModelEntity> EntityAdded;
+        public event Action<IModelRelationship> RelationshipAdded;
+        public event Action<IModelEntity> EntityRemoved;
+        public event Action<IModelRelationship> RelationshipRemoved;
         public event Action<IModelEntity, string, string> EntityRenamed;
         public event Action ModelCleared;
 
@@ -24,15 +24,15 @@ namespace Codartis.SoftVis.Modeling.Implementation
         {
             _graph = new ModelGraph();
 
-            _graph.VertexAdded += i => EntityAdded?.Invoke(this, i);
-            _graph.VertexRemoved += i => EntityRemoved?.Invoke(this, i);
-            _graph.EdgeAdded += i => RelationshipAdded?.Invoke(this, i);
-            _graph.EdgeRemoved += i => RelationshipRemoved?.Invoke(this, i);
+            _graph.VertexAdded += i => EntityAdded?.Invoke(i);
+            _graph.VertexRemoved += i => EntityRemoved?.Invoke(i);
+            _graph.EdgeAdded += i => RelationshipAdded?.Invoke(i);
+            _graph.EdgeRemoved += i => RelationshipRemoved?.Invoke(i);
             _graph.Cleared += (i, j) => ModelCleared?.Invoke();
         }
 
-        public IEnumerable<IModelEntity> Entities => _graph.Vertices;
-        public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
+        public IReadOnlyList<IModelEntity> Entities => _graph.Vertices;
+        public IReadOnlyList<IModelRelationship> Relationships => _graph.Edges;
 
         public virtual IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
         {
@@ -44,19 +44,27 @@ namespace Codartis.SoftVis.Modeling.Implementation
             yield return ModelRelationshipStereotype.None;
         }
 
-        public IEnumerable<IModelRelationship> GetRelationships(IModelEntity entity)
+        public IReadOnlyList<IModelRelationship> GetRelationships(IModelEntity entity)
         {
-            return Relationships.Where(i => i.Source == entity || i.Target == entity);
+            return Relationships.Where(i => i.Source == entity || i.Target == entity).ToArray();
+        }
+
+        public IReadOnlyList<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, bool recursive = false)
+        {
+            return _graph.GetConnectedVertices(entity,
+                (otherEntity, relationship) => relationship.Type == relationType.Type &&
+                relationship.IsEntityInRelationship(otherEntity, relationType.Direction),
+                recursive);
         }
 
         public virtual IModelEntity GetOrAddEntity(Func<IModelEntity, bool> entityPredicate, Func<IModelEntity> createEntityFunc)
-            => _graph.GetOrAddVertex(i => entityPredicate(i), createEntityFunc);
+            => _graph.GetOrAddVertex(i => entityPredicate(i), createEntityFunc).Result;
 
         public virtual IModelEntity GetOrAddEntity(IModelEntity entity)
             => this.GetOrAddEntity(i => i.Equals(entity), () => entity);
 
         public virtual ModelRelationship GetOrAddRelationship(ModelRelationship relationship)
-            => _graph.GetOrAddEdge(i => i == relationship, () => relationship);
+            => _graph.GetOrAddEdge(i => i == relationship, () => relationship).Result;
 
         public virtual ModelRelationship GetOrAddRelationship(IModelEntity sourceEntity, IModelEntity targetEntity, ModelRelationshipType relationType)
         {
@@ -72,14 +80,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
         {
             entity.UpdateName(name, fullName);
             EntityRenamed?.Invoke(entity, name, fullName);
-        }
-
-        public IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, bool recursive = false)
-        {
-            return _graph.GetConnectedVertices(entity,
-                (otherEntity, relationship) => relationship.Type == relationType.Type &&
-                relationship.IsEntityInRelationship(otherEntity, relationType.Direction),
-                recursive);
         }
     }
 }

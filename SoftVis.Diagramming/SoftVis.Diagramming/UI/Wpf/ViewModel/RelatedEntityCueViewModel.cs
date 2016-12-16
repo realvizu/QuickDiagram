@@ -37,11 +37,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void RecalculateVisibility()
         {
-            IsVisible = Diagram.GetUndisplayedRelatedEntities(_diagramNode, _entityRelationType).Any();
+            IsVisible = Diagram.GetUndisplayedRelatedModelEntities(_diagramNode, _entityRelationType).Any();
         }
 
-        private void OnModelRelationshipRemoved(object sender, IModelRelationship relationship) => RecalculateVisibility();
-        private void OnModelRelationshipAdded(object sender, IModelRelationship relationship) => RecalculateVisibility();
+        private void OnModelRelationshipRemoved(IModelRelationship relationship) => RecalculateVisibility();
+        private void OnModelRelationshipAdded(IModelRelationship relationship) => RecalculateVisibility();
 
         private void OnDiagramShapeRemoved(IDiagramShape shape) => RecalculateVisibility();
         private void OnDiagramShapeAdded(IDiagramShape shape) => RecalculateVisibility();

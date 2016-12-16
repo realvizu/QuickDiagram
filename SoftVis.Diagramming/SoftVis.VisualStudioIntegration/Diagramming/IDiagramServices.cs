@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 
@@ -13,9 +12,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     public interface IDiagramServices
     {
-        IEnumerable<DiagramNode> Nodes { get; }
-        IEnumerable<DiagramConnector> Connectors { get; }
-        IEnumerable<DiagramShape> Shapes { get; }
+        IReadOnlyList<IDiagramNode> Nodes { get; }
+        IReadOnlyList<IDiagramConnector> Connectors { get; }
+        IReadOnlyList<IDiagramShape> Shapes { get; }
 
         event Action<IDiagramShape> ShapeAdded;
         event Action<IDiagramShape> ShapeRemoved;
@@ -23,8 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         event Action DiagramCleared;
 
         IDiagramNode ShowEntity(IModelEntity modelEntity);
-        List<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress);
-        List<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress);
+        IReadOnlyList<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress);
+        IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress);
 
         void Clear();
         void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress);

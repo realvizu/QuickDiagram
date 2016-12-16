@@ -9,20 +9,20 @@ namespace Codartis.SoftVis.Modeling
     /// </summary>
     public interface IReadOnlyModel
     {
-        IEnumerable<IModelEntity> Entities { get; }
-        IEnumerable<IModelRelationship> Relationships { get; }
+        IReadOnlyList<IModelEntity> Entities { get; }
+        IReadOnlyList<IModelRelationship> Relationships { get; }
 
-        event EventHandler<IModelEntity> EntityAdded;
-        event EventHandler<IModelEntity> EntityRemoved;
-        event EventHandler<IModelRelationship> RelationshipAdded;
-        event EventHandler<IModelRelationship> RelationshipRemoved;
+        event Action<IModelEntity> EntityAdded;
+        event Action<IModelEntity> EntityRemoved;
+        event Action<IModelRelationship> RelationshipAdded;
+        event Action<IModelRelationship> RelationshipRemoved;
         event Action<IModelEntity, string, string> EntityRenamed;
         event Action ModelCleared;
 
         IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes();
         IEnumerable<ModelRelationshipStereotype> GetModelRelationshipStereotypes();
 
-        IEnumerable<IModelRelationship> GetRelationships(IModelEntity entity);
-        IEnumerable<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, bool recursive = false);
+        IReadOnlyList<IModelRelationship> GetRelationships(IModelEntity entity);
+        IReadOnlyList<IModelEntity> GetRelatedEntities(IModelEntity entity, EntityRelationType relationType, bool recursive = false);
     }
 }

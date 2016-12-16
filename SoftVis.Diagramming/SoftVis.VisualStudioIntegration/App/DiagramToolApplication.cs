@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        private async void OnShowItemsRequestedAsync(List<IModelEntity> modelEntities)
+        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelEntity> modelEntities)
         {
             if (!modelEntities.Any())
                 return;

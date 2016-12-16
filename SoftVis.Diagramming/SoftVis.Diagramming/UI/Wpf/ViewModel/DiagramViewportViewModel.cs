@@ -166,7 +166,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             DiagramShapeRemoveRequested?.Invoke(diagramShapeViewModel);
 
-            Diagram.RemoveShape(diagramShape);
+            Diagram.RemoveDiagramShape(diagramShape);
         }
 
         private void RemoveShape(IDiagramShape diagramShape)
@@ -198,10 +198,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnViewportTransformChanged(TransitionedTransform newTransform) 
             => ViewportManipulation?.Invoke();
 
-        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, List<IModelEntity> modelEntities) 
+        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities) 
             => ShowEntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
 
-        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, List<IModelEntity> modelEntities) 
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities) 
             => ShowRelatedEntitiesRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
 
         private void OnShowSourceCommand(IDiagramShape diagramShape) 

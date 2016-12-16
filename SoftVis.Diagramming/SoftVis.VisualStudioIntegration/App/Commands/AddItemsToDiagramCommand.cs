@@ -11,14 +11,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Adds the given model items to the diagram and shows a progress dialog.
     /// </summary>
-    internal sealed class AddItemsToDiagramCommand : AsyncCommandWithParameterBase<List<IModelEntity>>
+    internal sealed class AddItemsToDiagramCommand : AsyncCommandWithParameterBase<IReadOnlyList<IModelEntity>>
     {
         public AddItemsToDiagramCommand(IAppServices appServices)
             : base(appServices)
         {
         }
 
-        public override async Task ExecuteAsync(List<IModelEntity> modelEntities)
+        public override async Task ExecuteAsync(IReadOnlyList<IModelEntity> modelEntities)
         {
             var diagramNodes = await ShowProgressAndAddItemsAsync(modelEntities);
 
@@ -28,9 +28,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                 UiServices.FollowDiagramNodes(diagramNodes);
         }
 
-        private async Task<List<IDiagramNode>> ShowProgressAndAddItemsAsync(List<IModelEntity> modelEntities)
+        private async Task<IReadOnlyList<IDiagramNode>> ShowProgressAndAddItemsAsync(IReadOnlyList<IModelEntity> modelEntities)
         {
-            List<IDiagramNode> diagramNodes = null;
+            IReadOnlyList<IDiagramNode> diagramNodes = null;
 
             using (var progressDialog = UiServices.CreateProgressDialog("Adding model items:", modelEntities.Count))
             {
@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             return diagramNodes;
         }
 
-        private async Task<List<IDiagramNode>> ShowEntitiesAsync(List<IModelEntity> modelEntities,
+        private async Task<IReadOnlyList<IDiagramNode>> ShowEntitiesAsync(IReadOnlyList<IModelEntity> modelEntities,
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             return await Task.Run(() => DiagramServices.ShowEntities(modelEntities, cancellationToken, progress), cancellationToken);

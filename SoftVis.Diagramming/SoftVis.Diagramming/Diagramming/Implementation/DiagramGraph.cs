@@ -24,7 +24,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// <returns>The shortest paths between two nodes.</returns>
         public IEnumerable<DiagramPath> GetShortestPaths(DiagramNode source, DiagramNode target, int pathCount)
         {
-            return Graph.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCount).Select(i => new DiagramPath(i));
+            lock (SyncRoot)
+            {
+                if (!Graph.ContainsVertex(source) ||
+                    !Graph.ContainsVertex(target))
+                    return null;
+
+                return Graph.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCount).Select(i => new DiagramPath(i));
+            }
         }
     }
 }

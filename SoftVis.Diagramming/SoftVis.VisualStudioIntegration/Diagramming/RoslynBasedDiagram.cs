@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
@@ -41,26 +40,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public IDiagramNode ShowEntity(IModelEntity modelEntity)
         {
-            return ShowItem(modelEntity) as IDiagramNode;
+            return ShowModelItem(modelEntity) as IDiagramNode;
         }
 
-        public List<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress)
+        public IReadOnlyList<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return ShowItems(modelEntities, cancellationToken, progress).OfType<IDiagramNode>().ToList();
+            return ShowModelItems(modelEntities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
         }
 
-        public List<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
+        public IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
             var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
             var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
 
-             return ShowItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToList();
+             return ShowModelItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
         }
 
         public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            foreach (var diagramNode in Nodes.ToArray())
+            foreach (var diagramNode in Nodes)
             {
                 _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity, cancellationToken: cancellationToken);
                 progress?.Report(1);
