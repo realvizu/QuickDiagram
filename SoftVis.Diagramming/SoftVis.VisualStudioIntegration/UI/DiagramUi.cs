@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -68,18 +67,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             return saveFileDialog.FileName;
         }
 
-        public void ExecuteWhenUiIsIdle(Action action)
-            => Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
-
-        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes) => _diagramViewModel.FollowDiagramNodes(diagramNodes);
-        public void StopFollowingDiagramNodes() => _diagramViewModel.StopFollowingDiagramNodes();
+        public void FollowDiagramNode(IDiagramNode diagramNode) => _diagramViewModel.FollowDiagramNodes(new[] { diagramNode });
+        public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes) => _diagramViewModel.FollowDiagramNodes(diagramNodes);
         public void ZoomToDiagram() => _diagramViewModel.ZoomToContent();
 
         public void ZoomToDiagramNode(IDiagramNode diagramNode)
         {
             var rect = diagramNode.Rect.ToWpf();
             if (rect.IsDefined())
-                _diagramViewModel.ZoomToRect(rect);
+                _diagramViewModel.EnsureRectIsVisible(rect);
         }
 
         public void ZoomToDiagramNodes(IEnumerable<IDiagramNode> diagramNodes)
@@ -89,7 +85,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 _diagramViewModel.ZoomToRect(rect);
         }
 
-        public void EnsureDiagramVisible()
+        public void EnsureDiagramNodeIsVisible(IDiagramNode diagramNode)
+        {
+            var rect = diagramNode.Rect.ToWpf();
+            if (rect.IsDefined())
+                _diagramViewModel.EnsureRectIsVisible(rect);
+        }
+
+        public void EnsureDiagramIsVisible()
         {
             if (!_diagramViewModel.IsDiagramContentVisible())
                 _diagramViewModel.ZoomToContent();

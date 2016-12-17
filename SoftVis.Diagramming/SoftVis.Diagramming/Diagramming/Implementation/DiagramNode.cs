@@ -77,17 +77,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 if (_size != value)
                 {
                     Size2D oldSize;
-                    Point2D newTopLeft;
 
                     lock (_lockObject)
                     {
                         oldSize = _size;
                         _size = value;
-                        newTopLeft = AdjustTopLeftForNewSizeWithFixedCenter(oldSize, value);
+                        TopLeft = AdjustTopLeftForNewSizeWithFixedCenter(oldSize, value);
                     }
 
                     SizeChanged?.Invoke(this, oldSize, value);
-                    TopLeft = newTopLeft;
                 }
             }
         }

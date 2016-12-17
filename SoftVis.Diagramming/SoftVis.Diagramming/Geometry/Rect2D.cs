@@ -50,6 +50,7 @@ namespace Codartis.SoftVis.Geometry
         public Point2D BottomRight => new Point2D(Right, Bottom);
         public Point2D Center => new Point2D(Left + Size.Width / 2, Top + Size.Height / 2);
         public Point2D Position => TopLeft;
+        public bool IsEmpty => Size == Size2D.Zero;
 
         public static Rect2D CreateFromCenterAndSize(Point2D center, Size2D size)
         {

@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         }
 
         public static bool IsDefined(this Rect rect) => !rect.IsUndefined();
+        public static bool IsZero(this Rect rect) => rect.Size.IsZero();
 
         public static Point GetCenter(this Rect rect)
         {

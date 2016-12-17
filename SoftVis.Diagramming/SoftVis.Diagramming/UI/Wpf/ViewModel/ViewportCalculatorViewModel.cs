@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private ViewportCalculatorViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom,
             Size sizeInScreenSpace, Point centerInDiagramSpace)
-            :base(diagram)
+            : base(diagram)
         {
             _minZoom = minZoom;
             _maxZoom = maxZoom;
@@ -116,7 +116,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 #endif
             }
 
-            _exponentialZoom = CalculateZoomForContent(rect.Size);
+            _exponentialZoom = CalculateMinZoomToContainRect(rect.Size, _defaultExponentialZoom);
             _centerInDiagramSpace = rect.GetCenter();
             UpdateCalculatedProperties(transitionSpeed);
         }
@@ -131,6 +131,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _centerInDiagramSpace = (_centerInDiagramSpace - zoomCenterInDiagramSpace) * relativeZoom + zoomCenterInDiagramSpace;
             _exponentialZoom = newExponentialZoom;
+            UpdateCalculatedProperties(transitionSpeed);
+        }
+
+        public virtual void ContainRect(Rect rect, TransitionSpeed transitionSpeed)
+        {
+            if (rect.IsUndefined() || rect.IsZero())
+                return;
+
+            _exponentialZoom = CalculateMinZoomToContainRect(rect.Size, _exponentialZoom);
+
+            var viewportInDiagramSpace = ProjectViewportIntoDiagramSpace();
+            var vector = CalculateVectorToCoverRect(rect, viewportInDiagramSpace);
+            _centerInDiagramSpace = _centerInDiagramSpace + vector;
+
             UpdateCalculatedProperties(transitionSpeed);
         }
 
@@ -179,14 +193,35 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return ScaleCalculator.ExponentialToLinear(exponentialZoom, _minZoom, _maxZoom);
         }
 
-        private double CalculateZoomForContent(Size contentSize)
+        private double CalculateMinZoomToContainRect(Size contentSize, double maxZoom)
         {
+            if (contentSize.IsZero())
+                return maxZoom;
+
             return new[]
             {
-                _defaultExponentialZoom,
+                maxZoom,
                 _sizeInScreenSpace.Width / contentSize.Width,
                 _sizeInScreenSpace.Height / contentSize.Height
             }.Min();
+        }
+
+        private static Vector CalculateVectorToCoverRect(Rect rectToCover, Rect coveringRect)
+        {
+            double xOffset = 0;
+            double yOffset = 0;
+
+            if (rectToCover.Left < coveringRect.Left)
+                xOffset = rectToCover.Left - coveringRect.Left;
+            else if (rectToCover.Right > coveringRect.Right)
+                xOffset = rectToCover.Right - coveringRect.Right;
+
+            if (rectToCover.Top < coveringRect.Top)
+                yOffset = rectToCover.Top - coveringRect.Top;
+            else if (rectToCover.Bottom > coveringRect.Bottom)
+                yOffset = rectToCover.Bottom - coveringRect.Bottom;
+
+            return new Vector(xOffset, yOffset);
         }
 
         private Transform CreateTransformToScreenSpace()

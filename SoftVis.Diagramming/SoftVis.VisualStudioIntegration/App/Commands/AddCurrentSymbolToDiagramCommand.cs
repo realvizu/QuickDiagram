@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -10,7 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     internal sealed class AddCurrentSymbolToDiagramCommand : AsyncCommandBase
     {
         public AddCurrentSymbolToDiagramCommand(IAppServices appServices)
-            :base(appServices)
+            : base(appServices)
         {
         }
 
@@ -22,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             var diagramNode = DiagramServices.ShowEntity(modelEntity);
             UiServices.ShowDiagramWindow();
-            UiServices.FollowDiagramNodes(diagramNode.ToEnumerable());
+            UiServices.FollowDiagramNode(diagramNode);
         }
     }
 }

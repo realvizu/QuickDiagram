@@ -12,14 +12,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Adds the ability to the viewport to follow the rect of some diagram nodes.
     /// </summary>
-    public class AutoZoomViewportViewModel : ViewportCalculatorViewModel, IDisposable
+    public class AutoMoveViewportViewModel : ViewportCalculatorViewModel, IDisposable
     {
         private IDiagramNode[] _followedDiagramNodes;
         private TransitionSpeed _followDiagramNodesTransitionSpeed;
 
-        public AutoZoomViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
+        public ViewportAutoMoveMode Mode { get; set; }
+
+        public AutoMoveViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom,
+            ViewportAutoMoveMode mode = ViewportAutoMoveMode.Contain)
              : base(diagram, minZoom, maxZoom, initialZoom)
         {
+            Mode = mode;
             SubscribeToDiagramEvents();
         }
 
@@ -32,7 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             _followedDiagramNodes = diagramNodes?.ToArray();
             _followDiagramNodesTransitionSpeed = transitionSpeed;
-            ZoomToDiagramNodes();
+            MoveViewport();
         }
 
         public void StopFollowingDiagramNodes()
@@ -79,23 +83,33 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnDiagramNodeTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
         {
             if (_followedDiagramNodes != null && _followedDiagramNodes.Contains(diagramNode))
-                EnsureUiThread(ZoomToDiagramNodes);
+                EnsureUiThread(MoveViewport);
         }
 
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize)
         {
             if (_followedDiagramNodes != null && _followedDiagramNodes.Contains(diagramNode))
-                EnsureUiThread(ZoomToDiagramNodes);
+                EnsureUiThread(MoveViewport);
         }
 
-        private void ZoomToDiagramNodes()
+        private void MoveViewport()
         {
             if (_followedDiagramNodes == null)
                 return;
 
             var rect = _followedDiagramNodes.Select(i => i.Rect).Where(i => i.IsDefined()).Union().ToWpf();
-            if (rect.IsDefined())
-                ZoomToRect(rect, _followDiagramNodesTransitionSpeed);
+            if (rect.IsUndefined())
+                return;
+
+            switch (Mode)
+            {
+                case ViewportAutoMoveMode.Center:
+                    ZoomToRect(rect, _followDiagramNodesTransitionSpeed);
+                    break;
+                case ViewportAutoMoveMode.Contain:
+                    ContainRect(rect, _followDiagramNodesTransitionSpeed);
+                    break;
+            }
         }
     }
 }

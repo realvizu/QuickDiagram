@@ -25,13 +25,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
         string SelectSaveFilename(string title, string filter);
 
-        void ExecuteWhenUiIsIdle(Action action);
-        void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes);
-        void StopFollowingDiagramNodes();
+        void FollowDiagramNode(IDiagramNode diagramNode);
+        void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes);
         void ZoomToDiagram();
-        void ZoomToDiagramNode(IDiagramNode diagramNode);
-        void ZoomToDiagramNodes(IEnumerable<IDiagramNode> diagramNodes);
-        void EnsureDiagramVisible();
 
         ProgressDialog CreateProgressDialog(string text, int maxProgress = 0);
         Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 

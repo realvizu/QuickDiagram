@@ -71,10 +71,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes) => DiagramViewportViewModel.FollowDiagramNodes(diagramNodes);
+        public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes)
+        {
+            var autoMoveMode = Diagram.Nodes.Count > diagramNodes.Count
+                ? ViewportAutoMoveMode.Contain
+                : ViewportAutoMoveMode.Center;
+
+            DiagramViewportViewModel.SetFollowDiagramNodesMode(autoMoveMode);
+            DiagramViewportViewModel.FollowDiagramNodes(diagramNodes);
+        }
+
+        public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => DiagramViewportViewModel.SetFollowDiagramNodesMode(mode);
         public void StopFollowingDiagramNodes() => DiagramViewportViewModel.StopFollowingDiagramNodes();
+
         public void ZoomToContent() => DiagramViewportViewModel.ZoomToContent();
         public void ZoomToRect(Rect rect) => DiagramViewportViewModel.ZoomToRect(rect);
+        public void EnsureRectIsVisible(Rect rect) => DiagramViewportViewModel.EnsureRectIsVisible(rect);
         public bool IsDiagramContentVisible() => DiagramViewportViewModel.IsDiagramContentVisible();
 
         public void ShowPopupMessage(string text, TimeSpan hideAfter = default(TimeSpan))
@@ -122,8 +134,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 case 0:
                     return;
                 case 1:
-                    StopFollowingDiagramNodes();
-                    Diagram.ShowModelItems(modelEntities);
+                    var diagramNodes = Diagram.ShowModelItems(modelEntities).OfType<IDiagramNode>().ToArray();
+                    FollowDiagramNodes(diagramNodes);
                     break;
                 default:
                     HideRelatedEntityListBox();
@@ -134,7 +146,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnRelatedEntitySelected(IModelEntity selectedEntity)
         {
-            DiagramViewportViewModel.StopFollowingDiagramNodes();
+            StopFollowingDiagramNodes();
             Diagram.ShowModelItem(selectedEntity);
         }
 

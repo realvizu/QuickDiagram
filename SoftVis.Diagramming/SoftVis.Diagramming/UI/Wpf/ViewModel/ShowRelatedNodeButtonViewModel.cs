@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
@@ -47,9 +48,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             if (HostDiagramNode == null)
             {
-                // TODO: find out how this happens
-                //Debugger.Break();
+#if DEBUG
+                Debugger.Break();
+#else
                 return;
+#endif
             }
 
             var undisplayedRelatedEntities = GetUndisplayedRelatedModelEntities();
