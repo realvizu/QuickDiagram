@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.Diagramming
         void Rename(string name, string fullName);
 
         event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
-        event Action<IDiagramNode, Point2D, Point2D> TopLeftChanged;
+        event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
         event Action<IDiagramNode, string, string> Renamed;
     }
 }

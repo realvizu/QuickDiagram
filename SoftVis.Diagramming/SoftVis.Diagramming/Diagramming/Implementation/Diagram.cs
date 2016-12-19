@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action DiagramCleared;
 
         public event Action<IDiagramNode, Size2D, Size2D> NodeSizeChanged;
-        public event Action<IDiagramNode, Point2D, Point2D> NodeTopLeftChanged;
+        public event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
 
         public Diagram(IReadOnlyModel model)
@@ -160,7 +160,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var diagramNode = new DiagramNode(modelEntity);
 
             diagramNode.SizeChanged += OnDiagramNodeSizeChanged;
-            diagramNode.TopLeftChanged += OnDiagramNodeTopLeftChanged;
+            diagramNode.CenterChanged += OnDiagramNodeCenterChanged;
 
             return diagramNode;
         }
@@ -287,9 +287,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             NodeSizeChanged?.Invoke(diagramNode, oldSize, newSize);
         }
 
-        private void OnDiagramNodeTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
+        private void OnDiagramNodeCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
         {
-            NodeTopLeftChanged?.Invoke(diagramNode, oldTopLeft, newTopLeft);
+            NodeCenterChanged?.Invoke(diagramNode, oldCenter, newCenter);
         }
 
         private void OnDiagramConnectorRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute)
@@ -336,7 +336,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private void OnDiagramNodeRemovedFromGraph(DiagramNode diagramNode)
         {
             diagramNode.SizeChanged -= OnDiagramNodeSizeChanged;
-            diagramNode.TopLeftChanged -= OnDiagramNodeTopLeftChanged;
+            diagramNode.CenterChanged -= OnDiagramNodeCenterChanged;
             OnDiagramShapeRemoved(diagramNode);
         }
 

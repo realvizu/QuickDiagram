@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming
         void RerouteDiagramConnector(IDiagramConnector diagramConnector, Route newRoute);
 
         event Action<IDiagramNode, Size2D, Size2D> NodeSizeChanged;
-        event Action<IDiagramNode, Point2D, Point2D> NodeTopLeftChanged;
+        event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
     }
 }

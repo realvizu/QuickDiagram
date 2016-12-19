@@ -1,4 +1,3 @@
-using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
@@ -23,9 +22,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
         public IDiagramConnector DiagramConnector => Path.DiagramConnector;
         public IDiagramShape DiagramShape => DiagramConnector;
 
-        public void AcceptVisitor(ILayoutActionVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
+        public void AcceptVisitor(ILayoutActionVisitor visitor) => visitor.Visit(this);
+
+        public override string ToString() => $"ReroutePathLayoutAction {Path}: {OldRoute}->{NewRoute}";
     }
 }

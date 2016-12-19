@@ -14,6 +14,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, ICloneable, IDisposable
     {
+        private readonly object _positionUpdateLock = new object();
+
+        private Point _center;
         private Point _topLeft;
         private Size _size;
         private string _name;
@@ -28,6 +31,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             DiagramNode = diagramNode;
 
+            _center = PointExtensions.Undefined;
             _topLeft = PointExtensions.Undefined;
             _size = Size.Empty;
             _name = diagramNode.Name;
@@ -35,13 +39,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
 
-            DiagramNode.TopLeftChanged += OnTopLeftChanged;
+            DiagramNode.CenterChanged += OnCenterChanged;
             DiagramNode.Renamed += OnRenamed;
         }
 
         public void Dispose()
         {
-            DiagramNode.TopLeftChanged -= OnTopLeftChanged;
+            DiagramNode.CenterChanged -= OnCenterChanged;
             DiagramNode.Renamed -= OnRenamed;
 
             foreach (var relatedEntityCueViewModel in RelatedEntityCueViewModels)
@@ -79,6 +83,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        public Point Center
+        {
+            get { return _center; }
+            set
+            {
+                lock (_positionUpdateLock)
+                {
+                    if (_center != value)
+                    {
+                        _center = value;
+                        OnPropertyChanged();
+
+                        TopLeft = CenterToTopLeft(_center, _size);
+                    }
+                }
+            }
+        }
+
         public Point TopLeft
         {
             get { return _topLeft; }
@@ -102,13 +124,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             get { return _size; }
             set
             {
-                if (_size != value)
+                lock (_positionUpdateLock)
                 {
-                    _size = value;
-                    OnPropertyChanged();
-                    OnSizeChanged(value);
-                    OnPropertyChanged("Width");
-                    OnPropertyChanged("Height");
+                    if (_size != value)
+                    {
+                        _size = value;
+                        OnPropertyChanged();
+                        OnPropertyChanged("Width");
+                        OnPropertyChanged("Height");
+
+                        OnSizeChanged(value);
+                        TopLeft = CenterToTopLeft(_center, _size);
+                    }
                 }
             }
         }
@@ -121,13 +148,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return new DiagramNodeViewModel(Diagram, DiagramNode)
             {
                 _size = _size,
-                _topLeft = _topLeft,
+                _center = _center,
             };
         }
 
-        private void OnTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
+        private void OnCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
         {
-            TopLeft = newTopLeft.ToWpf();
+            Center = newCenter.ToWpf();
         }
 
         private void OnSizeChanged(Size newSize)
@@ -146,6 +173,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return Diagram.GetEntityRelationTypes()
                 .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
                 .ToList();
+        }
+
+        private Point CenterToTopLeft(Point center, Size size)
+        {
+            return new Point(_center.X - size.Width / 2, center.Y - size.Height / 2);
         }
     }
 }

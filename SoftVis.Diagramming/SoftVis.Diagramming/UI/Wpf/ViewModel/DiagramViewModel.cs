@@ -212,7 +212,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnDiagramShapeAdded(IDiagramShape diagramShape) => UpdateDiagramContentRect();
         private void OnDiagramShapeRemoved(IDiagramShape diagramShape) => UpdateDiagramContentRect();
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize) => UpdateDiagramContentRect();
-        private void OnDiagramNodeTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft) => UpdateDiagramContentRect();
+        private void OnDiagramNodeCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter) => UpdateDiagramContentRect();
         private void OnDiagramConnectorRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute) => UpdateDiagramContentRect();
 
         private void SubscribeToDiagramEvents()
@@ -220,7 +220,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShapeAdded += OnDiagramShapeAdded;
             Diagram.ShapeRemoved += OnDiagramShapeRemoved;
             Diagram.NodeSizeChanged += OnDiagramNodeSizeChanged;
-            Diagram.NodeTopLeftChanged += OnDiagramNodeTopLeftChanged;
+            Diagram.NodeCenterChanged += OnDiagramNodeCenterChanged;
             Diagram.ConnectorRouteChanged += OnDiagramConnectorRouteChanged;
             Diagram.DiagramCleared += OnCleared;
         }
@@ -230,7 +230,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram.ShapeAdded -= OnDiagramShapeAdded;
             Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
             Diagram.NodeSizeChanged -= OnDiagramNodeSizeChanged;
-            Diagram.NodeTopLeftChanged -= OnDiagramNodeTopLeftChanged;
+            Diagram.NodeCenterChanged -= OnDiagramNodeCenterChanged;
             Diagram.ConnectorRouteChanged -= OnDiagramConnectorRouteChanged;
             Diagram.DiagramCleared -= OnCleared;
         }

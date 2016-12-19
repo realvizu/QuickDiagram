@@ -23,9 +23,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
         public IDiagramNode DiagramNode => Vertex.DiagramNode;
         public IDiagramShape DiagramShape => DiagramNode;
 
-        public void AcceptVisitor(ILayoutActionVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
+        public void AcceptVisitor(ILayoutActionVisitor visitor) => visitor.Visit(this);
+
+        public override string ToString() => $"MoveDiagramNodeLayoutAction {Vertex}: {From}->{To} ({By})";
     }
 }

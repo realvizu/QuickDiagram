@@ -70,17 +70,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToDiagramEvents()
         {
-            Diagram.NodeTopLeftChanged += OnDiagramNodeTopLeftChanged;
+            Diagram.NodeCenterChanged += OnDiagramNodeCenterChanged;
             Diagram.NodeSizeChanged += OnDiagramNodeSizeChanged;
         }
 
         private void UnsubscribeFromDiagramEvents()
         {
-            Diagram.NodeTopLeftChanged -= OnDiagramNodeTopLeftChanged;
+            Diagram.NodeCenterChanged -= OnDiagramNodeCenterChanged;
             Diagram.NodeSizeChanged -= OnDiagramNodeSizeChanged;
         }
 
-        private void OnDiagramNodeTopLeftChanged(IDiagramNode diagramNode, Point2D oldTopLeft, Point2D newTopLeft)
+        private void OnDiagramNodeCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
         {
             if (_followedDiagramNodes != null && _followedDiagramNodes.Contains(diagramNode))
                 EnsureUiThread(MoveViewport);
