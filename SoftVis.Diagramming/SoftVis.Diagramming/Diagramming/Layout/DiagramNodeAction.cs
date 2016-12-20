@@ -3,17 +3,15 @@
     /// <summary>
     /// A diagram action that desribes the addition or removal of a diagram node.
     /// </summary>
-    internal sealed class DiagramNodeAction : DiagramShapeAction
+    internal abstract class DiagramNodeAction : DiagramShapeAction
     {
         public IDiagramNode DiagramNode { get; }
 
-        public DiagramNodeAction(IDiagramNode diagramNode, ShapeActionType actionType)
+        protected DiagramNodeAction(IDiagramNode diagramNode, ShapeActionType actionType)
             : base(actionType)
         {
             DiagramNode = diagramNode;
         }
-
-        public override void Accept(IDiagramActionVisitor visitor) => visitor.Visit(this);
 
         public override string ToString() => $"DiagramNodeAction({DiagramNode}, {ActionType})";
     }

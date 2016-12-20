@@ -5,9 +5,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class QuasiProperLayoutGraphBuilder : GraphBuilderBase<LayoutVertexBase, GeneralLayoutEdge, QuasiProperLayoutGraph>
     {
-        protected override LayoutVertexBase CreateVertex(string name)
+        protected override LayoutVertexBase CreateVertex(string name, int priority = 1)
         {
-            return CreateLayoutVertex(name);
+            return CreateLayoutVertex(name, priority);
         }
 
         protected override GeneralLayoutEdge CreateEdge(LayoutVertexBase source, LayoutVertexBase target)

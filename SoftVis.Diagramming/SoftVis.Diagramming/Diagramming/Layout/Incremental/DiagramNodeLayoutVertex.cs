@@ -1,5 +1,4 @@
-﻿using System;
-using Codartis.SoftVis.Geometry;
+﻿using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
@@ -10,19 +9,19 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     {
         private Size2D _size;
         public IDiagramNode DiagramNode { get; }
+        public override string Name { get; }
+        public override int Priority { get; }
 
-        public DiagramNodeLayoutVertex(IDiagramNode diagramNode)
+        public DiagramNodeLayoutVertex(IDiagramNode diagramNode, string name, int priority)
         {
-            if (diagramNode == null)
-                throw new ArgumentNullException(nameof(diagramNode));
-
             DiagramNode = diagramNode;
-            _size = diagramNode.Size.IsDefined ? diagramNode.Size : Size2D.Zero;
+            Name = name;
+            Priority = priority;
+
+            _size = Size2D.Zero;
         }
 
         public override bool IsDummy => false;
-        public override string Name => DiagramNode.Name;
-        public override int Priority => DiagramNode.Priority;
         public override Size2D Size => _size;
 
         public void Resize(Size2D size) => _size = size;

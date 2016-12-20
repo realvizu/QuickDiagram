@@ -1,3 +1,5 @@
+using Codartis.SoftVis.Geometry;
+
 namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
@@ -7,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
     {
         void AddDiagramNode(IDiagramNode diagramNode);
         void RemoveDiagramNode(IDiagramNode diagramNode);
-        void ResizeDiagramNode(IDiagramNode diagramNode);
+        void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize);
         void AddDiagramConnector(IDiagramConnector diagramConnector);
         void RemoveDiagramConnector(IDiagramConnector diagramConnector);
     }

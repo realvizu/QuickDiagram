@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void GetPrimaryParents_ChoosesHigherPriority()
         {
-            ((TestLayoutVertex)_testGraphBuilder.AddVertex("P2")).SetPriority(2);
+            _testGraphBuilder.AddVertex("P2", 2);
             _testGraphBuilder.SetUp(
                 "P1<-C",
                 "P2<-C"
@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void GetPrimaryChildren_Works()
         {
-            ((TestLayoutVertex)_testGraphBuilder.AddVertex("P1")).SetPriority(2);
+            _testGraphBuilder.AddVertex("P1", 2);
             _testGraphBuilder.SetUp(
                 "P1<-C1",
                 "P1<-C2",
@@ -74,7 +74,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void GetPrimarySiblings_Works()
         {
-            ((TestLayoutVertex)_testGraphBuilder.AddVertex("P1")).SetPriority(2);
+            _testGraphBuilder.AddVertex("P1", 2);
             _testGraphBuilder.SetUp(
                 "P1<-C1",
                 "P1<-C2",

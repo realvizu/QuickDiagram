@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,27 +64,27 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             var diagramNode = diagramShape as DiagramNode;
             if (diagramNode != null)
-                EnqueueDiagramAction(new DiagramNodeAction(diagramNode, ShapeActionType.Add));
+                EnqueueDiagramAction(new AddDiagramNodeAction(diagramNode));
 
             var diagramConnector = diagramShape as DiagramConnector;
             if (diagramConnector != null)
-                EnqueueDiagramAction(new DiagramConnectorAction(diagramConnector, ShapeActionType.Add));
+                EnqueueDiagramAction(new AddDiagramConnectorAction(diagramConnector));
         }
 
         private void OnNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize)
         {
-            EnqueueDiagramAction(new DiagramNodeAction(diagramNode, ShapeActionType.Resize));
+            EnqueueDiagramAction(new ResizeDiagramNodeAction(diagramNode, newSize));
         }
 
         private void OnShapeRemoved(IDiagramShape diagramShape)
         {
             var diagramNode = diagramShape as DiagramNode;
             if (diagramNode != null)
-                EnqueueDiagramAction(new DiagramNodeAction(diagramNode, ShapeActionType.Remove));
+                EnqueueDiagramAction(new RemoveDiagramNodeAction(diagramNode));
 
             var diagramConnector = diagramShape as DiagramConnector;
             if (diagramConnector != null)
-                EnqueueDiagramAction(new DiagramConnectorAction(diagramConnector, ShapeActionType.Remove));
+                EnqueueDiagramAction(new RemoveDiagramConnectorAction(diagramConnector));
         }
 
         private async void ProcessDiagramShapeActionsAsync(CancellationToken cancellationToken)
@@ -129,7 +130,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ApplyDiagramActions(List<DiagramAction> diagramActions)
         {
+            Debug.WriteLine($"{DateTime.Now:O} | ApplyDiagramActions");
+            foreach (var diagramAction in diagramActions)
+                Debug.WriteLine($"  {diagramAction}");
+
             var layoutActions = _incrementalLayoutEngine.CalculateLayoutActions(diagramActions).ToList();
+
+            Debug.WriteLine($"{DateTime.Now:O} | ApplyLayoutActions");
+            foreach (var layoutAction in layoutActions)
+                Debug.WriteLine($"  {layoutAction}");
+
             ApplyLayoutActionsToDiagram(layoutActions);
         }
 

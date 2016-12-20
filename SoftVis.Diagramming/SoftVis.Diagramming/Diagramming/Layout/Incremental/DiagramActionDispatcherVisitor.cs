@@ -12,33 +12,29 @@
             _consumer = consumer;
         }
 
-        public void Visit(DiagramNodeAction diagramNodeAction)
+        public void Visit(AddDiagramNodeAction action)
         {
-            switch (diagramNodeAction.ActionType)
-            {
-                case ShapeActionType.Add:
-                    _consumer.AddDiagramNode(diagramNodeAction.DiagramNode);
-                    break;
-                case ShapeActionType.Remove:
-                    _consumer.RemoveDiagramNode(diagramNodeAction.DiagramNode);
-                    break;
-                case ShapeActionType.Resize:
-                    _consumer.ResizeDiagramNode(diagramNodeAction.DiagramNode);
-                    break;
-            }
+            _consumer.AddDiagramNode(action.DiagramNode);
         }
 
-        public void Visit(DiagramConnectorAction diagramConnectorAction)
+        public void Visit(RemoveDiagramNodeAction action)
         {
-            switch (diagramConnectorAction.ActionType)
-            {
-                case ShapeActionType.Add:
-                    _consumer.AddDiagramConnector(diagramConnectorAction.DiagramConnector);
-                    break;
-                case ShapeActionType.Remove:
-                    _consumer.RemoveDiagramConnector(diagramConnectorAction.DiagramConnector);
-                    break;
-            }
+            _consumer.RemoveDiagramNode(action.DiagramNode);
+        }
+
+        public void Visit(ResizeDiagramNodeAction action)
+        {
+            _consumer.ResizeDiagramNode(action.DiagramNode, action.NewSize);
+        }
+
+        public void Visit(AddDiagramConnectorAction action)
+        {
+            _consumer.AddDiagramConnector(action.DiagramConnector);
+        }
+
+        public void Visit(RemoveDiagramConnectorAction action)
+        {
+            _consumer.RemoveDiagramConnector(action.DiagramConnector);
         }
     }
 }

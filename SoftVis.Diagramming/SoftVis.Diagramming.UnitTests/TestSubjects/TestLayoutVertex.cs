@@ -6,20 +6,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
 {
     internal class TestLayoutVertex : DiagramNodeLayoutVertex
     {
-        private int _priority;
-        public override string Name { get; }
-
         public TestLayoutVertex(string name, int priority = 1) 
-            : base(new TestDiagramNode())
+            : base(new TestDiagramNode(),  name, priority)
         {
-            Name = name;
-            _priority = priority;
         }
 
+        public override Size2D Size => new Size2D(20, 10);
+
         public override bool IsDummy => false;
-        public override Size2D Size => new Size2D(20,10);
-        public override int Priority => _priority;
-        public void SetPriority(int priority) => _priority = priority;
 
         protected bool Equals(TestLayoutVertex other)
         {

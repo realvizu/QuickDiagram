@@ -13,9 +13,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             RelativeLayoutCalculator = new RelativeLayoutCalculator();
         }
 
-        protected override DiagramNodeLayoutVertex CreateVertex(string name)
+        protected override DiagramNodeLayoutVertex CreateVertex(string name, int priority = 1)
         {
-            return CreateTestLayoutVertex(name);
+            return CreateTestLayoutVertex(name, priority);
         }
 
         protected override LayoutPath CreateEdge(DiagramNodeLayoutVertex source, DiagramNodeLayoutVertex target)
@@ -23,12 +23,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return new LayoutPath(source, target, null);
         }
 
-        public override DiagramNodeLayoutVertex AddVertex(string name)
+        public override DiagramNodeLayoutVertex AddVertex(string name, int priority = 1)
         {
             var vertex = GetVertex(name);
             if (vertex == null)
             {
-                vertex = CreateVertex(name);
+                vertex = CreateVertex(name, priority);
                 RelativeLayoutCalculator.OnDiagramNodeAdded(vertex);
             }
             return vertex;

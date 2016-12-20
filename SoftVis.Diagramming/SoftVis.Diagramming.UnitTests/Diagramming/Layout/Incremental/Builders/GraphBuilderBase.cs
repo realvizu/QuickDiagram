@@ -14,9 +14,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             Graph = new TGraph();
         }
 
-        public override TVertex AddVertex(string name)
+        public override TVertex AddVertex(string name, int priority = 1)
         {
-            var vertex = GetOrCreateVertex(name);
+            var vertex = GetOrCreateVertex(name, priority);
             if (vertex != null)
                 Graph.AddVertex(vertex);
             return vertex;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
@@ -128,12 +129,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 {
                     if (_size != value)
                     {
+                        var oldSize = _size;
                         _size = value;
                         OnPropertyChanged();
                         OnPropertyChanged("Width");
                         OnPropertyChanged("Height");
 
-                        OnSizeChanged(value);
+                        OnSizeChanged(oldSize, value);
                         TopLeft = CenterToTopLeft(_center, _size);
                     }
                 }
@@ -157,8 +159,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Center = newCenter.ToWpf();
         }
 
-        private void OnSizeChanged(Size newSize)
+        private void OnSizeChanged(Size oldSize, Size newSize)
         {
+            Debug.WriteLine($"DiagramNodeViewModel.OnSizeChanged {oldSize}->{newSize}");
             DiagramNode.Size = newSize.FromWpf();
         }
 

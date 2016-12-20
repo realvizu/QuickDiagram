@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
@@ -100,6 +101,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var rect = _followedDiagramNodes.Select(i => i.Rect).Where(i => i.IsDefined()).Union().ToWpf();
             if (rect.IsUndefined())
                 return;
+
+            Debug.WriteLine($"MoveViewport to follow: {rect}");
 
             switch (Mode)
             {

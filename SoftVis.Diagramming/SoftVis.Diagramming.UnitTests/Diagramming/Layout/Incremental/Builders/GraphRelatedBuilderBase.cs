@@ -11,9 +11,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
     {
         public abstract TGraph Graph { get; }
 
-        protected abstract TVertex CreateVertex(string name);
+        protected abstract TVertex CreateVertex(string name, int priority = 1);
         protected abstract TEdge CreateEdge(TVertex source, TVertex target);
-        public abstract TVertex AddVertex(string name);
+        public abstract TVertex AddVertex(string name, int priority = 1);
         public abstract TEdge AddEdge(string sourceName, string targetName);
         public abstract TVertex RemoveVertex(string name);
         public abstract TEdge RemoveEdge(string sourceName, string targetName);
@@ -65,9 +65,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             return RemoveEdge(edgeSpec.SourceVertexName, edgeSpec.TargetVertexName);
         }
 
-        protected TVertex GetOrCreateVertex(string name)
+        protected TVertex GetOrCreateVertex(string name, int priority = 1)
         {
-            return GetVertex(name) ?? CreateVertex(name);
+            return GetVertex(name) ?? CreateVertex(name, priority);
         }
 
         protected TEdge GetOrCreateEdge(string sourceName, string targetName)
