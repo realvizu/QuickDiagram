@@ -60,8 +60,8 @@
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
-                <Setter Property="LeftToAnimate" Value="{Binding X}"/>
-                <Setter Property="TopToAnimate" Value="{Binding Y}"/>
+                <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}"/>
+                <Setter Property="TopToAnimate" Value="{Binding Path=TopLeft.Y}"/>
                 <Setter Property="Rect">
                     <Setter.Value>
                         <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">

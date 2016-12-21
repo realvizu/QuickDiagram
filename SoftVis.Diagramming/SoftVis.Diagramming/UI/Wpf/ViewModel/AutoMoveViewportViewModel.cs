@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (rect.IsUndefined())
                 return;
 
-            Debug.WriteLine($"MoveViewport to follow: {rect}");
+            //Debug.WriteLine($"MoveViewport to follow: {rect}");
 
             switch (Mode)
             {

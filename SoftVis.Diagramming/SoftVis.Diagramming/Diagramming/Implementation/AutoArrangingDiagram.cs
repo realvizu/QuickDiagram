@@ -130,15 +130,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ApplyDiagramActions(List<DiagramAction> diagramActions)
         {
-            Debug.WriteLine($"{DateTime.Now:O} | ApplyDiagramActions");
-            foreach (var diagramAction in diagramActions)
-                Debug.WriteLine($"  {diagramAction}");
+            //Debug.WriteLine($"{DateTime.Now:O} | ApplyDiagramActions");
+            //foreach (var diagramAction in diagramActions)
+            //    Debug.WriteLine($"  {diagramAction}");
 
             var layoutActions = _incrementalLayoutEngine.CalculateLayoutActions(diagramActions).ToList();
 
-            Debug.WriteLine($"{DateTime.Now:O} | ApplyLayoutActions");
-            foreach (var layoutAction in layoutActions)
-                Debug.WriteLine($"  {layoutAction}");
+            //Debug.WriteLine($"{DateTime.Now:O} | ApplyLayoutActions");
+            //foreach (var layoutAction in layoutActions)
+            //    Debug.WriteLine($"  {layoutAction}");
 
             ApplyLayoutActionsToDiagram(layoutActions);
         }

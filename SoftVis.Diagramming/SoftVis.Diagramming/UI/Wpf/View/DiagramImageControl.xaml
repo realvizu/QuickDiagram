@@ -41,10 +41,10 @@
             <Style x:Key="DiagramNodeContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
-                <Setter Property="Width" Value="{Binding Path=Width, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
-                <Setter Property="Height" Value="{Binding Path=Height, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
-                <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
+                <Setter Property="Width" Value="{Binding Path=Size.Width, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
+                <Setter Property="Height" Value="{Binding Path=Size.Height, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
+                <Setter Property="Canvas.Left" Value="{Binding Path=TopLeft.X}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Path=TopLeft.Y}"/>
             </Style>
 
         </ResourceDictionary>
