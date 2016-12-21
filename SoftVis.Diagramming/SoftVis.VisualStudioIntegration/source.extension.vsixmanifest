@@ -9,6 +9,7 @@ This is an experimental release that supports type inheritance and interface imp
         <MoreInfo>https://github.com/realvizu/softvis</MoreInfo>
         <License>https://github.com/realvizu/softvis/blob/master/LICENSE</License>
         <GettingStartedGuide>https://github.com/realvizu/softvis</GettingStartedGuide>
+        <Icon>Resources\QuickDiagramTool_256.ico</Icon>
         <Tags>code visualize quick diagram c# tool inheritance interface implementation codemap map</Tags>
     </Metadata>
     <Installation>
