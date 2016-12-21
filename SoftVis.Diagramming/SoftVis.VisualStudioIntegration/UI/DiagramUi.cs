@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     public sealed class DiagramUi : IUiServices
     {
-        private const string DialogTitle = "Diagram Tool";
+        private const string DialogTitle = "Quick Diagram Tool";
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
         private const double ExportedImageMargin = 10;
 

@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public void HostDiagram(ContentControl diagramControl)
         {
-            _diagramHostWindow.Initialize("Diagram", diagramControl);
+            _diagramHostWindow.Initialize("Quick Diagram", diagramControl);
         }
 
         public void ShowDiagramWindow()

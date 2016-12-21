@@ -5,15 +5,10 @@
 
     <Commands package="SoftVisPackageGuid">
         <Menus>
-            <Menu guid="SoftVisCommandSetGuid" id="DiagramMainMenu" type="Menu">
-                <Strings>
-                    <ButtonText>D&amp;iagram</ButtonText>
-                </Strings>
-            </Menu>
             <Menu guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" type="ToolWindowToolbar">
                 <CommandFlag>DefaultDocked</CommandFlag>
                 <Strings>
-                    <ButtonText>Diagram Window Toolbar</ButtonText>
+                    <ButtonText>Quick Diagram Window Toolbar</ButtonText>
                 </Strings>
             </Menu>
             <Menu guid="SoftVisCommandSetGuid" id="ExportImageMenuController" type="MenuController">
@@ -48,19 +43,19 @@
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" type="Button">
                 <Icon guid="AddToDiagramImageGuid" id="AddToDiagramImageId" />
                 <Strings>
-                    <ButtonText>&amp;Add to Diagram</ButtonText>
+                    <ButtonText>&amp;Add to Quick Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" type="Button">
                 <Icon guid="AddToDiagramWithHierarchyImageGuid" id="AddToDiagramWithHierarchyImageId" />
                 <Strings>
-                    <ButtonText>Add to Diagram With &amp;Hierarchy</ButtonText>
+                    <ButtonText>Add to Quick Diagram With &amp;Hierarchy</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ClearModelCommand" type="Button">
                 <Icon guid="DeleteImageGuid" id="DeleteImageId" />
                 <Strings>
-                    <ButtonText>&amp;Clear Model</ButtonText>
+                    <ButtonText>&amp;Clear Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="ClearDiagramCommand" type="Button">
@@ -77,7 +72,7 @@
             <Button guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1" type="Button">
                 <Icon guid="DiagramImageGuid" id="DiagramImageId" />
                 <Strings>
-                    <ButtonText>&amp;Diagram Window</ButtonText>
+                    <ButtonText>Quick &amp;Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" priority="1" type="Button">
