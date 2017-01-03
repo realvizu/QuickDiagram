@@ -11,6 +11,7 @@
     <Allowed From="*" To="System.CodeDom.Compiler" />
     <Allowed From="*" To="System.Threading" />
     <Allowed From="*" To="System.Threading.Tasks" />
+    <Allowed From="*" To="System.Xml.*" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
 

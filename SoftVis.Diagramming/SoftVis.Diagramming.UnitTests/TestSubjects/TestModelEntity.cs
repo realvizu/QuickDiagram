@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
     internal class TestModelEntity : ModelEntity
     {
         public TestModelEntity(string name = null)
-            :base(name, name, ModelEntityClassifier.Class, ModelEntityStereotype.None, ModelOrigin.Unknown)
+            :base(name, name, name, ModelEntityClassifier.Class, ModelEntityStereotype.None, ModelOrigin.Unknown)
         {
         }
 

@@ -10,183 +10,188 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <UserControl.Resources>
-        <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SoftVis.Util;component/UI/Wpf/Resources/CommonGeometries.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="RepeatButtonStyleBase" TargetType="{x:Type RepeatButton}">
-            <Setter Property="IsTabStop" Value="false" />
-            <Setter Property="Focusable" Value="false" />
-            <Setter Property="Foreground" Value="{Binding Path=Foreground}" />
-            <Setter Property="Background" Value="{Binding Path=Fill}" />
-        </Style>
+            <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
-        <Style x:Key="TrackRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="IsEnabled" Value="False" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Rectangle Stroke="{TemplateBinding Foreground}" 
+            <Style x:Key="RepeatButtonStyleBase" TargetType="{x:Type RepeatButton}">
+                <Setter Property="IsTabStop" Value="false" />
+                <Setter Property="Focusable" Value="false" />
+                <Setter Property="Foreground" Value="{Binding Path=Foreground}" />
+                <Setter Property="Background" Value="{Binding Path=Fill}" />
+            </Style>
+
+            <Style x:Key="TrackRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Rectangle Stroke="{TemplateBinding Foreground}" 
                                    Fill="{TemplateBinding Background}"
                                    Width="{Binding Path=ActualWidth, 
                                                 RelativeSource={RelativeSource TemplatedParent},
                                                 Converter={StaticResource DoubleMultiplierConverter}, 
                                                 ConverterParameter=.2}" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="ZoomInRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="ZoomInRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M 0 0 L 8 0 L 8 8 L 0 8 L 0 0 M 2 4 L 6 4 M 4 2 L 4 6" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource PlusSignInSquareGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="ZoomOutRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="ZoomOutRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M 0 0 L 8 0 L 8 8 L 0 8 L 0 0 M 2 4 L 6 4" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource MinusSignInSquareGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="PanUpRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="PanUpRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1.5 1 L 0 -1.5 M 0 -1.5 L 1.5 1" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource UpArrowInCircleGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="PanLeftRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="PanLeftRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M 1 1.5 L -1.5 0 M -1.5 0 L 1 -1.5" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource LeftArrowInCircleGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="PanRightRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="PanRightRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1 1.5 L 1.5 0 M 1.5 0 L -1 -1.5" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource RightArrowInCircleGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="PanDownRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="PanDownRepeatButtonStyle" TargetType="{x:Type RepeatButton}" BasedOn="{StaticResource RepeatButtonStyleBase}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1.5 -1 L 0 1.5 M 0 1.5 L 1.5 -1" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource DownArrowInCircleGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="CenterButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="IsTabStop" Value="false" />
-            <Setter Property="Focusable" Value="false" />
-            <Setter Property="Foreground" Value="{Binding Path=Foreground}" />
-            <Setter Property="Background" Value="{Binding Path=Fill}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Path Stretch="Fill" 
+            <Style x:Key="CenterButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="IsTabStop" Value="false" />
+                <Setter Property="Focusable" Value="false" />
+                <Setter Property="Foreground" Value="{Binding Path=Foreground}" />
+                <Setter Property="Background" Value="{Binding Path=Fill}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Path Stretch="Fill" 
                               Stroke="{TemplateBinding Foreground}" 
                               Fill="{TemplateBinding Background}"
-                              Data="M -1 -1 L 1 -1 L 1 1 L -1 1 Z" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                              Data="{StaticResource SquareGeometry}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="SliderThumbStyle" TargetType="{x:Type Thumb}">
-            <Setter Property="Foreground" Value="{Binding Path=Foreground}" />
-            <Setter Property="Background" Value="{Binding Path=Fill}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle StrokeThickness="1"
+            <Style x:Key="SliderThumbStyle" TargetType="{x:Type Thumb}">
+                <Setter Property="Foreground" Value="{Binding Path=Foreground}" />
+                <Setter Property="Background" Value="{Binding Path=Fill}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle StrokeThickness="1"
                                    Stroke="{TemplateBinding Foreground}"
                                    Fill="{TemplateBinding Background}"
                                    Height="{Binding Path=ActualWidth,
                                                     RelativeSource={RelativeSource TemplatedParent},
                                                     Converter={StaticResource DoubleMultiplierConverter}, 
                                                     ConverterParameter=.6}"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style TargetType="{x:Type Slider}" x:Key="PanAndZoomSliderStyle">
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Foreground" Value="{Binding Path=Foreground}"/>
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Grid Background="{TemplateBinding Background}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
-                            </Grid.RowDefinitions>
-                            <RepeatButton Grid.Row="0"
+            <Style TargetType="{x:Type Slider}" x:Key="PanAndZoomSliderStyle">
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Foreground" Value="{Binding Path=Foreground}"/>
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Grid Background="{TemplateBinding Background}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                </Grid.RowDefinitions>
+                                <RepeatButton Grid.Row="0"
                                           Style="{StaticResource ZoomInRepeatButtonStyle}" 
                                           Command="Slider.IncreaseLarge" />
-                            <Track x:Name="PART_Track"
+                                <Track x:Name="PART_Track"
                                    Grid.Row="1" 
                                    Orientation="Vertical">
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Style="{StaticResource TrackRepeatButtonStyle}"/>
-                                </Track.DecreaseRepeatButton>
-                                <Track.Thumb>
-                                    <Thumb Style="{StaticResource SliderThumbStyle}" />
-                                </Track.Thumb>
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Style="{StaticResource TrackRepeatButtonStyle}"/>
-                                </Track.IncreaseRepeatButton>
-                            </Track>
-                            <RepeatButton Grid.Row="2" 
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource TrackRepeatButtonStyle}"/>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Style="{StaticResource SliderThumbStyle}" />
+                                    </Track.Thumb>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource TrackRepeatButtonStyle}"/>
+                                    </Track.IncreaseRepeatButton>
+                                </Track>
+                                <RepeatButton Grid.Row="2" 
                                           Style="{StaticResource ZoomOutRepeatButtonStyle}" 
                                           Command="Slider.DecreaseLarge"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>

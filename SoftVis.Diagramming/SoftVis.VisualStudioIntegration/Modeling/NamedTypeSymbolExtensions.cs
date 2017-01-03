@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.Roslyn;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -15,5 +16,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
                 ? ModelOrigin.SourceCode
                 : ModelOrigin.Metadata;
         }
+
+        public static string GetName(this INamedTypeSymbol namedTypeSymbol) => namedTypeSymbol.GetMinimallyQualifiedName();
+        public static string GetFullName(this INamedTypeSymbol namedTypeSymbol) => namedTypeSymbol.GetNamespaceQualifiedName();
+        public static string GetDescription(this INamedTypeSymbol namedTypeSymbol) => namedTypeSymbol.GetCommentSummary()?.Trim();
     }
 }

@@ -199,7 +199,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private IRoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null)
         {
-            var modelEntity = _model.GetOrAddEntity(i => i.RoslynSymbol.SymbolEquals(namedTypeSymbol), () => CreateModelEntity(namedTypeSymbol));
+            var modelEntity = _model.GetOrAddEntity(i => i.SymbolEquals(namedTypeSymbol), () => CreateModelEntity(namedTypeSymbol));
             progress?.Report(1);
             return modelEntity;
         }

@@ -17,6 +17,11 @@
         string FullName { get; }
 
         /// <summary>
+        /// Description of the entity.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
         /// Provides a fixed set of entity categories.
         /// </summary>
         ModelEntityClassifier Classifier { get; }
@@ -37,8 +42,17 @@
         /// </summary>
         int Priority { get; }
 
+        /// <summary>
+        /// Returns a value indicating whether this entity is abstract.
+        /// </summary>
         bool IsAbstract { get; }
 
-        void UpdateName(string name, string fullName);
+        /// <summary>
+        /// Updates the name and desription of the entity.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="fullName"></param>
+        /// <param name="description"></param>
+        void UpdateName(string name, string fullName, string description);
     }
 }

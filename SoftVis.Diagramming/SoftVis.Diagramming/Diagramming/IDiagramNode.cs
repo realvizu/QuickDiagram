@@ -18,15 +18,16 @@ namespace Codartis.SoftVis.Diagramming
 
         string Name { get; }
         string FullName { get; }
+        string Description { get; }
         int Priority { get; }
         Point2D TopLeft { get; }
         Point2D Center { get; set; }
         Size2D Size { get; set; }
 
-        void Rename(string name, string fullName);
+        void Rename(string name, string fullName, string description);
 
         event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
-        event Action<IDiagramNode, string, string> Renamed;
+        event Action<IDiagramNode, string, string, string> Renamed;
     }
 }

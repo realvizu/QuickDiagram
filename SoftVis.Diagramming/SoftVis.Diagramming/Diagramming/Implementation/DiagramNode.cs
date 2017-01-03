@@ -20,10 +20,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private Point2D _center;
         private string _name;
         private string _fullName;
+        private string _description;
 
         public event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         public event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
-        public event Action<IDiagramNode, string, string> Renamed;
+        public event Action<IDiagramNode, string, string, string> Renamed;
 
         public DiagramNode(IModelEntity modelEntity)
             : base(modelEntity)
@@ -32,11 +33,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _center = Point2D.Undefined;
             _name = modelEntity.Name;
             _fullName = modelEntity.FullName;
+            _description = modelEntity.Description;
         }
 
         public IModelEntity ModelEntity => (IModelEntity)ModelItem;
         public string Name => _name;
         public string FullName => _fullName;
+        public string Description => _description;
         public int Priority => ModelEntity.Priority;
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
@@ -102,11 +105,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void Rename(string name, string fullName)
+        public void Rename(string name, string fullName, string description)
         {
             _name = name;
             _fullName = fullName;
-            Renamed?.Invoke(this, name, fullName);
+            _description = description;
+            Renamed?.Invoke(this, name, fullName, description);
         }
 
         public int CompareTo(IDiagramNode otherNode)

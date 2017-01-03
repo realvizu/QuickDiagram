@@ -21,6 +21,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _size;
         private string _name;
         private string _fullName;
+        private string _description;
+        private bool _descriptionExists;
+        private bool _isDescriptionVisible;
 
         public IDiagramNode DiagramNode { get; }
 
@@ -36,6 +39,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _size = Size.Empty;
             _name = diagramNode.Name;
             _fullName = diagramNode.FullName;
+            _description = diagramNode.Description;
+            _descriptionExists = !string.IsNullOrWhiteSpace(_description);
+            _isDescriptionVisible = false;
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
 
@@ -78,6 +84,45 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 if (_fullName != value)
                 {
                     _fullName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                if (_description != value)
+                {
+                    _description = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool DescriptionExists
+        {
+            get { return _descriptionExists; }
+            set
+            {
+                if (_descriptionExists != value)
+                {
+                    _descriptionExists = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsDescriptionVisible
+        {
+            get { return _isDescriptionVisible; }
+            set
+            {
+                if (_isDescriptionVisible != value)
+                {
+                    _isDescriptionVisible = value;
                     OnPropertyChanged();
                 }
             }
@@ -141,6 +186,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 _size = _size,
                 _center = _center,
                 _topLeft = _topLeft,
+                _isDescriptionVisible = _isDescriptionVisible
             };
         }
 
@@ -154,10 +200,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramNode.Size = newSize.FromWpf();
         }
 
-        private void OnRenamed(IDiagramNode diagramNode, string name, string fullName)
+        private void OnRenamed(IDiagramNode diagramNode, string name, string fullName, string description)
         {
             Name = name;
             FullName = fullName;
+            Description = description;
+            DescriptionExists = !string.IsNullOrWhiteSpace(description);
         }
 
         private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()

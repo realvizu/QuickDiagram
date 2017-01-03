@@ -19,8 +19,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private INamedTypeSymbol _roslynSymbol;
 
         protected RoslynBasedModelEntity(INamedTypeSymbol roslynSymbol, TypeKind typeKind)
-            : base(roslynSymbol.GetMinimallyQualifiedName(),
-                  roslynSymbol.GetNamespaceQualifiedName(),
+            : base(roslynSymbol.GetName(),
+                  roslynSymbol.GetFullName(),
+                  roslynSymbol.GetDescription(),
                   typeKind.ToModelEntityType(),
                   typeKind.ToModelEntityStereotype(),
                   roslynSymbol.GetOrigin())

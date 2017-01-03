@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public event Action<IModelRelationship> RelationshipAdded;
         public event Action<IModelEntity> EntityRemoved;
         public event Action<IModelRelationship> RelationshipRemoved;
-        public event Action<IModelEntity, string, string> EntityRenamed;
+        public event Action<IModelEntity, string, string, string> EntityRenamed;
         public event Action ModelCleared;
 
         public Model()
@@ -76,10 +76,10 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public virtual void RemoveRelationship(ModelRelationship relationship) => _graph.RemoveEdge(relationship);
         public void Clear() => _graph.Clear();
 
-        public virtual void UpdateEntity(IModelEntity entity, string name, string fullName)
+        public virtual void UpdateEntity(IModelEntity entity, string name, string fullName, string description)
         {
-            entity.UpdateName(name, fullName);
-            EntityRenamed?.Invoke(entity, name, fullName);
+            entity.UpdateName(name, fullName, description);
+            EntityRenamed?.Invoke(entity, name, fullName, description);
         }
     }
 }

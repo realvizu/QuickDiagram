@@ -70,7 +70,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public void UpdateEntity(IRoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
         {
             entity.RoslynSymbol = roslynSymbol;
-            base.UpdateEntity(entity, roslynSymbol.GetMinimallyQualifiedName(), roslynSymbol.GetFullyQualifiedName());
+            base.UpdateEntity(entity, 
+                roslynSymbol.GetName(), 
+                roslynSymbol.GetFullName(),
+                roslynSymbol.GetDescription());
         }
     }
 }

@@ -12,8 +12,10 @@
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DecoratorPlacementDictionary.xaml" />
+        <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <ui:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
     <ui:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
 
@@ -30,7 +32,8 @@
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">
-        <Setter Property="Height" Value="46"/>
+        <Setter Property="MinHeight" Value="46"/>
+        <Setter Property="MaxHeight" Value="100"/>
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
     </Style>
@@ -45,23 +48,35 @@
                     <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
 							BorderThickness="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="16"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Image Grid.Row="0" 
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="16"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="0" 
                                    Margin="1" 
                                    HorizontalAlignment="Left" 
                                    Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
-                            <TextBlock x:Name="TextBlock"
+                                <TextBlock x:Name="TextBlock"
                                        Grid.Row="1" 
                                        Margin="4,0,4,0" 
                                        VerticalAlignment="Top" 
                                        HorizontalAlignment="Center"
                                        Text="{Binding Path=Name, Mode=OneWay}" 
                                        TextWrapping="Wrap"/>
-                        </Grid>
+                            </Grid>
+                            <Expander Margin="4,6,4,4"
+                                      Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                      BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
+                                      BorderThickness=".5"
+                                      IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
+                                <TextBlock FontSize="10"
+                                           TextWrapping="Wrap"
+                                           Text="{Binding Path=Description}"
+                                           ToolTip="{Binding Path=Description}"/>
+                            </Expander>
+                        </StackPanel>
                     </Border>
 
                     <ControlTemplate.Triggers>

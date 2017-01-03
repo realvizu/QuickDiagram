@@ -312,10 +312,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             HideModelItem(modelRelationship);
         }
 
-        private void OnModelEntityRenamed(IModelEntity modelEntity, string name, string fullName)
+        private void OnModelEntityRenamed(IModelEntity modelEntity, string name, string fullName, string description)
         {
             var diagramNode = FindDiagramNode(modelEntity);
-            diagramNode?.Rename(name, fullName);
+            diagramNode?.Rename(name, fullName, description);
         }
 
         private void OnModelCleared()

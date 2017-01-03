@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Xml;
+using System.Xml.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.Util.Roslyn
 {
@@ -17,6 +19,24 @@ namespace Codartis.SoftVis.Util.Roslyn
         public static string GetMinimallyQualifiedName(this INamedTypeSymbol namedTypeSymbol)
         {
             return namedTypeSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        }
+
+        public static string GetCommentSummary(this INamedTypeSymbol namedTypeSymbol)
+        {
+            var xmlCommentAsString = namedTypeSymbol.GetDocumentationCommentXml();
+            if (string.IsNullOrWhiteSpace(xmlCommentAsString))
+                return null;
+
+            XElement xmlComment = null;
+            try
+            {
+                xmlComment = XElement.Parse(xmlCommentAsString, LoadOptions.None);
+            }
+            catch (XmlException)
+            {
+            }
+
+            return xmlComment?.Element("summary")?.Value;
         }
 
         /// TODO: This is naive. Any way to make it smarter?
