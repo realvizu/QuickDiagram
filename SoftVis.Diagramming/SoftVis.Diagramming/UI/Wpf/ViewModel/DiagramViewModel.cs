@@ -81,8 +81,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.FollowDiagramNodes(diagramNodes);
         }
 
-        public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => DiagramViewportViewModel.SetFollowDiagramNodesMode(mode);
         public void StopFollowingDiagramNodes() => DiagramViewportViewModel.StopFollowingDiagramNodes();
+
+        public void KeepDiagramCentered()
+        {
+            DiagramViewportViewModel.SetFollowDiagramNodesMode(ViewportAutoMoveMode.Center);
+            DiagramViewportViewModel.FollowDiagramNodes(Diagram.Nodes);
+        }
+
+        public void ExpandAllNodes() => DiagramViewportViewModel.ExpandAllDiagramNodes();
+        public void CollapseAllNodes() => DiagramViewportViewModel.CollapseAllDiagramNodes();
 
         public void ZoomToContent() => DiagramViewportViewModel.ZoomToContent();
         public void ZoomToRect(Rect rect) => DiagramViewportViewModel.ZoomToRect(rect);

@@ -87,6 +87,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => ViewportCalculator.Mode = mode;
         public void StopFollowingDiagramNodes() => ViewportCalculator.StopFollowingDiagramNodes();
 
+        public void ExpandAllDiagramNodes() => SetDescriptionVisibilityOnAllDiagramNodes(true);
+        public void CollapseAllDiagramNodes() => SetDescriptionVisibilityOnAllDiagramNodes(false);
+
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToContent(transitionSpeed);
         public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
         public void EnsureRectIsVisible(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ContainRect(rect, transitionSpeed);
@@ -246,6 +249,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             foreach (var entityRelationType in Diagram.GetEntityRelationTypes())
                 yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
+        }
+
+        private void SetDescriptionVisibilityOnAllDiagramNodes(bool isVisible)
+        {
+            foreach (var diagramNodeViewModel in DiagramNodeViewModels)
+                diagramNodeViewModel.IsDescriptionVisible = isVisible;
         }
     }
 }

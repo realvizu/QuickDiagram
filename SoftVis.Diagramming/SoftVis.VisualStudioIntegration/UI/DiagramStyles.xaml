@@ -33,7 +33,7 @@
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">
         <Setter Property="MinHeight" Value="46"/>
-        <Setter Property="MaxHeight" Value="100"/>
+        <Setter Property="MaxHeight" Value="110"/>
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
     </Style>

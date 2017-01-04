@@ -22,6 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 new CommandSpecification<ExportToFileCommand>(PackageIds.ExportToFileCommand),
                 new CommandSpecification<ShowDiagramWindowCommand>(PackageIds.ShowDiagramWindowCommand),
                 new CommandSpecification<ZoomToDiagramCommand>(PackageIds.ZoomToDiagramCommand),
+                new CommandSpecification<ExpandAllNodesCommand>(PackageIds.ExpandAllNodesCommand),
+                new CommandSpecification<CollapseAllNodesCommand>(PackageIds.CollapseAllNodesCommand),
             };
 
         public static readonly List<IComboSpecification> ComboSpecifications =

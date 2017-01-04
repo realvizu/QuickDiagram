@@ -28,6 +28,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         void FollowDiagramNode(IDiagramNode diagramNode);
         void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes);
         void ZoomToDiagram();
+        void KeepDiagramCentered();
+        void ExpandAllNodes();
+        void CollapseAllNodes();
 
         ProgressDialog CreateProgressDialog(string text, int maxProgress = 0);
         Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 

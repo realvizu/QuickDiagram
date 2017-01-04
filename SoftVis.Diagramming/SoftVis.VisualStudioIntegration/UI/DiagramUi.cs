@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -70,6 +71,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void FollowDiagramNode(IDiagramNode diagramNode) => _diagramViewModel.FollowDiagramNodes(new[] { diagramNode });
         public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes) => _diagramViewModel.FollowDiagramNodes(diagramNodes);
         public void ZoomToDiagram() => _diagramViewModel.ZoomToContent();
+        public void KeepDiagramCentered() => _diagramViewModel.KeepDiagramCentered();
+        public void ExpandAllNodes() => _diagramViewModel.ExpandAllNodes();
+        public void CollapseAllNodes() => _diagramViewModel.CollapseAllNodes();
 
         public void ZoomToDiagramNode(IDiagramNode diagramNode)
         {
@@ -97,6 +101,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             if (!_diagramViewModel.IsDiagramContentVisible())
                 _diagramViewModel.ZoomToContent();
         }
+
+        public void ExecuteWhenUiIsIdle(Action action)
+            => Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
 
         public ProgressDialog CreateProgressDialog(string text, int maxProgress = 0)
         {
