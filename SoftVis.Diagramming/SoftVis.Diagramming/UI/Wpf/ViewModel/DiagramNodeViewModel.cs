@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
 
-        public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode)
+        public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible)
               : base(diagram, diagramNode)
         {
             DiagramNode = diagramNode;
@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _fullName = diagramNode.FullName;
             _description = diagramNode.Description;
             _descriptionExists = !string.IsNullOrWhiteSpace(_description);
-            _isDescriptionVisible = false;
+            _isDescriptionVisible = isDescriptionVisible;
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
 
@@ -181,12 +181,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public object Clone()
         {
-            return new DiagramNodeViewModel(Diagram, DiagramNode)
+            return new DiagramNodeViewModel(Diagram, DiagramNode, _isDescriptionVisible)
             {
                 _size = _size,
                 _center = _center,
                 _topLeft = _topLeft,
-                _isDescriptionVisible = _isDescriptionVisible
             };
         }
 

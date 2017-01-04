@@ -18,11 +18,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramNodeViewModels = diagramNodeViewModels;
         }
 
-        public DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
+        public DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape, bool isDescriptionVisible)
         {
             if (diagramShape is IDiagramNode)
             {
-                return new DiagramNodeViewModel(Diagram, (IDiagramNode) diagramShape);
+                return new DiagramNodeViewModel(Diagram, (IDiagramNode) diagramShape, isDescriptionVisible);
             }
 
             if (diagramShape is IDiagramConnector)

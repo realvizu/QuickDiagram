@@ -20,6 +20,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase, IDisposable
     {
+        private bool _areDiagramNodeDescriptionsVisible;
+
         public double MinZoom { get; }
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
@@ -87,8 +89,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => ViewportCalculator.Mode = mode;
         public void StopFollowingDiagramNodes() => ViewportCalculator.StopFollowingDiagramNodes();
 
-        public void ExpandAllDiagramNodes() => SetDescriptionVisibilityOnAllDiagramNodes(true);
-        public void CollapseAllDiagramNodes() => SetDescriptionVisibilityOnAllDiagramNodes(false);
+        public void ExpandAllDiagramNodes() => SetDiagramNodeDescriptionVisibility(true);
+        public void CollapseAllDiagramNodes() => SetDiagramNodeDescriptionVisibility(false);
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToContent(transitionSpeed);
         public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
@@ -157,7 +159,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddShape(IDiagramShape diagramShape)
         {
-            var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
+            var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape, _areDiagramNodeDescriptionsVisible);
             diagramShapeViewModel.RemoveRequested += OnShapeRemoveRequested;
 
             AddToViewModels(diagramShapeViewModel);
@@ -251,10 +253,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
         }
 
-        private void SetDescriptionVisibilityOnAllDiagramNodes(bool isVisible)
+        private void SetDiagramNodeDescriptionVisibility(bool isVisible)
         {
+            _areDiagramNodeDescriptionsVisible = isVisible;
+
             foreach (var diagramNodeViewModel in DiagramNodeViewModels)
-                diagramNodeViewModel.IsDescriptionVisible = isVisible;
+                diagramNodeViewModel.IsDescriptionVisible = _areDiagramNodeDescriptionsVisible;
         }
     }
 }
