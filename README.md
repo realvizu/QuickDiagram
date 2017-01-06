@@ -1,4 +1,4 @@
-# Quick Diagram Tool for C#
+# Quick Diagram Tool for C# #
 
 Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships.
 
@@ -18,7 +18,7 @@ See the [change log](CHANGELOG.md) for versions and road map.
 
 **Explore code visually**
 - Visualize code structure and relationships.
-- Currently it is limited to type hierarchies and interface implementation relationships.
+- Add entities to diagram from source code or from other diagram nodes.
 
 **Navigate quickly**
 - Add those types to a diagram that you are focusing on.
