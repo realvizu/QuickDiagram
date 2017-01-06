@@ -17,8 +17,8 @@ The current version (v0.5) is an **experimental release** to showcase the approa
 See the [change log](CHANGELOG.md) for versions and road map.
 
 **Explore code visually**
-- Visualize code structure and relationships.
-- Add entities to diagram from source code or from other diagram nodes.
+- Add types or entire hierarchies from source code to diagram to visualize their relationships.
+- Use existing diagram nodes to discover their related entities.
 
 **Navigate quickly**
 - Add those types to a diagram that you are focusing on.
