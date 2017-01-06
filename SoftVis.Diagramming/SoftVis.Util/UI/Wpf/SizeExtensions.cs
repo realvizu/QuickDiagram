@@ -13,5 +13,14 @@ namespace Codartis.SoftVis.Util.UI.Wpf
             // ReSharper restore CompareOfFloatsByEqualityOperator
         }
 
+        public static bool IsUndefined(this Size size)
+        {
+            return double.IsNaN(size.Width) 
+                || double.IsNaN(size.Height) 
+                || double.IsInfinity(size.Width) 
+                || double.IsInfinity(size.Height);
+        }
+
+        public static bool IsDefined(this Size size) => !size.IsUndefined();
     }
 }

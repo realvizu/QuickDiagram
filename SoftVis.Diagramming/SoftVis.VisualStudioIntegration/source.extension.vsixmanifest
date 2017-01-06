@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="7481ead5-87e4-4ac0-86d1-317e7adab60c" Version="0.5" Language="en-US" Publisher="Codartis" />
+        <Identity Id="7481ead5-87e4-4ac0-86d1-317e7adab60c" Version="0.5.0.0" Language="en-US" Publisher="Codartis" />
         <DisplayName>Quick Diagram Tool for C#</DisplayName>
-        <Description xml:space="preserve">Quick Diagram is a code visualization tool for C#. You can use it to quickly explore, navigate and document source code structure and relationships.
-It is similar to the Code Map feature of Visual Studio Enterprise Edition but much more lightweight.
+        <Description xml:space="preserve">Code visualization tool for C# to quickly explore, navigate and document source code structure and relationships. Similar to the Code Map feature of Visual Studio Enterprise Edition but much more lightweight.
 This is an experimental release that supports type inheritance and interface implementation relationships only. Later versions will show a lot more (namespaces, type members, method calls, property read/write, object creation, etc.)</Description>
         <MoreInfo>https://github.com/realvizu/softvis</MoreInfo>
-        <License>https://github.com/realvizu/softvis/blob/master/LICENSE</License>
         <GettingStartedGuide>https://github.com/realvizu/softvis</GettingStartedGuide>
-        <Icon>Resources\QuickDiagramTool_256.ico</Icon>
-        <Tags>code visualize quick diagram c# tool inheritance interface implementation codemap map</Tags>
+        <Icon>Resources\QuickDiagramTool_64.ico</Icon>
+        <PreviewImage>Resources\QuickDiagramTool_256.png</PreviewImage>
+        <Tags>code;visualize;quick;diagram;c#;csharp;tool;inheritance;interface;implementation;codemap;map</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,15.0)" />

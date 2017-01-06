@@ -161,7 +161,14 @@
     <Content Include="Resources\Copy_16x16.png" />
     <Content Include="Resources\DependancyGraph_16x16.png" />
     <Content Include="Resources\ExpandAll_16x16.png" />
-    <Content Include="Resources\QuickDiagramTool_256.png" />
+    <Content Include="Resources\QuickDiagramTool_256.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\QuickDiagramTool_64.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Refresh_16x16.png" />
     <Content Include="Resources\Save_16x16.png" />
     <Content Include="Resources\QuickDiagramTool_256.ico">

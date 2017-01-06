@@ -11,7 +11,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
     /// Abstract base class for model entities created from Roslyn symbols.
-    /// Capable of finding related symbols in the Roslyn model (API).
     /// </summary>
     public abstract class RoslynBasedModelEntity : ModelEntity, IRoslynBasedModelEntity
     {

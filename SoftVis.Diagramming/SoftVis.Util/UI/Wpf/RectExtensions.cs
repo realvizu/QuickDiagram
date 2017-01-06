@@ -40,6 +40,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         public static Point GetPerimeterPointTowardPoint(this Rect rect, Point outerPoint)
         {
             var center = rect.GetCenter();
+            if (center == outerPoint)
+                return outerPoint;
+
             var sides = new[]
             {
                 (rect.Left - outerPoint.X)/(center.X - outerPoint.X),
