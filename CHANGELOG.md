@@ -6,7 +6,7 @@ First experimental release to gather feedback.
 
 - [x] Add entities from source code to diagram.
   - [x] Types: class, interface, struct, enum, delegate.
-  - [x] Features: description (xml comment summary), is abstract, is from source or metadata.
+  - [x] Type features: description (xml comment summary), is abstract, is from source or metadata.
   - [x] Relationships: inherits, implements.
 - [x] Visually extend diagram nodes with related entities.
 - [x] Jump from diagram node to corresponding source code.
@@ -23,11 +23,11 @@ First experimental release to gather feedback.
 - [ ] Diagram manipulations:
   - [ ] Select diagram nodes/relationships.
   - [ ] Move/remove selected shapes.
-  - [ ] Smarter automatic diagram shape arrangement.
-  - [ ] Undo/redo of diagram manipulation operations.
+  - [ ] Smarter diagram layout.
+  - [ ] Undo/redo diagram manipulation.
   - [ ] Minimap for navigating in large diagrams.
 - [ ] Multiple diagram windows.
-- [ ] Automatically update the diagram with code changes.
+- [ ] Live automatic update of the diagram with code changes.
 - [ ] Follow in-code navigations on the diagram to provide a continuous visual context.
 - [ ] Refactor code by modifying the diagram.
 - [ ] ...
