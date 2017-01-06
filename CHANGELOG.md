@@ -4,6 +4,7 @@
 
 First experimental release to gather feedback.
 
+- [x] Integrates into Visual Studio 2015.
 - [x] Add entities from source code to diagram.
   - [x] Types: class, interface, struct, enum, delegate.
   - [x] Type features: description (xml comment summary), is abstract, is from source or metadata.

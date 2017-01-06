@@ -6,6 +6,7 @@
         <Description xml:space="preserve">Code visualization tool for C# to quickly explore, navigate and document source code structure and relationships. Similar to the Code Map feature of Visual Studio Enterprise Edition but much more lightweight.
 This is an experimental release that supports type inheritance and interface implementation relationships only. Later versions will show a lot more (namespaces, type members, method calls, property read/write, object creation, etc.)</Description>
         <MoreInfo>https://github.com/realvizu/softvis</MoreInfo>
+        <License>Resources\LICENSE</License>
         <GettingStartedGuide>https://github.com/realvizu/softvis</GettingStartedGuide>
         <Icon>Resources\QuickDiagramTool_64.ico</Icon>
         <PreviewImage>Resources\QuickDiagramTool_256.png</PreviewImage>

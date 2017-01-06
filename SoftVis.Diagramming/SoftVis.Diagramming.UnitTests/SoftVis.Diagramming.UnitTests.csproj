@@ -80,6 +80,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Include\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Include\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="Diagramming\Layout\Incremental\Builders\BuilderBase.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\RelativeLayoutCalculatorBuilder.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\GraphRelatedBuilderBase.cs" />

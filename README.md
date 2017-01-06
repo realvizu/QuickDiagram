@@ -1,6 +1,6 @@
 # Quick Diagram Tool for C# #
 
-Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships.
+Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships. Integrates into Visual Studio.
 
 <!-- Replace this badge with your own-->
 <!-- [![Build status](https://ci.appveyor.com/api/projects/status/hv6uyc059rqbc6fj?svg=true)](https://ci.appveyor.com/project/madskristensen/extensibilitytools) -->

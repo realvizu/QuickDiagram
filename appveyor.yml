@@ -1,0 +1,12 @@
+image: Visual Studio 2015
+version: '0.5.{build}.0'
+
+assembly_info:
+  patch: true
+  file: SoftVis.Diagramming\Include\VersionInfo.cs
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
+build_script:
+  - cmd: SoftVis.Diagramming\build.cmd

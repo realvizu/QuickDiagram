@@ -16,9 +16,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{223D26ED-3694-4CA6-9B3C-FAFB692882C2}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		..\appveyor.yml = ..\appveyor.yml
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{6F495DB2-5604-493B-A673-C5D2A857CEAE}"
+	ProjectSection(SolutionItems) = preProject
+		Include\CommonAssemblyInfo.cs = Include\CommonAssemblyInfo.cs
+		Include\VersionInfo.cs = Include\VersionInfo.cs
 	EndProjectSection
 EndProject
 Global
