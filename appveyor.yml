@@ -9,4 +9,6 @@ assembly_info:
   assembly_informational_version: '{version}'
 
 build_script:
-  - cmd: SoftVis.Diagramming\build.cmd
+  - cmd: >-
+    cd SoftVis.Diagramming
+    build.cmd
