@@ -1,5 +1,8 @@
 image: Visual Studio 2015
-version: '0.5.{build}.0'
+
+version: '0.5.{build}.1'
+
+configuration: Release
 
 assembly_info:
   patch: true
@@ -8,7 +11,17 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
 
-build_script:
-  - cmd: >-
+before_build:
+- cmd: >-
     cd SoftVis.Diagramming
-    build.cmd
+    nuget restore
+
+build:
+  project: SoftVis.Diagramming\SoftVis.Diagramming.sln
+  verbosity: minimal
+
+test:
+  assemblies: '**\*UnitTests.dll'
+
+artifacts:
+- path: SoftVis.Diagramming\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix
