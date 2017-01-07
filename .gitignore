@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.sln.ide
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -21,6 +22,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+out/
 
 # Visual Studo 2015 cache/options directory
 .vs/
@@ -194,6 +196,3 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-
-/SoftVis.Diagramming/SoftVis.Diagramming.sln.ide
-/SoftVis.Diagramming/out
