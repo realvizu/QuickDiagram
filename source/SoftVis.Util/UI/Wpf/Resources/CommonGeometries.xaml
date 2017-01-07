@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    mc:Ignorable="d">
+
+    <Geometry x:Key="PlusSignInSquareGeometry">M 0 0 L 8 0 L 8 8 L 0 8 Z M 2 4 L 6 4 M 4 2 L 4 6</Geometry>
+    <Geometry x:Key="MinusSignInSquareGeometry">M 0 0 L 8 0 L 8 8 L 0 8 Z M 2 4 L 6 4</Geometry>
+    <Geometry x:Key="UpArrowInCircleGeometry">M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1.5 1 L 0 -1.5 M 0 -1.5 L 1.5 1</Geometry>
+    <Geometry x:Key="LeftArrowInCircleGeometry">M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M 1 1.5 L -1.5 0 M -1.5 0 L 1 -1.5</Geometry>
+    <Geometry x:Key="RightArrowInCircleGeometry">M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1 1.5 L 1.5 0 M 1.5 0 L -1 -1.5</Geometry>
+    <Geometry x:Key="DownArrowInCircleGeometry">M -3 0 A 3 3 0 0 0 3 0 M -3 0 A 3 3 0 0 1 3 0 M -1.5 -1 L 0 1.5 M 0 1.5 L 1.5 -1</Geometry>
+    <Geometry x:Key="SquareGeometry">M -1 -1 L 1 -1 L 1 1 L -1 1 Z</Geometry>
+
+</ResourceDictionary>

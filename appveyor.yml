@@ -6,23 +6,23 @@ configuration: Release
 
 assembly_info:
   patch: true
-  file: SoftVis.Diagramming\Include\VersionInfo.cs
+  file: source\include\VersionInfo.cs
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
 
 before_build:
 - cmd: >-
-    cd SoftVis.Diagramming
+    cd source
 
     nuget restore
 
 build:
-  project: SoftVis.Diagramming\SoftVis.Diagramming.sln
+  project: source\QuickDiagramTool.sln
   verbosity: minimal
 
 test:
   assemblies: '**\*UnitTests.dll'
 
 artifacts:
-- path: SoftVis.Diagramming\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix
+- path: source\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix

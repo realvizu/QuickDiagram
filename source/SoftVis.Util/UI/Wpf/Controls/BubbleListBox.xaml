@@ -1,0 +1,205 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls"
+                    mc:Ignorable="d">
+
+    <system:Double x:Key="ScrollBarWidth">12</system:Double>
+
+    <SolidColorBrush x:Key="BubbleBackgroundBrush" Color="White" Opacity=".9"/>
+    <SolidColorBrush x:Key="BubbleBorderBrush" Color="Black" />
+    <SolidColorBrush x:Key="ScrollButtonBackgroundBrush" Color="White" />
+    <SolidColorBrush x:Key="ScrollBackgroundBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="ScrollBorderBrush" Color="Black" />
+    <Color x:Key="ScrollButtonPressedColor">#FFDDDDDD</Color>
+
+    <Style x:Key="ScrollBarLineButton" TargetType="{x:Type RepeatButton}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Border x:Name="Border"
+                            CornerRadius="2" 
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource ScrollBorderBrush}"
+                            Background="{StaticResource ScrollButtonBackgroundBrush}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver" />
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
+                                                Storyboard.TargetProperty="Background.(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ScrollButtonPressedColor}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Path x:Name="Arrow" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" 
+                              Margin="2"
+                              Fill="Transparent"
+                              Stroke="{StaticResource ScrollBorderBrush}"
+                              Data="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ScrollBarPageButton"
+       TargetType="{x:Type RepeatButton}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="IsTabStop" Value="false" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Border Background="{StaticResource ScrollBackgroundBrush}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ScrollBarThumb"
+       TargetType="{x:Type Thumb}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="IsTabStop" Value="false" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border CornerRadius="2" 
+                            BorderThickness="1"
+                            Background="{StaticResource ScrollButtonBackgroundBrush}" 
+                            BorderBrush="{StaticResource ScrollBorderBrush}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+        <Border BorderBrush="{StaticResource ScrollBorderBrush}"
+                Background="{StaticResource ScrollBackgroundBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="{StaticResource ScrollBarWidth}" />
+                    <RowDefinition Height="0.00001*" />
+                    <RowDefinition MaxHeight="{StaticResource ScrollBarWidth}" />
+                </Grid.RowDefinitions>
+                <RepeatButton Grid.Row="0"
+                  Style="{StaticResource ScrollBarLineButton}"
+                  Height="{StaticResource ScrollBarWidth}"
+                  Command="ScrollBar.LineUpCommand"
+                  Content="M 0 4 L 4 0 L 8 4" />
+                <Track x:Name="PART_Track" Grid.Row="1" IsDirectionReversed="true">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageUpCommand" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumb}" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageDownCommand" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Row="2"
+                  Style="{StaticResource ScrollBarLineButton}"
+                  Height="{StaticResource ScrollBarWidth}"
+                  Command="ScrollBar.LineDownCommand"
+                  Content="M 0 0 L 4 4 L 8 0" />
+            </Grid>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="VerticalOnlyBubbleScrollBar" TargetType="{x:Type ScrollBar}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Width" Value="{StaticResource ScrollBarWidth}" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
+    </Style>
+
+    <Style x:Key="BubbleScrollViewer" TargetType="{x:Type ScrollViewer}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <DockPanel>
+                        <ScrollBar x:Name="PART_VerticalScrollBar"
+                                   DockPanel.Dock="Right"
+                                   Margin="2,0,0,0"
+                                   Value="{TemplateBinding VerticalOffset}" 
+                                   Maximum="{TemplateBinding ScrollableHeight}"
+                                   ViewportSize="{TemplateBinding ViewportHeight}"
+                                   Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                   Style="{StaticResource VerticalOnlyBubbleScrollBar}" />
+                        <ScrollContentPresenter />
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <ControlTemplate x:Key="BubbleListBox" TargetType="{x:Type view:BubbleListBox}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="6"/>
+            </Grid.RowDefinitions>
+            <Path x:Name="TopHandle"
+              Grid.Row="0"
+              Stroke="{StaticResource BubbleBorderBrush}"
+              Fill="{StaticResource BubbleBorderBrush}"
+              Stretch="Uniform"
+              Data="M -1 0 L 0 -1 L 1 0 Z"/>
+            <Border Grid.Row="1"
+                    BorderBrush="{StaticResource BubbleBorderBrush}"
+                    BorderThickness="2"
+                    CornerRadius="4"
+                    Background="{StaticResource BubbleBackgroundBrush}">
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Auto"
+                              Margin="2"
+                              MinWidth="12" MinHeight="12"
+                              MaxWidth="350" MaxHeight="140"
+                              Style="{StaticResource BubbleScrollViewer}">
+                    <ItemsPresenter />
+                </ScrollViewer>
+            </Border>
+            <Path x:Name="BottomHandle"
+              Grid.Row="2"
+              Stroke="{StaticResource BubbleBorderBrush}"
+              Fill="{StaticResource BubbleBorderBrush}"
+              Stretch="Uniform"
+              Data="M -1 0 L 0 1 L 1 0 Z"/>
+        </Grid>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="HandleOrientation" Value="None">
+                <Setter TargetName="TopHandle" Property="Visibility" Value="Hidden"></Setter>
+                <Setter TargetName="BottomHandle" Property="Visibility" Value="Hidden"></Setter>
+            </Trigger>
+            <Trigger Property="HandleOrientation" Value="Top">
+                <Setter TargetName="TopHandle" Property="Visibility" Value="Visible"></Setter>
+                <Setter TargetName="BottomHandle" Property="Visibility" Value="Hidden"></Setter>
+            </Trigger>
+            <Trigger Property="HandleOrientation" Value="Bottom">
+                <Setter TargetName="TopHandle" Property="Visibility" Value="Hidden"></Setter>
+                <Setter TargetName="BottomHandle" Property="Visibility" Value="Visible"></Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type view:BubbleListBox}">
+        <Setter Property="Template" Value="{StaticResource BubbleListBox}"/>
+    </Style>
+
+</ResourceDictionary>

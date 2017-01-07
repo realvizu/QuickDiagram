@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+    <Allowed From="*" To="System" />
+    <Allowed From="*" To="System.Diagnostics.*" />
+    <Allowed From="*" To="System.Collections.*" />
+    <Allowed From="*" To="System.Linq.*" />
+    <Allowed From="*" To="System.Globalization.*" />
+    <Allowed From="*" To="System.ComponentModel" />
+    <Allowed From="*" To="System.Runtime.*" />
+    <Allowed From="*" To="System.Reflection" />
+    <Allowed From="*" To="System.Threading.*" />
+    <Allowed From="*" To="System.CodeDom.Compiler">
+        <VisibleMembers>
+            <Type Name="GeneratedCodeAttribute" />
+        </VisibleMembers>
+    </Allowed>
+    <Allowed From="*" To="System.Xml" />
+    <Allowed From="*" To="System.Text">
+        <VisibleMembers>
+            <Type Name="Encoding" />
+        </VisibleMembers>
+    </Allowed>
+    <Allowed From="*" To="System.IO" />
+    <Allowed From="*" To="MoreLinq" />
+    <Allowed From="*" To="Codartis.SoftVis.Util" />
+
+    <Allowed From="XamlGeneratedNamespace" To="*" />
+
+    <Allowed From="Codartis.SoftVis.Graphs.*" To="Codartis.SoftVis.Geometry" />
+    <Allowed From="Codartis.SoftVis.Graphs.*" To="QuickGraph.*" />
+
+    <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="QuickGraph" />
+    <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="Codartis.SoftVis.Graphs" />
+
+    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="QuickGraph.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="Codartis.SoftVis.Graphs.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Layout" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
+
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="QuickGraph.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Graphs.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative" />
+
+    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
+    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming" />
+    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling" />
+
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.*" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
+
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
+
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.Controls" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+</NsDepCopConfig>

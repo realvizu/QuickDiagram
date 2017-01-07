@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Codartis.SoftVis.Util.UI.Wpf.Controls.PopupTextControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type viewModels:PopupTextViewModel}}">
+    
+    <Border BorderThickness="1"
+            BorderBrush="#D5D7E1" 
+            Background="#F6F6F6">
+        <TextBlock Text="{Binding Text}"
+                   Margin="3"
+                   MinWidth="50" 
+                   MaxWidth="600"/>
+    </Border>
+</UserControl>

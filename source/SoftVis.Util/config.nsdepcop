@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+    <Allowed From="*" To="System" />
+    <Allowed From="*" To="System.Collections.*" />
+    <Allowed From="*" To="System.Linq" />
+    <Allowed From="*" To="System.Globalization" />
+    <Allowed From="*" To="System.Reflection" />
+    <Allowed From="*" To="System.IO" />
+    <Allowed From="*" To="System.Diagnostics.*" />
+    <Allowed From="*" To="System.Runtime.CompilerServices" />
+    <Allowed From="*" To="System.CodeDom.Compiler" />
+    <Allowed From="*" To="System.Threading" />
+    <Allowed From="*" To="System.Threading.Tasks" />
+    <Allowed From="*" To="System.Xml.*" />
+
+    <Allowed From="XamlGeneratedNamespace" To="*" />
+
+    <Allowed From="Codartis.SoftVis.Util.Roslyn.*" To="Microsoft.CodeAnalysis.*" />
+
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.ComponentModel" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.Runtime.InteropServices" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.Wpf.Collections" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.Wpf.Commands" />
+
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.Controls" To="Codartis.SoftVis.Util.UI.Wpf.Animations" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.Controls" To="Codartis.SoftVis.Util.UI.Wpf.Transforms" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.Controls" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
+
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.Dialogs" To="Codartis.SoftVis.Util.UI.Wpf.Controls" />
+    <Allowed From="Codartis.SoftVis.Util.UI.Wpf.Dialogs" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
+</NsDepCopConfig>
