@@ -7,7 +7,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="/SoftVis.TestHostApp;component/Resources/DecoratorPlacementDictionary.xaml" />
+        <ResourceDictionary Source="/TestHostApp;component/Resources/DecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type view:DiagramControl}" >
