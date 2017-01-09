@@ -17,7 +17,8 @@ assembly_info:
 before_build:
 - ps: |
     Set-VsixVersion source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest {version}
-    if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }
+    Write-Host $LastExitCode
+    if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
 
 - cmd: >-
     cd source
