@@ -1,6 +1,6 @@
 image: Visual Studio 2015
 
-version: '0.5.{build}.0'
+version: 0.5.{build}.0
 
 configuration: Release
 
@@ -9,13 +9,13 @@ install:
 
 assembly_info:
   patch: true
-  file: 'source\include\VersionInfo.cs'
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  file: source\include\VersionInfo.cs
+  assembly_version: {version}
+  assembly_file_version: {version}
+  assembly_informational_version: {version}
 
 before_build:
-- ps: Set-VsixVersion 'source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest' '{version}'
+- ps: Set-VsixVersion source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest {version}
 
 - cmd: >-
     cd source
@@ -27,7 +27,7 @@ build:
   verbosity: minimal
 
 test:
-  assemblies: '**\*UnitTests.dll'
+  assemblies: **\*UnitTests.dll
 
 artifacts:
 - path: source\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix
