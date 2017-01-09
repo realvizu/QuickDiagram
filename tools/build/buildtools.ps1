@@ -20,6 +20,6 @@
 
         $vsixmanifestXml.Save($vsixmanifestPath)
 
-        Write-Host " Done."
+        Write-Host "Done."
     }
 }

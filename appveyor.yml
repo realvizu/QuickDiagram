@@ -16,8 +16,8 @@ assembly_info:
 
 before_build:
 - ps: |
-    Set-VsixVersion c:\projects\softvis\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest {version} -ErrorAction Stop
-
+    # vsixmanifest file must be specified with full path.
+    Set-VsixVersion '{clone_folder}\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest' '{version}' -ErrorAction Stop
 - cmd: >-
     cd source
 
