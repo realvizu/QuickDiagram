@@ -15,7 +15,9 @@ assembly_info:
   assembly_informational_version: '{version}'
 
 before_build:
-- ps: Set-VsixVersion source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest {version} -ErrorAction Stop
+- ps: |
+    Set-Location source\SoftVis.VisualStudioIntegration
+    Set-VsixVersion source.extension.vsixmanifest {version} -ErrorAction Stop
 
 - cmd: >-
     cd source
