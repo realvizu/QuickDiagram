@@ -17,7 +17,7 @@ assembly_info:
 before_build:
 - ps: |
     # vsixmanifest file must be specified with full path.
-    Set-VsixVersion '$(appveyor_build_folder)\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest' '$(appveyor_build_version)' -ErrorAction Stop
+    Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest $env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 - cmd: >-
     cd source
 
