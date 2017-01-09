@@ -107,6 +107,7 @@
     <Compile Include="UI\Wpf\Controls\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Wpf\Controls\ConcealableExpander.cs" />
     <Compile Include="UI\Wpf\Converters\DoubleEnsureNumberConverter.cs" />
     <Compile Include="UI\Wpf\Converters\RectCreatorConverter.cs" />
     <Compile Include="UI\Wpf\Converters\FindControlByDataContextConverter.cs" />

@@ -6,7 +6,8 @@
                     xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=SoftVis.Diagramming"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming">
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming"
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
@@ -33,7 +34,7 @@
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">
         <Setter Property="MinHeight" Value="46"/>
-        <Setter Property="MaxHeight" Value="110"/>
+        <Setter Property="MaxHeight" Value="112"/>
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
     </Style>
@@ -66,16 +67,17 @@
                                        Text="{Binding Path=Name, Mode=OneWay}" 
                                        TextWrapping="Wrap"/>
                             </Grid>
-                            <Expander Margin="4,6,4,4"
-                                      Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                      BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-                                      BorderThickness=".5"
-                                      IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
+                            <controls:ConcealableExpander Margin="4,6,4,4"
+                                                          IsButtonVisible="False"
+                                                          Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                          BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
+                                                          BorderThickness=".5"
+                                                          IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
                                 <TextBlock FontSize="10"
                                            TextWrapping="Wrap"
                                            Text="{Binding Path=Description}"
                                            ToolTip="{Binding Path=Description}"/>
-                            </Expander>
+                            </controls:ConcealableExpander>
                         </StackPanel>
                     </Border>
 
