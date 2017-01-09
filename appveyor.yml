@@ -27,7 +27,7 @@ build:
   verbosity: minimal
 
 test:
-  assemblies: **\*UnitTests.dll
+  assemblies: '**\*UnitTests.dll'
 
 artifacts:
 - path: source\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix
