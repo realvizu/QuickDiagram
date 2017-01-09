@@ -16,10 +16,11 @@ assembly_info:
 
 before_build:
 - ps: |
-    Set-Location source
-    Set-VsixVersion SoftVis.VisualStudioIntegration\source.extension.vsixmanifest {version} -ErrorAction Stop
+    Set-VsixVersion $(APPVEYOR_BUILD_FOLDER)\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest {version} -ErrorAction Stop
 
 - cmd: >-
+    cd source
+
     nuget restore
 
 build:
