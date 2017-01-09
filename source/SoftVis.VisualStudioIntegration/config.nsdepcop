@@ -9,11 +9,19 @@
     <Allowed From="*" To="System.Threading.Tasks" />
     <Allowed From="*" To="System.ComponentModel.*" />
     <Allowed From="*" To="System.Runtime.InteropServices" />
+    <Allowed From="*" To="System.Runtime.CompilerServices" />
+    <Allowed From="*" To="System.CodeDom.Compiler" />
+    <Allowed From="*" To="System.Resources" />
     <Allowed From="*" To="System.Reflection" />
     <Allowed From="*" To="System.IO" />
     <Allowed From="*" To="System.Windows">
         <VisibleMembers>
             <Type Name="Clipboard"/>
+        </VisibleMembers>
+    </Allowed>
+    <Allowed From="*" To="System.Drawing">
+        <VisibleMembers>
+            <Type Name="Icon"/>
         </VisibleMembers>
     </Allowed>
     <Allowed From="*" To="System.Windows.Media.Imaging"/>

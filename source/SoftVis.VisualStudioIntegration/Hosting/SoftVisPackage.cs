@@ -24,14 +24,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
-    [Guid(PackageGuidString)]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 401)]
+    [Guid(PackageGuids.SoftVisPackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(DiagramHostToolWindow))]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class SoftVisPackage : Package, IPackageServices
     {
-        private const string PackageGuidString = "198d9322-583a-4112-a2a8-61f4c0818966";
+        static SoftVisPackage()
+        {
+            // HACK: Force load System.Windows.Interactivity.dll from plugin's directory.
+            // See: http://stackoverflow.com/questions/29362125/visual-studio-extension-could-not-find-a-required-assembly
+            typeof(System.Windows.Interactivity.Behavior).ToString();
+        }
 
         private IVisualStudioServiceProvider _visualStudioServiceProvider;
         private IComponentModel _componentModel;

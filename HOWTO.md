@@ -9,7 +9,7 @@
 
 ## Debug the tool in Visual Studio
 1. In the SoftVis.VisualStudioIntegration project set up debug start action.
-   * StartProgram: C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe
+   * StartProgram: C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe
    * StartArguments: /rootsuffix Exp 
 ![Setting VSIX debug start action](images/doc/SetUpVsixDebugStartAction.png)
 1. Set SoftVis.VisualStudioIntegration as StartUp project.
