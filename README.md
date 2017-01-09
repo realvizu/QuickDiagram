@@ -1,9 +1,7 @@
 # Quick Diagram Tool for C# #
+[![Build status](https://ci.appveyor.com/api/projects/status/sw2picivqnv5buj8?svg=true)](https://ci.appveyor.com/project/realvizu/softvis)
 
 Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships. Integrates into Visual Studio.
-
-<!-- Replace this badge with your own-->
-<!-- [![Build status](https://ci.appveyor.com/api/projects/status/hv6uyc059rqbc6fj?svg=true)](https://ci.appveyor.com/project/madskristensen/extensibilitytools) -->
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
 <!-- Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
