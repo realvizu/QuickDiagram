@@ -5,7 +5,7 @@ version: 0.5.{build}.0
 configuration: Release
 
 install:
-- ps: (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/realvizu/softvis/master/tools/build/buildtools.ps1") | Invoke-Expression
+- ps: (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/realvizu/QuickDiagram/master/tools/build/buildtools.ps1") | Invoke-Expression
 
 assembly_info:
   patch: true
