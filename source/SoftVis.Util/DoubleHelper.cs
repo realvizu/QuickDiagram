@@ -10,5 +10,12 @@ namespace Codartis.SoftVis.Util
         {
             return Math.Abs(value1 - value2) <= Math.Abs(value1 * DoubleComparisonTolerance);
         }
+
+        public static bool IsUndefined(this double value)
+        {
+            return double.IsNaN(value) || double.IsInfinity(value);
+        }
+
+        public static bool IsDefined(this double value) => !value.IsUndefined();
     }
 }

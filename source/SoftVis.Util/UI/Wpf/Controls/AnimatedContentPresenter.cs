@@ -145,10 +145,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             if (_isDisappearing)
                 return;
 
-            if (double.IsNaN(oldValue) && !double.IsNaN(newValue))
+            if (oldValue.IsUndefined() && newValue.IsDefined())
                 SetValue(property, newValue);
 
-            if (!double.IsNaN(oldValue) && !double.IsNaN(newValue))
+            if (oldValue.IsDefined() && newValue.IsDefined())
                 AnimateMove(property, newValue);
         }
 

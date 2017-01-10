@@ -11,7 +11,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf
 
         public static bool IsUndefined(this Point point)
         {
-            return double.IsNaN(point.X) || double.IsNaN(point.Y);
+            return double.IsNaN(point.X) || double.IsNaN(point.Y)
+                || double.IsInfinity(point.X) || double.IsInfinity(point.Y);
         }
 
         public static PathFigure ToPathFigure(this IEnumerable<Point> points, bool closed)
