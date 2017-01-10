@@ -87,6 +87,8 @@
     <Compile Include="Roslyn\FileLinePositionSpanExtensions.cs" />
     <Compile Include="Roslyn\LinePositionSpanExtensions.cs" />
     <Compile Include="Roslyn\NamedTypeSymbolExtensions.cs" />
+    <Compile Include="Roslyn\XmlDocumentation.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="UI\TransitionSpeed.cs" />
     <Compile Include="UI\Wpf\Animations\MatrixAnimation.cs" />
     <Compile Include="UI\Wpf\Animations\PointArrayAnimation.cs" />

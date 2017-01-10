@@ -24,19 +24,17 @@ namespace Codartis.SoftVis.Util.Roslyn
         public static string GetCommentSummary(this INamedTypeSymbol namedTypeSymbol)
         {
             var xmlCommentAsString = namedTypeSymbol.GetDocumentationCommentXml();
-            if (string.IsNullOrWhiteSpace(xmlCommentAsString))
-                return null;
 
-            XElement xmlComment = null;
+            string summary = null;
             try
             {
-                xmlComment = XElement.Parse(xmlCommentAsString, LoadOptions.None);
+                summary = new XmlDocumentation(xmlCommentAsString).Summary;
             }
             catch (XmlException)
             {
             }
 
-            return xmlComment?.Element("summary")?.Value;
+            return summary;
         }
 
         /// TODO: This is naive. Any way to make it smarter?

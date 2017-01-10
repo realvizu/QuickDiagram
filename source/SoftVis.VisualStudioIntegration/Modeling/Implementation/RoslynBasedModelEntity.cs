@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             get { return _roslynSymbol; }
             set
             {
-                if (value.TypeKind != _typeKind)
+                if (value != null && value.TypeKind != _typeKind)
                     throw new ArgumentException($"{value.Name} must be a {_typeKind}.");
 
                 _roslynSymbol = value;
