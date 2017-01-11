@@ -35,7 +35,7 @@
                    defaultWidth="67" idCommandList="ImageDpiComboGetItemsCommand">
                 <Strings>
                     <ButtonText>DPI</ButtonText>
-                    <ToolTipText>Exported image resolution (DPI)</ToolTipText>
+                    <ToolTipText>Exported Image Resolution (DPI)</ToolTipText>
                 </Strings>
             </Combo>
         </Combos>
@@ -113,7 +113,7 @@
             <Button guid="SoftVisCommandSetGuid" id="ShowHideNodeDescriptionsCommand" type="Button">
                 <Icon guid="ShowHideNodeDescriptionsImageGuid" id="ShowHideNodeDescriptionsImageId" />
                 <Strings>
-                    <ButtonText>&amp;Show/Hide All Descriptions</ButtonText>
+                    <ButtonText>&amp;Show/Hide Descriptions</ButtonText>
                 </Strings>
             </Button>
         </Buttons>
