@@ -4,9 +4,9 @@ using Codartis.SoftVis.VisualStudioIntegration.App;
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
 {
     /// <summary>
-    /// Describes a command's ID and type.
+    /// Describes all information needed for registering a command with the host.
     /// </summary>
-    /// <typeparam name="T">The type of the command.</typeparam>
+    /// <typeparam name="T">The type that implements the command.</typeparam>
     internal struct CommandSpecification<T> : ICommandSpecification
         where T : CommandBase
     {

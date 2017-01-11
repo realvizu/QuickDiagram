@@ -43,12 +43,16 @@
         <Buttons>
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" type="Button">
                 <Icon guid="AddToDiagramImageGuid" id="AddToDiagramImageId" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <CommandFlag>DefaultInvisible</CommandFlag>
                 <Strings>
                     <ButtonText>&amp;Add to Quick Diagram</ButtonText>
                 </Strings>
             </Button>
             <Button guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" type="Button">
                 <Icon guid="AddToDiagramWithHierarchyImageGuid" id="AddToDiagramWithHierarchyImageId" />
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <CommandFlag>DefaultInvisible</CommandFlag>
                 <Strings>
                     <ButtonText>Add to Quick Diagram With &amp;Hierarchy</ButtonText>
                 </Strings>

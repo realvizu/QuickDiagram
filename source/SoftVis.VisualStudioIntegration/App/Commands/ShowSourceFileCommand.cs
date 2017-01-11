@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Activates the source code editor window for a given Symbol.
     /// </summary>
-    internal class ShowSourceFileCommand : ParameterizedSyncCommandBase<IDiagramNode>
+    internal class ShowSourceFileCommand : SyncCommandWithParameterBase<IDiagramNode>
     {
         private const string NoSourceMessage = "There's no source file for this item.";
         private static readonly TimeSpan NoSourceMessageDuration = TimeSpan.FromSeconds(5);

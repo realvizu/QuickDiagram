@@ -76,6 +76,7 @@
     <Compile Include="..\Include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="App\Commands\AddCurrentSymbolToDiagramCommandBase.cs" />
     <Compile Include="App\Commands\CollapseAllNodesCommand.cs" />
     <Compile Include="App\Commands\ExpandAllNodesCommand.cs" />
     <Compile Include="App\Commands\ZoomToDiagramCommand.cs" />

@@ -40,13 +40,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public IReadOnlyModel Model => _model;
 
+        public async Task<bool> CurrentSymbolAvailableAsync() => await GetCurrentSymbolAsync() != null;
+
         public async Task<IRoslynBasedModelEntity> AddCurrentSymbolAsync()
         {
-            var namedTypeSymbol = await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
-            if (namedTypeSymbol == null)
-                return null;
-
-            return GetOrAddEntity(GetOriginalDefinition(namedTypeSymbol));
+            var namedTypeSymbol = await GetCurrentSymbolAsync();
+            return namedTypeSymbol == null 
+                ? null 
+                : GetOrAddEntity(GetOriginalDefinition(namedTypeSymbol));
         }
 
         public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
@@ -101,6 +102,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public void Clear()
         {
             _model.Clear();
+        }
+
+        private async Task<INamedTypeSymbol> GetCurrentSymbolAsync()
+        {
+            return await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
         }
 
         private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)

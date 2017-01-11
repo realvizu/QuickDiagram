@@ -33,8 +33,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (SyncCommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
-                AddMenuCommand(commandSetGuid, commandSpecification.CommandId, (o, e) => command.Execute());
+                var command = (SyncCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                AddMenuCommand(commandSetGuid, commandSpecification.CommandId, (o, e) => command.Execute(), () => command.IsEnabled());
             }
         }
 
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
             foreach (var commandSpecification in commandSpecifications)
             {
                 var command = (AsyncCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
-                AddMenuCommand(commandSetGuid, commandSpecification.CommandId, (o, e) => command.ExecuteAsync());
+                AddMenuCommand(commandSetGuid, commandSpecification.CommandId, (o, e) => command.ExecuteAsync(), () => command.IsEnabled());
             }
         }
 
@@ -57,12 +57,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
             }
         }
 
-        private void AddMenuCommand(Guid commandSet, int commandId, EventHandler commandDelegate)
+        private void AddMenuCommand(Guid commandSet, int commandId, EventHandler commandDelegate, Func<bool> isCommandEnabledPredicate = null)
         {
             var menuCommandId = new CommandID(commandSet, commandId);
-            var menuItem = new OleMenuCommand(commandDelegate, menuCommandId);
+            var menuCommand = new OleMenuCommand(commandDelegate, menuCommandId);
+            menuCommand.BeforeQueryStatus += (o, e) => BeforeQueryStatusCallback(o as OleMenuCommand, isCommandEnabledPredicate);
 
-            _menuCommandService.AddCommand(menuItem);
+            _menuCommandService.AddCommand(menuCommand);
+        }
+
+        private static void BeforeQueryStatusCallback(OleMenuCommand menuCommand, Func<bool> isCommandEnabledPredicate)
+        {
+            if (menuCommand != null && isCommandEnabledPredicate != null)
+                menuCommand.Visible = isCommandEnabledPredicate.Invoke();
         }
     }
 }

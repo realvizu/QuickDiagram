@@ -22,5 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         {
             _appServices = appServices;
         }
+
+        public virtual bool IsEnabled() => true;
     }
 }

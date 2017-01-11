@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.App;
@@ -28,7 +27,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [Guid(PackageGuids.SoftVisPackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(DiagramHostToolWindow))]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     public sealed class SoftVisPackage : Package, IPackageServices
     {
         static SoftVisPackage()

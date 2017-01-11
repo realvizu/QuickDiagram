@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Adds the current symbol (the one at the caret) and its hierarchy (base type and subtypes) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
-    internal sealed class AddCurrentSymbolToDiagramWithHierarchyCommand : AsyncCommandBase
+    internal sealed class AddCurrentSymbolToDiagramWithHierarchyCommand : AddCurrentSymbolToDiagramCommandBase
     {
         public AddCurrentSymbolToDiagramWithHierarchyCommand(IAppServices appServices)
             : base(appServices)

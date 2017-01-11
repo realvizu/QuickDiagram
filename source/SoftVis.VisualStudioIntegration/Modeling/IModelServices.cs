@@ -16,6 +16,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         IReadOnlyModel Model { get; }
 
         /// <summary>
+        /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
+        /// </summary>
+        /// <returns>True if there is a symbol under the caret that can be added to the model.</returns>
+        Task<bool> CurrentSymbolAvailableAsync();
+
+        /// <summary>
         /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.
         /// </summary>
         /// <returns>The model entity that corresponds to the current Roslyn symbol.</returns>
