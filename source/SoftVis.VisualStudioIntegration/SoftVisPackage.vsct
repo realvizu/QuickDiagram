@@ -129,7 +129,7 @@
             <Bitmap guid="AddToDiagramWithHierarchyImageGuid" href="Resources\AddToDependancyGraph_16x16.png" />
             <Bitmap guid="ExpandAllImageGuid" href="Resources\ExpandAll_16x16.png" />
             <Bitmap guid="CollapseAllImageGuid" href="Resources\CollapseAll_16x16.png" />
-            <Bitmap guid="ShowHideNodeDescriptionsImageGuid" href="Resources\StatusInformationNoColor_16x16.png" />
+            <Bitmap guid="ShowHideNodeDescriptionsImageGuid" href="Resources\SmallInfo_16x16.png" />
         </Bitmaps>
     </Commands>
 
