@@ -109,7 +109,13 @@
                 <Strings>
                     <ButtonText>&amp;Hide All Descriptions</ButtonText>
                 </Strings>
-            </Button>      
+            </Button>
+            <Button guid="SoftVisCommandSetGuid" id="ShowHideNodeDescriptionsCommand" type="Button">
+                <Icon guid="ShowHideNodeDescriptionsImageGuid" id="ShowHideNodeDescriptionsImageId" />
+                <Strings>
+                    <ButtonText>&amp;Show/Hide All Descriptions</ButtonText>
+                </Strings>
+            </Button>
         </Buttons>
 
         <Bitmaps>
@@ -123,6 +129,7 @@
             <Bitmap guid="AddToDiagramWithHierarchyImageGuid" href="Resources\AddToDependancyGraph_16x16.png" />
             <Bitmap guid="ExpandAllImageGuid" href="Resources\ExpandAll_16x16.png" />
             <Bitmap guid="CollapseAllImageGuid" href="Resources\CollapseAll_16x16.png" />
+            <Bitmap guid="ShowHideNodeDescriptionsImageGuid" href="Resources\StatusInformationNoColor_16x16.png" />
         </Bitmaps>
     </Commands>
 
@@ -134,8 +141,9 @@
         <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="H" mod2="Shift Control"/>
         <!-- DiagramToolWindow -->
         <KeyBinding guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" editor="DiagramToolWindowGuid" key1="F" mod1="Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ExpandAllNodesCommand" editor="DiagramToolWindowGuid" key1="X" mod1="Alt"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="CollapseAllNodesCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Alt"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowHideNodeDescriptionsCommand" editor="DiagramToolWindowGuid" key1="D" mod1="Control"/>
+        <!--<KeyBinding guid="SoftVisCommandSetGuid" id="ExpandAllNodesCommand" editor="DiagramToolWindowGuid" key1="X" mod1="Alt"/>-->
+        <!--<KeyBinding guid="SoftVisCommandSetGuid" id="CollapseAllNodesCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Alt"/>-->
         <KeyBinding guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="ExportToFileCommand" editor="DiagramToolWindowGuid" key1="S" mod1="Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="DiagramToolWindowGuid" key1="U" mod1="Control"/>
@@ -164,9 +172,6 @@
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarGroup1" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
         </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarGroup2" priority="2">
-            <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
-        </CommandPlacement>
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ToolbarImageGroup" priority="3">
             <Parent guid="SoftVisCommandSetGuid" id="ToolWindowToolbar" />
         </CommandPlacement>
@@ -178,13 +183,8 @@
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" priority="1">
             <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup1" />
         </CommandPlacement>
-
-            <!-- DiagramToolWindow toolbar command group 2 -->
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExpandAllNodesCommand" priority="2">
-            <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup2" />
-        </CommandPlacement>
-        <CommandPlacement guid="SoftVisCommandSetGuid" id="CollapseAllNodesCommand" priority="3">
-            <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup2" />
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ShowHideNodeDescriptionsCommand" priority="2">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup1" />
         </CommandPlacement>
 
         <!-- DiagramToolWindow toolbar command group for image export -->
@@ -246,6 +246,7 @@
             <IDSymbol name="ZoomToDiagramCommand" value="110" />
             <IDSymbol name="ExpandAllNodesCommand" value="111" />
             <IDSymbol name="CollapseAllNodesCommand" value="112" />
+            <IDSymbol name="ShowHideNodeDescriptionsCommand" value="113" />
         </GuidSymbol>
 
         <GuidSymbol name="AutoSizeImageGuid" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">
@@ -277,6 +278,9 @@
         </GuidSymbol>
         <GuidSymbol name="CollapseAllImageGuid" value="{748226C2-748D-4DB1-B692-18CFB4654B47}" >
             <IDSymbol name="CollapseAllImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="ShowHideNodeDescriptionsImageGuid" value="{28B8D9AF-F138-4B68-BB2C-38FFA84E6EB0}" >
+            <IDSymbol name="ShowHideNodeDescriptionsImageId" value="1" />
         </GuidSymbol>
 
         <GuidSymbol name="SourceCodeTextEditorGuid" value="{8b382828-6202-11d1-8870-0000f87579d2}" />

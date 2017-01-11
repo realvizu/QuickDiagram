@@ -108,13 +108,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public virtual void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed)
         {
             if (rect.IsUndefined())
-            {
-#if DEBUG
-                Debugger.Break();
-#else
                 return;
-#endif
-            }
 
             _exponentialZoom = CalculateMinZoomToContainRect(rect.Size, _defaultExponentialZoom);
             _centerInDiagramSpace = rect.GetCenter();

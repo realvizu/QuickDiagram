@@ -25,6 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration
         public const string AddToDiagramWithHierarchyImageGuidString = "cb459c8b-1aa2-4882-b92b-10f6f5f8a074";
         public const string ExpandAllImageGuidString = "482d62f8-9816-4a2d-9e2a-183be2e2896f";
         public const string CollapseAllImageGuidString = "748226c2-748d-4db1-b692-18cfb4654b47";
+        public const string ShowHideNodeDescriptionsImageGuidString = "28b8d9af-f138-4b68-bb2c-38ffa84e6eb0";
         public const string SourceCodeTextEditorGuidString = "8b382828-6202-11d1-8870-0000f87579d2";
         public static Guid SoftVisPackageGuid = new Guid(SoftVisPackageGuidString);
         public static Guid DiagramToolWindowGuid = new Guid(DiagramToolWindowGuidString);
@@ -39,6 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration
         public static Guid AddToDiagramWithHierarchyImageGuid = new Guid(AddToDiagramWithHierarchyImageGuidString);
         public static Guid ExpandAllImageGuid = new Guid(ExpandAllImageGuidString);
         public static Guid CollapseAllImageGuid = new Guid(CollapseAllImageGuidString);
+        public static Guid ShowHideNodeDescriptionsImageGuid = new Guid(ShowHideNodeDescriptionsImageGuidString);
         public static Guid SourceCodeTextEditorGuid = new Guid(SourceCodeTextEditorGuidString);
     }
     /// <summary>
@@ -69,6 +71,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration
         public const int ZoomToDiagramCommand = 0x006E;
         public const int ExpandAllNodesCommand = 0x006F;
         public const int CollapseAllNodesCommand = 0x0070;
+        public const int ShowHideNodeDescriptionsCommand = 0x0071;
         public const int AutoSizeImageId = 0x0001;
         public const int CopyImageId = 0x0001;
         public const int DeleteImageId = 0x0001;
@@ -79,5 +82,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration
         public const int AddToDiagramWithHierarchyImageId = 0x0001;
         public const int ExpandAllImageId = 0x0001;
         public const int CollapseAllImageId = 0x0001;
+        public const int ShowHideNodeDescriptionsImageId = 0x0001;
     }
 }

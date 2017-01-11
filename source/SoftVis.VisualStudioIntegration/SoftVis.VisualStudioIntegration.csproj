@@ -88,6 +88,8 @@
     <Compile Include="App\Commands\AsyncCommandBase.cs" />
     <Compile Include="App\Selectors\DpiSelector.cs" />
     <Compile Include="App\Selectors\ISelector.cs" />
+    <Compile Include="App\ToggleCommands\ShowHideNodeDescriptionsToggleCommand.cs" />
+    <Compile Include="App\ToggleCommands\ToggleCommandBase.cs" />
     <Compile Include="Hosting\ComboAdapters\ComboAdapter.cs" />
     <Compile Include="Hosting\CommandRegistration\CommandRegistrator.cs" />
     <Compile Include="Hosting\CommandRegistration\ComboSpecification.cs" />
@@ -168,6 +170,7 @@
       <Link>Resources\LICENSE</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\StatusInformationNoColor_16x16.png" />
     <Content Include="source.extension.ico">
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Content>
