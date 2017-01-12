@@ -14,16 +14,19 @@ The current version (v0.5) is an **experimental release** to showcase the approa
 
 See the [change log](CHANGELOG.md) for versions and road map.
 
-**Explore code visually**
-- Add types or entire hierarchies from source code to diagram to visualize their relationships.
-- Use existing diagram nodes to discover their related entities.
+## Getting started
+* Add types or entire hierarchies from source code to diagram to visualize their relationships.
 
-**Navigate quickly**
-- Add those types to a diagram that you are focusing on.
-- Use the diagram to jump directly to relevant source code segments.
+![Add To Quick Diagram](images/doc/help/AddToQuickDiagramContextMenuItem.png)
 
-**Document with diagrams**
-- Paste diagrams into documentation.
+* Use existing diagram nodes to discover their related entities.
+
+![Show Related Entities Large](images/doc/help/ShowRelatedEntitiesLarge.png)
+
+* Use the diagram to jump directly to relevant source code segments.
+* Save diagrams as image or copy/paste directly into documentation.
+
+[See the Help for details.](Help.md)
 
 ## License
 [GPL-2.0](LICENSE)
