@@ -20,7 +20,7 @@ Similar to the Code Map feature of Visual Studio Enterprise Edition but more lig
 <!-- Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
 or get the [CI build](http://vsixgallery.com/extension/7481ead5-87e4-4ac0-86d1-317e7adab60c/). -->
 
-## Getting started
+## Getting Started
 * Use the context menu in the source code editor to add types or entire hierarchies to the diagram.
 
 ![Add To Quick Diagram](images/doc/help/AddToQuickDiagramContextMenuItem.png)
@@ -47,5 +47,10 @@ In other words: I won't put any more effort into it if I don't get some positive
 
 To keep informed about my hobby projects follow me on twitter [@realvizu](https://twitter.com/realvizu)
 
+## Thanks to 
+* [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
+* [QuickGraph](https://quickgraph.codeplex.com/) for the great graph library.
+* [Graph#](http://graphsharp.codeplex.com/) for inspiration about WPF diagram canvas implementation and graph layout algorithms.
+* [LearnVSXNow](https://learnvsxnow.codeplex.com/) for Visual Studio Extensibility authoring resources.
 ## License
 [GPL-2.0](LICENSE)

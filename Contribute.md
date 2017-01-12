@@ -3,9 +3,10 @@
 ## How to build the source
 1. Prerequisites
    * Visual Studio 2015 Update 3 (any edition)
-   * Visual Studio 2015 SDK Update 3 (https://msdn.microsoft.com/en-us/library/mt683786.aspx)
-1. Download or clone the source from https://github.com/realvizu/QuickDiagram
-1. Open source\QuickDiagramTool.sln
+   * [Visual Studio 2015 SDK Update 3](https://msdn.microsoft.com/en-us/library/mt683786.aspx)
+   * [NsDepCop 1.5](https://nsdepcop.codeplex.com/releases/view/624331) (for enforcing namespace dependency rules)
+1. [Download or clone the source](https://github.com/realvizu/QuickDiagram)
+1. Open "source\QuickDiagramTool.sln"
 1. Enable NuGet Package restore in Visual Studio
 ![Allowing NuGet package restore](images/doc/contribute/VSAllowNuGetPackageRestore.png)
 1. Build the solution
