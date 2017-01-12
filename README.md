@@ -51,7 +51,8 @@ To keep informed about my hobby projects follow me on twitter [@realvizu](https:
 * [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
 * [QuickGraph](https://quickgraph.codeplex.com/) for the great graph library.
 * [Graph#](http://graphsharp.codeplex.com/) for inspiration about WPF diagram canvas implementation and graph layout algorithms.
-* [LearnVSXNow](https://learnvsxnow.codeplex.com/) for Visual Studio Extensibility authoring resources.
+* [LearnVSXNow](https://learnvsxnow.codeplex.com/) for VSIX resources.
+* [Extensibility Tools](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ExtensibilityTools) for helping a lot in VSIX authoring.
 
 ## License
 [GPL-2.0](LICENSE)
