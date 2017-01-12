@@ -32,15 +32,15 @@ or get the [CI build](http://vsixgallery.com/extension/7481ead5-87e4-4ac0-86d1-3
 * Double-click on diagram nodes to jump to their declaration in the source code.
 * Save diagrams as image or copy/paste them directly into documentation.
 
-[See the Help for details.](Help.md)
+See the [**Help**](Help.md) for details.
 
 ## Versions
-See the [change log](CHANGELOG.md) for versions and road map.
+See the [**Change Log**](CHANGELOG.md) for versions and road map.
 
 The current version (v0.5) is an **experimental release** to showcase the approach of the tool. It supports only a few types of relationships: type inheritance and interface implementation. Later versions will show a lot more (namespaces, type members, method calls, property read/write, object creation, etc.)
 
 ## Feedback
-Please use the [Issue Tracker](https://github.com/realvizu/QuickDiagram/issues) to record bugs and feature requests.
+Please use the [**Issue Tracker**](https://github.com/realvizu/QuickDiagram/issues) to record bugs and feature requests.
 
 **Your feedback is much appreciated and is very important to shape the future of this tool!**
 In other words: I won't put any more effort into it if I don't get some positive feedback :)
