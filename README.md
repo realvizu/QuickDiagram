@@ -52,5 +52,6 @@ To keep informed about my hobby projects follow me on twitter [@realvizu](https:
 * [QuickGraph](https://quickgraph.codeplex.com/) for the great graph library.
 * [Graph#](http://graphsharp.codeplex.com/) for inspiration about WPF diagram canvas implementation and graph layout algorithms.
 * [LearnVSXNow](https://learnvsxnow.codeplex.com/) for Visual Studio Extensibility authoring resources.
+
 ## License
 [GPL-2.0](LICENSE)
