@@ -7,10 +7,10 @@ Similar to the Code Map feature of Visual Studio Enterprise Edition but more lig
 
 **Explore code visually**
 * Add types or entire hierarchies from source code to diagram to visualize their relationships.
-* Use the diagram to read type descriptions and to discover related types.
+* Use the diagram to discover related types.
 
 **Navigate quickly**
-* Use the diagram to jump directly to relevant source code segments.
+* Jump from the diagram to relevant source code segments.
 
 **Document with diagrams**
 * Copy/paste diagrams into documentation.
