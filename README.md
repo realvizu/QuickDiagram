@@ -42,8 +42,8 @@ The current version (v0.5) is an **experimental release** to showcase the approa
 ## Feedback
 Please use the [Issue Tracker](https://github.com/realvizu/QuickDiagram/issues) to record bugs and feature requests.
 
-Your feedback is much appreciated and is very important to shape the future of this tool!
-In other words: I won't put any more effort into this tool if I don't get some positive feedback :)
+**Your feedback is much appreciated and is very important to shape the future of this tool!**
+In other words: I won't put any more effort into it if I don't get some positive feedback :)
 
 To keep informed about my hobby projects follow me on twitter [@realvizu](https://twitter.com/realvizu)
 

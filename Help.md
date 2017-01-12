@@ -12,6 +12,12 @@
 
 ![Add To Quick Diagram With Hierarchy](images/doc/help/AddToDiagramWithHierarchy.png)
 
+### Open the Quick Diagram tool window
+* The Quick Diagram tool window opens automatically if you add anything to it.
+* But if it was closed then you can open it again from the Visual Studio menu bar:
+  * View > Other Windows > Quick Diagram
+* Or use the keyboard shortcut: Ctrl+Shift+D, Ctrl+Shift+D (yes, the same key combination twice).
+
 ### Show/Hide descriptions
 * Use the "Show/Hide Descriptions" toolbar button to show/hide type descriptions (the summary part of the type's XML documentation).
 
@@ -50,7 +56,7 @@
 
 ![Clear Diagram Button](images/doc/help/ClearDiagramButton.png)
 
-### Update the diagram to refkect code changes
+### Update the diagram to reflect code changes
 * Use the "Update Diagram from Code" toolbar button to synchronize the diagram with the changed code.
 
 ![Update Diagram From Code Button](images/doc/help/UpdateDiagramFromCodeButton.png)
@@ -74,10 +80,4 @@
 * Use the "Fit Diagram to Window" toolbar button, or the rectangle in the Pan and Zoom Control.
 
 ![Fit Diagram To Window](images/doc/help/FitDiagramToWindow.png)
-
-### Open the Quick Diagram tool window
-* You can open the Quick Diagram tool window from the Visual Studio menu bar:
-* View > Other Windows > Quick Diagram
-* Or use the keyboard shortcut: Ctrl+Shift+D, Ctrl+Shift+D
-
-![Show Quick Diagram Tool Window](images/doc/help/ShowQuickDiagramToolWindow.png)
+ 
