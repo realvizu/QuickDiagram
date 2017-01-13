@@ -5,17 +5,19 @@
     /// </summary>
     public struct EntityRelationType
     {
+        public string Name { get; }
         public ModelRelationshipType Type { get; }
         public EntityRelationDirection Direction { get; }
 
-        public EntityRelationType(ModelRelationshipClassifier classifier, ModelRelationshipStereotype stereotype,
+        public EntityRelationType(string name, ModelRelationshipClassifier classifier, ModelRelationshipStereotype stereotype, 
             EntityRelationDirection direction)
-            : this(new ModelRelationshipType(classifier, stereotype), direction)
+            : this(name, new ModelRelationshipType(classifier, stereotype), direction)
         {
         }
 
-        public EntityRelationType(ModelRelationshipType type, EntityRelationDirection direction)
+        public EntityRelationType(string name, ModelRelationshipType type, EntityRelationDirection direction)
         {
+            Name = name;
             Type = type;
             Direction = direction;
         }

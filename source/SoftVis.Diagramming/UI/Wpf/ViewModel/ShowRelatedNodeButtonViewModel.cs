@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
 
         public ShowRelatedNodeButtonViewModel(IArrangedDiagram diagram, EntityRelationType relationType)
-            : base(diagram)
+            : base(diagram, relationType.Name)
         {
             _relationType = relationType;
             SubscribeToModelEvents();

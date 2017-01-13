@@ -121,6 +121,7 @@
                                 Width="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}" 
                                 Height="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"
                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                ToolTip="{Binding Name}"
                                 MouseClickCommand="{Binding ClickCommand}"
                                 MouseDoubleClickCommand="{Binding DoubleClickCommand}"/>
                         </DataTemplate>

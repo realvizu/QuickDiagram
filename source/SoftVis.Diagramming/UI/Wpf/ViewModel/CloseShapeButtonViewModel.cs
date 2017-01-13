@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class CloseShapeButtonViewModel : DiagramShapeButtonViewModelBase
     {
         public CloseShapeButtonViewModel(IArrangedDiagram diagram)
-            : base(diagram)
+            : base(diagram, "Remove")
         {
             IsEnabled = true;
         }

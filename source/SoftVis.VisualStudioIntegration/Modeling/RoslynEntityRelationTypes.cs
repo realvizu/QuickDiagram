@@ -7,12 +7,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal static class RoslynEntityRelationTypes
     {
-        public static readonly EntityRelationType ImplementedInterface = new EntityRelationType(
+        public static readonly EntityRelationType ImplementedInterface = new EntityRelationType("Implemented interfaces",
             ModelRelationshipClassifier.Generalization,
             ModelRelationshipStereotypes.Implementation,
             EntityRelationDirection.Outgoing);
 
-        public static readonly EntityRelationType ImplementerType = new EntityRelationType(
+        public static readonly EntityRelationType ImplementerType = new EntityRelationType("Implementing types",
             ModelRelationshipClassifier.Generalization,
             ModelRelationshipStereotypes.Implementation,
             EntityRelationDirection.Incoming);
