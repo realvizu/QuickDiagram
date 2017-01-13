@@ -7,7 +7,7 @@
 This is an experimental release that supports type inheritance and interface implementation relationships only. Later versions will show a lot more (namespaces, type members, method calls, property read/write, object creation, etc.)</Description>
         <MoreInfo>https://github.com/realvizu/QuickDiagram</MoreInfo>
         <License>Resources\LICENSE</License>
-        <GettingStartedGuide>https://github.com/realvizu/QuickDiagram</GettingStartedGuide>
+        <GettingStartedGuide>https://github.com/realvizu/QuickDiagram#getting-started</GettingStartedGuide>
         <Icon>Resources\QuickDiagramTool_64.ico</Icon>
         <PreviewImage>Resources\QuickDiagramTool_256.png</PreviewImage>
         <Tags>code;visualize;quick;diagram;c#;csharp;tool;inheritance;interface;implementation;codemap;map</Tags>
