@@ -3,7 +3,7 @@
 namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
     /// <summary>
-    /// An animated content presenter with a Rect property.
+    /// An animated content presenter with Rect and Center properties.
     /// </summary>
     public class AnimatedRectContentPresenter : AnimatedContentPresenter
     {
@@ -20,14 +20,24 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         private static void OnRectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => ((AnimatedRectContentPresenter) d).OnRectChanged((Rect) e.OldValue, (Rect) e.NewValue);
 
+        public static readonly DependencyProperty CenterProperty =
+            DependencyProperty.Register("Center", typeof(Point), typeof(AnimatedRectContentPresenter));
+
         public Rect Rect
         {
             get { return (Rect)GetValue(RectProperty); }
             set { SetValue(RectProperty, value); }
         }
 
-        protected virtual void OnRectChanged(Rect oldValue, Rect newValue)
+        public Point Center
         {
+            get { return (Point)GetValue(CenterProperty); }
+            set { SetValue(CenterProperty, value); }
+        }
+
+        private void OnRectChanged(Rect oldValue, Rect newValue)
+        {
+            Center = newValue.GetCenter();
         }
     }
 }

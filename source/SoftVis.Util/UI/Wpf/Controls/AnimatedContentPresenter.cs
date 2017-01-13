@@ -67,6 +67,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             DependencyProperty.Register("AnimationDuration", typeof(Duration), typeof(AnimatedContentPresenter),
                 new PropertyMetadata(AnimationDurationDefault));
 
+        public static readonly DependencyProperty AnimatedRectProperty =
+            DependencyProperty.Register("AnimatedRect", typeof(Rect), typeof(AnimatedContentPresenter));
+
         public double Left
         {
             get { return (double)GetValue(LeftProperty); }
@@ -103,6 +106,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             set { SetValue(AnimationDurationProperty, value); }
         }
 
+        public Rect AnimatedRect
+        {
+            get { return (Rect)GetValue(AnimatedRectProperty); }
+            set { SetValue(AnimatedRectProperty, value); }
+        }
+
         public void OnBeforeRemove(Action<ViewModelBase> readyToBeRemovedCallback)
         {
             _isDisappearing = true;
@@ -125,10 +134,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void UpdatePosition(double oldValue, double newValue)
         {
+            AnimatedRect = new Rect(Left, Top, ActualWidth, ActualHeight);
+
             if (_isDisappearing)
                 return;
 
-            if (double.IsNaN(oldValue) && !double.IsNaN(newValue))
+            if (oldValue.IsUndefined() && newValue.IsDefined())
                 AnimateAppear();
 
             SetVisibilityBasedOnPosition(newValue);
@@ -136,7 +147,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private void SetVisibilityBasedOnPosition(double newValue)
         {
-            var newVisibility = double.IsNaN(newValue) ? Visibility.Hidden : Visibility.Visible;
+            var newVisibility = newValue.IsDefined() ? Visibility.Visible : Visibility.Hidden;
             SetValue(VisibilityProperty, newVisibility);
         }
 

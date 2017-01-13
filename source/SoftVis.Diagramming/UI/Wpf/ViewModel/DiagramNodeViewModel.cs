@@ -19,6 +19,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point _center;
         private Point _topLeft;
         private Size _size;
+        private Rect _animatedRect;
         private string _name;
         private string _fullName;
         private string _description;
@@ -175,6 +176,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                         OnSizeChanged(oldSize, value);
                         TopLeft = CenterToTopLeft(_center, _size);
                     }
+                }
+            }
+        }
+
+        public Rect AnimatedRect
+        {
+            get { return _animatedRect; }
+            set
+            {
+                if (_animatedRect != value)
+                {
+                    _animatedRect = value;
+                    OnPropertyChanged();
                 }
             }
         }
