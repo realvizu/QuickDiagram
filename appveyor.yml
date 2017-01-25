@@ -1,6 +1,10 @@
 image: Visual Studio 2015
 
-version: 0.6.{build}.0
+environment:
+  shortversion: '0.6.0'
+  informationalversion: '0.6.0'
+
+version: '$(shortversion).{build}'
 
 configuration: Release
 
@@ -12,11 +16,11 @@ assembly_info:
   file: source\include\VersionInfo.cs
   assembly_version: '{version}'
   assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  assembly_informational_version: '$(informationalversion)'
 
 before_build:
 # vsixmanifest file must be specified with full path.
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest $env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\QuickDiagramTool.sln
 
 build:
