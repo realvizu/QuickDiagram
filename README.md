@@ -5,6 +5,8 @@ Code visualization tool for C# to quickly **explore, navigate and document** sou
 Integrates into Visual Studio 2015.
 Similar to the Code Map feature of Visual Studio Enterprise Edition but more lightweight ... and free.
 
+Install from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC).
+
 **Explore code visually**
 * Add types or entire hierarchies from source code to diagram to visualize their relationships.
 * Use the diagram to discover related types.
