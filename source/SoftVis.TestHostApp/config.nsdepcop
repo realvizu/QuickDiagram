@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning">
+<NsDepCopConfig InheritanceDepth="1">
     <Allowed From="*" To="System.*" />
-    <Allowed From="*" To="MoreLinq" />
-    <Allowed From="*" To="." />
     <Allowed From="Codartis.SoftVis.TestHostApp.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.TestHostApp.*" To="Codartis.SoftVis.*" />
 </NsDepCopConfig>

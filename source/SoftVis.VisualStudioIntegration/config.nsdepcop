@@ -1,19 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
-    <Allowed From="*" To="System" />
-    <Allowed From="*" To="System.Diagnostics.*" />
-    <Allowed From="*" To="System.Collections.*" />
-    <Allowed From="*" To="System.Linq.*" />
-    <Allowed From="*" To="System.Globalization.*" />
-    <Allowed From="*" To="System.Threading" />
-    <Allowed From="*" To="System.Threading.Tasks" />
-    <Allowed From="*" To="System.ComponentModel.*" />
-    <Allowed From="*" To="System.Runtime.InteropServices" />
-    <Allowed From="*" To="System.Runtime.CompilerServices" />
-    <Allowed From="*" To="System.CodeDom.Compiler" />
-    <Allowed From="*" To="System.Resources" />
-    <Allowed From="*" To="System.Reflection" />
-    <Allowed From="*" To="System.IO" />
+<NsDepCopConfig InheritanceDepth="1">
     <Allowed From="*" To="System.Windows">
         <VisibleMembers>
             <Type Name="Clipboard"/>
@@ -26,10 +12,6 @@
     </Allowed>
     <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
-    <Allowed From="*" To="MoreLinq" />
-    <Allowed From="*" To="Codartis.SoftVis.Util.*" />
-
-    <Allowed From="XamlGeneratedNamespace" To="*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Microsoft.VisualStudio.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="EnvDTE.*" />
