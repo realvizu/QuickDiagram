@@ -64,20 +64,20 @@
     <Content Include="..\..\LICENSE">
       <Link>Resources\LICENSE</Link>
     </Content>
-    <Content Include="Resources\QuickDiagramTool_256.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="..\SoftVis.VisualStudioIntegration.Vs2017\Resources\QuickDiagramTool_256.png">
+      <Link>Resources\QuickDiagramTool_256.png</Link>
     </Content>
-    <Content Include="Resources\QuickDiagramTool_64.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="..\SoftVis.VisualStudioIntegration.Vs2017\Resources\QuickDiagramTool_64.ico">
+      <Link>Resources\QuickDiagramTool_64.ico</Link>
     </Content>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\Key.snk">
       <Link>Key.snk</Link>
     </None>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="source.extension.vsixmanifest">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftVis.VisualStudioIntegration\SoftVis.VisualStudioIntegration.csproj">
