@@ -13,6 +13,10 @@
     <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
 
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.*" To="Codartis.SoftVis.VisualStudioIntegration.Util" />
+
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Util" To="Microsoft.CodeAnalysis.*" />
+
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Microsoft.VisualStudio.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="EnvDTE.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="EnvDTE80.*" />

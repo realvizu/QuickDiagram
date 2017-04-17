@@ -1,8 +1,7 @@
 ﻿using System.Xml;
-using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.SoftVis.Util.Roslyn
+namespace Codartis.SoftVis.VisualStudioIntegration.Util
 {
     public static class NamedTypeSymbolExtensions
     {

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using Codartis.SoftVis.Util;
 
-namespace Codartis.SoftVis.Util.Roslyn
+namespace Codartis.SoftVis.VisualStudioIntegration.Util
 {
     /// <summary>
     /// Extracts information from xml comment documentation as returned by the Roslyn API.

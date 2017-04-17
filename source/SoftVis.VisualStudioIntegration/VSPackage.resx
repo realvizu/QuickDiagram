@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -121,11 +121,10 @@
     <value>Quick Diagram Tool for C#</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>Code visualization tool for C# to quickly explore, navigate and document source code structure and relationships. Similar to the Code Map feature of Visual Studio Enterprise Edition but much more lightweight.
-This is an experimental release that supports type inheritance and interface implementation relationships only. Later versions will show a lot more (namespaces, type members, method calls, property read/write, object creation, etc.)</value>
+    <value>Code visualization tool for C# to quickly explore, navigate and document source code structure and relationships.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>source.extension.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="401" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\QuickDiagramTool_64.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.Roslyn;
+using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling

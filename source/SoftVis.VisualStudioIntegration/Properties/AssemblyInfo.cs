@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("QuickDiagramTool")]
-[assembly: AssemblyDescription("Code visualization tool for C#. Visual Studio extension.")]
+[assembly: AssemblyTitle("SoftVis.VisualStudioIntegration")]
+[assembly: AssemblyDescription("Implements a diagram tool as a Visual Studio package.")]

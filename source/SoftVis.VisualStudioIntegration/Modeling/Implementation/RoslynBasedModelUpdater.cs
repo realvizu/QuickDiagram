@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Codartis.SoftVis.Util.Roslyn;
+using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

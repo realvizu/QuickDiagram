@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.Roslyn;
+using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;

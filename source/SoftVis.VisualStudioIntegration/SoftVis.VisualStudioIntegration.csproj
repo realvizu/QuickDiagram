@@ -1,13 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>14.0</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -20,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -29,6 +33,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -40,8 +47,8 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Codartis.SoftVis.VisualStudioIntegration</RootNamespace>
-    <AssemblyName>QuickDiagramTool</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <AssemblyName>SoftVis.VisualStudioIntegration</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -58,6 +65,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CreateVsixContainer>False</CreateVsixContainer>
+    <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -111,18 +120,10 @@
     <Compile Include="Hosting\CommandRegistration\CommandSpecification.cs" />
     <Compile Include="Hosting\ShellCommands.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelUpdater.cs" />
-    <Compile Include="PackageIcon.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PackageIcon.resx</DependentUpon>
-    </Compile>
     <Compile Include="SoftVisPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SoftVisPackage.vsct</DependentUpon>
-    </Compile>
-    <Compile Include="source.extension.cs">
-      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
     <Compile Include="UI\FrameMode.cs" />
     <Compile Include="UI\IHostUiServices.cs" />
@@ -164,16 +165,16 @@
     <Compile Include="Modeling\Implementation\RoslynBasedClass.cs" />
     <Compile Include="Hosting\SoftVisPackage.cs" />
     <Compile Include="Hosting\HostWorkspaceGateway.cs" />
+    <Compile Include="Util\FileLinePositionSpanExtensions.cs" />
+    <Compile Include="Util\LinePositionSpanExtensions.cs" />
+    <Compile Include="Util\NamedTypeSymbolExtensions.cs" />
+    <Compile Include="Util\XmlDocumentation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\LICENSE">
-      <Link>Resources\LICENSE</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
+    <Content Include="Resources\QuickDiagramTool_64.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\SmallInfo_16x16.png" />
-    <Content Include="source.extension.ico">
-      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
-    </Content>
     <None Include="..\Key.snk">
       <Link>Key.snk</Link>
     </None>
@@ -185,11 +186,6 @@
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="source.extension.vsixmanifest">
-      <SubType>Designer</SubType>
-      <Generator>VsixManifestGenerator</Generator>
-      <LastGenOutput>source.extension.resx</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -206,20 +202,8 @@
     <Content Include="Resources\Copy_16x16.png" />
     <Content Include="Resources\DependancyGraph_16x16.png" />
     <Content Include="Resources\ExpandAll_16x16.png" />
-    <Content Include="Resources\QuickDiagramTool_256.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Resources\QuickDiagramTool_64.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Resources\Refresh_16x16.png" />
     <Content Include="Resources\Save_16x16.png" />
-    <Content Include="Resources\QuickDiagramTool_256.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <VSCTCompile Include="SoftVisPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
@@ -229,62 +213,72 @@
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\EnvDTE.8.0.1\lib\net10\EnvDTE.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\EnvDTE100.10.0.1\lib\net20\EnvDTE100.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\EnvDTE80.8.0.1\lib\net10\EnvDTE80.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\EnvDTE90.9.0.1\lib\net10\EnvDTE90.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EnvDTE90a, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\EnvDTE90a.9.0.1\lib\net10\EnvDTE90a.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.2.2\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.2.2\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.2.2\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.EditorFeatures.Text, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.EditorFeatures.Text.1.2.2\lib\net46\Microsoft.CodeAnalysis.EditorFeatures.Text.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.1.2.2\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.Workspaces.1.2.2\lib\net45\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.2.2\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.2.2\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.ComponentModelHost.14.0.25424\lib\net45\Microsoft.VisualStudio.ComponentModelHost.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Editor, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.CoreUtility.14.3.25407\lib\net45\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Editor, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Editor.14.3.25407\lib\net45\Microsoft.VisualStudio.Editor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.3.25407\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.LanguageServices, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.LanguageServices.1.2.2\lib\net46\Microsoft.VisualStudio.LanguageServices.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.OLE.Interop.7.10.6070\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
@@ -315,17 +309,17 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.10.0.10.0.30319\lib\Microsoft.VisualStudio.Shell.Interop.10.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.11.0.11.0.61030\lib\Microsoft.VisualStudio.Shell.Interop.11.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.12.0.12.0.30110\lib\Microsoft.VisualStudio.Shell.Interop.12.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -337,10 +331,22 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30729\lib\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.Data.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.Logic.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.UI.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.UI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.UI.Wpf.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.UI.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.TextManager.Interop.7.10.6070\lib\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
       <Private>True</Private>
@@ -361,9 +367,8 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.14.1.111\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MoreLinq, Version=1.4.18916.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>..\packages\morelinq.1.4.0\lib\net35\MoreLinq.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.3.0\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -371,7 +376,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
     </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\stdole.7.0.3301\lib\net10\stdole.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
+    </Reference>
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
@@ -397,19 +410,64 @@
       <HintPath>..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Diagnostics.FileVersionInfo, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.FileVersionInfo.4.3.0\lib\net46\System.Diagnostics.FileVersionInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.StackTrace, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.StackTrace.4.3.0\lib\net46\System.Diagnostics.StackTrace.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XmlDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.XmlDocument.4.3.0\lib\net46\System.Xml.XmlDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.XPath.4.3.0\lib\net46\System.Xml.XPath.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath.XDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.XPath.XDocument.4.3.0\lib\net46\System.Xml.XPath.XDocument.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -437,10 +495,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.6 %28x86 and x64%29</ProductName>
@@ -453,17 +507,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PackageIcon.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>PackageIcon.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="source.extension.resx">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -471,11 +522,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets'))" />
     <Error Condition="!Exists('..\packages\NsDepCop.1.6.0\build\NsDepCop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NsDepCop.1.6.0\build\NsDepCop.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets')" />
   <Import Project="..\packages\NsDepCop.1.6.0\build\NsDepCop.targets" Condition="Exists('..\packages\NsDepCop.1.6.0\build\NsDepCop.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

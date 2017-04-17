@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
-using Codartis.SoftVis.Util.Roslyn;
+using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation

@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Debugger = System.Diagnostics.Debugger;
 using IVisualStudioServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
@@ -23,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 401)]
+    [InstalledProductRegistration("#110", "#112", "0.6.0.0", IconResourceID = 401)]
     [Guid(PackageGuids.SoftVisPackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(DiagramHostToolWindow))]
@@ -49,7 +48,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) =>
             {
 #if DEBUG
-                Debugger.Break();
+                System.Diagnostics.Debugger.Break();
 #else
                 return;
 #endif

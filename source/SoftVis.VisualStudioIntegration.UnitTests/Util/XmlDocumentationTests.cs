@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Xml;
-using Codartis.SoftVis.Util.Roslyn;
+using Codartis.SoftVis.VisualStudioIntegration.Util;
 using FluentAssertions;
 using Xunit;
 
-namespace Codartis.SoftVis.Util.UnitTests.Roslyn
+namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Util
 {
     public class XmlDocumentationTests
     {

@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig InheritanceDepth="1">
-    <Allowed From="Codartis.SoftVis.Util.Roslyn.*" To="Microsoft.CodeAnalysis.*" />
-
     <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.ComponentModel" />
     <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.Runtime.InteropServices" />
     <Allowed From="Codartis.SoftVis.Util.UI.Wpf.*" To="System.Windows.*" />
