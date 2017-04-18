@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "0.6.0.0", IconResourceID = 401)]
+    [InstalledProductRegistration("#110", "#112", PackageInfo.Version, IconResourceID = 401)]
     [Guid(PackageGuids.SoftVisPackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(DiagramHostToolWindow))]

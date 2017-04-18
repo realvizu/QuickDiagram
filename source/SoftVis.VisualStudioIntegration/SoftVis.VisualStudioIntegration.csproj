@@ -51,7 +51,7 @@
     <AssemblyName>SoftVis.VisualStudioIntegration</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
-    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
@@ -171,10 +171,11 @@
     <Compile Include="Util\LinePositionSpanExtensions.cs" />
     <Compile Include="Util\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Util\XmlDocumentation.cs" />
+    <Compile Include="PackageInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\QuickDiagramTool_64.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Resources\QuickDiagramTool_128.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\SmallInfo_16x16.png" />
     <None Include="..\Key.snk">

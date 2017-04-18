@@ -63,12 +63,17 @@
   <ItemGroup>
     <Content Include="..\..\LICENSE">
       <Link>Resources\LICENSE</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\SoftVis.VisualStudioIntegration.Vs2017\Resources\QuickDiagramTool_128.ico">
+      <Link>Resources\QuickDiagramTool_128.ico</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\SoftVis.VisualStudioIntegration.Vs2017\Resources\QuickDiagramTool_256.png">
       <Link>Resources\QuickDiagramTool_256.png</Link>
-    </Content>
-    <Content Include="..\SoftVis.VisualStudioIntegration.Vs2017\Resources\QuickDiagramTool_64.ico">
-      <Link>Resources\QuickDiagramTool_64.ico</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -80,6 +85,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftVis.Diagramming\SoftVis.Diagramming.csproj">
+      <Project>{9a600b8e-7c32-4dae-b61c-55fb78051f81}</Project>
+      <Name>SoftVis.Diagramming</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj">
+      <Project>{04b8c468-787f-45b2-bd98-31e05c646099}</Project>
+      <Name>SoftVis.Util</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftVis.VisualStudioIntegration\SoftVis.VisualStudioIntegration.csproj">
       <Project>{50ff6515-367a-4ffa-bfeb-3d7bf2204f5d}</Project>
       <Name>SoftVis.VisualStudioIntegration</Name>
