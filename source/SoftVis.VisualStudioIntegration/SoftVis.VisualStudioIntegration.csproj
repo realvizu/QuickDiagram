@@ -78,6 +78,7 @@
     <WarningLevel>4</WarningLevel>
     <DeployExtension>False</DeployExtension>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CreateVsixContainer>False</CreateVsixContainer>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Include\CommonAssemblyInfo.cs">
