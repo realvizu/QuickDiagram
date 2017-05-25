@@ -5,9 +5,10 @@
     /// </summary>
     internal class ShowHideNodeDescriptionsToggleCommand : ToggleCommandBase
     {
-        public ShowHideNodeDescriptionsToggleCommand(IAppServices appServices) 
-            : base(appServices, initialIsChecked: false)
+        public ShowHideNodeDescriptionsToggleCommand(IAppServices appServices)
+            : base(appServices, initialIsChecked: true)
         {
+            UiServices.ExpandAllNodes();
         }
 
         protected override void OnChecked()

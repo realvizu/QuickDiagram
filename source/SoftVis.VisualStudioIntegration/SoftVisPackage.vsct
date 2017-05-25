@@ -133,23 +133,6 @@
         </Bitmaps>
     </Commands>
 
-    <KeyBindings>
-        <!-- Global -->
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="D" mod1="Shift Control" key2="D" mod2="Shift Control"/>
-        <!-- SourceCodeTextEditor -->
-        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="A" mod2="Shift Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="H" mod2="Shift Control"/>
-        <!-- DiagramToolWindow -->
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" editor="DiagramToolWindowGuid" key1="F" mod1="Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowHideNodeDescriptionsCommand" editor="DiagramToolWindowGuid" key1="D" mod1="Control"/>
-        <!--<KeyBinding guid="SoftVisCommandSetGuid" id="ExpandAllNodesCommand" editor="DiagramToolWindowGuid" key1="X" mod1="Alt"/>-->
-        <!--<KeyBinding guid="SoftVisCommandSetGuid" id="CollapseAllNodesCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Alt"/>-->
-        <KeyBinding guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ExportToFileCommand" editor="DiagramToolWindowGuid" key1="S" mod1="Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="DiagramToolWindowGuid" key1="U" mod1="Control"/>
-        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearModelCommand" editor="DiagramToolWindowGuid" key1="VK_DELETE" mod1="Control"/>
-    </KeyBindings>
-
     <CommandPlacements>
         <!-- View Menu / Other Windows -->
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="0x1000">
@@ -214,6 +197,23 @@
             <Parent guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup" />
         </CommandPlacement>
     </CommandPlacements>
+
+    <KeyBindings>
+        <!-- Global -->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" editor="guidVSStd97" key1="D" mod1="Shift Control" key2="D" mod2="Shift Control"/>
+        <!-- SourceCodeTextEditor -->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="A" mod2="Shift Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="AddToDiagramWithHierarchyCommand" editor="SourceCodeTextEditorGuid" key1="D" mod1="Shift Control" key2="H" mod2="Shift Control"/>
+        <!-- DiagramToolWindow -->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ZoomToDiagramCommand" editor="DiagramToolWindowGuid" key1="F" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ShowHideNodeDescriptionsCommand" editor="DiagramToolWindowGuid" key1="D" mod1="Control"/>
+        <!--<KeyBinding guid="SoftVisCommandSetGuid" id="ExpandAllNodesCommand" editor="DiagramToolWindowGuid" key1="X" mod1="Alt"/>-->
+        <!--<KeyBinding guid="SoftVisCommandSetGuid" id="CollapseAllNodesCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Alt"/>-->
+        <KeyBinding guid="SoftVisCommandSetGuid" id="CopyToClipboardCommand" editor="DiagramToolWindowGuid" key1="C" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ExportToFileCommand" editor="DiagramToolWindowGuid" key1="S" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="DiagramToolWindowGuid" key1="U" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ClearModelCommand" editor="DiagramToolWindowGuid" key1="VK_DELETE" mod1="Control"/>
+    </KeyBindings>
 
     <Symbols>
         <GuidSymbol name="SoftVisPackageGuid" value="{198d9322-583a-4112-a2a8-61f4c0818966}" />

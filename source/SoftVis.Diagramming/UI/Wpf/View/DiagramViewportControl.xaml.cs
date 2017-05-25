@@ -92,7 +92,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("KeyboardZoomCommand", typeof(ZoomDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportResizeCommandProperty =
-            DependencyProperty.Register("ViewportResizeCommand", typeof(ViewportCalculatorViewModel.ResizeDelegateCommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register("ViewportResizeCommand", typeof(ViewportCalculatorViewModel.ResizeDelegateCommand), typeof(DiagramViewportControl),
+                new FrameworkPropertyMetadata(OnViewportResizeCommandChanged));
+
+        private static void OnViewportResizeCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // HACK: When ViewportResizeCommand is bound we forcibly execute it 
+            // because in some circumstances the resize event happens before data binding.
+            if (e.OldValue == null && e.NewValue != null && d is DiagramViewportControl diagramViewportControl)
+                diagramViewportControl.OnViewportResized(diagramViewportControl.RenderSize);
+        }
 
         public static readonly DependencyProperty ViewportPanCommandProperty =
             DependencyProperty.Register("ViewportPanCommand", typeof(ViewportCalculatorViewModel.PanDelegateCommand), typeof(DiagramViewportControl));
