@@ -4,7 +4,7 @@
 
 First experimental release to gather feedback.
 
-- [x] Visual Studio 2015 extension.
+- [x] Visual Studio 2015 and 2017 extension.
 - [x] Add entities from source code to diagram.
   - [x] Types: class, interface, struct, enum, delegate.
   - [x] Type features: description (xml comment summary), is abstract, is from source or metadata.
