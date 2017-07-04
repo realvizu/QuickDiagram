@@ -11,17 +11,17 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// </summary>
     public abstract class BubbleListBoxViewModel : ShowHideViewModelBase
     {
-        private ThreadSafeObservableList<object> _items;
+        private ThreadSafeObservableCollection<object> _items;
         private object _selectedItem;
 
         public DelegateCommand<object> ItemSelectedCommand { get; protected set; }
 
         protected BubbleListBoxViewModel()
         {
-            Items = new ThreadSafeObservableList<object>();
+            Items = new ThreadSafeObservableCollection<object>();
         }
 
-        public ThreadSafeObservableList<object> Items
+        public ThreadSafeObservableCollection<object> Items
         {
             get { return _items; }
             set

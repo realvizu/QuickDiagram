@@ -10,9 +10,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     internal class DiagramShapeViewModelFactory : DiagramViewModelBase
     {
-        private readonly ThreadSafeObservableList<DiagramNodeViewModel> _diagramNodeViewModels;
+        private readonly ThreadSafeObservableCollection<DiagramNodeViewModel> _diagramNodeViewModels;
 
-        public DiagramShapeViewModelFactory(IArrangedDiagram diagram, ThreadSafeObservableList<DiagramNodeViewModel> diagramNodeViewModels)
+        public DiagramShapeViewModelFactory(IArrangedDiagram diagram, ThreadSafeObservableCollection<DiagramNodeViewModel> diagramNodeViewModels)
               : base(diagram)
         {
             _diagramNodeViewModels = diagramNodeViewModels;

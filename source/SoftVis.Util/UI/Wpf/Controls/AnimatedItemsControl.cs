@@ -27,8 +27,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         where TViewModel : ViewModelBase
         where TContentPresenter : AnimatedContentPresenter, new()
     {
-        private ThreadSafeObservableList<TViewModel> _originalItemsSource;
-        private ThreadSafeObservableList<TViewModel> _presentedItemsSource;
+        private ThreadSafeObservableCollection<TViewModel> _originalItemsSource;
+        private ThreadSafeObservableCollection<TViewModel> _presentedItemsSource;
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -45,15 +45,15 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             if (ReferenceEquals(newValue, _presentedItemsSource))
                 return;
 
-            SetUpDuplicatedItemsSource((ThreadSafeObservableList<TViewModel>)newValue);
+            SetUpDuplicatedItemsSource((ThreadSafeObservableCollection<TViewModel>)newValue);
         }
 
-        private void SetUpDuplicatedItemsSource(ThreadSafeObservableList<TViewModel> viewModels)
+        private void SetUpDuplicatedItemsSource(ThreadSafeObservableCollection<TViewModel> viewModels)
         {
             _originalItemsSource = viewModels;
             ((INotifyCollectionChanged)_originalItemsSource).CollectionChanged += OnOriginalCollectionChanged;
 
-            _presentedItemsSource = new ThreadSafeObservableList<TViewModel>(_originalItemsSource);
+            _presentedItemsSource = new ThreadSafeObservableCollection<TViewModel>(_originalItemsSource);
 
             ItemsSource = _presentedItemsSource;
         }

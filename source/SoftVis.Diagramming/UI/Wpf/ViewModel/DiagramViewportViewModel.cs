@@ -25,9 +25,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double MinZoom { get; }
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
-        public ThreadSafeObservableList<DiagramNodeViewModel> DiagramNodeViewModels { get; }
-        public ThreadSafeObservableList<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
-        public ThreadSafeObservableList<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
+        public ThreadSafeObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public ThreadSafeObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
+        public ThreadSafeObservableCollection<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
         public DecorationManagerViewModel<DiagramNodeViewModel> DecorationManager { get; }
 
         private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
@@ -48,9 +48,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             MaxZoom = maxZoom;
 
             ViewportCalculator = new AutoMoveViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
-            DiagramNodeViewModels = new ThreadSafeObservableList<DiagramNodeViewModel>();
-            DiagramConnectorViewModels = new ThreadSafeObservableList<DiagramConnectorViewModel>();
-            DiagramNodeButtonViewModels = new ThreadSafeObservableList<DiagramShapeButtonViewModelBase>(CreateDiagramNodeButtons());
+            DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
+            DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
+            DiagramNodeButtonViewModels = new ThreadSafeObservableCollection<DiagramShapeButtonViewModelBase>(CreateDiagramNodeButtons());
             DecorationManager = new DecorationManagerViewModel<DiagramNodeViewModel>(DiagramNodeButtonViewModels);
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
