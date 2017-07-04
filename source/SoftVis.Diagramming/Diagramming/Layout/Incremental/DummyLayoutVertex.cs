@@ -9,25 +9,12 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </summary>
     internal class DummyLayoutVertex : LayoutVertexBase
     {
-        private static int _nextId = 1;
         protected readonly int Id;
 
-        public DummyLayoutVertex(int? id = null)
+        public DummyLayoutVertex(int id)
         {
-            Id = id ?? SetNextUniqueId();
+            Id = id;
         }
-
-        private static int SetNextUniqueId()
-        {
-            lock (typeof (DummyLayoutVertex))
-            {
-                var id = _nextId;
-                _nextId++;
-                return id;
-            }
-        }
-
-        public static void ResetUniqueIdCounter() => _nextId = 1;
 
         public override bool IsDummy => true;
         public override string Name => $"Dummy#{Id}";
@@ -41,7 +28,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public override bool Equals(object obj)
         {
-            return obj is DummyLayoutVertex && ((DummyLayoutVertex) obj).Id == Id;
+            return obj is DummyLayoutVertex && ((DummyLayoutVertex)obj).Id == Id;
         }
 
         public override int GetHashCode()

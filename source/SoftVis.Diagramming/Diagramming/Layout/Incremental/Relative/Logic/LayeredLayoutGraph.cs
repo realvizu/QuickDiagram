@@ -15,6 +15,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         IReadOnlyLayeredLayoutGraph
     {
         private readonly QuasiProperLayoutGraph _properGraph;
+        private int _nextDummyVertexId = 1;
+        private readonly object _nextDummyVertexIdLockObject = new object();
 
         public LayeredLayoutGraph()
         {
@@ -124,7 +126,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         private void SplitEdge(LayoutPath layoutPath, int atIndex)
         {
             var edgeToSplit = layoutPath[atIndex];
-            var interimVertex = new DummyLayoutVertex();
+            var interimVertex = CreateDummyVertex();
 
             var newEdges = SplitEdge(edgeToSplit, interimVertex);
             layoutPath.Substitute(atIndex, 1, newEdges[0], newEdges[1]);
@@ -184,6 +186,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
         {
             if (!_properGraph.IsProper())
                 throw new Exception("The proper graph is not proper.");
+        }
+
+        private DummyLayoutVertex CreateDummyVertex() => new DummyLayoutVertex(GetNextDummyVertexId());
+
+        private int GetNextDummyVertexId()
+        {
+            lock (_nextDummyVertexIdLockObject)
+            {
+                var id = _nextDummyVertexId;
+                _nextDummyVertexId++;
+                return id;
+            }
         }
     }
 }

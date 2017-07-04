@@ -68,7 +68,6 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void OnDiagramConnectorAdded_SplitEdge_DummyVertexAdded()
         {
-            DummyLayoutVertex.ResetUniqueIdCounter();
             _calculatorBuilder.SetUp("A<-B<-C");
 
             Calculator.OnDiagramConnectorAdded(CreateEdge("A<-C"));
@@ -78,7 +77,6 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void OnDiagramConnectorAdded_MergeEdge_DummyVertexRemoved()
         {
-            DummyLayoutVertex.ResetUniqueIdCounter();
             _calculatorBuilder.SetUp("A<-B<-C", "D<-C", "E");
 
             var dummy = GetDummyVertex("#1");
@@ -91,7 +89,6 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         [Fact]
         public void OnDiagramConnectorRemoved_DummyVertexRemoved()
         {
-            DummyLayoutVertex.ResetUniqueIdCounter();
             _calculatorBuilder.SetUp("A<-B<-C", "A<-C");
 
             Calculator.OnDiagramConnectorRemoved(GetEdge("A<-C"));
