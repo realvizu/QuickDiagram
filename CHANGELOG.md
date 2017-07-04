@@ -1,10 +1,21 @@
 # Change log
 
-## 0.5
+## 0.5.61
+(07/2017)
+
+- [x] Bugfix: exception when adding related entities with the bubble list box.
+
+## 0.5.60
+(05/2017)
+
+- [x] Visual Studio 2017 support.
+
+## 0.5.56
+(01/2017)
 
 First experimental release to gather feedback.
 
-- [x] Visual Studio 2015 and 2017 extension.
+- [x] Visual Studio 2015 extension.
 - [x] Add entities from source code to diagram.
   - [x] Types: class, interface, struct, enum, delegate.
   - [x] Type features: description (xml comment summary), is abstract, is from source or metadata.
