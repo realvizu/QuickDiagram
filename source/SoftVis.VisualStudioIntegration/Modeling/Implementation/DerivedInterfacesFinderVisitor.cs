@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -10,6 +11,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class DerivedInterfacesFinderVisitor : SymbolVisitor
     {
+        private static readonly NamedTypeSymbolEqualityComparer NamedTypeSymbolEqualityComparer = new NamedTypeSymbolEqualityComparer();
+
         private INamedTypeSymbol InterfaceSymbol { get; }
         public List<INamedTypeSymbol> DerivedInterfaces { get; }
 
@@ -39,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
             if (symbol.TypeKind == TypeKind.Interface &&
-                symbol.OriginalDefinition.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol))
+                symbol.OriginalDefinition.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol, NamedTypeSymbolEqualityComparer))
                 DerivedInterfaces.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())

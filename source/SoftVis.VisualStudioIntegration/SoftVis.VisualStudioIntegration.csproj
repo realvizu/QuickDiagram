@@ -170,6 +170,7 @@
     <Compile Include="Util\FileLinePositionSpanExtensions.cs" />
     <Compile Include="Util\LinePositionSpanExtensions.cs" />
     <Compile Include="Util\NamedTypeSymbolExtensions.cs" />
+    <Compile Include="Util\NamedTypeSymbolEqualityComparer.cs" />
     <Compile Include="Util\XmlDocumentation.cs" />
     <Compile Include="PackageInfo.cs" />
   </ItemGroup>

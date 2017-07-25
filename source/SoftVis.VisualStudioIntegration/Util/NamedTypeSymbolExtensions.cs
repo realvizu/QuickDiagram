@@ -42,5 +42,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Util
             return namedTypeSymbol1?.TypeKind == namedTypeSymbol2.TypeKind
                 && namedTypeSymbol1.GetFullyQualifiedName() == namedTypeSymbol2.GetFullyQualifiedName();
         }
+
+        public static int GetHashCodeForSymbolEquals(this INamedTypeSymbol namedTypeSymbol)
+            => namedTypeSymbol.GetFullyQualifiedName().GetHashCode();
     }
 }
