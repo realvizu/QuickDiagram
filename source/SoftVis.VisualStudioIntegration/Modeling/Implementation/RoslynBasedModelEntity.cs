@@ -100,7 +100,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             foreach (var compilation in GetCompilations(workspace))
             {
                 var visitor = new ImplementingTypesFinderVisitor(interfaceSymbol);
-                compilation.Assembly.Accept(visitor);
+                compilation.Assembly?.Accept(visitor);
 
                 foreach (var descendant in visitor.ImplementingTypeSymbols.Where(i => i.TypeKind == TypeKind.Struct))
                     yield return descendant;
@@ -112,7 +112,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             foreach (var compilation in GetCompilations(workspace))
             {
                 var visitor = new DerivedInterfacesFinderVisitor(interfaceSymbol);
-                compilation.Assembly.Accept(visitor);
+                compilation.Assembly?.Accept(visitor);
 
                 foreach (var descendant in visitor.DerivedInterfaces)
                     yield return descendant;
@@ -121,8 +121,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private static IEnumerable<Compilation> GetCompilations(Workspace workspace)
         {
-            foreach (var project in workspace.CurrentSolution.Projects)
-                yield return project.GetCompilationAsync().Result;
+            return workspace?.CurrentSolution?.Projects.Select(i => i?.GetCompilationAsync().Result).Where(i => i != null) 
+                ?? Enumerable.Empty<Compilation>();
         }
     }
 }
