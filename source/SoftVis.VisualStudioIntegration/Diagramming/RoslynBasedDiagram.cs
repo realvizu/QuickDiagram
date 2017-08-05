@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private readonly IModelServices _modelServices;
 
         public RoslynBasedDiagram(IModelServices modelServices)
-            : base(modelServices.Model)
+            : base(null)
         {
             _modelServices = modelServices;
         }
@@ -50,11 +50,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
-            var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
-            var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
+            //var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
+            //var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
+            //var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
 
-             return ShowModelItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
+             //return ShowModelItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
+             return  new List<IDiagramNode>();
         }
 
         public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)

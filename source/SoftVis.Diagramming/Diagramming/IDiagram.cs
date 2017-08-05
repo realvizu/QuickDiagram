@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming
@@ -14,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagram
     {
-        IReadOnlyModel Model { get; }
+        INotifyModelChanged Model { get; }
 
         IReadOnlyList<IDiagramNode> Nodes { get; }
         IReadOnlyList<IDiagramConnector> Connectors { get; }

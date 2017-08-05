@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public List<List<IModelItem>> ModelItemGroups { get; }
 
         public TestDiagram(TestModel model)
-            : base(model)
+            : base(null)
         {
             ModelItemGroups = model.ItemGroups.ToList();
         }

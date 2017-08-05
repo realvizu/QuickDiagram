@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -23,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private readonly Queue<DiagramAction> _diagramActionQueue;
         private readonly AutoResetEvent _diagramActionArrivedEvent;
 
-        public AutoArrangingDiagram(IReadOnlyModel model)
+        public AutoArrangingDiagram(INotifyModelChanged model)
             : base(model)
         {
             _incrementalLayoutEngine = new IncrementalLayoutEngine();

@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using TestModelBuilder = Codartis.SoftVis.TestHostApp.Modeling.TestModelBuilder;
 
 namespace Codartis.SoftVis.TestHostApp
 {
     class MainWindowViewModel : ViewModelBase
     {
-        private readonly TestModel _testModel;
-        private readonly TestDiagram _testDiagram;
+        private readonly TestModelBuilder _testModelBuilder;
+        private readonly Diagramming.TestDiagram _testDiagram;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
@@ -35,10 +36,8 @@ namespace Codartis.SoftVis.TestHostApp
 
         public MainWindowViewModel()
         {
-            _testModel = new TestModelBuilder().Create();
-            //_testModel = new BigTestModelBuilder().Create(4, 4);
-
-            _testDiagram = new TestDiagram(_testModel);
+            _testModelBuilder = new TestModelBuilder();
+            _testDiagram = new Diagramming.TestDiagram(_testModelBuilder);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");
@@ -64,11 +63,14 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            if (_modelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
-                return;
+            var model = _testModelBuilder.AddClass($"Class{_testModelBuilder.CurrentModel.RootNodes.Count() + 1}");
+            _testDiagram.AddModelNode(model.RootNodes.Last());
 
-            _testDiagram.ShowModelItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
-            _modelItemGroupIndex++;
+            //if (_modelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
+            //    return;
+
+            //_testDiagram.ShowModelItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
+            //_modelItemGroupIndex++;
 
             //_testDiagram.Save(@"c:\big.xml");
 
@@ -77,11 +79,11 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void RemoveShapes()
         {
-            if (_nextToRemoveModelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
-                return;
+            //if (_nextToRemoveModelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
+            //    return;
 
-            _testDiagram.HideModelItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
-            _nextToRemoveModelItemGroupIndex++;
+            //_testDiagram.HideModelItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
+            //_nextToRemoveModelItemGroupIndex++;
 
             ZoomToContent();
         }

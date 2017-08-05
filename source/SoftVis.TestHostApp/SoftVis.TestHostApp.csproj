@@ -46,6 +46,10 @@
       <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,7 +73,11 @@
     <Compile Include="..\Include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Diagramming\TestDiagram.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Modeling\TestType.cs" />
+    <Compile Include="Modeling\TestInterface.cs" />
+    <Compile Include="Modeling\TestClass.cs" />
     <Compile Include="TestData\BigTestModelBuilder.cs" />
     <Compile Include="TestData\TestConnectorTypes.cs" />
     <Compile Include="TestData\TestModelBuilder.cs" />
@@ -81,6 +89,7 @@
     <Compile Include="TestData\TestModelEntity.cs" />
     <Compile Include="TestData\TestModelEntityStereotype.cs" />
     <Compile Include="TestData\TestEntityRelationTypes.cs" />
+    <Compile Include="Modeling\TestModelBuilder.cs" />
     <Compile Include="TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>

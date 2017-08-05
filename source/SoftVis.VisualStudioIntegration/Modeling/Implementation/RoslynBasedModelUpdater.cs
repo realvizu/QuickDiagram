@@ -8,6 +8,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
+    /// <summary>
+    /// Not used. 
+    /// It was an experiment to keep the model continously updated by workspace changes.
+    /// Should revisit later.
+    /// </summary>
     internal class RoslynBasedModelUpdater
     {
         private readonly RoslynBasedModel _model;

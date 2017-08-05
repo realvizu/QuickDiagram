@@ -6,7 +6,9 @@ using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util;
+using IModelRelationship = Codartis.SoftVis.Modeling.IModelRelationship;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -20,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     [DebuggerDisplay("NodeCount={_graph.VertexCount}, ConnectorCount={_graph.EdgeCount}")]
     public class Diagram : IArrangedDiagram
     {
-        public IReadOnlyModel Model { get; }
+        public INotifyModelChanged Model { get; }
 
         private readonly DiagramGraph _graph;
 
@@ -34,16 +36,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
 
-        public Diagram(IReadOnlyModel model)
+        public Diagram(INotifyModelChanged model)
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
             Model = model;
-            Model.EntityRenamed += OnModelEntityRenamed;
-            Model.RelationshipAdded += OnModelRelationshipAdded;
-            Model.EntityRemoved += OnModelEntityRemoved;
-            Model.RelationshipRemoved += OnModelRelationshipRemoved;
+            //Model.NodeUpdated += OnModelEntityRenamed;
+            //Model.RelationshipAdded += OnModelRelationshipAdded;
+            //Model.NodeRemoved += OnModelEntityRemoved;
+            //Model.RelationshipRemoved += OnModelRelationshipRemoved;
             Model.ModelCleared += OnModelCleared;
 
             _graph = new DiagramGraph();
@@ -133,10 +135,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities(IDiagramNode diagramNode, EntityRelationType relationType)
         {
-            var displayedDiagramNodes = Nodes;
-            return Model
-                .GetRelatedEntities(diagramNode.ModelEntity, relationType)
-                .Where(i => displayedDiagramNodes.All(j => j.ModelEntity != i)).ToArray();
+            //var displayedDiagramNodes = Nodes;
+            //return Model
+            //    .GetRelatedEntities(diagramNode.ModelEntity, relationType)
+            //    .Where(i => displayedDiagramNodes.All(j => j.ModelEntity != i)).ToArray();
+            return new List<IModelEntity>();
         }
 
         public void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize) => diagramNode.Size = newSize;
@@ -236,8 +239,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowModelRelationshipsIfBothEndsAreVisible(IModelEntity modelEntity)
         {
-            foreach (var modelRelationship in Model.GetRelationships(modelEntity))
-                ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
+            //foreach (var modelRelationship in Model.GetRelationships(modelEntity))
+            //    ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
         }
 
         private void ShowModelRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship)
@@ -312,13 +315,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             HideModelItem(modelRelationship);
         }
 
-        private void OnModelEntityRenamed(IModelEntity modelEntity, string name, string fullName, string description)
+        private void OnModelEntityRenamed(IModelNode modelNode, IModel model)
         {
-            var diagramNode = FindDiagramNode(modelEntity);
-            diagramNode?.Rename(name, fullName, description);
+            //var diagramNode = FindDiagramNode(modelNode);
+            //diagramNode?.Rename(modelNode.DisplayName, modelNode.FullName, modelNode.Description);
         }
 
-        private void OnModelCleared()
+        private void OnModelCleared(IModel model)
         {
             Clear();
         }
