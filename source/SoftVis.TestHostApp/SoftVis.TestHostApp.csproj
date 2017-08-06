@@ -75,6 +75,9 @@
     </Compile>
     <Compile Include="Diagramming\TestDiagram.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Modeling\TestImplementsRelationship.cs" />
+    <Compile Include="Modeling\TestInheritanceRelationship.cs" />
+    <Compile Include="Modeling\TestModel.cs" />
     <Compile Include="Modeling\TestType.cs" />
     <Compile Include="Modeling\TestInterface.cs" />
     <Compile Include="Modeling\TestClass.cs" />

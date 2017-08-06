@@ -22,8 +22,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private readonly Queue<DiagramAction> _diagramActionQueue;
         private readonly AutoResetEvent _diagramActionArrivedEvent;
 
-        public AutoArrangingDiagram(INotifyModelChanged model)
-            : base(model)
+        public AutoArrangingDiagram(IModelBuilder modelBuilder)
+            : base(modelBuilder)
         {
             _incrementalLayoutEngine = new IncrementalLayoutEngine();
             _layoutActionExecutor = new LayoutActionExecutorVisitor(this);

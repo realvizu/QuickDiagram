@@ -14,6 +14,6 @@
 
         //IModel AddRelationship(IModelRelationship relationship);
         //IModel RemoveRelationship(IModelRelationship relationship);
-        IModel ClearModel();
+        IModelBuilder ClearModel();
     }
 }

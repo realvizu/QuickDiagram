@@ -2,18 +2,15 @@
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.TestHostApp.Modeling;
-using ModelOrigin = Codartis.SoftVis.Modeling.ModelOrigin;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
     internal class TestDiagram : AutoArrangingDiagram
     {
-        public TestDiagram(TestModelBuilder model)
-            : base(model)
+        public TestDiagram(IModelBuilder notifyModelChanged)
+            : base(notifyModelChanged)
         {
         }
 

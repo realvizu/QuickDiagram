@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
@@ -37,6 +39,7 @@ namespace Codartis.SoftVis.TestHostApp
         public MainWindowViewModel()
         {
             _testModelBuilder = new TestModelBuilder();
+            TestModel.Create(_testModelBuilder);
             _testDiagram = new Diagramming.TestDiagram(_testModelBuilder);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
@@ -63,14 +66,17 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            var model = _testModelBuilder.AddClass($"Class{_testModelBuilder.CurrentModel.RootNodes.Count() + 1}");
-            _testDiagram.AddModelNode(model.RootNodes.Last());
+            //var model = _testModelBuilder.AddClass($"Class{_testModelBuilder.CurrentModel.RootNodes.Count() + 1}");
+            //_testDiagram.AddModelNode(model.RootNodes.Last());
 
-            //if (_modelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
-            //    return;
+            if (_modelItemGroupIndex == _testModelBuilder.ItemGroups.Count)
+                return;
 
-            //_testDiagram.ShowModelItems(_testDiagram.ModelItemGroups[_modelItemGroupIndex]);
-            //_modelItemGroupIndex++;
+            var modelItemIds = _testModelBuilder.ItemGroups[_modelItemGroupIndex];
+            var modelItems = modelItemIds.Select(i => _testModelBuilder.CurrentModel.RootNodes.FirstOrDefault(j => j.Id == i));
+
+            _testDiagram.ShowModelItems(modelItems);
+            _modelItemGroupIndex++;
 
             //_testDiagram.Save(@"c:\big.xml");
 

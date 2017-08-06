@@ -14,7 +14,8 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagram
     {
-        INotifyModelChanged Model { get; }
+        // Remove when DiagramBuilder is separated.
+        IModelBuilder ModelBuilder { get; }
 
         IReadOnlyList<IDiagramNode> Nodes { get; }
         IReadOnlyList<IDiagramConnector> Connectors { get; }

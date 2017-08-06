@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     [DebuggerDisplay("NodeCount={_graph.VertexCount}, ConnectorCount={_graph.EdgeCount}")]
     public class Diagram : IArrangedDiagram
     {
-        public INotifyModelChanged Model { get; }
+        public IModelBuilder ModelBuilder { get; }
 
         private readonly DiagramGraph _graph;
 
@@ -34,17 +34,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
 
-        public Diagram(INotifyModelChanged model)
+        public Diagram(IModelBuilder modelBuilder)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
+            //if (model == null)
+            //    throw new ArgumentNullException(nameof(model));
 
-            Model = model;
+            ModelBuilder = modelBuilder;
             //Model.NodeUpdated += OnModelEntityRenamed;
             //Model.RelationshipAdded += OnModelRelationshipAdded;
             //Model.NodeRemoved += OnModelEntityRemoved;
             //Model.RelationshipRemoved += OnModelRelationshipRemoved;
-            Model.ModelCleared += OnModelCleared;
+            ModelBuilder.ModelCleared += OnModelCleared;
 
             _graph = new DiagramGraph();
             _graph.VertexAdded += OnDiagramNodeAddedToGraph;
@@ -144,14 +144,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void MoveDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter) => diagramNode.Center = newCenter;
         public void RerouteDiagramConnector(IDiagramConnector diagramConnector, Route newRoute) => diagramConnector.RoutePoints = newRoute;
 
-        private IDiagramNode GetOrAddDiagramNode(IModelNode modelEntity)
+        private IDiagramNode GetOrAddDiagramNode(IModelNode modelNode)
         {
             var getOrAddResult = _graph.GetOrAddVertex(
-                vertex => vertex.ModelItemId == modelEntity.Id,
-                () => CreateDiagramNode(modelEntity));
+                vertex => vertex.ModelItemId == modelNode.Id,
+                () => CreateDiagramNode(modelNode));
 
-            //if (getOrAddResult.IsAdd)
-            //    ShowModelRelationshipsIfBothEndsAreVisible(modelEntity);
+            if (getOrAddResult.IsAdd)
+                ShowModelRelationshipsIfBothEndsAreVisible(modelNode.Id);
 
             return getOrAddResult.Result;
         }
@@ -237,8 +237,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowModelRelationshipsIfBothEndsAreVisible(ModelItemId modelItemId)
         {
-            //foreach (var modelRelationship in Model.GetRelationships(modelEntity))
-            //    ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
+            foreach (var modelRelationship in ModelBuilder.CurrentModel.GetRelationships(modelItemId))
+                ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
         }
 
         private void ShowModelRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Modeling2.Implementation
@@ -7,7 +6,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
     /// <summary>
     /// An immutable implementation of the IModelRelationship interface with a QuickGraph edge.
     /// </summary>
-    [DebuggerDisplay("{Source.DisplayName}--{GetType().Name}-->{Target.DisplayName}")]
     public class ModelRelationship : IModelRelationship, IEdge<IModelNode>
     {
         public ModelItemId Id { get; }

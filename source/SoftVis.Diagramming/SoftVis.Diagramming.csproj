@@ -93,6 +93,7 @@
     <Compile Include="Diagramming\Layout\IDiagramActionConsumer.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramActionDispatcherVisitor.cs" />
     <Compile Include="Graphs\ConcurrentBidirectionalGraph.cs" />
+    <Compile Include="Graphs\IImmutableBidirectionalGraph.cs" />
     <Compile Include="Graphs\RemoveVertexResult.cs" />
     <Compile Include="Graphs\ImmutableBidirectionalGraph.cs" />
     <Compile Include="Modeling2\IModelItem.cs" />

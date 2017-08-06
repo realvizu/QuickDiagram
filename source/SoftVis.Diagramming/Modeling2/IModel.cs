@@ -16,24 +16,36 @@ namespace Codartis.SoftVis.Modeling2
         IEnumerable<IModelNode> RootNodes { get; }
 
         /// <summary>
+        /// The collection of all model nodes.
+        /// </summary>
+        IEnumerable<IModelNode> Nodes { get; }
+
+        /// <summary>
         /// The collection of relationships that exist between nodes.
         /// </summary>
         IEnumerable<IModelRelationship> Relationships { get; }
 
         /// <summary>
+        /// Returns a model node by its id. Throws if not found.
+        /// </summary>
+        /// <param name="modelNodeId">The id of the model node.</param>
+        /// <returns>A model node.</returns>
+        IModelNode GetModelNode(ModelItemId modelNodeId);
+
+        /// <summary>
         /// Returns all relationships attached to the given node (as either a source or target node).
         /// </summary>
-        /// <param name="node">A model node.</param>
+        /// <param name="modelNodeId">The id of the model node.</param>
         /// <returns>A read-only collection of relationships.</returns>
-        IEnumerable<IModelRelationship> GetRelationships(IModelNode node);
+        IEnumerable<IModelRelationship> GetRelationships(ModelItemId modelNodeId);
 
         /// <summary>
         /// Returns those nodes that are related to the given node with the given type of relationship.
         /// </summary>
-        /// <param name="node">A model node.</param>
+        /// <param name="modelNodeId">The id of the model node.</param>
         /// <param name="relationshipType">A type of relationship.</param>
         /// <param name="recursive">True means that nodes are recursively traversed. False returns only immediately related nodes.</param>
         /// <returns>A read-only collection of nodes.</returns>
-        IEnumerable<IModelNode> GetRelatedNodes(IModelNode node, Type relationshipType, bool recursive = false);
+        IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, Type relationshipType, bool recursive = false);
     }
 }

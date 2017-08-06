@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 
 namespace Codartis.SoftVis.Modeling2.Implementation
 {
@@ -12,7 +11,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
     /// Descendants must keep the immutability: mutators must return a new (mutated) instance.
     /// The Id field is used to track identity through mutated instances so its value must be kept unchanged by all mutators.
     /// </remarks>
-    [DebuggerDisplay("{GetType().Name} {DisplayName} [{Id}]")]
     public abstract class ImmutableModelNode : IModelNode
     {
         public ModelItemId Id { get; }

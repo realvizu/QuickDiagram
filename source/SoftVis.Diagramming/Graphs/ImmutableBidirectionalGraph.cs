@@ -8,7 +8,9 @@ namespace Codartis.SoftVis.Graphs
     /// <summary>
     /// An immutable graph. Mutators return a modified copy of the original graph.
     /// </summary>
-    public class ImmutableBidirectionalGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
+    public class ImmutableBidirectionalGraph<TVertex, TEdge> : 
+        IBidirectionalGraph<TVertex, TEdge>, 
+        IImmutableBidirectionalGraph<TVertex, TEdge, ImmutableBidirectionalGraph<TVertex, TEdge>> 
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -169,6 +171,34 @@ namespace Codartis.SoftVis.Graphs
             {
                 Vertex = vertex;
             }
+
+            protected bool Equals(VertexWrapper other)
+            {
+                return EqualityComparer<TVertex>.Default.Equals(Vertex, other.Vertex);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((VertexWrapper) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return EqualityComparer<TVertex>.Default.GetHashCode(Vertex);
+            }
+
+            public static bool operator ==(VertexWrapper left, VertexWrapper right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(VertexWrapper left, VertexWrapper right)
+            {
+                return !Equals(left, right);
+            }
         }
 
         private class EdgeWrapper : IEdge<VertexWrapper>
@@ -182,6 +212,40 @@ namespace Codartis.SoftVis.Graphs
                 Source = source;
                 Target = target;
                 Edge = edge;
+            }
+
+            protected bool Equals(EdgeWrapper other)
+            {
+                return Source.Equals(other.Source) && Target.Equals(other.Target) && EqualityComparer<TEdge>.Default.Equals(Edge, other.Edge);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((EdgeWrapper) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = Source.GetHashCode();
+                    hashCode = (hashCode * 397) ^ Target.GetHashCode();
+                    hashCode = (hashCode * 397) ^ EqualityComparer<TEdge>.Default.GetHashCode(Edge);
+                    return hashCode;
+                }
+            }
+
+            public static bool operator ==(EdgeWrapper left, EdgeWrapper right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(EdgeWrapper left, EdgeWrapper right)
+            {
+                return !Equals(left, right);
             }
         }
     }
