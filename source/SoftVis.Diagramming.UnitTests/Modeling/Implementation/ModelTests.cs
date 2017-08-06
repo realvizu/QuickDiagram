@@ -13,45 +13,45 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Modeling.Implementation
 {
     public class ModelTests
     {
-        [Fact]
-        public void GetOrAddRelationship_IsThreadSafe()
-        {
-            const int repeat = 100;
+        //[Fact]
+        //public void GetOrAddRelationship_IsThreadSafe()
+        //{
+        //    const int repeat = 100;
 
-            var model = new Model();
+        //    var model = new Model();
 
-            var sourceEntity = model.GetOrAddEntity(i => true, () => new TestModelEntity());
+        //    var sourceEntity = model.GetOrAddEntity(i => true, () => new TestModelEntity());
 
-            for (int i = 0; i < repeat; i++)
-            {
-                var testModelEntity = new TestModelEntity(i.ToString());
-                model.GetOrAddEntity(testModelEntity);
-            }
+        //    for (int i = 0; i < repeat; i++)
+        //    {
+        //        var testModelEntity = new TestModelEntity(i.ToString());
+        //        model.GetOrAddEntity(testModelEntity);
+        //    }
 
-            var relationshipType = new ModelRelationshipType(ModelRelationshipClassifier.Generalization, ModelRelationshipStereotype.None);
+        //    var relationshipType = new ModelRelationshipType(ModelRelationshipClassifier.Generalization, ModelRelationshipStereotype.None);
 
-            var tasks = new List<Task>
-            {
-                Task.Run(() => GetOrAddRelationship(model, sourceEntity, relationshipType, repeat)),
-                Task.Run(() => GetOrAddRelationship(model, sourceEntity, relationshipType, repeat)),
-                Task.Run(() => GetOrAddRelationship(model, sourceEntity, relationshipType, repeat)),
-            };
+        //    var tasks = new List<Task>
+        //    {
+        //        Task.Run(() => GetOrAddRelationship(model, sourceEntity, relationshipType, repeat)),
+        //        Task.Run(() => GetOrAddRelationship(model, sourceEntity, relationshipType, repeat)),
+        //        Task.Run(() => GetOrAddRelationship(model, sourceEntity, relationshipType, repeat)),
+        //    };
 
-            Task.WaitAll(tasks.ToArray());
+        //    Task.WaitAll(tasks.ToArray());
 
-            model.Relationships.Count.ShouldBeEquivalentTo(repeat);
-        }
+        //    model.Relationships.Count.ShouldBeEquivalentTo(repeat);
+        //}
 
-        private static void GetOrAddRelationship(Model model, IModelEntity sourceEntity, ModelRelationshipType relationshipType, int repeat)
-        {
-            var targetEntities = model.Entities.Except(sourceEntity.ToEnumerable()).ToArray();
+        //private static void GetOrAddRelationship(Model model, IModelEntity sourceEntity, ModelRelationshipType relationshipType, int repeat)
+        //{
+        //    var targetEntities = model.Entities.Except(sourceEntity.ToEnumerable()).ToArray();
 
-            for (int i = 0; i < repeat; i++)
-            {
-                var relationship = model.GetOrAddRelationship(sourceEntity, targetEntities[i], relationshipType);
-                if (relationship == null)
-                    throw new Exception("Relationship is null.");
-            }
-        }
+        //    for (int i = 0; i < repeat; i++)
+        //    {
+        //        var relationship = model.GetOrAddRelationship(sourceEntity, targetEntities[i], relationshipType);
+        //        if (relationship == null)
+        //            throw new Exception("Relationship is null.");
+        //    }
+        //}
     }
 }
