@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             SourceNodeViewModel = sourceNodeViewModel;
             TargetNodeViewModel = targetNodeViewModel;
 
-            _connectorType = Diagram.GetConnectorType(diagramConnector.Type);
+            _connectorType = ConnectorTypes.Generalization;// TODO Diagram.GetConnectorType(diagramConnector.Type);
             _routePoints = RouteToWpf(diagramConnector.RoutePoints);
 
             DiagramConnector.RouteChanged += OnRouteChanged;

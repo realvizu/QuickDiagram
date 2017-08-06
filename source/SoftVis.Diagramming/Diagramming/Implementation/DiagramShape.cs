@@ -1,6 +1,5 @@
-﻿using System;
-using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -9,14 +8,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public abstract class DiagramShape : IDiagramShape
     {
-        public IModelItem ModelItem { get; }
+        public ModelItemId ModelItemId { get; }
 
-        protected DiagramShape(IModelItem modelItem)
+        protected DiagramShape(ModelItemId modelItemId)
         {
-            if (modelItem == null)
-                throw new ArgumentNullException(nameof(modelItem));
-
-            ModelItem = modelItem;
+            ModelItemId = modelItemId;
         }
 
         public abstract bool IsRectDefined { get; }

@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public Dpi ImageExportDpi { get; set; }
 
         public event Action<IDiagramShape> ShowSourceRequested;
-        public event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
+        //public event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
 
         public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
         {
@@ -141,7 +141,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private void SubscribeToDiagramViewModelEvents(DiagramViewModel diagramViewModel)
         {
             diagramViewModel.ShowSourceRequested += i => ShowSourceRequested?.Invoke(i);
-            diagramViewModel.ShowModelItemsRequested += i => ShowModelItemsRequested?.Invoke(i);
+            //diagramViewModel.ShowModelItemsRequested += i => ShowModelItemsRequested?.Invoke(i);
         }
     }
 }

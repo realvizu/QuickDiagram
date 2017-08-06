@@ -52,11 +52,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDiagramShapeAdded(IDiagramShape diagramShape)
         {
-            var removedModelEntity = diagramShape?.ModelItem as IModelEntity;
-            if (removedModelEntity == null)
+            var removedModelItemId = diagramShape?.ModelItemId;
+            if (removedModelItemId == null)
                 return;
 
-            Items.Remove(removedModelEntity);
+            Items.Remove(removedModelItemId);
         }
     }
 }

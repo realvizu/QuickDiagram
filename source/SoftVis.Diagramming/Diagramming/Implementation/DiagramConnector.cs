@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util;
 using QuickGraph;
 
@@ -11,26 +11,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// It is the representation of a directed model relationship and it connects two diagram nodes.
     /// Eg. an inheritance arrow pointing from a derived class shape to its base class shape.
     /// </summary>
-    public class DiagramConnector : DiagramShape, IDiagramConnector, IEdge<DiagramNode>
+    public class DiagramConnector : DiagramShape, IDiagramConnector, IEdge<IDiagramNode>
     {
         private Route _routePoints;
 
-        public DiagramNode Source { get; }
-        IDiagramNode IDiagramConnector.Source => Source;
-
-        public DiagramNode Target { get; }
-        IDiagramNode IDiagramConnector.Target => Target;
+        public IDiagramNode Source { get; }
+        public IDiagramNode Target { get; }
+        public string RelationshipType { get; }
 
         public event Action<IDiagramConnector, Route, Route> RouteChanged;
 
-        public DiagramConnector(IModelRelationship relationship, DiagramNode source, DiagramNode target)
-            : base(relationship)
+        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target)
+            : base(relationship.Id)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (target == null) throw new ArgumentNullException(nameof(target));
-
-            Source = source;
-            Target = target;
+            Source = source ?? throw new ArgumentNullException(nameof(source));
+            Target = target ?? throw new ArgumentNullException(nameof(target));
+            RelationshipType = relationship.GetType().Name;
         }
 
         public virtual Route RoutePoints
@@ -47,10 +43,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
-        public ModelRelationshipClassifier Classifier => ModelRelationship.Classifier;
-        public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
-        public ModelRelationshipType Type => ModelRelationship.Type;
+        //public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
+        //public ModelRelationshipClassifier Classifier => ModelRelationship.Classifier;
+        //public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
+        //public ModelRelationshipType Type => ModelRelationship.Type;
 
         public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && RoutePoints != null;
         public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
@@ -66,9 +62,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return rectUnion;
         }
 
-        public override string ToString()
-        {
-            return Source + "---" + Classifier + "-->" + Target;
-        }
+        public override string ToString() => Source + "---" + RelationshipType + "-->" + Target;
     }
 }

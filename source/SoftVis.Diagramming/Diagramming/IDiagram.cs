@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util;
 
@@ -26,24 +25,24 @@ namespace Codartis.SoftVis.Diagramming
         event Action<IDiagramShape> ShapeSelected;
         event Action DiagramCleared;
 
-        IEnumerable<EntityRelationType> GetEntityRelationTypes();
-        ConnectorType GetConnectorType(ModelRelationshipType type);
+        //IEnumerable<EntityRelationType> GetEntityRelationTypes();
+        //ConnectorType GetConnectorType(ModelRelationshipType type);
 
         IDiagramShape ShowModelItem(IModelItem modelItem);
 
         IReadOnlyList<IDiagramShape> ShowModelItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
 
-        void HideModelItem(IModelItem modelItem);
+        //void HideModelItem(IModelItem modelItem);
 
-        void HideModelItems(IEnumerable<IModelItem> modelItems,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+        //void HideModelItems(IEnumerable<IModelItem> modelItems,
+        //    CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
 
         void Clear();
 
         void SelectDiagramShape(IDiagramShape diagramShape);
         void RemoveDiagramShape(IDiagramShape diagramShape);
 
-        IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities(IDiagramNode diagramNode, EntityRelationType relationType);
+        //IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities(IDiagramNode diagramNode, EntityRelationType relationType);
     }
 }

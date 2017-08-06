@@ -95,6 +95,7 @@
     <Compile Include="Graphs\ConcurrentBidirectionalGraph.cs" />
     <Compile Include="Graphs\RemoveVertexResult.cs" />
     <Compile Include="Graphs\ImmutableBidirectionalGraph.cs" />
+    <Compile Include="Modeling2\IModelItem.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModelNode.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModelGraph.cs" />
     <Compile Include="Modeling2\Implementation\ModelRelationship.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Modeling2\IModelRelationship.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModel.cs" />
     <Compile Include="Modeling2\Implementation\ModelBuilderBase.cs" />
+    <Compile Include="Modeling2\ModelItemId.cs" />
     <Compile Include="Modeling2\ModelOrigin.cs" />
     <Compile Include="Modeling\Implementation\Model.cs" />
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />

@@ -18,14 +18,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override void Execute(IDiagramNode diagramNode)
         {
-            var modelEntity = diagramNode?.ModelEntity;
-            if (modelEntity == null)
-                throw new Exception("Entity missing in DiagramNode.");
+            //var modelEntity = diagramNode?.ModelItemId;
+            //if (modelEntity == null)
+            //    throw new Exception("Entity missing in DiagramNode.");
 
-            if (ModelServices.HasSource(modelEntity))
-                ModelServices.ShowSource(modelEntity);
-            else
-                UiServices.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
+            //if (ModelServices.HasSource(modelEntity))
+            //    ModelServices.ShowSource(modelEntity);
+            //else
+            //    UiServices.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
         }
     }
 }

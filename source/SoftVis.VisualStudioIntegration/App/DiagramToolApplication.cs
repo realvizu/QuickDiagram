@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
@@ -45,7 +45,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private void SubscribeToUiEvents(IUiServices uiServices)
         {
             uiServices.ShowSourceRequested += OnShowSourceRequested;
-            uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
+            //uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (diagramNode == null)
                 return;
 
-            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity);
+            //ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelItemId);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
@@ -70,12 +70,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelEntity> modelEntities)
-        {
-            if (!modelEntities.Any())
-                return;
+        //private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelEntity> modelEntities)
+        //{
+        //    if (!modelEntities.Any())
+        //        return;
 
-            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelEntities);
-        }
+        //    await new AddItemsToDiagramCommand(this).ExecuteAsync(modelEntities);
+        //}
     }
 }

@@ -5,26 +5,25 @@ using QuickGraph;
 namespace Codartis.SoftVis.Modeling2.Implementation
 {
     /// <summary>
-    /// An implementation of the IModelRelationship interface with a QuickGraph edge.
-    /// Immutable.
+    /// An immutable implementation of the IModelRelationship interface with a QuickGraph edge.
     /// </summary>
     [DebuggerDisplay("{Source.DisplayName}--{GetType().Name}-->{Target.DisplayName}")]
     public class ModelRelationship : IModelRelationship, IEdge<IModelNode>
     {
+        public ModelItemId Id { get; }
         public IModelNode Source { get; }
         public IModelNode Target { get; }
 
-        public ModelRelationship(IModelNode source, IModelNode target)
+        public ModelRelationship(ModelItemId id, IModelNode source, IModelNode target)
         {
+            Id = id;
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
         }
 
-        public bool Equals(ModelRelationship other)
+        protected bool Equals(ModelRelationship other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(Source, other.Source) && Equals(Target, other.Target);
+            return Id.Equals(other.Id);
         }
 
         public override bool Equals(object obj)
@@ -37,10 +36,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((Source != null ? Source.GetHashCode() : 0) * 397) ^ (Target != null ? Target.GetHashCode() : 0);
-            }
+            return Id.GetHashCode();
         }
 
         public static bool operator ==(ModelRelationship left, ModelRelationship right)
@@ -53,7 +49,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             return !Equals(left, right);
         }
 
-        public override string ToString() => $"{Source.DisplayName}--{GetType().Name}-->{Target.DisplayName}";
-
+        public override string ToString() => $"{Source.DisplayName}--{GetType().Name}-->{Target.DisplayName} [{Id}]";
     }
 }

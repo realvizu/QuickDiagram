@@ -6,7 +6,7 @@
     <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="QuickGraph" />
     <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="Codartis.SoftVis.Graphs" />
 
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
+    <!--<Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />-->
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="Codartis.SoftVis.Graphs.*" />

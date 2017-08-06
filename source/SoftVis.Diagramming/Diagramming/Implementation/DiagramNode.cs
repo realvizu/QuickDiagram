@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -16,31 +16,29 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         private readonly object _sizeAndPositionLock = new object();
 
+        public string DisplayName { get; private set; }
+        public string FullName { get; private set; }
+        public string Description { get; private set; }
+        public int Priority { get; }
+
         private Size2D _size;
         private Point2D _center;
-        private string _name;
-        private string _fullName;
-        private string _description;
 
         public event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         public event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
         public event Action<IDiagramNode, string, string, string> Renamed;
 
-        public DiagramNode(IModelEntity modelEntity)
-            : base(modelEntity)
+        public DiagramNode(IModelNode modelNode)
+            : base(modelNode.Id)
         {
+            DisplayName = modelNode.DisplayName;
+            FullName = modelNode.FullName;
+            Description = modelNode.Description;
+            Priority = modelNode.Priority;
+
             _size = Size2D.Zero;
             _center = Point2D.Undefined;
-            _name = modelEntity.Name;
-            _fullName = modelEntity.FullName;
-            _description = modelEntity.Description;
         }
-
-        public IModelEntity ModelEntity => (IModelEntity)ModelItem;
-        public string Name => _name;
-        public string FullName => _fullName;
-        public string Description => _description;
-        public int Priority => ModelEntity.Priority;
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
 
@@ -107,35 +105,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void Rename(string name, string fullName, string description)
         {
-            _name = name;
-            _fullName = fullName;
-            _description = description;
+            DisplayName = name;
+            FullName = fullName;
+            Description = description;
             Renamed?.Invoke(this, name, fullName, description);
         }
 
-        public int CompareTo(IDiagramNode otherNode)
-        {
-            return string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
-        }
+        public int CompareTo(IDiagramNode otherNode) 
+            => string.Compare(DisplayName, otherNode.DisplayName, StringComparison.InvariantCultureIgnoreCase);
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => DisplayName;
 
-        private static Point2D CenterToTopLeft(Point2D center, Size2D size)
-        {
-            return new Point2D(center.X - size.Width / 2, center.Y - size.Height / 2);
-        }
+        private static Point2D CenterToTopLeft(Point2D center, Size2D size) 
+            => new Point2D(center.X - size.Width / 2, center.Y - size.Height / 2);
 
-        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter)
-        {
-            CenterChanged?.Invoke(this, oldCenter, newCenter);
-        }
-
-        private void OnSizeChanged(Size2D oldSize, Size2D newSize)
-        {
-            SizeChanged?.Invoke(this, oldSize, newSize);
-        }
+        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter) => CenterChanged?.Invoke(this, oldCenter, newCenter);
+        private void OnSizeChanged(Size2D oldSize, Size2D newSize) => SizeChanged?.Invoke(this, oldSize, newSize);
     }
 }

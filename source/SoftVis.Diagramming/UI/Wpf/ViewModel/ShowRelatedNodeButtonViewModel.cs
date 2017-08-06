@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UnsubscribeFromModelEvents();
         }
 
-        public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationType.Type);
+        public ConnectorType ConnectorType => ConnectorTypes.Generalization;//TODO Diagram.GetConnectorType(_relationType.Type);
 
         private EntityRelationType EntityRelationType => _relationType;
         private IDiagramNode HostDiagramNode => HostViewModel?.DiagramNode;
@@ -97,6 +97,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         private IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities()
-            => Diagram.GetUndisplayedRelatedModelEntities(HostDiagramNode, EntityRelationType);
+        {
+            return new List<IModelEntity>();
+            //return Diagram.GetUndisplayedRelatedModelEntities(HostDiagramNode, EntityRelationType);
+        }
     }
 }

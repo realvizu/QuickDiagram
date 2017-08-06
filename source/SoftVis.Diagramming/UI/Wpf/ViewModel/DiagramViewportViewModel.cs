@@ -249,8 +249,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             yield return new CloseShapeButtonViewModel(Diagram);
 
-            foreach (var entityRelationType in Diagram.GetEntityRelationTypes())
-                yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
+            //foreach (var entityRelationType in Diagram.GetEntityRelationTypes())
+            //    yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
         }
 
         private void SetDiagramNodeDescriptionVisibility(bool isVisible)

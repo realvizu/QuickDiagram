@@ -22,30 +22,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             _modelServices = modelServices;
         }
 
-        public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
-        {
-            foreach (var entityRelationType in base.GetEntityRelationTypes())
-                yield return entityRelationType;
+        //public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
+        //{
+        //    foreach (var entityRelationType in base.GetEntityRelationTypes())
+        //        yield return entityRelationType;
 
-            yield return RoslynEntityRelationTypes.ImplementedInterface;
-            yield return RoslynEntityRelationTypes.ImplementerType;
-        }
+        //    yield return RoslynEntityRelationTypes.ImplementedInterface;
+        //    yield return RoslynEntityRelationTypes.ImplementerType;
+        //}
 
-        public override ConnectorType GetConnectorType(ModelRelationshipType type)
-        {
-            return type.Stereotype == ModelRelationshipStereotypes.Implementation
-                ? RoslynBasedConnectorTypes.Implementation
-                : ConnectorTypes.Generalization;
-        }
+        //public override ConnectorType GetConnectorType(ModelRelationshipType type)
+        //{
+        //    return type.Stereotype == ModelRelationshipStereotypes.Implementation
+        //        ? RoslynBasedConnectorTypes.Implementation
+        //        : ConnectorTypes.Generalization;
+        //}
 
         public IDiagramNode ShowEntity(IModelEntity modelEntity)
         {
-            return ShowModelItem(modelEntity) as IDiagramNode;
+            return null;
+            //return ShowModelItem(modelEntity) as IDiagramNode;
         }
 
         public IReadOnlyList<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return ShowModelItems(modelEntities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
+            return new List<IDiagramNode>();
+            //return ShowModelItems(modelEntities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
         }
 
         public IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
@@ -60,11 +62,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            foreach (var diagramNode in Nodes)
-            {
-                _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity, cancellationToken: cancellationToken);
-                progress?.Report(1);
-            }
+            //foreach (var diagramNode in Nodes)
+            //{
+            //    _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity, cancellationToken: cancellationToken);
+            //    progress?.Report(1);
+            //}
         }
     }
 }

@@ -19,17 +19,17 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 
         public void AddModelNode(IModelNode node)
         {
-            ShowModelItem(new ModelEntity(node.FullName, "", "", ModelEntityClassifier.Class, ModelEntityStereotype.None, ModelOrigin.SourceCode));
+            ShowModelItem(node);
         }
 
-        public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
-        {
-            yield break;
-        }
+        //public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
+        //{
+        //    yield break;
+        //}
 
-        public override ConnectorType GetConnectorType(ModelRelationshipType type)
-        {
-            return ConnectorTypes.Generalization;
-        }
+        //public override ConnectorType GetConnectorType(ModelRelationshipType type)
+        //{
+        //    return ConnectorTypes.Generalization;
+        //}
     }
 }

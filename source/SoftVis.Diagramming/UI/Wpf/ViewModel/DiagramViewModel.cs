@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand MouseDownCommand { get; }
 
         public event Action<IDiagramShape> ShowSourceRequested;
-        public event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
+        //public event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
 
         public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
 
             RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel(diagram);
-            RelatedEntityListBoxViewModel.ItemSelected += OnRelatedEntitySelected;
+            //RelatedEntityListBoxViewModel.ItemSelected += OnRelatedEntitySelected;
             RelatedEntityListBoxViewModel.Items.CollectionChanged += OnRelatedEntityCollectionChanged;
 
             PopupTextViewModel = new AutoHidePopupTextViewModel();
@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Dispose()
         {
-            RelatedEntityListBoxViewModel.ItemSelected -= OnRelatedEntitySelected;
+            //RelatedEntityListBoxViewModel.ItemSelected -= OnRelatedEntitySelected;
             RelatedEntityListBoxViewModel.Items.CollectionChanged -= OnRelatedEntityCollectionChanged;
             RelatedEntityListBoxViewModel.Dispose();
 
@@ -107,8 +107,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void SubscribeToViewportEvents()
         {
             DiagramViewportViewModel.ViewportManipulation += OnViewportManipulation;
-            DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
-            DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
+            //DiagramViewportViewModel.ShowEntitySelectorRequested += OnShowRelatedEntitySelectorRequested;
+            //DiagramViewportViewModel.ShowRelatedEntitiesRequested += OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
             DiagramViewportViewModel.ShowSourceRequested += OnShowSourceRequested;
         }
@@ -116,8 +116,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void UnsubscribeFromViewportEvents()
         {
             DiagramViewportViewModel.ViewportManipulation -= OnViewportManipulation;
-            DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
-            DiagramViewportViewModel.ShowRelatedEntitiesRequested -= OnShowRelatedEntitiesRequested;
+            //DiagramViewportViewModel.ShowEntitySelectorRequested -= OnShowRelatedEntitySelectorRequested;
+            //DiagramViewportViewModel.ShowRelatedEntitiesRequested -= OnShowRelatedEntitiesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
             DiagramViewportViewModel.ShowSourceRequested -= OnShowSourceRequested;
         }
@@ -129,30 +129,30 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 HideRelatedEntityListBox();
         }
 
-        private void OnShowRelatedEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
-        {
-            DiagramViewportViewModel.PinDecoration();
-            RelatedEntityListBoxViewModel.Show(diagramNodeButtonViewModel, modelEntities);
-        }
+        //private void OnShowRelatedEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IEnumerable<IModelEntity> modelEntities)
+        //{
+        //    DiagramViewportViewModel.PinDecoration();
+        //    RelatedEntityListBoxViewModel.Show(diagramNodeButtonViewModel, modelEntities);
+        //}
 
-        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities)
-        {
-            switch (modelEntities.Count)
-            {
-                case 0:
-                    return;
-                case 1:
-                    var diagramNodes = Diagram.ShowModelItems(modelEntities).OfType<IDiagramNode>().ToArray();
-                    FollowDiagramNodes(diagramNodes);
-                    break;
-                default:
-                    HideRelatedEntityListBox();
-                    ShowModelItemsRequested?.Invoke(modelEntities);
-                    break;
-            }
-        }
+        //private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities)
+        //{
+        //    switch (modelEntities.Count)
+        //    {
+        //        case 0:
+        //            return;
+        //        case 1:
+        //            var diagramNodes = Diagram.ShowModelItems(modelEntities).OfType<IDiagramNode>().ToArray();
+        //            FollowDiagramNodes(diagramNodes);
+        //            break;
+        //        default:
+        //            HideRelatedEntityListBox();
+        //            ShowModelItemsRequested?.Invoke(modelEntities);
+        //            break;
+        //    }
+        //}
 
-        private void OnRelatedEntitySelected(IModelEntity selectedEntity)
+        private void OnRelatedEntitySelected(IModelNode selectedEntity)
         {
             StopFollowingDiagramNodes();
             Diagram.ShowModelItem(selectedEntity);

@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void RecalculateVisibility()
         {
-            IsVisible = Diagram.GetUndisplayedRelatedModelEntities(_diagramNode, _entityRelationType).Any();
+            //IsVisible = Diagram.GetUndisplayedRelatedModelEntities(_diagramNode, _entityRelationType).Any();
         }
 
         private void OnModelRelationshipRemoved(IModelRelationship relationship) => RecalculateVisibility();

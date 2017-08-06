@@ -6,7 +6,7 @@
     /// <remarks>
     /// For bidirectional relationships the model contains two directed relationships.
     /// </remarks>
-    public interface IModelRelationship
+    public interface IModelRelationship : IModelItem
     {
         /// <summary>
         /// The relationship starts from this node.

@@ -6,25 +6,31 @@ using System.Diagnostics;
 namespace Codartis.SoftVis.Modeling2.Implementation
 {
     /// <summary>
-    /// An immutable implementation of the IModelNode interface.
+    /// Abstract base class for immutable implementations of the IModelNode interface.
     /// </summary>
-    [DebuggerDisplay("{DisplayName} ({GetType().Name})")]
-    public class ImmutableModelNode : IModelNode
+    /// <remarks>
+    /// Descendants must keep the immutability: mutators must return a new (mutated) instance.
+    /// The Id field is used to track identity through mutated instances so its value must be kept unchanged by all mutators.
+    /// </remarks>
+    [DebuggerDisplay("{GetType().Name} {DisplayName} [{Id}]")]
+    public abstract class ImmutableModelNode : IModelNode
     {
-        public ImmutableList<ImmutableModelNode> ImmutableChildNodes { get; }
-
+        public ModelItemId Id { get; }
         public string DisplayName { get; }
         public string FullName { get; }
         public string Description { get; }
         public ModelOrigin Origin { get; }
+        public ImmutableList<ImmutableModelNode> ImmutableChildNodes { get; }
 
-        public ImmutableModelNode(ImmutableList<ImmutableModelNode> childNodes, string displayName, string fullName, string description, ModelOrigin origin)
+        protected ImmutableModelNode(ModelItemId id, string displayName, string fullName, string description, 
+            ModelOrigin origin, ImmutableList<ImmutableModelNode> childNodes)
         {
-            ImmutableChildNodes = childNodes;
+            Id = id;
             DisplayName = displayName;
             FullName = fullName;
             Description = description;
             Origin = origin;
+            ImmutableChildNodes = childNodes;
         }
 
         public IEnumerable<IModelNode> ChildNodes => ImmutableChildNodes;
@@ -37,7 +43,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             if (ImmutableChildNodes.Contains(node))
                 throw new InvalidOperationException($"Model node {this} already contains child {node}");
 
-            return new ImmutableModelNode(ImmutableChildNodes.Add(node), DisplayName, FullName, Description, Origin);
+            return CreateInstance(Id, DisplayName, FullName, Description, Origin, ImmutableChildNodes.Add(node));
         }
 
         public ImmutableModelNode RemoveChildNode(ImmutableModelNode node)
@@ -45,7 +51,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             if (!ImmutableChildNodes.Contains(node))
                 throw new InvalidOperationException($"Model node {this} does not contain child {node}");
 
-            return new ImmutableModelNode(ImmutableChildNodes.Remove(node), DisplayName, FullName, Description, Origin);
+            return CreateInstance(Id, DisplayName, FullName, Description, Origin, ImmutableChildNodes.Remove(node));
         }
 
         public ImmutableModelNode ReplaceChildNode(ImmutableModelNode oldNode, ImmutableModelNode newNode)
@@ -53,14 +59,46 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             if (!ImmutableChildNodes.Contains(oldNode))
                 throw new InvalidOperationException($"Model node {this} does not contain child {oldNode}");
 
-            return new ImmutableModelNode(ImmutableChildNodes.Replace(oldNode, newNode), DisplayName, FullName, Description, Origin);
+            return CreateInstance(Id, DisplayName, FullName, Description, Origin, ImmutableChildNodes.Replace(oldNode, newNode));
         }
 
         public ImmutableModelNode WithName(string displayName, string fullName, string description)
         {
-            return new ImmutableModelNode(ImmutableChildNodes, displayName, fullName, description, Origin);
+            return CreateInstance(Id, displayName, fullName, description, Origin, ImmutableChildNodes);
         }
 
-        public override string ToString() => DisplayName;
+        protected abstract ImmutableModelNode CreateInstance(ModelItemId id,
+            string displayName, string fullName, string description,
+            ModelOrigin origin, ImmutableList<ImmutableModelNode> childNodes);
+
+        protected bool Equals(ImmutableModelNode other)
+        {
+            return Id.Equals(other.Id);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ImmutableModelNode) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public static bool operator ==(ImmutableModelNode left, ImmutableModelNode right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ImmutableModelNode left, ImmutableModelNode right)
+        {
+            return !Equals(left, right);
+        }
+
+        public override string ToString() => $"{GetType().Name} {DisplayName} [{Id}]";
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -38,7 +37,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _center = PointExtensions.Undefined;
             _topLeft = PointExtensions.Undefined;
             _size = Size.Empty;
-            _name = diagramNode.Name;
+            _name = diagramNode.DisplayName;
             _fullName = diagramNode.FullName;
             _description = diagramNode.Description;
             _descriptionExists = !string.IsNullOrWhiteSpace(_description);
@@ -59,10 +58,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 relatedEntityCueViewModel.Dispose();
         }
 
-        public IModelEntity ModelEntity => DiagramNode.ModelEntity;
-        public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
-        public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
-        public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
+        //public IModelEntity ModelEntity => DiagramNode.ModelEntity;
+        //public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
+        //public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
+        //public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
 
         public string Name
         {
@@ -223,9 +222,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()
         {
-            return Diagram.GetEntityRelationTypes()
-                .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
-                .ToList();
+            return new List<RelatedEntityCueViewModel>();
+            //return Diagram.GetEntityRelationTypes()
+            //    .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
+            //    .ToList();
         }
 
         private Point CenterToTopLeft(Point center, Size size)

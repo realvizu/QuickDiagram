@@ -1,5 +1,5 @@
 ﻿using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -9,7 +9,10 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagramShape
     {
-        IModelItem ModelItem { get; }
+        /// <summary>
+        /// Identifies the model item represented by this shape.
+        /// </summary>
+        ModelItemId ModelItemId { get; }
 
         bool IsRectDefined { get; }
         Rect2D Rect { get; }
