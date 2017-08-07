@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private string _description;
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
+        private string _nodeType;
 
         public IDiagramNode DiagramNode { get; }
 
@@ -42,6 +43,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _description = diagramNode.Description;
             _descriptionExists = !string.IsNullOrWhiteSpace(_description);
             _isDescriptionVisible = isDescriptionVisible;
+            _nodeType = diagramNode.Type;
 
             RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
 
@@ -58,10 +60,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 relatedEntityCueViewModel.Dispose();
         }
 
-        //public IModelEntity ModelEntity => DiagramNode.ModelEntity;
-        //public ModelEntityStereotype Stereotype => ModelEntity.Stereotype;
-        //public bool IsStereotypeVisible => Stereotype != ModelEntityStereotype.None;
-        //public string StereotypeText => IsStereotypeVisible ? $"<<{Stereotype.Name.ToLower()}>>" : string.Empty;
+        public bool IsStereotypeVisible => _nodeType != null;
+        public string StereotypeText => IsStereotypeVisible ? $"<<{_nodeType.ToLower()}>>" : string.Empty;
 
         public string Name
         {

@@ -22,6 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         public IModelBuilder ModelBuilder { get; }
 
+        private readonly DiagramBuilder _diagramBuilder;
         private readonly DiagramGraph _graph;
 
         public event Action<IDiagramShape> ShapeAdded;
@@ -34,12 +35,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
 
-        public Diagram(IModelBuilder modelBuilder)
+        public Diagram(IModelBuilder modelBuilder, DiagramBuilder diagramBuilder)
         {
-            //if (model == null)
-            //    throw new ArgumentNullException(nameof(model));
-
             ModelBuilder = modelBuilder;
+            _diagramBuilder = diagramBuilder;
+
             //Model.NodeUpdated += OnModelEntityRenamed;
             //Model.RelationshipAdded += OnModelRelationshipAdded;
             //Model.NodeRemoved += OnModelEntityRemoved;
@@ -191,7 +191,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             var sourceNode = FindDiagramNode(relationship.Source);
             var targetNode = FindDiagramNode(relationship.Target);
-            var diagramConnector = new DiagramConnector(relationship, sourceNode, targetNode);
+            var connectorType = _diagramBuilder.GetConnectorType(relationship);
+            var diagramConnector = new DiagramConnector(relationship, sourceNode, targetNode, connectorType);
 
             diagramConnector.RouteChanged += OnDiagramConnectorRouteChanged;
 

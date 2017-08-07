@@ -74,6 +74,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Diagramming\TestDiagram.cs" />
+    <Compile Include="Diagramming\TestDiagramBuilder.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Modeling\TestImplementsRelationship.cs" />
     <Compile Include="Modeling\TestInheritanceRelationship.cs" />

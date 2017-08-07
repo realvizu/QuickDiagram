@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.Diagramming
         string DisplayName { get; }
         string FullName { get; }
         string Description { get; }
+        string Type { get; } // TODO: temp solution
         int Priority { get; }
 
         Point2D TopLeft { get; }

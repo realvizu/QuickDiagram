@@ -83,6 +83,7 @@
     <Compile Include="Diagramming\IDiagram.cs" />
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Diagramming\Implementation\AutoArrangingDiagram.cs" />
+    <Compile Include="Diagramming\Implementation\DiagramBuilder.cs" />
     <Compile Include="Diagramming\Layout\RemoveDiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\AddDiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\ResizeDiagramNodeAction.cs" />

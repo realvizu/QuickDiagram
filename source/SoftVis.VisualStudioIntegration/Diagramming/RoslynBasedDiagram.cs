@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private readonly IModelServices _modelServices;
 
         public RoslynBasedDiagram(IModelServices modelServices)
-            : base(null)
+            : base(null, null)
         {
             _modelServices = modelServices;
         }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
 
@@ -11,7 +10,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public List<List<IModelItem>> ModelItemGroups { get; }
 
         public TestDiagram(TestModel model)
-            : base(null)
+            : base(null, null)
         {
             ModelItemGroups = model.ItemGroups.ToList();
         }
@@ -23,13 +22,6 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         //    yield return TestEntityRelationTypes.ImplementedInterfaces;
         //    yield return TestEntityRelationTypes.ImplementerTypes;
-        //}
-
-        //public override ConnectorType GetConnectorType(ModelRelationshipType type)
-        //{
-        //    return type.Stereotype == TestModelRelationshipStereotypes.Implementation
-        //        ? TestConnectorTypes.Implementation
-        //        : ConnectorTypes.Generalization;
         //}
     }
 }

@@ -19,6 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public string DisplayName { get; private set; }
         public string FullName { get; private set; }
         public string Description { get; private set; }
+        public string Type { get; }
         public int Priority { get; }
 
         private Size2D _size;
@@ -34,6 +35,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             DisplayName = modelNode.DisplayName;
             FullName = modelNode.FullName;
             Description = modelNode.Description;
+            Type = modelNode.GetType().Name;
             Priority = modelNode.Priority;
 
             _size = Size2D.Zero;

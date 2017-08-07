@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.TestHostApp
     class MainWindowViewModel : ViewModelBase
     {
         private readonly TestModelBuilder _testModelBuilder;
+        private readonly TestDiagramBuilder _testDiagramBuilder;
         private readonly Diagramming.TestDiagram _testDiagram;
 
         private int _modelItemGroupIndex;
@@ -39,8 +40,10 @@ namespace Codartis.SoftVis.TestHostApp
         public MainWindowViewModel()
         {
             _testModelBuilder = new TestModelBuilder();
+            _testDiagramBuilder = new TestDiagramBuilder();
+
             TestModel.Create(_testModelBuilder);
-            _testDiagram = new Diagramming.TestDiagram(_testModelBuilder);
+            _testDiagram = new TestDiagram(_testModelBuilder, _testDiagramBuilder);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             //DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");

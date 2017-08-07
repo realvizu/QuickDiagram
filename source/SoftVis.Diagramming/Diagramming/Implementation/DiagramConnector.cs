@@ -18,15 +18,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagramNode Source { get; }
         public IDiagramNode Target { get; }
         public string RelationshipType { get; }
+        public ConnectorType ConnectorType { get; }
 
         public event Action<IDiagramConnector, Route, Route> RouteChanged;
 
-        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target)
+        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target, ConnectorType connectorType)
             : base(relationship.Id)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
             RelationshipType = relationship.GetType().Name;
+            ConnectorType = connectorType;
         }
 
         public virtual Route RoutePoints
@@ -42,11 +44,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 }
             }
         }
-
-        //public IModelRelationship ModelRelationship => (IModelRelationship)ModelItem;
-        //public ModelRelationshipClassifier Classifier => ModelRelationship.Classifier;
-        //public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
-        //public ModelRelationshipType Type => ModelRelationship.Type;
 
         public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && RoutePoints != null;
         public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
