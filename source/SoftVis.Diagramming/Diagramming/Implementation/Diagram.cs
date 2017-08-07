@@ -129,7 +129,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         //}
 
         public void SelectDiagramShape(IDiagramShape diagramShape) => OnDiagramShapeSelected(diagramShape);
-        public void RemoveDiagramShape(IDiagramShape diagramShape) {} //HideModelItems(new[] { diagramShape.ModelItemId });
+        public void RemoveDiagramShape(IDiagramShape diagramShape)
+        {
+            if (diagramShape is DiagramNode)
+                RemoveDiagramNode(diagramShape.ModelItemId);
+
+            if (diagramShape is DiagramConnector)
+                RemoveDiagramConnector((DiagramConnector)diagramShape);
+        }
 
         //public IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities(IDiagramNode diagramNode, EntityRelationType relationType)
         //{
@@ -210,15 +217,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 ShowModelRelationshipsIfBothEndsAreVisible(diagramNode.ModelItemId);
         }
 
-        private void RemoveDiagramConnector(IModelRelationship modelRelationship)
+        private void RemoveDiagramConnector(DiagramConnector diagramConnector)
         {
-            //var edgeRemoved = _graph.RemoveEdge(i => i.ModelRelationship.Equals(modelRelationship));
+            var edgeRemoved = _graph.RemoveEdge(i => i.ModelItemId == diagramConnector.ModelItemId);
 
-            //if (edgeRemoved)
-            //{
-            //    ShowModelRelationshipsIfBothEndsAreVisible(modelRelationship.Source);
-            //    ShowModelRelationshipsIfBothEndsAreVisible(modelRelationship.Target);
-            //}
+            if (edgeRemoved)
+            {
+                ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Source.ModelItemId);
+                ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Target.ModelItemId);
+            }
         }
 
         private void HideRedundantDirectDiagramConnectors()
