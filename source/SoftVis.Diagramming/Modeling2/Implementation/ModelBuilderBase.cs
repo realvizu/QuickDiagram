@@ -31,14 +31,14 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             return this;
         }
 
-        protected IModelBuilder AddNode(ImmutableModelNode node, ImmutableModelNode parentNode = null)
+        protected IModelBuilder AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null)
         {
             _currentModel = _currentModel.AddNode(node, parentNode);
             NodeAdded?.Invoke(node, _currentModel);
             return this;
         }
 
-        protected IModelBuilder AddRelationship(ModelRelationship relationship)
+        protected IModelBuilder AddRelationship(ModelRelationshipBase relationship)
         {
             _currentModel = _currentModel.AddRelationship(relationship);
             RelationshipAdded?.Invoke(relationship, _currentModel);

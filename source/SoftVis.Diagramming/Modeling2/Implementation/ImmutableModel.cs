@@ -11,17 +11,17 @@ namespace Codartis.SoftVis.Modeling2.Implementation
     /// </summary>
     public class ImmutableModel : IModel
     {
-        private readonly ImmutableList<ImmutableModelNode> _rootNodes;
+        private readonly ImmutableList<ImmutableModelNodeBase> _rootNodes;
         private readonly ImmutableModelGraph _graph;
 
-        public ImmutableModel(ImmutableList<ImmutableModelNode> rootNodes, ImmutableModelGraph graph)
+        public ImmutableModel(ImmutableList<ImmutableModelNodeBase> rootNodes, ImmutableModelGraph graph)
         {
             _rootNodes = rootNodes;
             _graph = graph;
         }
 
         public ImmutableModel()
-            : this(ImmutableList<ImmutableModelNode>.Empty, new ImmutableModelGraph())
+            : this(ImmutableList<ImmutableModelNodeBase>.Empty, new ImmutableModelGraph())
         {
         }
 
@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
                 (_, relationship) => relationshipType.IsInstanceOfType(relationship),
                 recursive);
 
-        public ImmutableModel AddNode(ImmutableModelNode node, ImmutableModelNode parentNode = null)
+        public ImmutableModel AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null)
         {
             if (parentNode == null)
                 return new ImmutableModel(_rootNodes.Add(node), _graph.AddVertex(node));
@@ -58,12 +58,12 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             //return new ImmutableModel(newRootNodes, newModelGraph);
         }
 
-        public ImmutableModel AddRelationship(ModelRelationship relationship)
+        public ImmutableModel AddRelationship(ModelRelationshipBase relationship)
         {
             return new ImmutableModel(_rootNodes, _graph.AddEdge(relationship));
         }
 
-        private ImmutableModelGraph ReplaceVertexInModelGraph(ImmutableModelNode parentNode, ImmutableModelNode newParentNode)
+        private ImmutableModelGraph ReplaceVertexInModelGraph(ImmutableModelNodeBase parentNode, ImmutableModelNodeBase newParentNode)
             => _graph.ReplaceVertex(parentNode, newParentNode);
     }
 }

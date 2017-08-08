@@ -65,7 +65,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         //    yield return EntityRelationTypes.Subtype;
         //}
 
-        //public virtual ConnectorType GetConnectorType(ModelRelationshipType type) => ConnectorTypes.Generalization;
 
         /// <summary>
         /// Clear the diagram (that is, hide all nodes and connectors).
