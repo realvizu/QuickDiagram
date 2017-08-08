@@ -14,15 +14,5 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
         {
             ShowModelItem(node);
         }
-
-        //public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
-        //{
-        //    yield break;
-        //}
-
-        //public override ConnectorType GetConnectorType(ModelRelationshipType type)
-        //{
-        //    return ConnectorTypes.Generalization;
-        //}
     }
 }

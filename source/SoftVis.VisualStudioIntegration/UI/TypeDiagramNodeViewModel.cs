@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             return new TypeDiagramNodeViewModel(Diagram, DiagramNode, IsDescriptionVisible, Size, Center, TopLeft);
         }
 
-        protected override IEnumerable<DirectedModelRelationshipType> GetRelatedNodeCueTypes()
+        public override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
             // TODO 
             yield break;

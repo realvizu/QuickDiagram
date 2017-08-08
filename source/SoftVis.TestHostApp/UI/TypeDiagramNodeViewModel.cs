@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
@@ -26,12 +25,12 @@ namespace Codartis.SoftVis.TestHostApp.UI
             return new TypeDiagramNodeViewModel(Diagram, DiagramNode, IsDescriptionVisible, Size, Center, TopLeft);
         }
 
-        protected override IEnumerable<DirectedModelRelationshipType> GetRelatedNodeCueTypes()
+        public override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
-            yield return DirectedRelationshipTypes.BaseType;
-            yield return DirectedRelationshipTypes.Subtype;
-            yield return DirectedRelationshipTypes.ImplementerType;
-            yield return DirectedRelationshipTypes.ImplementedInterface;
+            yield return new RelatedNodeType(DirectedRelationshipTypes.BaseType, "Base types");
+            yield return new RelatedNodeType(DirectedRelationshipTypes.Subtype, "Subtypes");
+            yield return new RelatedNodeType(DirectedRelationshipTypes.ImplementerType, "Implementers");
+            yield return new RelatedNodeType(DirectedRelationshipTypes.ImplementedInterface, "Interfaces");
         }
     }
 }

@@ -195,6 +195,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public abstract object Clone();
 
+        public virtual IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
+        {
+            yield break;
+        }
+
         private void OnCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
         {
             Center = newCenter.ToWpf();
@@ -215,14 +220,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private List<RelatedNodeCueViewModel> CreateRelatedEntityCueViewModels()
         {
-            return GetRelatedNodeCueTypes()
+            return GetRelatedNodeTypes()
                 .Select(i => new RelatedNodeCueViewModel(Diagram, DiagramNode, i))
                 .ToList();
-        }
-
-        protected virtual IEnumerable<DirectedModelRelationshipType> GetRelatedNodeCueTypes()
-        {
-            yield break;
         }
 
         private Point CenterToTopLeft(Point center, Size size)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,8 +50,8 @@ namespace Codartis.SoftVis.TestHostApp
             DiagramViewModel = new DiagramViewModel(_testDiagram, diagramShapeVieModelFactory,
                 minZoom: 0.2, maxZoom: 5, initialZoom: 1);
 
-            //DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");
-            //DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowModelItems(i);
+            DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItemId}");
+            DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowModelItems(i);
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
@@ -72,9 +73,6 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            //var model = _testModelBuilder.AddClass($"Class{_testModelBuilder.CurrentModel.RootNodes.Count() + 1}");
-            //_testDiagram.AddModelNode(model.RootNodes.Last());
-
             if (_modelItemGroupIndex == _testModelBuilder.ItemGroups.Count)
                 return;
 

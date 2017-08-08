@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -11,15 +11,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class ShowRelatedNodeButtonViewModel : DiagramShapeButtonViewModelBase
     {
-        private readonly EntityRelationType _relationType;
+        private readonly DirectedModelRelationshipType _relationshipType;
 
         public event ShowRelatedNodeButtonEventHandler EntitySelectorRequested;
         public event ShowRelatedNodeButtonEventHandler ShowRelatedEntitiesRequested;
 
-        public ShowRelatedNodeButtonViewModel(IArrangedDiagram diagram, EntityRelationType relationType)
-            : base(diagram, relationType.Name)
+        public ShowRelatedNodeButtonViewModel(IArrangedDiagram diagram, RelatedNodeType relatedNodeType)
+            : base(diagram, relatedNodeType.Name)
         {
-            _relationType = relationType;
+            _relationshipType = relatedNodeType.RelationshipType;
             SubscribeToModelEvents();
         }
 
@@ -28,15 +28,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UnsubscribeFromModelEvents();
         }
 
-        public ConnectorType ConnectorType => ConnectorTypes.Generalization;//TODO Diagram.GetConnectorType(_relationType.Type);
+        public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationshipType.Type);
 
-        private EntityRelationType EntityRelationType => _relationType;
         private IDiagramNode HostDiagramNode => HostViewModel?.DiagramNode;
 
         /// <summary>
-        /// For related entity buttons the placement key is the RelatedEntitySpecification.
+        /// For related entity buttons the placement key is a DirectedModelRelationshipType.
         /// </summary>
-        public override object PlacementKey => EntityRelationType;
+        public override object PlacementKey => _relationshipType;
 
         public override void AssociateWith(DiagramNodeViewModelBase diagramNodeViewModel)
         {
@@ -96,10 +95,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IsEnabled = GetUndisplayedRelatedModelEntities().Any();
         }
 
-        private IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities()
-        {
-            return new List<IModelEntity>();
-            //return Diagram.GetUndisplayedRelatedModelNodes(HostDiagramNode, EntityRelationType);
-        }
+        private IReadOnlyList<IModelNode> GetUndisplayedRelatedModelEntities() => 
+            Diagram.GetUndisplayedRelatedModelNodes(HostDiagramNode, _relationshipType);
     }
 }

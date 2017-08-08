@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf.Collections;
@@ -48,15 +48,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
+            _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
+            _diagramShapeViewModelFactory = diagramShapeViewModelFactory;
+            _diagramShapeViewModelFactory.Initialize(this);
+
             ViewportCalculator = new AutoMoveViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
             DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModelBase>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
             DiagramNodeButtonViewModels = new ThreadSafeObservableCollection<DiagramShapeButtonViewModelBase>(CreateDiagramNodeButtons());
             DecorationManager = new DecorationManagerViewModel<DiagramNodeViewModelBase>(DiagramNodeButtonViewModels);
-
-            _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = diagramShapeViewModelFactory;
-            _diagramShapeViewModelFactory.Initialize(this);
 
             ShowSourceCommand = new DelegateCommand<IDiagramShape>(OnShowSourceCommand);
 
@@ -214,10 +214,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnViewportTransformChanged(TransitionedTransform newTransform)
             => ViewportManipulation?.Invoke();
 
-        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities)
+        private void OnEntitySelectorRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelNode> modelEntities)
             => ShowEntitySelectorRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
 
-        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelEntity> modelEntities)
+        private void OnShowRelatedEntitiesRequested(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel, IReadOnlyList<IModelNode> modelEntities)
             => ShowRelatedEntitiesRequested?.Invoke(diagramNodeButtonViewModel, modelEntities);
 
         private void OnShowSourceCommand(IDiagramShape diagramShape)
@@ -257,7 +257,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             yield return new CloseShapeButtonViewModel(Diagram);
 
-            //foreach (var entityRelationType in Diagram.GetEntityRelationTypes())
+            //foreach (var entityRelationType in GetRelatedNodeTypes())
             //    yield return new ShowRelatedNodeButtonViewModel(Diagram, entityRelationType);
         }
 

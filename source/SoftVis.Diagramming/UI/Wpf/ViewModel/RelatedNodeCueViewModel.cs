@@ -13,11 +13,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private readonly IDiagramNode _diagramNode;
         private readonly DirectedModelRelationshipType _modelRelationshipType;
 
-        public RelatedNodeCueViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType)
+        public RelatedNodeCueViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, RelatedNodeType relatedNodeType)
             : base(diagram)
         {
             _diagramNode = diagramNode;
-            _modelRelationshipType = modelRelationshipType;
+            _modelRelationshipType = relatedNodeType.RelationshipType;
 
             SubscribeToModelEvents();
             SubscribeToDiagramEvents();

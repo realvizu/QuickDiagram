@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a bubble list box that attaches to related entity selector diagram shape buttons.
     /// </summary>
-    public class RelatedEntityListBoxViewModel : BubbleListBoxViewModel<IModelEntity>, IDisposable
+    public class RelatedEntityListBoxViewModel : BubbleListBoxViewModel<IModelNode>, IDisposable
     {
         private readonly IDiagram _diagram;
 
@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DiagramShapeViewModelBase OwnerDiagramShape => _ownerButton?.HostViewModel;
 
-        public void Show(ShowRelatedNodeButtonViewModel ownerButton, IEnumerable<IModelEntity> items)
+        public void Show(ShowRelatedNodeButtonViewModel ownerButton, IEnumerable<IModelNode> items)
         {
             base.Show(items);
             OwnerButton = ownerButton;

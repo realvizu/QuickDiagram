@@ -122,6 +122,7 @@
     <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
     <Compile Include="UI\Wpf\ViewModel\IDiagramShapeViewModelRepository.cs" />
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeType.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewportAutoMoveMode.cs" />
     <Compile Include="UI\Wpf\ViewModel\AutoMoveViewportViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />

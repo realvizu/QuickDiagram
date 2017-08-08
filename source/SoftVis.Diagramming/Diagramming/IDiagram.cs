@@ -26,8 +26,7 @@ namespace Codartis.SoftVis.Diagramming
         event Action<IDiagramShape> ShapeSelected;
         event Action DiagramCleared;
 
-        //IEnumerable<EntityRelationType> GetEntityRelationTypes();
-        //ConnectorType GetConnectorType(ModelRelationshipType type);
+        ConnectorType GetConnectorType(Type modelRealtionshipType);
 
         IDiagramShape ShowModelItem(IModelItem modelItem);
 
