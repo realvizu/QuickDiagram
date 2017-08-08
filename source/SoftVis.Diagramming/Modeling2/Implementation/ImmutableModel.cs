@@ -40,11 +40,15 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         public IEnumerable<IModelRelationship> GetRelationships(ModelItemId modelNodeId)
             => _graph.GetAllEdges(GetModelNode(modelNodeId));
 
-        public IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, Type relationshipType, bool recursive = false)
-            => _graph.GetConnectedVertices(GetModelNode(modelNodeId),
+        public IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType modelRelationshipType, bool recursive = false)
+        {
+            var modelNode = GetModelNode(modelNodeId);
+            return _graph.GetConnectedVertices(modelNode,
                 // TODO: is IsInstanceOfType working for subtypes?
-                (_, relationship) => relationshipType.IsInstanceOfType(relationship),
+                (_, relationship) => modelRelationshipType.Type.IsInstanceOfType(relationship) && 
+                                     relationship.IsNodeInRelationship(modelNode, modelRelationshipType.Direction),
                 recursive);
+        }
 
         public ImmutableModel AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null)
         {

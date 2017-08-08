@@ -18,20 +18,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Also handles viewport transform (resize, pan and zoom) in a transitioned style (with a given transition speed).
     /// Also handles which shape has the focus and which one has the decorators (mini buttons).
     /// </summary>
-    public class DiagramViewportViewModel : DiagramViewModelBase, IDisposable
+    public class DiagramViewportViewModel : DiagramViewModelBase, IDisposable, IDiagramShapeViewModelRepository
     {
         private bool _areDiagramNodeDescriptionsVisible;
 
         public double MinZoom { get; }
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
-        public ThreadSafeObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public ThreadSafeObservableCollection<DiagramNodeViewModelBase> DiagramNodeViewModels { get; }
         public ThreadSafeObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public ThreadSafeObservableCollection<DiagramShapeButtonViewModelBase> DiagramNodeButtonViewModels { get; }
-        public DecorationManagerViewModel<DiagramNodeViewModel> DecorationManager { get; }
+        public DecorationManagerViewModel<DiagramNodeViewModelBase> DecorationManager { get; }
 
         private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
-        private readonly DiagramShapeViewModelFactory _diagramShapeViewModelFactory;
+        private readonly DiagramShapeViewModelFactoryBase _diagramShapeViewModelFactory;
 
         public event Action ViewportManipulation;
         public event ShowRelatedNodeButtonEventHandler ShowEntitySelectorRequested;
@@ -41,20 +41,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DelegateCommand<IDiagramShape> ShowSourceCommand { get; }
 
-        public DiagramViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewportViewModel(IArrangedDiagram diagram, DiagramShapeViewModelFactoryBase diagramShapeViewModelFactory,
+            double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
             ViewportCalculator = new AutoMoveViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
-            DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
+            DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModelBase>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
             DiagramNodeButtonViewModels = new ThreadSafeObservableCollection<DiagramShapeButtonViewModelBase>(CreateDiagramNodeButtons());
-            DecorationManager = new DecorationManagerViewModel<DiagramNodeViewModel>(DiagramNodeButtonViewModels);
+            DecorationManager = new DecorationManagerViewModel<DiagramNodeViewModelBase>(DiagramNodeButtonViewModels);
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = new DiagramShapeViewModelFactory(diagram, DiagramNodeViewModels);
+            _diagramShapeViewModelFactory = diagramShapeViewModelFactory;
+            _diagramShapeViewModelFactory.Initialize(this);
 
             ShowSourceCommand = new DelegateCommand<IDiagramShape>(OnShowSourceCommand);
 
@@ -99,6 +101,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void PinDecoration() => DecorationManager.PinDecoration();
         public void UnpinDecoration() => DecorationManager.UnpinDecoration();
+
+        public DiagramNodeViewModelBase GetDiagramNodeViewModel(IDiagramNode diagramNode) =>
+            DiagramNodeViewModels.FirstOrDefault(i => i.DiagramNode == diagramNode);
+
+        public DiagramConnectorViewModel GetDiagramConnectorViewModel(IDiagramConnector diagramConnector) =>
+            DiagramConnectorViewModels.FirstOrDefault(i => i.DiagramConnector == diagramConnector);
 
         private void SubscribeToViewportEvents()
         {
@@ -183,8 +191,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeViewModel == null)
                 return;
 
-            if (diagramShapeViewModel is DiagramNodeViewModel)
-                DecorationManager.Unfocus(diagramShapeViewModel as DiagramNodeViewModel);
+            if (diagramShapeViewModel is DiagramNodeViewModelBase)
+                DecorationManager.Unfocus(diagramShapeViewModel as DiagramNodeViewModelBase);
 
             diagramShapeViewModel.RemoveRequested -= OnShapeRemoveRequested;
 
@@ -217,8 +225,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            if (diagramShapeViewModel is DiagramNodeViewModel)
-                DiagramNodeViewModels.Add((DiagramNodeViewModel)diagramShapeViewModel);
+            if (diagramShapeViewModel is DiagramNodeViewModelBase)
+                DiagramNodeViewModels.Add((DiagramNodeViewModelBase)diagramShapeViewModel);
 
             else if (diagramShapeViewModel is DiagramConnectorViewModel)
                 DiagramConnectorViewModels.Add((DiagramConnectorViewModel)diagramShapeViewModel);
@@ -229,9 +237,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void RemoveFromViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
         {
-            if (diagramShapeViewModel is DiagramNodeViewModel)
+            if (diagramShapeViewModel is DiagramNodeViewModelBase)
             {
-                var diagramNodeViewModel = (DiagramNodeViewModel)diagramShapeViewModel;
+                var diagramNodeViewModel = (DiagramNodeViewModelBase)diagramShapeViewModel;
                 DiagramNodeViewModels.Remove(diagramNodeViewModel);
                 diagramNodeViewModel.Dispose();
             }

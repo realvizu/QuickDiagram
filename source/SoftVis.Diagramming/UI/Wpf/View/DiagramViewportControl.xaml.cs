@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// The diagram node view model that currently owns the decorators (mini buttons).
         /// </summary>
         public static readonly DependencyProperty DecoratedDiagramNodeProperty =
-            DependencyProperty.Register("DecoratedDiagramNode", typeof(DiagramNodeViewModel), typeof(DiagramViewportControl),
+            DependencyProperty.Register("DecoratedDiagramNode", typeof(DiagramNodeViewModelBase), typeof(DiagramViewportControl),
                 new PropertyMetadata(OnDecoratedDiagramNodeChanged));
 
         private static void OnDecoratedDiagramNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

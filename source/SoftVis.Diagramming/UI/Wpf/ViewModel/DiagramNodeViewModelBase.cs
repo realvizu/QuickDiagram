@@ -4,14 +4,14 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Defines the visible properties of a diagram node.
+    /// Abstract base class for view models that define the visible properties of a diagram node.
     /// </summary>
-    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, ICloneable, IDisposable
+    public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, ICloneable, IDisposable
     {
         private readonly object _positionUpdateLock = new object();
 
@@ -28,16 +28,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramNode DiagramNode { get; }
 
-        public List<RelatedEntityCueViewModel> RelatedEntityCueViewModels { get; }
+        public List<RelatedNodeCueViewModel> RelatedEntityCueViewModels { get; }
 
-        public DiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible)
+        protected DiagramNodeViewModelBase(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible,
+            Size size, Point center, Point topLeft)
               : base(diagram, diagramNode)
         {
             DiagramNode = diagramNode;
 
-            _center = PointExtensions.Undefined;
-            _topLeft = PointExtensions.Undefined;
-            _size = Size.Empty;
+            _size = size;
+            _center = center;
+            _topLeft = topLeft;
             _name = diagramNode.DisplayName;
             _fullName = diagramNode.FullName;
             _description = diagramNode.Description;
@@ -192,15 +193,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public object Clone()
-        {
-            return new DiagramNodeViewModel(Diagram, DiagramNode, _isDescriptionVisible)
-            {
-                _size = _size,
-                _center = _center,
-                _topLeft = _topLeft,
-            };
-        }
+        public abstract object Clone();
 
         private void OnCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
         {
@@ -220,12 +213,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DescriptionExists = !string.IsNullOrWhiteSpace(description);
         }
 
-        private List<RelatedEntityCueViewModel> CreateRelatedEntityCueViewModels()
+        private List<RelatedNodeCueViewModel> CreateRelatedEntityCueViewModels()
         {
-            return new List<RelatedEntityCueViewModel>();
-            //return Diagram.GetEntityRelationTypes()
-            //    .Select(i => new RelatedEntityCueViewModel(Diagram, DiagramNode, i))
-            //    .ToList();
+            return GetRelatedNodeCueTypes()
+                .Select(i => new RelatedNodeCueViewModel(Diagram, DiagramNode, i))
+                .ToList();
+        }
+
+        protected virtual IEnumerable<DirectedModelRelationshipType> GetRelatedNodeCueTypes()
+        {
+            yield break;
         }
 
         private Point CenterToTopLeft(Point center, Size size)

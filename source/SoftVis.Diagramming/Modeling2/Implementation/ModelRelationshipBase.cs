@@ -28,6 +28,12 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             ValidateSourceAndTargetTypes(source, target);
         }
 
+        public bool IsNodeInRelationship(IModelNode modelNode, RelationshipDirection direction)
+        {
+            return (direction == RelationshipDirection.Outgoing && modelNode.Equals(Source))
+                || (direction == RelationshipDirection.Incoming && modelNode.Equals(Target));
+        }
+
         /// <summary>
         /// Returns all valid source node type - target node type pairs.
         /// </summary>

@@ -41,9 +41,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return diagramImageCreator.CreateImage(dpi, margin, cancellationToken, progress, maxProgress);
         }
 
-        private static IEnumerable<DiagramNodeViewModel> Clone(IEnumerable<DiagramNodeViewModel> diagramNodeViewModels)
+        private static IEnumerable<DiagramNodeViewModelBase> Clone(IEnumerable<DiagramNodeViewModelBase> diagramNodeViewModels)
         {
-            return diagramNodeViewModels.Select(i => (DiagramNodeViewModel)i.Clone()).ToArray();
+            return diagramNodeViewModels.Select(i => (DiagramNodeViewModelBase)i.Clone()).ToArray();
         }
 
         private static IEnumerable<DiagramConnectorViewModel> Clone(IEnumerable<DiagramConnectorViewModel> diagramConnectorViewModels)

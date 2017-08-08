@@ -59,13 +59,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Rect2D ContentRect => Shapes.Select(i => i.Rect).Where(i => i.IsDefined()).Union();
 
-        //public virtual IEnumerable<EntityRelationType> GetEntityRelationTypes()
-        //{
-        //    yield return EntityRelationTypes.BaseType;
-        //    yield return EntityRelationTypes.Subtype;
-        //}
-
-
         /// <summary>
         /// Clear the diagram (that is, hide all nodes and connectors).
         /// </summary>
@@ -137,14 +130,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 RemoveDiagramConnector((DiagramConnector)diagramShape);
         }
 
-        //public IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities(IDiagramNode diagramNode, EntityRelationType relationType)
-        //{
-        //    //var displayedDiagramNodes = Nodes;
-        //    //return Model
-        //    //    .GetRelatedEntities(diagramNode.ModelEntity, relationType)
-        //    //    .Where(i => displayedDiagramNodes.All(j => j.ModelEntity != i)).ToArray();
-        //    return new List<IModelEntity>();
-        //}
+        public IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes(IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType)
+        {
+            var displayedDiagramNodes = Nodes;
+            return ModelBuilder.CurrentModel
+                .GetRelatedNodes(diagramNode.ModelItemId, modelRelationshipType)
+                .Where(i => displayedDiagramNodes.All(j => j.ModelItemId != i.Id))
+                .ToArray();
+        }
 
         public void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize) => diagramNode.Size = newSize;
         public void MoveDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter) => diagramNode.Center = newCenter;

@@ -10,7 +10,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -45,7 +44,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _hostUiServices = hostUiServices;
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
+            var diagramShapeViewModelFactory = new RoslynDiagramShapeViewModelFactory(diagram);
+            _diagramViewModel = new DiagramViewModel(diagram, diagramShapeViewModelFactory, minZoom: .1, maxZoom: 10, initialZoom: 1);
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             hostUiServices.HostDiagram(_diagramControl);

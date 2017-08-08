@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(Size.Empty));
 
         public static readonly DependencyProperty FocusRequestedCommandProperty =
-            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<DiagramNodeViewModel>), typeof(DiagramNodeControl));
+            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<DiagramNodeViewModelBase>), typeof(DiagramNodeControl));
 
         public DiagramNodeControl()
         {
@@ -49,15 +49,15 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ActualSizeProperty, value); }
         }
 
-        public DelegateCommand<DiagramNodeViewModel> FocusRequestedCommand
+        public DelegateCommand<DiagramNodeViewModelBase> FocusRequestedCommand
         {
-            get { return (DelegateCommand<DiagramNodeViewModel>)GetValue(FocusRequestedCommandProperty); }
+            get { return (DelegateCommand<DiagramNodeViewModelBase>)GetValue(FocusRequestedCommandProperty); }
             set { SetValue(FocusRequestedCommandProperty, value); }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            FocusRequestedCommand?.Execute(DataContext as DiagramNodeViewModel);
+            FocusRequestedCommand?.Execute(DataContext as DiagramNodeViewModelBase);
 
             // Must stop the event from bubbling up because if its viewport parent receives MouseMove then it forces the node to lose focus.
             e.Handled = true;

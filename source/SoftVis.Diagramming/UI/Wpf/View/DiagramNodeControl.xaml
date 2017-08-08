@@ -9,7 +9,7 @@
              xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}"
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}"
              ToolTip="{Binding FullName}">
 
     <UserControl.Resources>
@@ -23,7 +23,7 @@
             </ItemsPanelTemplate>
 
             <DataTemplate x:Key="UndisplayedRelatedEntitiesCue" 
-                          DataType="{x:Type viewModel:RelatedEntityCueViewModel}">
+                          DataType="{x:Type viewModel:RelatedNodeCueViewModel}">
                 <Ellipse Fill="{Binding Path=DiagramStroke, ElementName=ThisControl}"
                          Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </DataTemplate>
@@ -32,7 +32,7 @@
 
             <Style x:Key="RelatedEntityCueContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:RelatedEntityCueViewModel}}">
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:RelatedNodeCueViewModel}}">
                 <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource CueSize}}"/>
                 <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource CueSize}}"/>
                 <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>

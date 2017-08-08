@@ -5,7 +5,6 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=SoftVis.Util"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"
                     xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=SoftVis.Util"
                     mc:Ignorable="d">
     
@@ -14,12 +13,6 @@
     <ext:Dictionary x:Key="DefaultUndisplayedEntityCuePlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}">
-
-        <wpf:RectRelativePlacement x:Key="{x:Static modeling:EntityRelationTypes.BaseType}" 
-                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
-
-        <wpf:RectRelativePlacement x:Key="{x:Static modeling:EntityRelationTypes.Subtype}" 
-                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5"/>
     </ext:Dictionary>
 
     <ext:Dictionary x:Key="DefaultDiagramShapeButtonPlacementDictionary" 
@@ -28,12 +21,6 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Type viewModel:CloseShapeButtonViewModel}" 
                                    Vertical="Top" Horizontal="Right" Translate="-3,3"/>
-
-        <wpf:RectRelativePlacement x:Key="{x:Static modeling:EntityRelationTypes.BaseType}" 
-                                   Vertical="Top" Horizontal="Center" Translate="-9,3"/>
-
-        <wpf:RectRelativePlacement x:Key="{x:Static modeling:EntityRelationTypes.Subtype}" 
-                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3"/>
     </ext:Dictionary>
 
 </ResourceDictionary>

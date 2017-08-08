@@ -28,10 +28,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramShape> ShowSourceRequested;
         //public event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
 
-        public DiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewModel(IArrangedDiagram diagram, DiagramShapeViewModelFactoryBase diagramShapeViewModelFactory,
+            double minZoom, double maxZoom, double initialZoom)
             : base(diagram)
         {
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramShapeViewModelFactory, minZoom, maxZoom, initialZoom);
 
             RelatedEntityListBoxViewModel = new RelatedEntityListBoxViewModel(diagram);
             //RelatedEntityListBoxViewModel.ItemSelected += OnRelatedEntitySelected;
@@ -58,7 +59,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.Dispose();
         }
 
-        public IEnumerable<DiagramNodeViewModel> DiagramNodeViewModels => DiagramViewportViewModel.DiagramNodeViewModels;
+        public IEnumerable<DiagramNodeViewModelBase> DiagramNodeViewModels => DiagramViewportViewModel.DiagramNodeViewModels;
         public IEnumerable<DiagramConnectorViewModel> DiagramConnectorViewModelsModels => DiagramViewportViewModel.DiagramConnectorViewModels;
 
         public Rect DiagramContentRect

@@ -40,6 +40,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.UI.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Util.UI.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Modeling2" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />

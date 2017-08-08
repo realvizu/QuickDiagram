@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// View model for a visual cue that indicates the availability of related entities that are not on the diagram yet.
+    /// View model for a visual cue that indicates the availability of related nodes that are not on the diagram yet.
     /// </summary>
-    public class RelatedEntityCueViewModel : DiagramShapeDecoratorViewModelBase, IDisposable
+    public class RelatedNodeCueViewModel : DiagramShapeDecoratorViewModelBase, IDisposable
     {
         private readonly IDiagramNode _diagramNode;
-        private readonly EntityRelationType _entityRelationType;
+        private readonly DirectedModelRelationshipType _modelRelationshipType;
 
-        public RelatedEntityCueViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, EntityRelationType descriptor)
+        public RelatedNodeCueViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType)
             : base(diagram)
         {
             _diagramNode = diagramNode;
-            _entityRelationType = descriptor;
+            _modelRelationshipType = modelRelationshipType;
 
             SubscribeToModelEvents();
             SubscribeToDiagramEvents();
@@ -31,13 +31,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         /// <summary>
-        /// The placement key is the RelatedEntitySpecification.
+        /// The placement key is the directed relationship type.
         /// </summary>
-        public override object PlacementKey => _entityRelationType;
+        public override object PlacementKey => _modelRelationshipType;
 
         private void RecalculateVisibility()
         {
-            //IsVisible = Diagram.GetUndisplayedRelatedModelEntities(_diagramNode, _entityRelationType).Any();
+            IsVisible = Diagram.GetUndisplayedRelatedModelNodes(_diagramNode, _modelRelationshipType).Any();
         }
 
         private void OnModelRelationshipRemoved(IModelRelationship relationship) => RecalculateVisibility();

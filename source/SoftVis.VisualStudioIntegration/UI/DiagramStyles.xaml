@@ -40,7 +40,7 @@
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
+           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}">
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
         <Setter Property="Template">
             <Setter.Value>

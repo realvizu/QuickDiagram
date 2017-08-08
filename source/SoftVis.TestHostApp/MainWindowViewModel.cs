@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
+using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
@@ -44,8 +44,11 @@ namespace Codartis.SoftVis.TestHostApp
 
             TestModel.Create(_testModelBuilder);
             _testDiagram = new TestDiagram(_testModelBuilder, _testDiagramBuilder);
+            var diagramShapeVieModelFactory = new TestDiagramShapeViewModelFactory(_testDiagram);
 
-            DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+            DiagramViewModel = new DiagramViewModel(_testDiagram, diagramShapeVieModelFactory,
+                minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+
             //DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");
             //DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowModelItems(i);
 

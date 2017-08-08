@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// </summary>
         public override object PlacementKey => EntityRelationType;
 
-        public override void AssociateWith(DiagramNodeViewModel diagramNodeViewModel)
+        public override void AssociateWith(DiagramNodeViewModelBase diagramNodeViewModel)
         {
             base.AssociateWith(diagramNodeViewModel);
             UpdateEnabledState();
@@ -99,7 +99,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities()
         {
             return new List<IModelEntity>();
-            //return Diagram.GetUndisplayedRelatedModelEntities(HostDiagramNode, EntityRelationType);
+            //return Diagram.GetUndisplayedRelatedModelNodes(HostDiagramNode, EntityRelationType);
         }
     }
 }

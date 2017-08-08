@@ -79,6 +79,7 @@
     <Compile Include="Diagramming\TestDiagram.cs" />
     <Compile Include="Diagramming\TestDiagramBuilder.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Modeling\DirectedRelationshipTypes.cs" />
     <Compile Include="Modeling\TestImplementsRelationship.cs" />
     <Compile Include="Modeling\TestInheritanceRelationship.cs" />
     <Compile Include="Modeling\TestModel.cs" />
@@ -100,6 +101,8 @@
     <Compile Include="TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\TestDiagramShapeViewModelFactory.cs" />
+    <Compile Include="UI\TypeDiagramNodeViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

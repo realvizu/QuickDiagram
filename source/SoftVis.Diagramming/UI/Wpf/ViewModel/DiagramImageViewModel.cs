@@ -10,11 +10,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramImageViewModel : ViewModelBase, IDisposable
     {
-        public IEnumerable<DiagramNodeViewModel> DiagramNodeViewModels { get; }
+        public IEnumerable<DiagramNodeViewModelBase> DiagramNodeViewModels { get; }
         public IEnumerable<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public Rect Rect { get; }
 
-        public DiagramImageViewModel(IEnumerable<DiagramNodeViewModel> diagramNodeViewModels,
+        public DiagramImageViewModel(IEnumerable<DiagramNodeViewModelBase> diagramNodeViewModels,
             IEnumerable<DiagramConnectorViewModel> diagramConnectorViewModels, 
             Rect contentRect, double margin = 0)
         {

@@ -100,6 +100,8 @@
     <Compile Include="Graphs\IImmutableBidirectionalGraph.cs" />
     <Compile Include="Graphs\RemoveVertexResult.cs" />
     <Compile Include="Graphs\ImmutableBidirectionalGraph.cs" />
+    <Compile Include="Modeling2\DirectedModelRelationshipType.cs" />
+    <Compile Include="Modeling2\RelationshipDirection.cs" />
     <Compile Include="Modeling2\IModelItem.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModelNodeBase.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModelGraph.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Modeling\EntityRelationTypes.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
+    <Compile Include="UI\Wpf\ViewModel\IDiagramShapeViewModelRepository.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewportAutoMoveMode.cs" />
     <Compile Include="UI\Wpf\ViewModel\AutoMoveViewportViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
@@ -144,7 +147,7 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeDecoratorViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonEventHandler.cs" />
-    <Compile Include="UI\Wpf\ViewModel\RelatedEntityCueViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeCueViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
@@ -257,9 +260,9 @@
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactoryBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
     <Compile Include="UI\Wpf\View\ConnectorTypeToGeometryConverter.cs" />

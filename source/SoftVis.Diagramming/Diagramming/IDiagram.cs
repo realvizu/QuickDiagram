@@ -44,6 +44,6 @@ namespace Codartis.SoftVis.Diagramming
         void SelectDiagramShape(IDiagramShape diagramShape);
         void RemoveDiagramShape(IDiagramShape diagramShape);
 
-        //IReadOnlyList<IModelEntity> GetUndisplayedRelatedModelEntities(IDiagramNode diagramNode, EntityRelationType relationType);
+        IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes(IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType);
     }
 }

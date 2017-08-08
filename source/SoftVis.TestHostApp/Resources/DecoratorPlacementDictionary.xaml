@@ -3,9 +3,9 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
-                    xmlns:testData="clr-namespace:Codartis.SoftVis.TestHostApp.TestData"
                     xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=SoftVis.Util"
                     xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=SoftVis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
@@ -17,10 +17,16 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultUndisplayedEntityCuePlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementedInterfaces}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,0.5"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementerTypes}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
     </ext:Dictionary>
 
@@ -29,10 +35,16 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultDiagramShapeButtonPlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementedInterfaces}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,3"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static testData:TestEntityRelationTypes.ImplementerTypes}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
     </ext:Dictionary>
 
