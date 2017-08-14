@@ -7,21 +7,25 @@ using Codartis.SoftVis.Util.UI.Wpf.Commands;
 namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
 {
     /// <summary>
-    /// Abstract base view model for a bubble selector.
+    /// View model for a bubble listbox control.
     /// </summary>
-    public abstract class BubbleListBoxViewModel : ShowHideViewModelBase
+    public class BubbleListBoxViewModel<TItem> : ShowHideViewModelBase
+        where TItem : class
     {
-        private ThreadSafeObservableCollection<object> _items;
-        private object _selectedItem;
+        private ThreadSafeObservableCollection<TItem> _items;
+        private TItem _selectedItem;
 
         public DelegateCommand<object> ItemSelectedCommand { get; protected set; }
+        public event Action<TItem> ItemSelected;
 
         protected BubbleListBoxViewModel()
         {
-            Items = new ThreadSafeObservableCollection<object>();
+            Items = new ThreadSafeObservableCollection<TItem>();
+            ItemSelected += OnItemSelected;
+            ItemSelectedCommand = new DelegateCommand<object>(i => ItemSelected?.Invoke((TItem)i));
         }
 
-        public ThreadSafeObservableCollection<object> Items
+        public ThreadSafeObservableCollection<TItem> Items
         {
             get { return _items; }
             set
@@ -31,7 +35,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             }
         }
 
-        public object SelectedItem
+        public TItem SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -41,7 +45,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             }
         }
 
-        protected void Show(IEnumerable<object> items)
+        protected void Show(IEnumerable<TItem> items)
         {
             SelectedItem = null;
             Items.Clear();
@@ -51,23 +55,6 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
 
             base.Show();
         }
-    }
-
-    /// <summary>
-    /// A typed wrapper around BubbleSelectorViewModel.
-    /// </summary>
-    public class BubbleListBoxViewModel<TItem> : BubbleListBoxViewModel
-        where TItem : class
-    {
-        public event Action<TItem> ItemSelected;
-
-        public BubbleListBoxViewModel()
-        {
-            ItemSelectedCommand = new DelegateCommand<object>(i => ItemSelected?.Invoke((TItem)i));
-            ItemSelected += OnItemSelected;
-        }
-
-        public virtual void Show(IEnumerable<TItem> items) => base.Show(items);
 
         protected virtual void OnItemSelected(TItem item)
         { }

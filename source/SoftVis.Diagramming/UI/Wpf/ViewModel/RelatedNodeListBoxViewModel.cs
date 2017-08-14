@@ -53,11 +53,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDiagramShapeAdded(IDiagramShape diagramShape)
         {
-            var removedModelItemId = diagramShape?.ModelItemId;
-            if (removedModelItemId == null)
-                return;
-
-            var itemToRemove = Items.OfType<IModelNode>().ToArray().FirstOrDefault(i => i.Id == removedModelItemId);
+            var itemToRemove = Items.ToArray().FirstOrDefault(i => i.Id == diagramShape?.ModelItemId);
 
             if (itemToRemove != null)
                 Items.Remove(itemToRemove);
