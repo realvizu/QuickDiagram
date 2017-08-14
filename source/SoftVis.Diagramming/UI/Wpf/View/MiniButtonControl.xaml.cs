@@ -14,24 +14,24 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// Can serve as a BubbleListBox owner.
     /// Inherits its Placement property from its items control container.
     /// </summary>
-    public partial class DiagramButtonControl : UserControl, IBubbleListBoxOwner
+    public partial class MiniButtonControl : UserControl, IBubbleListBoxOwner
     {
         public static readonly DependencyProperty DiagramFillProperty =
-            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramButtonControl));
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(MiniButtonControl));
 
         public static readonly DependencyProperty DiagramStrokeProperty =
-            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramButtonControl));
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(MiniButtonControl));
 
         public static readonly DependencyProperty PlacementProperty =
-            DecoratorPanel.PlacementProperty.AddOwner(typeof(DiagramButtonControl));
+            DecoratorPanel.PlacementProperty.AddOwner(typeof(MiniButtonControl));
 
         public static readonly DependencyProperty MouseClickCommandProperty =
-            DependencyProperty.Register("MouseClickCommand", typeof(DelegateCommand), typeof(DiagramButtonControl));
+            DependencyProperty.Register("MouseClickCommand", typeof(DelegateCommand), typeof(MiniButtonControl));
 
         public static readonly DependencyProperty MouseDoubleClickCommandProperty =
-            DependencyProperty.Register("MouseDoubleClickCommand", typeof(DelegateCommand), typeof(DiagramButtonControl));
+            DependencyProperty.Register("MouseDoubleClickCommand", typeof(DelegateCommand), typeof(MiniButtonControl));
 
-        public DiagramButtonControl()
+        public MiniButtonControl()
         {
             InitializeComponent();
         }

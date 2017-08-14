@@ -10,16 +10,16 @@
     
     <!-- Warning: If in the xmlns attributes above I specify the assembly for the same-assembly namespaces then compile error: MC3050 -->
 
-    <ext:Dictionary x:Key="DefaultUndisplayedEntityCuePlacementDictionary" 
+    <ext:Dictionary x:Key="DefaultRelatedNodeCuePlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}">
     </ext:Dictionary>
 
-    <ext:Dictionary x:Key="DefaultDiagramShapeButtonPlacementDictionary" 
+    <ext:Dictionary x:Key="DefaultMiniButtonPlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Type viewModel:CloseShapeButtonViewModel}" 
+        <wpf:RectRelativePlacement x:Key="{x:Type viewModel:CloseMiniButtonViewModel}" 
                                    Vertical="Top" Horizontal="Right" Translate="-3,3"/>
     </ext:Dictionary>
 

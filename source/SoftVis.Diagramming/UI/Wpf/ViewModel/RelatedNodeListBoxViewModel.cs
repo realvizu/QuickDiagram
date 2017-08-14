@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
@@ -9,11 +10,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a bubble list box that attaches to related entity selector diagram shape buttons.
     /// </summary>
-    public class RelatedEntityListBoxViewModel : BubbleListBoxViewModel<IModelNode>, IDisposable
+    public class RelatedNodeListBoxViewModel : BubbleListBoxViewModel<IModelNode>, IDisposable
     {
         private readonly IDiagram _diagram;
 
-        public RelatedEntityListBoxViewModel(IDiagram diagram)
+        public RelatedNodeListBoxViewModel(IDiagram diagram)
         {
             _diagram = diagram;
             _diagram.ShapeAdded += OnDiagramShapeAdded;
@@ -24,9 +25,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagram.ShapeAdded -= OnDiagramShapeAdded;
         }
 
-        private ShowRelatedNodeButtonViewModel _ownerButton;
+        private RelatedNodeMiniButtonViewModel _ownerButton;
 
-        public ShowRelatedNodeButtonViewModel OwnerButton
+        public RelatedNodeMiniButtonViewModel OwnerButton
         {
             get { return _ownerButton; }
             set
@@ -38,10 +39,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DiagramShapeViewModelBase OwnerDiagramShape => _ownerButton?.HostViewModel;
 
-        public void Show(ShowRelatedNodeButtonViewModel ownerButton, IEnumerable<IModelNode> items)
+        public void Show(RelatedNodeMiniButtonViewModel ownerButton, IEnumerable<IModelNode> items)
         {
-            base.Show(items);
             OwnerButton = ownerButton;
+            base.Show(items);
         }
 
         public override void Hide()
@@ -56,7 +57,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (removedModelItemId == null)
                 return;
 
-            Items.Remove(removedModelItemId);
+            var itemToRemove = Items.OfType<IModelNode>().ToArray().FirstOrDefault(i => i.Id == removedModelItemId);
+
+            if (itemToRemove != null)
+                Items.Remove(itemToRemove);
         }
     }
 }

@@ -62,12 +62,14 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             //return new ImmutableModel(newRootNodes, newModelGraph);
         }
 
-        public ImmutableModel AddRelationship(ModelRelationshipBase relationship)
-        {
-            return new ImmutableModel(_rootNodes, _graph.AddEdge(relationship));
-        }
+        public ImmutableModel AddRelationship(ModelRelationshipBase relationship) => 
+            new ImmutableModel(_rootNodes, _graph.AddEdge(relationship));
+
+        public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) => 
+            new ImmutableModel(_rootNodes, _graph.RemoveEdge(relationship));
 
         private ImmutableModelGraph ReplaceVertexInModelGraph(ImmutableModelNodeBase parentNode, ImmutableModelNodeBase newParentNode)
             => _graph.ReplaceVertex(parentNode, newParentNode);
+
     }
 }

@@ -7,7 +7,7 @@
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
-             xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"
+             xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling2"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
@@ -25,8 +25,8 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-        <DataTemplate x:Key="BubbleListBoxItemTemplate" DataType="modeling:IModelEntity">
-            <TextBlock x:Name="TextBlock" Text="{Binding Name}"/>
+        <DataTemplate x:Key="BubbleListBoxItemTemplate" DataType="modeling:IModelNode">
+            <TextBlock x:Name="TextBlock" Text="{Binding DisplayName}"/>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                     <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
@@ -35,7 +35,7 @@
         </DataTemplate>
 
         <Style x:Key="BubbleListBoxItemContainerStyle" TargetType="{x:Type ListBoxItem}"
-               d:DataContext="{d:DesignInstance {x:Type modeling:IModelEntity}}">
+               d:DataContext="{d:DesignInstance {x:Type modeling:IModelNode}}">
             <Setter Property="ToolTip" Value="{Binding FullName}"></Setter>
         </Style>
     </UserControl.Resources>
@@ -50,12 +50,12 @@
                                      ViewportPanCommand="{Binding Path=ViewportCalculator.PanCommand}"
                                      ViewportZoomCommand="{Binding Path=ViewportCalculator.ZoomCommand}"
                                      ViewportZoomToContentCommand="{Binding Path=ViewportCalculator.ZoomToContentCommand}"
-                                     DecoratedDiagramNode="{Binding Path=DecorationManager.DecoratedHost}"
-                                     UnfocusAllCommand="{Binding Path=DecorationManager.UnfocusAllCommand}"
+                                     DecoratedDiagramShape="{Binding Path=MiniButtonPanelViewModel.DecoratedHost}"
+                                     UnfocusAllCommand="{Binding Path=MiniButtonPanelViewModel.UnfocusAllCommand}"
                                      Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"/>
 
-        <controls:BubbleListBox DataContext="{Binding Path=RelatedEntityListBoxViewModel}"
+        <controls:BubbleListBox DataContext="{Binding Path=RelatedNodeListBoxViewModel}"
                                 OwnerViewModel="{Binding Path=OwnerButton}"
                                 CommonAncestorWithOwner="{Binding ElementName=ThisControl}"
                                 ItemsSource="{Binding Path=Items}"

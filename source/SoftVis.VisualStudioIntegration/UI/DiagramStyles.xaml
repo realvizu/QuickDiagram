@@ -28,8 +28,8 @@
         <Setter Property="DiagramFill" Value="White"/>
         <Setter Property="DiagramStroke" Value="Black"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
-        <Setter Property="UndisplayedEntityCuePlacementDictionary" Value="{StaticResource UndisplayedEntityCuePlacementDictionary}"/>
-        <Setter Property="DiagramShapeButtonPlacementDictionary" Value="{StaticResource DiagramShapeButtonPlacementDictionary}"/>
+        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}"/>
+        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}"/>
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">

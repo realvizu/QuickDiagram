@@ -5,9 +5,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button for removing a shape from the diagram.
     /// </summary>
-    public class CloseShapeButtonViewModel : DiagramShapeButtonViewModelBase
+    public class CloseMiniButtonViewModel : MiniButtonViewModelBase
     {
-        public CloseShapeButtonViewModel(IArrangedDiagram diagram)
+        public CloseMiniButtonViewModel(IArrangedDiagram diagram)
             : base(diagram, "Remove")
         {
             IsEnabled = true;
@@ -18,6 +18,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// </summary>
         public override object PlacementKey => this.GetType();
 
-        protected override void OnClick() => HostViewModel.RequestRemove();
+        protected override void OnClick() => HostViewModel.Remove();
     }
 }

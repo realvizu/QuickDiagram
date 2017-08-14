@@ -22,11 +22,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DiagramViewportControl.PanAndZoomControlHeightProperty.AddOwner(typeof(DiagramControl));
 
-        public static readonly DependencyProperty UndisplayedEntityCuePlacementDictionaryProperty =
-            DependencyProperty.Register("UndisplayedEntityCuePlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
+        public static readonly DependencyProperty RelatedNodeCuePlacementDictionaryProperty =
+            DependencyProperty.Register("RelatedNodeCuePlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
 
-        public static readonly DependencyProperty DiagramShapeButtonPlacementDictionaryProperty =
-            DependencyProperty.Register("DiagramShapeButtonPlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
+        public static readonly DependencyProperty MiniButtonPlacementDictionaryProperty =
+            DependencyProperty.Register("MiniButtonPlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
 
         public DiagramControl() : this(null)
         { }
@@ -56,16 +56,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(PanAndZoomControlHeightProperty, value); }
         }
 
-        public IDictionary UndisplayedEntityCuePlacementDictionary
+        public IDictionary RelatedNodeCuePlacementDictionary
         {
-            get { return (IDictionary)GetValue(UndisplayedEntityCuePlacementDictionaryProperty); }
-            set { SetValue(UndisplayedEntityCuePlacementDictionaryProperty, value); }
+            get { return (IDictionary)GetValue(RelatedNodeCuePlacementDictionaryProperty); }
+            set { SetValue(RelatedNodeCuePlacementDictionaryProperty, value); }
         }
 
-        public IDictionary DiagramShapeButtonPlacementDictionary
+        public IDictionary MiniButtonPlacementDictionary
         {
-            get { return (IDictionary)GetValue(DiagramShapeButtonPlacementDictionaryProperty); }
-            set { SetValue(DiagramShapeButtonPlacementDictionaryProperty, value); }
+            get { return (IDictionary)GetValue(MiniButtonPlacementDictionaryProperty); }
+            set { SetValue(MiniButtonPlacementDictionaryProperty, value); }
         }
 
         public override void OnApplyTemplate()

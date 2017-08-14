@@ -56,16 +56,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// <summary>
         /// The diagram node view model that currently owns the decorators (mini buttons).
         /// </summary>
-        public static readonly DependencyProperty DecoratedDiagramNodeProperty =
-            DependencyProperty.Register("DecoratedDiagramNode", typeof(DiagramNodeViewModelBase), typeof(DiagramViewportControl),
-                new PropertyMetadata(OnDecoratedDiagramNodeChanged));
+        public static readonly DependencyProperty DecoratedDiagramShapeProperty =
+            DependencyProperty.Register("DecoratedDiagramShape", typeof(DiagramShapeViewModelBase), typeof(DiagramViewportControl),
+                new PropertyMetadata(OnDecoratedDiagramShapeChanged));
 
-        private static void OnDecoratedDiagramNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl)d).OnDecoratedDiagramNodeChanged();
+        private static void OnDecoratedDiagramShapeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((DiagramViewportControl)d).OnDecoratedDiagramShapeChanged();
 
         /// <summary>
         /// The control that presents the currently decorated diagram node.
-        /// Populated automatically when DecoratedDiagramNode changes.
+        /// Populated automatically when DecoratedDiagramShape changes.
         /// </summary>
         public static readonly DependencyProperty DecoratedDiagramNodeControlProperty =
             DependencyProperty.Register("DecoratedDiagramNodeControl", typeof(UIElement), typeof(DiagramViewportControl));
@@ -241,9 +241,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _isViewportObscured = false;
         }
 
-        private void OnDecoratedDiagramNodeChanged()
+        private void OnDecoratedDiagramShapeChanged()
         {
-            DecoratedDiagramNodeControl = this.FindFirstDescendant<DiagramNodeItemsControl>()?.GetPresenterOf(DecoratedDiagramNode);
+            DecoratedDiagramNodeControl = this.FindFirstDescendant<DiagramNodeItemsControl>()?.GetPresenterOf(DecoratedDiagramShape);
         }
 
         private void UnfocusAllDiagramShapes()

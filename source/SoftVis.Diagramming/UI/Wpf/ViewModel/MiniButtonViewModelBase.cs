@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button on a diagram shape.
     /// </summary>
-    public abstract class DiagramShapeButtonViewModelBase : DiagramShapeDecoratorViewModelBase, IDisposable
+    public abstract class MiniButtonViewModelBase : DiagramShapeDecoratorViewModelBase, IDisposable
     {
         private bool _isEnabled;
         private string _name;
@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
 
-        protected DiagramShapeButtonViewModelBase(IArrangedDiagram diagram, string name)
+        protected MiniButtonViewModelBase(IArrangedDiagram diagram, string name)
             : base(diagram)
         {
             _isEnabled = true;

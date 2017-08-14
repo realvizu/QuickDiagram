@@ -11,14 +11,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
     internal class DiagramNodeItemsControl : AnimatedItemsControl<DiagramNodeViewModelBase, AnimatedRectContentPresenter>
     {
         /// <summary>
-        /// Returns the control that presents the given diagram node.
+        /// Returns the control that presents the given diagram shape.
         /// </summary>
-        /// <param name="diagramNode">A diagram node object.</param>
-        /// <returns>The control that presents the given diagram node.</returns>
-        public UIElement GetPresenterOf(DiagramNodeViewModelBase diagramNode)
+        /// <param name="diagramShape">A diagram shape view model.</param>
+        /// <returns>The control that presents the given diagram shape.</returns>
+        public UIElement GetPresenterOf(DiagramShapeViewModelBase diagramShape)
         {
             return this.
-                FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == diagramNode)?.
+                FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == diagramShape)?.
                 FindAncestor<AnimatedRectContentPresenter>();
         }
     }

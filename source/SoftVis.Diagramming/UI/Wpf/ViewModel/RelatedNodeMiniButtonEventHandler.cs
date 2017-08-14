@@ -3,6 +3,7 @@ using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
-    public delegate void ShowRelatedNodeButtonEventHandler(ShowRelatedNodeButtonViewModel diagramNodeButtonViewModel,
+    public delegate void RelatedNodeMiniButtonEventHandler(
+        RelatedNodeMiniButtonViewModel diagramNodeButtonViewModel,
         IReadOnlyList<IModelNode> modelNodes);
 }

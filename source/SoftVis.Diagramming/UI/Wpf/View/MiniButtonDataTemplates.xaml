@@ -11,7 +11,7 @@
     <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
     <view:ConnectorTypeToGeometryConverter x:Key="ConnectorTypeToGeometryConverter"/>
 
-    <DataTemplate DataType="{x:Type viewModel:CloseShapeButtonViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:CloseMiniButtonViewModel}">
         <view:PathControl Stretch="Uniform" 
                           Foreground="Red"
                           StrokeThickness="1.5"
@@ -22,7 +22,7 @@
                               Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}" />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModel:ShowRelatedNodeButtonViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:RelatedNodeMiniButtonViewModel}">
         <view:PathControl Stretch="Uniform" 
                           Data="{Binding ConnectorType, Converter={StaticResource ConnectorTypeToGeometryConverter}}" />
     </DataTemplate>

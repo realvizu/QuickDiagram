@@ -27,8 +27,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private string _nodeType;
 
         public IDiagramNode DiagramNode { get; }
+        public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
-        public List<RelatedNodeCueViewModel> RelatedEntityCueViewModels { get; }
+        public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
+        public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
 
         protected DiagramNodeViewModelBase(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible,
             Size size, Point center, Point topLeft)
@@ -46,7 +48,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _isDescriptionVisible = isDescriptionVisible;
             _nodeType = diagramNode.Type;
 
-            RelatedEntityCueViewModels = CreateRelatedEntityCueViewModels();
+            RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
             DiagramNode.CenterChanged += OnCenterChanged;
             DiagramNode.Renamed += OnRenamed;
@@ -57,8 +59,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramNode.CenterChanged -= OnCenterChanged;
             DiagramNode.Renamed -= OnRenamed;
 
-            foreach (var relatedEntityCueViewModel in RelatedEntityCueViewModels)
-                relatedEntityCueViewModel.Dispose();
+            foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
+                relatedNodeCueViewModel.Dispose();
         }
 
         public bool IsStereotypeVisible => _nodeType != null;
@@ -195,7 +197,21 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public abstract object Clone();
 
-        public virtual IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
+        public void ShowRelatedNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) => 
+            ShowRelatedNodesRequested?.Invoke(ownerButton, modelNodes);
+
+        public void ShowRelatedNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
+            RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
+
+        public override IEnumerable<MiniButtonViewModelBase> CreateMiniButtonViewModels()
+        {
+            yield return new CloseMiniButtonViewModel(Diagram);
+
+            foreach (var entityRelationType in GetRelatedNodeTypes())
+                yield return new RelatedNodeMiniButtonViewModel(Diagram, entityRelationType);
+        }
+
+        protected virtual IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
             yield break;
         }
@@ -218,7 +234,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DescriptionExists = !string.IsNullOrWhiteSpace(description);
         }
 
-        private List<RelatedNodeCueViewModel> CreateRelatedEntityCueViewModels()
+        private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()
         {
             return GetRelatedNodeTypes()
                 .Select(i => new RelatedNodeCueViewModel(Diagram, DiagramNode, i))

@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.TestHostApp.UI
             return new TypeDiagramNodeViewModel(Diagram, DiagramNode, IsDescriptionVisible, Size, Center, TopLeft);
         }
 
-        public override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
+        protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
             yield return new RelatedNodeType(DirectedRelationshipTypes.BaseType, "Base types");
             yield return new RelatedNodeType(DirectedRelationshipTypes.Subtype, "Subtypes");

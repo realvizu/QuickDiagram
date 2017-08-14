@@ -44,10 +44,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportTransformProperty, value); }
         }
 
-        public DiagramNodeViewModelBase DecoratedDiagramNode
+        public DiagramShapeViewModelBase DecoratedDiagramShape
         {
-            get { return (DiagramNodeViewModelBase)GetValue(DecoratedDiagramNodeProperty); }
-            set { SetValue(DecoratedDiagramNodeProperty, value); }
+            get { return (DiagramShapeViewModelBase)GetValue(DecoratedDiagramShapeProperty); }
+            set { SetValue(DecoratedDiagramShapeProperty, value); }
         }
 
         public UIElement DecoratedDiagramNodeControl

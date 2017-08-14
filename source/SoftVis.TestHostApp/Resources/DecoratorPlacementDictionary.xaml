@@ -12,10 +12,10 @@
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DefaultDecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <ext:Dictionary x:Key="UndisplayedEntityCuePlacementDictionary" 
+    <ext:Dictionary x:Key="RelatedNodeCuePlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
-                    Init="{StaticResource DefaultUndisplayedEntityCuePlacementDictionary}">
+                    Init="{StaticResource DefaultRelatedNodeCuePlacementDictionary}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.BaseType}" 
                                    Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
@@ -30,10 +30,10 @@
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
     </ext:Dictionary>
 
-    <ext:Dictionary x:Key="DiagramShapeButtonPlacementDictionary" 
+    <ext:Dictionary x:Key="MiniButtonPlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
-                    Init="{StaticResource DefaultDiagramShapeButtonPlacementDictionary}">
+                    Init="{StaticResource DefaultMiniButtonPlacementDictionary}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedRelationshipTypes.BaseType}" 
                                    Vertical="Top" Horizontal="Center" Translate="-9,3"/>

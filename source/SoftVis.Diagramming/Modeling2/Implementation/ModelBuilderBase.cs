@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         public event Action<IModelNode, IModel> NodeAdded;
         //public event Action<IModelNode, IModel> NodeRemoved;
         public event Action<IModelRelationship, IModel> RelationshipAdded;
-        //public event Action<IModelRelationship, IModel> RelationshipRemoved;
+        public event Action<IModelRelationship, IModel> RelationshipRemoved;
         //public event Action<IModelNode, IModel> NodeUpdated;
         public event Action<IModel> ModelCleared;
 
@@ -42,6 +42,13 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         {
             _currentModel = _currentModel.AddRelationship(relationship);
             RelationshipAdded?.Invoke(relationship, _currentModel);
+            return this;
+        }
+
+        protected IModelBuilder RemoveRelationship(ModelRelationshipBase relationship)
+        {
+            _currentModel = _currentModel.RemoveRelationship(relationship);
+            RelationshipRemoved?.Invoke(relationship, _currentModel);
             return this;
         }
     }
