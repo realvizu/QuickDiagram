@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         private Route _routePoints;
 
+        public IModelRelationship ModelRelationship { get; }
         public IDiagramNode Source { get; }
         public IDiagramNode Target { get; }
         public string RelationshipType { get; }
@@ -23,8 +24,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramConnector, Route, Route> RouteChanged;
 
         public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target, ConnectorType connectorType)
-            : base(relationship.Id)
+            : base(relationship)
         {
+            ModelRelationship = relationship;
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
             RelationshipType = relationship.GetType().Name;

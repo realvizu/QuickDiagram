@@ -125,19 +125,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void SelectDiagramShape(IDiagramShape diagramShape) => OnDiagramShapeSelected(diagramShape);
         public void RemoveDiagramShape(IDiagramShape diagramShape)
         {
-            if (diagramShape is DiagramNode)
-                RemoveDiagramNode(diagramShape.ModelItemId);
+            if (diagramShape is IDiagramNode diagramNode)
+                RemoveDiagramNode(diagramNode);
 
-            if (diagramShape is DiagramConnector)
-                RemoveDiagramConnector((DiagramConnector)diagramShape);
+            if (diagramShape is DiagramConnector diagramConnector)
+                RemoveDiagramConnector(diagramConnector);
         }
 
         public IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes(IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType)
         {
             var displayedDiagramNodes = Nodes;
             return ModelBuilder.CurrentModel
-                .GetRelatedNodes(diagramNode.ModelItemId, modelRelationshipType)
-                .Where(i => displayedDiagramNodes.All(j => j.ModelItemId != i.Id))
+                .GetRelatedNodes(diagramNode.ModelItem.Id, modelRelationshipType)
+                .Except(displayedDiagramNodes.Select(j => j.ModelNode))
                 .ToArray();
         }
 
@@ -148,11 +148,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private IDiagramNode GetOrAddDiagramNode(IModelNode modelNode)
         {
             var getOrAddResult = _graph.GetOrAddVertex(
-                vertex => vertex.ModelItemId == modelNode.Id,
+                vertex => vertex.ModelItem.Id == modelNode.Id,
                 () => CreateDiagramNode(modelNode));
 
             if (getOrAddResult.IsAdd)
-                ShowModelRelationshipsIfBothEndsAreVisible(modelNode.Id);
+                ShowModelRelationshipsIfBothEndsAreVisible(modelNode);
 
             return getOrAddResult.Result;
         }
@@ -178,7 +178,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                     return null;
 
                 getOrAddResult = _graph.GetOrAddEdge(
-                    edge => edge.ModelItemId == modelRelationship.Id,
+                    edge => edge.ModelItem.Id == modelRelationship.Id,
                     () => CreateDiagramConnector(modelRelationship));
             }
 
@@ -200,25 +200,25 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return diagramConnector;
         }
 
-        private void RemoveDiagramNode(ModelItemId modelItemId)
+        private void RemoveDiagramNode(IDiagramNode diagramNode)
         {
-            var result = _graph.RemoveVertex(i => i.ModelItemId == modelItemId);
+            var result = _graph.RemoveVertex(diagramNode);
 
             var surroundingNodes = result.RemovedEdges.EmptyIfNull()
                 .Select(i => i.GetOtherEnd(result.RemovedVertex)).Distinct();
 
-            foreach (var diagramNode in surroundingNodes)
-                ShowModelRelationshipsIfBothEndsAreVisible(diagramNode.ModelItemId);
+            foreach (var neighbourNode in surroundingNodes)
+                ShowModelRelationshipsIfBothEndsAreVisible(neighbourNode.ModelItem);
         }
 
         private void RemoveDiagramConnector(DiagramConnector diagramConnector)
         {
-            var edgeRemoved = _graph.RemoveEdge(i => i.ModelItemId == diagramConnector.ModelItemId);
+            var edgeRemoved = _graph.RemoveEdge(diagramConnector);
 
             if (edgeRemoved)
             {
-                ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Source.ModelItemId);
-                ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Target.ModelItemId);
+                ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Source.ModelItem);
+                ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Target.ModelItem);
             }
         }
 
@@ -237,9 +237,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             //}
         }
 
-        private void ShowModelRelationshipsIfBothEndsAreVisible(ModelItemId modelItemId)
+        private void ShowModelRelationshipsIfBothEndsAreVisible(IModelItem modelItem)
         {
-            foreach (var modelRelationship in ModelBuilder.CurrentModel.GetRelationships(modelItemId))
+            foreach (var modelRelationship in ModelBuilder.CurrentModel.GetRelationships(modelItem.Id))
                 ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
         }
 
@@ -272,12 +272,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private IDiagramNode FindDiagramNode(IModelNode modelNode)
         {
-            return _graph.Vertices.FirstOrDefault(i => i.ModelItemId == modelNode.Id);
+            return Nodes.FirstOrDefault(i => i.ModelNode.Id == modelNode.Id);
         }
 
         private bool DiagramNodeExists(IModelNode modelNode)
         {
-            return Nodes.Any(i => i.ModelItemId == modelNode.Id);
+            return Nodes.Any(i => i.ModelNode.Id == modelNode.Id);
         }
 
         private void OnDiagramShapeAdded(IDiagramShape diagramShape) => ShapeAdded?.Invoke(diagramShape);

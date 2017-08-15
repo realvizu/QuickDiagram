@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         private readonly object _sizeAndPositionLock = new object();
 
+        public IModelNode ModelNode { get; }
         public string DisplayName { get; private set; }
         public string FullName { get; private set; }
         public string Description { get; private set; }
@@ -30,8 +31,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramNode, string, string, string> Renamed;
 
         public DiagramNode(IModelNode modelNode)
-            : base(modelNode.Id)
+            : base(modelNode)
         {
+            ModelNode = modelNode;
             DisplayName = modelNode.DisplayName;
             FullName = modelNode.FullName;
             Description = modelNode.Description;
@@ -105,12 +107,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void Rename(string name, string fullName, string description)
+        public void Update(IModelNode modelNode)
         {
-            DisplayName = name;
-            FullName = fullName;
-            Description = description;
-            Renamed?.Invoke(this, name, fullName, description);
+            if (ModelNode.Id != modelNode.Id)
+                throw new InvalidOperationException($"Cannot update DiagramNode ModelItemId={ModelNode.Id} with ModelNode with Id={modelNode.Id}");
+
+            DisplayName = modelNode.DisplayName;
+            FullName = modelNode.FullName;
+            Description = modelNode.Description;
+            Renamed?.Invoke(this, DisplayName, FullName, Description);
         }
 
         public int CompareTo(IDiagramNode otherNode) 

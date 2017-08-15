@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -13,6 +14,8 @@ namespace Codartis.SoftVis.Diagramming
     /// </remarks>
     public interface IDiagramNode : IDiagramShape, IComparable<IDiagramNode>
     {
+        IModelNode ModelNode { get; }
+
         string DisplayName { get; }
         string FullName { get; }
         string Description { get; }
@@ -23,7 +26,7 @@ namespace Codartis.SoftVis.Diagramming
         Point2D Center { get; set; }
         Size2D Size { get; set; }
 
-        void Rename(string name, string fullName, string description);
+        void Update(IModelNode modelNode);
 
         event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         event Action<IDiagramNode, Point2D, Point2D> CenterChanged;

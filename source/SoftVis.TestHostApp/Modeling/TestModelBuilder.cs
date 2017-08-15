@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Modeling2.Implementation;
@@ -18,7 +17,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public TestModelBuilder AddClass(string name, string baseName = null)
         {
-            var node = new TestClass(ModelItemId.Create(),  name, name, name, ModelOrigin.SourceCode, ImmutableList<ImmutableModelNodeBase>.Empty, false);
+            var node = new TestClass(ModelItemId.Create(),  name, name, name, ModelOrigin.SourceCode, false);
             AddNode(node);
             AddItemToCurrentGroup(node);
 
@@ -33,7 +32,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public TestModelBuilder AddInterface(string name, string baseName = null)
         {
-            var node = new TestInterface(ModelItemId.Create(), name, name, name, ModelOrigin.SourceCode, ImmutableList<ImmutableModelNodeBase>.Empty, false);
+            var node = new TestInterface(ModelItemId.Create(), name, name, name, ModelOrigin.SourceCode, false);
             AddNode(node);
             AddItemToCurrentGroup(node);
 

@@ -9,10 +9,7 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagramShape
     {
-        /// <summary>
-        /// Identifies the model item represented by this shape.
-        /// </summary>
-        ModelItemId ModelItemId { get; }
+        IModelItem ModelItem { get; }
 
         bool IsRectDefined { get; }
         Rect2D Rect { get; }

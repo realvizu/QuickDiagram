@@ -8,11 +8,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public abstract class DiagramShape : IDiagramShape
     {
-        public ModelItemId ModelItemId { get; }
+        public IModelItem ModelItem { get; }
 
-        protected DiagramShape(ModelItemId modelItemId)
+        protected DiagramShape(IModelItem modelItem)
         {
-            ModelItemId = modelItemId;
+            ModelItem = modelItem;
         }
 
         public abstract bool IsRectDefined { get; }

@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Codartis.SoftVis.Modeling2
+﻿namespace Codartis.SoftVis.Modeling2
 {
     /// <summary>
     /// Represents a named item in the model, e.g. a package, a type, a member.
-    /// Model nodes form tree hierarchies, so nodes can have child nodes.
     /// </summary>
     public interface IModelNode : IModelItem
     {
@@ -22,7 +19,5 @@ namespace Codartis.SoftVis.Modeling2
         /// Higher value means higher priority.
         /// </summary>
         int Priority { get; }
-
-        IEnumerable<IModelNode> ChildNodes { get; }
     }
 }

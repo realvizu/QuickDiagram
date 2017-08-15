@@ -40,34 +40,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         /// <returns>A collection of valid source and target node type pairs.</returns>
         protected abstract IEnumerable<(Type, Type)> GetValidSourceAndTargetNodeTypePairs();
 
-        protected bool Equals(ModelRelationshipBase other)
-        {
-            return Id.Equals(other.Id);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((ModelRelationshipBase) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        public static bool operator ==(ModelRelationshipBase left, ModelRelationshipBase right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(ModelRelationshipBase left, ModelRelationshipBase right)
-        {
-            return !Equals(left, right);
-        }
-
         public override string ToString() => $"{Source.DisplayName}--{GetType().Name}-->{Target.DisplayName} [{Id}]";
 
         private void ValidateSourceAndTargetTypes(IModelNode source, IModelNode target)
@@ -75,6 +47,5 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             if (!GetValidSourceAndTargetNodeTypePairs().Contains((source.GetType(), target.GetType())))
                 throw new ArgumentException($"{source.GetType().Name} and {target.GetType().Name} can not be in {GetType().Name} relationship.");
         }
-
     }
 }
