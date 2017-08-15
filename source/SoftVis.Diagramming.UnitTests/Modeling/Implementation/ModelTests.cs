@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.UnitTests.TestSubjects;
-using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Util;
 using FluentAssertions;
 using Xunit;

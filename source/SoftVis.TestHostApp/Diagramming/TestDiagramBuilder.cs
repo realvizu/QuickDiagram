@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.TestHostApp.Modeling;
-using Codartis.SoftVis.TestHostApp.TestData;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
 {

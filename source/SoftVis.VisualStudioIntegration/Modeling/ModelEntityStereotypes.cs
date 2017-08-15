@@ -3,7 +3,7 @@
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
-    /// Defines the model entity stereotypes used in Roslyn based models.
+    /// Defines the model node stereotypes used in Roslyn based models.
     /// </summary>
     internal static class ModelEntityStereotypes
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -7,9 +7,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// A model entity created from a Roslyn struct symbol.
     /// </summary>
-    internal class RoslynBasedStruct : RoslynBasedModelEntity
+    internal class RoslynStruct : RoslynType
     {
-        internal RoslynBasedStruct(INamedTypeSymbol namedTypeSymbol)
+        internal RoslynStruct(INamedTypeSymbol namedTypeSymbol)
             : base(namedTypeSymbol, TypeKind.Struct)
         {
         }

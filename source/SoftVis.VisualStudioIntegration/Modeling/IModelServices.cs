@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.
         /// </summary>
         /// <returns>The model entity that corresponds to the current Roslyn symbol.</returns>
-        Task<IRoslynBasedModelEntity> AddCurrentSymbolAsync();
+        Task<IRoslynBasedModelNode> AddCurrentSymbolAsync();
 
         /// <summary>
         /// Explores related entities and adds them to the model.

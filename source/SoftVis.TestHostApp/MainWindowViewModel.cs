@@ -15,7 +15,6 @@ using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
-using TestModelBuilder = Codartis.SoftVis.TestHostApp.Modeling.TestModelBuilder;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -44,6 +43,8 @@ namespace Codartis.SoftVis.TestHostApp
             _testDiagramBuilder = new TestDiagramBuilder();
 
             TestModel.Create(_testModelBuilder);
+            //CreateBigModel();
+
             _testDiagram = new TestDiagram(_testModelBuilder, _testDiagramBuilder);
             var diagramShapeVieModelFactory = new TestDiagramShapeViewModelFactory(_testDiagram);
 
@@ -85,6 +86,15 @@ namespace Codartis.SoftVis.TestHostApp
             //_testDiagram.Save(@"c:\big.xml");
 
             ZoomToContent();
+        }
+
+        private void CreateBigModel()
+        {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            BigTestModel.Create(_testModelBuilder, 2, 7);
+            stopWatch.Stop();
+            Debug.WriteLine($"BigTestModel created in {stopWatch.Elapsed}");
         }
 
         private void RemoveShapes()

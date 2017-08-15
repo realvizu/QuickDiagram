@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling2.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
@@ -10,24 +10,25 @@ using Microsoft.CodeAnalysis.FindSymbols;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// Abstract base class for model entities created from Roslyn symbols.
+    /// Abstract base class for model nodes that represent Roslyn types.
     /// </summary>
-    public abstract class RoslynBasedModelEntity : ModelEntity, IRoslynBasedModelEntity
+    public abstract class RoslynType : ImmutableModelNodeBase, IRoslynBasedModelNode
     {
         private readonly TypeKind _typeKind;
         private INamedTypeSymbol _roslynSymbol;
 
-        protected RoslynBasedModelEntity(INamedTypeSymbol roslynSymbol, TypeKind typeKind)
-            : base(roslynSymbol.GetName(),
+        protected RoslynType(ModelItemId id, INamedTypeSymbol roslynSymbol, TypeKind typeKind)
+            : base(id,
+                  roslynSymbol.GetName(),
                   roslynSymbol.GetFullName(),
                   roslynSymbol.GetDescription(),
-                  typeKind.ToModelEntityType(),
-                  typeKind.ToModelEntityStereotype(),
                   roslynSymbol.GetOrigin())
         {
             _typeKind = typeKind;
             RoslynSymbol = roslynSymbol;
         }
+
+        public bool IsAbstract => RoslynSymbol.IsAbstract;
 
         public INamedTypeSymbol RoslynSymbol
         {

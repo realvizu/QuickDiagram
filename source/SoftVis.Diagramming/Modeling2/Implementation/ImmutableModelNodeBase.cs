@@ -10,29 +10,22 @@
     public abstract class ImmutableModelNodeBase : IModelNode
     {
         public ModelItemId Id { get; }
-        public string DisplayName { get; }
-        public string FullName { get; }
-        public string Description { get; }
+        public string Name { get; }
         public ModelOrigin Origin { get; }
 
-        protected ImmutableModelNodeBase(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin)
+        protected ImmutableModelNodeBase(ModelItemId id, string name, ModelOrigin origin)
         {
             Id = id;
-            DisplayName = displayName;
-            FullName = fullName;
-            Description = description;
+            Name = name;
             Origin = origin;
         }
 
         public virtual int Priority => 0;
 
-        public ImmutableModelNodeBase WithName(string displayName, string fullName, string description)
-        {
-            return CreateInstance(Id, displayName, fullName, description, Origin);
-        }
+        public ImmutableModelNodeBase WithName(string name) => CreateInstance(Id, name, Origin);
 
-        protected abstract ImmutableModelNodeBase CreateInstance(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin);
+        protected abstract ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin);
 
-        public override string ToString() => $"{GetType().Name} {DisplayName} [{Id}]";
+        public override string ToString() => $"{GetType().Name} {Name} [{Id}]";
     }
 }

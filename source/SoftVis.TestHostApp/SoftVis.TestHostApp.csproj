@@ -76,27 +76,20 @@
     <Compile Include="..\Include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Diagramming\TestConnectorTypes.cs" />
     <Compile Include="Diagramming\TestDiagram.cs" />
     <Compile Include="Diagramming\TestDiagramBuilder.cs" />
+    <Compile Include="Diagramming\TestDiagramNodeFactory.cs" />
+    <Compile Include="Diagramming\TypeDiagramNode.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Modeling\DirectedRelationshipTypes.cs" />
     <Compile Include="Modeling\TestImplementsRelationship.cs" />
     <Compile Include="Modeling\TestInheritanceRelationship.cs" />
+    <Compile Include="Modeling\BigTestModel.cs" />
     <Compile Include="Modeling\TestModel.cs" />
     <Compile Include="Modeling\TestType.cs" />
     <Compile Include="Modeling\TestInterface.cs" />
     <Compile Include="Modeling\TestClass.cs" />
-    <Compile Include="TestData\BigTestModelBuilder.cs" />
-    <Compile Include="TestData\TestConnectorTypes.cs" />
-    <Compile Include="TestData\TestModelBuilder.cs" />
-    <Compile Include="TestData\TestModelRelationshipStereotype.cs" />
-    <Compile Include="TestData\TestDiagram.cs" />
-    <Compile Include="TestData\TestClass.cs" />
-    <Compile Include="TestData\TestModel.cs" />
-    <Compile Include="TestData\TestInterface.cs" />
-    <Compile Include="TestData\TestModelEntity.cs" />
-    <Compile Include="TestData\TestModelEntityStereotype.cs" />
-    <Compile Include="TestData\TestEntityRelationTypes.cs" />
     <Compile Include="Modeling\TestModelBuilder.cs" />
     <Compile Include="TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>

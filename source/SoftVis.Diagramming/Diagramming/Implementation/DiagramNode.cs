@@ -5,44 +5,31 @@ using Codartis.SoftVis.Modeling2;
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// A diagram node is a vertex in the diagram graph.
-    /// It represents a model entity, eg. a box representing a class.
-    /// All diagram nodes have a name, a position and a size.
+    /// A mutable implementation of the IDiagramNode interface.
     /// </summary>
-    /// <remarks>
-    /// Warning: DiagramNode comparison is based on name order, not position or size!
-    /// </remarks>
     public class DiagramNode : DiagramShape, IDiagramNode
     {
-        private readonly object _sizeAndPositionLock = new object();
-
         public IModelNode ModelNode { get; }
-        public string DisplayName { get; private set; }
-        public string FullName { get; private set; }
-        public string Description { get; private set; }
-        public string Type { get; }
-        public int Priority { get; }
 
         private Size2D _size;
         private Point2D _center;
+        private readonly object _sizeAndPositionLock = new object();
 
         public event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         public event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
-        public event Action<IDiagramNode, string, string, string> Renamed;
+        public event Action<IDiagramNode, IModelNode> ModelNodeUpdated;
 
         public DiagramNode(IModelNode modelNode)
             : base(modelNode)
         {
             ModelNode = modelNode;
-            DisplayName = modelNode.DisplayName;
-            FullName = modelNode.FullName;
-            Description = modelNode.Description;
-            Type = modelNode.GetType().Name;
-            Priority = modelNode.Priority;
 
             _size = Size2D.Zero;
             _center = Point2D.Undefined;
         }
+
+        public string Name => ModelNode.Name;
+        public int Priority => ModelNode.Priority;
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
 
@@ -103,30 +90,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             get
             {
                 lock (_sizeAndPositionLock)
-                    return CenterToTopLeft(_center, _size);
+                    return Rect2D.CreateFromCenterAndSize(_center, _size).TopLeft;
             }
         }
 
-        public void Update(IModelNode modelNode)
-        {
-            if (ModelNode.Id != modelNode.Id)
-                throw new InvalidOperationException($"Cannot update DiagramNode ModelItemId={ModelNode.Id} with ModelNode with Id={modelNode.Id}");
+        public void Update(IModelNode modelNode) => ModelNodeUpdated?.Invoke(this, modelNode);
 
-            DisplayName = modelNode.DisplayName;
-            FullName = modelNode.FullName;
-            Description = modelNode.Description;
-            Renamed?.Invoke(this, DisplayName, FullName, Description);
-        }
+        public int CompareTo(IDiagramNode otherNode) => 
+            string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
 
-        public int CompareTo(IDiagramNode otherNode) 
-            => string.Compare(DisplayName, otherNode.DisplayName, StringComparison.InvariantCultureIgnoreCase);
+        public override string ToString() => Name;
 
-        public override string ToString() => DisplayName;
+        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter) => 
+            CenterChanged?.Invoke(this, oldCenter, newCenter);
 
-        private static Point2D CenterToTopLeft(Point2D center, Size2D size) 
-            => new Point2D(center.X - size.Width / 2, center.Y - size.Height / 2);
-
-        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter) => CenterChanged?.Invoke(this, oldCenter, newCenter);
-        private void OnSizeChanged(Size2D oldSize, Size2D newSize) => SizeChanged?.Invoke(this, oldSize, newSize);
+        private void OnSizeChanged(Size2D oldSize, Size2D newSize) => 
+            SizeChanged?.Invoke(this, oldSize, newSize);
     }
 }

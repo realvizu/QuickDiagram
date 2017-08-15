@@ -20,11 +20,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _size;
         private Rect _animatedRect;
         private string _name;
-        private string _fullName;
-        private string _description;
-        private bool _descriptionExists;
-        private bool _isDescriptionVisible;
-        private string _nodeType;
 
         public IDiagramNode DiagramNode { get; }
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
@@ -32,8 +27,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
 
-        protected DiagramNodeViewModelBase(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible,
-            Size size, Point center, Point topLeft)
+        protected DiagramNodeViewModelBase(IArrangedDiagram diagram, IDiagramNode diagramNode, Size size, Point center, Point topLeft)
               : base(diagram, diagramNode)
         {
             DiagramNode = diagramNode;
@@ -41,30 +35,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _size = size;
             _center = center;
             _topLeft = topLeft;
-            _name = diagramNode.DisplayName;
-            _fullName = diagramNode.FullName;
-            _description = diagramNode.Description;
-            _descriptionExists = !string.IsNullOrWhiteSpace(_description);
-            _isDescriptionVisible = isDescriptionVisible;
-            _nodeType = diagramNode.Type;
+            _name = diagramNode.Name;
 
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
             DiagramNode.CenterChanged += OnCenterChanged;
-            DiagramNode.Renamed += OnRenamed;
+            DiagramNode.ModelNodeUpdated += OnModelNodeUpdated;
         }
 
         public void Dispose()
         {
             DiagramNode.CenterChanged -= OnCenterChanged;
-            DiagramNode.Renamed -= OnRenamed;
+            DiagramNode.ModelNodeUpdated -= OnModelNodeUpdated;
 
             foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
                 relatedNodeCueViewModel.Dispose();
         }
 
-        public bool IsStereotypeVisible => _nodeType != null;
-        public string StereotypeText => IsStereotypeVisible ? $"<<{_nodeType.ToLower()}>>" : string.Empty;
+        public IModelNode ModelNode => DiagramNode.ModelNode;
 
         public string Name
         {
@@ -74,58 +62,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 if (_name != value)
                 {
                     _name = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public string FullName
-        {
-            get { return _fullName; }
-            set
-            {
-                if (_fullName != value)
-                {
-                    _fullName = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                if (_description != value)
-                {
-                    _description = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool DescriptionExists
-        {
-            get { return _descriptionExists; }
-            set
-            {
-                if (_descriptionExists != value)
-                {
-                    _descriptionExists = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool IsDescriptionVisible
-        {
-            get { return _isDescriptionVisible; }
-            set
-            {
-                if (_isDescriptionVisible != value)
-                {
-                    _isDescriptionVisible = value;
                     OnPropertyChanged();
                 }
             }
@@ -216,6 +152,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             yield break;
         }
 
+        protected virtual void OnModelNodeUpdated(IDiagramNode diagramNode, IModelNode modelNode)
+        {
+            Name = modelNode.Name;
+        }
+
         private void OnCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
         {
             Center = newCenter.ToWpf();
@@ -224,14 +165,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnSizeChanged(Size oldSize, Size newSize)
         {
             DiagramNode.Size = newSize.FromWpf();
-        }
-
-        private void OnRenamed(IDiagramNode diagramNode, string name, string fullName, string description)
-        {
-            Name = name;
-            FullName = fullName;
-            Description = description;
-            DescriptionExists = !string.IsNullOrWhiteSpace(description);
         }
 
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()

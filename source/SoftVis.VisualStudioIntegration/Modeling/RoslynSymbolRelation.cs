@@ -54,8 +54,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         public bool Matches(ModelRelationship relationship)
         {
             return relationship.Type == Type
-                   && SourceSymbol.OriginalDefinition.SymbolEquals(((IRoslynBasedModelEntity) relationship.Source).RoslynSymbol.OriginalDefinition)
-                   && TargetSymbol.OriginalDefinition.SymbolEquals(((IRoslynBasedModelEntity) relationship.Target).RoslynSymbol.OriginalDefinition);
+                   && SourceSymbol.OriginalDefinition.SymbolEquals(((IRoslynBasedModelNode) relationship.Source).RoslynSymbol.OriginalDefinition)
+                   && TargetSymbol.OriginalDefinition.SymbolEquals(((IRoslynBasedModelNode) relationship.Target).RoslynSymbol.OriginalDefinition);
         }
     }
 }

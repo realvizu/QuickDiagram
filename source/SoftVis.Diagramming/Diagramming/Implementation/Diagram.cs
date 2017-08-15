@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private readonly DiagramBuilder _diagramBuilder;
         private readonly DiagramGraph _graph;
+        private readonly IDiagramNodeFactory _diagramNodeFactory;
 
         public event Action<IDiagramShape> ShapeAdded;
         public event Action<IDiagramShape> ShapeRemoved;
@@ -35,10 +36,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
 
-        public Diagram(IModelBuilder modelBuilder, DiagramBuilder diagramBuilder)
+        public Diagram(IModelBuilder modelBuilder, DiagramBuilder diagramBuilder, IDiagramNodeFactory diagramNodeFactory)
         {
             ModelBuilder = modelBuilder;
             _diagramBuilder = diagramBuilder;
+            _diagramNodeFactory = diagramNodeFactory;
 
             //Model.NodeUpdated += OnModelEntityRenamed;
             //Model.RelationshipAdded += OnModelRelationshipAdded;
@@ -157,9 +159,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return getOrAddResult.Result;
         }
 
-        private DiagramNode CreateDiagramNode(IModelNode modelNode)
+        private IDiagramNode CreateDiagramNode(IModelNode modelNode)
         {
-            var diagramNode = new DiagramNode(modelNode);
+            var diagramNode = _diagramNodeFactory.CreateDiagramNode(modelNode);
 
             diagramNode.SizeChanged += OnDiagramNodeSizeChanged;
             diagramNode.CenterChanged += OnDiagramNodeCenterChanged;
@@ -318,7 +320,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private void OnModelEntityRenamed(IModelNode modelNode, IModel model)
         {
             //var diagramNode = FindDiagramNode(modelNode);
-            //diagramNode?.Rename(modelNode.DisplayName, modelNode.FullName, modelNode.Description);
+            //diagramNode?.Rename(modelNode.Name, modelNode.FullName, modelNode.Description);
         }
 
         private void OnModelCleared(IModel model)

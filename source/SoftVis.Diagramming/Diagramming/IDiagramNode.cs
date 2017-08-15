@@ -16,10 +16,7 @@ namespace Codartis.SoftVis.Diagramming
     {
         IModelNode ModelNode { get; }
 
-        string DisplayName { get; }
-        string FullName { get; }
-        string Description { get; }
-        string Type { get; } // TODO: temp solution
+        string Name { get; }
         int Priority { get; }
 
         Point2D TopLeft { get; }
@@ -30,6 +27,6 @@ namespace Codartis.SoftVis.Diagramming
 
         event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
-        event Action<IDiagramNode, string, string, string> Renamed;
+        event Action<IDiagramNode, IModelNode> ModelNodeUpdated;
     }
 }

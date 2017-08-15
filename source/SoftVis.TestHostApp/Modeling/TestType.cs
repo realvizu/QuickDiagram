@@ -7,8 +7,8 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     {
         public bool IsAbstract { get; }
 
-        protected TestType(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin, bool isAbstract)
-            : base(id, displayName, fullName, description, origin)
+        protected TestType(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
+            : base(id, name, origin)
         {
             IsAbstract = isAbstract;
         }

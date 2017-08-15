@@ -5,9 +5,7 @@
     /// </summary>
     public interface IModelNode : IModelItem
     {
-        string DisplayName { get; }
-        string FullName { get; }
-        string Description { get; }
+        string Name { get; }
 
         /// <summary>
         /// Specifies the source of the model information for this node.

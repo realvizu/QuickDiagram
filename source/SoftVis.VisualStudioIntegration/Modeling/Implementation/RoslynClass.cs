@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling2;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// A model entity created from a Roslyn class symbol.
+    /// A model node created from a Roslyn class symbol.
     /// </summary>
-    internal class RoslynBasedClass : RoslynBasedModelEntity
+    internal class RoslynClass : RoslynType
     {
-        internal RoslynBasedClass(INamedTypeSymbol namedTypeSymbol)
-            : base(namedTypeSymbol, TypeKind.Class)
+        internal RoslynClass(ModelItemId id, INamedTypeSymbol namedTypeSymbol)
+            : base(id, namedTypeSymbol, TypeKind.Class)
         {
         }
 
         public override int Priority => 4;
-        public override bool IsAbstract => RoslynSymbol.IsAbstract;
 
         /// <summary>
         /// Finds and returns related Roslyn symbols.

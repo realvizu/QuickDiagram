@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public async Task<bool> CurrentSymbolAvailableAsync() => await GetCurrentSymbolAsync() != null;
 
-        public async Task<IRoslynBasedModelEntity> AddCurrentSymbolAsync()
+        public async Task<IRoslynBasedModelNode> AddCurrentSymbolAsync()
         {
             var namedTypeSymbol = await GetCurrentSymbolAsync();
             return namedTypeSymbol == null 
@@ -53,7 +53,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false)
         {
-            var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
+            var roslynBasedModelEntity = modelEntity as RoslynType;
             if (roslynBasedModelEntity == null)
                 return;
 
@@ -77,7 +77,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public bool HasSource(IModelEntity modelEntity)
         {
-            var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;
+            var roslyBasedModelEntity = modelEntity as IRoslynBasedModelNode;
             if (roslyBasedModelEntity == null)
                 return false;
 
@@ -86,7 +86,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public void ShowSource(IModelEntity modelEntity)
         {
-            var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;
+            var roslyBasedModelEntity = modelEntity as IRoslynBasedModelNode;
             if (roslyBasedModelEntity == null)
                 return;
 
@@ -117,7 +117,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken))
                 .Select(i => i.Result).ToArray();
 
-            foreach (var roslynBasedModelEntity in _model.Entities.OfType<RoslynBasedModelEntity>().ToArray())
+            foreach (var roslynBasedModelEntity in _model.Entities.OfType<RoslynType>().ToArray())
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -174,7 +174,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var allSymbolRelations = _model.Entities.OfType<RoslynBasedModelEntity>()
+            var allSymbolRelations = _model.Entities.OfType<RoslynType>()
                 .SelectMany(i =>
                 {
                     progress?.Report(1);
@@ -203,7 +203,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return namedTypeSymbol.OriginalDefinition ?? namedTypeSymbol;
         }
 
-        private IRoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null)
+        private IRoslynBasedModelNode GetOrAddEntity(INamedTypeSymbol namedTypeSymbol, IIncrementalProgress progress = null)
         {
             var modelEntity = _model.GetOrAddEntity(i => i.SymbolEquals(namedTypeSymbol), () => CreateModelEntity(namedTypeSymbol));
             progress?.Report(1);
@@ -218,20 +218,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return _model.GetOrAddRelationship(relationship);
         }
 
-        private static RoslynBasedModelEntity CreateModelEntity(INamedTypeSymbol namedTypeSymbol)
+        private static RoslynType CreateModelEntity(INamedTypeSymbol namedTypeSymbol)
         {
             switch (namedTypeSymbol.TypeKind)
             {
                 case TypeKind.Class:
-                    return new RoslynBasedClass(namedTypeSymbol);
+                    return new RoslynClass(namedTypeSymbol);
                 case TypeKind.Interface:
-                    return new RoslynBasedInterface(namedTypeSymbol);
+                    return new RoslynInterface(namedTypeSymbol);
                 case TypeKind.Struct:
-                    return new RoslynBasedStruct(namedTypeSymbol);
+                    return new RoslynStruct(namedTypeSymbol);
                 case TypeKind.Enum:
-                    return new RoslynBasedEnum(namedTypeSymbol);
+                    return new RoslynEnum(namedTypeSymbol);
                 case TypeKind.Delegate:
-                    return new RoslynBasedDelegate(namedTypeSymbol);
+                    return new RoslynDelegate(namedTypeSymbol);
                 default:
                     throw new Exception($"Unexpected TypeKind: {namedTypeSymbol.TypeKind}");
             }

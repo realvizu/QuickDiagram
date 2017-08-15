@@ -3,11 +3,11 @@
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// A model entity created from a Roslyn delegate symbol.
+    /// A model node created from a Roslyn delegate symbol.
     /// </summary>
-    internal class RoslynBasedDelegate : RoslynBasedModelEntity
+    internal class RoslynDelegate : RoslynType
     {
-        internal RoslynBasedDelegate(INamedTypeSymbol namedTypeSymbol)
+        internal RoslynDelegate(INamedTypeSymbol namedTypeSymbol)
             : base(namedTypeSymbol, TypeKind.Delegate)
         {
         }

@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         /// <returns>A collection of valid source and target node type pairs.</returns>
         protected abstract IEnumerable<(Type, Type)> GetValidSourceAndTargetNodeTypePairs();
 
-        public override string ToString() => $"{Source.DisplayName}--{GetType().Name}-->{Target.DisplayName} [{Id}]";
+        public override string ToString() => $"{Source.Name}--{GetType().Name}-->{Target.Name} [{Id}]";
 
         private void ValidateSourceAndTargetTypes(IModelNode source, IModelNode target)
         {

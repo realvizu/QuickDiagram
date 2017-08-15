@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Geometry;
+﻿using System;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         protected DiagramShape(IModelItem modelItem)
         {
-            ModelItem = modelItem;
+            ModelItem = modelItem ?? throw new ArgumentNullException(nameof(modelItem));
         }
 
         public abstract bool IsRectDefined { get; }

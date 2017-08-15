@@ -15,9 +15,12 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             StartNewGroup();
         }
 
-        public TestModelBuilder AddClass(string name, string baseName = null)
+        public TestModelBuilder AddClass(string name, bool isAbstract) =>
+            AddClass(name, null, ModelOrigin.SourceCode, isAbstract);
+
+        public TestModelBuilder AddClass(string name, string baseName = null, ModelOrigin origin = ModelOrigin.SourceCode, bool isAbstract = false)
         {
-            var node = new TestClass(ModelItemId.Create(),  name, name, name, ModelOrigin.SourceCode, false);
+            var node = new TestClass(ModelItemId.Create(), name, origin, isAbstract);
             AddNode(node);
             AddItemToCurrentGroup(node);
 
@@ -30,9 +33,9 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             return this;
         }
 
-        public TestModelBuilder AddInterface(string name, string baseName = null)
+        public TestModelBuilder AddInterface(string name, string baseName = null, ModelOrigin origin = ModelOrigin.SourceCode)
         {
-            var node = new TestInterface(ModelItemId.Create(), name, name, name, ModelOrigin.SourceCode, false);
+            var node = new TestInterface(ModelItemId.Create(), name, origin, false);
             AddNode(node);
             AddItemToCurrentGroup(node);
 
@@ -69,7 +72,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         private IModelNode GetNodeByName(string name)
         {
-            return CurrentModel.Nodes.Single(i => i.DisplayName == name);
+            return CurrentModel.Nodes.Single(i => i.Name == name);
         }
 
         private void AddInheritance(IModelNode node, IModelNode baseNode)

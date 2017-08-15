@@ -6,11 +6,11 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// A model entity created from a Roslyn interface symbol.
+    /// A model node created from a Roslyn interface symbol.
     /// </summary>
-    internal class RoslynBasedInterface : RoslynBasedModelEntity
+    internal class RoslynInterface : RoslynType
     {
-        internal RoslynBasedInterface(INamedTypeSymbol namedTypeSymbol)
+        internal RoslynInterface(INamedTypeSymbol namedTypeSymbol)
             : base(namedTypeSymbol, TypeKind.Interface)
         {
         }

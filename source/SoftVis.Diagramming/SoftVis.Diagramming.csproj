@@ -87,6 +87,7 @@
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Diagramming\Implementation\AutoArrangingDiagram.cs" />
     <Compile Include="Diagramming\Implementation\DiagramBuilder.cs" />
+    <Compile Include="Diagramming\IDiagramNodeFactory.cs" />
     <Compile Include="Diagramming\Layout\RemoveDiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\AddDiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\ResizeDiagramNodeAction.cs" />
@@ -115,11 +116,6 @@
     <Compile Include="Modeling2\Implementation\ModelBuilderBase.cs" />
     <Compile Include="Modeling2\ModelItemId.cs" />
     <Compile Include="Modeling2\ModelOrigin.cs" />
-    <Compile Include="Modeling\Implementation\Model.cs" />
-    <Compile Include="Modeling\Implementation\ModelGraph.cs" />
-    <Compile Include="Modeling\ModelRelationshipType.cs" />
-    <Compile Include="Modeling\EntityRelationTypes.cs" />
-    <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
     <Compile Include="UI\Wpf\ViewModel\MiniButtonPanelViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\IDiagramShapeViewModelRepository.cs" />
@@ -141,7 +137,6 @@
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\ModelEntityDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ZoomDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\VectorDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
@@ -154,7 +149,6 @@
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Modeling\EntityRelationType.cs" />
     <Compile Include="Diagramming\Implementation\Diagram.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnector.cs" />
     <Compile Include="Diagramming\Layout\DiagramConnectorAction.cs" />
@@ -230,17 +224,6 @@
     <Compile Include="Geometry\IRect.cs" />
     <Compile Include="Graphs\Layout\EdgeRouting\EdgeRoutingAlgorithm.cs" />
     <Compile Include="Graphs\Path.cs" />
-    <Compile Include="Modeling\IModelItem.cs" />
-    <Compile Include="Modeling\IModelEntity.cs" />
-    <Compile Include="Modeling\IModelRelationship.cs" />
-    <Compile Include="Modeling\EntityRelationDirection.cs" />
-    <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
-    <Compile Include="Modeling\ModelEntityStereotype.cs" />
-    <Compile Include="Modeling\ModelRelationshipClassifier.cs" />
-    <Compile Include="Modeling\ModelEntityClassifier.cs" />
-    <Compile Include="Modeling\IReadOnlyModel.cs" />
-    <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
-    <Compile Include="Modeling\Implementation\ModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ScaleCalculator.cs" />
     <Compile Include="UI\Wpf\Size2DExtensions.cs" />

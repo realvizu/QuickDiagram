@@ -9,17 +9,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     public class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactoryBase
     {
-        public RoslynDiagramShapeViewModelFactory(IArrangedDiagram diagram)
+        public bool DefaultIsDescriptionVisible { get; }
+
+        public RoslynDiagramShapeViewModelFactory(IArrangedDiagram diagram, bool defaultIsDescriptionVisible)
             : base(diagram)
         {
+            DefaultIsDescriptionVisible = defaultIsDescriptionVisible;
         }
 
-        public override DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape, bool isDescriptionVisible)
+        public override DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
         {
             switch (diagramShape)
             {
                 case IDiagramNode diagramNode:
-                    return new TypeDiagramNodeViewModel(Diagram, (IDiagramNode)diagramShape, isDescriptionVisible);
+                    return new TypeDiagramNodeViewModel(Diagram, diagramNode, DefaultIsDescriptionVisible);
 
                 case IDiagramConnector diagramConnector:
                     return CreateDiagramConnectorViewModel(diagramConnector);

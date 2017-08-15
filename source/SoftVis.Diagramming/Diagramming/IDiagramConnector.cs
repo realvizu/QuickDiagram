@@ -15,7 +15,6 @@ namespace Codartis.SoftVis.Diagramming
         IDiagramNode Source { get; }
         IDiagramNode Target { get; }
         Route RoutePoints { get; set; }
-        string RelationshipType { get; }
         ConnectorType ConnectorType { get; }
 
         event Action<IDiagramConnector, Route, Route> RouteChanged;

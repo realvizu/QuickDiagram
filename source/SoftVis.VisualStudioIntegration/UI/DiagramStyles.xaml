@@ -5,8 +5,8 @@
                     mc:Ignorable="d"
                     xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
-                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=SoftVis.Diagramming"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling2;assembly=SoftVis.Diagramming"
                     xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util">
 
     <ResourceDictionary.MergedDictionaries>
@@ -40,7 +40,7 @@
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}">
+           d:DataContext="{d:DesignInstance {x:Type viewModel:TypeDiagramNodeViewModel}}">
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -48,7 +48,8 @@
 
                     <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-							BorderThickness="1">
+							BorderThickness="1"
+                            ToolTip="{Binding Path=TypeNode.FullName}">
                         <StackPanel Orientation="Vertical">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -82,10 +83,10 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding ModelEntity.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                        <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                             <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ModelEntity.IsAbstract}" Value="true">
+                        <DataTrigger Binding="{Binding Path=TypeNode.IsAbstract}" Value="true">
                             <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
                         </DataTrigger>
                     </ControlTemplate.Triggers>

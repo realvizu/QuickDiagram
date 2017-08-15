@@ -5,9 +5,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// A model entity created from a Roslyn enum symbol.
     /// </summary>
-    internal class RoslynBasedEnum : RoslynBasedModelEntity
+    internal class RoslynEnum : RoslynType
     {
-        internal RoslynBasedEnum(INamedTypeSymbol namedTypeSymbol)
+        internal RoslynEnum(INamedTypeSymbol namedTypeSymbol)
             : base(namedTypeSymbol, TypeKind.Enum)
         {
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.TestHostApp.UI
@@ -11,12 +12,12 @@ namespace Codartis.SoftVis.TestHostApp.UI
         {
         }
 
-        public override DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape, bool isDescriptionVisible)
+        public override DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape)
         {
             switch (diagramShape)
             {
-                case IDiagramNode diagramNode:
-                    return new TypeDiagramNodeViewModel(Diagram, (IDiagramNode)diagramShape, isDescriptionVisible);
+                case TypeDiagramNode typeDiagramNode:
+                    return new TypeDiagramNodeViewModel(Diagram, typeDiagramNode);
 
                 case IDiagramConnector diagramConnector:
                     return CreateDiagramConnectorViewModel(diagramConnector);

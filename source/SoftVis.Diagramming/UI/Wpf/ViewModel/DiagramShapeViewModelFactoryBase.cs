@@ -19,6 +19,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramShapeViewModelRepository = diagramShapeViewModelRepository;
         }
 
-        public abstract DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape, bool isDescriptionVisible);
+        public abstract DiagramShapeViewModelBase CreateViewModel(IDiagramShape diagramShape);
     }
 }

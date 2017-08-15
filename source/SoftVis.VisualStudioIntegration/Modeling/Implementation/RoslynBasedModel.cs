@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModel : Model
     {
-        public IReadOnlyList<IRoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<IRoslynBasedModelEntity>().ToArray();
+        public IReadOnlyList<IRoslynBasedModelNode> RoslynBasedEntities => Entities.OfType<IRoslynBasedModelNode>().ToArray();
 
         public override IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
         {
@@ -35,22 +35,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             yield return ModelRelationshipStereotypes.Implementation;
         }
 
-        public IRoslynBasedModelEntity GetOrAddEntity(Func<IRoslynBasedModelEntity, bool> entityPredicate, Func<IRoslynBasedModelEntity> createEntityFunc)
+        public IRoslynBasedModelNode GetOrAddEntity(Func<IRoslynBasedModelNode, bool> entityPredicate, Func<IRoslynBasedModelNode> createEntityFunc)
         {
-            return base.GetOrAddEntity(i => entityPredicate((IRoslynBasedModelEntity) i), createEntityFunc) as IRoslynBasedModelEntity;
+            return base.GetOrAddEntity(i => entityPredicate((IRoslynBasedModelNode) i), createEntityFunc) as IRoslynBasedModelNode;
         }
 
-        public IRoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol roslynSymbol, Func<IRoslynBasedModelEntity> createEntityFunc)
+        public IRoslynBasedModelNode GetOrAddEntity(INamedTypeSymbol roslynSymbol, Func<IRoslynBasedModelNode> createEntityFunc)
         {
             return this.GetOrAddEntity(i => i.SymbolEquals(roslynSymbol), createEntityFunc);
         }
 
-        public IRoslynBasedModelEntity GetEntityBySymbol(INamedTypeSymbol namedTypeSymbol)
+        public IRoslynBasedModelNode GetEntityBySymbol(INamedTypeSymbol namedTypeSymbol)
         {
             return RoslynBasedEntities.FirstOrDefault(i => i.SymbolEquals(namedTypeSymbol));
         }
 
-        public IRoslynBasedModelEntity GetEntityByLocation(Location location)
+        public IRoslynBasedModelNode GetEntityByLocation(Location location)
         {
             if (location == null)
                 return null;
@@ -67,10 +67,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return null;
         }
 
-        public void UpdateEntity(IRoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
+        public void UpdateEntity(IRoslynBasedModelNode node, INamedTypeSymbol roslynSymbol)
         {
-            entity.RoslynSymbol = roslynSymbol;
-            base.UpdateEntity(entity, 
+            node.RoslynSymbol = roslynSymbol;
+            base.UpdateEntity(node, 
                 roslynSymbol.GetName(), 
                 roslynSymbol.GetFullName(),
                 roslynSymbol.GetDescription());

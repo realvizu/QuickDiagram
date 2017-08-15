@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             UiServices.FollowDiagramNodes(diagramNodes);
         }
 
-        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelEntity modelEntity)
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelNode modelNode)
         {
             IReadOnlyList<IDiagramNode> diagramNodes = null;
 
@@ -44,11 +44,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
                 try
                 {
-                    await ExtendModelWithRelatedEntitiesAsync(modelEntity, progressDialog.CancellationToken, progressDialog.Progress);
+                    await ExtendModelWithRelatedEntitiesAsync(modelNode, progressDialog.CancellationToken, progressDialog.Progress);
 
                     progressDialog.Reset("Adding diagram nodes:");
 
-                    diagramNodes = await ExtendDiagramAsync(modelEntity, progressDialog.CancellationToken, progressDialog.Progress);
+                    diagramNodes = await ExtendDiagramAsync(modelNode, progressDialog.CancellationToken, progressDialog.Progress);
                 }
                 catch (OperationCanceledException)
                 {
@@ -70,10 +70,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.Subtype, cancellationToken, progress, recursive: true);
         }
 
-        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynBasedModelEntity modelEntity, 
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynBasedModelNode modelNode, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return await Task.Run(() => DiagramServices.ShowEntityWithHierarchy(modelEntity, cancellationToken, progress), cancellationToken);
+            return await Task.Run(() => DiagramServices.ShowEntityWithHierarchy(modelNode, cancellationToken, progress), cancellationToken);
         }
     }
 }

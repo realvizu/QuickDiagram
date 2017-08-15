@@ -3,6 +3,9 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.TestHostApp.UI"
+                    xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling2;assembly=SoftVis.Diagramming"
                     mc:Ignorable="d" >
 
     <ResourceDictionary.MergedDictionaries>
@@ -10,6 +13,8 @@
         <ResourceDictionary Source="/TestHostApp;component/Resources/DecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+    
     <Style TargetType="{x:Type view:DiagramControl}" >
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontSize" Value="12"/>
@@ -27,5 +32,43 @@
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
     </Style>
-    
+
+    <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
+           d:DataContext="{d:DesignInstance {x:Type viewModel:TypeDiagramNodeViewModel}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+
+                    <Border BorderThickness="1"
+                            BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                            Background="{Binding DiagramFill, ElementName=ThisControl}">
+                        <StackPanel Orientation="Vertical" 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Path=TypeDiagramNode.Stereotype}" 
+                                       FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
+                                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
+                                       HorizontalAlignment="Center"/>
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock x:Name="TextBlock"
+                                           Text="{Binding Path=Name, Mode=OneWay}" 
+                                           HorizontalAlignment="Left" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                            <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=TypeDiagramNode.TestType.IsAbstract}" Value="true">
+                            <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

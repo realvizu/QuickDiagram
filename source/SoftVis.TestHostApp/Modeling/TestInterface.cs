@@ -5,14 +5,12 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 {
     internal class TestInterface : TestType
     {
-        public TestInterface(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin, bool isAbstract)
-            : base(id, displayName, fullName, description, origin, isAbstract)
+        public TestInterface(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
+            : base(id, name, origin, isAbstract)
         {
         }
 
-        protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin)
-        {
-            return new TestInterface(id, displayName, fullName, description, origin, IsAbstract);
-        }
+        protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin) => 
+            new TestInterface(id, name, origin, IsAbstract);
     }
 }

@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private readonly IHostUiServices _hostUiServices;
         private readonly ResourceDictionary _resourceDictionary;
-        private readonly DiagramViewModel _diagramViewModel;
+        private readonly RoslynDiagramViewModel _diagramViewModel;
         private readonly DiagramControl _diagramControl;
 
         public Dpi ImageExportDpi { get; set; }
@@ -44,8 +44,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _hostUiServices = hostUiServices;
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            var diagramShapeViewModelFactory = new RoslynDiagramShapeViewModelFactory(diagram);
-            _diagramViewModel = new DiagramViewModel(diagram, diagramShapeViewModelFactory, minZoom: .1, maxZoom: 10, initialZoom: 1);
+            _diagramViewModel = new RoslynDiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1, );
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             hostUiServices.HostDiagram(_diagramControl);

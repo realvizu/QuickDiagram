@@ -6,20 +6,18 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
     internal class TestModelNode : ImmutableModelNodeBase
     {
         public TestModelNode(string name = null)
-            : this(ModelItemId.Create(), name, name, name, ModelOrigin.SourceCode)
+            : this(ModelItemId.Create(), name, ModelOrigin.SourceCode)
         {
         }
 
-        private TestModelNode(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin)
-            : base(id, displayName, fullName, description, origin)
+        private TestModelNode(ModelItemId id, string name, ModelOrigin origin)
+            : base(id, name, origin)
         {
         }
 
         public override int Priority => 0;
 
-        protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string displayName, string fullName, string description, ModelOrigin origin)
-        {
-            return new TestModelNode(id, displayName, fullName, description, origin);
-        }
+        protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin) => 
+            new TestModelNode(id, name, origin);
     }
 }

@@ -19,8 +19,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewportViewModel : DiagramViewModelBase, IDisposable, IDiagramShapeViewModelRepository
     {
-        private bool _areDiagramNodeDescriptionsVisible;
-
         public double MinZoom { get; }
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
@@ -85,8 +83,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => ViewportCalculator.Mode = mode;
         public void StopFollowingDiagramNodes() => ViewportCalculator.StopFollowingDiagramNodes();
 
-        public void ExpandAllDiagramNodes() => SetDiagramNodeDescriptionVisibility(true);
-        public void CollapseAllDiagramNodes() => SetDiagramNodeDescriptionVisibility(false);
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToContent(transitionSpeed);
         public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
@@ -143,7 +139,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddShape(IDiagramShape diagramShape)
         {
-            var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape, _areDiagramNodeDescriptionsVisible);
+            var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
             diagramShapeViewModel.RemoveRequested += OnShapeRemoveRequested;
 
             if (diagramShapeViewModel is DiagramNodeViewModelBase diagramNodeViewModel)
@@ -232,14 +228,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
             else
                 throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
-        }
-
-        private void SetDiagramNodeDescriptionVisibility(bool isVisible)
-        {
-            _areDiagramNodeDescriptionsVisible = isVisible;
-
-            foreach (var diagramNodeViewModel in DiagramNodeViewModels)
-                diagramNodeViewModel.IsDescriptionVisible = _areDiagramNodeDescriptionsVisible;
         }
     }
 }
