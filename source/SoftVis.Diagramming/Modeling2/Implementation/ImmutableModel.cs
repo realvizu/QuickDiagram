@@ -46,7 +46,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         {
             var modelNode = GetModelNode(modelNodeId);
             return _graph.GetConnectedVertices(modelNode,
-                // TODO: test for subtypes
                 (_, relationship) => modelRelationshipType.Type.IsInstanceOfType(relationship) && 
                                      relationship.IsNodeInRelationship(modelNode, modelRelationshipType.Direction),
                 recursive);
@@ -64,5 +63,13 @@ namespace Codartis.SoftVis.Modeling2.Implementation
 
         public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) => 
             new ImmutableModel(_graph.RemoveEdge(relationship));
+
+        public ImmutableModel UpdateNode(ImmutableModelNodeBase oldNode, ImmutableModelNodeBase newNode)
+        {
+            if (oldNode.Id != newNode.Id)
+                throw new InvalidOperationException($"Cannot update node with id {oldNode.Id} to node with id {newNode.Id}");
+
+            return new ImmutableModel(_graph.ReplaceVertex(oldNode, newNode));
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -34,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             UiServices.FollowDiagramNodes(diagramNodes);
         }
 
-        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynBasedModelNode modelNode)
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynModelNode modelNode)
         {
             IReadOnlyList<IDiagramNode> diagramNodes = null;
 
@@ -58,22 +57,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             return diagramNodes;
         }
 
-        private async Task ExtendModelWithRelatedEntitiesAsync(IModelEntity modelEntity, 
+        private async Task ExtendModelWithRelatedEntitiesAsync(IRoslynModelNode modelEntity, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             await Task.Run(() => ExtendModelWithRelatedEntities(modelEntity, cancellationToken, progress), cancellationToken);
         }
 
-        private void ExtendModelWithRelatedEntities(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
+        private void ExtendModelWithRelatedEntities(IRoslynModelNode modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.BaseType, cancellationToken, progress, recursive: true);
-            ModelServices.ExtendModelWithRelatedEntities(modelEntity, EntityRelationTypes.Subtype, cancellationToken, progress, recursive: true);
+            ModelServices.ExtendModelWithRelatedEntities(modelEntity, DirectedRelationshipTypes.BaseType, cancellationToken, progress, recursive: true);
+            ModelServices.ExtendModelWithRelatedEntities(modelEntity, DirectedRelationshipTypes.Subtype, cancellationToken, progress, recursive: true);
         }
 
-        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynBasedModelNode modelNode, 
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynModelNode modelNode, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return await Task.Run(() => DiagramServices.ShowEntityWithHierarchy(modelNode, cancellationToken, progress), cancellationToken);
+            return await Task.Run(() => DiagramServices.ShowModelNodeWithHierarchy(modelNode, cancellationToken, progress), cancellationToken);
         }
     }
 }

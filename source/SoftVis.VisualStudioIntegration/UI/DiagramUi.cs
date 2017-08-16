@@ -44,7 +44,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _hostUiServices = hostUiServices;
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            _diagramViewModel = new RoslynDiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1, );
+            _diagramViewModel = new RoslynDiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1, 
+                initialIsDescriptionVisible: GlobalOptions.NodeDescriptionsVisibleByDefault);
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             hostUiServices.HostDiagram(_diagramControl);

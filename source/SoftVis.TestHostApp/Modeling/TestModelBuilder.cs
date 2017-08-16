@@ -10,6 +10,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         public List<List<ModelItemId>> ItemGroups { get; }
 
         public TestModelBuilder()
+            :base(new ImmutableModelFactory())
         {
             ItemGroups = new List<List<ModelItemId>>();
             StartNewGroup();

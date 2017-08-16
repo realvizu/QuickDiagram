@@ -8,12 +8,6 @@
     {
         IModel CurrentModel { get; }
 
-        //IModel AddNode(IModelNode node, IModelNode parentNode = null);
-        //IModel RemoveNode(IModelNode node);
-        //IModel UpdateNode(IModelNode node, IModelNode newNode);
-
-        //IModel AddRelationship(IModelRelationship relationship);
-        //IModel RemoveRelationship(IModelRelationship relationship);
-        IModelBuilder ClearModel();
+        IModel ClearModel();
     }
 }

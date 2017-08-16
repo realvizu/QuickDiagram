@@ -16,8 +16,5 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
         }
 
         public override int LayoutPriority => 0;
-
-        protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin) => 
-            new TestModelNode(id, name, origin);
     }
 }

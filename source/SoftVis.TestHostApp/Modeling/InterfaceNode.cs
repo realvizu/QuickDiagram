@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Modeling2;
-using Codartis.SoftVis.Modeling2.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
@@ -11,8 +10,5 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         }
 
         public override int LayoutPriority => 0;
-
-        protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin) => 
-            new InterfaceNode(id, name, origin, IsAbstract);
     }
 }

@@ -49,21 +49,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             foreach (var declaredTypeSymbol in declaredTypeSymbols)
             {
                 // Match by name
-                var matchingEntityByName = _model.RoslynBasedEntities.FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
+                var matchingEntityByName = _model.RoslynModelNodes.FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
                 if (matchingEntityByName != null)
                 {
                     Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by name.");
-                    _model.UpdateEntity(matchingEntityByName, declaredTypeSymbol);
+                    //_model.UpdateEntity(matchingEntityByName, declaredTypeSymbol);
                     continue;
                 }
 
                 // Match by location
-                var mathingEntityByLocation = _model.GetEntityByLocation(declaredTypeSymbol.Locations.FirstOrDefault());
+                var mathingEntityByLocation = _model.GetNodeByLocation(declaredTypeSymbol.Locations.FirstOrDefault());
                 if (mathingEntityByLocation != null)
                 {
                     Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by location.");
-                    _model.UpdateEntity(mathingEntityByLocation, declaredTypeSymbol);
-                    
+                    //_model.UpdateEntity(mathingEntityByLocation, declaredTypeSymbol);
                     continue;
                 }
             }

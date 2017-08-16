@@ -9,9 +9,9 @@ namespace Codartis.SoftVis.Modeling2
     {
         event Action<IModelNode, IModel> NodeAdded;
         event Action<IModelNode, IModel> NodeRemoved;
+        event Action<IModelNode, IModelNode, IModel> NodeUpdated;
         event Action<IModelRelationship, IModel> RelationshipAdded;
         event Action<IModelRelationship, IModel> RelationshipRemoved;
-        //event Action<IModelNode, IModel> NodeUpdated;
         event Action<IModel> ModelCleared;
     }
 }

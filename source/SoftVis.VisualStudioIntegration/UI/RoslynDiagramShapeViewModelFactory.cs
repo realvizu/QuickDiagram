@@ -1,6 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -21,8 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             switch (diagramShape)
             {
-                case IDiagramNode diagramNode:
-                    return new TypeDiagramNodeViewModel(Diagram, diagramNode, DefaultIsDescriptionVisible);
+                case TypeDiagramNode typeDiagramNode:
+                    return new TypeDiagramNodeViewModel(Diagram, typeDiagramNode, DefaultIsDescriptionVisible);
 
                 case IDiagramConnector diagramConnector:
                     return CreateDiagramConnectorViewModel(diagramConnector);

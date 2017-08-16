@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -12,27 +14,30 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
+        public TypeDiagramNode TypeDiagramNode { get; }
+
         private string _description;
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
 
-        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible)
-            : this(diagram, diagramNode, isDescriptionVisible, Size.Empty, PointExtensions.Undefined, PointExtensions.Undefined)
+        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode typeDiagramNode, bool isDescriptionVisible)
+            : this(diagram, typeDiagramNode, isDescriptionVisible, Size.Empty, PointExtensions.Undefined, PointExtensions.Undefined)
         {
         }
 
-        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, bool isDescriptionVisible,
+        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode typeDiagramNode, bool isDescriptionVisible,
             Size size, Point center, Point topLeft)
-            : base(diagram, diagramNode, isDescriptionVisible, size, center, topLeft)
+            : base(diagram, typeDiagramNode, size, center, topLeft)
         {
-            _description = diagramNode.ModelNode.Description;
+            TypeDiagramNode = typeDiagramNode;
+            _description = typeDiagramNode.RoslynTypeNode.Description;
             _descriptionExists = !string.IsNullOrWhiteSpace(_description);
             _isDescriptionVisible = isDescriptionVisible;
         }
 
         public override object Clone()
         {
-            return new TypeDiagramNodeViewModel(Diagram, DiagramNode, IsDescriptionVisible, Size, Center, TopLeft);
+            return new TypeDiagramNodeViewModel(Diagram, TypeDiagramNode, IsDescriptionVisible, Size, Center, TopLeft);
         }
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
@@ -84,7 +89,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             base.OnModelNodeUpdated(diagramNode, modelNode);
 
-            Description = modelNode.Description;
+            var typeDiagramNode = diagramNode as TypeDiagramNode;
+            if (typeDiagramNode == null)
+                throw new InvalidOperationException($"{typeof(TypeDiagramNode).Name} expected.");
+
+            Description = typeDiagramNode.RoslynTypeNode.Description;
             DescriptionExists = !string.IsNullOrWhiteSpace(Description);
         }
 

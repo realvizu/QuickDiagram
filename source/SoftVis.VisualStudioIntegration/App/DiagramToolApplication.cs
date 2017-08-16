@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// Sets up the model, the diagram, and the commands that implement the application logic.
     /// Provides application services to the commands.
     /// </remarks>
-    public sealed class DiagramToolApplication : IAppServices
+    internal sealed class DiagramToolApplication : IAppServices
     {
         public IModelServices ModelServices { get; }
         public IDiagramServices DiagramServices { get; }
