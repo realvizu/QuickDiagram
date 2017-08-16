@@ -66,6 +66,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             set { SetValue(ItemSelectedCommandProperty, value); }
         }
 
+        protected override DependencyObject GetContainerForItemOverride() => new BubbleListBoxItem();
+
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 0)

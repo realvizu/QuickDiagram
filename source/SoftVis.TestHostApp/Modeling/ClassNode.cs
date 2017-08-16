@@ -3,16 +3,18 @@ using Codartis.SoftVis.Modeling2.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal class TestClass : TestType
+    internal class ClassNode : TypeNodeBase
     {
-        public TestClass(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
+        public ClassNode(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
             : base(id, name, origin, isAbstract)
         {
         }
 
+        public override int LayoutPriority => 1;
+        
         protected override ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin)
         {
-            return new TestClass(id, name, origin, IsAbstract);
+            return new ClassNode(id, name, origin, IsAbstract);
         }
     }
 }

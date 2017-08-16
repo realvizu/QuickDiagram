@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Diagramming
         IModelNode ModelNode { get; }
 
         string Name { get; }
-        int Priority { get; }
+        int LayoutPriority { get; }
 
         Point2D TopLeft { get; }
         Point2D Center { get; set; }

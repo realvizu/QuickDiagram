@@ -5,16 +5,17 @@ using Codartis.SoftVis.Modeling2.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal class TestImplementsRelationship : ModelRelationshipBase
+    internal class InheritanceRelationship : ModelRelationshipBase
     {
-        public TestImplementsRelationship(ModelItemId id, IModelNode source, IModelNode target) 
+        public InheritanceRelationship(ModelItemId id, IModelNode source, IModelNode target)
             : base(id, source, target)
         {
         }
 
         protected override IEnumerable<(Type, Type)> GetValidSourceAndTargetNodeTypePairs()
         {
-            yield return (typeof(TestClass), typeof(TestInterface));
+            yield return (typeof(ClassNode), typeof(ClassNode));
+            yield return (typeof(InterfaceNode), typeof(InterfaceNode));
         }
     }
 }

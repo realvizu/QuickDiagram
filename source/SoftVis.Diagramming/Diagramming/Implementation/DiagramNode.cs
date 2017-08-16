@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public string Name => ModelNode.Name;
-        public int Priority => ModelNode.Priority;
+        public int LayoutPriority => ModelNode.LayoutPriority;
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
 

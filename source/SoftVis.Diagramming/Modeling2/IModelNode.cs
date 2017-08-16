@@ -13,9 +13,9 @@
         ModelOrigin Origin { get; }
 
         /// <summary>
-        /// The priority of this model node. Used for layout.
+        /// Layout arranges child nodes based on the highest priority parent node.
         /// Higher value means higher priority.
         /// </summary>
-        int Priority { get; }
+        int LayoutPriority { get; }
     }
 }

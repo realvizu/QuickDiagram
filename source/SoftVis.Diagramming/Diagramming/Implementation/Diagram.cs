@@ -226,17 +226,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void HideRedundantDirectDiagramConnectors()
         {
-            // TODO: should only hide same-type connectors!!!
-            //foreach (var connector in _graph.Edges)
-            //{
-            //    var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).EmptyIfNull().ToArray();
-            //    if (paths.Length > 1)
-            //    {
-            //        var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
-            //        if (pathToHide != null)
-            //            RemoveDiagramConnector(pathToHide[0].ModelRelationship);
-            //    }
-            //}
+            //TODO: should only hide same-type connectors!!!
+            foreach (var connector in _graph.Edges)
+            {
+                var paths = _graph.GetShortestPaths(connector.Source, connector.Target, 2).EmptyIfNull().ToArray();
+                if (paths.Length > 1)
+                {
+                    var pathToHide = paths.FirstOrDefault(i => i.Length == 1);
+                    if (pathToHide != null)
+                    {
+                        var diagramConnector = FindDiagramConnector(pathToHide[0].ModelRelationship) as DiagramConnector;
+                        RemoveDiagramConnector(diagramConnector);
+                    }
+                }
+            }
         }
 
         private void ShowModelRelationshipsIfBothEndsAreVisible(IModelItem modelItem)
@@ -280,6 +283,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private bool DiagramNodeExists(IModelNode modelNode)
         {
             return Nodes.Any(i => i.ModelNode.Id == modelNode.Id);
+        }
+
+        private IDiagramConnector FindDiagramConnector(IModelRelationship modelRelationship)
+        {
+            return Connectors.FirstOrDefault(i => i.ModelRelationship.Id == modelRelationship.Id);
+        }
+
+        private bool DiagramConnectorExists(IModelRelationship modelRelationship)
+        {
+            return Connectors.Any(i => i.ModelRelationship.Id == modelRelationship.Id);
         }
 
         private void OnDiagramShapeAdded(IDiagramShape diagramShape) => ShapeAdded?.Invoke(diagramShape);

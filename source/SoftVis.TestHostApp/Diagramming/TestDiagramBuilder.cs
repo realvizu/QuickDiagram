@@ -10,8 +10,8 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
     {
         private static readonly Dictionary<Type, ConnectorType> ModelRelationshipTypeToConnectorTypeMap = new Dictionary<Type, ConnectorType>
         {
-            {typeof(TestInheritanceRelationship), ConnectorTypes.Generalization},
-            {typeof(TestImplementsRelationship), TestConnectorTypes.Implementation},
+            {typeof(InheritanceRelationship), ConnectorTypes.Generalization},
+            {typeof(ImplementsRelationship), TestConnectorTypes.Implementation},
         };
 
         public override ConnectorType GetConnectorType(Type modelRelationshipType)

@@ -28,6 +28,8 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             ValidateSourceAndTargetTypes(source, target);
         }
 
+        public override string ToString() => $"{Source.Name}--{GetType().Name}-->{Target.Name} [{Id}]";
+
         public bool IsNodeInRelationship(IModelNode modelNode, RelationshipDirection direction)
         {
             return (direction == RelationshipDirection.Outgoing && modelNode.Equals(Source))
@@ -39,8 +41,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         /// </summary>
         /// <returns>A collection of valid source and target node type pairs.</returns>
         protected abstract IEnumerable<(Type, Type)> GetValidSourceAndTargetNodeTypePairs();
-
-        public override string ToString() => $"{Source.Name}--{GetType().Name}-->{Target.Name} [{Id}]";
 
         private void ValidateSourceAndTargetTypes(IModelNode source, IModelNode target)
         {

@@ -12,10 +12,10 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             if (modelNode == null)
                 throw new ArgumentNullException(nameof(modelNode));
 
-            if (modelNode is TestType testType)
+            if (modelNode is TypeNodeBase testType)
                 return new TypeDiagramNode(testType);
 
-            throw new ArgumentException($"Expected {typeof(TestType).Name} but received {modelNode.GetType().Name}");
+            throw new ArgumentException($"Expected {typeof(TypeNodeBase).Name} but received {modelNode.GetType().Name}");
         }
     }
 }

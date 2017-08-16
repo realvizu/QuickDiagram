@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
 
@@ -11,23 +10,26 @@ namespace Codartis.SoftVis.Modeling2.Implementation
     /// </summary>
     public class ImmutableModel : IModel
     {
-        private readonly ImmutableList<ImmutableModelNodeBase> _rootNodes;
         private readonly ImmutableModelGraph _graph;
 
-        public ImmutableModel(ImmutableList<ImmutableModelNodeBase> rootNodes, ImmutableModelGraph graph)
+        public ImmutableModel() 
+            : this(new ImmutableModelGraph())
         {
-            _rootNodes = rootNodes;
+        }
+
+        private ImmutableModel(ImmutableModelGraph graph)
+        {
             _graph = graph;
         }
 
-        public ImmutableModel()
-            : this(ImmutableList<ImmutableModelNodeBase>.Empty, new ImmutableModelGraph())
-        {
-        }
-
-        public IEnumerable<IModelNode> RootNodes => _rootNodes;
         public IEnumerable<IModelNode> Nodes => _graph.Vertices;
         public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
+
+        // TODO: implement node hierarchy
+        public IEnumerable<IModelNode> RootNodes => Nodes;
+
+        // TODO: implement node hierarchy
+        public IEnumerable<IModelNode> GetChildNodes(ModelItemId parentNodeId) => throw new NotImplementedException();
 
         public IModelNode GetModelNode(ModelItemId id)
         {
@@ -44,32 +46,23 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         {
             var modelNode = GetModelNode(modelNodeId);
             return _graph.GetConnectedVertices(modelNode,
-                // TODO: is IsInstanceOfType working for subtypes?
+                // TODO: test for subtypes
                 (_, relationship) => modelRelationshipType.Type.IsInstanceOfType(relationship) && 
                                      relationship.IsNodeInRelationship(modelNode, modelRelationshipType.Direction),
                 recursive);
         }
 
-        public ImmutableModel AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null)
-        {
-            if (parentNode == null)
-                return new ImmutableModel(_rootNodes.Add(node), _graph.AddVertex(node));
+        // TODO: implement node hierarchy
+        public ImmutableModel AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null) => 
+            new ImmutableModel(_graph.AddVertex(node));
 
-            throw new NotImplementedException("Node hierarchy handling is not yet implemented.");
-            //var newParentNode = parentNode.AddChildNode(node);
-            //var newRootNodes = ReplaceNodeInTreeRecursive(_rootNodes, parentNode, newParentNode);
-            //var newModelGraph = ReplaceVertexInModelGraph(parentNode, newParentNode);
-            //return new ImmutableModel(newRootNodes, newModelGraph);
-        }
+        public ImmutableModel RemoveNode(ImmutableModelNodeBase node) =>
+            new ImmutableModel(_graph.RemoveVertex(node));
 
         public ImmutableModel AddRelationship(ModelRelationshipBase relationship) => 
-            new ImmutableModel(_rootNodes, _graph.AddEdge(relationship));
+            new ImmutableModel(_graph.AddEdge(relationship));
 
         public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) => 
-            new ImmutableModel(_rootNodes, _graph.RemoveEdge(relationship));
-
-        private ImmutableModelGraph ReplaceVertexInModelGraph(ImmutableModelNodeBase parentNode, ImmutableModelNodeBase newParentNode)
-            => _graph.ReplaceVertex(parentNode, newParentNode);
-
+            new ImmutableModel(_graph.RemoveEdge(relationship));
     }
 }

@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         private ImmutableModel _currentModel;
 
         public event Action<IModelNode, IModel> NodeAdded;
-        //public event Action<IModelNode, IModel> NodeRemoved;
+        public event Action<IModelNode, IModel> NodeRemoved;
         public event Action<IModelRelationship, IModel> RelationshipAdded;
         public event Action<IModelRelationship, IModel> RelationshipRemoved;
         //public event Action<IModelNode, IModel> NodeUpdated;
@@ -35,6 +35,13 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         {
             _currentModel = _currentModel.AddNode(node, parentNode);
             NodeAdded?.Invoke(node, _currentModel);
+            return this;
+        }
+
+        protected IModelBuilder RemoveNode(ImmutableModelNodeBase node)
+        {
+            _currentModel = _currentModel.RemoveNode(node);
+            NodeRemoved?.Invoke(node, _currentModel);
             return this;
         }
 

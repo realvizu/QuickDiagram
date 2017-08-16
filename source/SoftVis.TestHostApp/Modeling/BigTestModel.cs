@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Codartis.SoftVis.TestHostApp.Modeling
+﻿namespace Codartis.SoftVis.TestHostApp.Modeling
 {
     internal static class BigTestModel
     {

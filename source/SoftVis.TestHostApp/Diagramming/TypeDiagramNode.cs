@@ -5,13 +5,13 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
     internal class TypeDiagramNode : DiagramNode
     {
-        public TestType TestType { get; }
+        public TypeNodeBase TypeNodeBase { get; }
         public string Stereotype { get; }
 
-        public TypeDiagramNode(TestType testType) : base(testType)
+        public TypeDiagramNode(TypeNodeBase typeNodeBase) : base(typeNodeBase)
         {
-            TestType = testType;
-            Stereotype = $"<<{testType.GetType().Name.ToLower()}>>";
+            TypeNodeBase = typeNodeBase;
+            Stereotype = $"<<{typeNodeBase.GetType().Name.ToLower()}>>";
         }
     }
 }

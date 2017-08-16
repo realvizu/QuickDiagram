@@ -3,14 +3,16 @@ using Codartis.SoftVis.Modeling2.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal abstract class TestType : ImmutableModelNodeBase
+    internal abstract class TypeNodeBase : ImmutableModelNodeBase
     {
         public bool IsAbstract { get; }
 
-        protected TestType(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
+        protected TypeNodeBase(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
             : base(id, name, origin)
         {
             IsAbstract = isAbstract;
         }
+
+        public string FullName => $"Full name of {Name}";
     }
 }

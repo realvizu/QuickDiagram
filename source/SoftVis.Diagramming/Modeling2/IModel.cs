@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Codartis.SoftVis.Modeling2
 {
@@ -11,11 +10,6 @@ namespace Codartis.SoftVis.Modeling2
     public interface IModel
     {
         /// <summary>
-        /// The collection of model nodes that are hierarchy roots.
-        /// </summary>
-        IEnumerable<IModelNode> RootNodes { get; }
-
-        /// <summary>
         /// The collection of all model nodes.
         /// </summary>
         IEnumerable<IModelNode> Nodes { get; }
@@ -24,6 +18,18 @@ namespace Codartis.SoftVis.Modeling2
         /// The collection of relationships that exist between nodes.
         /// </summary>
         IEnumerable<IModelRelationship> Relationships { get; }
+
+        /// <summary>
+        /// The collection of model nodes that are hierarchy roots.
+        /// </summary>
+        IEnumerable<IModelNode> RootNodes { get; }
+
+        /// <summary>
+        /// Returns the children of a node.
+        /// </summary>
+        /// <param name="parentNodeId">Identifies the parent node.</param>
+        /// <returns>The collection of child nodes. Can be empty.</returns>
+        IEnumerable<IModelNode> GetChildNodes(ModelItemId parentNodeId);
 
         /// <summary>
         /// Returns a model node by its id. Throws if not found.

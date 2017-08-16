@@ -20,12 +20,12 @@
             Origin = origin;
         }
 
-        public virtual int Priority => 0;
+        public abstract int LayoutPriority { get; }
+
+        public override string ToString() => $"{GetType().Name} {Name} [{Id}]";
 
         public ImmutableModelNodeBase WithName(string name) => CreateInstance(Id, name, Origin);
 
         protected abstract ImmutableModelNodeBase CreateInstance(ModelItemId id, string name, ModelOrigin origin);
-
-        public override string ToString() => $"{GetType().Name} {Name} [{Id}]";
     }
 }

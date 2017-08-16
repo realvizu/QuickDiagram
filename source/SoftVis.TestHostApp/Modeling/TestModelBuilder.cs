@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public TestModelBuilder AddClass(string name, string baseName = null, ModelOrigin origin = ModelOrigin.SourceCode, bool isAbstract = false)
         {
-            var node = new TestClass(ModelItemId.Create(), name, origin, isAbstract);
+            var node = new ClassNode(ModelItemId.Create(), name, origin, isAbstract);
             AddNode(node);
             AddItemToCurrentGroup(node);
 
@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public TestModelBuilder AddInterface(string name, string baseName = null, ModelOrigin origin = ModelOrigin.SourceCode)
         {
-            var node = new TestInterface(ModelItemId.Create(), name, origin, false);
+            var node = new InterfaceNode(ModelItemId.Create(), name, origin, false);
             AddNode(node);
             AddItemToCurrentGroup(node);
 
@@ -77,13 +77,13 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         private void AddInheritance(IModelNode node, IModelNode baseNode)
         {
-            var relationship = new TestInheritanceRelationship(ModelItemId.Create(), node, baseNode);
+            var relationship = new InheritanceRelationship(ModelItemId.Create(), node, baseNode);
             AddRelationship(relationship);
         }
 
         private void AddImplements(IModelNode node, IModelNode baseNode)
         {
-            var relationship = new TestImplementsRelationship(ModelItemId.Create(), node, baseNode);
+            var relationship = new ImplementsRelationship(ModelItemId.Create(), node, baseNode);
             AddRelationship(relationship);
         }
 

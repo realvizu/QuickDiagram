@@ -25,31 +25,6 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         {
         }
 
-        public IEnumerable<IModelNode> GetConnectedVertices(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate, bool recursive = false)
-        {
-            return _graph.ContainsVertex(vertex)
-                ? GetConnectedVerticesRecursive(vertex, edgePredicate, recursive)
-                : Enumerable.Empty<IModelNode>();
-        }
-
-        private IEnumerable<IModelNode> GetConnectedVerticesRecursive(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate, bool recursive = false)
-        {
-            var connectedVertices = this.GetAllEdges(vertex)
-                .Where(edge => edgePredicate(vertex, edge))
-                .Select(edge => edge.GetOtherEnd(vertex))
-                .Distinct();
-
-            foreach (var connectedVertex in connectedVertices)
-            {
-                yield return connectedVertex;
-
-                // TODO: loop detection!
-                if (recursive)
-                    foreach (var nextConnectedVertex in GetConnectedVertices(connectedVertex, edgePredicate, recursive: true))
-                        yield return nextConnectedVertex;
-            }
-        }
-
         public bool IsDirected => _graph.IsDirected;
         public bool AllowParallelEdges => _graph.AllowParallelEdges;
         public bool ContainsVertex(IModelNode vertex) => _graph.ContainsVertex(vertex);
@@ -128,5 +103,30 @@ namespace Codartis.SoftVis.Modeling2.Implementation
 
         public ImmutableModelGraph Clear() => 
             new ImmutableModelGraph(_graph.Clear());
+
+        public IEnumerable<IModelNode> GetConnectedVertices(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate, bool recursive = false)
+        {
+            return _graph.ContainsVertex(vertex)
+                ? GetConnectedVerticesRecursive(vertex, edgePredicate, recursive)
+                : Enumerable.Empty<IModelNode>();
+        }
+
+        private IEnumerable<IModelNode> GetConnectedVerticesRecursive(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate, bool recursive = false)
+        {
+            var connectedVertices = this.GetAllEdges(vertex)
+                .Where(edge => edgePredicate(vertex, edge))
+                .Select(edge => edge.GetOtherEnd(vertex))
+                .Distinct();
+
+            foreach (var connectedVertex in connectedVertices)
+            {
+                yield return connectedVertex;
+
+                // TODO: loop detection!
+                if (recursive)
+                    foreach (var nextConnectedVertex in GetConnectedVertices(connectedVertex, edgePredicate, recursive: true))
+                        yield return nextConnectedVertex;
+            }
+        }
     }
 }

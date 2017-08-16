@@ -34,10 +34,6 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
-        <Style x:Key="BubbleListBoxItemContainerStyle" TargetType="{x:Type ListBoxItem}"
-               d:DataContext="{d:DesignInstance {x:Type modeling:IModelNode}}">
-            <Setter Property="ToolTip" Value="{Binding FullName}"></Setter>
-        </Style>
     </UserControl.Resources>
 
     <Canvas x:Name="Canvas">
@@ -60,7 +56,6 @@
                                 CommonAncestorWithOwner="{Binding ElementName=ThisControl}"
                                 ItemsSource="{Binding Path=Items}"
                                 ItemTemplate="{StaticResource BubbleListBoxItemTemplate}"
-                                ItemContainerStyle="{StaticResource BubbleListBoxItemContainerStyle}"
                                 ItemSelectedCommand="{Binding Path=ItemSelectedCommand}"
                                 Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 

@@ -6,6 +6,8 @@
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.TestHostApp.UI"
                     xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
                     xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling2;assembly=SoftVis.Diagramming"
+                    xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
                     mc:Ignorable="d" >
 
     <ResourceDictionary.MergedDictionaries>
@@ -35,6 +37,7 @@
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:TypeDiagramNodeViewModel}}">
+        <Setter Property="ToolTip" Value="{Binding Path=TypeDiagramNode.TypeNodeBase.FullName}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -61,7 +64,7 @@
                         <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                             <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=TypeDiagramNode.TestType.IsAbstract}" Value="true">
+                        <DataTrigger Binding="{Binding Path=TypeDiagramNode.TypeNodeBase.IsAbstract}" Value="true">
                             <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
                         </DataTrigger>
                     </ControlTemplate.Triggers>
@@ -71,4 +74,8 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type controls:BubbleListBoxItem}"
+           d:DataContext="{d:DesignInstance {x:Type testHostAppModeling:TypeNodeBase}}">
+        <Setter Property="ToolTip" Value="{Binding FullName}"/>
+    </Style>
 </ResourceDictionary>

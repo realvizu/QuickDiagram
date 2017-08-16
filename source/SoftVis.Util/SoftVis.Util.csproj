@@ -81,6 +81,7 @@
     <Compile Include="UI\Wpf\Controls\AnimatedItemsControl.cs" />
     <Compile Include="UI\Wpf\Controls\AnimatedRenderTransformCanvas.cs" />
     <Compile Include="UI\Wpf\Controls\BubbleListBox.cs" />
+    <Compile Include="UI\Wpf\Controls\BubbleListBoxItem.cs" />
     <Compile Include="UI\Wpf\Controls\CanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\DecoratorPanel.cs" />
     <Compile Include="UI\Wpf\Controls\IBubbleListBoxOwner.cs" />
