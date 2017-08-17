@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -14,12 +15,16 @@ using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
+using Codartis.SoftVis.Util.UI.Wpf.Resources;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp
 {
     class MainWindowViewModel : ViewModelBase
     {
+        private const string DiagramStylesXaml = "Resources/Styles.xaml";
+
+        private readonly ResourceDictionary _resourceDictionary;
         private readonly TestModelBuilder _testModelBuilder;
         private readonly TestDiagram _testDiagram;
 
@@ -38,6 +43,8 @@ namespace Codartis.SoftVis.TestHostApp
 
         public MainWindowViewModel()
         {
+            _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+
             _testModelBuilder = new TestModelBuilder();
             var testDiagramBuilder = new TestDiagramBuilder();
 
@@ -133,7 +140,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             try
             {
-                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider, _resourceDictionary);
                 var cancellationToken = progressDialog.CancellationToken;
 
                 return await Task.Factory.StartSTA(() =>
