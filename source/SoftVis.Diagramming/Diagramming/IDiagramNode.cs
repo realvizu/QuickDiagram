@@ -23,8 +23,6 @@ namespace Codartis.SoftVis.Diagramming
         Point2D Center { get; set; }
         Size2D Size { get; set; }
 
-        void Update(IModelNode modelNode);
-
         event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
         event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
         event Action<IDiagramNode, IModelNode> ModelNodeUpdated;

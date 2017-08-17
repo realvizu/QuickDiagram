@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         {
         }
 
-        private ImmutableModel(ImmutableModelGraph graph)
+        protected ImmutableModel(ImmutableModelGraph graph)
         {
             _graph = graph;
         }
@@ -46,29 +46,32 @@ namespace Codartis.SoftVis.Modeling.Implementation
         {
             var modelNode = GetModelNode(modelNodeId);
             return _graph.GetConnectedVertices(modelNode,
-                (_, relationship) => relationship.IsNodeInRelationship(modelNode, directedModelRelationshipType),
+                (node, relationship) => relationship.IsNodeInRelationship(node, directedModelRelationshipType),
                 recursive);
         }
 
         // TODO: implement node hierarchy
         public ImmutableModel AddNode(ModelNodeBase node, ModelNodeBase parentNode = null) => 
-            new ImmutableModel(_graph.AddVertex(node));
+            CreateClone(_graph.AddVertex(node));
 
         public ImmutableModel RemoveNode(ModelNodeBase node) =>
-            new ImmutableModel(_graph.RemoveVertex(node));
+            CreateClone(_graph.RemoveVertex(node));
 
-        public ImmutableModel AddRelationship(ModelRelationshipBase relationship) => 
-            new ImmutableModel(_graph.AddEdge(relationship));
+        public ImmutableModel AddRelationship(ModelRelationshipBase relationship) =>
+            CreateClone(_graph.AddEdge(relationship));
 
-        public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) => 
-            new ImmutableModel(_graph.RemoveEdge(relationship));
+        public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) =>
+            CreateClone(_graph.RemoveEdge(relationship));
 
         public ImmutableModel UpdateNode(ModelNodeBase oldNode, ModelNodeBase newNode)
         {
             if (oldNode.Id != newNode.Id)
                 throw new InvalidOperationException($"Cannot update node with id {oldNode.Id} to node with id {newNode.Id}");
 
-            return new ImmutableModel(_graph.ReplaceVertex(oldNode, newNode));
+            return CreateClone(_graph.ReplaceVertex(oldNode, newNode));
         }
+
+        protected virtual ImmutableModel CreateClone(ImmutableModelGraph graph) => 
+            new ImmutableModel(graph);
     }
 }

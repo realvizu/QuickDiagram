@@ -16,6 +16,8 @@ namespace Codartis.SoftVis.Modeling
             Direction = direction;
         }
 
+        public override string ToString() => $"{Stereotype}/{Direction}";
+
         public bool Equals(DirectedModelRelationshipType other)
         {
             return Stereotype.Equals(other.Stereotype) && Direction == other.Direction;

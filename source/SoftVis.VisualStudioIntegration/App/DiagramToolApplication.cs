@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
@@ -42,7 +45,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private void SubscribeToUiEvents(IUiServices uiServices)
         {
             uiServices.ShowSourceRequested += OnShowSourceRequested;
-            //uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
+            uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
         }
 
         /// <summary>
@@ -55,7 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (diagramNode == null)
                 return;
 
-            //ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelItemId);
+            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelNode);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
@@ -67,12 +70,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        //private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelEntity> modelEntities)
-        //{
-        //    if (!modelEntities.Any())
-        //        return;
+        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelNode> modelNodes)
+        {
+            var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
 
-        //    await new AddItemsToDiagramCommand(this).ExecuteAsync(modelEntities);
-        //}
+            if (roslynModelNodes.Any())
+                await new AddItemsToDiagramCommand(this).ExecuteAsync(roslynModelNodes);
+        }
     }
 }

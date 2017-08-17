@@ -12,6 +12,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModel : ImmutableModel
     {
+        public RoslynBasedModel()
+        {
+        }
+
+        private RoslynBasedModel(ImmutableModelGraph graph) 
+            : base(graph)
+        {
+        }
+
         public IEnumerable<RoslynModelNode> RoslynModelNodes => Nodes.OfType<RoslynModelNode>();
         public IEnumerable<ModelRelationshipBase> RoslynRelationships => Relationships.OfType<ModelRelationshipBase>();
 
@@ -41,5 +50,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             return RoslynRelationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
         }
+
+        protected override ImmutableModel CreateClone(ImmutableModelGraph graph) =>
+            new RoslynBasedModel(graph);
     }
 }

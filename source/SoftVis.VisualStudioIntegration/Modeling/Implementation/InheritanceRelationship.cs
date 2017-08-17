@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     internal class InheritanceRelationship : ModelRelationshipBase
     {
         public InheritanceRelationship(ModelItemId id, IModelNode source, IModelNode target)
-            : base(id, source, target, RoslynModelRelationshipStereotype.Implementation)
+            : base(id, source, target, RoslynModelRelationshipStereotype.Inheritance)
         {
         }
 

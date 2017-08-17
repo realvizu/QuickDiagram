@@ -17,6 +17,12 @@
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultRelatedNodeCuePlacementDictionary}">
 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5"/>
+
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,0.5"/>
 
@@ -28,6 +34,12 @@
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultMiniButtonPlacementDictionary}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3"/>
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,3"/>

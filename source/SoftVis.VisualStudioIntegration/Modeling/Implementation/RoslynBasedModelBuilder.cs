@@ -52,25 +52,36 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public void ExtendModelWithRelatedEntities(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false)
         {
-            var roslynBasedModelEntity = modelNode as RoslynTypeNode;
-            if (roslynBasedModelEntity == null)
+            var roslynModelNode = modelNode as IRoslynModelNode;
+            if (roslynModelNode == null)
                 return;
 
-            var symbolRelations = roslynBasedModelEntity
+            ExtendModelWithRelatedNodesRecursive(roslynModelNode, directedModelRelationshipType, cancellationToken, progress, recursive);
+        }
+
+        private void ExtendModelWithRelatedNodesRecursive(IRoslynModelNode roslynModelNode, DirectedModelRelationshipType? directedModelRelationshipType,
+            CancellationToken cancellationToken, IIncrementalProgress progress, bool recursive)
+        {
+            var relatedSymbolPairs = roslynModelNode
                 .FindRelatedSymbols(_roslynModelProvider, directedModelRelationshipType)
                 .Select(GetOriginalDefinition)
                 .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
 
-            foreach (var symbolRelation in symbolRelations)
+            foreach (var relatedSymbolPair in relatedSymbolPairs)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var relatedEntity = GetOrAddNode(symbolRelation.RelatedSymbol, progress);
-                GetOrAddRelationship(symbolRelation);
+                var relatedSymbol = relatedSymbolPair.RelatedSymbol;
 
-                // TODO: loop detection?
+                // Avoid infinite loop by stopping recursion when a node is already added.
+                if (CurrentRoslynModel.GetNodeBySymbol(relatedSymbol) != null)
+                    recursive = false;
+
+                var relatedNode = GetOrAddNode(relatedSymbol, progress);
+                GetOrAddRelationship(relatedSymbolPair);
+
                 if (recursive)
-                    ExtendModelWithRelatedEntities(relatedEntity, directedModelRelationshipType, cancellationToken, progress, recursive: true);
+                    ExtendModelWithRelatedNodesRecursive(relatedNode, directedModelRelationshipType, cancellationToken, progress, recursive: true);
             }
         }
 

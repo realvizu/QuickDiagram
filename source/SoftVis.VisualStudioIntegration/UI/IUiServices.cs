@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 
@@ -12,12 +13,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// Defines the UI operations of the diagram control.
     /// </summary>
-    public interface IUiServices
+    internal interface IUiServices
     {
         Dpi ImageExportDpi { get; set; }
 
         event Action<IDiagramShape> ShowSourceRequested;
-        //event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
+        event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
 
         void ShowDiagramWindow();
         void ShowMessageBox(string message);

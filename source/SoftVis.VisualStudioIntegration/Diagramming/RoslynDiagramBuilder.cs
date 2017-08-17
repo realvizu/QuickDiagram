@@ -7,7 +7,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
-    internal class RoslynDiagramBuilder : DiagramBuilder
+    internal class RoslynDiagramBuilder : DiagramBuilderBase
     {
         private static readonly Dictionary<ModelRelationshipStereotype, ConnectorType> ModelRelationshipTypeToConnectorTypeMap = 
             new Dictionary<ModelRelationshipStereotype, ConnectorType>

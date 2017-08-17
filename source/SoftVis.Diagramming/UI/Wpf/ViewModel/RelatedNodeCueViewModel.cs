@@ -40,22 +40,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IsVisible = Diagram.GetUndisplayedRelatedModelNodes(_diagramNode, _modelRelationshipType).Any();
         }
 
-        private void OnModelRelationshipRemoved(IModelRelationship relationship) => RecalculateVisibility();
-        private void OnModelRelationshipAdded(IModelRelationship relationship) => RecalculateVisibility();
+        private void OnModelRelationshipRemoved(IModelRelationship relationship, IModel model) => RecalculateVisibility();
+        private void OnModelRelationshipAdded(IModelRelationship relationship, IModel model) => RecalculateVisibility();
 
         private void OnDiagramShapeRemoved(IDiagramShape shape) => RecalculateVisibility();
         private void OnDiagramShapeAdded(IDiagramShape shape) => RecalculateVisibility();
 
         private void SubscribeToModelEvents()
         {
-            //Model.RelationshipAdded += OnModelRelationshipAdded;
-            //Model.RelationshipRemoved += OnModelRelationshipRemoved;
+            Model.RelationshipAdded += OnModelRelationshipAdded;
+            Model.RelationshipRemoved += OnModelRelationshipRemoved;
         }
 
         private void UnsubscribeFromModelEvents()
         {
-            //Model.RelationshipAdded -= OnModelRelationshipAdded;
-            //Model.RelationshipRemoved -= OnModelRelationshipRemoved;
+            Model.RelationshipAdded -= OnModelRelationshipAdded;
+            Model.RelationshipRemoved -= OnModelRelationshipRemoved;
         }
 
         private void SubscribeToDiagramEvents()

@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         private Route _routePoints;
 
-        public IModelRelationship ModelRelationship { get; }
+        public IModelRelationship ModelRelationship { get; private set; }
         public IDiagramNode Source { get; }
         public IDiagramNode Target { get; }
         public ConnectorType ConnectorType { get; }
@@ -47,6 +47,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && RoutePoints != null;
         public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
+
+        public override void Update(IModelItem modelItem)
+        {
+            base.Update(modelItem);
+
+            if (modelItem is IModelRelationship modelRelationship)
+            {
+                ModelRelationship = modelRelationship;
+            }
+            else
+            {
+                throw new ArgumentException($"IModelRelationship expected but received {modelItem.GetType().Name}");
+            }
+        }
 
         private static Rect2D CalculateRect(Rect2D sourceRect, Rect2D targetRect, Route routePoints)
         {

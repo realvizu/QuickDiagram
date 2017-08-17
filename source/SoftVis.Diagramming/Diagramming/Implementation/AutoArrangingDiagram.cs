@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private readonly Queue<DiagramAction> _diagramActionQueue;
         private readonly AutoResetEvent _diagramActionArrivedEvent;
 
-        public AutoArrangingDiagram(IModelBuilder modelBuilder, DiagramBuilder diagramBuilder, IDiagramNodeFactory diagramNodeFactory)
+        public AutoArrangingDiagram(IModelBuilder modelBuilder, DiagramBuilderBase diagramBuilder, IDiagramNodeFactory diagramNodeFactory)
             : base(modelBuilder, diagramBuilder, diagramNodeFactory)
         {
             _incrementalLayoutEngine = new IncrementalLayoutEngine();

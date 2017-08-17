@@ -7,7 +7,7 @@ using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
-    internal class TestDiagramBuilder : DiagramBuilder
+    internal class TestDiagramBuilder : DiagramBuilderBase
     {
         private static readonly Dictionary<ModelRelationshipStereotype, ConnectorType> ModelRelationshipTypeToConnectorTypeMap =
             new Dictionary<ModelRelationshipStereotype, ConnectorType>

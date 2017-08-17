@@ -6,6 +6,7 @@ using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -16,6 +17,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         public TypeDiagramNode TypeDiagramNode { get; }
 
+        private bool _isAbstract;
+        private string _fullName;
         private string _description;
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
@@ -30,9 +33,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             : base(diagram, typeDiagramNode, size, center, topLeft)
         {
             TypeDiagramNode = typeDiagramNode;
-            _description = typeDiagramNode.RoslynTypeNode.Description;
-            _descriptionExists = !string.IsNullOrWhiteSpace(_description);
-            _isDescriptionVisible = isDescriptionVisible;
+            PopulateProperties(typeDiagramNode.RoslynTypeNode);
+            IsDescriptionVisible = isDescriptionVisible;
         }
 
         public override object Clone()
@@ -42,8 +44,36 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
-            // TODO 
-            yield break;
+            yield return new RelatedNodeType(DirectedRelationshipTypes.BaseType, "Base types");
+            yield return new RelatedNodeType(DirectedRelationshipTypes.Subtype, "Subtypes");
+            yield return new RelatedNodeType(DirectedRelationshipTypes.ImplementerType, "Implementers");
+            yield return new RelatedNodeType(DirectedRelationshipTypes.ImplementedInterface, "Interfaces");
+        }
+
+        public bool IsAbstract
+        {
+            get { return _isAbstract; }
+            set
+            {
+                if (_isAbstract != value)
+                {
+                    _isAbstract = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string FullName
+        {
+            get { return _fullName; }
+            set
+            {
+                if (_fullName != value)
+                {
+                    _fullName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string Description
@@ -93,9 +123,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             if (typeDiagramNode == null)
                 throw new InvalidOperationException($"{typeof(TypeDiagramNode).Name} expected.");
 
-            Description = typeDiagramNode.RoslynTypeNode.Description;
-            DescriptionExists = !string.IsNullOrWhiteSpace(Description);
+            PopulateProperties(typeDiagramNode.RoslynTypeNode);
         }
 
+        private void PopulateProperties(IRoslynTypeNode roslynTypeNode)
+        {
+            IsAbstract = roslynTypeNode.IsAbstract;
+            FullName = roslynTypeNode.FullName;
+            SetDescription(roslynTypeNode.Description);
+        }
+
+        private void SetDescription(string description)
+        {
+            Description = description;
+            DescriptionExists = !string.IsNullOrWhiteSpace(_description);
+        }
     }
 }

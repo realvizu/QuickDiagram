@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public class DiagramNode : DiagramShape, IDiagramNode
     {
-        public IModelNode ModelNode { get; }
+        public IModelNode ModelNode { get; private set; }
 
         private Size2D _size;
         private Point2D _center;
@@ -94,7 +94,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void Update(IModelNode modelNode) => ModelNodeUpdated?.Invoke(this, modelNode);
+        public override void Update(IModelItem modelItem)
+        {
+            base.Update(modelItem);
+
+            if (modelItem is IModelNode modelNode)
+            {
+                ModelNode = modelNode;
+                ModelNodeUpdated?.Invoke(this, modelNode);
+            }
+            else
+            {
+                throw new ArgumentException($"IModelNode expected but received {modelItem.GetType().Name}");
+            }
+        }
 
         public int CompareTo(IDiagramNode otherNode) => 
             string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);

@@ -106,12 +106,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public IEnumerable<IModelNode> GetConnectedVertices(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate, bool recursive = false)
         {
-            return _graph.ContainsVertex(vertex)
-                ? GetConnectedVerticesRecursive(vertex, edgePredicate, recursive)
-                : Enumerable.Empty<IModelNode>();
+            if (!_graph.ContainsVertex(vertex))
+                return Enumerable.Empty<IModelNode>();
+
+            var collectedVertices = new List<IModelNode>();
+            CollectConnectedVerticesRecursive(vertex, edgePredicate, collectedVertices, recursive);
+            return collectedVertices;
         }
 
-        private IEnumerable<IModelNode> GetConnectedVerticesRecursive(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate, bool recursive = false)
+        private void CollectConnectedVerticesRecursive(IModelNode vertex, Func<IModelNode, ModelRelationshipBase, bool> edgePredicate,
+            ICollection<IModelNode> collectedVertices, bool recursive = false)
         {
             var connectedVertices = this.GetAllEdges(vertex)
                 .Where(edge => edgePredicate(vertex, edge))
@@ -120,12 +124,14 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
             foreach (var connectedVertex in connectedVertices)
             {
-                yield return connectedVertex;
+                // Loop detection
+                if (collectedVertices.Contains(connectedVertex))
+                    continue;
 
-                // TODO: loop detection!
+                collectedVertices.Add(connectedVertex);
+
                 if (recursive)
-                    foreach (var nextConnectedVertex in GetConnectedVertices(connectedVertex, edgePredicate, recursive: true))
-                        yield return nextConnectedVertex;
+                    CollectConnectedVerticesRecursive(connectedVertex, edgePredicate, collectedVertices, recursive: true);
             }
         }
     }

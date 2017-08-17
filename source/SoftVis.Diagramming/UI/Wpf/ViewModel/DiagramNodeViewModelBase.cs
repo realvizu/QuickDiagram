@@ -147,10 +147,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 yield return new RelatedNodeMiniButtonViewModel(Diagram, entityRelationType);
         }
 
-        protected virtual IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
-        {
-            yield break;
-        }
+        protected abstract IEnumerable<RelatedNodeType> GetRelatedNodeTypes();
 
         protected virtual void OnModelNodeUpdated(IDiagramNode diagramNode, IModelNode modelNode)
         {
