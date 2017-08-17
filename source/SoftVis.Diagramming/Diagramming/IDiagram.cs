@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming

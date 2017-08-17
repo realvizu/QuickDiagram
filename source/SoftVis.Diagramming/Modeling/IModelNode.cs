@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling2
+﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// Represents a named item in the model, e.g. a package, a type, a member.

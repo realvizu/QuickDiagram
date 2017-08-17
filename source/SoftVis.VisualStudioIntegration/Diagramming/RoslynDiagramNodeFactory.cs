@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming

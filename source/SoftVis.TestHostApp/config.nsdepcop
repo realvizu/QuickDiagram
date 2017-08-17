@@ -3,6 +3,4 @@
     <Allowed From="*" To="System.*" />
     <Allowed From="Codartis.SoftVis.TestHostApp.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.TestHostApp.*" To="Codartis.SoftVis.*" />
-
-    <Disallowed From="Codartis.SoftVis.TestHostApp.Modeling" To="Codartis.SoftVis.Modeling" />
 </NsDepCopConfig>

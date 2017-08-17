@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling2
+﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// Specifies the direction to navigate the relationship from an entity to another.

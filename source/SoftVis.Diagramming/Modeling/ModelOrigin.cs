@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling2
+﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// Enumerates the possible sources of model information.

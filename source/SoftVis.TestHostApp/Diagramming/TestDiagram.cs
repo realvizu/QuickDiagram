@@ -1,5 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
 {

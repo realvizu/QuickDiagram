@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Modeling2.Implementation
+namespace Codartis.SoftVis.Modeling.Implementation
 {
     /// <summary>
     /// Abstract base class for implementations of the IModelNode interface.

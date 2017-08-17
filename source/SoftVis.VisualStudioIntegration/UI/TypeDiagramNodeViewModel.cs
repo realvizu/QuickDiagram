@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;

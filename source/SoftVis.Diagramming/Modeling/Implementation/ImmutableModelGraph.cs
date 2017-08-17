@@ -4,7 +4,7 @@ using System.Linq;
 using Codartis.SoftVis.Graphs;
 using QuickGraph;
 
-namespace Codartis.SoftVis.Modeling2.Implementation
+namespace Codartis.SoftVis.Modeling.Implementation
 {
     /// <summary>
     /// An immutable graph of model nodes and relationships. Mutators return a new graph.

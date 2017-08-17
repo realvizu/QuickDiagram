@@ -5,9 +5,9 @@
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.TestHostApp.UI"
                     xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling2;assembly=SoftVis.Diagramming"
                     xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
                     xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming"
                     mc:Ignorable="d" >
 
     <ResourceDictionary.MergedDictionaries>

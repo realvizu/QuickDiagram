@@ -6,7 +6,7 @@
     <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="QuickGraph" />
     <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="Codartis.SoftVis.Graphs" />
 
-    <!--<Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />-->
+    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="Codartis.SoftVis.Graphs.*" />
@@ -31,9 +31,4 @@
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.Controls" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-    
-    <!--Temp-->
-    <Allowed From="Codartis.SoftVis.Modeling2.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Modeling2.*" To="QuickGraph.*" />
-    <Allowed From="Codartis.SoftVis.*" To="Codartis.SoftVis.Modeling2.*" />
 </NsDepCopConfig>

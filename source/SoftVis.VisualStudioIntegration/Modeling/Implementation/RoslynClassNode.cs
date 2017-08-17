@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation

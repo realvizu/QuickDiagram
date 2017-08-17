@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Modeling2
+namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// Identifies a model item throughout its lifetime.

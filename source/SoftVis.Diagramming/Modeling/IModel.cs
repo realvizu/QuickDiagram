@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Codartis.SoftVis.Modeling2
+namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// A read-only view of a model. 

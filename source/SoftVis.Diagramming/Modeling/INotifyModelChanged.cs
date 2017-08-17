@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Modeling2
+namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// Publishes events about model changes.

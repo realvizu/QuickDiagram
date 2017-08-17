@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling2;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {

@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling2.Implementation
+﻿namespace Codartis.SoftVis.Modeling.Implementation
 {
     /// <summary>
     /// Creates immutable model instances.
