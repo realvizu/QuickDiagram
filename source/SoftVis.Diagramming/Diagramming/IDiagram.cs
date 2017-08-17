@@ -33,10 +33,10 @@ namespace Codartis.SoftVis.Diagramming
         IReadOnlyList<IDiagramShape> ShowModelItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
 
-        //void HideModelItem(IModelItem modelItem);
+        void HideModelItem(ModelItemId modelItemId);
 
-        //void HideModelItems(IEnumerable<IModelItem> modelItems,
-        //    CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+        void HideModelItems(IEnumerable<ModelItemId> modelItemIds,
+            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
 
         void Clear();
 

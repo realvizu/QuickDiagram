@@ -42,10 +42,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _diagramBuilder = diagramBuilder;
             _diagramNodeFactory = diagramNodeFactory;
 
-            //Model.NodeUpdated += OnModelEntityRenamed;
-            //Model.RelationshipAdded += OnModelRelationshipAdded;
-            //Model.NodeRemoved += OnModelEntityRemoved;
-            //Model.RelationshipRemoved += OnModelRelationshipRemoved;
+            ModelBuilder.NodeUpdated += OnModelNodeUpdated;
+            ModelBuilder.NodeRemoved += OnModelNodeRemoved;
+            ModelBuilder.RelationshipAdded += OnModelRelationshipAdded;
+            ModelBuilder.RelationshipRemoved += OnModelRelationshipRemoved;
             ModelBuilder.ModelCleared += OnModelCleared;
 
             _graph = new DiagramGraph();
@@ -70,11 +70,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             OnDiagramCleared();
         }
 
-        public ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype) => 
+        public ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype) =>
             _diagramBuilder.GetConnectorType(modelRelationshipStereotype);
 
         public IDiagramShape ShowModelItem(IModelItem modelItem) => ShowModelItems(new[] { modelItem }).FirstOrDefault();
-        //public void HideModelItem(IModelItem modelItem) => HideModelItems(new[] { modelItem });
+        public void HideModelItem(ModelItemId modelItemId) => HideModelItems(new[] { modelItemId });
 
         public virtual IReadOnlyList<IDiagramShape> ShowModelItems(IEnumerable<IModelItem> modelItems,
             CancellationToken cancellationToken = default(CancellationToken),
@@ -107,33 +107,41 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return diagramShapes;
         }
 
-        //public virtual void HideModelItems(IEnumerable<ModelItemId> modelItemIds,
-        //    CancellationToken cancellationToken = default(CancellationToken),
-        //    IIncrementalProgress progress = null)
-        //{
-        //    foreach (var modelItemId in modelItemIds)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
+        public virtual void HideModelItems(IEnumerable<ModelItemId> modelItemIds,
+            CancellationToken cancellationToken = default(CancellationToken),
+            IIncrementalProgress progress = null)
+        {
+            foreach (var modelItemId in modelItemIds)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-        //        if (modelItem is IModelNode)
-        //            RemoveDiagramNode(modelItem.Id);
+                var diagramShape = GetDiagramShapeByModelItemId(modelItemId);
 
-        //        if (modelItem is IModelRelationship)
-        //            RemoveDiagramConnector((IModelRelationship)modelItem);
+                if (diagramShape != null)
+                    RemoveDiagramShape(diagramShape);
 
-        //        progress?.Report(1);
-        //    }
-        //}
+                progress?.Report(1);
+            }
+        }
 
-        public void SelectDiagramShape(IDiagramShape diagramShape) => OnDiagramShapeSelected(diagramShape);
         public void RemoveDiagramShape(IDiagramShape diagramShape)
         {
-            if (diagramShape is IDiagramNode diagramNode)
-                RemoveDiagramNode(diagramNode);
+            switch (diagramShape)
+            {
+                case IDiagramNode diagramNode:
+                    RemoveDiagramNode(diagramNode);
+                    break;
 
-            if (diagramShape is DiagramConnector diagramConnector)
-                RemoveDiagramConnector(diagramConnector);
+                case DiagramConnector diagramConnector:
+                    RemoveDiagramConnector(diagramConnector);
+                    break;
+
+                default:
+                    throw new Exception($"Unexpected diagramShape type: {diagramShape.GetType().Name}");
+            }
         }
+
+        public void SelectDiagramShape(IDiagramShape diagramShape) => OnDiagramShapeSelected(diagramShape);
 
         public IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes(IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType)
         {
@@ -276,6 +284,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
+        private IDiagramShape GetDiagramShapeByModelItemId(ModelItemId modelItemId)
+        {
+            return Shapes.FirstOrDefault(i => i.ModelItem.Id == modelItemId);
+        }
+
         private IDiagramNode FindDiagramNode(IModelNode modelNode)
         {
             return Nodes.FirstOrDefault(i => i.ModelNode.Id == modelNode.Id);
@@ -316,22 +329,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ConnectorRouteChanged?.Invoke(diagramConnector, oldRoute, newRoute);
         }
 
-        private void OnModelRelationshipAdded(IModelRelationship modelRelationship)
+        private void OnModelRelationshipAdded(IModelRelationship modelRelationship, IModel model)
         {
             ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
         }
 
-        //private void OnModelEntityRemoved(IModelEntity modelEntity)
-        //{
-        //    HideModelItem(modelEntity);
-        //}
+        private void OnModelNodeRemoved(IModelNode modelNode, IModel model)
+        {
+            HideModelItem(modelNode.Id);
+        }
 
-        //private void OnModelRelationshipRemoved(IModelRelationship modelRelationship)
-        //{
-        //    HideModelItem(modelRelationship);
-        //}
+        private void OnModelRelationshipRemoved(IModelRelationship modelRelationship, IModel model)
+        {
+            HideModelItem(modelRelationship.Id);
+        }
 
-        private void OnModelEntityRenamed(IModelNode modelNode, IModel model)
+        private void OnModelNodeUpdated(IModelNode oldNode, IModelNode newNode, IModel model)
         {
             //var diagramNode = FindDiagramNode(modelNode);
             //diagramNode?.Rename(modelNode.Name, modelNode.FullName, modelNode.Description);

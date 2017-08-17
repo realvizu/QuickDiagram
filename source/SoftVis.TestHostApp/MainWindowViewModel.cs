@@ -21,8 +21,7 @@ namespace Codartis.SoftVis.TestHostApp
     class MainWindowViewModel : ViewModelBase
     {
         private readonly TestModelBuilder _testModelBuilder;
-        private readonly TestDiagramBuilder _testDiagramBuilder;
-        private readonly Diagramming.TestDiagram _testDiagram;
+        private readonly TestDiagram _testDiagram;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
@@ -40,12 +39,12 @@ namespace Codartis.SoftVis.TestHostApp
         public MainWindowViewModel()
         {
             _testModelBuilder = new TestModelBuilder();
-            _testDiagramBuilder = new TestDiagramBuilder();
+            var testDiagramBuilder = new TestDiagramBuilder();
 
             TestModel.Create(_testModelBuilder);
             //CreateBigModel();
 
-            _testDiagram = new TestDiagram(_testModelBuilder, _testDiagramBuilder);
+            _testDiagram = new TestDiagram(_testModelBuilder, testDiagramBuilder);
             var diagramShapeVieModelFactory = new TestDiagramShapeViewModelFactory(_testDiagram);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, diagramShapeVieModelFactory,
@@ -99,11 +98,11 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void RemoveShapes()
         {
-            //if (_nextToRemoveModelItemGroupIndex == _testDiagram.ModelItemGroups.Count)
-            //    return;
+            if (_nextToRemoveModelItemGroupIndex == _testModelBuilder.ItemGroups.Count)
+                return;
 
-            //_testDiagram.HideModelItems(_testDiagram.ModelItemGroups[_nextToRemoveModelItemGroupIndex]);
-            //_nextToRemoveModelItemGroupIndex++;
+            _testDiagram.HideModelItems(_testModelBuilder.ItemGroups[_nextToRemoveModelItemGroupIndex]);
+            _nextToRemoveModelItemGroupIndex++;
 
             ZoomToContent();
         }
