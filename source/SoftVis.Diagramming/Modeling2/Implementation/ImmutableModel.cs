@@ -42,20 +42,19 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         public IEnumerable<IModelRelationship> GetRelationships(ModelItemId modelNodeId)
             => _graph.GetAllEdges(GetModelNode(modelNodeId));
 
-        public IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType modelRelationshipType, bool recursive = false)
+        public IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false)
         {
             var modelNode = GetModelNode(modelNodeId);
             return _graph.GetConnectedVertices(modelNode,
-                (_, relationship) => modelRelationshipType.Type.IsInstanceOfType(relationship) && 
-                                     relationship.IsNodeInRelationship(modelNode, modelRelationshipType.Direction),
+                (_, relationship) => relationship.IsNodeInRelationship(modelNode, directedModelRelationshipType),
                 recursive);
         }
 
         // TODO: implement node hierarchy
-        public ImmutableModel AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null) => 
+        public ImmutableModel AddNode(ModelNodeBase node, ModelNodeBase parentNode = null) => 
             new ImmutableModel(_graph.AddVertex(node));
 
-        public ImmutableModel RemoveNode(ImmutableModelNodeBase node) =>
+        public ImmutableModel RemoveNode(ModelNodeBase node) =>
             new ImmutableModel(_graph.RemoveVertex(node));
 
         public ImmutableModel AddRelationship(ModelRelationshipBase relationship) => 
@@ -64,7 +63,7 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) => 
             new ImmutableModel(_graph.RemoveEdge(relationship));
 
-        public ImmutableModel UpdateNode(ImmutableModelNodeBase oldNode, ImmutableModelNodeBase newNode)
+        public ImmutableModel UpdateNode(ModelNodeBase oldNode, ModelNodeBase newNode)
         {
             if (oldNode.Id != newNode.Id)
                 throw new InvalidOperationException($"Cannot update node with id {oldNode.Id} to node with id {newNode.Id}");

@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UnsubscribeFromModelEvents();
         }
 
-        public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationshipType.Type);
+        public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationshipType.Stereotype);
 
         private DiagramNodeViewModelBase HostDiagramNodeViewModel => HostViewModel as DiagramNodeViewModelBase;
         private IDiagramNode HostDiagramNode => HostDiagramNodeViewModel?.DiagramNode;

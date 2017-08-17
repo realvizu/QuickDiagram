@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Modeling2.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     internal class RoslynBasedModel : ImmutableModel
     {
         public IEnumerable<RoslynModelNode> RoslynModelNodes => Nodes.OfType<RoslynModelNode>();
-        public IEnumerable<IRoslynRelationship> RoslynRelationships => Relationships.OfType<IRoslynRelationship>();
+        public IEnumerable<ModelRelationshipBase> RoslynRelationships => Relationships.OfType<ModelRelationshipBase>();
 
         public IRoslynModelNode GetNodeBySymbol(ISymbol symbol)
         {
@@ -37,10 +37,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return null;
         }
 
-        public IRoslynRelationship GetRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, Type type)
+        public IModelRelationship GetRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
         {
-            return Relationships.OfType<IRoslynRelationship>().
-                FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.GetType() == type);
+            return RoslynRelationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
         }
     }
 }

@@ -15,11 +15,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         ISymbol RoslynSymbol { get; }
 
         /// <summary>
-        /// Provides an enumerated classification for the model node type.
-        /// </summary>
-        NodeStereotype Stereotype { get; }
-
-        /// <summary>
         /// Returns a value indicating whether this node represents the same roslyn symbol as the one given as parameter,
         /// </summary>
         bool SymbolEquals(ISymbol roslynSymbol);

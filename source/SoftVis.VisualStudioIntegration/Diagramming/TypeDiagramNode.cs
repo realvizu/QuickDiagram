@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming.Implementation;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
@@ -13,6 +14,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             RoslynTypeNode = roslynTypeNode;
         }
 
-        public NodeStereotype Stereotype => RoslynTypeNode.Stereotype;
+        public ModelNodeStereotype Stereotype => RoslynTypeNode.Stereotype;
     }
 }

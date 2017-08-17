@@ -8,6 +8,11 @@
         string Name { get; }
 
         /// <summary>
+        /// The type of the model node.
+        /// </summary>
+        ModelNodeStereotype Stereotype { get; }
+
+        /// <summary>
         /// Specifies the source of the model information for this node.
         /// </summary>
         ModelOrigin Origin { get; }

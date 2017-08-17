@@ -5,19 +5,19 @@ using Codartis.SoftVis.Modeling2.Implementation;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// Inheritance relationship between two model nodes.
+    /// Interface implementation relationship between two model nodes.
     /// </summary>
-    internal class InheritanceRelationship : ModelRelationshipBase
+    internal class ImplementationRelationship : ModelRelationshipBase
     {
-        public InheritanceRelationship(ModelItemId id, IModelNode source, IModelNode target)
+        public ImplementationRelationship(ModelItemId id, IModelNode source, IModelNode target) 
             : base(id, source, target, RoslynModelRelationshipStereotype.Implementation)
         {
         }
 
         protected override IEnumerable<(ModelNodeStereotype, ModelNodeStereotype)> GetValidSourceAndTargetNodeTypePairs()
         {
-            yield return (ModelNodeStereotype.Class, ModelNodeStereotype.Class);
-            yield return (RoslynModelNodeStereotype.Interface, RoslynModelNodeStereotype.Interface);
+            yield return (ModelNodeStereotype.Class, RoslynModelNodeStereotype.Interface);
+            yield return (RoslynModelNodeStereotype.Struct, RoslynModelNodeStereotype.Interface);
         }
     }
 }

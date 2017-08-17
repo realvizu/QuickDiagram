@@ -49,9 +49,10 @@ namespace Codartis.SoftVis.Modeling2
         /// Returns those nodes that are related to the given node with the given type of relationship.
         /// </summary>
         /// <param name="modelNodeId">The id of the model node.</param>
-        /// <param name="modelRelationshipType">A directed relationship type.</param>
+        /// <param name="directedModelRelationshipType">A directed relationship type.</param>
         /// <param name="recursive">True means that nodes are recursively traversed. False returns only immediately related nodes.</param>
         /// <returns>A read-only collection of nodes.</returns>
-        IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType modelRelationshipType, bool recursive = false);
+        IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType directedModelRelationshipType,
+            bool recursive = false);
     }
 }

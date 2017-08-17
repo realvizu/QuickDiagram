@@ -70,7 +70,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             OnDiagramCleared();
         }
 
-        public ConnectorType GetConnectorType(Type modelRealtionshipType) => _diagramBuilder.GetConnectorType(modelRealtionshipType);
+        public ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype) => 
+            _diagramBuilder.GetConnectorType(modelRelationshipStereotype);
 
         public IDiagramShape ShowModelItem(IModelItem modelItem) => ShowModelItems(new[] { modelItem }).FirstOrDefault();
         //public void HideModelItem(IModelItem modelItem) => HideModelItems(new[] { modelItem });
@@ -194,7 +195,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             var sourceNode = FindDiagramNode(relationship.Source);
             var targetNode = FindDiagramNode(relationship.Target);
-            var connectorType = GetConnectorType(relationship.GetType());
+            var connectorType = GetConnectorType(relationship.Stereotype);
             var diagramConnector = new DiagramConnector(relationship, sourceNode, targetNode, connectorType);
 
             diagramConnector.RouteChanged += OnDiagramConnectorRouteChanged;

@@ -48,7 +48,7 @@
                         <StackPanel Orientation="Vertical" 
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Path=TypeDiagramNode.Stereotype}" 
+                            <TextBlock Text="{Binding Path=Stereotype}" 
                                        FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
                                         Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
                                        HorizontalAlignment="Center"/>

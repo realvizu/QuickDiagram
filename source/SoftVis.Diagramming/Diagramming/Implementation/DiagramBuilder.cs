@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Codartis.SoftVis.Modeling2;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -7,6 +7,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public abstract class DiagramBuilder
     {
-        public abstract ConnectorType GetConnectorType(Type modelRealtionshipType);
+        public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }
 }

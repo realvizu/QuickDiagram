@@ -12,16 +12,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// Abstract base class for model nodes that represent a Roslyn symbol.
     /// Immutable.
     /// </summary>
-    internal abstract class RoslynModelNode : ImmutableModelNodeBase, IRoslynModelNode
+    internal abstract class RoslynModelNode : ModelNodeBase, IRoslynModelNode
     {
         public ISymbol RoslynSymbol { get; }
-        public NodeStereotype Stereotype { get; }
 
-        protected RoslynModelNode(ModelItemId id, ISymbol roslynSymbol, NodeStereotype stereotype)
-            : base(id, roslynSymbol.GetName(), roslynSymbol.GetOrigin())
+        protected RoslynModelNode(ModelItemId id, ISymbol roslynSymbol, ModelNodeStereotype stereotype)
+            : base(id, roslynSymbol.GetName(), stereotype, roslynSymbol.GetOrigin())
         {
             RoslynSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));
-            Stereotype = stereotype;
         }
 
         public bool SymbolEquals(ISymbol roslynSymbol) => RoslynSymbol.SymbolEquals(roslynSymbol);

@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         public INamedTypeSymbol NamedTypeSymbol { get; }
 
-        protected RoslynTypeNode(ModelItemId id, INamedTypeSymbol roslynSymbol, NodeStereotype stereotype)
+        protected RoslynTypeNode(ModelItemId id, INamedTypeSymbol roslynSymbol, ModelNodeStereotype stereotype)
             : base(id, roslynSymbol, stereotype)
         {
             NamedTypeSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));

@@ -3,22 +3,22 @@
 namespace Codartis.SoftVis.Modeling2
 {
     /// <summary>
-    /// A relatinship type with a direction.
+    /// A relationship type with a direction.
     /// </summary>
     public struct DirectedModelRelationshipType : IEquatable<DirectedModelRelationshipType>
     {
-        public Type Type { get; }
+        public ModelRelationshipStereotype Stereotype { get; }
         public RelationshipDirection Direction { get; }
 
-        public DirectedModelRelationshipType(Type type, RelationshipDirection direction)
+        public DirectedModelRelationshipType(ModelRelationshipStereotype stereotype, RelationshipDirection direction)
         {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
+            Stereotype = stereotype ?? throw new ArgumentNullException(nameof(stereotype));
             Direction = direction;
         }
 
         public bool Equals(DirectedModelRelationshipType other)
         {
-            return Type.Equals(other.Type) && Direction == other.Direction;
+            return Stereotype.Equals(other.Stereotype) && Direction == other.Direction;
         }
 
         public override bool Equals(object obj)
@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.Modeling2
         {
             unchecked
             {
-                return (Type.GetHashCode() * 397) ^ (int) Direction;
+                return (Stereotype.GetHashCode() * 397) ^ (int) Direction;
             }
         }
 

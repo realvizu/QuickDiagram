@@ -179,7 +179,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 })
                 .Distinct().ToArray();
 
-            foreach (var relationship in CurrentRoslynModel.RoslynRelationships.OfType<ModelRelationshipBase>())
+            foreach (var relationship in CurrentRoslynModel.RoslynRelationships)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -238,31 +238,31 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        private IRoslynRelationship GetOrAddRelationship(RelatedSymbolPair relatedSymbolPair)
+        private IModelRelationship GetOrAddRelationship(RelatedSymbolPair relatedSymbolPair)
         {
             var sourceNode = CurrentRoslynModel.GetNodeBySymbol(relatedSymbolPair.SourceSymbol);
             var targetNode = CurrentRoslynModel.GetNodeBySymbol(relatedSymbolPair.TargetSymbol);
 
-            var relationship = CurrentRoslynModel.GetRelationship(sourceNode, targetNode, relatedSymbolPair.Type);
+            var relationship = CurrentRoslynModel.GetRelationship(sourceNode, targetNode, relatedSymbolPair.Stereotype);
             if (relationship != null)
                 return relationship;
 
-            var newRelationship = CreateRoslynRelationship(sourceNode, targetNode, relatedSymbolPair.Type);
+            var newRelationship = CreateRoslynRelationship(sourceNode, targetNode, relatedSymbolPair.Stereotype);
             AddRelationship(newRelationship);
             return newRelationship;
         }
 
-        private static RoslynRelationshipBase CreateRoslynRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, Type relationshipType)
+        private static ModelRelationshipBase CreateRoslynRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
         {
             var id = ModelItemId.Create();
 
-            if (relationshipType == typeof(InheritanceRelationship))
+            if (stereotype == RoslynModelRelationshipStereotype.Inheritance)
                 return new InheritanceRelationship(id, sourceNode, targetNode);
 
-            if (relationshipType == typeof(ImplementsRelationship))
-                return new ImplementsRelationship(id, sourceNode, targetNode);
+            if (stereotype == RoslynModelRelationshipStereotype.Implementation)
+                return new ImplementationRelationship(id, sourceNode, targetNode);
 
-            throw new InvalidOperationException($"Unexpected relationship type {relationshipType.Name}");
+            throw new InvalidOperationException($"Unexpected relationship type {stereotype.Name}");
         }
 
         private static bool IsHidden(ISymbol roslynSymbol)

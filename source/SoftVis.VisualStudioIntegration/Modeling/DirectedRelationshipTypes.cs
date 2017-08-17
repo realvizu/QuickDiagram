@@ -8,16 +8,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     public static class DirectedRelationshipTypes
     {
         public static readonly DirectedModelRelationshipType BaseType = 
-            new DirectedModelRelationshipType(typeof(IInheritanceRelationship), RelationshipDirection.Outgoing);
+            new DirectedModelRelationshipType(RoslynModelRelationshipStereotype.Inheritance, RelationshipDirection.Outgoing);
 
         public static readonly DirectedModelRelationshipType Subtype =
-            new DirectedModelRelationshipType(typeof(IInheritanceRelationship), RelationshipDirection.Incoming);
+            new DirectedModelRelationshipType(RoslynModelRelationshipStereotype.Inheritance, RelationshipDirection.Incoming);
 
         public static readonly DirectedModelRelationshipType ImplementedInterface =
-            new DirectedModelRelationshipType(typeof(IImplementationRelationship), RelationshipDirection.Outgoing);
+            new DirectedModelRelationshipType(RoslynModelRelationshipStereotype.Implementation, RelationshipDirection.Outgoing);
 
         public static readonly DirectedModelRelationshipType ImplementerType =
-            new DirectedModelRelationshipType(typeof(IImplementationRelationship), RelationshipDirection.Incoming);
+            new DirectedModelRelationshipType(RoslynModelRelationshipStereotype.Implementation, RelationshipDirection.Incoming);
 
     }
 }

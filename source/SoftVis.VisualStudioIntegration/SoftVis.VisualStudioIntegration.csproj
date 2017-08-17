@@ -125,19 +125,15 @@
     <Compile Include="Hosting\CommandRegistration\CommandSpecification.cs" />
     <Compile Include="Hosting\ShellCommands.cs" />
     <Compile Include="Modeling\DirectedRelationshipTypes.cs" />
-    <Compile Include="Modeling\IImplementationRelationship.cs" />
     <Compile Include="Modeling\Implementation\RoslynModelNode.cs" />
-    <Compile Include="Modeling\Implementation\RoslynRelationshipBase.cs" />
-    <Compile Include="Modeling\IInheritanceRelationship.cs" />
     <Compile Include="Modeling\IRoslynTypeNode.cs" />
-    <Compile Include="Modeling\IRoslynRelationship.cs" />
-    <Compile Include="Modeling\Implementation\ImplementsRelationship.cs" />
+    <Compile Include="Modeling\Implementation\ImplementationRelationship.cs" />
     <Compile Include="Modeling\Implementation\InheritanceRelationship.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelFactory.cs" />
     <Compile Include="Modeling\Implementation\RoslynBasedModelUpdater.cs" />
-    <Compile Include="Modeling\RelationshipStereotype.cs" />
     <Compile Include="Modeling\RelatedSymbolPair.cs" />
-    <Compile Include="Modeling\NodeStereotype.cs" />
+    <Compile Include="Modeling\RoslynModelNodeStereotype.cs" />
+    <Compile Include="Modeling\RoslynModelRelationshipStereotype.cs" />
     <Compile Include="SoftVisPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,5 +1,4 @@
-﻿using System;
-using Codartis.SoftVis.Modeling2;
+﻿using Codartis.SoftVis.Modeling2;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -32,7 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             DirectedRelationshipType = directedRelationshipType;
         }
 
-        public Type Type => DirectedRelationshipType.Type;
+        public ModelRelationshipStereotype Stereotype => DirectedRelationshipType.Stereotype;
 
         /// <summary>
         /// The roslyn symbol that is on the source side of the directed relationship.
@@ -55,7 +54,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         public bool Matches(IModelRelationship relationship)
         {
-            return relationship.GetType() == Type
+            return relationship.Stereotype == Stereotype
                    && ((IRoslynModelNode) relationship.Source).SymbolEquals(SourceSymbol)
                    && ((IRoslynModelNode) relationship.Target).SymbolEquals(TargetSymbol);
         }

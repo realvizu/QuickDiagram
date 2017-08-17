@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
+using Codartis.SoftVis.Modeling2;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stereotype = (NodeStereotype)value;
+            var stereotype = (ModelNodeStereotype)value;
             return ResourceHelpers.CreateUri(StereotypeToVisualPropertyMaps.StereotypeToImagePathMap[stereotype], Assembly.GetExecutingAssembly());
         }
 

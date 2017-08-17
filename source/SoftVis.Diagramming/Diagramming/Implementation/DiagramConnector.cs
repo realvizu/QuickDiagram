@@ -18,7 +18,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IModelRelationship ModelRelationship { get; }
         public IDiagramNode Source { get; }
         public IDiagramNode Target { get; }
-        public string RelationshipType { get; }
         public ConnectorType ConnectorType { get; }
 
         public event Action<IDiagramConnector, Route, Route> RouteChanged;
@@ -29,7 +28,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ModelRelationship = relationship;
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
-            RelationshipType = relationship.GetType().Name;
             ConnectorType = connectorType;
         }
 
@@ -61,6 +59,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return rectUnion;
         }
 
-        public override string ToString() => Source + "---" + RelationshipType + "-->" + Target;
+        public override string ToString() => Source + "---" + ModelRelationship.Stereotype + "-->" + Target;
     }
 }

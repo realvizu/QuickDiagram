@@ -11,6 +11,7 @@ namespace Codartis.SoftVis.TestHostApp.UI
     internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
         public TypeDiagramNode TypeDiagramNode { get; }
+        public string Stereotype { get; }
 
         public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode diagramNode)
             : this(diagram,  diagramNode, Size.Empty, PointExtensions.Undefined, PointExtensions.Undefined)
@@ -21,6 +22,7 @@ namespace Codartis.SoftVis.TestHostApp.UI
             : base(diagram, diagramNode, size, center, topLeft)
         {
             TypeDiagramNode = diagramNode;
+            Stereotype = $"<<{diagramNode.TypeNodeBase.Stereotype.Name.ToLower()}>>";
         }
 
         public override object Clone()

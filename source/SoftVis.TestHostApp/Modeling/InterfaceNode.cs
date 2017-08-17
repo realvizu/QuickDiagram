@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     internal class InterfaceNode : TypeNodeBase
     {
         public InterfaceNode(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
-            : base(id, name, origin, isAbstract)
+            : base(id, name, TestModelNodeStereotype.Interface, origin, isAbstract)
         {
         }
 

@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     internal class RoslynInterfaceNode : RoslynTypeNode
     {
         internal RoslynInterfaceNode(ModelItemId id, INamedTypeSymbol namedTypeSymbol)
-            : base(id, namedTypeSymbol, NodeStereotype.Interface)
+            : base(id, namedTypeSymbol, RoslynModelNodeStereotype.Interface)
         {
         }
 

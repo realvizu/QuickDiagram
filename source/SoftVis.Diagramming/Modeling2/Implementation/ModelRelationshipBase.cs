@@ -18,34 +18,49 @@ namespace Codartis.SoftVis.Modeling2.Implementation
         public ModelItemId Id { get; }
         public IModelNode Source { get; }
         public IModelNode Target { get; }
+        public ModelRelationshipStereotype Stereotype { get; }
 
-        protected ModelRelationshipBase(ModelItemId id, IModelNode source, IModelNode target)
+        protected ModelRelationshipBase(ModelItemId id, IModelNode source, IModelNode target, ModelRelationshipStereotype stereotype)
         {
             Id = id;
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
+            Stereotype = stereotype ?? throw new ArgumentNullException(nameof(stereotype));
 
             ValidateSourceAndTargetTypes(source, target);
         }
 
-        public override string ToString() => $"{Source.Name}--{GetType().Name}-->{Target.Name} [{Id}]";
+        public override string ToString() => $"{Source.Name}--{Stereotype}-->{Target.Name} [{Id}]";
 
-        public bool IsNodeInRelationship(IModelNode modelNode, RelationshipDirection direction)
+        /// <summary>
+        /// Evaluates whether a given node participates in this relationship with the given type and direction.
+        /// </summary>
+        /// <param name="modelNode">A model node.</param>
+        /// <param name="directedModelRelationshipType">A relationship type with direction.</param>
+        /// <returns>True if the given node participates in this relationship on the side specified by the given direction.</returns>
+        public bool IsNodeInRelationship(IModelNode modelNode, DirectedModelRelationshipType directedModelRelationshipType)
         {
-            return (direction == RelationshipDirection.Outgoing && modelNode.Equals(Source))
-                || (direction == RelationshipDirection.Incoming && modelNode.Equals(Target));
+            if (Stereotype != directedModelRelationshipType.Stereotype)
+                return false;
+
+            switch (directedModelRelationshipType.Direction)
+            {
+                case RelationshipDirection.Outgoing: return modelNode.Equals(Source);
+                case RelationshipDirection.Incoming: return modelNode.Equals(Target);
+                default: throw new ArgumentException($"Unexpected RelationshipDirection: {directedModelRelationshipType.Direction}");
+            }
         }
 
         /// <summary>
         /// Returns all valid source node type - target node type pairs.
         /// </summary>
         /// <returns>A collection of valid source and target node type pairs.</returns>
-        protected abstract IEnumerable<(Type, Type)> GetValidSourceAndTargetNodeTypePairs();
+        protected abstract IEnumerable<(ModelNodeStereotype, ModelNodeStereotype)> GetValidSourceAndTargetNodeTypePairs();
 
         private void ValidateSourceAndTargetTypes(IModelNode source, IModelNode target)
         {
-            if (!GetValidSourceAndTargetNodeTypePairs().Contains((source.GetType(), target.GetType())))
-                throw new ArgumentException($"{source.GetType().Name} and {target.GetType().Name} can not be in {GetType().Name} relationship.");
+            if (!GetValidSourceAndTargetNodeTypePairs().Contains((source.Stereotype, target.Stereotype)))
+                throw new ArgumentException($"{source.Stereotype} and {target.Stereotype} can not be in {Stereotype} relationship.");
         }
     }
 }

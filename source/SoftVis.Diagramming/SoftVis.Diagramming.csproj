@@ -104,9 +104,11 @@
     <Compile Include="Modeling2\DirectedModelRelationshipType.cs" />
     <Compile Include="Modeling2\Implementation\IImmutableModelFactory.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModelFactory.cs" />
+    <Compile Include="Modeling2\ModelRelationshipStereotype.cs" />
+    <Compile Include="Modeling2\ModelNodeStereotype.cs" />
     <Compile Include="Modeling2\RelationshipDirection.cs" />
     <Compile Include="Modeling2\IModelItem.cs" />
-    <Compile Include="Modeling2\Implementation\ImmutableModelNodeBase.cs" />
+    <Compile Include="Modeling2\Implementation\ModelNodeBase.cs" />
     <Compile Include="Modeling2\Implementation\ImmutableModelGraph.cs" />
     <Compile Include="Modeling2\Implementation\ModelRelationshipBase.cs" />
     <Compile Include="Modeling2\INotifyModelChanged.cs" />

@@ -1,4 +1,3 @@
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling

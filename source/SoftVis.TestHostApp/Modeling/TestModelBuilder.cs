@@ -84,7 +84,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         private void AddImplements(IModelNode node, IModelNode baseNode)
         {
-            var relationship = new ImplementsRelationship(ModelItemId.Create(), node, baseNode);
+            var relationship = new ImplementationRelationship(ModelItemId.Create(), node, baseNode);
             AddRelationship(relationship);
         }
 

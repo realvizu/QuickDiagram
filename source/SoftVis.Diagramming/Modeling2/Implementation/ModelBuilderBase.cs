@@ -33,21 +33,21 @@ namespace Codartis.SoftVis.Modeling2.Implementation
             return _currentModel;
         }
 
-        protected IModel AddNode(ImmutableModelNodeBase node, ImmutableModelNodeBase parentNode = null)
+        protected IModel AddNode(ModelNodeBase node, ModelNodeBase parentNode = null)
         {
             _currentModel = _currentModel.AddNode(node, parentNode);
             NodeAdded?.Invoke(node, _currentModel);
             return _currentModel;
         }
 
-        protected IModel RemoveNode(ImmutableModelNodeBase node)
+        protected IModel RemoveNode(ModelNodeBase node)
         {
             _currentModel = _currentModel.RemoveNode(node);
             NodeRemoved?.Invoke(node, _currentModel);
             return _currentModel;
         }
 
-        protected IModel UpdateNode(ImmutableModelNodeBase oldNode, ImmutableModelNodeBase newNode)
+        protected IModel UpdateNode(ModelNodeBase oldNode, ModelNodeBase newNode)
         {
             _currentModel = _currentModel.UpdateNode(oldNode, newNode);
             NodeUpdated?.Invoke(oldNode, newNode, _currentModel);

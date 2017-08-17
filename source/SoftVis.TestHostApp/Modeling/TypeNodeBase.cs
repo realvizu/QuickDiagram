@@ -3,12 +3,12 @@ using Codartis.SoftVis.Modeling2.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal abstract class TypeNodeBase : ImmutableModelNodeBase
+    internal abstract class TypeNodeBase : ModelNodeBase
     {
         public bool IsAbstract { get; }
 
-        protected TypeNodeBase(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
-            : base(id, name, origin)
+        protected TypeNodeBase(ModelItemId id, string name, ModelNodeStereotype stereotype, ModelOrigin origin, bool isAbstract)
+            : base(id, name, stereotype, origin)
         {
             IsAbstract = isAbstract;
         }
