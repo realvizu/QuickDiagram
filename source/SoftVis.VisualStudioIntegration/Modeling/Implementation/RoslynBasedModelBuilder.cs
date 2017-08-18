@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             };
 
         internal RoslynBasedModelBuilder(IRoslynModelProvider roslynModelProvider)
-            : base(new RoslynBasedModelFactory())
+            : base(new RoslynBasedModel())
         {
             _roslynModelProvider = roslynModelProvider;
 
@@ -133,7 +132,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     RemoveNode(roslynTypeNode);
                 else
                 {
-                    var updatedNode = CreateModelNode(newVersionOfSymbol, roslynTypeNode.Id);
+                    var updatedNode = RoslynModelItemFactory.CreateModelNode(newVersionOfSymbol, roslynTypeNode.Id);
                     UpdateNode(roslynTypeNode, updatedNode);
                 }
 
@@ -219,34 +218,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             if (node != null)
                 return node;
 
-            var newNode = CreateModelNode(symbol);
+            var newNode = RoslynModelItemFactory.CreateModelNode(symbol);
             AddNode(newNode);
             return newNode;
-        }
-
-        private static RoslynModelNode CreateModelNode(ISymbol symbol, ModelItemId? idOfPreviousVersion = null)
-        {
-            var namedTypeSymbol = symbol as INamedTypeSymbol;
-            if (namedTypeSymbol == null)
-                throw new NotImplementedException($"CreateModelNode for {symbol.GetType().Name} is not implemented.");
-
-            var id = idOfPreviousVersion ?? ModelItemId.Create();
-
-            switch (namedTypeSymbol.TypeKind)
-            {
-                case TypeKind.Class:
-                    return new RoslynClassNode(id, namedTypeSymbol);
-                case TypeKind.Interface:
-                    return new RoslynInterfaceNode(id, namedTypeSymbol);
-                case TypeKind.Struct:
-                    return new RoslynStructNode(id, namedTypeSymbol);
-                case TypeKind.Enum:
-                    return new RoslynEnumNode(id, namedTypeSymbol);
-                case TypeKind.Delegate:
-                    return new RoslynDelegateNode(id, namedTypeSymbol);
-                default:
-                    throw new Exception($"Unexpected TypeKind: {namedTypeSymbol.TypeKind}");
-            }
         }
 
         private IModelRelationship GetOrAddRelationship(RelatedSymbolPair relatedSymbolPair)
@@ -258,22 +232,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             if (relationship != null)
                 return relationship;
 
-            var newRelationship = CreateRoslynRelationship(sourceNode, targetNode, relatedSymbolPair.Stereotype);
+            var newRelationship = RoslynModelItemFactory.CreateRoslynRelationship(sourceNode, targetNode, relatedSymbolPair.Stereotype);
             AddRelationship(newRelationship);
             return newRelationship;
-        }
-
-        private static ModelRelationshipBase CreateRoslynRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
-        {
-            var id = ModelItemId.Create();
-
-            if (stereotype == RoslynModelRelationshipStereotype.Inheritance)
-                return new InheritanceRelationship(id, sourceNode, targetNode);
-
-            if (stereotype == RoslynModelRelationshipStereotype.Implementation)
-                return new ImplementationRelationship(id, sourceNode, targetNode);
-
-            throw new InvalidOperationException($"Unexpected relationship type {stereotype.Name}");
         }
 
         private static bool IsHidden(ISymbol roslynSymbol)

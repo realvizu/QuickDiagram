@@ -53,28 +53,31 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 recursive);
         }
 
+        public ImmutableModel Clear() =>
+            WithGraph(new ImmutableModelGraph());
+
         // TODO: implement node hierarchy
         public ImmutableModel AddNode(ModelNodeBase node, ModelNodeBase parentNode = null) => 
-            CreateClone(_graph.AddVertex(node));
+            WithGraph(_graph.AddVertex(node));
 
         public ImmutableModel RemoveNode(ModelNodeBase node) =>
-            CreateClone(_graph.RemoveVertex(node));
+            WithGraph(_graph.RemoveVertex(node));
 
         public ImmutableModel AddRelationship(ModelRelationshipBase relationship) =>
-            CreateClone(_graph.AddEdge(relationship));
+            WithGraph(_graph.AddEdge(relationship));
 
         public ImmutableModel RemoveRelationship(ModelRelationshipBase relationship) =>
-            CreateClone(_graph.RemoveEdge(relationship));
+            WithGraph(_graph.RemoveEdge(relationship));
 
         public ImmutableModel UpdateNode(ModelNodeBase oldNode, ModelNodeBase newNode)
         {
             if (oldNode.Id != newNode.Id)
                 throw new InvalidOperationException($"Cannot update node with id {oldNode.Id} to node with id {newNode.Id}");
 
-            return CreateClone(_graph.ReplaceVertex(oldNode, newNode));
+            return WithGraph(_graph.ReplaceVertex(oldNode, newNode));
         }
 
-        protected virtual ImmutableModel CreateClone(ImmutableModelGraph graph) => 
+        protected virtual ImmutableModel WithGraph(ImmutableModelGraph graph) => 
             new ImmutableModel(graph);
     }
 }

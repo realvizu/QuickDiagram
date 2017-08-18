@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return RoslynRelationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
         }
 
-        protected override ImmutableModel CreateClone(ImmutableModelGraph graph) =>
+        protected override ImmutableModel WithGraph(ImmutableModelGraph graph) =>
             new RoslynBasedModel(graph);
     }
 }

@@ -102,8 +102,6 @@
     <Compile Include="Graphs\RemoveVertexResult.cs" />
     <Compile Include="Graphs\ImmutableBidirectionalGraph.cs" />
     <Compile Include="Modeling\DirectedModelRelationshipType.cs" />
-    <Compile Include="Modeling\Implementation\IImmutableModelFactory.cs" />
-    <Compile Include="Modeling\Implementation\ImmutableModelFactory.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
     <Compile Include="Modeling\ModelNodeStereotype.cs" />
     <Compile Include="Modeling\RelationshipDirection.cs" />

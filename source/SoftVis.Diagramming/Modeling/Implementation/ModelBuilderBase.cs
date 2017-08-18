@@ -8,7 +8,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// </summary>
     public abstract class ModelBuilderBase : IModelBuilder
     {
-        private readonly IImmutableModelFactory _modelFactory;
         private ImmutableModel _currentModel;
 
         public event Action<IModelNode, IModel> NodeAdded;
@@ -18,17 +17,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public event Action<IModelRelationship, IModel> RelationshipRemoved;
         public event Action<IModel> ModelCleared;
 
-        protected ModelBuilderBase(IImmutableModelFactory modelFactory)
+        protected ModelBuilderBase(ImmutableModel model)
         {
-            _modelFactory = modelFactory ?? throw new ArgumentNullException(nameof(modelFactory));
-            _currentModel = _modelFactory.CreateModel();
+            _currentModel = model ?? throw new ArgumentNullException(nameof(model));
         }
 
         public IModel CurrentModel => _currentModel;
 
         public IModel ClearModel()
         {
-            _currentModel = _modelFactory.CreateModel();
+            _currentModel = _currentModel.Clear();
             ModelCleared?.Invoke(_currentModel);
             return _currentModel;
         }
