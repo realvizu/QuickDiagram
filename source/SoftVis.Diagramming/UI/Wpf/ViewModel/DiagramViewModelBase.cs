@@ -17,6 +17,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram = diagram;
         }
 
-        protected IReadOnlyModel Model => Diagram.Model;
+        protected INotifyModelChanged Model => Diagram.ModelBuilder;
     }
 }

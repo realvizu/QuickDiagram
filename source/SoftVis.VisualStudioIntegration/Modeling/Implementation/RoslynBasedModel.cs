@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
@@ -9,71 +8,50 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// A model created from Roslyn symbols.
+    /// A model created from Roslyn symbols. Immutable.
     /// </summary>
-    internal class RoslynBasedModel : Model
+    internal class RoslynBasedModel : ImmutableModel
     {
-        public IReadOnlyList<IRoslynBasedModelEntity> RoslynBasedEntities => Entities.OfType<IRoslynBasedModelEntity>().ToArray();
-
-        public override IEnumerable<ModelEntityStereotype> GetModelEntityStereotypes()
+        public RoslynBasedModel()
         {
-            foreach (var modelEntityStereotype in base.GetModelEntityStereotypes())
-                yield return modelEntityStereotype;
-
-            yield return ModelEntityStereotypes.Class;
-            yield return ModelEntityStereotypes.Interface;
-            yield return ModelEntityStereotypes.Struct;
-            yield return ModelEntityStereotypes.Enum;
-            yield return ModelEntityStereotypes.Delegate;
         }
 
-        public override IEnumerable<ModelRelationshipStereotype> GetModelRelationshipStereotypes()
+        private RoslynBasedModel(ImmutableModelGraph graph) 
+            : base(graph)
         {
-            foreach (var modelRelationshipStereotype in base.GetModelRelationshipStereotypes())
-                yield return modelRelationshipStereotype;
-
-            yield return ModelRelationshipStereotypes.Implementation;
         }
 
-        public IRoslynBasedModelEntity GetOrAddEntity(Func<IRoslynBasedModelEntity, bool> entityPredicate, Func<IRoslynBasedModelEntity> createEntityFunc)
+        public IEnumerable<RoslynModelNode> RoslynModelNodes => Nodes.OfType<RoslynModelNode>();
+        public IEnumerable<ModelRelationshipBase> RoslynRelationships => Relationships.OfType<ModelRelationshipBase>();
+
+        public IRoslynModelNode GetNodeBySymbol(ISymbol symbol)
         {
-            return base.GetOrAddEntity(i => entityPredicate((IRoslynBasedModelEntity) i), createEntityFunc) as IRoslynBasedModelEntity;
+            return RoslynModelNodes.FirstOrDefault(i => i.SymbolEquals(symbol));
         }
 
-        public IRoslynBasedModelEntity GetOrAddEntity(INamedTypeSymbol roslynSymbol, Func<IRoslynBasedModelEntity> createEntityFunc)
-        {
-            return this.GetOrAddEntity(i => i.SymbolEquals(roslynSymbol), createEntityFunc);
-        }
-
-        public IRoslynBasedModelEntity GetEntityBySymbol(INamedTypeSymbol namedTypeSymbol)
-        {
-            return RoslynBasedEntities.FirstOrDefault(i => i.SymbolEquals(namedTypeSymbol));
-        }
-
-        public IRoslynBasedModelEntity GetEntityByLocation(Location location)
+        public IRoslynModelNode GetNodeByLocation(Location location)
         {
             if (location == null)
                 return null;
 
             var fileLinePositionSpan = location.GetMappedLineSpan();
 
-            foreach (var roslynBasedModelEntity in RoslynBasedEntities)
+            foreach (var roslynModelNode in RoslynModelNodes)
             {
-                var entityLocation = roslynBasedModelEntity.RoslynSymbol?.Locations.FirstOrDefault()?.GetMappedLineSpan();
-                if (entityLocation != null && entityLocation.Value.Overlaps(fileLinePositionSpan))
-                    return roslynBasedModelEntity;
+                var nodeLocation = roslynModelNode.RoslynSymbol?.Locations.FirstOrDefault()?.GetMappedLineSpan();
+                if (nodeLocation != null && nodeLocation.Value.Overlaps(fileLinePositionSpan))
+                    return roslynModelNode;
             }
 
             return null;
         }
 
-        public void UpdateEntity(IRoslynBasedModelEntity entity, INamedTypeSymbol roslynSymbol)
+        public IModelRelationship GetRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
         {
-            entity.RoslynSymbol = roslynSymbol;
-            base.UpdateEntity(entity, 
-                roslynSymbol.GetName(), 
-                roslynSymbol.GetFullName(),
-                roslynSymbol.GetDescription());
+            return RoslynRelationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
         }
+
+        protected override ImmutableModel CreateClone(ImmutableModelGraph graph) =>
+            new RoslynBasedModel(graph);
     }
 }

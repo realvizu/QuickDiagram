@@ -18,7 +18,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DiagramNodeButtonDataTemplates.xaml" />
+                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -26,10 +26,10 @@
             <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                                          ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                                         FocusRequestedCommand="{Binding Path=DataContext.DecorationManager.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
+                                         FocusRequestedCommand="{Binding Path=DataContext.MiniButtonPanelViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowSourceCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}"
@@ -56,7 +56,7 @@
 
             <Style x:Key="DiagramNodeItemContainerStyle"
                    TargetType="{x:Type controls:AnimatedRectContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
                 <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}"/>
@@ -106,20 +106,20 @@
                     SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
             </ItemsPanelTemplate>
 
-            <Size x:Key="DiagramButtonSize" Width="16" Height="16"/>
+            <Size x:Key="MiniButtonSize" Width="16" Height="16"/>
 
-            <Style x:Key="DiagramNodeButtonItemContainerStyle" 
+            <Style x:Key="MiniButtonItemContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramShapeButtonViewModelBase}}">
-                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}"/>
-                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"/>
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:MiniButtonViewModelBase}}">
+                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource MiniButtonSize}}"/>
+                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource MiniButtonSize}}"/>
                 <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <view:DiagramButtonControl 
-                                Width="{Binding Path=Width, Source={StaticResource DiagramButtonSize}}" 
-                                Height="{Binding Path=Height, Source={StaticResource DiagramButtonSize}}"
+                            <view:MiniButtonControl 
+                                Width="{Binding Path=Width, Source={StaticResource MiniButtonSize}}" 
+                                Height="{Binding Path=Height, Source={StaticResource MiniButtonSize}}"
                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="{Binding Name}"
                                 MouseClickCommand="{Binding ClickCommand}"
@@ -129,10 +129,10 @@
                 </Setter>
             </Style>
 
-            <ItemsPanelTemplate x:Key="DiagramNodeButtonItemsPanel">
+            <ItemsPanelTemplate x:Key="MiniButtonItemsPanel">
                 <view:DiagramCanvasChildDecoratorPanel 
                     DecoratedElement="{Binding Path=DecoratedDiagramNodeControl, ElementName=ThisControl}"
-                    PlacementDictionary="{Binding DiagramShapeButtonPlacementDictionary, 
+                    PlacementDictionary="{Binding MiniButtonPlacementDictionary, 
                         RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}"/>
             </ItemsPanelTemplate>
 
@@ -149,9 +149,10 @@
                                       ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
                                       ItemContainerStyle="{StaticResource DiagramNodeItemContainerStyle}"/>
 
-        <ItemsControl ItemsSource="{Binding DiagramNodeButtonViewModels}" 
-                      ItemsPanel="{StaticResource DiagramNodeButtonItemsPanel}"
-                      ItemContainerStyle="{StaticResource DiagramNodeButtonItemContainerStyle}"
+        <ItemsControl DataContext="{Binding MiniButtonPanelViewModel}"
+                      ItemsSource="{Binding ButtonViewModels}" 
+                      ItemsPanel="{StaticResource MiniButtonItemsPanel}"
+                      ItemContainerStyle="{StaticResource MiniButtonItemContainerStyle}"
                       Background="{x:Null}" />
 
         <view:PanAndZoomControl Focusable="False"

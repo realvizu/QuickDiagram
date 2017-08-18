@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -17,51 +16,35 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private readonly IModelServices _modelServices;
 
         public RoslynBasedDiagram(IModelServices modelServices)
-            : base(modelServices.Model)
+            : base(modelServices, new RoslynDiagramBuilder(), new RoslynDiagramNodeFactory())
         {
             _modelServices = modelServices;
         }
 
-        public override IEnumerable<EntityRelationType> GetEntityRelationTypes()
+        public IDiagramNode ShowModelNode(IRoslynModelNode modelNode)
         {
-            foreach (var entityRelationType in base.GetEntityRelationTypes())
-                yield return entityRelationType;
-
-            yield return RoslynEntityRelationTypes.ImplementedInterface;
-            yield return RoslynEntityRelationTypes.ImplementerType;
+            return ShowModelItem(modelNode) as IDiagramNode;
         }
 
-        public override ConnectorType GetConnectorType(ModelRelationshipType type)
+        public IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IRoslynModelNode> modelNodes, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return type.Stereotype == ModelRelationshipStereotypes.Implementation
-                ? RoslynBasedConnectorTypes.Implementation
-                : ConnectorTypes.Generalization;
+            return ShowModelItems(modelNodes, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
         }
 
-        public IDiagramNode ShowEntity(IModelEntity modelEntity)
+        public IReadOnlyList<IDiagramNode> ShowModelNodeWithHierarchy(IRoslynModelNode modelNode, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return ShowModelItem(modelEntity) as IDiagramNode;
-        }
+            var baseTypes = _modelServices.CurrentModel.GetRelatedNodes(modelNode.Id, DirectedRelationshipTypes.BaseType, recursive: true);
+            var subtypes = _modelServices.CurrentModel.GetRelatedNodes(modelNode.Id, DirectedRelationshipTypes.Subtype, recursive: true);
+            var entities = new[] { modelNode }.Union(baseTypes).Union(subtypes);
 
-        public IReadOnlyList<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress)
-        {
-            return ShowModelItems(modelEntities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
-        }
-
-        public IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
-        {
-            var baseTypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.BaseType, recursive: true);
-            var subtypes = Model.GetRelatedEntities(modelEntity, EntityRelationTypes.Subtype, recursive: true);
-            var entities = new[] { modelEntity }.Union(baseTypes).Union(subtypes);
-
-             return ShowModelItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
+            return ShowModelItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
         }
 
         public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             foreach (var diagramNode in Nodes)
             {
-                _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity, cancellationToken: cancellationToken);
+                _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelNode, cancellationToken: cancellationToken);
                 progress?.Report(1);
             }
         }

@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// <summary>
     /// These are the application services that the application commands can use.
     /// </summary>
-    public interface IAppServices
+    internal interface IAppServices
     {
         IModelServices ModelServices { get; }
         IDiagramServices DiagramServices { get; }

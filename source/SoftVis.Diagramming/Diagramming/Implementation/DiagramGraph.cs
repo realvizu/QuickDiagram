@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// The graph formed by the nodes and connectors of a diagram.
     /// </summary>
-    internal sealed class DiagramGraph : ConcurrentBidirectionalGraph<DiagramNode, DiagramConnector>
+    internal sealed class DiagramGraph : ConcurrentBidirectionalGraph<IDiagramNode, DiagramConnector>
     {
         public DiagramGraph() 
             : base(allowParallelEdges: false)
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         /// <param name="target">Target node of the path.</param>
         /// <param name="pathCount">The max. number of paths to be returned.</param>
         /// <returns>The shortest paths between two nodes.</returns>
-        public IEnumerable<DiagramPath> GetShortestPaths(DiagramNode source, DiagramNode target, int pathCount)
+        public IEnumerable<DiagramPath> GetShortestPaths(IDiagramNode source, IDiagramNode target, int pathCount)
         {
             lock (SyncRoot)
             {

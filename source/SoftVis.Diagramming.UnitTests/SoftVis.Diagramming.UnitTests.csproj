@@ -59,7 +59,14 @@
       <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -105,7 +112,7 @@
     <Compile Include="TestSubjects\TestDummyLayoutVertex.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Builders\QuasiProperLayoutGraphBuilder.cs" />
     <Compile Include="TestSubjects\TestLayoutVertex.cs" />
-    <Compile Include="TestSubjects\TestModelEntity.cs" />
+    <Compile Include="TestSubjects\TestModelNode.cs" />
     <Compile Include="Graphs\ConcurrentBidirectionalGraphTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

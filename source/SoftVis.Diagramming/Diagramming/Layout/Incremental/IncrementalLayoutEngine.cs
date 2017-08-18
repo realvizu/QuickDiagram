@@ -68,7 +68,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             if (_diagramNodeToLayoutVertexMap.Contains(diagramNode))
                 throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
 
-            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNode.Priority);
+            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNode.LayoutPriority);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
             _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);

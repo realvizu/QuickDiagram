@@ -13,5 +13,7 @@ namespace Codartis.SoftVis.Diagramming
 
         bool IsRectDefined { get; }
         Rect2D Rect { get; }
+
+        void Update(IModelItem modelItem);
     }
 }

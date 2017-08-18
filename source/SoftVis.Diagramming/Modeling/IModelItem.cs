@@ -1,10 +1,13 @@
 ﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
-    /// Model items are the basic building blocks of a model.
-    /// Both model entities and model relationships are model items.
+    /// A constituent of a model.
     /// </summary>
     public interface IModelItem
     {
+        /// <summary>
+        /// The Id of a model item does not change during its lifetime.
+        /// </summary>
+        ModelItemId Id { get; }
     }
 }

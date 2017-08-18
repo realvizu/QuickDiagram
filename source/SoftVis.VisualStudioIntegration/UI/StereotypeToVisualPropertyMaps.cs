@@ -13,24 +13,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private const string ImagePathTemplate = "/UI/Images/{0}.png";
 
-        public static readonly Dictionary<ModelEntityStereotype, string> StereotypeToImagePathMap =
-            new Dictionary<ModelEntityStereotype, string>
+        public static readonly Dictionary<ModelNodeStereotype, string> StereotypeToImagePathMap =
+            new Dictionary<ModelNodeStereotype, string>
             {
-                {ModelEntityStereotypes.Class, string.Format(ImagePathTemplate, "Class")},
-                {ModelEntityStereotypes.Interface, string.Format(ImagePathTemplate, "Interface")},
-                {ModelEntityStereotypes.Struct, string.Format(ImagePathTemplate, "Struct")},
-                {ModelEntityStereotypes.Enum, string.Format(ImagePathTemplate, "Enum")},
-                {ModelEntityStereotypes.Delegate, string.Format(ImagePathTemplate, "Delegate")}
+                {ModelNodeStereotype.Class, string.Format(ImagePathTemplate, "Class")},
+                {RoslynModelNodeStereotype.Interface, string.Format(ImagePathTemplate, "Interface")},
+                {RoslynModelNodeStereotype.Struct, string.Format(ImagePathTemplate, "Struct")},
+                {RoslynModelNodeStereotype.Enum, string.Format(ImagePathTemplate, "Enum")},
+                {RoslynModelNodeStereotype.Delegate, string.Format(ImagePathTemplate, "Delegate")}
             };
 
-        public static readonly Dictionary<ModelEntityStereotype, Brush> StereotypeToBackgroundBrushMap =
-            new Dictionary<ModelEntityStereotype, Brush>
+        public static readonly Dictionary<ModelNodeStereotype, Brush> StereotypeToBackgroundBrushMap =
+            new Dictionary<ModelNodeStereotype, Brush>
             {
-                {ModelEntityStereotypes.Class, Color.FromArgb(0xFF, 0xF5, 0xE3, 0xD6).CreateBrushFrozen()},
-                {ModelEntityStereotypes.Interface, Brushes.LightGray},
-                {ModelEntityStereotypes.Struct, Color.FromArgb(0xFF, 0xD1, 0xEA, 0xF3).CreateBrushFrozen()},
-                {ModelEntityStereotypes.Enum, Brushes.Gold},
-                {ModelEntityStereotypes.Delegate, Brushes.Lavender}
+                {ModelNodeStereotype.Class, Color.FromArgb(0xFF, 0xF5, 0xE3, 0xD6).CreateBrushFrozen()},
+                {RoslynModelNodeStereotype.Interface, Brushes.LightGray},
+                {RoslynModelNodeStereotype.Struct, Color.FromArgb(0xFF, 0xD1, 0xEA, 0xF3).CreateBrushFrozen()},
+                {RoslynModelNodeStereotype.Enum, Brushes.Gold},
+                {RoslynModelNodeStereotype.Delegate, Brushes.Lavender}
             };
     }
 }

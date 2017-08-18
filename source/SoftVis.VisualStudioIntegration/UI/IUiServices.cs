@@ -13,12 +13,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// Defines the UI operations of the diagram control.
     /// </summary>
-    public interface IUiServices
+    internal interface IUiServices
     {
         Dpi ImageExportDpi { get; set; }
 
         event Action<IDiagramShape> ShowSourceRequested;
-        event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
+        event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
 
         void ShowDiagramWindow();
         void ShowMessageBox(string message);

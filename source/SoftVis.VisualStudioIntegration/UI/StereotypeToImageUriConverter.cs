@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stereotype = (ModelEntityStereotype)value;
+            var stereotype = (ModelNodeStereotype)value;
             return ResourceHelpers.CreateUri(StereotypeToVisualPropertyMaps.StereotypeToImagePathMap[stereotype], Assembly.GetExecutingAssembly());
         }
 

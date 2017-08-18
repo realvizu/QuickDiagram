@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -18,7 +19,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramShape = diagramShape;
         }
 
-        public void RequestRemove() => RemoveRequested?.Invoke(DiagramShape);
+        public void Remove() => RemoveRequested?.Invoke(DiagramShape);
+
+        public virtual IEnumerable<MiniButtonViewModelBase> CreateMiniButtonViewModels()
+        {
+            yield break;
+        }
 
         public override string ToString() => DiagramShape.ToString();
     }

@@ -16,26 +16,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         // This member cannot be static because it will be bound to UI elements created on different threads.
         private readonly DoubleCollection _dashPattern = new DoubleCollection(new[] { 5d, 5d });
 
-        private readonly ConnectorType _connectorType;
         private Point[] _routePoints;
 
         public IDiagramConnector DiagramConnector { get; }
-        public DiagramNodeViewModel SourceNodeViewModel { get; }
-        public DiagramNodeViewModel TargetNodeViewModel { get; }
+        public DiagramNodeViewModelBase SourceNodeViewModel { get; }
+        public DiagramNodeViewModelBase TargetNodeViewModel { get; }
 
         public DiagramConnectorViewModel(IArrangedDiagram diagram, IDiagramConnector diagramConnector,
-            DiagramNodeViewModel sourceNodeViewModel, DiagramNodeViewModel targetNodeViewModel)
+            DiagramNodeViewModelBase sourceNodeViewModel, DiagramNodeViewModelBase targetNodeViewModel)
             : base(diagram, diagramConnector)
         {
             DiagramConnector = diagramConnector;
             SourceNodeViewModel = sourceNodeViewModel;
             TargetNodeViewModel = targetNodeViewModel;
 
-            _connectorType = Diagram.GetConnectorType(diagramConnector.Type);
             _routePoints = RouteToWpf(diagramConnector.RoutePoints);
 
             DiagramConnector.RouteChanged += OnRouteChanged;
         }
+
 
         public void Dispose()
         {
@@ -50,8 +49,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             };
         }
 
-        public ArrowHeadType ArrowHeadType => _connectorType.ArrowHeadType;
-        private bool IsDashed => _connectorType.ShaftLineType == LineType.Dashed;
+        private ConnectorType ConnectorType => DiagramConnector.ConnectorType;
+        private bool IsDashed => ConnectorType.ShaftLineType == LineType.Dashed;
+        public ArrowHeadType ArrowHeadType => ConnectorType.ArrowHeadType;
         public DoubleCollection StrokeDashArray => IsDashed ? _dashPattern : null;
 
         public Point[] RoutePoints

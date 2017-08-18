@@ -11,13 +11,11 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagramConnector : IDiagramShape
     {
         IModelRelationship ModelRelationship { get; }
-        ModelRelationshipClassifier Classifier { get; }
-        ModelRelationshipStereotype Stereotype { get; }
-        ModelRelationshipType Type { get; }
 
         IDiagramNode Source { get; }
         IDiagramNode Target { get; }
         Route RoutePoints { get; set; }
+        ConnectorType ConnectorType { get; }
 
         event Action<IDiagramConnector, Route, Route> RouteChanged;
     }

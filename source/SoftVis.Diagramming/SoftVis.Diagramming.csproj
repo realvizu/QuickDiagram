@@ -54,7 +54,14 @@
       <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -79,6 +86,8 @@
     <Compile Include="Diagramming\IDiagram.cs" />
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Diagramming\Implementation\AutoArrangingDiagram.cs" />
+    <Compile Include="Diagramming\Implementation\DiagramBuilderBase.cs" />
+    <Compile Include="Diagramming\IDiagramNodeFactory.cs" />
     <Compile Include="Diagramming\Layout\RemoveDiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\AddDiagramConnectorAction.cs" />
     <Compile Include="Diagramming\Layout\ResizeDiagramNodeAction.cs" />
@@ -89,19 +98,39 @@
     <Compile Include="Diagramming\Layout\IDiagramActionConsumer.cs" />
     <Compile Include="Diagramming\Layout\Incremental\DiagramActionDispatcherVisitor.cs" />
     <Compile Include="Graphs\ConcurrentBidirectionalGraph.cs" />
+    <Compile Include="Graphs\IImmutableBidirectionalGraph.cs" />
     <Compile Include="Graphs\RemoveVertexResult.cs" />
-    <Compile Include="Modeling\Implementation\Model.cs" />
-    <Compile Include="Modeling\Implementation\ModelGraph.cs" />
-    <Compile Include="Modeling\ModelRelationshipType.cs" />
-    <Compile Include="Modeling\EntityRelationTypes.cs" />
+    <Compile Include="Graphs\ImmutableBidirectionalGraph.cs" />
+    <Compile Include="Modeling\DirectedModelRelationshipType.cs" />
+    <Compile Include="Modeling\Implementation\IImmutableModelFactory.cs" />
+    <Compile Include="Modeling\Implementation\ImmutableModelFactory.cs" />
+    <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
+    <Compile Include="Modeling\ModelNodeStereotype.cs" />
+    <Compile Include="Modeling\RelationshipDirection.cs" />
+    <Compile Include="Modeling\IModelItem.cs" />
+    <Compile Include="Modeling\Implementation\ModelNodeBase.cs" />
+    <Compile Include="Modeling\Implementation\ImmutableModelGraph.cs" />
+    <Compile Include="Modeling\Implementation\ModelRelationshipBase.cs" />
+    <Compile Include="Modeling\INotifyModelChanged.cs" />
+    <Compile Include="Modeling\IModel.cs" />
+    <Compile Include="Modeling\IModelBuilder.cs" />
+    <Compile Include="Modeling\IModelNode.cs" />
+    <Compile Include="Modeling\IModelRelationship.cs" />
+    <Compile Include="Modeling\Implementation\ImmutableModel.cs" />
+    <Compile Include="Modeling\Implementation\ModelBuilderBase.cs" />
+    <Compile Include="Modeling\ModelItemId.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
+    <Compile Include="UI\Wpf\ViewModel\MiniButtonPanelViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\IDiagramShapeViewModelRepository.cs" />
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeType.cs" />
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeMiniButtonEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewportAutoMoveMode.cs" />
     <Compile Include="UI\Wpf\ViewModel\AutoMoveViewportViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\RelatedEntityListBoxViewModel.cs" />
-    <Compile Include="UI\Wpf\View\DiagramButtonControl.xaml.cs">
-      <DependentUpon>DiagramButtonControl.xaml</DependentUpon>
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeListBoxViewModel.cs" />
+    <Compile Include="UI\Wpf\View\MiniButtonControl.xaml.cs">
+      <DependentUpon>MiniButtonControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramConnectorRouteCalculatorConverter.cs" />
     <Compile Include="UI\Wpf\View\DiagramConnectorItemsControl.cs" />
@@ -112,7 +141,6 @@
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\ModelEntityDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\ZoomDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\VectorDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
@@ -120,13 +148,11 @@
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeDecoratorViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonEventHandler.cs" />
-    <Compile Include="UI\Wpf\ViewModel\RelatedEntityCueViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeCueViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Modeling\EntityRelationType.cs" />
     <Compile Include="Diagramming\Implementation\Diagram.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnector.cs" />
     <Compile Include="Diagramming\Layout\DiagramConnectorAction.cs" />
@@ -202,17 +228,6 @@
     <Compile Include="Geometry\IRect.cs" />
     <Compile Include="Graphs\Layout\EdgeRouting\EdgeRoutingAlgorithm.cs" />
     <Compile Include="Graphs\Path.cs" />
-    <Compile Include="Modeling\IModelItem.cs" />
-    <Compile Include="Modeling\IModelEntity.cs" />
-    <Compile Include="Modeling\IModelRelationship.cs" />
-    <Compile Include="Modeling\EntityRelationDirection.cs" />
-    <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
-    <Compile Include="Modeling\ModelEntityStereotype.cs" />
-    <Compile Include="Modeling\ModelRelationshipClassifier.cs" />
-    <Compile Include="Modeling\ModelEntityClassifier.cs" />
-    <Compile Include="Modeling\IReadOnlyModel.cs" />
-    <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
-    <Compile Include="Modeling\Implementation\ModelEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ScaleCalculator.cs" />
     <Compile Include="UI\Wpf\Size2DExtensions.cs" />
@@ -230,13 +245,13 @@
     <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
     <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
     <Compile Include="UI\PanDirection.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\RelatedNodeMiniButtonViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\CloseMiniButtonViewModel.cs" />
+    <Compile Include="UI\Wpf\ViewModel\MiniButtonViewModelBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactoryBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
     <Compile Include="UI\Wpf\View\ConnectorTypeToGeometryConverter.cs" />
@@ -275,7 +290,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\DiagramButtonControl.xaml">
+    <Page Include="UI\Wpf\View\MiniButtonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -303,7 +318,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeButtonDataTemplates.xaml">
+    <Page Include="UI\Wpf\View\MiniButtonDataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

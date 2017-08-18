@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// Provides diagram UI services. Bundles the diagram control and its view model together.
     /// </summary>
-    public sealed class DiagramUi : IUiServices
+    internal sealed class DiagramUi : IUiServices
     {
         private const string DialogTitle = "Quick Diagram Tool";
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
@@ -32,20 +32,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private readonly IHostUiServices _hostUiServices;
         private readonly ResourceDictionary _resourceDictionary;
-        private readonly DiagramViewModel _diagramViewModel;
+        private readonly RoslynDiagramViewModel _diagramViewModel;
         private readonly DiagramControl _diagramControl;
 
         public Dpi ImageExportDpi { get; set; }
 
         public event Action<IDiagramShape> ShowSourceRequested;
-        public event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
+        public event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
 
         public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
         {
             _hostUiServices = hostUiServices;
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
+            _diagramViewModel = new RoslynDiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1, 
+                initialIsDescriptionVisible: GlobalOptions.NodeDescriptionsVisibleByDefault);
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             hostUiServices.HostDiagram(_diagramControl);

@@ -18,7 +18,7 @@
             <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
             <util:DoubleEnsureNumberConverter x:Key="DoubleEnsureNumberConverter" />
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModel}">
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
                 <view:DiagramNodeCoreControl />
             </DataTemplate>
 
@@ -40,7 +40,7 @@
 
             <Style x:Key="DiagramNodeContainerStyle" 
                    TargetType="{x:Type ContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}">
                 <Setter Property="Width" Value="{Binding Path=Size.Width, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
                 <Setter Property="Height" Value="{Binding Path=Size.Height, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}"/>
                 <Setter Property="Canvas.Left" Value="{Binding Path=TopLeft.X}"/>

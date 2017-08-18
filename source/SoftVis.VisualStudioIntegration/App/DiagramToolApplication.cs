@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// Sets up the model, the diagram, and the commands that implement the application logic.
     /// Provides application services to the commands.
     /// </remarks>
-    public sealed class DiagramToolApplication : IAppServices
+    internal sealed class DiagramToolApplication : IAppServices
     {
         public IModelServices ModelServices { get; }
         public IDiagramServices DiagramServices { get; }
@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (diagramNode == null)
                 return;
 
-            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity);
+            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelNode);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
@@ -70,12 +70,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelEntity> modelEntities)
+        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelNode> modelNodes)
         {
-            if (!modelEntities.Any())
-                return;
+            var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
 
-            await new AddItemsToDiagramCommand(this).ExecuteAsync(modelEntities);
+            if (roslynModelNodes.Any())
+                await new AddItemsToDiagramCommand(this).ExecuteAsync(roslynModelNodes);
         }
     }
 }

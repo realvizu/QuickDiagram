@@ -1,28 +1,27 @@
-﻿using System;
-
-namespace Codartis.SoftVis.Modeling
+﻿namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
-    /// A model relationship is a directed, typed connection between two model entites.
+    /// A relationship is a directed link between two model nodes: a source and a target.
+    /// It also has a stereotype.
     /// </summary>
-    public interface IModelRelationship : IModelItem, IEquatable<IModelRelationship>
+    /// <remarks>
+    /// For bidirectional relationships the model contains two directed relationships.
+    /// </remarks>
+    public interface IModelRelationship : IModelItem
     {
-        IModelEntity Source { get; }
-        IModelEntity Target { get; }
-
         /// <summary>
-        /// Provides a fixed set of relationship categories.
+        /// The relationship starts from this node.
         /// </summary>
-        ModelRelationshipClassifier Classifier { get; }
+        IModelNode Source { get; }
 
         /// <summary>
-        /// Provides an extensible set of relationship categories.
+        /// The relationship points to this node.
+        /// </summary>
+        IModelNode Target { get; }
+
+        /// <summary>
+        /// The type of the relationship.
         /// </summary>
         ModelRelationshipStereotype Stereotype { get; }
-
-        /// <summary>
-        /// Specifies the relationship type (classification + stereotype).
-        /// </summary>
-        ModelRelationshipType Type { get; }
     }
 }

@@ -12,27 +12,39 @@
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/DefaultDecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <ext:Dictionary x:Key="UndisplayedEntityCuePlacementDictionary" 
+    <ext:Dictionary x:Key="RelatedNodeCuePlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
-                    Init="{StaticResource DefaultUndisplayedEntityCuePlacementDictionary}">
+                    Init="{StaticResource DefaultRelatedNodeCuePlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementedInterface}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,0.5"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementerType}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
     </ext:Dictionary>
 
-    <ext:Dictionary x:Key="DiagramShapeButtonPlacementDictionary" 
+    <ext:Dictionary x:Key="MiniButtonPlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
-                    Init="{StaticResource DefaultDiagramShapeButtonPlacementDictionary}">
+                    Init="{StaticResource DefaultMiniButtonPlacementDictionary}">
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementedInterface}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.BaseType}" 
+                                   Vertical="Top" Horizontal="Center" Translate="-9,3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.Subtype}" 
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementedInterface}" 
                                    Vertical="Top" Horizontal="Center" Translate="9,3"/>
 
-        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:RoslynEntityRelationTypes.ImplementerType}" 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
     </ext:Dictionary>
     

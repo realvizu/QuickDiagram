@@ -8,13 +8,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Defines model operations for the application commands package.
     /// </summary>
-    public interface IModelServices
+    internal interface IModelServices : IModelBuilder
     {
-        /// <summary>
-        /// A read-only view of the model.
-        /// </summary>
-        IReadOnlyModel Model { get; }
-
         /// <summary>
         /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
         /// </summary>
@@ -24,32 +19,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <summary>
         /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.
         /// </summary>
-        /// <returns>The model entity that corresponds to the current Roslyn symbol.</returns>
-        Task<IRoslynBasedModelEntity> AddCurrentSymbolAsync();
+        /// <returns>The model node that corresponds to the current Roslyn symbol.</returns>
+        Task<IRoslynModelNode> AddCurrentSymbolAsync();
 
         /// <summary>
-        /// Explores related entities and adds them to the model.
+        /// Explores related nodes and adds them to the model.
         /// </summary>
-        /// <param name="modelEntity">The starting model item.</param>
-        /// <param name="entityRelationType">Optionally specifies what kind of relations should be explored. Null means all relations.</param>
+        /// <param name="modelNode">The starting model node.</param>
+        /// <param name="directedModelRelationshipType">Optionally specifies what kind of relations should be explored. Null means all relations.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
-        /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
-        void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
+        /// <param name="recursive">True means repeat exploring for related node. Default is false.</param>
+        void ExtendModelWithRelatedEntities(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null, 
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
 
         /// <summary>
-        /// Returns a value indicating whether a model entity has source code.
+        /// Returns a value indicating whether a model node has source code.
         /// </summary>
-        /// <param name="modelEntity">A model entity.</param>
-        /// <remarks>True if the model entity has source code, false otherwise.</remarks>
-        bool HasSource(IModelEntity modelEntity);
+        /// <param name="modelNode">A model node.</param>
+        /// <remarks>True if the model node has source code, false otherwise.</remarks>
+        bool HasSource(IModelNode modelNode);
 
         /// <summary>
-        /// Shows the source in the host environment that corresponds to the given model entity.
+        /// Shows the source in the host environment that corresponds to the given model node.
         /// </summary>
-        /// <param name="modelEntity">A model entity.</param>
-        void ShowSource(IModelEntity modelEntity);
+        /// <param name="modelNode">A model node.</param>
+        void ShowSource(IModelNode modelNode);
 
         /// <summary>
         /// Updates the model from the current source code.
@@ -57,10 +52,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
-
-        /// <summary>
-        /// Clears the model.
-        /// </summary>
-        void Clear();
     }
 }

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
     /// <summary>
     /// Defines diagram operations for the application commands package.
     /// </summary>
-    public interface IDiagramServices
+    internal interface IDiagramServices
     {
         IReadOnlyList<IDiagramNode> Nodes { get; }
         IReadOnlyList<IDiagramConnector> Connectors { get; }
@@ -21,9 +21,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         event Action<IDiagramShape> ShapeSelected;
         event Action DiagramCleared;
 
-        IDiagramNode ShowEntity(IModelEntity modelEntity);
-        IReadOnlyList<IDiagramNode> ShowEntities(IEnumerable<IModelEntity> modelEntities, CancellationToken cancellationToken, IIncrementalProgress progress);
-        IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress);
+        IDiagramNode ShowModelNode(IRoslynModelNode modelNode);
+        IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IRoslynModelNode> modelNodes, CancellationToken cancellationToken, IIncrementalProgress progress);
+        IReadOnlyList<IDiagramNode> ShowModelNodeWithHierarchy(IRoslynModelNode modelNode, CancellationToken cancellationToken, IIncrementalProgress progress);
 
         void Clear();
         void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress);

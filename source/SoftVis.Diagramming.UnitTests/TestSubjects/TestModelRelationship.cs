@@ -1,18 +1,24 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using System.Collections.Generic;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
 {
-    internal sealed class TestModelRelationship : ModelRelationship
+    internal sealed class TestModelRelationship : ModelRelationshipBase
     {
-        public TestModelRelationship(IModelEntity source, IModelEntity target)
-            : base(source, target, ModelRelationshipClassifier.Generalization, ModelRelationshipStereotype.None)
+        public TestModelRelationship(IModelNode source, IModelNode target)
+            : base(ModelItemId.Create(), source, target, ModelRelationshipStereotype.Containment)
         {
         }
 
-        public TestModelRelationship() 
+        public TestModelRelationship()
             : this(null, null)
         {
+        }
+
+        protected override IEnumerable<(ModelNodeStereotype, ModelNodeStereotype)> GetValidSourceAndTargetNodeTypePairs()
+        {
+            yield return (ModelNodeStereotype.Class, ModelNodeStereotype.Class);
         }
     }
 }

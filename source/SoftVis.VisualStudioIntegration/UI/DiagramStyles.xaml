@@ -5,9 +5,9 @@
                     mc:Ignorable="d"
                     xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
-                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=SoftVis.Diagramming"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming"
-                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util">
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
@@ -28,8 +28,8 @@
         <Setter Property="DiagramFill" Value="White"/>
         <Setter Property="DiagramStroke" Value="Black"/>
         <Setter Property="PanAndZoomControlHeight" Value="120"/>
-        <Setter Property="UndisplayedEntityCuePlacementDictionary" Value="{StaticResource UndisplayedEntityCuePlacementDictionary}"/>
-        <Setter Property="DiagramShapeButtonPlacementDictionary" Value="{StaticResource DiagramShapeButtonPlacementDictionary}"/>
+        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}"/>
+        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}"/>
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">
@@ -40,15 +40,16 @@
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
-        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
+           d:DataContext="{d:DesignInstance {x:Type viewModel:TypeDiagramNodeViewModel}}">
+        <Setter Property="DiagramFill" Value="{Binding Path=TypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
 
                     <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-							BorderThickness="1">
+							BorderThickness="1"
+                            ToolTip="{Binding Path=FullName}">
                         <StackPanel Orientation="Vertical">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -58,7 +59,7 @@
                                 <Image Grid.Row="0" 
                                    Margin="1" 
                                    HorizontalAlignment="Left" 
-                                   Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
+                                   Source="{Binding Path=TypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
                                 <TextBlock x:Name="TextBlock"
                                        Grid.Row="1" 
                                        Margin="4,0,4,0" 
@@ -82,10 +83,10 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding ModelEntity.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                        <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                             <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ModelEntity.IsAbstract}" Value="true">
+                        <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
                             <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
                         </DataTrigger>
                     </ControlTemplate.Triggers>
