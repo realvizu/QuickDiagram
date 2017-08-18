@@ -6,7 +6,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Abstract base class for those view models that store a diagram reference.
-    /// The Model can also be accessed through the Diagram.
     /// </summary>
     public abstract class DiagramViewModelBase : ViewModelBase
     {
@@ -17,6 +16,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Diagram = diagram;
         }
 
-        protected INotifyModelChanged Model => Diagram.ModelBuilder;
+        protected IModelProvider ModelProvider => Diagram.ModelProvider;
     }
 }

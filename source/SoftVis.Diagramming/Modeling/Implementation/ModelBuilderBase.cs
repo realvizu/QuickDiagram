@@ -5,8 +5,9 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// <summary>
     /// Abstract base class for model builders.
     /// Responsible for adding, removing, updating nodes and relationships in a model.
+    /// The underlying model is immutable so each modification creates a new snapshot of the model.
     /// </summary>
-    public abstract class ModelBuilderBase : IModelBuilder
+    public abstract class ModelBuilderBase : IModelProvider
     {
         private ImmutableModel _currentModel;
 
@@ -24,7 +25,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public IModel CurrentModel => _currentModel;
 
-        public IModel ClearModel()
+        protected IModel ClearModel()
         {
             _currentModel = _currentModel.Clear();
             ModelCleared?.Invoke(_currentModel);

@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagram
     {
         // Remove when DiagramBuilder is separated.
-        IModelBuilder ModelBuilder { get; }
+        IModelProvider ModelProvider { get; }
 
         IReadOnlyList<IDiagramNode> Nodes { get; }
         IReadOnlyList<IDiagramConnector> Connectors { get; }

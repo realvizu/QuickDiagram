@@ -48,14 +48,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void SubscribeToModelEvents()
         {
-            Model.RelationshipAdded += OnModelRelationshipAdded;
-            Model.RelationshipRemoved += OnModelRelationshipRemoved;
+            ModelProvider.RelationshipAdded += OnModelRelationshipAdded;
+            ModelProvider.RelationshipRemoved += OnModelRelationshipRemoved;
         }
 
         private void UnsubscribeFromModelEvents()
         {
-            Model.RelationshipAdded -= OnModelRelationshipAdded;
-            Model.RelationshipRemoved -= OnModelRelationshipRemoved;
+            ModelProvider.RelationshipAdded -= OnModelRelationshipAdded;
+            ModelProvider.RelationshipRemoved -= OnModelRelationshipRemoved;
         }
 
         private void SubscribeToDiagramEvents()

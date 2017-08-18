@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     [DebuggerDisplay("NodeCount={_graph.VertexCount}, ConnectorCount={_graph.EdgeCount}")]
     public class Diagram : IArrangedDiagram
     {
-        public IModelBuilder ModelBuilder { get; }
+        public IModelProvider ModelProvider { get; }
 
         private readonly DiagramBuilderBase _diagramBuilder;
         private readonly DiagramGraph _graph;
@@ -36,17 +36,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public event Action<IDiagramNode, Point2D, Point2D> NodeCenterChanged;
         public event Action<IDiagramConnector, Route, Route> ConnectorRouteChanged;
 
-        public Diagram(IModelBuilder modelBuilder, DiagramBuilderBase diagramBuilder, IDiagramNodeFactory diagramNodeFactory)
+        public Diagram(IModelProvider modelProvider, DiagramBuilderBase diagramBuilder, IDiagramNodeFactory diagramNodeFactory)
         {
-            ModelBuilder = modelBuilder;
+            ModelProvider = modelProvider;
             _diagramBuilder = diagramBuilder;
             _diagramNodeFactory = diagramNodeFactory;
 
-            ModelBuilder.NodeUpdated += OnModelNodeUpdated;
-            ModelBuilder.NodeRemoved += OnModelNodeRemoved;
-            ModelBuilder.RelationshipAdded += OnModelRelationshipAdded;
-            ModelBuilder.RelationshipRemoved += OnModelRelationshipRemoved;
-            ModelBuilder.ModelCleared += OnModelCleared;
+            ModelProvider.NodeUpdated += OnModelNodeUpdated;
+            ModelProvider.NodeRemoved += OnModelNodeRemoved;
+            ModelProvider.RelationshipAdded += OnModelRelationshipAdded;
+            ModelProvider.RelationshipRemoved += OnModelRelationshipRemoved;
+            ModelProvider.ModelCleared += OnModelCleared;
 
             _graph = new DiagramGraph();
             _graph.VertexAdded += OnDiagramNodeAddedToGraph;
@@ -146,7 +146,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes(IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType)
         {
             var displayedDiagramNodes = Nodes;
-            return ModelBuilder.CurrentModel
+            return ModelProvider.CurrentModel
                 .GetRelatedNodes(diagramNode.ModelItem.Id, modelRelationshipType)
                 .Except(displayedDiagramNodes.Select(j => j.ModelNode))
                 .ToArray();
@@ -253,7 +253,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void ShowModelRelationshipsIfBothEndsAreVisible(IModelItem modelItem)
         {
-            foreach (var modelRelationship in ModelBuilder.CurrentModel.GetRelationships(modelItem.Id))
+            foreach (var modelRelationship in ModelProvider.CurrentModel.GetRelationships(modelItem.Id))
                 ShowModelRelationshipIfBothEndsAreVisible(modelRelationship);
         }
 

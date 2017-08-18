@@ -111,7 +111,7 @@
     <Compile Include="Modeling\Implementation\ModelRelationshipBase.cs" />
     <Compile Include="Modeling\INotifyModelChanged.cs" />
     <Compile Include="Modeling\IModel.cs" />
-    <Compile Include="Modeling\IModelBuilder.cs" />
+    <Compile Include="Modeling\IModelProvider.cs" />
     <Compile Include="Modeling\IModelNode.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
     <Compile Include="Modeling\Implementation\ImmutableModel.cs" />

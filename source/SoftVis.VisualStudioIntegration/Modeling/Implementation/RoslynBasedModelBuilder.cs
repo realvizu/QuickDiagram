@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private RoslynBasedModel CurrentRoslynModel => CurrentModel as RoslynBasedModel;
 
-        public async Task<bool> CurrentSymbolAvailableAsync() => await GetCurrentSymbolAsync() != null;
+        public async Task<bool> IsCurrentSymbolAvailableAsync() => await GetCurrentSymbolAsync() != null;
 
         public async Task<IRoslynModelNode> AddCurrentSymbolAsync()
         {
@@ -107,6 +107,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             UpdateEntitiesFromSource(cancellationToken, progress);
             UpdateRelationshipsFromSource(cancellationToken, progress);
         }
+
+        public new void ClearModel() => base.ClearModel();
 
         private async Task<INamedTypeSymbol> GetCurrentSymbolAsync()
         {

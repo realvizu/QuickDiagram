@@ -8,13 +8,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Defines model operations for the application commands package.
     /// </summary>
-    internal interface IModelServices : IModelBuilder
+    internal interface IModelServices : IModelProvider
     {
         /// <summary>
         /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
         /// </summary>
         /// <returns>True if there is a symbol under the caret that can be added to the model.</returns>
-        Task<bool> CurrentSymbolAvailableAsync();
+        Task<bool> IsCurrentSymbolAvailableAsync();
 
         /// <summary>
         /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.
@@ -52,5 +52,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+
+        void ClearModel();
     }
 }
