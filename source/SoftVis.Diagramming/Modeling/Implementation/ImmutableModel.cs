@@ -31,20 +31,23 @@ namespace Codartis.SoftVis.Modeling.Implementation
         // TODO: implement node hierarchy
         public IEnumerable<IModelNode> GetChildNodes(ModelItemId parentNodeId) => throw new NotImplementedException();
 
-        public IModelNode GetModelNode(ModelItemId id)
-        {
-            var result = Nodes.SingleOrDefault(i => i.Id == id);
-            if (result == null)
-                throw new InvalidOperationException($"Node with id {id} not found in the model.");
-            return result;
-        }
+        public IModelNode GetModelNode(ModelItemId id) => Nodes.FirstOrDefault(i => i.Id == id);
 
         public IEnumerable<IModelRelationship> GetRelationships(ModelItemId modelNodeId)
-            => _graph.GetAllEdges(GetModelNode(modelNodeId));
+        {
+            var modelNode = GetModelNode(modelNodeId);
+            if (modelNode == null)
+                return Enumerable.Empty<IModelRelationship>();
+
+            return _graph.GetAllEdges(modelNode);
+        }
 
         public IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false)
         {
             var modelNode = GetModelNode(modelNodeId);
+            if (modelNode == null)
+                return Enumerable.Empty<IModelNode>();
+
             return _graph.GetConnectedVertices(modelNode,
                 (node, relationship) => relationship.IsNodeInRelationship(node, directedModelRelationshipType),
                 recursive);

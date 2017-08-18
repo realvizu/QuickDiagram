@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         public override int LayoutPriority => 4;
+        public override bool IsAbstract => NamedTypeSymbol.IsAbstract;
 
         public override IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)

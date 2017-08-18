@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             NamedTypeSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));
         }
 
-        public bool IsAbstract => NamedTypeSymbol.IsAbstract;
+        public virtual bool IsAbstract => false;
         public string FullName => NamedTypeSymbol.GetFullName();
         public string Description => NamedTypeSymbol.GetDescription();
 

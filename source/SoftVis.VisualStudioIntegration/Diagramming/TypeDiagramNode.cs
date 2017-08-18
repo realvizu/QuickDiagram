@@ -4,16 +4,14 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
-    internal class TypeDiagramNode : DiagramNode
+    internal sealed class TypeDiagramNode : DiagramNode
     {
-        public IRoslynTypeNode RoslynTypeNode { get; }
-
         public TypeDiagramNode(IRoslynTypeNode roslynTypeNode) 
             : base(roslynTypeNode)
         {
-            RoslynTypeNode = roslynTypeNode;
         }
 
+        public IRoslynTypeNode RoslynTypeNode => (IRoslynTypeNode)ModelItem;
         public ModelNodeStereotype Stereotype => RoslynTypeNode.Stereotype;
     }
 }

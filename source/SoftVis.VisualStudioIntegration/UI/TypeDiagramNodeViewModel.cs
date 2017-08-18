@@ -13,10 +13,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// View model for a diagram node that represents a type.
     /// </summary>
-    internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
+    internal sealed class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
-        public TypeDiagramNode TypeDiagramNode { get; }
-
         private bool _isAbstract;
         private string _fullName;
         private string _description;
@@ -32,10 +30,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             Size size, Point center, Point topLeft)
             : base(diagram, typeDiagramNode, size, center, topLeft)
         {
-            TypeDiagramNode = typeDiagramNode;
             PopulateProperties(typeDiagramNode.RoslynTypeNode);
             IsDescriptionVisible = isDescriptionVisible;
         }
+
+        public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode) DiagramNode;
 
         public override object Clone()
         {

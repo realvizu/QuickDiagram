@@ -9,8 +9,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public class DiagramNode : DiagramShape, IDiagramNode
     {
-        public IModelNode ModelNode { get; private set; }
-
         private Size2D _size;
         private Point2D _center;
         private readonly object _sizeAndPositionLock = new object();
@@ -22,12 +20,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public DiagramNode(IModelNode modelNode)
             : base(modelNode)
         {
-            ModelNode = modelNode;
-
             _size = Size2D.Zero;
             _center = Point2D.Undefined;
         }
 
+        public IModelNode ModelNode => (IModelNode)ModelItem;
         public string Name => ModelNode.Name;
         public int LayoutPriority => ModelNode.LayoutPriority;
 
@@ -97,27 +94,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public override void Update(IModelItem modelItem)
         {
             base.Update(modelItem);
-
-            if (modelItem is IModelNode modelNode)
-            {
-                ModelNode = modelNode;
-                ModelNodeUpdated?.Invoke(this, modelNode);
-            }
-            else
-            {
-                throw new ArgumentException($"IModelNode expected but received {modelItem.GetType().Name}");
-            }
+            ModelNodeUpdated?.Invoke(this, (IModelNode)modelItem);
         }
 
-        public int CompareTo(IDiagramNode otherNode) => 
+        public int CompareTo(IDiagramNode otherNode) =>
             string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
 
         public override string ToString() => Name;
 
-        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter) => 
+        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter) =>
             CenterChanged?.Invoke(this, oldCenter, newCenter);
 
-        private void OnSizeChanged(Size2D oldSize, Size2D newSize) => 
+        private void OnSizeChanged(Size2D oldSize, Size2D newSize) =>
             SizeChanged?.Invoke(this, oldSize, newSize);
     }
 }
