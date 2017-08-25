@@ -5,6 +5,6 @@
     /// </summary>
     public static class ConnectorTypes
     {
-        public static readonly ConnectorType Generalization = new ConnectorType(ArrowHeadType.Hollow, LineType.Solid);
+        public static readonly ConnectorType Dependency = new ConnectorType(ArrowHeadType.Simple, LineType.Dashed);
     }
 }

@@ -5,11 +5,11 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
     internal class TypeDiagramNode : DiagramNode
     {
-        public TypeNodeBase TypeNodeBase { get; }
+        public TypeNode TypeNode { get; }
 
-        public TypeDiagramNode(TypeNodeBase typeNodeBase) : base(typeNodeBase)
+        public TypeDiagramNode(TypeNode typeNode) : base(typeNode)
         {
-            TypeNodeBase = typeNodeBase;
+            TypeNode = typeNode;
         }
     }
 }

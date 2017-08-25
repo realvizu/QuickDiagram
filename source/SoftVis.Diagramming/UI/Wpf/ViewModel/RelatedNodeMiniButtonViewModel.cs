@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
@@ -11,29 +10,37 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class RelatedNodeMiniButtonViewModel : MiniButtonViewModelBase
     {
-        private readonly DirectedModelRelationshipType _relationshipType;
+        private readonly DirectedModelRelationshipType _directedModelRelationshipType;
+        public ConnectorType ConnectorType { get; }
 
-        public RelatedNodeMiniButtonViewModel(IArrangedDiagram diagram, RelatedNodeType relatedNodeType)
-            : base(diagram, relatedNodeType.Name)
+        private IModel _lastModel;
+        private IDiagram _lastDiagram;
+
+        public RelatedNodeMiniButtonViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            RelatedNodeType relatedNodeType)
+            : base(modelStore, diagramStore, relatedNodeType.Name)
         {
-            _relationshipType = relatedNodeType.RelationshipType;
-            SubscribeToModelEvents();
+            _directedModelRelationshipType = relatedNodeType.RelationshipType;
+            ConnectorType = diagramStore.GetConnectorType(relatedNodeType.RelationshipType.Stereotype);
+
+            _lastModel = modelStore.CurrentModel;
+            _lastDiagram = diagramStore.CurrentDiagram;
+
+            ModelStore.ModelChanged += OnModelChanged;
+            DiagramStore.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
-            UnsubscribeFromModelEvents();
+            base.Dispose();
+
+            ModelStore.ModelChanged -= OnModelChanged;
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
         }
 
-        public ConnectorType ConnectorType => Diagram.GetConnectorType(_relationshipType.Stereotype);
+        public override object PlacementKey => _directedModelRelationshipType;
 
         private DiagramNodeViewModelBase HostDiagramNodeViewModel => HostViewModel as DiagramNodeViewModelBase;
-        private IDiagramNode HostDiagramNode => HostDiagramNodeViewModel?.DiagramNode;
-
-        /// <summary>
-        /// For related entity buttons the placement key is the directed relationship type.
-        /// </summary>
-        public override object PlacementKey => _relationshipType;
 
         public override void AssociateWith(DiagramShapeViewModelBase diagramNodeViewModel)
         {
@@ -43,57 +50,60 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnClick()
         {
-            if (HostDiagramNodeViewModel == null)
-            {
-#if DEBUG
-                Debugger.Break();
-#else
+            // Copy to variable to avoid race condition of HostViewModel changing in-flight
+            var hostDiagramNodeViewModel = HostDiagramNodeViewModel;
+            if (hostDiagramNodeViewModel == null)
                 return;
-#endif
-            }
 
-            var undisplayedRelatedEntities = GetUndisplayedRelatedModelNodes();
+            var undisplayedRelatedModelNodes = GetUndisplayedRelatedModelNodes(hostDiagramNodeViewModel.ModelNode).ToList();
 
-            if (undisplayedRelatedEntities.Count == 1)
+            if (undisplayedRelatedModelNodes.Count == 1)
             {
-                HostDiagramNodeViewModel.ShowRelatedNodes(this, undisplayedRelatedEntities);
+                hostDiagramNodeViewModel.ShowRelatedModelNodes(this, undisplayedRelatedModelNodes);
             }
-            else if (undisplayedRelatedEntities.Count > 1)
+            else if (undisplayedRelatedModelNodes.Count > 1)
             {
-                HostDiagramNodeViewModel.ShowRelatedNodeSelector(this, undisplayedRelatedEntities);
+                hostDiagramNodeViewModel.ShowRelatedModelNodeSelector(this, undisplayedRelatedModelNodes);
             }
         }
 
         protected override void OnDoubleClick()
         {
-            var undisplayedRelatedEntities = GetUndisplayedRelatedModelNodes();
-            HostDiagramNodeViewModel.ShowRelatedNodes(this, undisplayedRelatedEntities);
+            // Copy to variable to avoid race condition of HostViewModel changing in-flight
+            var hostDiagramNodeViewModel = HostDiagramNodeViewModel;
+            if (hostDiagramNodeViewModel == null)
+                return;
+
+            var undisplayedRelatedModelNodes = GetUndisplayedRelatedModelNodes(hostDiagramNodeViewModel.ModelNode);
+            hostDiagramNodeViewModel.ShowRelatedModelNodes(this, undisplayedRelatedModelNodes.ToList());
         }
 
-        private void OnModelRelationshipAdded(IModelRelationship relationship, IModel model) => UpdateEnabledState();
-        private void OnModelRelationshipRemoved(IModelRelationship relationship, IModel model) => UpdateEnabledState();
-
-        private void SubscribeToModelEvents()
+        private void OnModelChanged(ModelEventBase modelEvent)
         {
-            ModelProvider.RelationshipAdded += OnModelRelationshipAdded;
-            ModelProvider.RelationshipRemoved += OnModelRelationshipRemoved;
+            _lastModel = modelEvent.NewModel;
+            UpdateEnabledState();
         }
 
-        private void UnsubscribeFromModelEvents()
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            ModelProvider.RelationshipAdded -= OnModelRelationshipAdded;
-            ModelProvider.RelationshipRemoved -= OnModelRelationshipRemoved;
+            _lastDiagram = diagramEvent.NewDiagram;
+            UpdateEnabledState();
         }
 
         private void UpdateEnabledState()
         {
-            if (HostDiagramNode == null)
+            // Copy to variable to avoid race condition of HostViewModel changing in-flight
+            var hostDiagramNodeViewModel = HostDiagramNodeViewModel;
+            if (hostDiagramNodeViewModel == null)
                 return;
 
-            IsEnabled = GetUndisplayedRelatedModelNodes().Any();
+            IsEnabled = GetUndisplayedRelatedModelNodes(hostDiagramNodeViewModel.ModelNode).Any();
         }
 
-        private IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes() => 
-            Diagram.GetUndisplayedRelatedModelNodes(HostDiagramNode, _relationshipType);
+        private IEnumerable<IModelNode> GetUndisplayedRelatedModelNodes(IModelNode modelNode)
+        {
+            return _lastModel.GetRelatedNodes(modelNode, _directedModelRelationshipType)
+                .Except(_lastDiagram.Nodes.Select(j => j.ModelNode));
+        }
     }
 }

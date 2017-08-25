@@ -5,8 +5,8 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
     internal class TestDiagram : AutoArrangingDiagram
     {
-        public TestDiagram(IModelProvider modelProvider, DiagramBuilderBase diagramBuilder)
-            : base(modelProvider, diagramBuilder, new TestDiagramNodeFactory())
+        public TestDiagram(IReadOnlyModelStore modelProvider, DiagramStore diagramStore)
+            : base(modelProvider, diagramStore, new TestDiagramShapeFactory())
         {
         }
     }

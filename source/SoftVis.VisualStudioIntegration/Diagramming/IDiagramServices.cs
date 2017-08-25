@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Util;
@@ -10,17 +9,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// <summary>
     /// Defines diagram operations for the application commands package.
     /// </summary>
-    internal interface IDiagramServices
+    internal interface IDiagramServices : IDiagramStore
     {
-        IReadOnlyList<IDiagramNode> Nodes { get; }
-        IReadOnlyList<IDiagramConnector> Connectors { get; }
-        IReadOnlyList<IDiagramShape> Shapes { get; }
-
-        event Action<IDiagramShape> ShapeAdded;
-        event Action<IDiagramShape> ShapeRemoved;
-        event Action<IDiagramShape> ShapeSelected;
-        event Action DiagramCleared;
-
         IDiagramNode ShowModelNode(IRoslynModelNode modelNode);
         IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IRoslynModelNode> modelNodes, CancellationToken cancellationToken, IIncrementalProgress progress);
         IReadOnlyList<IDiagramNode> ShowModelNodeWithHierarchy(IRoslynModelNode modelNode, CancellationToken cancellationToken, IIncrementalProgress progress);

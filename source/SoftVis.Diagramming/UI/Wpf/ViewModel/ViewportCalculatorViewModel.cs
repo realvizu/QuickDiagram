@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Internally the zoom values change on an exponential scale to give a feel of depth.
     /// But externally the zoom values are converted to/from a linear scale for easy linear manipulation.
     /// </remarks>
-    public class ViewportCalculatorViewModel : DiagramViewModelBase
+    public class ViewportCalculatorViewModel : ModelObserverViewModelBase
     {
         private static readonly Size ViewportSizeDefault = new Size(0, 0);
         private static readonly Point ViewportCenterDefault = new Point(0, 0);
@@ -33,6 +33,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Transform _diagramSpaceToScreenSpaceTransform;
         private double _linearZoom;
         private TransitionedTransform _transform;
+        private Rect _diagramContentRect;
 
         public ResizeDelegateCommand ResizeCommand { get; }
         public PanDelegateCommand PanCommand { get; }
@@ -41,14 +42,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event Action<TransitionedTransform> TransformChanged;
 
-        public ViewportCalculatorViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom)
-            : this(diagram, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
+        public ViewportCalculatorViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            double minZoom, double maxZoom, double initialZoom)
+            : this(modelStore, diagramStore, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
         {
         }
 
-        private ViewportCalculatorViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom,
-            Size sizeInScreenSpace, Point centerInDiagramSpace)
-            : base(diagram)
+        private ViewportCalculatorViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            double minZoom, double maxZoom, double initialZoom, Size sizeInScreenSpace, Point centerInDiagramSpace)
+            : base(modelStore, diagramStore)
         {
             _minZoom = minZoom;
             _maxZoom = maxZoom;
@@ -56,6 +58,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
+            _diagramContentRect = diagramStore.CurrentDiagram.ContentRect.ToWpf();
 
             ResizeCommand = new ResizeDelegateCommand(Resize);
             PanCommand = new PanDelegateCommand(Pan);
@@ -63,6 +66,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ZoomCommand = new ZoomDelegateCommand(ZoomWithCenterTo);
 
             UpdateCalculatedProperties(TransitionSpeed.Instant);
+
+            DiagramStore.DiagramChanged += OnDiagramChanged;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
         }
 
         public double LinearZoom
@@ -102,7 +114,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public virtual void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium)
         {
-            ZoomToRect(Diagram.ContentRect.ToWpf(), transitionSpeed);
+            ZoomToRect(_diagramContentRect, transitionSpeed);
         }
 
         public virtual void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed)
@@ -144,9 +156,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public bool IsDiagramRectVisible()
         {
-            var diagramRect = Diagram.ContentRect.ToWpf();
             var viewportRect = ProjectViewportIntoDiagramSpace();
-            return viewportRect.IntersectsWith(diagramRect);
+            return viewportRect.IntersectsWith(_diagramContentRect);
+        }
+
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        {
+            _diagramContentRect = diagramEvent.NewDiagram.ContentRect.ToWpf();
         }
 
         private Point ProjectFromDiagramSpaceToScreenSpace(Point pointInDiagramSpace)

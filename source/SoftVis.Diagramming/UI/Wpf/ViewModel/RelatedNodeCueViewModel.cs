@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
@@ -8,66 +9,61 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a visual cue that indicates the availability of related nodes that are not on the diagram yet.
     /// </summary>
-    public class RelatedNodeCueViewModel : DiagramShapeDecoratorViewModelBase, IDisposable
+    public class RelatedNodeCueViewModel : DiagramShapeDecoratorViewModelBase
     {
         private readonly IDiagramNode _diagramNode;
-        private readonly DirectedModelRelationshipType _modelRelationshipType;
+        private readonly DirectedModelRelationshipType _directedModelRelationshipType;
 
-        public RelatedNodeCueViewModel(IArrangedDiagram diagram, IDiagramNode diagramNode, RelatedNodeType relatedNodeType)
-            : base(diagram)
+        private IModel _lastModel;
+        private IDiagram _lastDiagram;
+
+        public RelatedNodeCueViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            IDiagramNode diagramNode, RelatedNodeType relatedNodeType)
+            : base(modelStore, diagramStore)
         {
             _diagramNode = diagramNode;
-            _modelRelationshipType = relatedNodeType.RelationshipType;
+            _directedModelRelationshipType = relatedNodeType.RelationshipType;
 
-            SubscribeToModelEvents();
-            SubscribeToDiagramEvents();
-            RecalculateVisibility();
+            _lastModel = modelStore.CurrentModel;
+            _lastDiagram = diagramStore.CurrentDiagram;
+
+            ModelStore.ModelChanged += OnModelChanged;
+            DiagramStore.DiagramChanged += OnDiagramChanged;
+
+            UpdateVisibility();
         }
 
-        public void Dispose()
+        public override  void Dispose()
         {
-            UnsubscribeFromModelEvents();
-            UnsubscribeFromDiagramEvents();
+            base.Dispose();
+
+            ModelStore.ModelChanged -= OnModelChanged;
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
         }
 
-        /// <summary>
-        /// The placement key is the directed relationship type.
-        /// </summary>
-        public override object PlacementKey => _modelRelationshipType;
-
-        private void RecalculateVisibility()
+        public override object PlacementKey => _directedModelRelationshipType;
+        
+        private void OnModelChanged(ModelEventBase modelEvent)
         {
-            IsVisible = Diagram.GetUndisplayedRelatedModelNodes(_diagramNode, _modelRelationshipType).Any();
+            _lastModel = modelEvent.NewModel;
+            UpdateVisibility();
         }
 
-        private void OnModelRelationshipRemoved(IModelRelationship relationship, IModel model) => RecalculateVisibility();
-        private void OnModelRelationshipAdded(IModelRelationship relationship, IModel model) => RecalculateVisibility();
-
-        private void OnDiagramShapeRemoved(IDiagramShape shape) => RecalculateVisibility();
-        private void OnDiagramShapeAdded(IDiagramShape shape) => RecalculateVisibility();
-
-        private void SubscribeToModelEvents()
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            ModelProvider.RelationshipAdded += OnModelRelationshipAdded;
-            ModelProvider.RelationshipRemoved += OnModelRelationshipRemoved;
+            _lastDiagram = diagramEvent.NewDiagram;
+            UpdateVisibility();
         }
 
-        private void UnsubscribeFromModelEvents()
+        private void UpdateVisibility()
         {
-            ModelProvider.RelationshipAdded -= OnModelRelationshipAdded;
-            ModelProvider.RelationshipRemoved -= OnModelRelationshipRemoved;
+            IsVisible = GetUndisplayedRelatedModelNodes(_diagramNode.ModelNode).Any();
         }
 
-        private void SubscribeToDiagramEvents()
+        private IEnumerable<IModelNode> GetUndisplayedRelatedModelNodes(IModelNode modelNode)
         {
-            Diagram.ShapeAdded += OnDiagramShapeAdded;
-            Diagram.ShapeRemoved += OnDiagramShapeRemoved;
-        }
-
-        private void UnsubscribeFromDiagramEvents()
-        {
-            Diagram.ShapeAdded -= OnDiagramShapeAdded;
-            Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
+            return _lastModel.GetRelatedNodes(modelNode, _directedModelRelationshipType)
+                .Except(_lastDiagram.Nodes.Select(j => j.ModelNode));
         }
     }
 }

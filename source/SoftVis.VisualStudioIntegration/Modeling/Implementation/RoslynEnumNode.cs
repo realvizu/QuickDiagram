@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     internal class RoslynEnumNode : RoslynTypeNode
     {
         internal RoslynEnumNode(ModelItemId id, INamedTypeSymbol namedTypeSymbol)
-            : base(id, namedTypeSymbol, RoslynModelNodeStereotype.Enum)
+            : base(id, namedTypeSymbol, ModelNodeStereotypes.Enum)
         {
         }
 

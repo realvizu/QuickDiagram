@@ -104,7 +104,7 @@
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationCalculatorTests.cs" />
     <Compile Include="Diagramming\Layout\Incremental\Relative\VerticesInLayerComparerTests.cs" />
-    <Compile Include="Graphs\RemovedVertexResultTests.cs" />
+    <Compile Include="Graphs\Concurrent\RemovedVertexResultTests.cs" />
     <Compile Include="Modeling\Implementation\ModelTests.cs" />
     <Compile Include="TestSubjects\TestDiagramConnector.cs" />
     <Compile Include="TestSubjects\TestModelRelationship.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Diagramming\Layout\Incremental\Builders\QuasiProperLayoutGraphBuilder.cs" />
     <Compile Include="TestSubjects\TestLayoutVertex.cs" />
     <Compile Include="TestSubjects\TestModelNode.cs" />
-    <Compile Include="Graphs\ConcurrentBidirectionalGraphTests.cs" />
+    <Compile Include="Graphs\Concurrent\ConcurrentBidirectionalGraphTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

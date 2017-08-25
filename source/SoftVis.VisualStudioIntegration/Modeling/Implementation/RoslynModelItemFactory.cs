@@ -35,14 +35,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        public static ModelRelationshipBase CreateRoslynRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
+        public static ModelRelationship CreateRoslynRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
         {
             var id = ModelItemId.Create();
 
-            if (stereotype == RoslynModelRelationshipStereotype.Inheritance)
+            if (stereotype == ModelRelationshipStereotypes.Inheritance)
                 return new InheritanceRelationship(id, sourceNode, targetNode);
 
-            if (stereotype == RoslynModelRelationshipStereotype.Implementation)
+            if (stereotype == ModelRelationshipStereotypes.Implementation)
                 return new ImplementationRelationship(id, sourceNode, targetNode);
 
             throw new InvalidOperationException($"Unexpected relationship type {stereotype.Name}");

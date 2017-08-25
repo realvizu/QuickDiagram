@@ -3,13 +3,13 @@
     /// <summary>
     /// Extensible list of model relationship types.
     /// </summary>
-    public class ModelRelationshipStereotype
+    public sealed class ModelRelationshipStereotype
     {
         public static readonly ModelRelationshipStereotype Containment = new ModelRelationshipStereotype(nameof(Containment));
 
         public string Name { get; }
 
-        protected ModelRelationshipStereotype(string name)
+        public ModelRelationshipStereotype(string name)
         {
             Name = name;
         }

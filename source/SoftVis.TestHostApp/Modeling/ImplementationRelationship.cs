@@ -4,16 +4,16 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal class ImplementationRelationship : ModelRelationshipBase
+    internal class ImplementationRelationship : ModelRelationship
     {
-        public ImplementationRelationship(ModelItemId id, IModelNode source, IModelNode target) 
-            : base(id, source, target, TestModelRelationshipStereotype.Implementation)
+        public ImplementationRelationship(ModelItemId id, IModelNode source, IModelNode target)
+            : base(id, source, target, ModelRelationshipStereotypes.Implementation)
         {
         }
 
         protected override IEnumerable<(ModelNodeStereotype, ModelNodeStereotype)> GetValidSourceAndTargetNodeTypePairs()
         {
-            yield return (ModelNodeStereotype.Class, TestModelNodeStereotype.Interface);
+            yield return (ModelNodeStereotype.Class, ModelNodeStereotypes.Interface);
         }
     }
 }

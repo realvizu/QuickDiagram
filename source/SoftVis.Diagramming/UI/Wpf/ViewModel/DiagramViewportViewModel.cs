@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
@@ -17,7 +18,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Also handles viewport transform (resize, pan and zoom) in a transitioned style (with a given transition speed).
     /// Also handles which shape has the focus and which one has the decorators (mini buttons).
     /// </summary>
-    public class DiagramViewportViewModel : DiagramViewModelBase, IDisposable, IDiagramShapeViewModelRepository
+    public class DiagramViewportViewModel : ModelObserverViewModelBase, IDiagramShapeUiRepository
     {
         public double MinZoom { get; }
         public double MaxZoom { get; }
@@ -27,54 +28,55 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public MiniButtonPanelViewModel MiniButtonPanelViewModel { get; }
 
         private readonly Map<IDiagramShape, DiagramShapeViewModelBase> _diagramShapeToViewModelMap;
-        private readonly DiagramShapeViewModelFactoryBase _diagramShapeViewModelFactory;
+        private readonly IDiagramShapeUiFactory _diagramShapeUiFactory;
 
         public event Action ViewportManipulation;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
-        public event Action<IDiagramShape> ShowSourceRequested;
+        public event Action<IDiagramNode> DiagramNodeInvoked;
 
-        public DelegateCommand<IDiagramShape> ShowSourceCommand { get; }
+        public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
-        public DiagramViewportViewModel(IArrangedDiagram diagram, DiagramShapeViewModelFactoryBase diagramShapeViewModelFactory,
-            double minZoom, double maxZoom, double initialZoom)
-            : base(diagram)
+        public DiagramViewportViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
+            : base(modelStore, diagramStore)
         {
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
             _diagramShapeToViewModelMap = new Map<IDiagramShape, DiagramShapeViewModelBase>();
-            _diagramShapeViewModelFactory = diagramShapeViewModelFactory;
-            _diagramShapeViewModelFactory.Initialize(this);
+            _diagramShapeUiFactory = diagramShapeUiFactory;
+            _diagramShapeUiFactory.Initialize(this);
 
-            ViewportCalculator = new AutoMoveViewportViewModel(diagram, minZoom, maxZoom, initialZoom);
+            ViewportCalculator = new AutoMoveViewportViewModel(modelStore, diagramStore, minZoom, maxZoom, initialZoom);
             DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModelBase>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
             MiniButtonPanelViewModel = new MiniButtonPanelViewModel();
 
-            ShowSourceCommand = new DelegateCommand<IDiagramShape>(OnShowSourceCommand);
+            DiagramNodeDoubleClickedCommand = new DelegateCommand<IDiagramNode>(i => DiagramNodeInvoked?.Invoke(i));
 
-            SubscribeToViewportEvents();
-            SubscribeToDiagramEvents();
+            ViewportCalculator.TransformChanged += OnViewportTransformChanged;
+            DiagramStore.DiagramChanged += OnDiagramChanged;
 
-            AddDiagram(diagram);
+            AddDiagram(diagramStore.CurrentDiagram);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            UnsubscribeFromViewportEvents();
-            UnsubscribeFromDiagramEvents();
+            base.Dispose();
+
+            ViewportCalculator.TransformChanged -= OnViewportTransformChanged;
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
 
             ViewportCalculator.Dispose();
+            MiniButtonPanelViewModel.Dispose();
 
             foreach (var diagramNodeViewModel in DiagramNodeViewModels)
                 diagramNodeViewModel.Dispose();
 
             foreach (var diagramConnectorViewModel in DiagramConnectorViewModels)
                 diagramConnectorViewModel.Dispose();
-
-            MiniButtonPanelViewModel.Dispose();
         }
 
         public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
@@ -82,7 +84,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => ViewportCalculator.Mode = mode;
         public void StopFollowingDiagramNodes() => ViewportCalculator.StopFollowingDiagramNodes();
-
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToContent(transitionSpeed);
         public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
@@ -92,64 +93,70 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void PinDecoration() => MiniButtonPanelViewModel.PinDecoration();
         public void UnpinDecoration() => MiniButtonPanelViewModel.UnpinDecoration();
 
-        public DiagramNodeViewModelBase GetDiagramNodeViewModel(IDiagramNode diagramNode) =>
-            DiagramNodeViewModels.FirstOrDefault(i => i.DiagramNode == diagramNode);
+        public DiagramNodeViewModelBase GetDiagramNodeViewModel(IDiagramNode diagramNode) 
+            => _diagramShapeToViewModelMap.Get(diagramNode) as DiagramNodeViewModelBase;
 
-        public DiagramConnectorViewModel GetDiagramConnectorViewModel(IDiagramConnector diagramConnector) =>
-            DiagramConnectorViewModels.FirstOrDefault(i => i.DiagramConnector == diagramConnector);
+        public DiagramConnectorViewModel GetDiagramConnectorViewModel(IDiagramConnector diagramConnector) 
+            => _diagramShapeToViewModelMap.Get(diagramConnector) as DiagramConnectorViewModel;
 
-        private void SubscribeToViewportEvents()
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            ViewportCalculator.TransformChanged += OnViewportTransformChanged;
+            // All diagram-induced view model manipulation must occur on the UI thread to avoid certain race conditions.
+            // (E.g. avoid the case when creating a connector view model precedes the creation of its source and target node view models.)
+            EnsureUiThread(() => DispatchDiagramChangeEvent(diagramEvent));
         }
 
-        private void UnsubscribeFromViewportEvents()
+        private void DispatchDiagramChangeEvent(DiagramEventBase diagramEvent)
         {
-            ViewportCalculator.TransformChanged -= OnViewportTransformChanged;
-        }
-
-        // All diagram-induced view model manipulation must occur on the UI thread to avoid certain race conditions.
-        // (E.g. avoid the case when creating a connector view model precedes the creation of its source and target node view models.)
-        private void OnDiagramShapeAdded(IDiagramShape diagramShape) => EnsureUiThread(() => AddShape(diagramShape));
-        private void OnDiagramShapeRemoved(IDiagramShape diagramShape) => EnsureUiThread(() => RemoveShape(diagramShape));
-        private void OnDiagramCleared() => EnsureUiThread(ClearViewport);
-
-        private void SubscribeToDiagramEvents()
-        {
-            Diagram.ShapeAdded += OnDiagramShapeAdded;
-            Diagram.ShapeRemoved += OnDiagramShapeRemoved;
-            Diagram.DiagramCleared += OnDiagramCleared;
-        }
-
-        private void UnsubscribeFromDiagramEvents()
-        {
-            Diagram.ShapeAdded -= OnDiagramShapeAdded;
-            Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
-            Diagram.DiagramCleared -= OnDiagramCleared;
+            switch (diagramEvent)
+            {
+                case DiagramNodeAddedEvent diagramNodeAddedEvent:
+                    AddNode(diagramNodeAddedEvent.DiagramNode);
+                    break;
+                case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
+                    RemoveNode(diagramNodeRemovedEvent.DiagramNode);
+                    break;
+                case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
+                    AddConnector(diagramConnectorAddedEvent.DiagramConnector);
+                    break;
+                case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
+                    RemoveConnector(diagramConnectorRemovedEvent.DiagramConnector);
+                    break;
+                case DiagramClearedEvent _:
+                    ClearViewport();
+                    break;
+            }
         }
 
         private void AddDiagram(IDiagram diagram)
         {
             foreach (var diagramNode in diagram.Nodes)
-                AddShape(diagramNode);
+                AddNode(diagramNode);
 
             foreach (var diagramConnector in diagram.Connectors)
-                AddShape(diagramConnector);
+                AddConnector(diagramConnector);
         }
 
-        private void AddShape(IDiagramShape diagramShape)
+        private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramShapeViewModel = _diagramShapeViewModelFactory.CreateViewModel(diagramShape);
-            diagramShapeViewModel.RemoveRequested += OnShapeRemoveRequested;
+            var diagramNodeViewModel = _diagramShapeUiFactory.CreateDiagramNodeViewModel(diagramNode);
+            DiagramNodeViewModels.Add(diagramNodeViewModel);
 
-            if (diagramShapeViewModel is DiagramNodeViewModelBase diagramNodeViewModel)
-            {
-                diagramNodeViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
-                diagramNodeViewModel.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
-            }
+            diagramNodeViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
+            diagramNodeViewModel.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
+            diagramNodeViewModel.RemoveRequested += OnShapeRemoveRequested;
 
-            AddToViewModels(diagramShapeViewModel);
-            _diagramShapeToViewModelMap.Set(diagramShape, diagramShapeViewModel);
+            _diagramShapeToViewModelMap.Set(diagramNode, diagramNodeViewModel);
+        }
+
+        private void AddConnector(IDiagramConnector diagramConnector)
+        {
+            var diagramConnectorViewModel = _diagramShapeUiFactory.CreateDiagramConnectorViewModel(diagramConnector);
+            DiagramConnectorViewModels.Add(diagramConnectorViewModel);
+
+            diagramConnectorViewModel.RemoveRequested += OnShapeRemoveRequested;
+
+            _diagramShapeToViewModelMap.Set(diagramConnector, diagramConnectorViewModel);
         }
 
         private void OnShapeRemoveRequested(IDiagramShape diagramShape)
@@ -159,31 +166,43 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 return;
 
             DiagramShapeRemoveRequested?.Invoke(diagramShapeViewModel);
-
-            Diagram.RemoveDiagramShape(diagramShape);
         }
 
-        private void RemoveShape(IDiagramShape diagramShape)
+        private void RemoveNode(IDiagramNode diagramNode)
         {
-            var diagramShapeViewModel = _diagramShapeToViewModelMap.Get(diagramShape);
-            if (diagramShapeViewModel == null)
-                return;
+            var diagramNodeViewModel = GetDiagramNodeViewModel(diagramNode);
 
-            MiniButtonPanelViewModel.Unfocus(diagramShapeViewModel);
+            diagramNodeViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
+            diagramNodeViewModel.RelatedNodeSelectorRequested -= OnEntitySelectorRequested;
+            diagramNodeViewModel.RemoveRequested -= OnShapeRemoveRequested;
 
-            diagramShapeViewModel.RemoveRequested -= OnShapeRemoveRequested;
+            MiniButtonPanelViewModel.Unfocus(diagramNodeViewModel);
+            _diagramShapeToViewModelMap.Remove(diagramNode);
+            DiagramNodeViewModels.Remove(diagramNodeViewModel);
 
-            RemoveFromViewModels(diagramShapeViewModel);
-            _diagramShapeToViewModelMap.Remove(diagramShape);
+            diagramNodeViewModel.Dispose();
+        }
+
+        private void RemoveConnector(IDiagramConnector diagramConnector)
+        {
+            var diagramConnectorViewModel = GetDiagramConnectorViewModel(diagramConnector);
+
+            diagramConnectorViewModel.RemoveRequested -= OnShapeRemoveRequested;
+
+            MiniButtonPanelViewModel.Unfocus(diagramConnectorViewModel);
+            _diagramShapeToViewModelMap.Remove(diagramConnector);
+            DiagramConnectorViewModels.Remove(diagramConnectorViewModel);
+
+            diagramConnectorViewModel.Dispose();
         }
 
         private void ClearViewport()
         {
             foreach (var diagramConnectorViewModel in DiagramConnectorViewModels.ToArray())
-                RemoveFromViewModels(diagramConnectorViewModel);
+                RemoveConnector(diagramConnectorViewModel.DiagramConnector);
 
             foreach (var diagramNodeViewModel in DiagramNodeViewModels.ToArray())
-                RemoveFromViewModels(diagramNodeViewModel);
+                RemoveNode(diagramNodeViewModel.DiagramNode);
 
             _diagramShapeToViewModelMap.Clear();
         }
@@ -196,38 +215,5 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnEntitySelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
-
-        private void OnShowSourceCommand(IDiagramShape diagramShape)
-            => ShowSourceRequested?.Invoke(diagramShape);
-
-        private void AddToViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
-        {
-            if (diagramShapeViewModel is DiagramNodeViewModelBase)
-                DiagramNodeViewModels.Add((DiagramNodeViewModelBase)diagramShapeViewModel);
-
-            else if (diagramShapeViewModel is DiagramConnectorViewModel)
-                DiagramConnectorViewModels.Add((DiagramConnectorViewModel)diagramShapeViewModel);
-
-            else
-                throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
-        }
-
-        private void RemoveFromViewModels(DiagramShapeViewModelBase diagramShapeViewModel)
-        {
-            if (diagramShapeViewModel is DiagramNodeViewModelBase)
-            {
-                var diagramNodeViewModel = (DiagramNodeViewModelBase)diagramShapeViewModel;
-                DiagramNodeViewModels.Remove(diagramNodeViewModel);
-                diagramNodeViewModel.Dispose();
-            }
-            else if (diagramShapeViewModel is DiagramConnectorViewModel)
-            {
-                var diagramConnectorViewModel = (DiagramConnectorViewModel)diagramShapeViewModel;
-                DiagramConnectorViewModels.Remove(diagramConnectorViewModel);
-                diagramConnectorViewModel.Dispose();
-            }
-            else
-                throw new Exception($"Unexpected DiagramShapeViewModelBase: {diagramShapeViewModel.GetType().Name}");
-        }
     }
 }

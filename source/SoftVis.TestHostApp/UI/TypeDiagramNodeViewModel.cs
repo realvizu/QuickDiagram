@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.TestHostApp.UI
             : base(diagram, diagramNode, size, center, topLeft)
         {
             TypeDiagramNode = diagramNode;
-            Stereotype = $"<<{diagramNode.TypeNodeBase.Stereotype.Name.ToLower()}>>";
+            Stereotype = $"<<{diagramNode.TypeNode.Stereotype.Name.ToLower()}>>";
         }
 
         public override object Clone()

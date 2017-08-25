@@ -2,6 +2,7 @@
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
+using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
@@ -65,8 +66,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
             var hostUiGateway = new HostUiGateway(this);
 
-            var modelServices = new RoslynBasedModelBuilder(hostWorkspaceGateway);
-            var diagramServices = new RoslynBasedDiagram(modelServices);
+            var modelServices = new RoslynBasedModelStore(hostWorkspaceGateway);
+            var diagramServices = new RoslynDiagramStore(modelServices, new RoslynDiagramShapeFactory());
             var uiServices = new DiagramUi(hostUiGateway, diagramServices);
 
             _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices);

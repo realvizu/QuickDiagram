@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Abstract base class for diagram shape view models.
     /// </summary>
-    public abstract class DiagramShapeViewModelBase : DiagramViewModelBase
+    public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase
     {
         public IDiagramShape DiagramShape { get; }
 
         public event Action<IDiagramShape> RemoveRequested;
 
-        protected DiagramShapeViewModelBase(IArrangedDiagram diagram, IDiagramShape diagramShape)
-            :base(diagram)
+        protected DiagramShapeViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            IDiagramShape diagramShape)
+            :base(modelStore, diagramStore)
         {
             DiagramShape = diagramShape;
         }

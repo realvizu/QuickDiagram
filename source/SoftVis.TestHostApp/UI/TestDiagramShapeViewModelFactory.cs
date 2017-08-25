@@ -17,7 +17,6 @@ namespace Codartis.SoftVis.TestHostApp.UI
             switch (diagramShape)
             {
                 case TypeDiagramNode typeDiagramNode:
-                    return new TypeDiagramNodeViewModel(Diagram, typeDiagramNode);
 
                 case IDiagramConnector diagramConnector:
                     return CreateDiagramConnectorViewModel(diagramConnector);
@@ -27,7 +26,12 @@ namespace Codartis.SoftVis.TestHostApp.UI
             }
         }
 
-        private DiagramShapeViewModelBase CreateDiagramConnectorViewModel(IDiagramConnector diagramConnector)
+        public override DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramNode diagramNode)
+        {
+            return new TypeDiagramNodeViewModel(Diagram, typeDiagramNode);
+        }
+
+        public override DiagramConnectorViewModel CreateDiagramConnectorViewModel(IDiagramConnector diagramConnector)
         {
             var sourceNode = DiagramShapeViewModelRepository.GetDiagramNodeViewModel(diagramConnector.Source);
             var targetNode = DiagramShapeViewModelRepository.GetDiagramNodeViewModel(diagramConnector.Target);

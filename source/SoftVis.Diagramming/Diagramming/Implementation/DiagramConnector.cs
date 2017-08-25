@@ -1,78 +1,50 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
-using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// A diagram connector is an edge in the diagram graph.
-    /// It is the representation of a directed model relationship and it connects two diagram nodes.
-    /// Eg. an inheritance arrow pointing from a derived class shape to its base class shape.
+    /// An immutable implementation of a diagram connector.
     /// </summary>
-    public class DiagramConnector : DiagramShape, IDiagramConnector, IEdge<IDiagramNode>
+    public class DiagramConnector : DiagramShapeBase, IDiagramConnector
     {
-        private Route _routePoints;
-
-        public IModelRelationship ModelRelationship { get; private set; }
+        public IModelRelationship ModelRelationship { get; }
         public IDiagramNode Source { get; }
         public IDiagramNode Target { get; }
         public ConnectorType ConnectorType { get; }
+        public Route Route { get; }
 
-        public event Action<IDiagramConnector, Route, Route> RouteChanged;
-
-        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target, ConnectorType connectorType)
-            : base(relationship)
+        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target,
+            ConnectorType connectorType)
+            : this(relationship, source, target, connectorType, Route.Empty)
         {
-            ModelRelationship = relationship;
+        }
+
+        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target,
+            ConnectorType connectorType, Route route)
+        {
+            ModelRelationship = relationship ?? throw new ArgumentNullException(nameof(relationship));
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
-            ConnectorType = connectorType;
+            ConnectorType = connectorType ?? throw new ArgumentNullException(nameof(connectorType));
+            Route = route ?? throw new ArgumentNullException(nameof(route));
         }
 
-        public virtual Route RoutePoints
-        {
-            get { return _routePoints; }
-            set
-            {
-                if (!_routePoints.EmptyIfNullSequenceEqual(value))
-                {
-                    var oldRoute = _routePoints;
-                    _routePoints = value;
-                    RouteChanged?.Invoke(this, oldRoute, value);
-                }
-            }
-        }
+        public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && Route != null;
+        public override Rect2D Rect => Source.Rect.Union(Target.Rect).Union(Route);
 
-        public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && RoutePoints != null;
-        public override Rect2D Rect => CalculateRect(Source.Rect, Target.Rect, RoutePoints);
+        public ModelRelationshipId Id => ModelRelationship.Id;
+        public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
 
-        public override void Update(IModelItem modelItem)
-        {
-            base.Update(modelItem);
-
-            if (modelItem is IModelRelationship modelRelationship)
-            {
-                ModelRelationship = modelRelationship;
-            }
-            else
-            {
-                throw new ArgumentException($"IModelRelationship expected but received {modelItem.GetType().Name}");
-            }
-        }
-
-        private static Rect2D CalculateRect(Rect2D sourceRect, Rect2D targetRect, Route routePoints)
-        {
-            var rectUnion = sourceRect.Union(targetRect);
-            if (routePoints != null)
-            {
-                foreach (var routePoint in routePoints)
-                    rectUnion = rectUnion.Union(routePoint);
-            }
-            return rectUnion;
-        }
+        public IDiagramConnector WithSource(IDiagramNode newSourceNode) => CreateInstance(newSourceNode, Target, Route);
+        public IDiagramConnector WithTarget(IDiagramNode newTargetNode) => CreateInstance(Source, newTargetNode, Route);
+        public IDiagramConnector WithRoute(Route newRoute) => CreateInstance(Source, Target, newRoute);
 
         public override string ToString() => Source + "---" + ModelRelationship.Stereotype + "-->" + Target;
+
+        protected virtual IDiagramConnector CreateInstance(IDiagramNode source, IDiagramNode target, Route route)
+        => new DiagramConnector(ModelRelationship, source, target, ConnectorType, route);
     }
 }

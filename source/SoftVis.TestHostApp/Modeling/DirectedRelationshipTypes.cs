@@ -8,16 +8,16 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     public static class DirectedRelationshipTypes
     {
         public static readonly DirectedModelRelationshipType BaseType = 
-            new DirectedModelRelationshipType(TestModelRelationshipStereotype.Inheritance, RelationshipDirection.Outgoing);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Inheritance, RelationshipDirection.Outgoing);
 
         public static readonly DirectedModelRelationshipType Subtype =
-            new DirectedModelRelationshipType(TestModelRelationshipStereotype.Inheritance, RelationshipDirection.Incoming);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Inheritance, RelationshipDirection.Incoming);
 
         public static readonly DirectedModelRelationshipType ImplementedInterface =
-            new DirectedModelRelationshipType(TestModelRelationshipStereotype.Implementation, RelationshipDirection.Outgoing);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Implementation, RelationshipDirection.Outgoing);
 
         public static readonly DirectedModelRelationshipType ImplementerType =
-            new DirectedModelRelationshipType(TestModelRelationshipStereotype.Implementation, RelationshipDirection.Incoming);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Implementation, RelationshipDirection.Incoming);
 
     }
 }

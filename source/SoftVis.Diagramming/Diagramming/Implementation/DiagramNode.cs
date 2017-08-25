@@ -1,111 +1,72 @@
 ﻿using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// A mutable implementation of the IDiagramNode interface.
+    /// An immutable implementation of a diagram node.
     /// </summary>
-    public class DiagramNode : DiagramShape, IDiagramNode
+    public class DiagramNode : DiagramShapeBase, IDiagramNode
     {
-        private Size2D _size;
-        private Point2D _center;
-        private readonly object _sizeAndPositionLock = new object();
-
-        public event Action<IDiagramNode, Size2D, Size2D> SizeChanged;
-        public event Action<IDiagramNode, Point2D, Point2D> CenterChanged;
-        public event Action<IDiagramNode, IModelNode> ModelNodeUpdated;
+        public IModelNode ModelNode { get; }
+        public Size2D Size { get; }
+        public Point2D Center { get; }
 
         public DiagramNode(IModelNode modelNode)
-            : base(modelNode)
+            : this(modelNode, Size2D.Zero, Point2D.Undefined)
         {
-            _size = Size2D.Zero;
-            _center = Point2D.Undefined;
         }
 
-        public IModelNode ModelNode => (IModelNode)ModelItem;
-        public string Name => ModelNode.Name;
-        public int LayoutPriority => ModelNode.LayoutPriority;
+        public DiagramNode(IModelNode modelNode, Size2D size, Point2D center)
+        {
+            ModelNode = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
+            Size = size;
+            Center = center;
+        }
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
+        public override Rect2D Rect => Rect2D.CreateFromCenterAndSize(Center, Size);
 
-        public override Rect2D Rect
-        {
-            get
-            {
-                lock (_sizeAndPositionLock)
-                    return new Rect2D(TopLeft, Size);
-            }
-        }
+        public ModelNodeId Id => ModelNode.Id;
+        public string Name => ModelNode.Name;
+        public ModelNodeStereotype Stereotype => ModelNode.Stereotype;
+        public ModelOrigin Origin => ModelNode.Origin;
 
-        public Point2D Center
-        {
-            get { return _center; }
-            set
-            {
-                if (_center != value)
-                {
-                    Point2D oldCenter;
-
-                    lock (_sizeAndPositionLock)
-                    {
-                        oldCenter = _center;
-                        _center = value;
-                    }
-
-                    OnCenterChanged(oldCenter, value);
-                }
-            }
-        }
-
-        public virtual Size2D Size
-        {
-            get { return _size; }
-            set
-            {
-                if (_size != value)
-                {
-                    Size2D oldSize;
-
-                    lock (_sizeAndPositionLock)
-                    {
-                        oldSize = _size;
-                        _size = value;
-                    }
-
-                    OnSizeChanged(oldSize, value);
-                }
-            }
-        }
-
+        public Point2D TopLeft => Rect.TopLeft;
         public double Width => Size.Width;
         public double Height => Size.Height;
-
-        public virtual Point2D TopLeft
-        {
-            get
-            {
-                lock (_sizeAndPositionLock)
-                    return Rect2D.CreateFromCenterAndSize(_center, _size).TopLeft;
-            }
-        }
-
-        public override void Update(IModelItem modelItem)
-        {
-            base.Update(modelItem);
-            ModelNodeUpdated?.Invoke(this, (IModelNode)modelItem);
-        }
 
         public int CompareTo(IDiagramNode otherNode) =>
             string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
 
         public override string ToString() => Name;
 
-        private void OnCenterChanged(Point2D oldCenter, Point2D newCenter) =>
-            CenterChanged?.Invoke(this, oldCenter, newCenter);
+        public IDiagramNode WithModelNode(IModelNode modelNode) => CreateInstance(modelNode, Size, Center);
+        public IDiagramNode WithSize(Size2D newSize)  => CreateInstance(ModelNode, newSize, Center);
+        public IDiagramNode WithCenter(Point2D newCenter) => CreateInstance(ModelNode, Size, newCenter);
 
-        private void OnSizeChanged(Size2D oldSize, Size2D newSize) =>
-            SizeChanged?.Invoke(this, oldSize, newSize);
+        protected virtual DiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center) 
+            => new DiagramNode(modelNode, size, center);
+
+        public static IEqualityComparer<IDiagramNode> IdComparer { get; } = new IdEqualityComparer();
+
+        private sealed class IdEqualityComparer : IEqualityComparer<IDiagramNode>
+        {
+            public bool Equals(IDiagramNode x, IDiagramNode y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (ReferenceEquals(x, null)) return false;
+                if (ReferenceEquals(y, null)) return false;
+                if (x.GetType() != y.GetType()) return false;
+                return x.Id.Equals(y.Id);
+            }
+
+            public int GetHashCode(IDiagramNode obj)
+            {
+                return obj.Id.GetHashCode();
+            }
+        }
     }
 }

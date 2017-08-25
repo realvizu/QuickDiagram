@@ -3,56 +3,33 @@
 namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
-    /// A read-only view of a model. 
     /// A model consists of nodes and relationships between nodes.
     /// The nodes form one or more tree hierarchies (e.g. packages contain other packages and types).
+    /// Immutable.
     /// </summary>
     public interface IModel
     {
-        /// <summary>
-        /// The collection of all model nodes.
-        /// </summary>
         IEnumerable<IModelNode> Nodes { get; }
-
-        /// <summary>
-        /// The collection of relationships that exist between nodes.
-        /// </summary>
         IEnumerable<IModelRelationship> Relationships { get; }
-
-        /// <summary>
-        /// The collection of model nodes that are hierarchy roots.
-        /// </summary>
         IEnumerable<IModelNode> RootNodes { get; }
 
-        /// <summary>
-        /// Returns the children of a node.
-        /// </summary>
-        /// <param name="parentNodeId">Identifies the parent node.</param>
-        /// <returns>The collection of child nodes. Can be empty.</returns>
-        IEnumerable<IModelNode> GetChildNodes(ModelItemId parentNodeId);
+        bool NodeExists(IModelNode node);
+        bool RelationshipExists(IModelRelationship relationship);
+        bool PathExists(IModelNode sourceNode, IModelNode targetNode);
 
-        /// <summary>
-        /// Returns a model node by its id. Throws if not found.
-        /// </summary>
-        /// <param name="modelNodeId">The id of the model node.</param>
-        /// <returns>A model node.</returns>
-        IModelNode GetModelNode(ModelItemId modelNodeId);
+        IModelNode GetNodeById(ModelNodeId nodeId);
 
-        /// <summary>
-        /// Returns all relationships attached to the given node (as either a source or target node).
-        /// </summary>
-        /// <param name="modelNodeId">The id of the model node.</param>
-        /// <returns>A read-only collection of relationships.</returns>
-        IEnumerable<IModelRelationship> GetRelationships(ModelItemId modelNodeId);
+        IEnumerable<IModelNode> GetChildNodes(IModelNode node);
+        IEnumerable<IModelNode> GetRelatedNodes(IModelNode node, 
+            DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false);
 
-        /// <summary>
-        /// Returns those nodes that are related to the given node with the given type of relationship.
-        /// </summary>
-        /// <param name="modelNodeId">The id of the model node.</param>
-        /// <param name="directedModelRelationshipType">A directed relationship type.</param>
-        /// <param name="recursive">True means that nodes are recursively traversed. False returns only immediately related nodes.</param>
-        /// <returns>A read-only collection of nodes.</returns>
-        IEnumerable<IModelNode> GetRelatedNodes(ModelItemId modelNodeId, DirectedModelRelationshipType directedModelRelationshipType,
-            bool recursive = false);
+        IEnumerable<IModelRelationship> GetRelationships(IModelNode node);
+
+        IModel AddNode(IModelNode node);
+        IModel RemoveNode(IModelNode node);
+        IModel ReplaceNode(IModelNode oldNode, IModelNode newNode);
+        IModel AddRelationship(IModelRelationship relationship);
+        IModel RemoveRelationship(IModelRelationship relationship);
+        IModel Clear();
     }
 }

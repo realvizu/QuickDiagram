@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Util;
@@ -16,8 +17,7 @@ namespace Codartis.SoftVis.Graphs
     /// Invariants:
     /// <para>The target of an edge is the source of the next edge.</para>
     /// </remarks>
-    internal class Path<TVertex, TEdge> : IEnumerable<TEdge>
-        where TVertex : class
+    public class Path<TVertex, TEdge> : IEnumerable<TEdge>
         where TEdge : IEdge<TVertex>
     {
         protected readonly List<TEdge> Edges;
@@ -34,8 +34,8 @@ namespace Codartis.SoftVis.Graphs
         }
 
         public int Length => Edges.Count;
-        public TVertex Source => Edges.FirstOrDefault()?.Source;
-        public TVertex Target => Edges.LastOrDefault()?.Target;
+        public TVertex Source => Edges.Any() ? Edges.First().Source : throw new InvalidOperationException("The path is empty.");
+        public TVertex Target => Edges.Any() ? Edges.Last().Target : throw new InvalidOperationException("The path is empty.");
         public IEnumerable<TVertex> Vertices => this.Select(i => i.Source).Concat(this.Last().Target);
         public TEdge this[int i] => Edges[i];
 

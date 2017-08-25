@@ -23,6 +23,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </remarks>
     internal sealed class IncrementalLayoutEngine : IIncrementalLayoutEngine, IDiagramActionConsumer
     {
+        private readonly ILayoutPriorityProvider _layoutPriorityProvider;
         private readonly Map<IDiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
         private readonly Map<IDiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
         private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
@@ -33,8 +34,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private const double HorizontalGap = DiagramDefaults.HorizontalGap;
         private const double VerticalGap = DiagramDefaults.VerticalGap;
 
-        public IncrementalLayoutEngine()
+        public IncrementalLayoutEngine(ILayoutPriorityProvider layoutPriorityProvider)
         {
+            _layoutPriorityProvider = layoutPriorityProvider ?? throw new ArgumentNullException(nameof(layoutPriorityProvider));
             _diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>();
             _diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>();
             _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
@@ -68,7 +70,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             if (_diagramNodeToLayoutVertexMap.Contains(diagramNode))
                 throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
 
-            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNode.LayoutPriority);
+            var diagramNodeLayoutPriority = _layoutPriorityProvider.GetPriority(diagramNode);
+            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNodeLayoutPriority);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
             _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);

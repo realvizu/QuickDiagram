@@ -16,6 +16,8 @@ namespace Codartis.SoftVis.Geometry
     /// </remarks>
     public class Route : IEnumerable<Point2D>
     {
+        public static readonly Route Empty = new Route();
+
         private readonly List<Point2D> _routePoints;
 
         public Route(IEnumerable<Point2D> routePoints = null)

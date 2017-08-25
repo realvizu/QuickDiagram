@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
+using Codartis.SoftVis.Graphs.Layered;
 using MoreLinq;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic

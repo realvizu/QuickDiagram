@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -7,7 +8,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button on a diagram shape.
     /// </summary>
-    public abstract class MiniButtonViewModelBase : DiagramShapeDecoratorViewModelBase, IDisposable
+    public abstract class MiniButtonViewModelBase : DiagramShapeDecoratorViewModelBase
     {
         private bool _isEnabled;
         private string _name;
@@ -15,16 +16,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
 
-        protected MiniButtonViewModelBase(IArrangedDiagram diagram, string name)
-            : base(diagram)
+        protected MiniButtonViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, 
+            string name)
+            : base(modelStore, diagramStore)
         {
             _isEnabled = true;
             _name = name;
             ClickCommand = new DelegateCommand(OnClick);
             DoubleClickCommand = new DelegateCommand(OnDoubleClick);
         }
-
-        public virtual void Dispose() { }
 
         public bool IsEnabled
         {

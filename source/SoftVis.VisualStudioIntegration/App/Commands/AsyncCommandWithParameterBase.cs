@@ -15,4 +15,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public abstract Task ExecuteAsync(T param);
     }
+
+    internal abstract class AsyncCommandWithParameterBase<T1,T2> : CommandBase
+    {
+        protected AsyncCommandWithParameterBase(IAppServices appServices)
+            : base(appServices)
+        {
+        }
+
+        public abstract Task ExecuteAsync(T1 param1, T2 param2);
+    }
 }

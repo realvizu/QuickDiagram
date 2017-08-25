@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Codartis.SoftVis.Geometry
@@ -20,6 +21,19 @@ namespace Codartis.SoftVis.Geometry
         public static Rect2D Union(this Rect2D rect, Point2D point)
         {
             return Union(rect, new Rect2D(point, point));
+        }
+
+        public static Rect2D Union(this Rect2D rect, Route route)
+        {
+            if (route == null)
+                throw new ArgumentNullException(nameof(route));
+
+            var result = rect;
+
+            foreach (var point in route)
+                result = result.Union(point);
+
+            return result;
         }
 
         public static Rect2D Union(this IEnumerable<Rect2D> rects)

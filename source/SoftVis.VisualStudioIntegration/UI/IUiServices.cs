@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         Dpi ImageExportDpi { get; set; }
 
         event Action<IDiagramShape> ShowSourceRequested;
-        event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
+        event Action<IReadOnlyList<IModelNode>, bool> ShowModelItemsRequested;
 
         void ShowDiagramWindow();
         void ShowMessageBox(string message);

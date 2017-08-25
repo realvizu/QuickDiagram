@@ -3,7 +3,7 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
 {
-    internal class TestModelNode : ModelNodeBase
+    internal class TestModelNode : ModelNode
     {
         public TestModelNode(string name = "dummy")
             : this(ModelItemId.Create(), name, ModelOrigin.SourceCode)

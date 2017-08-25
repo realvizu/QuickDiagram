@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
@@ -14,8 +14,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Top level view model of the diagram control.
     /// </summary>
-    public class DiagramViewModel : DiagramViewModelBase, IDisposable
+    public class DiagramViewModel : ModelObserverViewModelBase, IDiagramUi
     {
+        private IDiagram _lastDiagram;
         private Rect _diagramContentRect;
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
@@ -25,16 +26,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand PreviewMouseDownCommand { get; }
         public DelegateCommand MouseDownCommand { get; }
 
-        public event Action<IDiagramShape> ShowSourceRequested;
-        public event Action<IReadOnlyList<IModelNode>> ShowModelItemsRequested;
+        public event Action<IDiagramNode> DiagramNodeInvoked;
+        public event Action<IReadOnlyList<IModelNode>, bool> ShowModelItemsRequested;
 
-        public DiagramViewModel(IArrangedDiagram diagram, DiagramShapeViewModelFactoryBase diagramShapeViewModelFactory,
-            double minZoom, double maxZoom, double initialZoom)
-            : base(diagram)
+        public DiagramViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
+            : base(modelStore, diagramStore)
         {
-            DiagramViewportViewModel = new DiagramViewportViewModel(diagram, diagramShapeViewModelFactory, minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(ModelStore, DiagramStore, diagramShapeUiFactory,
+                minZoom, maxZoom, initialZoom);
 
-            RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(diagram);
+            RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelStore, DiagramStore);
             RelatedNodeListBoxViewModel.ItemSelected += OnRelatedNodeSelected;
             RelatedNodeListBoxViewModel.Items.CollectionChanged += OnRelatedNodeCollectionChanged;
 
@@ -43,17 +45,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             PreviewMouseDownCommand = new DelegateCommand(OnAnyMouseDownEvent);
             MouseDownCommand = new DelegateCommand(OnUnhandledMouseDownEvent);
 
-            SubscribeToDiagramEvents();
+            DiagramStore.DiagramChanged += OnDiagramChanged;
+
             SubscribeToViewportEvents();
+
+            _lastDiagram = DiagramStore.CurrentDiagram;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
+
             RelatedNodeListBoxViewModel.ItemSelected -= OnRelatedNodeSelected;
             RelatedNodeListBoxViewModel.Items.CollectionChanged -= OnRelatedNodeCollectionChanged;
             RelatedNodeListBoxViewModel.Dispose();
 
-            UnsubscribeFromDiagramEvents();
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
+
             UnsubscribeFromViewportEvents();
 
             DiagramViewportViewModel.Dispose();
@@ -74,7 +82,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes)
         {
-            var autoMoveMode = Diagram.Nodes.Count > diagramNodes.Count
+            var autoMoveMode = _lastDiagram.Nodes.Count() > diagramNodes.Count
                 ? ViewportAutoMoveMode.Contain
                 : ViewportAutoMoveMode.Center;
 
@@ -82,12 +90,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.FollowDiagramNodes(diagramNodes);
         }
 
-        public void StopFollowingDiagramNodes() => DiagramViewportViewModel.StopFollowingDiagramNodes();
+        public void StopFollowingDiagramNodes()
+        {
+            DiagramViewportViewModel.StopFollowingDiagramNodes();
+        }
 
         public void KeepDiagramCentered()
         {
             DiagramViewportViewModel.SetFollowDiagramNodesMode(ViewportAutoMoveMode.Center);
-            DiagramViewportViewModel.FollowDiagramNodes(Diagram.Nodes);
+            DiagramViewportViewModel.FollowDiagramNodes(_lastDiagram.Nodes);
         }
 
         public void ZoomToContent() => DiagramViewportViewModel.ZoomToContent();
@@ -108,7 +119,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.RelatedNodeSelectorRequested += OnRelatedNodeSelectorRequested;
             DiagramViewportViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
-            DiagramViewportViewModel.ShowSourceRequested += OnShowSourceRequested;
+            DiagramViewportViewModel.DiagramNodeInvoked += OnDiagramNodeInvoked;
         }
 
         private void UnsubscribeFromViewportEvents()
@@ -117,7 +128,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.RelatedNodeSelectorRequested -= OnRelatedNodeSelectorRequested;
             DiagramViewportViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
-            DiagramViewportViewModel.ShowSourceRequested -= OnShowSourceRequested;
+            DiagramViewportViewModel.DiagramNodeInvoked -= OnDiagramNodeInvoked;
         }
 
         private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
@@ -140,25 +151,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 case 0:
                     return;
                 case 1:
-                    var diagramNodes = Diagram.ShowModelItems(modelNodes).OfType<IDiagramNode>().ToArray();
-                    FollowDiagramNodes(diagramNodes);
+                    ShowModelItemsRequested?.Invoke(modelNodes, true);
                     break;
                 default:
                     HideRelatedNodeListBox();
-                    ShowModelItemsRequested?.Invoke(modelNodes);
+                    ShowModelItemsRequested?.Invoke(modelNodes, true);
                     break;
             }
         }
 
-        private void OnRelatedNodeSelected(IModelNode selectedNode)
+        private void OnRelatedNodeSelected(IModelNode modelNode)
         {
             StopFollowingDiagramNodes();
-            Diagram.ShowModelItem(selectedNode);
+            ShowModelItemsRequested?.Invoke(new[] { modelNode }, false);
         }
 
-        private void OnShowSourceRequested(IDiagramShape diagramShape)
+        private void OnDiagramNodeInvoked(IDiagramNode diagramNode)
         {
-            ShowSourceRequested?.Invoke(diagramShape);
+            DiagramNodeInvoked?.Invoke(diagramNode);
         }
 
         private void OnRelatedNodeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -187,12 +197,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             HideAllWidgets();
         }
 
-        private void OnCleared()
-        {
-            HideAllWidgets();
-            UpdateDiagramContentRect();
-        }
-
         private void HideRelatedNodeListBox()
         {
             DiagramViewportViewModel.UnpinDecoration();
@@ -210,35 +214,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             HidePopupText();
         }
 
-        private void UpdateDiagramContentRect()
+        private void UpdateDiagramContentRect(IDiagram diagram)
         {
-            DiagramContentRect = Diagram.ContentRect.ToWpf();
+            DiagramContentRect = diagram.ContentRect.ToWpf();
         }
 
-        private void OnDiagramShapeAdded(IDiagramShape diagramShape) => UpdateDiagramContentRect();
-        private void OnDiagramShapeRemoved(IDiagramShape diagramShape) => UpdateDiagramContentRect();
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize) => UpdateDiagramContentRect();
-        private void OnDiagramNodeCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter) => UpdateDiagramContentRect();
-        private void OnDiagramConnectorRouteChanged(IDiagramConnector diagramConnector, Route oldRoute, Route newRoute) => UpdateDiagramContentRect();
-
-        private void SubscribeToDiagramEvents()
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            Diagram.ShapeAdded += OnDiagramShapeAdded;
-            Diagram.ShapeRemoved += OnDiagramShapeRemoved;
-            Diagram.NodeSizeChanged += OnDiagramNodeSizeChanged;
-            Diagram.NodeCenterChanged += OnDiagramNodeCenterChanged;
-            Diagram.ConnectorRouteChanged += OnDiagramConnectorRouteChanged;
-            Diagram.DiagramCleared += OnCleared;
-        }
+            _lastDiagram = diagramEvent.NewDiagram;
 
-        private void UnsubscribeFromDiagramEvents()
-        {
-            Diagram.ShapeAdded -= OnDiagramShapeAdded;
-            Diagram.ShapeRemoved -= OnDiagramShapeRemoved;
-            Diagram.NodeSizeChanged -= OnDiagramNodeSizeChanged;
-            Diagram.NodeCenterChanged -= OnDiagramNodeCenterChanged;
-            Diagram.ConnectorRouteChanged -= OnDiagramConnectorRouteChanged;
-            Diagram.DiagramCleared -= OnCleared;
+            if (diagramEvent is DiagramClearedEvent)
+                HideAllWidgets();
+
+            UpdateDiagramContentRect(diagramEvent.NewDiagram);
         }
     }
 }

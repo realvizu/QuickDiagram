@@ -1,48 +1,42 @@
-using System;
 using System.Collections.Generic;
-using System.Threading;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
-    /// A diagram is a partial, graphical representation of a model. 
-    /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
-    /// A diagram consists of shapes that represent model elements.
-    /// The shapes form a directed graph: some shapes are nodes in the graph and others are connectors between nodes.
+    /// A diagram is a partial, graphical representation of a model.
+    /// Immutable.
+    /// A diagram consists of shapes that represent model items: Diagram nodes for model nodes and diagram connectors for model relatioships.
+    /// The diagram nodes and connectors form a directed graph.
     /// </summary>
+    /// <remarks>
+    /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
+    /// </remarks>
     public interface IDiagram
     {
-        // Remove when DiagramBuilder is separated.
-        IModelProvider ModelProvider { get; }
+        Rect2D ContentRect { get; }
 
-        IReadOnlyList<IDiagramNode> Nodes { get; }
-        IReadOnlyList<IDiagramConnector> Connectors { get; }
-        IReadOnlyList<IDiagramShape> Shapes { get; }
+        IEnumerable<IDiagramShape> Shapes { get; }
+        IEnumerable<IDiagramNode> Nodes { get; }
+        IEnumerable<IDiagramConnector> Connectors { get; }
 
-        event Action<IDiagramShape> ShapeAdded;
-        event Action<IDiagramShape> ShapeRemoved;
-        event Action<IDiagramShape> ShapeSelected;
-        event Action DiagramCleared;
+        bool NodeExists(IDiagramNode node);
+        bool NodeExistsById(ModelNodeId modelNodeId);
+        bool ConnectorExists(IDiagramConnector connector);
+        bool ConnectorExistsById(ModelRelationshipId modelRelationshipId);
+        bool PathExists(IDiagramNode sourceNode, IDiagramNode targetNode);
+        bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeIdNode);
 
-        ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
+        IDiagramNode GetNodeById(ModelNodeId modelNodeId);
+        IDiagramConnector GetConnectorById(ModelRelationshipId modelRelationshipId);
 
-        IDiagramShape ShowModelItem(IModelItem modelItem);
-
-        IReadOnlyList<IDiagramShape> ShowModelItems(IEnumerable<IModelItem> modelItems,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
-
-        void HideModelItem(ModelItemId modelItemId);
-
-        void HideModelItems(IEnumerable<ModelItemId> modelItemIds,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
-
-        void Clear();
-
-        void SelectDiagramShape(IDiagramShape diagramShape);
-        void RemoveDiagramShape(IDiagramShape diagramShape);
-
-        IReadOnlyList<IModelNode> GetUndisplayedRelatedModelNodes(IDiagramNode diagramNode, DirectedModelRelationshipType modelRelationshipType);
+        IDiagram AddNode(IDiagramNode node);
+        IDiagram RemoveNode(IDiagramNode node);
+        IDiagram ReplaceNode(IDiagramNode oldNode, IDiagramNode newNode);
+        IDiagram AddConnector(IDiagramConnector connector);
+        IDiagram RemoveConnector(IDiagramConnector connector);
+        IDiagram ReplaceConnector(IDiagramConnector oldConnector, IDiagramConnector newConnector);
+        IDiagram Clear();
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using Codartis.SoftVis.Geometry;
+﻿using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
@@ -7,16 +7,15 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// A diagram connector represents a model relationship and it connects two diagram nodes.
     /// Eg. an inheritance arrow pointing from a derived class shape to its base class shape.
+    /// Immutable.
     /// </summary>
-    public interface IDiagramConnector : IDiagramShape
+    public interface IDiagramConnector : IDiagramShape, IImmutableEdge<IDiagramNode, IDiagramConnector, ModelRelationshipId>
     {
         IModelRelationship ModelRelationship { get; }
 
-        IDiagramNode Source { get; }
-        IDiagramNode Target { get; }
-        Route RoutePoints { get; set; }
         ConnectorType ConnectorType { get; }
+        Route Route { get; }
 
-        event Action<IDiagramConnector, Route, Route> RouteChanged;
+        IDiagramConnector WithRoute(Route newRoute);
     }
 }

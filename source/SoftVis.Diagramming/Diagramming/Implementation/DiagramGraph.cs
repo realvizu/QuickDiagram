@@ -1,37 +1,41 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
+using Codartis.SoftVis.Graphs.Immutable;
+using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Implementation;
+using QuickGraph;
 using QuickGraph.Algorithms;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// The graph formed by the nodes and connectors of a diagram.
+    /// An immutable graph of digaram nodes and connectors. Mutators return a new graph.
     /// </summary>
-    internal sealed class DiagramGraph : ConcurrentBidirectionalGraph<IDiagramNode, DiagramConnector>
+    public class DiagramGraph
+        : ReplaceableImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId, DiagramGraph>
+
     {
-        public DiagramGraph() 
-            : base(allowParallelEdges: false)
+        public DiagramGraph()
+            : base(allowParallelEdges: true)
         {
         }
 
-        /// <summary>
-        /// Returns the given number of shortest paths between two nodes.
-        /// </summary>
-        /// <param name="source">Source node of the path.</param>
-        /// <param name="target">Target node of the path.</param>
-        /// <param name="pathCount">The max. number of paths to be returned.</param>
-        /// <returns>The shortest paths between two nodes.</returns>
-        public IEnumerable<DiagramPath> GetShortestPaths(IDiagramNode source, IDiagramNode target, int pathCount)
+        protected DiagramGraph(
+            ImmutableDictionary<ModelNodeId, IDiagramNode> vertices, 
+            ImmutableDictionary<ModelRelationshipId, IDiagramConnector> edges, 
+            ImmutableBidirectionalGraph<ModelNodeId, VertexIdEdge<ModelNodeId, ModelRelationshipId>> graph) 
+            : base(vertices, edges, graph)
         {
-            lock (SyncRoot)
-            {
-                if (!Graph.ContainsVertex(source) ||
-                    !Graph.ContainsVertex(target))
-                    return null;
+        }
 
-                return Graph.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCount).Select(i => new DiagramPath(i));
-            }
+        protected override DiagramGraph CreateInstance(
+            ImmutableDictionary<ModelNodeId, IDiagramNode> vertices, 
+            ImmutableDictionary<ModelRelationshipId, IDiagramConnector> edges, 
+            ImmutableBidirectionalGraph<ModelNodeId, VertexIdEdge<ModelNodeId, ModelRelationshipId>> graph)
+        {
+            return new DiagramGraph(vertices, edges, graph);
         }
     }
 }

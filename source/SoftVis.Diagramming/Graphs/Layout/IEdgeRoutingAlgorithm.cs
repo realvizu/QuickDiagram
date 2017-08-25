@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs.Algorithms;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Layout

@@ -7,17 +7,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// Interface implementation relationship between two model nodes.
     /// </summary>
-    internal class ImplementationRelationship : ModelRelationshipBase
+    internal class ImplementationRelationship : ModelRelationship
     {
         public ImplementationRelationship(ModelItemId id, IModelNode source, IModelNode target) 
-            : base(id, source, target, RoslynModelRelationshipStereotype.Implementation)
+            : base(id, source, target, ModelRelationshipStereotypes.Implementation)
         {
         }
 
         protected override IEnumerable<(ModelNodeStereotype, ModelNodeStereotype)> GetValidSourceAndTargetNodeTypePairs()
         {
-            yield return (ModelNodeStereotype.Class, RoslynModelNodeStereotype.Interface);
-            yield return (RoslynModelNodeStereotype.Struct, RoslynModelNodeStereotype.Interface);
+            yield return (ModelNodeStereotype.Class, ModelNodeStereotypes.Interface);
+            yield return (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Interface);
         }
     }
 }

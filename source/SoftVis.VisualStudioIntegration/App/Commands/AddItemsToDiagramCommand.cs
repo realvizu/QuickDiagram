@@ -11,20 +11,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Adds the given model items to the diagram and shows a progress dialog.
     /// </summary>
-    internal sealed class AddItemsToDiagramCommand : AsyncCommandWithParameterBase<IReadOnlyList<IRoslynModelNode>>
+    internal sealed class AddItemsToDiagramCommand : AsyncCommandWithParameterBase<IReadOnlyList<IRoslynModelNode>, bool>
     {
         public AddItemsToDiagramCommand(IAppServices appServices)
             : base(appServices)
         {
         }
 
-        public override async Task ExecuteAsync(IReadOnlyList<IRoslynModelNode> modelEntities)
+        public override async Task ExecuteAsync(IReadOnlyList<IRoslynModelNode> modelEntities, bool followWithViewport)
         {
             var diagramNodes = await ShowProgressAndAddItemsAsync(modelEntities);
 
             UiServices.ShowDiagramWindow();
 
-            if (diagramNodes.Count > 1)
+            if (followWithViewport)
                 UiServices.FollowDiagramNodes(diagramNodes);
         }
 

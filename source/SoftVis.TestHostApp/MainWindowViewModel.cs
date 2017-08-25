@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
+using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -25,7 +26,7 @@ namespace Codartis.SoftVis.TestHostApp
         private const string DiagramStylesXaml = "Resources/Styles.xaml";
 
         private readonly ResourceDictionary _resourceDictionary;
-        private readonly TestModelBuilder _testModelBuilder;
+        private readonly TestModelStore _testModelStore;
         private readonly TestDiagram _testDiagram;
 
         private int _modelItemGroupIndex;
@@ -45,20 +46,18 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            _testModelBuilder = new TestModelBuilder();
-            var testDiagramBuilder = new TestDiagramBuilder();
+            _testModelStore = TestModelCreator.Create();
+            //_testModelStore = BigTestModelCreator.Create(2, 5);
 
-            TestModel.Create(_testModelBuilder);
-            //CreateBigModel();
-
-            _testDiagram = new TestDiagram(_testModelBuilder, testDiagramBuilder);
+            var testDiagramBuilder = new TestDiagramStore();
+            _testDiagram = new TestDiagram(_testModelStore, testDiagramBuilder);
             var diagramShapeVieModelFactory = new TestDiagramShapeViewModelFactory(_testDiagram);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, diagramShapeVieModelFactory,
                 minZoom: 0.2, maxZoom: 5, initialZoom: 1);
 
             DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.Id}");
-            DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowModelItems(i);
+            DiagramViewModel.ShowModelItemsRequested += (i,j) => _testDiagram.ShowModelItems(i);
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
@@ -80,11 +79,10 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            if (_modelItemGroupIndex == _testModelBuilder.ItemGroups.Count)
+            if (_modelItemGroupIndex == _testModelStore.CurrentTestModel.ItemGroups.Count)
                 return;
 
-            var modelItemIds = _testModelBuilder.ItemGroups[_modelItemGroupIndex];
-            var modelItems = modelItemIds.Select(i => _testModelBuilder.CurrentModel.RootNodes.FirstOrDefault(j => j.Id == i));
+            var modelItems = _testModelStore.CurrentTestModel.ItemGroups[_modelItemGroupIndex];
 
             _testDiagram.ShowModelItems(modelItems);
             _modelItemGroupIndex++;
@@ -94,21 +92,12 @@ namespace Codartis.SoftVis.TestHostApp
             ZoomToContent();
         }
 
-        private void CreateBigModel()
-        {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            BigTestModel.Create(_testModelBuilder, 2, 7);
-            stopWatch.Stop();
-            Debug.WriteLine($"BigTestModel created in {stopWatch.Elapsed}");
-        }
-
         private void RemoveShapes()
         {
-            if (_nextToRemoveModelItemGroupIndex == _testModelBuilder.ItemGroups.Count)
+            if (_nextToRemoveModelItemGroupIndex == _testModelStore.CurrentTestModel.ItemGroups.Count)
                 return;
 
-            _testDiagram.HideModelItems(_testModelBuilder.ItemGroups[_nextToRemoveModelItemGroupIndex]);
+            _testDiagram.HideModelItems(_testModelStore.CurrentTestModel.ItemGroups[_nextToRemoveModelItemGroupIndex]);
             _nextToRemoveModelItemGroupIndex++;
 
             ZoomToContent();

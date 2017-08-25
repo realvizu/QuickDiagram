@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -7,8 +8,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class CloseMiniButtonViewModel : MiniButtonViewModelBase
     {
-        public CloseMiniButtonViewModel(IArrangedDiagram diagram)
-            : base(diagram, "Remove")
+        public CloseMiniButtonViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore)
+            : base(modelStore, diagramStore, "Remove")
         {
             IsEnabled = true;
         }

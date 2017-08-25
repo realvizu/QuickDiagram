@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -13,45 +13,39 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, ICloneable, IDisposable
     {
-        private readonly object _positionUpdateLock = new object();
-
+        private string _name;
         private Point _center;
         private Point _topLeft;
         private Size _size;
         private Rect _animatedRect;
-        private string _name;
 
-        public IDiagramNode DiagramNode { get; }
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
 
-        protected DiagramNodeViewModelBase(IArrangedDiagram diagram, IDiagramNode diagramNode, Size size, Point center, Point topLeft)
-              : base(diagram, diagramNode)
+        protected DiagramNodeViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            IDiagramNode diagramNode)
+              : base(modelStore, diagramStore, diagramNode)
         {
-            DiagramNode = diagramNode;
-
-            _size = size;
-            _center = center;
-            _topLeft = topLeft;
-            _name = diagramNode.Name;
+            PopulateFromDiagramNode(diagramNode);
 
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
-            DiagramNode.CenterChanged += OnCenterChanged;
-            DiagramNode.ModelNodeUpdated += OnModelNodeUpdated;
+            DiagramStore.DiagramChanged += OnDiagramChanged;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            DiagramNode.CenterChanged -= OnCenterChanged;
-            DiagramNode.ModelNodeUpdated -= OnModelNodeUpdated;
+            base.Dispose();
+
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
 
             foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
                 relatedNodeCueViewModel.Dispose();
         }
 
+        public IDiagramNode DiagramNode => (IDiagramNode)DiagramShape;
         public IModelNode ModelNode => DiagramNode.ModelNode;
 
         public string Name
@@ -72,15 +66,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             get { return _center; }
             set
             {
-                lock (_positionUpdateLock)
+                if (_center != value)
                 {
-                    if (_center != value)
-                    {
-                        _center = value;
-                        OnPropertyChanged();
-
-                        TopLeft = CenterToTopLeft(_center, _size);
-                    }
+                    _center = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -103,17 +92,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             get { return _size; }
             set
             {
-                lock (_positionUpdateLock)
+                if (_size != value)
                 {
-                    if (_size != value)
-                    {
-                        var oldSize = _size;
-                        _size = value;
-                        OnPropertyChanged();
-
-                        OnSizeChanged(oldSize, value);
-                        TopLeft = CenterToTopLeft(_center, _size);
-                    }
+                    _size = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -133,47 +115,44 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public abstract object Clone();
 
-        public void ShowRelatedNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) => 
+        public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
             ShowRelatedNodesRequested?.Invoke(ownerButton, modelNodes);
 
-        public void ShowRelatedNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
+        public void ShowRelatedModelNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
             RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
         public override IEnumerable<MiniButtonViewModelBase> CreateMiniButtonViewModels()
         {
-            yield return new CloseMiniButtonViewModel(Diagram);
+            yield return new CloseMiniButtonViewModel(ModelStore, DiagramStore);
 
             foreach (var entityRelationType in GetRelatedNodeTypes())
-                yield return new RelatedNodeMiniButtonViewModel(Diagram, entityRelationType);
+                yield return new RelatedNodeMiniButtonViewModel(ModelStore, DiagramStore, entityRelationType);
         }
 
         protected abstract IEnumerable<RelatedNodeType> GetRelatedNodeTypes();
 
-        protected virtual void OnModelNodeUpdated(IDiagramNode diagramNode, IModelNode modelNode)
+        protected virtual void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            Name = modelNode.Name;
+            if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent
+                && diagramNodeChangedEvent.OldNode == DiagramNode)
+            {
+                PopulateFromDiagramNode(diagramNodeChangedEvent.DiagramNode);
+            }
         }
 
-        private void OnCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
+        private void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
-            Center = newCenter.ToWpf();
-        }
-
-        private void OnSizeChanged(Size oldSize, Size newSize)
-        {
-            DiagramNode.Size = newSize.FromWpf();
+            Size = diagramNode.Size.ToWpf();
+            Center = diagramNode.Center.ToWpf();
+            TopLeft = diagramNode.TopLeft.ToWpf();
+            Name = diagramNode.Name;
         }
 
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()
         {
             return GetRelatedNodeTypes()
-                .Select(i => new RelatedNodeCueViewModel(Diagram, DiagramNode, i))
+                .Select(i => new RelatedNodeCueViewModel(ModelStore, DiagramStore, DiagramNode, i))
                 .ToList();
-        }
-
-        private Point CenterToTopLeft(Point center, Size size)
-        {
-            return new Point(_center.X - size.Width / 2, center.Y - size.Height / 2);
         }
     }
 }

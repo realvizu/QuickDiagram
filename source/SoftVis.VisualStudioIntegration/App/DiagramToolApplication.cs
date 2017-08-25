@@ -70,12 +70,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             new ShowSourceFileCommand(this).Execute(diagramNode);
         }
 
-        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelNode> modelNodes)
+        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
             var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
 
             if (roslynModelNodes.Any())
-                await new AddItemsToDiagramCommand(this).ExecuteAsync(roslynModelNodes);
+                await new AddItemsToDiagramCommand(this).ExecuteAsync(roslynModelNodes, followWithViewport);
         }
     }
 }

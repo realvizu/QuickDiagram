@@ -26,6 +26,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             foreach (var diagramNodeViewModel in DiagramNodeViewModels.OfType<TypeDiagramNodeViewModel>())
                 diagramNodeViewModel.IsDescriptionVisible = _areDiagramNodeDescriptionsVisible;
         }
-
     }
 }

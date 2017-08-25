@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <remarks>
     /// Caches the minibutton view models created for a certain kind of diagram shape.
     /// </remarks>
-    public class MiniButtonPanelViewModel : DecorationManagerViewModelBase<DiagramShapeViewModelBase>, IDisposable
+    public class MiniButtonPanelViewModel : DecorationManagerViewModelBase<DiagramShapeViewModelBase>
     {
         private readonly Dictionary<Type, List<MiniButtonViewModelBase>> _miniButtonViewModelCache;
         private readonly object _cacheLockObject = new object();
@@ -28,8 +28,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ButtonViewModels = new ThreadSafeObservableCollection<MiniButtonViewModelBase>();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
+
             foreach (var buttonViewModel in ButtonViewModels)
                 buttonViewModel.Dispose();
         }

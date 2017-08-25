@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// <summary>
     /// Abstract base class for all ViewModels. Implements INotifyPropertyChanged.
     /// </summary>
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         private readonly Dispatcher _dispatcher;
 
@@ -18,6 +18,10 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
         protected ViewModelBase()
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
+        }
+
+        public virtual void Dispose()
+        {
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

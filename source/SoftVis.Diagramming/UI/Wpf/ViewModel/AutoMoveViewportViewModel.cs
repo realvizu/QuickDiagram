@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
 
@@ -13,24 +13,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Adds the ability to the viewport to follow the rect of some diagram nodes.
     /// </summary>
-    public class AutoMoveViewportViewModel : ViewportCalculatorViewModel, IDisposable
+    public class AutoMoveViewportViewModel : ViewportCalculatorViewModel
     {
         private IDiagramNode[] _followedDiagramNodes;
         private TransitionSpeed _followDiagramNodesTransitionSpeed;
 
         public ViewportAutoMoveMode Mode { get; set; }
 
-        public AutoMoveViewportViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom,
-            ViewportAutoMoveMode mode = ViewportAutoMoveMode.Contain)
-             : base(diagram, minZoom, maxZoom, initialZoom)
+        public AutoMoveViewportViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+            double minZoom, double maxZoom, double initialZoom, ViewportAutoMoveMode mode = ViewportAutoMoveMode.Contain)
+             : base(modelStore, diagramStore, minZoom, maxZoom, initialZoom)
         {
             Mode = mode;
-            SubscribeToDiagramEvents();
+
+            DiagramStore.DiagramChanged += OnDiagramChanged;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            UnsubscribeFromDiagramEvents();
+            base.Dispose();
+
+            DiagramStore.DiagramChanged -= OnDiagramChanged;
         }
 
         public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed)
@@ -69,28 +72,28 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             base.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace, transitionSpeed);
         }
 
-        private void SubscribeToDiagramEvents()
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            Diagram.NodeCenterChanged += OnDiagramNodeCenterChanged;
-            Diagram.NodeSizeChanged += OnDiagramNodeSizeChanged;
+            EnsureUiThread(() => DispatchDiagramEvent(diagramEvent));
         }
 
-        private void UnsubscribeFromDiagramEvents()
+        private void DispatchDiagramEvent(DiagramEventBase diagramEvent)
         {
-            Diagram.NodeCenterChanged -= OnDiagramNodeCenterChanged;
-            Diagram.NodeSizeChanged -= OnDiagramNodeSizeChanged;
+            switch (diagramEvent)
+            {
+                case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
+                    FollowDiagramNode(diagramNodeSizeChangedEvent.DiagramNode);
+                    break;
+                case DiagramNodePositionChangedEvent diagramNodePositionChangedEvent:
+                    FollowDiagramNode(diagramNodePositionChangedEvent.DiagramNode);
+                    break;
+            }
         }
 
-        private void OnDiagramNodeCenterChanged(IDiagramNode diagramNode, Point2D oldCenter, Point2D newCenter)
+        private void FollowDiagramNode(IDiagramNode diagramNode)
         {
             if (_followedDiagramNodes != null && _followedDiagramNodes.Contains(diagramNode))
-                EnsureUiThread(MoveViewport);
-        }
-
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D oldSize, Size2D newSize)
-        {
-            if (_followedDiagramNodes != null && _followedDiagramNodes.Contains(diagramNode))
-                EnsureUiThread(MoveViewport);
+                MoveViewport();
         }
 
         private void MoveViewport()
@@ -98,11 +101,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (_followedDiagramNodes == null)
                 return;
 
-            var rect = _followedDiagramNodes.Select(i => i.Rect).Where(i => i.IsDefined()).Union().ToWpf();
+            var rect = _followedDiagramNodes.Where(i => i.IsRectDefined).Select(i => i.Rect).Union().ToWpf();
             if (rect.IsUndefined())
                 return;
-
-            //Debug.WriteLine($"MoveViewport to follow: {rect}");
 
             switch (Mode)
             {

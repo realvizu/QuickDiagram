@@ -1,4 +1,5 @@
 ﻿using System;
+using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Modeling
 {
@@ -8,9 +9,9 @@ namespace Codartis.SoftVis.Modeling
     public struct DirectedModelRelationshipType : IEquatable<DirectedModelRelationshipType>
     {
         public ModelRelationshipStereotype Stereotype { get; }
-        public RelationshipDirection Direction { get; }
+        public EdgeDirection Direction { get; }
 
-        public DirectedModelRelationshipType(ModelRelationshipStereotype stereotype, RelationshipDirection direction)
+        public DirectedModelRelationshipType(ModelRelationshipStereotype stereotype, EdgeDirection direction)
         {
             Stereotype = stereotype ?? throw new ArgumentNullException(nameof(stereotype));
             Direction = direction;

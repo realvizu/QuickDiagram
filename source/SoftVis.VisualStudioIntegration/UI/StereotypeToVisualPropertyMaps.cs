@@ -17,20 +17,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             new Dictionary<ModelNodeStereotype, string>
             {
                 {ModelNodeStereotype.Class, string.Format(ImagePathTemplate, "Class")},
-                {RoslynModelNodeStereotype.Interface, string.Format(ImagePathTemplate, "Interface")},
-                {RoslynModelNodeStereotype.Struct, string.Format(ImagePathTemplate, "Struct")},
-                {RoslynModelNodeStereotype.Enum, string.Format(ImagePathTemplate, "Enum")},
-                {RoslynModelNodeStereotype.Delegate, string.Format(ImagePathTemplate, "Delegate")}
+                {ModelNodeStereotypes.Interface, string.Format(ImagePathTemplate, "Interface")},
+                {ModelNodeStereotypes.Struct, string.Format(ImagePathTemplate, "Struct")},
+                {ModelNodeStereotypes.Enum, string.Format(ImagePathTemplate, "Enum")},
+                {ModelNodeStereotypes.Delegate, string.Format(ImagePathTemplate, "Delegate")}
             };
 
         public static readonly Dictionary<ModelNodeStereotype, Brush> StereotypeToBackgroundBrushMap =
             new Dictionary<ModelNodeStereotype, Brush>
             {
                 {ModelNodeStereotype.Class, Color.FromArgb(0xFF, 0xF5, 0xE3, 0xD6).CreateBrushFrozen()},
-                {RoslynModelNodeStereotype.Interface, Brushes.LightGray},
-                {RoslynModelNodeStereotype.Struct, Color.FromArgb(0xFF, 0xD1, 0xEA, 0xF3).CreateBrushFrozen()},
-                {RoslynModelNodeStereotype.Enum, Brushes.Gold},
-                {RoslynModelNodeStereotype.Delegate, Brushes.Lavender}
+                {ModelNodeStereotypes.Interface, Brushes.LightGray},
+                {ModelNodeStereotypes.Struct, Color.FromArgb(0xFF, 0xD1, 0xEA, 0xF3).CreateBrushFrozen()},
+                {ModelNodeStereotypes.Enum, Brushes.Gold},
+                {ModelNodeStereotypes.Delegate, Brushes.Lavender}
             };
     }
 }

@@ -4,7 +4,7 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
 {
-    internal sealed class TestModelRelationship : ModelRelationshipBase
+    internal sealed class TestModelRelationship : ModelRelationship
     {
         public TestModelRelationship(IModelNode source, IModelNode target)
             : base(ModelItemId.Create(), source, target, ModelRelationshipStereotype.Containment)

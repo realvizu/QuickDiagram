@@ -3,13 +3,11 @@
     /// <summary>
     /// Extensible list of model node types.
     /// </summary>
-    public class ModelNodeStereotype
+    public sealed class ModelNodeStereotype
     {
-        public static readonly ModelNodeStereotype Class = new ModelNodeStereotype(nameof(Class));
-
         public string Name { get; }
 
-        protected ModelNodeStereotype(string name)
+        public ModelNodeStereotype(string name)
         {
             Name = name;
         }

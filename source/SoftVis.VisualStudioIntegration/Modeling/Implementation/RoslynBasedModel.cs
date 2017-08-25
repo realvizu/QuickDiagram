@@ -10,19 +10,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// A model created from Roslyn symbols. Immutable.
     /// </summary>
-    internal class RoslynBasedModel : ImmutableModel
+    internal class RoslynBasedModel : Model
     {
         public RoslynBasedModel()
         {
         }
 
-        private RoslynBasedModel(ImmutableModelGraph graph) 
+        private RoslynBasedModel(ModelGraph graph) 
             : base(graph)
         {
         }
 
         public IEnumerable<RoslynModelNode> RoslynModelNodes => Nodes.OfType<RoslynModelNode>();
-        public IEnumerable<ModelRelationshipBase> RoslynRelationships => Relationships.OfType<ModelRelationshipBase>();
+        public IEnumerable<ModelRelationship> RoslynRelationships => Relationships.OfType<ModelRelationship>();
 
         public IRoslynModelNode GetNodeBySymbol(ISymbol symbol)
         {
@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return RoslynRelationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
         }
 
-        protected override ImmutableModel WithGraph(ImmutableModelGraph graph) =>
+        protected override Model WithGraph(ModelGraph graph) =>
             new RoslynBasedModel(graph);
     }
 }

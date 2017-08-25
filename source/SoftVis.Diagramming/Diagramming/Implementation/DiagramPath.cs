@@ -6,10 +6,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// A path created from DiagramConnectors.
     /// </summary>
-    internal class DiagramPath : Path<IDiagramNode, DiagramConnector>
+    public class DiagramPath : Path<IDiagramNode, IDiagramConnector>
     {
-        public DiagramPath(IEnumerable<DiagramConnector> edges) 
-            : base(edges)
+        public DiagramPath(IEnumerable<IDiagramConnector> connectors) 
+            : base(connectors)
         {
         }
     }

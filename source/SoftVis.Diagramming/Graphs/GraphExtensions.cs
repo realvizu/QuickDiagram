@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using QuickGraph;
+using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Serialization;
 
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.Graphs
 {
     public static class GraphExtensions
     {
-        public static int Degree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
+        public static int Degree<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
             TVertex vertex, EdgeDirection direction)
             where TEdge : IEdge<TVertex>
         {
@@ -164,5 +165,74 @@ namespace Codartis.SoftVis.Graphs
                 writer.Write(Serialize(graph));
             }
         }
+
+        /// <summary>
+        /// Returns the given number of shortest paths between two nodes.
+        /// </summary>
+        /// <param name="graph">A bidirectional graph.</param>
+        /// <param name="source">Source node of the path.</param>
+        /// <param name="target">Target node of the path.</param>
+        /// <param name="pathCount">The max. number of paths to be returned.</param>
+        /// <returns>A collection of shortest paths between the two nodes.</returns>
+        public static IEnumerable<Path<TVertex, TEdge>> GetShortestPaths<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph,
+            TVertex source, TVertex target, int pathCount)
+            where TEdge : IEdge<TVertex>
+        {
+            return graph.RankedShortestPathHoffmanPavley(i => 1, source, target, pathCount)
+                .Select(i => new Path<TVertex, TEdge>(i));
+        }
+
+        public static bool IsEdgeRedundant<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, TEdge edge)
+            where TEdge : IEdge<TVertex>
+        {
+            var paths = graph.GetShortestPaths(edge.Source, edge.Target, 2);
+            return paths.Count() > 1;
+        }
+
+        public static bool PathExists<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, TVertex source, TVertex target)
+            where TEdge : IEdge<TVertex>
+        {
+            // TODO: use more efficient algo for the purpose + caching?
+            return graph.GetShortestPaths(source, target, 1).Any();
+        }
+
+        /// <summary>
+        /// Recursively collects all vertices that can be reached from a given vertex 
+        /// by traversing only those edges that are chosen by a given predicate.
+        /// </summary>
+        public static IEnumerable<TVertex> GetConnectedVertices<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, TVertex vertex,
+            Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
+            where TEdge : IEdge<TVertex>
+        {
+            if (!graph.ContainsVertex(vertex))
+                return Enumerable.Empty<TVertex>();
+
+            var collectedVertices = new List<TVertex>();
+            CollectConnectedVerticesRecursive(graph, vertex, edgePredicate, collectedVertices, recursive);
+            return collectedVertices;
+        }
+
+        private static void CollectConnectedVerticesRecursive<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> graph,
+            TVertex vertex, Func<TVertex, TEdge, bool> edgePredicate, ICollection<TVertex> collectedVertices, bool recursive = false)
+            where TEdge : IEdge<TVertex>
+        {
+            var connectedVertices = graph.GetAllEdges(vertex)
+                .Where(edge => edgePredicate(vertex, edge))
+                .Select(edge => edge.GetOtherEnd(vertex))
+                .Distinct();
+
+            foreach (var connectedVertex in connectedVertices)
+            {
+                // Loop detection
+                if (collectedVertices.Contains(connectedVertex))
+                    continue;
+
+                collectedVertices.Add(connectedVertex);
+
+                if (recursive)
+                    CollectConnectedVerticesRecursive(graph, connectedVertex, edgePredicate, collectedVertices, recursive: true);
+            }
+        }
+
     }
 }
