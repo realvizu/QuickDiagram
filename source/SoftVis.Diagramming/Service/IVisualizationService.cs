@@ -10,9 +10,10 @@ namespace Codartis.SoftVis.Service
     /// </summary>
     public interface IVisualizationService
     {
-        DiagramId CreateDiagram();
+        IModelStore GetModelStore();
 
-        IDiagramUi GetDiagramUi(DiagramId diagramId);
+        DiagramId CreateDiagram();
+        IDiagramUi CreateDiagramUi(DiagramId diagramId, double minZoom, double maxZoom, double initialZoom);
 
         void ShowModelNode(DiagramId diagramId, IModelNode modelNode);
         void ShowModelRelationship(DiagramId diagramId, IModelRelationship modelRelationship);

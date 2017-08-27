@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Modeling
     /// <summary>
     /// Identifies a model relationship through its lifetime.
     /// </summary>
-    public struct ModelRelationshipId : IEquatable<ModelRelationshipId>
+    public struct ModelRelationshipId : IEquatable<ModelRelationshipId>, IComparable<ModelRelationshipId>
     {
         private readonly Guid _id;
 
@@ -42,6 +42,11 @@ namespace Codartis.SoftVis.Modeling
         public static bool operator !=(ModelRelationshipId left, ModelRelationshipId right)
         {
             return !left.Equals(right);
+        }
+
+        public int CompareTo(ModelRelationshipId other)
+        {
+            return _id.CompareTo(other._id);
         }
     }
 }

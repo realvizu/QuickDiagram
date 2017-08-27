@@ -13,11 +13,8 @@ namespace Codartis.SoftVis.Modeling
         IEnumerable<IModelRelationship> Relationships { get; }
         IEnumerable<IModelNode> RootNodes { get; }
 
-        bool NodeExists(IModelNode node);
-        bool RelationshipExists(IModelRelationship relationship);
-        bool PathExists(IModelNode sourceNode, IModelNode targetNode);
-
         IModelNode GetNodeById(ModelNodeId nodeId);
+        bool TryGetNodeById(ModelNodeId nodeId, out IModelNode node);
 
         IEnumerable<IModelNode> GetChildNodes(IModelNode node);
         IEnumerable<IModelNode> GetRelatedNodes(IModelNode node, 

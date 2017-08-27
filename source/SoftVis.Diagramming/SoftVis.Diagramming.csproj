@@ -80,6 +80,7 @@
     <Compile Include="Diagramming\ArrowHeadType.cs" />
     <Compile Include="Diagramming\ConnectorTypes.cs" />
     <Compile Include="Diagramming\ConnectorType.cs" />
+    <Compile Include="Diagramming\DiagramConnectorIdEqualityComparer.cs" />
     <Compile Include="Diagramming\Events\DiagramClearedEvent.cs" />
     <Compile Include="Diagramming\Events\DiagramConnectorRouteChangedEvent.cs" />
     <Compile Include="Diagramming\Events\DiagramNodeAddedEvent.cs" />
@@ -92,12 +93,13 @@
     <Compile Include="Diagramming\Events\DiagramConnectorAddedEvent.cs" />
     <Compile Include="Diagramming\Events\DiagramConnectorEventBase.cs" />
     <Compile Include="Diagramming\Events\DiagramConnectorRemovedEvent.cs" />
+    <Compile Include="Diagramming\DiagramNodeIdEqualityComparer.cs" />
     <Compile Include="Service\IDiagramPluginFactory.cs" />
     <Compile Include="Service\IVisualizationService.cs" />
     <Compile Include="Diagramming\IDiagramStoreFactory.cs" />
     <Compile Include="Service\IDiagramPlugin.cs" />
     <Compile Include="Diagramming\IReadOnlyDiagramStore.cs" />
-    <Compile Include="Diagramming\IDiagramNodeResolver.cs" />
+    <Compile Include="Diagramming\IDiagramShapeResolver.cs" />
     <Compile Include="Service\DiagramPluginId.cs" />
     <Compile Include="Service\Plugins\ConnectorManipulatorDiagramPluginBase.cs" />
     <Compile Include="Service\Plugins\DiagramPluginFactory.cs" />

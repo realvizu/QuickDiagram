@@ -23,8 +23,8 @@ namespace Codartis.SoftVis.Util
             IsValueNullable = type.IsClass || IsNullableValueType(type);
         }
 
-        public Map() 
-            : this(new Dictionary<TKey, TValue>())
+        public Map(IEqualityComparer<TKey> idComparer = null) 
+            : this(new Dictionary<TKey, TValue>(idComparer))
         {
         }
 

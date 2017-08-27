@@ -1,34 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Windows;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.TestHostApp.UI
 {
     internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
-        public TypeDiagramNode TypeDiagramNode { get; }
-        public string Stereotype { get; }
-
-        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode diagramNode)
-            : this(diagram,  diagramNode, Size.Empty, PointExtensions.Undefined, PointExtensions.Undefined)
+        public TypeDiagramNodeViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, TypeDiagramNode diagramNode)
+            : base(modelStore, diagramStore,  diagramNode)
         {
-        }
-
-        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode diagramNode, Size size, Point center, Point topLeft)
-            : base(diagram, diagramNode, size, center, topLeft)
-        {
-            TypeDiagramNode = diagramNode;
-            Stereotype = $"<<{diagramNode.TypeNode.Stereotype.Name.ToLower()}>>";
         }
 
         public override object Clone()
         {
-            return new TypeDiagramNodeViewModel(Diagram, TypeDiagramNode, Size, Center, TopLeft);
+            return new TypeDiagramNodeViewModel(ModelStore, DiagramStore, TypeDiagramNode);
         }
+
+        public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode) DiagramNode;
+        public string Stereotype => $"<<{TypeDiagramNode.TypeNode.Stereotype.Name.ToLower()}>>";
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {

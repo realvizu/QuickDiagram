@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -29,18 +28,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IEnumerable<IDiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<IDiagramConnector> Connectors => _graph.Edges;
 
-        public bool NodeExists(IDiagramNode node) => _graph.ContainsVertex(node);
         public bool NodeExistsById(ModelNodeId modelNodeId) => _graph.ContainsVertexId(modelNodeId);
-        public bool ConnectorExists(IDiagramConnector connector) => _graph.ContainsEdge(connector);
         public bool ConnectorExistsById(ModelRelationshipId modelRelationshipId) => _graph.ContainsEdgeId(modelRelationshipId);
-        public bool PathExists(IDiagramNode sourceNode, IDiagramNode targetNode) => _graph.PathExists(sourceNode, targetNode);
-        public bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeIdNode)
+        public bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId)
             => NodeExistsById(sourceModelNodeId)
-            && NodeExistsById(targetModelNodeIdNode)
-            && _graph.PathExists(GetNodeById(sourceModelNodeId), GetNodeById(targetModelNodeIdNode));
+            && NodeExistsById(targetModelNodeId)
+            && _graph.PathExistsById(sourceModelNodeId, targetModelNodeId);
 
         public IDiagramNode GetNodeById(ModelNodeId modelNodeId) => _graph.GetVertexById(modelNodeId);
+        public bool TryGetNodeById(ModelNodeId modelNodeId, out IDiagramNode node) 
+            => _graph.TryGetVertexById(modelNodeId, out node);
+
         public IDiagramConnector GetConnectorById(ModelRelationshipId modelRelationshipId) => _graph.GetEdgeById(modelRelationshipId);
+        public bool TryGetConnectorById(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector) 
+            => _graph.TryGetEdgeById(modelRelationshipId, out connector);
 
         public IDiagram AddNode(IDiagramNode node) => CreateInstance(_graph.AddVertex(node));
         public IDiagram RemoveNode(IDiagramNode node) => CreateInstance(_graph.RemoveVertex(node));

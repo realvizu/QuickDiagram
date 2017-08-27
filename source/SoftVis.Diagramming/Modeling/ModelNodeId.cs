@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Modeling
     /// <summary>
     /// Identifies a model node through its lifetime.
     /// </summary>
-    public struct ModelNodeId : IEquatable<ModelNodeId>
+    public struct ModelNodeId : IEquatable<ModelNodeId>, IComparable<ModelNodeId>
     {
         private readonly Guid _id;
 
@@ -42,6 +42,11 @@ namespace Codartis.SoftVis.Modeling
         public static bool operator !=(ModelNodeId left, ModelNodeId right)
         {
             return !left.Equals(right);
+        }
+
+        public int CompareTo(ModelNodeId other)
+        {
+            return _id.CompareTo(other._id);
         }
     }
 }

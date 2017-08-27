@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Abstract base class for view models that define the visible properties of a diagram node.
     /// </summary>
-    public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, ICloneable, IDisposable
+    public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, ICloneable
     {
         private string _name;
         private Point _center;
@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
+        public event Action<IDiagramNode, Size> SizeChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
 
@@ -96,6 +97,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 {
                     _size = value;
                     OnPropertyChanged();
+
+                    // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
+                    SizeChanged?.Invoke(DiagramNode, _size);
                 }
             }
         }
@@ -134,7 +138,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         protected virtual void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
             if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent
-                && diagramNodeChangedEvent.OldNode == DiagramNode)
+                && DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.DiagramNode, DiagramNode))
             {
                 PopulateFromDiagramNode(diagramNodeChangedEvent.DiagramNode);
             }
@@ -142,7 +146,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
-            Size = diagramNode.Size.ToWpf();
+            // Must NOT populate size from model because its value flows from the controls to the models.
             Center = diagramNode.Center.ToWpf();
             TopLeft = diagramNode.TopLeft.ToWpf();
             Name = diagramNode.Name;

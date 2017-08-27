@@ -96,10 +96,12 @@
     <Compile Include="Modeling\InterfaceNode.cs" />
     <Compile Include="Modeling\ClassNode.cs" />
     <Compile Include="Modeling\TestModelStore.cs" />
+    <Compile Include="Modeling\TestModelStoreFactory.cs" />
+    <Compile Include="Diagramming\TestDiagramStoreFactory.cs" />
     <Compile Include="TextWindow.xaml.cs">
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\TestDiagramShapeViewModelFactory.cs" />
+    <Compile Include="UI\TestDiagramShapeUiFactory.cs" />
     <Compile Include="UI\TypeDiagramNodeViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

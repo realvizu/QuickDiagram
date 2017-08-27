@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Service;
+using Codartis.SoftVis.Service.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.TestHostApp.UI;
+using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
@@ -26,14 +27,16 @@ namespace Codartis.SoftVis.TestHostApp
         private const string DiagramStylesXaml = "Resources/Styles.xaml";
 
         private readonly ResourceDictionary _resourceDictionary;
+
+        private readonly IVisualizationService _visualizationService;
         private readonly TestModelStore _testModelStore;
-        private readonly TestDiagram _testDiagram;
+        private readonly DiagramId _diagramId;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
         private double _selectedDpi;
 
-        public DiagramViewModel DiagramViewModel { get; }
+        public IDiagramUi DiagramUi { get; }
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
         public ICommand ZoomToContentCommand { get; }
@@ -46,18 +49,30 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            _testModelStore = TestModelCreator.Create();
-            //_testModelStore = BigTestModelCreator.Create(2, 5);
+            _visualizationService = new VisualizationService(
+                new TestModelStoreFactory(),
+                new TestDiagramStoreFactory(),
+                new TestDiagramShapeFactory(),
+                new DiagramUiFactory(),
+                new TestDiagramShapeUiFactory(),
+                new DiagramPluginFactory(new TestLayoutPriorityProvider(), new TestDiagramShapeFactory()),
+                new[]
+                {
+                    DiagramPluginId.AutoLayoutDiagramPlugin,
+                    DiagramPluginId.ConnectorHandlerDiagramPlugin,
+                    DiagramPluginId.ModelTrackingDiagramPlugin
+                }
+            );
 
-            var testDiagramBuilder = new TestDiagramStore();
-            _testDiagram = new TestDiagram(_testModelStore, testDiagramBuilder);
-            var diagramShapeVieModelFactory = new TestDiagramShapeViewModelFactory(_testDiagram);
+            _testModelStore = (TestModelStore)_visualizationService.GetModelStore();
+            TestModelCreator.Create(_testModelStore);
+            //BigTestModelCreator.Create(_testModelStore, 2, 5);
 
-            DiagramViewModel = new DiagramViewModel(_testDiagram, diagramShapeVieModelFactory,
-                minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+            _diagramId = _visualizationService.CreateDiagram();
+            DiagramUi = _visualizationService.CreateDiagramUi(_diagramId, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
 
-            DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.Id}");
-            DiagramViewModel.ShowModelItemsRequested += (i,j) => _testDiagram.ShowModelItems(i);
+            //DiagramUi.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.Id}");
+            //DiagramUi.ShowModelItemsRequested += (i, j) => _testDiagram.ShowModelItems(i);
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
@@ -82,9 +97,11 @@ namespace Codartis.SoftVis.TestHostApp
             if (_modelItemGroupIndex == _testModelStore.CurrentTestModel.ItemGroups.Count)
                 return;
 
-            var modelItems = _testModelStore.CurrentTestModel.ItemGroups[_modelItemGroupIndex];
+            var modelNodes = _testModelStore.CurrentTestModel.ItemGroups[_modelItemGroupIndex];
 
-            _testDiagram.ShowModelItems(modelItems);
+            foreach (var modelNode in modelNodes)
+                _visualizationService.ShowModelNode(_diagramId, modelNode);
+
             _modelItemGroupIndex++;
 
             //_testDiagram.Save(@"c:\big.xml");
@@ -97,7 +114,11 @@ namespace Codartis.SoftVis.TestHostApp
             if (_nextToRemoveModelItemGroupIndex == _testModelStore.CurrentTestModel.ItemGroups.Count)
                 return;
 
-            _testDiagram.HideModelItems(_testModelStore.CurrentTestModel.ItemGroups[_nextToRemoveModelItemGroupIndex]);
+            var modelNodes = _testModelStore.CurrentTestModel.ItemGroups[_nextToRemoveModelItemGroupIndex];
+
+            foreach (var modelNode in modelNodes)
+                _visualizationService.HideModelNode(_diagramId, modelNode);
+
             _nextToRemoveModelItemGroupIndex++;
 
             ZoomToContent();
@@ -109,7 +130,7 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
-                DiagramViewModel.ZoomToContent();
+                DiagramUi.ZoomToContent();
             };
             timer.Start();
         }
@@ -127,23 +148,23 @@ namespace Codartis.SoftVis.TestHostApp
 
         private async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog)
         {
-            try
-            {
-                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider, _resourceDictionary);
-                var cancellationToken = progressDialog.CancellationToken;
+            //try
+            //{
+            //    var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramUi, DiagramStlyeProvider, _resourceDictionary);
+            //    var cancellationToken = progressDialog.CancellationToken;
 
-                return await Task.Factory.StartSTA(() =>
-                    diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progressDialog.Progress), cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                return null;
-            }
-            catch (OutOfMemoryException)
-            {
-                HandleOutOfMemory();
-                return null;
-            }
+            //    return await Task.Factory.StartSTA(() =>
+            //        diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progressDialog.Progress), cancellationToken);
+            //}
+            //catch (OperationCanceledException)
+            //{
+            //    return null;
+            //}
+            //catch (OutOfMemoryException)
+            //{
+            //    HandleOutOfMemory();
+            return null;
+            //}
         }
 
         private static void SetImageToClipboard(BitmapSource bitmapSource)

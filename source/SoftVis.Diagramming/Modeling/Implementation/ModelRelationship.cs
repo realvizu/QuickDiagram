@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
-using Codartis.SoftVis.Graphs.Immutable;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {

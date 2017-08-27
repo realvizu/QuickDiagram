@@ -72,7 +72,7 @@
         
         <view:DiagramControl x:Name="DiagramControl"
                              Grid.Row="1" 
-                             DataContext="{Binding DiagramViewModel}"/>
+                             DataContext="{Binding DiagramUi}"/>
     </Grid>
 
 </Window>

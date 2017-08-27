@@ -37,8 +37,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         public IncrementalLayoutEngine(ILayoutPriorityProvider layoutPriorityProvider)
         {
             _layoutPriorityProvider = layoutPriorityProvider ?? throw new ArgumentNullException(nameof(layoutPriorityProvider));
-            _diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>();
-            _diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>();
+            _diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>(new DiagramNodeIdEqualityComparer());
+            _diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>(new DiagramConnectorIdEqualityComparer());
             _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
             _previousVertexCenters = new LayoutVertexToPointMap();
             _relativeLayoutCalculator = new RelativeLayoutCalculator();

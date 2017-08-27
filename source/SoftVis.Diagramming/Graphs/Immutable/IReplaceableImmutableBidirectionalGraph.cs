@@ -28,7 +28,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
         bool ContainsEdgeId(TEdgeId id);
 
         TVertex GetVertexById(TVertexId id);
+        bool TryGetVertexById(TVertexId id, out TVertex vertex);
         TEdge GetEdgeById(TEdgeId id);
+        bool TryGetEdgeById(TEdgeId id, out TEdge edge);
+
+        bool PathExistsById(TVertexId sourceId, TVertexId targetId);
 
         TGraph ReplaceVertex(TVertex oldVertex, TVertex newVertex);
         TGraph ReplaceEdge(TEdge oldEdge, TEdge newEdge);

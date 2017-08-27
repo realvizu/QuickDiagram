@@ -1,5 +1,4 @@
 using System;
-using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -7,12 +6,10 @@ namespace Codartis.SoftVis.Diagramming
     /// Read-only view of a diagram store. 
     /// Publishes diagrams change events.
     /// </summary>
-    public interface IReadOnlyDiagramStore
+    public interface IReadOnlyDiagramStore : IDiagramShapeResolver
     {
         IDiagram CurrentDiagram { get; }
 
         event Action<DiagramEventBase> DiagramChanged;
-
-        ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
     }
 }

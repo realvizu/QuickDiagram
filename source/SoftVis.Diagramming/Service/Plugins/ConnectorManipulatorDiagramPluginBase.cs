@@ -33,17 +33,16 @@ namespace Codartis.SoftVis.Service.Plugins
         {
             var sourceNode = diagram.GetNodeById(modelRelationship.Source.Id);
             var targetNode = diagram.GetNodeById(modelRelationship.Target.Id);
-            return diagram.PathExists(sourceNode, targetNode);
+            return diagram.PathExistsById(sourceNode.Id, targetNode.Id);
         }
 
         protected void AddDiagramConnectorIfNotExists(IModelRelationship modelRelationship, IDiagram diagram)
         {
-            var connector = diagram.GetConnectorById(modelRelationship.Id);
-            if (connector == null)
-            {
-                var newConnector = DiagramShapeFactory.CreateDiagramConnector(modelRelationship);
-                DiagramStore.AddConnector(newConnector);
-            }
+            if (diagram.ConnectorExistsById(modelRelationship.Id))
+                return;
+
+            var newConnector = DiagramShapeFactory.CreateDiagramConnector(DiagramStore, modelRelationship);
+            DiagramStore.AddConnector(newConnector);
         }
     }
 }

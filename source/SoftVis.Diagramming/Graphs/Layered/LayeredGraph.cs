@@ -29,9 +29,9 @@ namespace Codartis.SoftVis.Graphs.Layered
     {
         private readonly Map<TVertex, int> _vertexToLayerIndexMap;
 
-        public LayeredGraph()
+        public LayeredGraph(IEqualityComparer<TVertex> vertexEqualityComparer = null)
         {
-            _vertexToLayerIndexMap = new Map<TVertex, int>();
+            _vertexToLayerIndexMap = new Map<TVertex, int>(vertexEqualityComparer);
         }
 
         public override bool AddVertex(TVertex vertex)

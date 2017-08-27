@@ -13,9 +13,9 @@ namespace Codartis.SoftVis.Graphs.Immutable
         : IBidirectionalGraph<TVertex, TEdge>,
         IReplaceableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>
         where TVertex : IImmutableVertex<TVertexId>
-        where TVertexId : IEquatable<TVertexId>
+        where TVertexId : IEquatable<TVertexId>, IComparable<TVertexId>
         where TEdge : IImmutableEdge<TVertex, TEdge, TEdgeId>
-        where TEdgeId : IEquatable<TEdgeId>
+        where TEdgeId : IEquatable<TEdgeId>, IComparable<TEdgeId>
         where TGraph : ReplaceableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>
     {
         private readonly ImmutableDictionary<TVertexId, TVertex> _vertices;
@@ -42,13 +42,37 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public TVertex GetVertexById(TVertexId id)
         {
             EnsureVertexId(id);
-            return _vertices[id];
+            return FromVertexId(id);
+        }
+
+        public bool TryGetVertexById(TVertexId id, out TVertex vertex)
+        {
+            if (ContainsVertexId(id))
+            {
+                vertex = FromVertexId(id);
+                return true;
+            }
+
+            vertex = default(TVertex);
+            return false;
         }
 
         public TEdge GetEdgeById(TEdgeId id)
         {
             EnsureEdgeId(id);
-            return _edges[id];
+            return FromEdgeId(id);
+        }
+
+        public bool TryGetEdgeById(TEdgeId id, out TEdge edge)
+        {
+            if (ContainsEdgeId(id))
+            {
+                edge = FromEdgeId(id);
+                return true;
+            }
+
+            edge = default(TEdge);
+            return false;
         }
 
         public IEnumerable<TVertex> Vertices => _vertices.Values;
@@ -145,6 +169,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return result;
         }
 
+        public bool PathExistsById(TVertexId sourceId, TVertexId targetId) => _graph.PathExists(sourceId, targetId);
+
         public TGraph Clear()
         {
             return CreateInstance(_vertices.Clear(), _edges.Clear(), _graph.Clear());
@@ -152,7 +178,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph AddVertex(TVertex vertex)
         {
-            EnsureNoVertex(vertex);
+            EnsureNoVertexId(vertex.Id);
 
             var updatedVertices = _vertices.Add(vertex.Id, vertex);
             var updatedGraph = _graph.AddVertex(ToVertexId(vertex));
@@ -171,7 +197,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph RemoveVertex(TVertex vertex)
         {
-            EnsureVertex(vertex);
+            EnsureVertexId(vertex.Id);
 
             var updatedVertices = _vertices.Remove(vertex.Id);
 
@@ -185,9 +211,9 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph AddEdge(TEdge edge)
         {
-            EnsureNoEdge(edge);
-            EnsureVertex(edge.Source);
-            EnsureVertex(edge.Target);
+            EnsureNoEdgeId(edge.Id);
+            EnsureVertexId(edge.Source.Id);
+            EnsureVertexId(edge.Target.Id);
 
             var updatedEdges = _edges.Add(edge.Id,edge);
             var updatedGraph = _graph.AddEdge(ToVertexIdEdge(edge));
@@ -206,7 +232,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph RemoveEdge(TEdge edge)
         {
-            EnsureEdge(edge);
+            EnsureEdgeId(edge.Id);
 
             var updatedEdges = _edges.Remove(edge.Id);
             var updatedGraph = _graph.RemoveEdge(ToVertexIdEdge(edge));
@@ -245,7 +271,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph ReplaceVertex(TVertex oldVertex, TVertex newVertex)
         {
-            EnsureVertex(oldVertex);
+            EnsureVertexId(oldVertex.Id);
             EnsureSameVertexId(oldVertex, newVertex);
 
             var updatedVertices = _vertices.SetItem(oldVertex.Id, newVertex);
@@ -259,8 +285,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
             foreach (var edge in _edges.Values)
             {
                 var updatedEdge = edge;
-                if (edge.Source.Equals(oldVertex)) updatedEdge = edge.WithSource(newVertex);
-                if (edge.Target.Equals(oldVertex)) updatedEdge = edge.WithTarget(newVertex);
+                if (edge.Source.Id.Equals(oldVertex.Id)) updatedEdge = edge.WithSource(newVertex);
+                if (edge.Target.Id.Equals(oldVertex.Id)) updatedEdge = edge.WithTarget(newVertex);
 
                 if (!updatedEdge.Equals(edge))
                     updatedEdges = updatedEdges.SetItem(edge.Id, updatedEdge);
@@ -270,10 +296,10 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph ReplaceEdge(TEdge oldEdge, TEdge newEdge)
         {
-            EnsureEdge(oldEdge);
+            EnsureEdgeId(oldEdge.Id);
             EnsureSameEdgeId(oldEdge, newEdge);
-            EnsureVertex(newEdge.Source);
-            EnsureVertex(newEdge.Target);
+            EnsureVertexId(newEdge.Source.Id);
+            EnsureVertexId(newEdge.Target.Id);
 
             var updatedEdges = _edges.SetItem(oldEdge.Id, newEdge);
             return CreateInstance(_vertices, updatedEdges, _graph);
@@ -287,57 +313,58 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         private void EnsureVertexId(TVertexId id)
         {
-            if (!_vertices.ContainsKey(id))
+            if (!ContainsVertexId(id))
                 throw new InvalidOperationException($"Graph does not contain a vertex with id: {id}");
         }
 
         private void EnsureVertex(TVertex vertex)
         {
             EnsureVertexId(vertex.Id);
-            if (!_vertices[vertex.Id].Equals(vertex))
+            if (!FromVertexId(vertex.Id).Equals(vertex))
                 throw new InvalidOperationException($"Graph contains a different vertex with id: {vertex.Id}");
         }
 
-        private void EnsureNoVertex(TVertex vertex)
+        private void EnsureNoVertexId(TVertexId id)
         {
-            if (ContainsVertexId(vertex.Id))
-                throw new InvalidOperationException($"Model already contains a vertex with id {vertex.Id}");
+            if (ContainsVertexId(id))
+                throw new InvalidOperationException($"Model already contains a vertex with id {id}");
         }
 
         private static void EnsureSameVertexId(TVertex oldVertex, TVertex newVertex)
         {
-            if (oldVertex.Id.Equals(newVertex.Id))
+            if (!oldVertex.Id.Equals(newVertex.Id))
                 throw new InvalidOperationException($"Old vertex with id {oldVertex.Id} does not match new vertex with id {newVertex.Id}");
         }
 
         private void EnsureEdgeId(TEdgeId id)
         {
-            if (!_edges.ContainsKey(id))
+            if (!ContainsEdgeId(id))
                 throw new InvalidOperationException($"Graph does not contain an edge with id: {id}");
         }
 
         private void EnsureEdge(TEdge edge)
         {
             EnsureEdgeId(edge.Id);
-            if (!_edges[edge.Id].Equals(edge))
+            if (!FromEdgeId(edge.Id).Equals(edge))
                 throw new InvalidOperationException($"Graph contains a different edge with id: {edge.Id}");
         }
 
-        private void EnsureNoEdge(TEdge edge)
+        private void EnsureNoEdgeId(TEdgeId id)
         {
-            if (ContainsEdgeId(edge.Id))
-                throw new InvalidOperationException($"Model already contains a edge with id {edge.Id}");
+            if (ContainsEdgeId(id))
+                throw new InvalidOperationException($"Model already contains a edge with id {id}");
         }
 
         private static void EnsureSameEdgeId(TEdge oldEdge, TEdge newEdge)
         {
-            if (oldEdge.Id.Equals(newEdge.Id))
+            if (!oldEdge.Id.Equals(newEdge.Id))
                 throw new InvalidOperationException($"Old edge with id {oldEdge.Id} does not match new edge with id {newEdge.Id}");
         }
 
         private TVertexId ToVertexId(TVertex vertex) => vertex.Id;
-        private TVertex FromVertexId(TVertexId vertexId) => GetVertexById(vertexId);
-        private IEnumerable<TVertex> FromVertexId(IEnumerable<TVertexId> vertexIds) => vertexIds.Select(FromVertexId);
+        private TVertex FromVertexId(TVertexId vertexId) => _vertices[vertexId];
+
+        private TEdge FromEdgeId(TEdgeId edgeId) => _edges[edgeId];
 
         private VertexIdEdge<TVertexId, TEdgeId> ToVertexIdEdge(TEdge edge) => new VertexIdEdge<TVertexId, TEdgeId>(edge.Id, edge.Source.Id, edge.Target.Id);
         private TEdge FromVertexIdEdge(VertexIdEdge<TVertexId, TEdgeId> vertexIdEdge) => GetEdgeById(vertexIdEdge.Id);

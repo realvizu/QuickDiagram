@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
@@ -49,24 +48,5 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         protected virtual DiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center) 
             => new DiagramNode(modelNode, size, center);
-
-        public static IEqualityComparer<IDiagramNode> IdComparer { get; } = new IdEqualityComparer();
-
-        private sealed class IdEqualityComparer : IEqualityComparer<IDiagramNode>
-        {
-            public bool Equals(IDiagramNode x, IDiagramNode y)
-            {
-                if (ReferenceEquals(x, y)) return true;
-                if (ReferenceEquals(x, null)) return false;
-                if (ReferenceEquals(y, null)) return false;
-                if (x.GetType() != y.GetType()) return false;
-                return x.Id.Equals(y.Id);
-            }
-
-            public int GetHashCode(IDiagramNode obj)
-            {
-                return obj.Id.GetHashCode();
-            }
-        }
     }
 }

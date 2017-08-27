@@ -7,21 +7,21 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 {
     internal class TestModel : Model
     {
-        public ImmutableList<ImmutableList<IModelItem>> ItemGroups { get; }
+        public ImmutableList<ImmutableList<IModelNode>> ItemGroups { get; }
 
         public TestModel()
         {
-            var newEmptyGroup = ImmutableList.Create<IModelItem>();
+            var newEmptyGroup = ImmutableList.Create<IModelNode>();
             ItemGroups = ImmutableList.Create(newEmptyGroup);
         }
 
-        private TestModel(ModelGraph graph, ImmutableList<ImmutableList<IModelItem>> itemGroups) 
+        private TestModel(ModelGraph graph, ImmutableList<ImmutableList<IModelNode>> itemGroups) 
             : base(graph)
         {
             ItemGroups = itemGroups;
         }
 
-        public TestModel AddItemToCurrentGroup(IModelItem modelItem)
+        public TestModel AddItemToCurrentGroup(IModelNode modelItem)
         {
             var lastGroup = ItemGroups.Last();
             var updatedItemGroups = ItemGroups.Replace(lastGroup, lastGroup.Add(modelItem));
@@ -30,11 +30,11 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public TestModel StartNewGroup()
         {
-            var updatedItemGroups = ItemGroups.Add(ImmutableList.Create<IModelItem>());
+            var updatedItemGroups = ItemGroups.Add(ImmutableList.Create<IModelNode>());
             return new TestModel(Graph, updatedItemGroups);
         }
 
-        protected override Model WithGraph(ModelGraph graph)
+        protected override IModel CreateInstance(ModelGraph graph)
         {
             return new TestModel(graph, ItemGroups);
         }

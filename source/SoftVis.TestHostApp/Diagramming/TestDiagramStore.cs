@@ -16,6 +16,11 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
                 {ModelRelationshipStereotypes.Implementation, TestConnectorTypes.Implementation},
             };
 
+        public TestDiagramStore(Diagram diagram)
+            : base(diagram)
+        {
+        }
+
         public override ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
         {
             if (!ModelRelationshipTypeToConnectorTypeMap.ContainsKey(stereotype))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI;
 
@@ -18,10 +19,10 @@ namespace Codartis.SoftVis.Service
 
         protected readonly IModelStoreFactory ModelStoreFactory;
         protected readonly IDiagramStoreFactory DiagramStoreFactory;
-        protected readonly IDiagramPluginFactory DiagramPluginFactory;
         protected readonly IDiagramShapeFactory DiagramShapeFactory;
         protected readonly IDiagramUiFactory DiagramUiFactory;
         protected readonly IDiagramShapeUiFactory DiagramShapeUiFactory;
+        protected readonly IDiagramPluginFactory DiagramPluginFactory;
         protected readonly IEnumerable<DiagramPluginId> DiagramPluginIds;
 
         protected readonly IModelStore ModelStore;
@@ -32,12 +33,12 @@ namespace Codartis.SoftVis.Service
         public event Action<IModelNode> ModelNodeInvoked;
 
         public VisualizationService(
-            IModelStoreFactory modelStoreFactory, 
+            IModelStoreFactory modelStoreFactory,
             IDiagramStoreFactory diagramStoreFactory,
-            IDiagramPluginFactory diagramPluginFactory,
             IDiagramShapeFactory diagramShapeFactory,
             IDiagramUiFactory diagramUiFactory,
             IDiagramShapeUiFactory diagramShapeUiFactory,
+            IDiagramPluginFactory diagramPluginFactory,
             IEnumerable<DiagramPluginId> diagramPluginIds)
         {
             ModelStoreFactory = modelStoreFactory;
@@ -50,9 +51,12 @@ namespace Codartis.SoftVis.Service
 
             ModelStore = ModelStoreFactory.Create();
             _diagramStores = new Dictionary<DiagramId, IDiagramStore>();
-            _diagramUis = new  Dictionary<DiagramId, IDiagramUi>();
+            _diagramUis = new Dictionary<DiagramId, IDiagramUi>();
             _diagramPlugins = new Dictionary<DiagramId, List<IDiagramPlugin>>();
         }
+
+
+        public IModelStore GetModelStore() => ModelStore;
 
         public DiagramId CreateDiagram()
         {
@@ -60,20 +64,26 @@ namespace Codartis.SoftVis.Service
             var newDiagramStore = DiagramStoreFactory.Create();
             _diagramStores.Add(newDiagramId, newDiagramStore);
 
-            var diagramUi = DiagramUiFactory.Create(ModelStore, newDiagramStore, DiagramShapeUiFactory, 
-                DefaultMinZoom, DefaultMaxZoom, DefaultInitialZoom);
-            diagramUi.DiagramNodeInvoked += OnDiagramNodeInvoked;
-            _diagramUis.Add(newDiagramId, diagramUi);
-
             var diagramPlugins = CreateAndAttachDiagramPlugins(DiagramPluginIds, ModelStore, newDiagramStore);
             _diagramPlugins.Add(newDiagramId, diagramPlugins.ToList());
 
             return newDiagramId;
         }
 
-        public IDiagramUi GetDiagramUi(DiagramId diagramId)
+        public IDiagramUi CreateDiagramUi(DiagramId diagramId,
+            double minZoom = DefaultMinZoom,
+            double maxZoom = DefaultMaxZoom,
+            double initialZoom = DefaultInitialZoom)
         {
-            return _diagramUis[diagramId];
+            var diagramStore = GetDiagramStore(diagramId);
+            var diagramUi = DiagramUiFactory.Create(ModelStore, diagramStore, DiagramShapeUiFactory,
+                minZoom, maxZoom, initialZoom);
+
+            diagramUi.DiagramNodeSizeChanged += (node, size) => OnDiagramNodeSizeChanged(diagramId, node, size);
+            diagramUi.DiagramNodeInvoked += node => OnDiagramNodeInvoked(diagramId, node);
+
+            _diagramUis.Add(diagramId, diagramUi);
+            return diagramUi;
         }
 
         public void ShowModelNode(DiagramId diagramId, IModelNode modelNode)
@@ -84,7 +94,7 @@ namespace Codartis.SoftVis.Service
             if (diagram.Nodes.Any(i => i.ModelNode == modelNode))
                 return;
 
-            var diagramNode = DiagramShapeFactory.CreateDiagramNode(modelNode);
+            var diagramNode = DiagramShapeFactory.CreateDiagramNode(diagramStore, modelNode);
             diagramStore.AddNode(diagramNode);
         }
 
@@ -96,7 +106,7 @@ namespace Codartis.SoftVis.Service
             if (diagram.Connectors.Any(i => i.ModelRelationship == modelRelationship))
                 return;
 
-            var diagramConnector = DiagramShapeFactory.CreateDiagramConnector(modelRelationship);
+            var diagramConnector = DiagramShapeFactory.CreateDiagramConnector(diagramStore, modelRelationship);
             diagramStore.AddConnector(diagramConnector);
         }
 
@@ -138,7 +148,12 @@ namespace Codartis.SoftVis.Service
             }
         }
 
-        private void OnDiagramNodeInvoked(IDiagramNode diagramNode)
+        private void OnDiagramNodeSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
+        {
+            GetDiagramStore(diagramId).UpdateDiagramNodeSize(diagramNode, newSize);
+        }
+
+        private void OnDiagramNodeInvoked(DiagramId diagramId, IDiagramNode diagramNode)
         {
             ModelNodeInvoked?.Invoke(diagramNode.ModelNode);
         }

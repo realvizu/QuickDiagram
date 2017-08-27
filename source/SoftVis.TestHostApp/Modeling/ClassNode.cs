@@ -4,11 +4,9 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 {
     internal class ClassNode : TypeNode
     {
-        public ClassNode(ModelItemId id, string name, ModelOrigin origin, bool isAbstract)
-            : base(id, name, ModelNodeStereotype.Class,  origin, isAbstract)
+        public ClassNode(ModelNodeId id, string name, ModelOrigin origin, bool isAbstract)
+            : base(id, name, ModelNodeStereotypes.Class,  origin, isAbstract)
         {
         }
-
-        public override int LayoutPriority => 1;
     }
 }

@@ -21,15 +21,14 @@ namespace Codartis.SoftVis.Diagramming
         IEnumerable<IDiagramNode> Nodes { get; }
         IEnumerable<IDiagramConnector> Connectors { get; }
 
-        bool NodeExists(IDiagramNode node);
         bool NodeExistsById(ModelNodeId modelNodeId);
-        bool ConnectorExists(IDiagramConnector connector);
         bool ConnectorExistsById(ModelRelationshipId modelRelationshipId);
-        bool PathExists(IDiagramNode sourceNode, IDiagramNode targetNode);
-        bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeIdNode);
+        bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
 
         IDiagramNode GetNodeById(ModelNodeId modelNodeId);
+        bool TryGetNodeById(ModelNodeId modelNodeId, out IDiagramNode node);
         IDiagramConnector GetConnectorById(ModelRelationshipId modelRelationshipId);
+        bool TryGetConnectorById(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector);
 
         IDiagram AddNode(IDiagramNode node);
         IDiagram RemoveNode(IDiagramNode node);

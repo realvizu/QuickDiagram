@@ -3,10 +3,12 @@
 namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
-    /// Resolves diagram nodes.
+    /// Resolves diagram concepts from model concepts.
     /// </summary>
-    public interface IDiagramNodeResolver
+    public interface IDiagramShapeResolver
     {
+        ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
+
         IDiagramNode GetDiagramNodeByModelNode(IModelNode modelNode);
     }
 }

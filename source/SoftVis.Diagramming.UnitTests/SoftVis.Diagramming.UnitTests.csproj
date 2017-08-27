@@ -107,6 +107,7 @@
     <Compile Include="Graphs\Concurrent\RemovedVertexResultTests.cs" />
     <Compile Include="Modeling\Implementation\ModelTests.cs" />
     <Compile Include="TestSubjects\TestDiagramConnector.cs" />
+    <Compile Include="TestSubjects\TestModelNodeStereotypes.cs" />
     <Compile Include="TestSubjects\TestModelRelationship.cs" />
     <Compile Include="TestSubjects\TestDiagramNode.cs" />
     <Compile Include="TestSubjects\TestDummyLayoutVertex.cs" />

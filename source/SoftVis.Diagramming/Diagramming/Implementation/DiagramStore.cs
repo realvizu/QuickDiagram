@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// Abstract base class for diagram stores.
     /// Responsible for diagram modification logic.
     /// </summary>
-    public abstract class DiagramStore : IDiagramStore, IDiagramNodeResolver
+    public abstract class DiagramStore : IDiagramStore
     {
         public IDiagram CurrentDiagram { get; protected set; }
 
@@ -47,9 +47,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (DiagramUpdateLockObject)
             {
-                var newNode = diagramNode.WithModelNode(newModelNode);
-                CurrentDiagram = CurrentDiagram.ReplaceNode(diagramNode, newNode);
-                DiagramChanged?.Invoke(new DiagramNodeModelNodeChangedEvent(CurrentDiagram, diagramNode, newNode));
+                var oldNode = CurrentDiagram.GetNodeById(diagramNode.Id);
+                var newNode = oldNode.WithModelNode(newModelNode);
+                CurrentDiagram = CurrentDiagram.ReplaceNode(oldNode, newNode);
+                DiagramChanged?.Invoke(new DiagramNodeModelNodeChangedEvent(CurrentDiagram, oldNode, newNode));
             }
         }
 
@@ -57,9 +58,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (DiagramUpdateLockObject)
             {
-                var newNode = diagramNode.WithSize(newSize);
-                CurrentDiagram = CurrentDiagram.ReplaceNode(diagramNode, newNode);
-                DiagramChanged?.Invoke(new DiagramNodeSizeChangedEvent(CurrentDiagram, diagramNode, newNode));
+                var oldNode = CurrentDiagram.GetNodeById(diagramNode.Id);
+                var newNode = oldNode.WithSize(newSize);
+                CurrentDiagram = CurrentDiagram.ReplaceNode(oldNode, newNode);
+                DiagramChanged?.Invoke(new DiagramNodeSizeChangedEvent(CurrentDiagram, oldNode, newNode));
             }
         }
 
@@ -67,9 +69,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (DiagramUpdateLockObject)
             {
-                var newNode = diagramNode.WithCenter(newCenter);
-                CurrentDiagram = CurrentDiagram.ReplaceNode(diagramNode, newNode);
-                DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(CurrentDiagram, diagramNode, newNode));
+                var oldNode = CurrentDiagram.GetNodeById(diagramNode.Id);
+                var newNode = oldNode.WithCenter(newCenter);
+                CurrentDiagram = CurrentDiagram.ReplaceNode(oldNode, newNode);
+                DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(CurrentDiagram, oldNode, newNode));
             }
         }
 
@@ -95,9 +98,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (DiagramUpdateLockObject)
             {
-                var newConnector = diagramConnector.WithRoute(newRoute);
-                CurrentDiagram = CurrentDiagram.ReplaceConnector(diagramConnector, newConnector);
-                DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(CurrentDiagram,diagramConnector, newConnector));
+                var oldConnector = CurrentDiagram.GetConnectorById(diagramConnector.Id);
+                var newConnector = oldConnector.WithRoute(newRoute);
+                CurrentDiagram = CurrentDiagram.ReplaceConnector(oldConnector, newConnector);
+                DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(CurrentDiagram, oldConnector, newConnector));
             }
         }
 

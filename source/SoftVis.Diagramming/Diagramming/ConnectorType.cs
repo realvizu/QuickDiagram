@@ -13,5 +13,7 @@
             ArrowHeadType = arrowHeadType;
             ShaftLineType = shaftLineType;
         }
+
+        public override string ToString() => $"Head:{ArrowHeadType}|Shaft:{ShaftLineType}";
     }
 }

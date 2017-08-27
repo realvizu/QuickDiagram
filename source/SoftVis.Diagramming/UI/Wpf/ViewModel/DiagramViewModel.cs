@@ -5,7 +5,9 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -26,6 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand PreviewMouseDownCommand { get; }
         public DelegateCommand MouseDownCommand { get; }
 
+        public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IReadOnlyList<IModelNode>, bool> ShowModelItemsRequested;
 
@@ -120,6 +123,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
             DiagramViewportViewModel.DiagramNodeInvoked += OnDiagramNodeInvoked;
+            DiagramViewportViewModel.DiagramNodeSizeChanged += OnDiagramNodeSizeChanged;
         }
 
         private void UnsubscribeFromViewportEvents()
@@ -129,6 +133,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
             DiagramViewportViewModel.DiagramNodeInvoked -= OnDiagramNodeInvoked;
+            DiagramViewportViewModel.DiagramNodeSizeChanged -= OnDiagramNodeSizeChanged;
+        }
+
+        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size newSize)
+        {
+            if (newSize.IsDefined())
+                DiagramNodeSizeChanged?.Invoke(diagramNode, newSize.FromWpf());
         }
 
         private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)

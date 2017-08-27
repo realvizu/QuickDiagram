@@ -1,13 +1,14 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
-    internal class TestDiagramShapeFactory : IDiagramShapeFactory
+    internal class TestDiagramShapeFactory : DiagramShapeFactoryBase
     {
-        public IDiagramNode CreateDiagramNode(IModelNode modelNode)
+        public override IDiagramNode CreateDiagramNode(IDiagramShapeResolver diagramShapeResolver, IModelNode modelNode)
         {
             if (modelNode == null)
                 throw new ArgumentNullException(nameof(modelNode));

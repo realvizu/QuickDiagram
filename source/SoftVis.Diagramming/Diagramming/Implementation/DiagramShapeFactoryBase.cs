@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using System;
+using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -7,23 +8,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public class DiagramShapeFactoryBase : IDiagramShapeFactory
     {
-        protected IReadOnlyDiagramStore DiagramStore { get; }
-        protected IDiagramNodeResolver DiagramNodeResolver { get; }
-
-        protected DiagramShapeFactoryBase(IReadOnlyDiagramStore diagramStore, IDiagramNodeResolver diagramNodeResolver)
+        public virtual IDiagramNode CreateDiagramNode(IDiagramShapeResolver diagramShapeResolver, IModelNode modelNode)
         {
-            DiagramStore = diagramStore;
-            DiagramNodeResolver = diagramNodeResolver;
+            if (modelNode == null)
+                throw new ArgumentNullException(nameof(modelNode));
+
+            return new DiagramNode(modelNode);
         }
 
-        public virtual IDiagramNode CreateDiagramNode(IModelNode modelNode) 
-            => new DiagramNode(modelNode);
-
-        public IDiagramConnector CreateDiagramConnector(IModelRelationship modelRelationship)
+        public virtual IDiagramConnector CreateDiagramConnector(IDiagramShapeResolver diagramShapeResolver, IModelRelationship modelRelationship)
         {
-            var sourceNode = DiagramNodeResolver.GetDiagramNodeByModelNode(modelRelationship.Source);
-            var targetNode = DiagramNodeResolver.GetDiagramNodeByModelNode(modelRelationship.Target);
-            var connectorType = DiagramStore.GetConnectorType(modelRelationship.Stereotype);
+            if (modelRelationship == null)
+                throw new ArgumentNullException(nameof(modelRelationship));
+
+            var sourceNode = diagramShapeResolver.GetDiagramNodeByModelNode(modelRelationship.Source);
+            var targetNode = diagramShapeResolver.GetDiagramNodeByModelNode(modelRelationship.Target);
+            var connectorType = diagramShapeResolver.GetConnectorType(modelRelationship.Stereotype);
             return new DiagramConnector(modelRelationship, sourceNode, targetNode, connectorType);
         }
     }

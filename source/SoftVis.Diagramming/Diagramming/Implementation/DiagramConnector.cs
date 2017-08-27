@@ -1,6 +1,5 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming.Implementation

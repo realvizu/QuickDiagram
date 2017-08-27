@@ -1,12 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using Codartis.SoftVis.Graphs;
+﻿using System.Collections.Immutable;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Modeling.Implementation;
-using QuickGraph;
-using QuickGraph.Algorithms;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {

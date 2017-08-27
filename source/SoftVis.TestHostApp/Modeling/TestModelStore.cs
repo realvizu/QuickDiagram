@@ -12,11 +12,11 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public TestModel CurrentTestModel => (TestModel)CurrentModel;
 
-        public void AddItemToCurrentGroup(IModelItem modelItem)
+        public void AddItemToCurrentGroup(IModelNode modelNode)
         {
             lock (ModelUpdateLockObject)
             {
-                CurrentModel = CurrentTestModel.AddItemToCurrentGroup(modelItem);
+                CurrentModel = CurrentTestModel.AddItemToCurrentGroup(modelNode);
             }
         }
 

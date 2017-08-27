@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     {
         public bool IsAbstract { get; }
 
-        protected TypeNode(ModelItemId id, string name, ModelNodeStereotype stereotype, ModelOrigin origin, bool isAbstract)
+        protected TypeNode(ModelNodeId id, string name, ModelNodeStereotype stereotype, ModelOrigin origin, bool isAbstract)
             : base(id, name, stereotype, origin)
         {
             IsAbstract = isAbstract;
