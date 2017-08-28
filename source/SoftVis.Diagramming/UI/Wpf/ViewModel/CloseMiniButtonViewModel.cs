@@ -19,6 +19,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// </summary>
         public override object PlacementKey => this.GetType();
 
-        protected override void OnClick() => HostViewModel.Remove();
+        protected override void OnClick()
+        {
+            if (HostViewModel is DiagramNodeViewModelBase diagramNodeViewModel)
+                diagramNodeViewModel.Remove();
+        }
     }
 }

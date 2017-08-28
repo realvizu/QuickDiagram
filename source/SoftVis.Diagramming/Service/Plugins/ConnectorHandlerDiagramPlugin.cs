@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Service.Plugins
     /// </summary>
     public class ConnectorHandlerDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public ConnectorHandlerDiagramPlugin(IDiagramShapeFactory diagramShapeFactory) 
+        public ConnectorHandlerDiagramPlugin(IDiagramShapeFactory diagramShapeFactory)
             : base(diagramShapeFactory)
         {
         }
@@ -39,12 +39,27 @@ namespace Codartis.SoftVis.Service.Plugins
                     ShowModelRelationshipsIfBothEndsAreVisible(modelNode, model, diagram);
                     break;
 
-                case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
-                    var diagramConnector = diagramConnectorRemovedEvent.DiagramConnector;
-                    ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Source.ModelNode, model, diagram);
-                    ShowModelRelationshipsIfBothEndsAreVisible(diagramConnector.Target.ModelNode, model, diagram);
+                case DiagramNodeRemovedEvent _:
+                    // TODO: optimize: should check only surrounding nodes of the deleted one (not all in diagram)
+                    foreach (var diagramNode in diagram.Nodes)
+                        ShowModelRelationshipsIfBothEndsAreVisible(diagramNode.ModelNode, model, diagram);
                     break;
+
+                case DiagramConnectorAddedEvent _:
+                    HideRedundantConnectors(diagram);
+                    break;
+
+                    // DiagramConnectorRemovedEvent is not handled 
+                    // because that would put back removed connectors immediately
+                    // (because nodes are removed after connectors)
             }
+        }
+
+        private void HideRedundantConnectors(IDiagram diagram)
+        {
+            foreach (var connector in diagram.Connectors)
+                if (diagram.IsConnectorRedundantById(connector.Id))
+                    DiagramStore.RemoveConnector(connector);
         }
     }
 }

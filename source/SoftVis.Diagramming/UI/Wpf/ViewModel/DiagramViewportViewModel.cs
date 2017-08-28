@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action ViewportManipulation;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
-        public event Action<DiagramShapeViewModelBase> DiagramShapeRemoveRequested;
+        public event Action<DiagramNodeViewModelBase> RemoveDiagramNodeRequested;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode, Size> DiagramNodeSizeChanged;
 
@@ -148,7 +148,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramNodeViewModel.SizeChanged += OnDiagramNodeSizeChanged;
             diagramNodeViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
             diagramNodeViewModel.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
-            diagramNodeViewModel.RemoveRequested += OnShapeRemoveRequested;
+            diagramNodeViewModel.RemoveRequested += OnRemoveDiagramNodeRequested;
 
             _diagramNodeToViewModelMap.Set(diagramNode, diagramNodeViewModel);
         }
@@ -158,30 +158,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var diagramConnectorViewModel = _diagramShapeUiFactory.CreateDiagramConnectorViewModel(DiagramStore, diagramConnector);
             DiagramConnectorViewModels.Add(diagramConnectorViewModel);
 
-            diagramConnectorViewModel.RemoveRequested += OnShapeRemoveRequested;
-
             _diagramConnectorToViewModelMap.Set(diagramConnector, diagramConnectorViewModel);
         }
 
-        private void OnShapeRemoveRequested(IDiagramShape diagramShape)
+        private void OnRemoveDiagramNodeRequested(IDiagramNode diagramNode)
         {
-            switch (diagramShape)
-            {
-                case IDiagramNode diagramNode:
-                    var diagramNodeViewModel = _diagramNodeToViewModelMap.Get(diagramNode);
-                    if (diagramNodeViewModel != null)
-                        DiagramShapeRemoveRequested?.Invoke(diagramNodeViewModel);
-                    break;
-
-                case IDiagramConnector diagramConnector:
-                    var diagramConnectorViewModel = _diagramConnectorToViewModelMap.Get(diagramConnector);
-                    if (diagramConnectorViewModel != null)
-                        DiagramShapeRemoveRequested?.Invoke(diagramConnectorViewModel);
-                    break;
-
-                default:
-                    throw new InvalidOperationException($"Unexpected diagram shape type: {diagramShape.GetType().Name}");
-            }
+            var diagramNodeViewModel = _diagramNodeToViewModelMap.Get(diagramNode);
+            if (diagramNodeViewModel != null)
+                RemoveDiagramNodeRequested?.Invoke(diagramNodeViewModel);
         }
 
         private void RemoveNode(IDiagramNode diagramNode)
@@ -191,7 +175,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramNodeViewModel.SizeChanged -= OnDiagramNodeSizeChanged;
             diagramNodeViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             diagramNodeViewModel.RelatedNodeSelectorRequested -= OnEntitySelectorRequested;
-            diagramNodeViewModel.RemoveRequested -= OnShapeRemoveRequested;
+            diagramNodeViewModel.RemoveRequested -= OnRemoveDiagramNodeRequested;
 
             MiniButtonPanelViewModel.Unfocus(diagramNodeViewModel);
             _diagramNodeToViewModelMap.Remove(diagramNode);
@@ -203,8 +187,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void RemoveConnector(IDiagramConnector diagramConnector)
         {
             var diagramConnectorViewModel = GetDiagramConnectorViewModel(diagramConnector);
-
-            diagramConnectorViewModel.RemoveRequested -= OnShapeRemoveRequested;
 
             MiniButtonPanelViewModel.Unfocus(diagramConnectorViewModel);
             _diagramConnectorToViewModelMap.Remove(diagramConnector);
@@ -234,7 +216,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnEntitySelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size newSize) 
+        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size newSize)
             => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
     }
 }

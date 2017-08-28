@@ -31,9 +31,11 @@ namespace Codartis.SoftVis.Service.Plugins
 
         protected static bool DiagramConnectorWouldBeRedundant(IModelRelationship modelRelationship, IDiagram diagram)
         {
-            var sourceNode = diagram.GetNodeById(modelRelationship.Source.Id);
-            var targetNode = diagram.GetNodeById(modelRelationship.Target.Id);
-            return diagram.PathExistsById(sourceNode.Id, targetNode.Id);
+            if (diagram.TryGetNodeById(modelRelationship.Source.Id, out IDiagramNode sourceNode) &&
+                diagram.TryGetNodeById(modelRelationship.Target.Id, out IDiagramNode targetNode))
+                return diagram.PathExistsById(sourceNode.Id, targetNode.Id);
+
+            return false;
         }
 
         protected void AddDiagramConnectorIfNotExists(IModelRelationship modelRelationship, IDiagram diagram)

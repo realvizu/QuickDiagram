@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -35,13 +36,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             && NodeExistsById(targetModelNodeId)
             && _graph.PathExistsById(sourceModelNodeId, targetModelNodeId);
 
+        public bool IsConnectorRedundantById(ModelRelationshipId modelRelationshipId) 
+            => TryGetConnectorById(modelRelationshipId, out var connector) 
+            && _graph.IsEdgeRedundant(connector);
+
         public IDiagramNode GetNodeById(ModelNodeId modelNodeId) => _graph.GetVertexById(modelNodeId);
-        public bool TryGetNodeById(ModelNodeId modelNodeId, out IDiagramNode node) 
+        public bool TryGetNodeById(ModelNodeId modelNodeId, out IDiagramNode node)
             => _graph.TryGetVertexById(modelNodeId, out node);
 
         public IDiagramConnector GetConnectorById(ModelRelationshipId modelRelationshipId) => _graph.GetEdgeById(modelRelationshipId);
-        public bool TryGetConnectorById(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector) 
+        public bool TryGetConnectorById(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector)
             => _graph.TryGetEdgeById(modelRelationshipId, out connector);
+
+        public IEnumerable<IDiagramConnector> GetConnectorsByNodeId(ModelNodeId id)
+            => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
 
         public IDiagram AddNode(IDiagramNode node) => CreateInstance(_graph.AddVertex(node));
         public IDiagram RemoveNode(IDiagramNode node) => CreateInstance(_graph.RemoveVertex(node));

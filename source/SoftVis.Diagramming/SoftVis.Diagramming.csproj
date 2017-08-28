@@ -171,6 +171,7 @@
     <Compile Include="UI\IDiagramShapeUiFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\MiniButtonPanelViewModel.cs" />
     <Compile Include="UI\IDiagramShapeUiRepository.cs" />
+    <Compile Include="UI\ShowModelItemsEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedNodeType.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedNodeMiniButtonEventHandler.cs" />
     <Compile Include="UI\Wpf\ViewModel\ViewportAutoMoveMode.cs" />

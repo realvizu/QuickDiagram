@@ -24,7 +24,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var sourceNode = DiagramShapeUiRepository.GetDiagramNodeViewModel(diagramConnector.Source);
             var targetNode = DiagramShapeUiRepository.GetDiagramNodeViewModel(diagramConnector.Target);
             return new DiagramConnectorViewModel(ModelStore, diagramStore, diagramConnector, sourceNode, targetNode);
-
         }
     }
 }

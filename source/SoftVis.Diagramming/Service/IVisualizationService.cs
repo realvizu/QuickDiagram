@@ -12,8 +12,8 @@ namespace Codartis.SoftVis.Service
     {
         IModelStore GetModelStore();
 
-        DiagramId CreateDiagram();
-        IDiagramUi CreateDiagramUi(DiagramId diagramId, double minZoom, double maxZoom, double initialZoom);
+        DiagramId CreateDiagram(double minZoom, double maxZoom, double initialZoom);
+        IDiagramUi GetDiagramUi(DiagramId diagramId);
 
         void ShowModelNode(DiagramId diagramId, IModelNode modelNode);
         void ShowModelRelationship(DiagramId diagramId, IModelRelationship modelRelationship);

@@ -68,8 +68,8 @@ namespace Codartis.SoftVis.TestHostApp
             TestModelCreator.Create(_testModelStore);
             //BigTestModelCreator.Create(_testModelStore, 2, 5);
 
-            _diagramId = _visualizationService.CreateDiagram();
-            DiagramUi = _visualizationService.CreateDiagramUi(_diagramId, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+            _diagramId = _visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+            DiagramUi = _visualizationService.GetDiagramUi(_diagramId);
 
             //DiagramUi.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.Id}");
             //DiagramUi.ShowModelItemsRequested += (i, j) => _testDiagram.ShowModelItems(i);

@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Service.Plugins
     /// </summary>
     public class ModelTrackingDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public ModelTrackingDiagramPlugin(IDiagramShapeFactory diagramShapeFactory) 
+        public ModelTrackingDiagramPlugin(IDiagramShapeFactory diagramShapeFactory)
             : base(diagramShapeFactory)
         {
         }
@@ -34,14 +34,14 @@ namespace Codartis.SoftVis.Service.Plugins
             {
                 case ModelNodeUpdatedEvent modelNodeUpdatedEvent:
                     var newModelNode = modelNodeUpdatedEvent.NewNode;
-                    var diagramNodeToUpdate = diagram.GetNodeById(newModelNode.Id);
-                    DiagramStore.UpdateDiagramNodeModelNode(diagramNodeToUpdate, newModelNode);
+                    if (diagram.TryGetNodeById(newModelNode.Id, out var diagramNodeToUpdate))
+                        DiagramStore.UpdateDiagramNodeModelNode(diagramNodeToUpdate, newModelNode);
                     break;
 
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
                     var removedModelNode = modelNodeRemovedEvent.RemovedNode;
-                    var oldDiagramNodeToRemove = diagram.GetNodeById(removedModelNode.Id);
-                    DiagramStore.RemoveNode(oldDiagramNodeToRemove);
+                    if (diagram.TryGetNodeById(removedModelNode.Id, out var diagramNodeToRemove))
+                        DiagramStore.RemoveNode(diagramNodeToRemove);
                     break;
 
                 case ModelRelationshipAddedEvent modelRelationshipAddedEvent:
@@ -51,8 +51,8 @@ namespace Codartis.SoftVis.Service.Plugins
 
                 case ModelRelationshipRemovedEvent modelRelationshipRemovedEvent:
                     var modelRelationship = modelRelationshipRemovedEvent.RemovedRelationship;
-                    var diagramConnector = diagram.GetConnectorById(modelRelationship.Id);
-                    DiagramStore.RemoveConnector(diagramConnector);
+                    if (diagram.TryGetConnectorById(modelRelationship.Id, out var diagramConnector))
+                        DiagramStore.RemoveConnector(diagramConnector);
                     break;
 
                 case ModelClearedEvent _:

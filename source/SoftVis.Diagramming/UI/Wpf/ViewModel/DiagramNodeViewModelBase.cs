@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode, Size> SizeChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
+        public event Action<IDiagramNode> RemoveRequested;
 
         protected DiagramNodeViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
             IDiagramNode diagramNode)
@@ -118,6 +119,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public abstract object Clone();
+
+        public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 
         public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
             ShowRelatedNodesRequested?.Invoke(ownerButton, modelNodes);

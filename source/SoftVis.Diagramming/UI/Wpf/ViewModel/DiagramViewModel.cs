@@ -28,9 +28,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand PreviewMouseDownCommand { get; }
         public DelegateCommand MouseDownCommand { get; }
 
+        public event ShowModelItemsEventHandler ShowModelItemsRequested;
         public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
         public event Action<IDiagramNode> DiagramNodeInvoked;
-        public event Action<IReadOnlyList<IModelNode>, bool> ShowModelItemsRequested;
+        public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
         public DiagramViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
             IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
@@ -121,7 +122,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ViewportManipulation += OnViewportManipulation;
             DiagramViewportViewModel.RelatedNodeSelectorRequested += OnRelatedNodeSelectorRequested;
             DiagramViewportViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
-            DiagramViewportViewModel.DiagramShapeRemoveRequested += OnDiagramShapeRemoveRequested;
+            DiagramViewportViewModel.RemoveDiagramNodeRequested += OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked += OnDiagramNodeInvoked;
             DiagramViewportViewModel.DiagramNodeSizeChanged += OnDiagramNodeSizeChanged;
         }
@@ -131,7 +132,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ViewportManipulation -= OnViewportManipulation;
             DiagramViewportViewModel.RelatedNodeSelectorRequested -= OnRelatedNodeSelectorRequested;
             DiagramViewportViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
-            DiagramViewportViewModel.DiagramShapeRemoveRequested -= OnDiagramShapeRemoveRequested;
+            DiagramViewportViewModel.RemoveDiagramNodeRequested -= OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked -= OnDiagramNodeInvoked;
             DiagramViewportViewModel.DiagramNodeSizeChanged -= OnDiagramNodeSizeChanged;
         }
@@ -142,11 +143,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 DiagramNodeSizeChanged?.Invoke(diagramNode, newSize.FromWpf());
         }
 
-        private void OnDiagramShapeRemoveRequested(DiagramShapeViewModelBase diagramShapeViewModel)
+        private void OnRemoveDiagramNodeRequested(DiagramNodeViewModelBase diagramNodeViewModel)
         {
             DiagramViewportViewModel.StopFollowingDiagramNodes();
-            if (RelatedNodeListBoxViewModel.OwnerDiagramShape == diagramShapeViewModel)
+            if (RelatedNodeListBoxViewModel.OwnerDiagramShape == diagramNodeViewModel)
                 HideRelatedNodeListBox();
+
+            RemoveDiagramNodeRequested?.Invoke(diagramNodeViewModel.DiagramNode);
         }
 
         private void OnRelatedNodeSelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
@@ -162,11 +165,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 case 0:
                     return;
                 case 1:
-                    ShowModelItemsRequested?.Invoke(modelNodes, true);
+                    ShowModelItemsRequested?.Invoke(modelNodes, followNewDiagramNodes: true);
                     break;
                 default:
                     HideRelatedNodeListBox();
-                    ShowModelItemsRequested?.Invoke(modelNodes, true);
+                    ShowModelItemsRequested?.Invoke(modelNodes, followNewDiagramNodes: true);
                     break;
             }
         }
@@ -174,7 +177,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnRelatedNodeSelected(IModelNode modelNode)
         {
             StopFollowingDiagramNodes();
-            ShowModelItemsRequested?.Invoke(new[] { modelNode }, false);
+            ShowModelItemsRequested?.Invoke(new[] { modelNode }, followNewDiagramNodes: false);
         }
 
         private void OnDiagramNodeInvoked(IDiagramNode diagramNode)
