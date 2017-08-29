@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase
     {
-        public IDiagramShape DiagramShape { get; }
+        public IDiagramShape DiagramShape { get; protected set; }
 
         protected DiagramShapeViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
             IDiagramShape diagramShape)

@@ -10,16 +10,16 @@ namespace Codartis.SoftVis.TestHostApp.UI
     internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
         public TypeDiagramNodeViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, TypeDiagramNode diagramNode)
-            : base(modelStore, diagramStore,  diagramNode)
+            : base(modelStore, diagramStore, diagramNode)
         {
         }
 
         public override object Clone()
         {
-            return new TypeDiagramNodeViewModel(ModelStore, DiagramStore, TypeDiagramNode);
+            return new TypeDiagramNodeViewModel(ModelStore, DiagramStore, TypeDiagramNode) { Size = Size };
         }
 
-        public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode) DiagramNode;
+        public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode)DiagramNode;
         public string Stereotype => $"<<{TypeDiagramNode.TypeNode.Stereotype.Name.ToLower()}>>";
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()

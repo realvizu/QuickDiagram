@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf.View;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Service
 {
@@ -29,6 +36,8 @@ namespace Codartis.SoftVis.Service
         private readonly Dictionary<DiagramId, IDiagramStore> _diagramStores;
         private readonly Dictionary<DiagramId, IDiagramUi> _diagramUis;
         private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
+        private IDiagramStlyeProvider _diagramStlyeProvider;
+        private ResourceDictionary _resourceDictionary;
 
         public event Action<IModelNode> ModelNodeInvoked;
 
@@ -55,7 +64,17 @@ namespace Codartis.SoftVis.Service
             _diagramPlugins = new Dictionary<DiagramId, List<IDiagramPlugin>>();
         }
 
+        public void InitializeUi(IDiagramStlyeProvider diagramStlyeProvider, ResourceDictionary resourceDictionary)
+        {
+            _diagramStlyeProvider = diagramStlyeProvider;
+            _resourceDictionary = resourceDictionary;
+        }
+
         public IModelStore GetModelStore() => ModelStore;
+
+        public void ClearModel() => ModelStore.ClearModel();
+
+        public void UpdateModelFromSource() => throw new NotImplementedException();
 
         public DiagramId CreateDiagram(
             double minZoom = DefaultMinZoom,
@@ -69,7 +88,7 @@ namespace Codartis.SoftVis.Service
             var diagramUi = CreateDiagramUi(newDiagramId, minZoom, maxZoom, initialZoom);
             _diagramUis.Add(newDiagramId, diagramUi);
 
-            // Warning: plugins must be created after the UI! Otherwise plugins may reference not yet existing UI elements.
+            // Warning: plugins must be created after the UI so its event callbacks don't precede UI updates.
             var diagramPlugins = CreateAndAttachDiagramPlugins(DiagramPluginIds, ModelStore, newDiagramStore);
             _diagramPlugins.Add(newDiagramId, diagramPlugins.ToList());
 
@@ -132,14 +151,25 @@ namespace Codartis.SoftVis.Service
             diagramStore.ClearDiagram();
         }
 
-        public void ClearModel()
-        {
-            ModelStore.ClearModel();
-        }
+        public void ZoomToContent(DiagramId diagramId) => GetDiagramUi(diagramId).ZoomToContent();
 
-        public void UpdateModelFromSource()
+        public async Task<BitmapSource> CreateDiagramImageAsync(DiagramId diagramId, double dpi, double margin,
+            CancellationToken cancellationToken = default(CancellationToken),
+            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var diagramUi = GetDiagramUi(diagramId);
+                var diagramImageCreator = new DataCloningDiagramImageCreator((DiagramViewModel)diagramUi,
+                    _diagramStlyeProvider, _resourceDictionary);
+
+                return await Task.Factory.StartSTA(() =>
+                    diagramImageCreator.CreateImage(dpi, margin, cancellationToken, progress, maxProgress), cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
         }
 
         private IDiagramStore GetDiagramStore(DiagramId diagramId) => _diagramStores[diagramId];

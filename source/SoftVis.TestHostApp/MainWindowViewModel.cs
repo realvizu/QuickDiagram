@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Service;
@@ -15,6 +15,7 @@ using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
@@ -36,18 +37,25 @@ namespace Codartis.SoftVis.TestHostApp
         private int _nextToRemoveModelItemGroupIndex;
         private double _selectedDpi;
 
-        public IDiagramUi DiagramUi { get; }
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
         public ICommand ZoomToContentCommand { get; }
         public ICommand CopyToClipboardCommand { get; }
 
         public MainWindow Window { get; set; }
+        public IDiagramUi DiagramUi { get; set; }
         public IDiagramStlyeProvider DiagramStlyeProvider { get; set; }
 
         public MainWindowViewModel()
         {
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+
+            AddCommand = new DelegateCommand(AddShapes);
+            RemoveCommand = new DelegateCommand(RemoveShapes);
+            ZoomToContentCommand = new DelegateCommand(ZoomToContent);
+            CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
+
+            SelectedDpi = 300;
 
             _visualizationService = new VisualizationService(
                 new TestModelStoreFactory(),
@@ -63,23 +71,14 @@ namespace Codartis.SoftVis.TestHostApp
                     DiagramPluginId.ModelTrackingDiagramPlugin
                 }
             );
-
-            _testModelStore = (TestModelStore)_visualizationService.GetModelStore();
-            TestModelCreator.Create(_testModelStore);
-            //BigTestModelCreator.Create(_testModelStore, 2, 5);
+            _visualizationService.ModelNodeInvoked += modelNode => Debug.WriteLine($"ModelNodeInvoked: {modelNode}");
 
             _diagramId = _visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             DiagramUi = _visualizationService.GetDiagramUi(_diagramId);
 
-            //DiagramUi.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.Id}");
-            //DiagramUi.ShowModelItemsRequested += (i, j) => _testDiagram.ShowModelItems(i);
-
-            AddCommand = new DelegateCommand(AddShapes);
-            RemoveCommand = new DelegateCommand(RemoveShapes);
-            ZoomToContentCommand = new DelegateCommand(ZoomToContent);
-            CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
-
-            SelectedDpi = 300;
+            _testModelStore = (TestModelStore)_visualizationService.GetModelStore();
+            TestModelCreator.Create(_testModelStore);
+            //BigTestModelCreator.Create(_testModelStore, 2, 5);
         }
 
         public double SelectedDpi
@@ -130,52 +129,34 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
-                DiagramUi.ZoomToContent();
+                _visualizationService.ZoomToContent(_diagramId);
             };
             timer.Start();
         }
 
         private async void CopyToClipboardAsync()
         {
-            using (var progressDialog = new ProgressDialog(Window, "TestHostApp", "Generating image.."))
+            _visualizationService.InitializeUi(DiagramStlyeProvider, _resourceDictionary);
+
+            try
             {
-                progressDialog.ShowWithDelayAsync();
+                using (var progressDialog = new ProgressDialog(Window, "TestHostApp", "Generating image.."))
+                {
+                    progressDialog.ShowWithDelayAsync();
 
-                var bitmapSource = await CreateDiagramImageAsync(progressDialog);
-                SetImageToClipboard(bitmapSource);
+                    var bitmapSource = await _visualizationService.CreateDiagramImageAsync(_diagramId, SelectedDpi, 10,
+                        progressDialog.CancellationToken, progressDialog.Progress, progressDialog.MaxProgress);
+
+                    progressDialog.Reset("Copying image to clipboard...", showProgressNumber: false);
+
+                    // Clipboard operations must run on STA thread.
+                    await Task.Factory.StartSTA(() => Clipboard.SetImage(bitmapSource), progressDialog.CancellationToken);
+                }
             }
-        }
-
-        private async Task<BitmapSource> CreateDiagramImageAsync(ProgressDialog progressDialog)
-        {
-            //try
-            //{
-            //    var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramUi, DiagramStlyeProvider, _resourceDictionary);
-            //    var cancellationToken = progressDialog.CancellationToken;
-
-            //    return await Task.Factory.StartSTA(() =>
-            //        diagramImageCreator.CreateImage(SelectedDpi, 10, cancellationToken, progressDialog.Progress), cancellationToken);
-            //}
-            //catch (OperationCanceledException)
-            //{
-            //    return null;
-            //}
-            //catch (OutOfMemoryException)
-            //{
-            //    HandleOutOfMemory();
-            return null;
-            //}
-        }
-
-        private static void SetImageToClipboard(BitmapSource bitmapSource)
-        {
-            if (bitmapSource != null)
-                Clipboard.SetImage(bitmapSource);
-        }
-
-        private static void HandleOutOfMemory()
-        {
-            MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
+            catch (OutOfMemoryException)
+            {
+                MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
+            }
         }
     }
 }

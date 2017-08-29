@@ -143,6 +143,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent
                 && DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.DiagramNode, DiagramNode))
             {
+                DiagramShape = diagramNodeChangedEvent.DiagramNode;
                 PopulateFromDiagramNode(diagramNodeChangedEvent.DiagramNode);
             }
         }
