@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Graphs;
+using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -37,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// The roslyn symbol that is on the source side of the directed relationship.
         /// </summary>
         public ISymbol SourceSymbol
-            => DirectedRelationshipType.Direction == RelationshipDirection.Outgoing
+            => DirectedRelationshipType.Direction == EdgeDirection.Out
                 ? BaseSymbol
                 : RelatedSymbol;
 
@@ -45,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// The roslyn symbol that is on the target side of the directed relationship.
         /// </summary>
         public ISymbol TargetSymbol
-            => DirectedRelationshipType.Direction == RelationshipDirection.Outgoing
+            => DirectedRelationshipType.Direction == EdgeDirection.Out
                 ? RelatedSymbol
                 : BaseSymbol;
 

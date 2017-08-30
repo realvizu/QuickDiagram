@@ -30,7 +30,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IDiagramNode diagramNode)
               : base(modelStore, diagramStore, diagramNode)
         {
-            PopulateFromDiagramNode(diagramNode);
+            Name = diagramNode.Name;
+            Center = diagramNode.Center.ToWpf();
+            TopLeft = diagramNode.TopLeft.ToWpf();
+
+            // Must NOT populate size from model because its value flows from the controls to the models.
 
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
@@ -148,12 +152,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private void PopulateFromDiagramNode(IDiagramNode diagramNode)
+        protected virtual void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
-            // Must NOT populate size from model because its value flows from the controls to the models.
+            Name = diagramNode.Name;
             Center = diagramNode.Center.ToWpf();
             TopLeft = diagramNode.TopLeft.ToWpf();
-            Name = diagramNode.Name;
+            // Must NOT populate size from model because its value flows from the controls to the models.
         }
 
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()

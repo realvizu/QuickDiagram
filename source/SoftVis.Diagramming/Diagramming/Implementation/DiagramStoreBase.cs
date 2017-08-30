@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// Abstract base class for diagram stores.
     /// Responsible for diagram modification logic.
     /// </summary>
-    public abstract class DiagramStore : IDiagramStore
+    public abstract class DiagramStoreBase : IDiagramStore
     {
         public IDiagram CurrentDiagram { get; protected set; }
 
@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
 
-        protected DiagramStore(Diagram diagram)
+        protected DiagramStoreBase(Diagram diagram)
         {
             CurrentDiagram = diagram ?? throw new ArgumentNullException(nameof(diagram));
         }

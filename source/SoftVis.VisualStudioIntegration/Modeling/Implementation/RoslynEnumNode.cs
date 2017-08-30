@@ -8,11 +8,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynEnumNode : RoslynTypeNode
     {
-        internal RoslynEnumNode(ModelItemId id, INamedTypeSymbol namedTypeSymbol)
+        internal RoslynEnumNode(ModelNodeId id, INamedTypeSymbol namedTypeSymbol)
             : base(id, namedTypeSymbol, ModelNodeStereotypes.Enum)
         {
         }
 
-        public override int LayoutPriority => 1;
+        protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
+            => new RoslynEnumNode(id, EnsureNamedTypeSymbol(newSymbol));
     }
 }

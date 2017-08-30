@@ -12,8 +12,7 @@
 
             InitializeComponent();
 
-            viewModel.Window = this;
-            viewModel.DiagramStlyeProvider = DiagramControl;
+            viewModel.OnUiInitialized(mainWindow: this, diagramStlyeProvider: DiagramControl);
         }
     }
 }

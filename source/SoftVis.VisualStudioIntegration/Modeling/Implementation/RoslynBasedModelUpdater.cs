@@ -15,10 +15,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModelUpdater
     {
-        private readonly RoslynBasedModel _model;
+        private readonly RoslynModel _model;
         private readonly Workspace _workspace;
 
-        public RoslynBasedModelUpdater(RoslynBasedModel model, Workspace workspace)
+        public RoslynBasedModelUpdater(RoslynModel model, Workspace workspace)
         {
             _model = model;
             _workspace = workspace;
@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             foreach (var declaredTypeSymbol in declaredTypeSymbols)
             {
                 // Match by name
-                var matchingEntityByName = _model.RoslynModelNodes.FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
+                var matchingEntityByName = _model.RoslynNodes.FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
                 if (matchingEntityByName != null)
                 {
                     Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by name.");

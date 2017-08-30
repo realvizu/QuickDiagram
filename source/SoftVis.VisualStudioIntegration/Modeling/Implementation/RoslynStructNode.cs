@@ -9,12 +9,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynStructNode : RoslynTypeNode
     {
-        internal RoslynStructNode(ModelItemId id, INamedTypeSymbol namedTypeSymbol)
+        internal RoslynStructNode(ModelNodeId id, INamedTypeSymbol namedTypeSymbol)
             : base(id, namedTypeSymbol, ModelNodeStereotypes.Struct)
         {
         }
 
-        public override int LayoutPriority => 3;
+        protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
+            => new RoslynStructNode(id, EnsureNamedTypeSymbol(newSymbol));
 
         public override IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)

@@ -6,9 +6,9 @@ using Codartis.SoftVis.Geometry;
 namespace Codartis.SoftVis.UI
 {
     /// <summary>
-    /// Defines interaction points for the app logic and the UI.
+    /// Defines UI-related operations and event hooks.
     /// </summary>
-    public interface IDiagramUi
+    public interface IUiService
     {
         void ZoomToContent();
         void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes);

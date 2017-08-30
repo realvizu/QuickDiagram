@@ -65,8 +65,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         private void ExtendModelWithRelatedEntities(IRoslynModelNode modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            ModelServices.ExtendModelWithRelatedEntities(modelEntity, DirectedRelationshipTypes.BaseType, cancellationToken, progress, recursive: true);
-            ModelServices.ExtendModelWithRelatedEntities(modelEntity, DirectedRelationshipTypes.Subtype, cancellationToken, progress, recursive: true);
+            ModelServices.ExtendModelWithRelatedNodes(modelEntity, DirectedRelationshipTypes.BaseType, cancellationToken, progress, recursive: true);
+            ModelServices.ExtendModelWithRelatedNodes(modelEntity, DirectedRelationshipTypes.Subtype, cancellationToken, progress, recursive: true);
         }
 
         private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynModelNode modelNode, 

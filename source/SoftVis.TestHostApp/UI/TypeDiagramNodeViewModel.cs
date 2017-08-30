@@ -24,10 +24,10 @@ namespace Codartis.SoftVis.TestHostApp.UI
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
-            yield return new RelatedNodeType(DirectedRelationshipTypes.BaseType, "Base types");
-            yield return new RelatedNodeType(DirectedRelationshipTypes.Subtype, "Subtypes");
-            yield return new RelatedNodeType(DirectedRelationshipTypes.ImplementerType, "Implementers");
-            yield return new RelatedNodeType(DirectedRelationshipTypes.ImplementedInterface, "Interfaces");
+            yield return new RelatedNodeType(DirectedModelRelationshipTypes.BaseType, "Base types");
+            yield return new RelatedNodeType(DirectedModelRelationshipTypes.Subtype, "Subtypes");
+            yield return new RelatedNodeType(DirectedModelRelationshipTypes.ImplementerType, "Implementers");
+            yield return new RelatedNodeType(DirectedModelRelationshipTypes.ImplementedInterface, "Interfaces");
         }
     }
 }

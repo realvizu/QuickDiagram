@@ -6,9 +6,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal class TestModelBuilder
     {
-        public TestModelStore ModelStore { get; }
+        public ITestModelStore ModelStore { get; }
 
-        public TestModelBuilder(TestModelStore modelStore)
+        public TestModelBuilder(ITestModelStore modelStore)
         {
             ModelStore = modelStore;
         }

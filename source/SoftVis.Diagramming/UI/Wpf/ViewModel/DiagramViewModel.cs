@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Top level view model of the diagram control.
     /// </summary>
-    public class DiagramViewModel : ModelObserverViewModelBase, IDiagramUi
+    public class DiagramViewModel : ModelObserverViewModelBase, IUiService
     {
         private IDiagram _lastDiagram;
         private Rect _diagramContentRect;

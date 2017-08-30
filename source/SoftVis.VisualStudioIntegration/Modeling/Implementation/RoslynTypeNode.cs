@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         public INamedTypeSymbol NamedTypeSymbol { get; }
 
-        protected RoslynTypeNode(ModelItemId id, INamedTypeSymbol roslynSymbol, ModelNodeStereotype stereotype)
+        protected RoslynTypeNode(ModelNodeId id, INamedTypeSymbol roslynSymbol, ModelNodeStereotype stereotype)
             : base(id, roslynSymbol, stereotype)
         {
             NamedTypeSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));
@@ -25,6 +25,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public virtual bool IsAbstract => false;
         public string FullName => NamedTypeSymbol.GetFullName();
         public string Description => NamedTypeSymbol.GetDescription();
+
+        protected INamedTypeSymbol EnsureNamedTypeSymbol(ISymbol newSymbol)
+        {
+            if (newSymbol is INamedTypeSymbol namedTypeSymbol)
+                return namedTypeSymbol;
+
+            throw new InvalidOperationException($"INamedTypeSymbol expected but received {newSymbol.GetType().Name}");
+        }
 
         protected static IEnumerable<RelatedSymbolPair> GetImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)
         {

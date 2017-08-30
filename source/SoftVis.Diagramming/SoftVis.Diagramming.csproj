@@ -94,9 +94,13 @@
     <Compile Include="Diagramming\Events\DiagramConnectorEventBase.cs" />
     <Compile Include="Diagramming\Events\DiagramConnectorRemovedEvent.cs" />
     <Compile Include="Diagramming\DiagramNodeIdEqualityComparer.cs" />
+    <Compile Include="Diagramming\IDiagramService.cs" />
+    <Compile Include="Diagramming\Implementation\DiagramService.cs" />
+    <Compile Include="Modeling\IModelService.cs" />
+    <Compile Include="Modeling\Implementation\ModelService.cs" />
     <Compile Include="Service\IDiagramPluginFactory.cs" />
     <Compile Include="Service\IVisualizationService.cs" />
-    <Compile Include="Diagramming\IDiagramStoreFactory.cs" />
+    <Compile Include="Diagramming\IDiagramServiceFactory.cs" />
     <Compile Include="Service\IDiagramPlugin.cs" />
     <Compile Include="Diagramming\IReadOnlyDiagramStore.cs" />
     <Compile Include="Diagramming\IDiagramShapeResolver.cs" />
@@ -116,7 +120,7 @@
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Service\Plugins\DiagramPluginBase.cs" />
     <Compile Include="Service\Plugins\AutoLayoutDiagramPlugin.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramStore.cs" />
+    <Compile Include="Diagramming\Implementation\DiagramStoreBase.cs" />
     <Compile Include="Diagramming\IDiagramShapeFactory.cs" />
     <Compile Include="Diagramming\Layout\ILayoutPriorityProvider.cs" />
     <Compile Include="Diagramming\Layout\RemoveDiagramConnectorAction.cs" />
@@ -138,7 +142,7 @@
     <Compile Include="Graphs\Concurrent\RemoveVertexResult.cs" />
     <Compile Include="Graphs\Immutable\ImmutableBidirectionalGraph.cs" />
     <Compile Include="Graphs\Immutable\VertexIdEdge.cs" />
-    <Compile Include="Modeling\IModelStoreFactory.cs" />
+    <Compile Include="Modeling\IModelServiceFactory.cs" />
     <Compile Include="Modeling\ModelRelationshipId.cs" />
     <Compile Include="Modeling\ModelNodeId.cs" />
     <Compile Include="Modeling\DirectedModelRelationshipType.cs" />
@@ -163,11 +167,11 @@
     <Compile Include="Modeling\Implementation\Model.cs" />
     <Compile Include="Modeling\Implementation\ModelStore.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
-    <Compile Include="UI\IDiagramUi.cs" />
-    <Compile Include="UI\IDiagramUiFactory.cs" />
+    <Compile Include="UI\IUiService.cs" />
+    <Compile Include="UI\IUiServiceFactory.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
+    <Compile Include="UI\Wpf\IWpfUiService..cs" />
     <Compile Include="UI\Wpf\RouteExtensions.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramUiFactory.cs" />
     <Compile Include="UI\IDiagramShapeUiFactory.cs" />
     <Compile Include="UI\Wpf\ViewModel\MiniButtonPanelViewModel.cs" />
     <Compile Include="UI\IDiagramShapeUiRepository.cs" />
@@ -187,6 +191,7 @@
     <Compile Include="UI\Wpf\View\DataCloningDiagramImageCreator.cs" />
     <Compile Include="UI\Wpf\View\DiagramImageCreator.cs" />
     <Compile Include="UI\Wpf\View\DiagramStyleCache.cs" />
+    <Compile Include="UI\Wpf\WpfUiService.cs" />
     <Compile Include="UI\ZoomDirection.cs" />
     <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
     <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />

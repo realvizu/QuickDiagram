@@ -12,7 +12,7 @@ using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.TestHostApp.UI;
-using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
@@ -23,46 +23,33 @@ using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp
 {
-    class MainWindowViewModel : ViewModelBase
+    internal class MainWindowViewModel : ViewModelBase
     {
         private const string DiagramStylesXaml = "Resources/Styles.xaml";
 
-        private readonly ResourceDictionary _resourceDictionary;
-
-        private readonly IVisualizationService _visualizationService;
-        private readonly TestModelStore _testModelStore;
-        private readonly DiagramId _diagramId;
+        private readonly ITestModelService _testModelService;
+        private readonly IDiagramService _diagramService;
+        private readonly IWpfUiService _wpfUiService;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
         private double _selectedDpi;
+        private Window _window;
 
+        public DiagramViewModel DiagramViewModel => _wpfUiService.DiagramViewModel;
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
         public ICommand ZoomToContentCommand { get; }
         public ICommand CopyToClipboardCommand { get; }
 
-        public MainWindow Window { get; set; }
-        public IDiagramUi DiagramUi { get; set; }
-        public IDiagramStlyeProvider DiagramStlyeProvider { get; set; }
-
         public MainWindowViewModel()
         {
-            _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-
-            AddCommand = new DelegateCommand(AddShapes);
-            RemoveCommand = new DelegateCommand(RemoveShapes);
-            ZoomToContentCommand = new DelegateCommand(ZoomToContent);
-            CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
-
             SelectedDpi = 300;
 
-            _visualizationService = new VisualizationService(
-                new TestModelStoreFactory(),
-                new TestDiagramStoreFactory(),
-                new TestDiagramShapeFactory(),
-                new DiagramUiFactory(),
-                new TestDiagramShapeUiFactory(),
+            var visualizationService = new VisualizationService(
+                new TestModelServiceFactory(),
+                new TestDiagramServiceFactory(),
+                new TestUiServiceFactory(),
                 new DiagramPluginFactory(new TestLayoutPriorityProvider(), new TestDiagramShapeFactory()),
                 new[]
                 {
@@ -71,14 +58,20 @@ namespace Codartis.SoftVis.TestHostApp
                     DiagramPluginId.ModelTrackingDiagramPlugin
                 }
             );
-            _visualizationService.ModelNodeInvoked += modelNode => Debug.WriteLine($"ModelNodeInvoked: {modelNode}");
 
-            _diagramId = _visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);
-            DiagramUi = _visualizationService.GetDiagramUi(_diagramId);
+            visualizationService.ModelNodeInvoked += (i, j) => Debug.WriteLine($"ModelNodeInvoked: {i} on diagram {j}");
 
-            _testModelStore = (TestModelStore)_visualizationService.GetModelStore();
-            TestModelCreator.Create(_testModelStore);
-            //BigTestModelCreator.Create(_testModelStore, 2, 5);
+            _testModelService = (ITestModelService)visualizationService.GetModelService();
+            var diagramId = visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+            _diagramService = visualizationService.GetDiagramService(diagramId);
+            _wpfUiService = (IWpfUiService)visualizationService.GetUiService(diagramId);
+
+            AddCommand = new DelegateCommand(AddShapes);
+            RemoveCommand = new DelegateCommand(RemoveShapes);
+            ZoomToContentCommand = new DelegateCommand(ZoomToContent);
+            CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
+
+            PopulateModel(_testModelService);
         }
 
         public double SelectedDpi
@@ -91,15 +84,24 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
+        public void OnUiInitialized(Window mainWindow, IDiagramStlyeProvider diagramStlyeProvider)
+        {
+            _window = mainWindow;
+
+            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+
+            _wpfUiService.Initialize(resourceDictionary, diagramStlyeProvider);
+        }
+
         private void AddShapes()
         {
-            if (_modelItemGroupIndex == _testModelStore.CurrentTestModel.ItemGroups.Count)
+            if (_modelItemGroupIndex == _testModelService.CurrentTestModel.ItemGroups.Count)
                 return;
 
-            var modelNodes = _testModelStore.CurrentTestModel.ItemGroups[_modelItemGroupIndex];
+            var modelNodes = _testModelService.CurrentTestModel.ItemGroups[_modelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
-                _visualizationService.ShowModelNode(_diagramId, modelNode);
+                _diagramService.ShowModelNode(modelNode);
 
             _modelItemGroupIndex++;
 
@@ -110,13 +112,13 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void RemoveShapes()
         {
-            if (_nextToRemoveModelItemGroupIndex == _testModelStore.CurrentTestModel.ItemGroups.Count)
+            if (_nextToRemoveModelItemGroupIndex == _testModelService.CurrentTestModel.ItemGroups.Count)
                 return;
 
-            var modelNodes = _testModelStore.CurrentTestModel.ItemGroups[_nextToRemoveModelItemGroupIndex];
+            var modelNodes = _testModelService.CurrentTestModel.ItemGroups[_nextToRemoveModelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
-                _visualizationService.HideModelNode(_diagramId, modelNode);
+                _diagramService.HideModelNode(modelNode);
 
             _nextToRemoveModelItemGroupIndex++;
 
@@ -129,22 +131,20 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
-                _visualizationService.ZoomToContent(_diagramId);
+                _wpfUiService.ZoomToContent();
             };
             timer.Start();
         }
 
         private async void CopyToClipboardAsync()
         {
-            _visualizationService.InitializeUi(DiagramStlyeProvider, _resourceDictionary);
-
             try
             {
-                using (var progressDialog = new ProgressDialog(Window, "TestHostApp", "Generating image.."))
+                using (var progressDialog = new ProgressDialog(_window, "TestHostApp", "Generating image.."))
                 {
                     progressDialog.ShowWithDelayAsync();
 
-                    var bitmapSource = await _visualizationService.CreateDiagramImageAsync(_diagramId, SelectedDpi, 10,
+                    var bitmapSource = await _wpfUiService.CreateDiagramImageAsync(SelectedDpi, 10,
                         progressDialog.CancellationToken, progressDialog.Progress, progressDialog.MaxProgress);
 
                     progressDialog.Reset("Copying image to clipboard...", showProgressNumber: false);
@@ -157,6 +157,12 @@ namespace Codartis.SoftVis.TestHostApp
             {
                 MessageBox.Show("Cannot export the image because it is too large. Please select a smaller DPI value.", "TestHostApp");
             }
+        }
+
+        private static void PopulateModel(ITestModelService testModelService)
+        {
+            TestModelCreator.Create(testModelService);
+            //BigTestModelCreator.Create(_testModelService, 2, 5);
         }
     }
 }

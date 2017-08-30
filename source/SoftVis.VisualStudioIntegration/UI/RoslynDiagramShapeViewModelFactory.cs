@@ -22,8 +22,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             switch (diagramShape)
             {
-                case TypeDiagramNode typeDiagramNode:
-                    return new TypeDiagramNodeViewModel(Diagram, typeDiagramNode, DefaultIsDescriptionVisible);
+                case RoslynTypeDiagramNode typeDiagramNode:
+                    return new RoslynTypeDiagramNodeViewModel(Diagram, typeDiagramNode, DefaultIsDescriptionVisible);
 
                 case IDiagramConnector diagramConnector:
                     return CreateDiagramConnectorViewModel(diagramConnector);

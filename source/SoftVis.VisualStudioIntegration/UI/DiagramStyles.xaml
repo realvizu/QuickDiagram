@@ -40,8 +40,8 @@
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:TypeDiagramNodeViewModel}}">
-        <Setter Property="DiagramFill" Value="{Binding Path=TypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
+           d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynTypeDiagramNodeViewModel}}">
+        <Setter Property="DiagramFill" Value="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -59,7 +59,7 @@
                                 <Image Grid.Row="0" 
                                    Margin="1" 
                                    HorizontalAlignment="Left" 
-                                   Source="{Binding Path=TypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
+                                   Source="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
                                 <TextBlock x:Name="TextBlock"
                                        Grid.Row="1" 
                                        Margin="4,0,4,0" 
@@ -83,7 +83,7 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                        <DataTrigger Binding="{Binding Path=RoslynTypeDiagramNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                             <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">

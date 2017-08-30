@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         public ISymbol RoslynSymbol { get; }
 
-        protected RoslynModelNode(ModelItemId id, ISymbol roslynSymbol, ModelNodeStereotype stereotype)
+        protected RoslynModelNode(ModelNodeId id, ISymbol roslynSymbol, ModelNodeStereotype stereotype)
             : base(id, roslynSymbol.GetName(), stereotype, roslynSymbol.GetOrigin())
         {
             RoslynSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));
@@ -32,5 +32,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return workspace?.CurrentSolution?.Projects.Select(i => i?.GetCompilationAsync().Result).Where(i => i != null) 
                 ?? Enumerable.Empty<Compilation>();
         }
+
+        public IRoslynModelNode UpdateRoslynSymbol(ISymbol newSymbol)
+        {
+            return CreateInstance(Id, newSymbol);
+        }
+
+        protected abstract IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol);
     }
 }

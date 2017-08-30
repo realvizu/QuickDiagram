@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public event Action<ModelEventBase> ModelChanged;
 
-        protected ModelStore(Model model)
+        public ModelStore(Model model)
         {
             CurrentModel = model ?? throw new ArgumentNullException(nameof(model));
         }

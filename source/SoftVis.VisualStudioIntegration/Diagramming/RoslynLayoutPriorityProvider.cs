@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     {
         public int GetPriority(IDiagramNode diagramNode)
         {
-            var nodeType = (diagramNode as TypeDiagramNode)?.Stereotype;
+            var nodeType = (diagramNode as RoslynTypeDiagramNode)?.Stereotype;
 
             if (nodeType == ModelNodeStereotypes.Class) return 2;
             if (nodeType == ModelNodeStereotypes.Interface) return 1;

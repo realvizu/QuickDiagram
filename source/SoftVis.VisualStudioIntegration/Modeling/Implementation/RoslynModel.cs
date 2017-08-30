@@ -10,23 +10,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// A model created from Roslyn symbols. Immutable.
     /// </summary>
-    internal class RoslynBasedModel : Model
+    internal class RoslynModel : Model
     {
-        public RoslynBasedModel()
+        public RoslynModel()
         {
         }
 
-        private RoslynBasedModel(ModelGraph graph) 
+        private RoslynModel(ModelGraph graph) 
             : base(graph)
         {
         }
 
-        public IEnumerable<RoslynModelNode> RoslynModelNodes => Nodes.OfType<RoslynModelNode>();
-        public IEnumerable<ModelRelationship> RoslynRelationships => Relationships.OfType<ModelRelationship>();
+        public IEnumerable<RoslynModelNode> RoslynNodes => Nodes.OfType<RoslynModelNode>();
 
         public IRoslynModelNode GetNodeBySymbol(ISymbol symbol)
         {
-            return RoslynModelNodes.FirstOrDefault(i => i.SymbolEquals(symbol));
+            return RoslynNodes.FirstOrDefault(i => i.SymbolEquals(symbol));
         }
 
         public IRoslynModelNode GetNodeByLocation(Location location)
@@ -36,7 +35,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             var fileLinePositionSpan = location.GetMappedLineSpan();
 
-            foreach (var roslynModelNode in RoslynModelNodes)
+            foreach (var roslynModelNode in RoslynNodes)
             {
                 var nodeLocation = roslynModelNode.RoslynSymbol?.Locations.FirstOrDefault()?.GetMappedLineSpan();
                 if (nodeLocation != null && nodeLocation.Value.Overlaps(fileLinePositionSpan))
@@ -48,10 +47,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public IModelRelationship GetRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
         {
-            return RoslynRelationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
+            return Relationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
         }
 
-        protected override Model WithGraph(ModelGraph graph) =>
-            new RoslynBasedModel(graph);
+        protected override IModel CreateInstance(ModelGraph graph) => new RoslynModel(graph);
     }
 }

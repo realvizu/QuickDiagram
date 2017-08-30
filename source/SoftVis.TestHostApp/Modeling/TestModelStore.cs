@@ -3,7 +3,7 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal class TestModelStore : ModelStore
+    internal class TestModelStore : ModelStore, ITestModelStore
     {
         public TestModelStore(TestModel model)
             : base(model)

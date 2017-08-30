@@ -66,7 +66,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
             var hostUiGateway = new HostUiGateway(this);
 
-            var modelServices = new RoslynBasedModelStore(hostWorkspaceGateway);
+            var modelServices = new RoslynModelStore(hostWorkspaceGateway);
             var diagramServices = new RoslynDiagramStore(modelServices, new RoslynDiagramShapeFactory());
             var uiServices = new DiagramUi(hostUiGateway, diagramServices);
 

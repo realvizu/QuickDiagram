@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -13,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// View model for a diagram node that represents a type.
     /// </summary>
-    internal sealed class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
+    internal sealed class RoslynTypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
         private bool _isAbstract;
         private string _fullName;
@@ -21,25 +18,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
 
-        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode typeDiagramNode, bool isDescriptionVisible)
-            : this(diagram, typeDiagramNode, isDescriptionVisible, Size.Empty, PointExtensions.Undefined, PointExtensions.Undefined)
+        public RoslynTypeDiagramNodeViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, 
+            RoslynTypeDiagramNode roslynTypeDiagramNode, bool isDescriptionVisible)
+            : base(modelStore, diagramStore, roslynTypeDiagramNode)
         {
-        }
-
-        public TypeDiagramNodeViewModel(IArrangedDiagram diagram, TypeDiagramNode typeDiagramNode, bool isDescriptionVisible,
-            Size size, Point center, Point topLeft)
-            : base(diagram, typeDiagramNode, size, center, topLeft)
-        {
-            PopulateProperties(typeDiagramNode.RoslynTypeNode);
             IsDescriptionVisible = isDescriptionVisible;
+            PopulateFromDiagramNode(roslynTypeDiagramNode);
         }
 
-        public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode) DiagramNode;
+        public RoslynTypeDiagramNode RoslynTypeDiagramNode => (RoslynTypeDiagramNode) DiagramNode;
 
-        public override object Clone()
-        {
-            return new TypeDiagramNodeViewModel(Diagram, TypeDiagramNode, IsDescriptionVisible, Size, Center, TopLeft);
-        }
+        public override object Clone() 
+            => new RoslynTypeDiagramNodeViewModel(ModelStore, DiagramStore, RoslynTypeDiagramNode, IsDescriptionVisible) {Size = Size};
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
@@ -114,22 +104,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
-        protected override void OnModelNodeUpdated(IDiagramNode diagramNode, IModelNode modelNode)
+        protected override void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
-            base.OnModelNodeUpdated(diagramNode, modelNode);
+            base.PopulateFromDiagramNode(diagramNode);
 
-            var typeDiagramNode = diagramNode as TypeDiagramNode;
-            if (typeDiagramNode == null)
-                throw new InvalidOperationException($"{typeof(TypeDiagramNode).Name} expected.");
+            var roslynTypeDiagramNode = (RoslynTypeDiagramNode) diagramNode;
 
-            PopulateProperties(typeDiagramNode.RoslynTypeNode);
-        }
-
-        private void PopulateProperties(IRoslynTypeNode roslynTypeNode)
-        {
-            IsAbstract = roslynTypeNode.IsAbstract;
-            FullName = roslynTypeNode.FullName;
-            SetDescription(roslynTypeNode.Description);
+            IsAbstract = roslynTypeDiagramNode.IsAbstract;
+            FullName = roslynTypeDiagramNode.RoslynTypeNode.FullName;
+            SetDescription(roslynTypeDiagramNode.RoslynTypeNode.Description);
         }
 
         private void SetDescription(string description)

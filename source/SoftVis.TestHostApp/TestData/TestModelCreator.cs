@@ -5,9 +5,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal static class TestModelCreator
     {
-        internal static TestModelStore Create(TestModelStore modelStore)
+        internal static ITestModelStore Create(ITestModelStore testModelStore)
         {
-            var modelBuilder = new TestModelBuilder(modelStore);
+            var modelBuilder = new TestModelBuilder(testModelStore);
 
             modelBuilder
 
@@ -144,7 +144,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
                 ;
 
-            return modelStore;
+            return testModelStore;
         }
     }
 }

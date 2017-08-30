@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     /// <summary>
     /// Defines the directed relationship types.
     /// </summary>
-    public static class DirectedRelationshipTypes
+    public static class DirectedModelRelationshipTypes
     {
         public static readonly DirectedModelRelationshipType BaseType = 
             new DirectedModelRelationshipType(ModelRelationshipStereotypes.Inheritance, EdgeDirection.Out);

@@ -13,6 +13,7 @@
     <Allowed From="*" To="System.Windows.Media.Imaging"/>
     <Allowed From="*" To="System.Windows.Threading" />
 
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.*" To="Codartis.SoftVis.Graphs" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.*" To="Codartis.SoftVis.VisualStudioIntegration.Util" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Util" To="Microsoft.CodeAnalysis.*" />
@@ -34,6 +35,8 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.VisualStudioIntegration.UI" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.Service" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Microsoft.CodeAnalysis.*" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="System.Windows.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.UI" To="Codartis.SoftVis.Geometry" />

@@ -29,9 +29,11 @@
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
 
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.View" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.Controls" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
 
     <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.Modeling" />

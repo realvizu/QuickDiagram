@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             if (diagramNode == null)
                 return;
 
-            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelNode);
+            ModelServices.ExtendModelWithRelatedNodes(diagramNode.ModelNode);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)

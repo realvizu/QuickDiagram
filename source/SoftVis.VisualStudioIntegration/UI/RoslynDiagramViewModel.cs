@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             _areDiagramNodeDescriptionsVisible = isVisible;
 
-            foreach (var diagramNodeViewModel in DiagramNodeViewModels.OfType<TypeDiagramNodeViewModel>())
+            foreach (var diagramNodeViewModel in DiagramNodeViewModels.OfType<RoslynTypeDiagramNodeViewModel>())
                 diagramNodeViewModel.IsDescriptionVisible = _areDiagramNodeDescriptionsVisible;
         }
     }

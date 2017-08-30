@@ -10,13 +10,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal static class RoslynModelItemFactory
     {
-        public static RoslynModelNode CreateModelNode(ISymbol symbol, ModelItemId? idOfPreviousVersion = null)
+        public static RoslynModelNode CreateModelNode(ISymbol symbol)
         {
             var namedTypeSymbol = symbol as INamedTypeSymbol;
             if (namedTypeSymbol == null)
                 throw new NotImplementedException($"CreateModelNode for {symbol.GetType().Name} is not implemented.");
 
-            var id = idOfPreviousVersion ?? ModelItemId.Create();
+            var id = ModelNodeId.Create();
 
             switch (namedTypeSymbol.TypeKind)
             {
@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public static ModelRelationship CreateRoslynRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
         {
-            var id = ModelItemId.Create();
+            var id = ModelRelationshipId.Create();
 
             if (stereotype == ModelRelationshipStereotypes.Inheritance)
                 return new InheritanceRelationship(id, sourceNode, targetNode);

@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Defines model operations for the application commands package.
     /// </summary>
-    internal interface IModelServices : IReadOnlyModelStore
+    internal interface IModelServices
     {
         /// <summary>
         /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related node. Default is false.</param>
-        void ExtendModelWithRelatedEntities(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null, 
+        void ExtendModelWithRelatedNodes(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null, 
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
 
         /// <summary>

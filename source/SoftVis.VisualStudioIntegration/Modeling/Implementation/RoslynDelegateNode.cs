@@ -8,11 +8,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynDelegateNode : RoslynTypeNode
     {
-        internal RoslynDelegateNode(ModelItemId id, INamedTypeSymbol namedTypeSymbol)
+        internal RoslynDelegateNode(ModelNodeId id, INamedTypeSymbol namedTypeSymbol)
             : base(id, namedTypeSymbol, ModelNodeStereotypes.Delegate)
         {
         }
 
-        public override int LayoutPriority => 0;
+        protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
+            => new RoslynDelegateNode(id, EnsureNamedTypeSymbol(newSymbol));
     }
 }
