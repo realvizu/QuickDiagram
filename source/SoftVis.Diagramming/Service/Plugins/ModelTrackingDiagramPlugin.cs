@@ -14,9 +14,9 @@ namespace Codartis.SoftVis.Service.Plugins
         {
         }
 
-        public override void Initialize(IReadOnlyModelStore modelStore, IDiagramStore diagramStore)
+        public override void Initialize(IModelService modelService, IDiagramService diagramService)
         {
-            base.Initialize(modelStore, diagramStore);
+            base.Initialize(modelService, diagramService);
 
             ModelStore.ModelChanged += OnModelChanged;
         }

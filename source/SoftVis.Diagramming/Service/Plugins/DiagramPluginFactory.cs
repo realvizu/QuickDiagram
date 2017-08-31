@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Service.Plugins
             _diagramShapeFactory = diagramShapeFactory;
         }
 
-        public IDiagramPlugin Create(DiagramPluginId diagramPluginId)
+        public virtual IDiagramPlugin Create(DiagramPluginId diagramPluginId)
         {
             if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin) return new AutoLayoutDiagramPlugin(_layoutPriorityProvider);
             if (diagramPluginId == DiagramPluginId.ConnectorHandlerDiagramPlugin) return new ConnectorHandlerDiagramPlugin(_diagramShapeFactory);

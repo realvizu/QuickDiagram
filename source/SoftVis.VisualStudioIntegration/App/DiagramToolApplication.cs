@@ -18,47 +18,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </remarks>
     internal sealed class DiagramToolApplication : IAppServices
     {
-        public IModelServices ModelServices { get; }
-        public IDiagramServices DiagramServices { get; }
-        public IUiServices UiServices { get; }
+        public IRoslynModelService RoslynModelService { get; }
+        public IRoslynDiagramService RoslynDiagramService { get; }
+        public IRoslynUiService RoslynUiService { get; }
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public DiagramToolApplication(IModelServices modelServices, IDiagramServices diagramServices, IUiServices uiServices)
+        public DiagramToolApplication(
+            IRoslynModelService roslynModelService, 
+            IRoslynDiagramService roslynDiagramService, 
+            IRoslynUiService roslynUiService)
         {
-            ModelServices = modelServices;
-            DiagramServices = diagramServices;
-            UiServices = uiServices;
+            RoslynModelService = roslynModelService;
+            RoslynDiagramService = roslynDiagramService;
+            RoslynUiService = roslynUiService;
 
-            UiServices.ImageExportDpi = Dpi.Dpi150;
+            RoslynUiService.ImageExportDpi = Dpi.Dpi150;
 
-            SubscribeToDiagramEvents(diagramServices);
-            SubscribeToUiEvents(uiServices);
-        }
-
-        private void SubscribeToDiagramEvents(IDiagramServices diagramServices)
-        {
-            diagramServices.ShapeAdded += OnShapeAdded;
-        }
-
-        private void SubscribeToUiEvents(IUiServices uiServices)
-        {
-            uiServices.ShowSourceRequested += OnShowSourceRequested;
-            uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
-        }
-
-        /// <summary>
-        /// Whenever a shape is added to the diagram we try to proactively expand the model with the related entities.
-        /// </summary>
-        /// <param name="diagramShape">The shape that was added to the diagram.</param>
-        private void OnShapeAdded(IDiagramShape diagramShape)
-        {
-            var diagramNode = diagramShape as IDiagramNode;
-            if (diagramNode == null)
-                return;
-
-            ModelServices.ExtendModelWithRelatedNodes(diagramNode.ModelNode);
+            //SubscribeToDiagramEvents(roslynDiagramService);
+            //SubscribeToUiEvents(roslynUiService);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)

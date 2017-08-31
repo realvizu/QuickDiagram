@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -9,22 +10,34 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     internal class RoslynDiagramViewModel : DiagramViewModel
     {
-        private bool _areDiagramNodeDescriptionsVisible;
+        private IRoslynDiagramShapeUiFactory RoslynDiagramShapeUiFactory => (IRoslynDiagramShapeUiFactory)DiagramShapeUiFactory;
 
         public void ExpandAllNodes() => SetDiagramNodeDescriptionVisibility(true);
         public void CollapseAllNodes() => SetDiagramNodeDescriptionVisibility(false);
 
-        public RoslynDiagramViewModel(IArrangedDiagram diagram, double minZoom, double maxZoom, double initialZoom, bool initialIsDescriptionVisible)
-            : base(diagram, new RoslynDiagramShapeViewModelFactory(diagram, initialIsDescriptionVisible), minZoom, maxZoom, initialZoom)
+        public RoslynDiagramViewModel(
+            IReadOnlyModelStore modelStore, 
+            IReadOnlyDiagramStore diagramStore,
+            bool initialIsDescriptionVisible,
+            double minZoom, 
+            double maxZoom, 
+            double initialZoom)
+            : base(
+                  modelStore, 
+                  diagramStore,
+                  new RoslynDiagramShapeUiFactory(initialIsDescriptionVisible),
+                  minZoom, 
+                  maxZoom, 
+                  initialZoom)
         {
         }
 
         private void SetDiagramNodeDescriptionVisibility(bool isVisible)
         {
-            _areDiagramNodeDescriptionsVisible = isVisible;
+            RoslynDiagramShapeUiFactory.IsDescriptionVisible = isVisible;
 
             foreach (var diagramNodeViewModel in DiagramNodeViewModels.OfType<RoslynTypeDiagramNodeViewModel>())
-                diagramNodeViewModel.IsDescriptionVisible = _areDiagramNodeDescriptionsVisible;
+                diagramNodeViewModel.IsDescriptionVisible = isVisible;
         }
     }
 }

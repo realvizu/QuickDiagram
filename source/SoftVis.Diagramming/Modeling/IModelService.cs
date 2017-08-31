@@ -3,7 +3,8 @@
     /// <summary>
     /// Defines model-related operations.
     /// </summary>
-    public interface IModelService : IModelStore
+    public interface IModelService
     {
+        IModelStore ModelStore { get; }
     }
 }

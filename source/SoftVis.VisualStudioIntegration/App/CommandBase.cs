@@ -14,9 +14,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         /// </summary>
         private readonly IAppServices _appServices;
 
-        protected IModelServices ModelServices => _appServices.ModelServices;
-        protected IDiagramServices DiagramServices => _appServices.DiagramServices;
-        protected IUiServices UiServices => _appServices.UiServices;
+        protected IRoslynModelService ModelService => _appServices.RoslynModelService;
+        protected IRoslynDiagramService DiagramServices => _appServices.RoslynDiagramService;
+        protected IRoslynUiService UiService => _appServices.RoslynUiService;
 
         protected CommandBase(IAppServices appServices)
         {

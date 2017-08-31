@@ -11,9 +11,9 @@
 
         public override void Execute()
         {
-            UiServices.ShowDiagramWindow();
-            UiServices.CollapseAllNodes();
-            UiServices.KeepDiagramCentered();
+            UiService.ShowDiagramWindow();
+            UiService.CollapseAllNodes();
+            UiService.KeepDiagramCentered();
         }
     }
 }

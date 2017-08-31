@@ -11,8 +11,8 @@
 
         public override void Execute()
         {
-            UiServices.ShowDiagramWindow();
-            ModelServices.ClearModel();
+            UiService.ShowDiagramWindow();
+            ModelService.ClearModel();
         }
     }
 }

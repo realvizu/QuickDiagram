@@ -4,10 +4,10 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.Service
 {
     /// <summary>
-    /// Per-diagram plugin.
+    /// Per-diagram plugin that reacts to model and/or diagram events and performs custom logic.
     /// </summary>
     public interface IDiagramPlugin
     {
-        void Initialize(IReadOnlyModelStore modelStore, IDiagramStore diagramStore);
+        void Initialize(IModelService modelService, IDiagramService diagramService);
     }
 }

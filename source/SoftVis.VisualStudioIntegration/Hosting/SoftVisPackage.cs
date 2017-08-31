@@ -2,11 +2,13 @@
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
-using Codartis.SoftVis.Diagramming.Implementation;
+using Codartis.SoftVis.Service;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
+using Codartis.SoftVis.VisualStudioIntegration.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using EnvDTE;
 using EnvDTE80;
@@ -39,6 +41,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private IVisualStudioServiceProvider _visualStudioServiceProvider;
         private IComponentModel _componentModel;
+
+        private IRoslynVisualizationService _visualizationService;
         private DiagramToolApplication _diagramToolApplication;
 
         protected override void Initialize()
@@ -51,7 +55,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 #if DEBUG
                 System.Diagnostics.Debugger.Break();
 #else
-                return;
+                Trace.WriteLine($"[{PackageInfo.ToolName}] unhandled exception: {args.Exception}");
 #endif
             };
 
@@ -66,11 +70,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
             var hostUiGateway = new HostUiGateway(this);
 
-            var modelServices = new RoslynModelStore(hostWorkspaceGateway);
-            var diagramServices = new RoslynDiagramStore(modelServices, new RoslynDiagramShapeFactory());
-            var uiServices = new DiagramUi(hostUiGateway, diagramServices);
-
-            _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices);
+            _visualizationService = CreateVisualizationService(hostWorkspaceGateway, hostUiGateway);
+            var diagramId = _visualizationService.CreateDiagram(minZoom: .1, maxZoom: 10, initialZoom: 1);
+            
+            _diagramToolApplication = new DiagramToolApplication(
+                _visualizationService.GetRoslynModelService(),
+                _visualizationService.GetRoslynDiagramService(diagramId),
+                _visualizationService.GetRoslynUiService(diagramId));
 
             RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
@@ -147,6 +153,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var commandRegistrator = new CommandRegistrator(menuCommandService, appServices);
             commandRegistrator.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
             commandRegistrator.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
+        }
+
+        private static RoslynVisualizationService CreateVisualizationService(
+            IRoslynModelProvider roslynModelProvider, IHostUiServices hostUiServices)
+        {
+            return new RoslynVisualizationService(
+                new RoslynModelServiceFactory(roslynModelProvider),
+                new RoslynDiagramServiceFactory(),
+                new RoslynUiServiceFactory(hostUiServices, GlobalOptions.NodeDescriptionsVisibleByDefault),
+                new RoslynDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory()),
+                new[]
+                {
+                    DiagramPluginId.AutoLayoutDiagramPlugin,
+                    DiagramPluginId.ModelTrackingDiagramPlugin,
+                    DiagramPluginId.ConnectorHandlerDiagramPlugin,
+                    RoslynDiagramPluginId.ModelExtenderDiagramPlugin
+                });
         }
     }
 }

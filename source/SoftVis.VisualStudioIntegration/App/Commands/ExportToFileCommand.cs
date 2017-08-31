@@ -17,13 +17,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync()
         {
-            var filename = UiServices.SelectSaveFilename("Save Diagram Image to File", "PNG Image|*.png");
+            var filename = UiService.SelectSaveFilename("Save Diagram Image to File", "PNG Image|*.png");
             if (string.IsNullOrWhiteSpace(filename))
                 return;
 
             if (!filename.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase))
             {
-                UiServices.ShowMessageBox("Only PNG file format is supported. Please select a file with .png extension.");
+                UiService.ShowMessageBox("Only PNG file format is supported. Please select a file with .png extension.");
                 return;
             }
 

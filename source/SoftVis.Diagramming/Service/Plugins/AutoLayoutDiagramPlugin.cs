@@ -28,11 +28,11 @@ namespace Codartis.SoftVis.Service.Plugins
             _incrementalLayoutEngine = new IncrementalLayoutEngine(layoutPriorityProvider);
         }
 
-        public override void Initialize(IReadOnlyModelStore modelStore, IDiagramStore diagramStore)
+        public override void Initialize(IModelService modelService, IDiagramService diagramService)
         {
-            base.Initialize(modelStore, diagramStore);
+            base.Initialize(modelService, diagramService);
 
-            _layoutActionExecutor = new LayoutActionExecutorVisitor(diagramStore);
+            _layoutActionExecutor = new LayoutActionExecutorVisitor(DiagramStore);
             _automaticLayoutCancellation = new CancellationTokenSource();
             _diagramActionQueue = new Queue<DiagramAction>();
             _diagramActionArrivedEvent = new AutoResetEvent(false);

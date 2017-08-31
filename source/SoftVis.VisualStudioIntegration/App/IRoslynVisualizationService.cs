@@ -1,10 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Service;
-using Codartis.SoftVis.Util;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App
 {
@@ -13,16 +11,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </summary>
     internal interface IRoslynVisualizationService : IVisualizationService
     {
-        Task<bool> IsCurrentSymbolAvailableAsync();
-        Task<IRoslynModelNode> AddCurrentSymbolAsync();
-
-        void ExtendModelWithRelatedNodes(IRoslynModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
-
-        void ShowModelNodeWithHierarchy(DiagramId diagramId, IRoslynModelNode modelNode,
-            CancellationToken cancellationToken, IIncrementalProgress progress);
-
-        bool HasSource(IRoslynModelNode modelNode);
-        void ShowSource(IRoslynModelNode modelNode);
+        IRoslynModelService GetRoslynModelService();
+        IRoslynDiagramService GetRoslynDiagramService(DiagramId diagramId);
+        IRoslynUiService GetRoslynUiService(DiagramId diagramId);
     }
 }

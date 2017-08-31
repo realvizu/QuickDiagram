@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Selectors
         }
 
         public IEnumerable<Dpi> GetAllItems() => DpiChoices;
-        public Dpi GetSelectedItem() => UiServices.ImageExportDpi;
-        public void OnItemSelected(Dpi item) => UiServices.ImageExportDpi = item;
+        public Dpi GetSelectedItem() => UiService.ImageExportDpi;
+        public void OnItemSelected(Dpi item) => UiService.ImageExportDpi = item;
     }
 }

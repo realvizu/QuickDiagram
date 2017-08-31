@@ -5,6 +5,9 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {
+    /// <summary>
+    /// An immutable diagram node that represents a Roslyn type.
+    /// </summary>
     internal sealed class RoslynTypeDiagramNode : DiagramNode
     {
         public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode) 

@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Modeling.Implementation;
+﻿using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
@@ -10,10 +9,6 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         {
         }
 
-        public TestModel CurrentTestModel => (TestModel) CurrentModel;
-        private TestModelStore TestModelStore => (TestModelStore)ModelStore;
-
-        public void AddItemToCurrentGroup(IModelNode modelNode) => TestModelStore.AddItemToCurrentGroup(modelNode);
-        public void StartNewGroup() => TestModelStore.StartNewGroup();
+        public TestModelStore TestModelStore => (TestModelStore)ModelStore;
     }
 }

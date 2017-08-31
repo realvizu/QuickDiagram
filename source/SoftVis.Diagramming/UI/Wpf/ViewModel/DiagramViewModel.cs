@@ -16,10 +16,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Top level view model of the diagram control.
     /// </summary>
-    public class DiagramViewModel : ModelObserverViewModelBase, IUiService
+    public class DiagramViewModel : ModelObserverViewModelBase
     {
         private IDiagram _lastDiagram;
         private Rect _diagramContentRect;
+
+        protected IDiagramShapeUiFactory DiagramShapeUiFactory { get; }
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public RelatedNodeListBoxViewModel RelatedNodeListBoxViewModel { get; }
@@ -37,6 +39,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
             : base(modelStore, diagramStore)
         {
+            DiagramShapeUiFactory = diagramShapeUiFactory;
+
             DiagramViewportViewModel = new DiagramViewportViewModel(ModelStore, DiagramStore, diagramShapeUiFactory,
                 minZoom, maxZoom, initialZoom);
 

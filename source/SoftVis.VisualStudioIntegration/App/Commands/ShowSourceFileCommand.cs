@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -18,14 +19,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override void Execute(IDiagramNode diagramNode)
         {
-            var modelNode = diagramNode?.ModelNode;
-            if (modelNode == null)
-                throw new Exception("DiagramNode or ModelNode is null.");
+            var roslynModelNode = diagramNode?.ModelNode as IRoslynModelNode;
+            if (roslynModelNode == null)
+                throw new Exception("DiagramNode or ModelNode is null or not an IRoslynModelNode.");
 
-            if (ModelServices.HasSource(modelNode))
-                ModelServices.ShowSource(modelNode);
+            if (ModelService.HasSource(roslynModelNode))
+                ModelService.ShowSource(roslynModelNode);
             else
-                UiServices.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
+                UiService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
         }
     }
 }

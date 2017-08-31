@@ -10,6 +10,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override bool IsEnabled() => ModelServices.IsCurrentSymbolAvailableAsync().Result;
+        public override bool IsEnabled() => ModelService.IsCurrentSymbolAvailableAsync().Result;
     }
 }

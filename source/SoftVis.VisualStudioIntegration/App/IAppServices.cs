@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </summary>
     internal interface IAppServices
     {
-        IModelServices ModelServices { get; }
-        IDiagramServices DiagramServices { get; }
-        IUiServices UiServices { get; }
+        IRoslynModelService RoslynModelService { get; }
+        IRoslynDiagramService RoslynDiagramService { get; }
+        IRoslynUiService RoslynUiService { get; }
     }
 }

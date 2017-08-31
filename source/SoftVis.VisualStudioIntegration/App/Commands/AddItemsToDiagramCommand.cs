@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
@@ -22,17 +23,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             var diagramNodes = await ShowProgressAndAddItemsAsync(modelEntities);
 
-            UiServices.ShowDiagramWindow();
+            UiService.ShowDiagramWindow();
 
             if (followWithViewport)
-                UiServices.FollowDiagramNodes(diagramNodes);
+                UiService.FollowDiagramNodes(diagramNodes);
         }
 
         private async Task<IReadOnlyList<IDiagramNode>> ShowProgressAndAddItemsAsync(IReadOnlyList<IRoslynModelNode> modelEntities)
         {
             IReadOnlyList<IDiagramNode> diagramNodes = null;
 
-            using (var progressDialog = UiServices.CreateProgressDialog("Adding model items:", modelEntities.Count))
+            using (var progressDialog = UiService.CreateProgressDialog("Adding model items:", modelEntities.Count))
             {
                 progressDialog.ShowWithDelayAsync();
 
@@ -51,7 +52,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         private async Task<IReadOnlyList<IDiagramNode>> ShowEntitiesAsync(IReadOnlyList<IRoslynModelNode> modelEntities,
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return await Task.Run(() => DiagramServices.ShowModelNodes(modelEntities, cancellationToken, progress), cancellationToken);
+            return await Task.Run(
+                () => DiagramServices.ShowModelNodes(modelEntities, cancellationToken, progress).ToArray(),
+                cancellationToken);
         }
     }
 }

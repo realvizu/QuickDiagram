@@ -20,13 +20,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             await ShowProgressAndUpdateModelAsync();
 
-            UiServices.ShowDiagramWindow();
-            UiServices.ZoomToDiagram();
+            UiService.ShowDiagramWindow();
+            UiService.ZoomToDiagram();
         }
 
         private async Task ShowProgressAndUpdateModelAsync()
         {
-            using (var progressDialog = UiServices.CreateProgressDialog("Updating model entities:"))
+            using (var progressDialog = UiService.CreateProgressDialog("Updating model entities:"))
             {
                 progressDialog.ShowWithDelayAsync();
 
@@ -34,9 +34,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                 {
                     await UpdateModelAsync(progressDialog.CancellationToken, progressDialog.Progress);
 
-                    progressDialog.Reset("Updating diagram nodes:", DiagramServices.Nodes.Count);
+                    //progressDialog.Reset("Updating diagram nodes:", DiagramServices.Nodes.Count);
 
-                    await UpdateDiagramAsync(progressDialog.CancellationToken, progressDialog.Progress);
+                    //await UpdateDiagramAsync(progressDialog.CancellationToken, progressDialog.Progress);
                 }
                 catch (OperationCanceledException)
                 {
@@ -46,12 +46,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         private Task UpdateModelAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return Task.Run(() => ModelServices.UpdateFromSource(cancellationToken, progress), cancellationToken);
+            return Task.Run(() => ModelService.UpdateFromSource(cancellationToken, progress), cancellationToken);
         }
 
-        private Task UpdateDiagramAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
-        {
-            return Task.Run(() => DiagramServices.UpdateFromSource(cancellationToken, progress), cancellationToken);
-        }
+        //private Task UpdateDiagramAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
+        //{
+        //    return Task.Run(() => DiagramServices.UpdateFromSource(cancellationToken, progress), cancellationToken);
+        //}
     }
 }

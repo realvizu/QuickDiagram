@@ -71,7 +71,7 @@ namespace Codartis.SoftVis.TestHostApp
             ZoomToContentCommand = new DelegateCommand(ZoomToContent);
             CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
 
-            PopulateModel(_testModelService);
+            PopulateModel(_testModelService.TestModelStore);
         }
 
         public double SelectedDpi
@@ -95,10 +95,12 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            if (_modelItemGroupIndex == _testModelService.CurrentTestModel.ItemGroups.Count)
+            var model = _testModelService.TestModelStore.CurrentTestModel;
+
+            if (_modelItemGroupIndex == model.ItemGroups.Count)
                 return;
 
-            var modelNodes = _testModelService.CurrentTestModel.ItemGroups[_modelItemGroupIndex];
+            var modelNodes = model.ItemGroups[_modelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
                 _diagramService.ShowModelNode(modelNode);
@@ -112,10 +114,12 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void RemoveShapes()
         {
-            if (_nextToRemoveModelItemGroupIndex == _testModelService.CurrentTestModel.ItemGroups.Count)
+            var model = _testModelService.TestModelStore.CurrentTestModel;
+
+            if (_nextToRemoveModelItemGroupIndex == model.ItemGroups.Count)
                 return;
 
-            var modelNodes = _testModelService.CurrentTestModel.ItemGroups[_nextToRemoveModelItemGroupIndex];
+            var modelNodes = model.ItemGroups[_nextToRemoveModelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
                 _diagramService.HideModelNode(modelNode);
@@ -131,7 +135,7 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
-                _wpfUiService.ZoomToContent();
+                _wpfUiService.ZoomToDiagram();
             };
             timer.Start();
         }
@@ -159,9 +163,9 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
-        private static void PopulateModel(ITestModelService testModelService)
+        private static void PopulateModel(ITestModelStore testModelStore)
         {
-            TestModelCreator.Create(testModelService);
+            TestModelCreator.Create(testModelStore);
             //BigTestModelCreator.Create(_testModelService, 2, 5);
         }
     }

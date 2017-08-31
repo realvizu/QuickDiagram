@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
@@ -11,11 +12,10 @@ using Microsoft.CodeAnalysis.FindSymbols;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// Builds a model based on Roslyn-provided info.
+    /// Implements Roslyn model related operations.
     /// </summary>
-    internal class RoslynModelBuilder : IModelServices
+    internal class RoslynModelService : ModelService, IRoslynModelService
     {
-        private readonly RoslynModelStore _roslynModelStore;
         private readonly IRoslynModelProvider _roslynModelProvider;
 
         private static readonly List<string> TrivialBaseSymbolNames =
@@ -25,13 +25,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 "object"
             };
 
-        internal RoslynModelBuilder(RoslynModelStore roslynModelStore, IRoslynModelProvider roslynModelProvider)
+        internal RoslynModelService(RoslynModelStore roslynModelStore, IRoslynModelProvider roslynModelProvider)
+            : base(roslynModelStore)
         {
-            _roslynModelStore = roslynModelStore;
             _roslynModelProvider = roslynModelProvider;
         }
 
-        private RoslynModel CurrentRoslynModel => _roslynModelStore.CurrentRoslynModel;
+        private RoslynModelStore RoslynModelStore => (RoslynModelStore)ModelStore;
+        private RoslynModel CurrentRoslynModel => RoslynModelStore.CurrentRoslynModel;
 
         public async Task<bool> IsCurrentSymbolAvailableAsync() => await GetCurrentSymbolAsync() != null;
 
@@ -72,12 +73,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     recursive = false;
 
                 var relatedNode = GetOrAddNode(relatedSymbol, progress);
-                GetOrAddRelationship(relatedSymbolPair);
+                AddRelationshipIfNotExists(relatedSymbolPair);
 
                 if (recursive)
                     ExtendModelWithRelatedNodesRecursive(relatedNode, directedModelRelationshipType, cancellationToken, progress, recursive: true);
             }
         }
+
+        public bool HasSource(IRoslynModelNode modelNode) => _roslynModelProvider.HasSource(modelNode.RoslynSymbol);
+        public void ShowSource(IRoslynModelNode modelNode) => _roslynModelProvider.ShowSource(modelNode.RoslynSymbol);
 
         public void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
         {
@@ -85,15 +89,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             UpdateRelationshipsFromSource(cancellationToken, progress);
         }
 
-        public void ClearModel()
-        {
-            _roslynModelStore.ClearModel();
-        }
+        public void ClearModel() => RoslynModelStore.ClearModel();
 
-        private async Task<INamedTypeSymbol> GetCurrentSymbolAsync()
-        {
-            return await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
-        }
+        private async Task<INamedTypeSymbol> GetCurrentSymbolAsync() 
+            => await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
 
         private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
@@ -111,11 +110,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 var newVersionOfSymbol = FindSymbolInCompilations(namedTypeSymbol, compilations, cancellationToken);
 
                 if (newVersionOfSymbol == null)
-                    _roslynModelStore.RemoveNode(roslynTypeNode);
+                    RoslynModelStore.RemoveNode(roslynTypeNode);
                 else
                 {
                     var updatedNode = roslynTypeNode.UpdateRoslynSymbol(newVersionOfSymbol);
-                    _roslynModelStore.UpdateNode(roslynTypeNode, updatedNode);
+                    RoslynModelStore.UpdateNode(roslynTypeNode, updatedNode);
                 }
 
                 progress?.Report(1);
@@ -128,9 +127,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var compilationArray = compilations as Compilation[] ?? compilations.ToArray();
 
             return FindSymbolInCompilationsByName(namedTypeSymbol, compilationArray, cancellationToken);
-
-            // TODO: find better way to detect type rename. Location-based detection is too fragile.
-            // ?? FindSymbolInCompilationsByLocation(symbol, compilationArray);
         }
 
         private static ISymbol FindSymbolInCompilationsByName(ISymbol namedTypeSymbol, Compilation[] compilationArray, CancellationToken cancellationToken)
@@ -160,7 +156,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 cancellationToken.ThrowIfCancellationRequested();
 
                 if (allSymbolRelations.All(i => !i.Matches(relationship)))
-                    _roslynModelStore.RemoveRelationship(relationship);
+                    RoslynModelStore.RemoveRelationship(relationship);
 
                 progress?.Report(1);
             }
@@ -185,22 +181,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 return node;
 
             var newNode = RoslynModelItemFactory.CreateModelNode(symbol);
-            _roslynModelStore.AddNode(newNode);
+            RoslynModelStore.AddNode(newNode);
             return newNode;
         }
 
-        private IModelRelationship GetOrAddRelationship(RelatedSymbolPair relatedSymbolPair)
+        private void AddRelationshipIfNotExists(RelatedSymbolPair relatedSymbolPair)
         {
             var sourceNode = CurrentRoslynModel.GetNodeBySymbol(relatedSymbolPair.SourceSymbol);
             var targetNode = CurrentRoslynModel.GetNodeBySymbol(relatedSymbolPair.TargetSymbol);
 
-            var relationship = CurrentRoslynModel.GetRelationship(sourceNode, targetNode, relatedSymbolPair.Stereotype);
-            if (relationship != null)
-                return relationship;
+            if (CurrentRoslynModel.RelationshipExists(sourceNode, targetNode, relatedSymbolPair.Stereotype))
+                return;
 
             var newRelationship = RoslynModelItemFactory.CreateRoslynRelationship(sourceNode, targetNode, relatedSymbolPair.Stereotype);
-            _roslynModelStore.AddRelationship(newRelationship);
-            return newRelationship;
+            RoslynModelStore.AddRelationship(newRelationship);
         }
 
         private static bool IsHidden(ISymbol roslynSymbol)

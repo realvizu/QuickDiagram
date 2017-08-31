@@ -15,13 +15,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync()
         {
-            var modelEntity = await ModelServices.AddCurrentSymbolAsync();
+            var modelEntity = await ModelService.AddCurrentSymbolAsync();
             if (modelEntity == null)
                 return;
 
             var diagramNode = DiagramServices.ShowModelNode(modelEntity);
-            UiServices.ShowDiagramWindow();
-            UiServices.FollowDiagramNode(diagramNode);
+            UiService.ShowDiagramWindow();
+            UiService.FollowDiagramNode(diagramNode);
         }
     }
 }

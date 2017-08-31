@@ -11,8 +11,8 @@
 
         public override void Execute()
         {
-            UiServices.ShowDiagramWindow();
-            UiServices.ZoomToDiagram();
+            UiService.ShowDiagramWindow();
+            UiService.ZoomToDiagram();
         }
     }
 }

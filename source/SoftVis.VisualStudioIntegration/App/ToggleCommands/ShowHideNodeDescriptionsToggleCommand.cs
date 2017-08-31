@@ -8,21 +8,21 @@
         public ShowHideNodeDescriptionsToggleCommand(IAppServices appServices)
             : base(appServices, initialIsChecked: GlobalOptions.NodeDescriptionsVisibleByDefault)
         {
-            UiServices.ExpandAllNodes();
+            UiService.ExpandAllNodes();
         }
 
         protected override void OnChecked()
         {
-            UiServices.ShowDiagramWindow();
-            UiServices.ExpandAllNodes();
-            UiServices.KeepDiagramCentered();
+            UiService.ShowDiagramWindow();
+            UiService.ExpandAllNodes();
+            UiService.KeepDiagramCentered();
         }
 
         protected override void OnUnchecked()
         {
-            UiServices.ShowDiagramWindow();
-            UiServices.CollapseAllNodes();
-            UiServices.KeepDiagramCentered();
+            UiService.ShowDiagramWindow();
+            UiService.CollapseAllNodes();
+            UiService.KeepDiagramCentered();
         }
     }
 }

@@ -11,8 +11,8 @@
 
         public override void Execute()
         {
-            UiServices.ShowDiagramWindow();
-            DiagramServices.Clear();
+            UiService.ShowDiagramWindow();
+            DiagramServices.ClearDiagram();
         }
     }
 }

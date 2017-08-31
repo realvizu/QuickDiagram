@@ -11,7 +11,7 @@
 
         public override void Execute()
         {
-            UiServices.ShowDiagramWindow();
+            UiService.ShowDiagramWindow();
         }
     }
 }

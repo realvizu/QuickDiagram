@@ -45,10 +45,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return null;
         }
 
-        public IModelRelationship GetRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
-        {
-            return Relationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
-        }
+        public bool RelationshipExists(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype)
+            => GetRelationship(sourceNode, targetNode, stereotype) != null;
+
+        public IModelRelationship GetRelationship(IRoslynModelNode sourceNode, IRoslynModelNode targetNode, ModelRelationshipStereotype stereotype) 
+            => Relationships.FirstOrDefault(i => i.Source == sourceNode && i.Target == targetNode && i.Stereotype == stereotype);
 
         protected override IModel CreateInstance(ModelGraph graph) => new RoslynModel(graph);
     }

@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Defines model operations for the application commands package.
     /// </summary>
-    internal interface IModelServices
+    internal interface IRoslynModelService : IModelService
     {
         /// <summary>
         /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
@@ -38,13 +38,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <param name="modelNode">A model node.</param>
         /// <remarks>True if the model node has source code, false otherwise.</remarks>
-        bool HasSource(IModelNode modelNode);
+        bool HasSource(IRoslynModelNode modelNode);
 
         /// <summary>
         /// Shows the source in the host environment that corresponds to the given model node.
         /// </summary>
         /// <param name="modelNode">A model node.</param>
-        void ShowSource(IModelNode modelNode);
+        void ShowSource(IRoslynModelNode modelNode);
 
         /// <summary>
         /// Updates the model from the current source code.

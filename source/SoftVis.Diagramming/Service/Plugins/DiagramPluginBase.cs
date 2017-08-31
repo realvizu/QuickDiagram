@@ -9,17 +9,20 @@ namespace Codartis.SoftVis.Service.Plugins
     /// </summary>
     public abstract class DiagramPluginBase : IDiagramPlugin, IDisposable
     {
-        protected IReadOnlyModelStore ModelStore { get; private set; }
-        protected IDiagramStore DiagramStore { get; private set; }
+        protected IModelService ModelService { get; private set; }
+        protected IDiagramService DiagramService { get; private set; }
 
-        public virtual void Initialize(IReadOnlyModelStore modelStore, IDiagramStore diagramStore)
+        public virtual void Initialize(IModelService modelService, IDiagramService diagramService)
         {
-            ModelStore = modelStore ?? throw new ArgumentNullException(nameof(modelStore));
-            DiagramStore = diagramStore ?? throw new ArgumentNullException(nameof(diagramStore));
+            ModelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
+            DiagramService = diagramService ?? throw new ArgumentNullException(nameof(diagramService));
         }
 
         public virtual void Dispose()
         {
         }
+
+        protected IModelStore ModelStore => ModelService.ModelStore;
+        protected IDiagramStore DiagramStore => DiagramService.DiagramStore;
     }
 }

@@ -10,8 +10,10 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IUiService
     {
-        void ZoomToContent();
+        void ZoomToDiagram();
+        void FollowDiagramNode(IDiagramNode diagramNode);
         void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes);
+        void KeepDiagramCentered();
 
         event ShowModelItemsEventHandler ShowModelItemsRequested;
         event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;

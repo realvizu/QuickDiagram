@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.Service
             double initialZoom = DefaultInitialZoom)
         {
             var diagramId = DiagramId.Create();
-            var diagramService = DiagramServiceFactory.Create();
+            var diagramService = DiagramServiceFactory.Create(GetModelService().ModelStore);
             _diagramServices.Add(diagramId, diagramService);
 
             var diagramUi = CreateDiagramUi(diagramId, minZoom, maxZoom, initialZoom);
@@ -79,8 +79,8 @@ namespace Codartis.SoftVis.Service
             double maxZoom = DefaultMaxZoom,
             double initialZoom = DefaultInitialZoom)
         {
-            var diagramStore = GetDiagramService(diagramId);
-            var diagramUi = UiServiceFactory.Create(ModelService, diagramStore, minZoom, maxZoom, initialZoom);
+            var diagramService = GetDiagramService(diagramId);
+            var diagramUi = UiServiceFactory.Create(ModelService.ModelStore, diagramService.DiagramStore, minZoom, maxZoom, initialZoom);
 
             diagramUi.ShowModelItemsRequested += (modelNodes, followNewDiagramNodes) => OnShowModelItemsRequested(diagramId, modelNodes, followNewDiagramNodes);
             diagramUi.DiagramNodeSizeChanged += (diagramNode, size) => OnDiagramNodeSizeChanged(diagramId, diagramNode, size);
@@ -91,12 +91,12 @@ namespace Codartis.SoftVis.Service
         }
 
         private IEnumerable<IDiagramPlugin> CreateAndAttachDiagramPlugins(IEnumerable<DiagramPluginId> diagramPluginIds,
-            IModelStore modelStore, IDiagramStore diagramStore)
+            IModelService modelService, IDiagramService diagramService)
         {
             foreach (var diagramPluginId in diagramPluginIds)
             {
                 var diagramPlugin = DiagramPluginFactory.Create(diagramPluginId);
-                diagramPlugin.Initialize(modelStore, diagramStore);
+                diagramPlugin.Initialize(modelService, diagramService);
                 yield return diagramPlugin;
             }
         }
@@ -110,7 +110,7 @@ namespace Codartis.SoftVis.Service
 
             if (followNewDiagramNodes)
             {
-                var diagramStore = GetDiagramService(diagramId);
+                var diagramStore = diagramService.DiagramStore;
                 var diagramNodes = modelNodes.Select(i => diagramStore.GetDiagramNodeById(i.Id)).ToArray();
                 GetUiService(diagramId).FollowDiagramNodes(diagramNodes);
             }
@@ -118,7 +118,7 @@ namespace Codartis.SoftVis.Service
 
         private void OnDiagramNodeSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
         {
-            GetDiagramService(diagramId).UpdateDiagramNodeSize(diagramNode, newSize);
+            GetDiagramService(diagramId).DiagramStore.UpdateDiagramNodeSize(diagramNode, newSize);
         }
 
         private void OnDiagramNodeInvoked(DiagramId diagramId, IDiagramNode diagramNode)

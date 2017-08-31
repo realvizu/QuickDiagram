@@ -96,11 +96,15 @@
     <Compile Include="App\Commands\AsyncCommandWithParameterBase.cs" />
     <Compile Include="App\Commands\DiagramImageCreatorCommandBase.cs" />
     <Compile Include="App\Commands\AsyncCommandBase.cs" />
+    <Compile Include="Plugins\ModelExtenderDiagramPlugin.cs" />
     <Compile Include="App\IRoslynVisualizationService.cs" />
     <Compile Include="App\Selectors\DpiSelector.cs" />
     <Compile Include="App\Selectors\ISelector.cs" />
     <Compile Include="App\ToggleCommands\ShowHideNodeDescriptionsToggleCommand.cs" />
     <Compile Include="App\ToggleCommands\ToggleCommandBase.cs" />
+    <Compile Include="Diagramming\IRoslynDiagramService.cs" />
+    <Compile Include="Diagramming\RoslynDiagramService.cs" />
+    <Compile Include="Diagramming\RoslynDiagramServiceFactory.cs" />
     <Compile Include="Diagramming\RoslynDiagramStore.cs" />
     <Compile Include="Diagramming\RoslynDiagramShapeFactory.cs" />
     <Compile Include="Diagramming\RoslynLayoutPriorityProvider.cs" />
@@ -126,9 +130,10 @@
     <Compile Include="Hosting\CommandRegistration\CommandSpecification.cs" />
     <Compile Include="Hosting\ShellCommands.cs" />
     <Compile Include="Modeling\DirectedRelationshipTypes.cs" />
-    <Compile Include="Modeling\Implementation\RoslynModelBuilder.cs" />
+    <Compile Include="Modeling\Implementation\RoslynModelService.cs" />
     <Compile Include="Modeling\Implementation\RoslynModelNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynModelItemFactory.cs" />
+    <Compile Include="Modeling\Implementation\RoslynModelServiceFactory.cs" />
     <Compile Include="Modeling\IRoslynTypeNode.cs" />
     <Compile Include="Modeling\Implementation\ImplementationRelationship.cs" />
     <Compile Include="Modeling\Implementation\InheritanceRelationship.cs" />
@@ -137,6 +142,8 @@
     <Compile Include="Modeling\ModelNodeStereotypes.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotypes.cs" />
     <Compile Include="App\RoslynVisualizationService.cs" />
+    <Compile Include="Plugins\RoslynDiagramPluginFactory.cs" />
+    <Compile Include="Plugins\RoslynDiagramPluginId.cs" />
     <Compile Include="SoftVisPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -154,21 +161,22 @@
     <Compile Include="Modeling\IRoslynModelProvider.cs" />
     <Compile Include="Modeling\Implementation\SymbolExtensions.cs" />
     <Compile Include="Modeling\IRoslynModelNode.cs" />
-    <Compile Include="UI\DiagramUi.cs" />
-    <Compile Include="UI\IUiServices.cs" />
+    <Compile Include="UI\IRoslynDiagramShapeUiFactory.cs" />
+    <Compile Include="UI\RoslynUiService.cs" />
+    <Compile Include="UI\IRoslynUiService.cs" />
     <Compile Include="UI\RoslynDiagramViewModel.cs" />
+    <Compile Include="UI\RoslynUiServiceFactory.cs" />
     <Compile Include="UI\StereotypeToBackgroundBrushConverter.cs" />
     <Compile Include="UI\StereotypeToImageUriConverter.cs" />
     <Compile Include="UI\StereotypeToVisualPropertyMaps.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="UI\Dpi.cs" />
-    <Compile Include="Modeling\IModelServices.cs" />
+    <Compile Include="Modeling\IRoslynModelService.cs" />
     <Compile Include="Modeling\Implementation\RoslynDelegateNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynEnumNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynStructNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynInterfaceNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynModelStore.cs" />
-    <Compile Include="Diagramming\IDiagramServices.cs" />
     <Compile Include="Modeling\Implementation\RoslynTypeNode.cs" />
     <Compile Include="App\IAppServices.cs" />
     <Compile Include="Hosting\DiagramHostToolWindow.cs" />
@@ -177,7 +185,7 @@
     <Compile Include="Modeling\Implementation\RoslynClassNode.cs" />
     <Compile Include="Hosting\SoftVisPackage.cs" />
     <Compile Include="Hosting\HostWorkspaceGateway.cs" />
-    <Compile Include="UI\RoslynDiagramShapeViewModelFactory.cs" />
+    <Compile Include="UI\RoslynDiagramShapeUiFactory.cs" />
     <Compile Include="UI\RoslynTypeDiagramNodeViewModel.cs" />
     <Compile Include="Util\FileLinePositionSpanExtensions.cs" />
     <Compile Include="Util\LinePositionSpanExtensions.cs" />

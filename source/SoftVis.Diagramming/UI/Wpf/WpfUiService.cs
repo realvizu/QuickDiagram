@@ -39,6 +39,7 @@ namespace Codartis.SoftVis.UI.Wpf
         {
             try
             {
+                // The image creator must be created on the UI thread so it can read the necessary view and view model data.
                 var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, _diagramStlyeProvider, _resourceDictionary);
 
                 return await Task.Factory.StartSTA(() =>
@@ -50,8 +51,10 @@ namespace Codartis.SoftVis.UI.Wpf
             }
         }
 
-        public void ZoomToContent() => DiagramViewModel.ZoomToContent();
+        public void ZoomToDiagram() => DiagramViewModel.ZoomToContent();
+        public void FollowDiagramNode(IDiagramNode diagramNode) => DiagramViewModel.FollowDiagramNodes(new [] {diagramNode});
         public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes) => DiagramViewModel.FollowDiagramNodes(diagramNodes);
+        public void KeepDiagramCentered() => DiagramViewModel.KeepDiagramCentered();
 
         public event ShowModelItemsEventHandler ShowModelItemsRequested
         {

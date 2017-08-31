@@ -1,10 +1,12 @@
-﻿namespace Codartis.SoftVis.Diagramming
+﻿using Codartis.SoftVis.Modeling;
+
+namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// Creates diagram service instances.
     /// </summary>
     public interface IDiagramServiceFactory
     {
-        IDiagramService Create();
+        IDiagramService Create(IReadOnlyModelStore modelStore);
     }
 }
