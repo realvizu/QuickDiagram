@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.Diagnostics; // Do not remove, used in Release config.
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Codartis.SoftVis.Service;
