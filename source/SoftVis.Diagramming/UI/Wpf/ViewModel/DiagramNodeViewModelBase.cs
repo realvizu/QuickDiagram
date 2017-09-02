@@ -26,9 +26,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event Action<IDiagramNode> RemoveRequested;
 
-        protected DiagramNodeViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        protected DiagramNodeViewModelBase(IModelService modelService, IDiagramService diagramService,
             IDiagramNode diagramNode)
-              : base(modelStore, diagramStore, diagramNode)
+              : base(modelService, diagramService, diagramNode)
         {
             Name = diagramNode.Name;
             Center = diagramNode.Center.ToWpf();
@@ -38,14 +38,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
 
             foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
                 relatedNodeCueViewModel.Dispose();
@@ -134,10 +134,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override IEnumerable<MiniButtonViewModelBase> CreateMiniButtonViewModels()
         {
-            yield return new CloseMiniButtonViewModel(ModelStore, DiagramStore);
+            yield return new CloseMiniButtonViewModel(ModelService, DiagramService);
 
             foreach (var entityRelationType in GetRelatedNodeTypes())
-                yield return new RelatedNodeMiniButtonViewModel(ModelStore, DiagramStore, entityRelationType);
+                yield return new RelatedNodeMiniButtonViewModel(ModelService, DiagramService, entityRelationType);
         }
 
         protected abstract IEnumerable<RelatedNodeType> GetRelatedNodeTypes();
@@ -163,7 +163,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()
         {
             return GetRelatedNodeTypes()
-                .Select(i => new RelatedNodeCueViewModel(ModelStore, DiagramStore, DiagramNode, i))
+                .Select(i => new RelatedNodeCueViewModel(ModelService, DiagramService, DiagramNode, i))
                 .ToList();
         }
     }

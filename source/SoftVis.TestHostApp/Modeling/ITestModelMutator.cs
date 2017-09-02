@@ -2,9 +2,9 @@
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal interface ITestModelStore : IModelStore
+    internal interface ITestModelMutator : IModelMutator
     {
-        TestModel CurrentTestModel { get; }
+        TestModel TestModel { get; }
 
         void AddItemToCurrentGroup(IModelNode modelNode);
         void StartNewGroup();

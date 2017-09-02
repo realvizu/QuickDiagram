@@ -17,10 +17,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             IsDescriptionVisible = isDescriptionVisible;
         }
 
-        public override DiagramNodeViewModelBase CreateDiagramNodeViewModel(IReadOnlyDiagramStore diagramStore, IDiagramNode diagramNode)
+        public override DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramService diagramService, IDiagramNode diagramNode)
         {
             if (diagramNode is RoslynTypeDiagramNode roslynTypeDiagramNode)
-                return new RoslynTypeDiagramNodeViewModel(ModelStore, diagramStore, roslynTypeDiagramNode, IsDescriptionVisible);
+                return new RoslynTypeDiagramNodeViewModel(ModelService, diagramService, roslynTypeDiagramNode, IsDescriptionVisible);
 
             throw new InvalidOperationException($"Unexpected diagram node type {diagramNode?.GetType().Name}");
         }

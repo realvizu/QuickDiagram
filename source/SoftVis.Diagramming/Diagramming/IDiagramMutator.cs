@@ -1,3 +1,4 @@
+using System;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
@@ -6,8 +7,12 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// Keeps track of the latest diagram instance through mutated instances and publishes change events.
     /// </summary>
-    public interface IDiagramStore : IReadOnlyDiagramStore
+    public interface IDiagramMutator
     {
+        IDiagram Diagram { get; }
+
+        event Action<DiagramEventBase> DiagramChanged;
+
         void AddNode(IDiagramNode node);
         void RemoveNode(IDiagramNode node);
         void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode);

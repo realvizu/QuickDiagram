@@ -9,11 +9,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynDiagramServiceFactory : IDiagramServiceFactory
     {
-        public IDiagramService Create(IReadOnlyModelStore modelStore)
+        public IDiagramService Create(IModelService modelService)
         {
             return new RoslynDiagramService(
-                modelStore,
-                new RoslynDiagramStore(new Diagram()),
+                new Diagram(),
+                modelService, 
                 new RoslynDiagramShapeFactory());
         }
     }

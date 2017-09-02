@@ -21,16 +21,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramNodeViewModelBase SourceNodeViewModel { get; }
         public DiagramNodeViewModelBase TargetNodeViewModel { get; }
 
-        public DiagramConnectorViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, 
+        public DiagramConnectorViewModel(IModelService modelService, IDiagramService diagramService, 
             IDiagramConnector diagramConnector, DiagramNodeViewModelBase sourceNodeViewModel, DiagramNodeViewModelBase targetNodeViewModel)
-            : base(modelStore, diagramStore, diagramConnector)
+            : base(modelService, diagramService, diagramConnector)
         {
             _routePoints = diagramConnector.Route.ToWpf();
 
             SourceNodeViewModel = sourceNodeViewModel;
             TargetNodeViewModel = targetNodeViewModel;
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
 
@@ -38,14 +38,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             base.Dispose();
 
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         public IDiagramConnector DiagramConnector => (IDiagramConnector) DiagramShape;
 
         public object Clone()
         {
-            return new DiagramConnectorViewModel(ModelStore, DiagramStore, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel);
+            return new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel);
         }
 
         private ConnectorType ConnectorType => DiagramConnector.ConnectorType;

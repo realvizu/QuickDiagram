@@ -8,21 +8,21 @@ namespace Codartis.SoftVis.Service.Plugins
     /// </summary>
     internal sealed class LayoutActionExecutorVisitor : ILayoutActionVisitor
     {
-        private readonly IDiagramStore _diagramStore;
+        private readonly IDiagramService _diagramService;
 
-        public LayoutActionExecutorVisitor(IDiagramStore diagramStore)
+        public LayoutActionExecutorVisitor(IDiagramService diagramService)
         {
-            _diagramStore = diagramStore;
+            _diagramService = diagramService;
         }
 
         public void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
-            _diagramStore.UpdateDiagramNodeCenter(layoutAction.DiagramNode, layoutAction.To);
+            _diagramService.UpdateDiagramNodeCenter(layoutAction.DiagramNode, layoutAction.To);
         }
 
         public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
-            _diagramStore.UpdateDiagramConnectorRoute(layoutAction.DiagramConnector, layoutAction.NewRoute);
+            _diagramService.UpdateDiagramConnectorRoute(layoutAction.DiagramConnector, layoutAction.NewRoute);
         }
     }
 }

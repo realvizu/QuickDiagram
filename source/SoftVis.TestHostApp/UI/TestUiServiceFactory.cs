@@ -11,12 +11,12 @@ namespace Codartis.SoftVis.TestHostApp.UI
     /// </summary>
     public class TestUiServiceFactory : IUiServiceFactory
     {
-        public IUiService Create(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        public IUiService Create(IModelService modelService, IDiagramService diagramService,
             double minZoom, double maxZoom, double initialZoom)
         {
             var diagramShapeUiFactory = new TestDiagramShapeUiFactory();
 
-            var diagramViewModel = new DiagramViewModel(modelStore, diagramStore, diagramShapeUiFactory, minZoom, maxZoom, initialZoom);
+            var diagramViewModel = new DiagramViewModel(modelService, diagramService, diagramShapeUiFactory, minZoom, maxZoom, initialZoom);
 
             return new WpfUiService(diagramViewModel);
         }

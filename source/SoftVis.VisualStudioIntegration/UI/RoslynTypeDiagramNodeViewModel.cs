@@ -18,9 +18,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
 
-        public RoslynTypeDiagramNodeViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, 
+        public RoslynTypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, 
             RoslynTypeDiagramNode roslynTypeDiagramNode, bool isDescriptionVisible)
-            : base(modelStore, diagramStore, roslynTypeDiagramNode)
+            : base(modelService, diagramService, roslynTypeDiagramNode)
         {
             IsDescriptionVisible = isDescriptionVisible;
             PopulateFromDiagramNode(roslynTypeDiagramNode);
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public RoslynTypeDiagramNode RoslynTypeDiagramNode => (RoslynTypeDiagramNode) DiagramNode;
 
         public override object Clone() 
-            => new RoslynTypeDiagramNodeViewModel(ModelStore, DiagramStore, RoslynTypeDiagramNode, IsDescriptionVisible) {Size = Size};
+            => new RoslynTypeDiagramNodeViewModel(ModelService, DiagramService, RoslynTypeDiagramNode, IsDescriptionVisible) {Size = Size};
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {

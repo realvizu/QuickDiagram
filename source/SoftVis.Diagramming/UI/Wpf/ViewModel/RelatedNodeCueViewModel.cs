@@ -17,18 +17,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private IModel _lastModel;
         private IDiagram _lastDiagram;
 
-        public RelatedNodeCueViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        public RelatedNodeCueViewModel(IModelService modelService, IDiagramService diagramService,
             IDiagramNode diagramNode, RelatedNodeType relatedNodeType)
-            : base(modelStore, diagramStore)
+            : base(modelService, diagramService)
         {
             _diagramNode = diagramNode;
             _directedModelRelationshipType = relatedNodeType.RelationshipType;
 
-            _lastModel = modelStore.CurrentModel;
-            _lastDiagram = diagramStore.CurrentDiagram;
+            _lastModel = modelService.Model;
+            _lastDiagram = diagramService.Diagram;
 
-            ModelStore.ModelChanged += OnModelChanged;
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            ModelService.ModelChanged += OnModelChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
 
             UpdateVisibility();
         }
@@ -37,8 +37,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             base.Dispose();
 
-            ModelStore.ModelChanged -= OnModelChanged;
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            ModelService.ModelChanged -= OnModelChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         public override object PlacementKey => _directedModelRelationshipType;

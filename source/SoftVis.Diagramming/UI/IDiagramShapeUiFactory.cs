@@ -9,9 +9,9 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUiFactory
     {
-        void Initialize(IReadOnlyModelStore modelStore, IDiagramShapeUiRepository diagramShapeUiRepository);
+        void Initialize(IModelService modelService, IDiagramShapeUiRepository diagramShapeUiRepository);
 
-        DiagramNodeViewModelBase CreateDiagramNodeViewModel(IReadOnlyDiagramStore diagramStore, IDiagramNode diagramNode);
-        DiagramConnectorViewModel CreateDiagramConnectorViewModel(IReadOnlyDiagramStore diagramStore, IDiagramConnector diagramConnector);
+        DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramService diagramService, IDiagramNode diagramNode);
+        DiagramConnectorViewModel CreateDiagramConnectorViewModel(IDiagramService diagramService, IDiagramConnector diagramConnector);
     }
 }

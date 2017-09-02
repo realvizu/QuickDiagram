@@ -8,17 +8,13 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// Defines diagram-related operations.
     /// </summary>
-    public interface IDiagramService
+    public interface IDiagramService : IDiagramMutator, IDiagramShapeResolver
     {
-        IDiagramStore DiagramStore { get; }
-
         IDiagramNode ShowModelNode(IModelNode modelNode);
         IEnumerable<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes, CancellationToken cancellationToken, IIncrementalProgress progress);
         void HideModelNode(IModelNode modelNode);
 
         void ShowModelRelationship(IModelRelationship modelRelationship);
         void HideModelRelationship(IModelRelationship modelRelationship);
-
-        void ClearDiagram();
     }
 }

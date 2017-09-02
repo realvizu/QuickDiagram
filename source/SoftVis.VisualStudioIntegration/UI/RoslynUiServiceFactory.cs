@@ -18,10 +18,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _initialIsDescriptionVisible = initialIsDescriptionVisible;
         }
 
-        public IUiService Create(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, 
+        public IUiService Create(IModelService modelService, IDiagramService diagramService, 
             double minZoom, double maxZoom, double initialZoom)
         {
-            var diagramViewModel = new RoslynDiagramViewModel(modelStore, diagramStore, 
+            var diagramViewModel = new RoslynDiagramViewModel(modelService, diagramService, 
                 _initialIsDescriptionVisible, minZoom, maxZoom, initialZoom);
 
             return new RoslynUiService(_hostUiServices, diagramViewModel);

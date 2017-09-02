@@ -7,6 +7,6 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagramServiceFactory
     {
-        IDiagramService Create(IReadOnlyModelStore modelStore);
+        IDiagramService Create(IModelService modelService);
     }
 }

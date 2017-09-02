@@ -16,9 +16,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
 
-        protected MiniButtonViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, 
-            string name)
-            : base(modelStore, diagramStore)
+        protected MiniButtonViewModelBase(IModelService modelService, IDiagramService diagramService, string name)
+            : base(modelService, diagramService)
         {
             _isEnabled = true;
             _name = name;

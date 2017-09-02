@@ -6,9 +6,9 @@ namespace Codartis.SoftVis.TestHostApp.UI
 {
     public class TestDiagramShapeUiFactory : DiagramShapeUiFactoryBase
     {
-        public override DiagramNodeViewModelBase CreateDiagramNodeViewModel(IReadOnlyDiagramStore diagramStore, IDiagramNode diagramNode)
+        public override DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramService diagramService, IDiagramNode diagramNode)
         {
-            return new TypeDiagramNodeViewModel(ModelStore, diagramStore, (TypeDiagramNode)diagramNode);
+            return new TypeDiagramNodeViewModel(ModelService, diagramService, (TypeDiagramNode)diagramNode);
         }
     }
 }

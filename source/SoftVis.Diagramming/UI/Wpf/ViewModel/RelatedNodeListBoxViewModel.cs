@@ -14,24 +14,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class RelatedNodeListBoxViewModel : BubbleListBoxViewModel<IModelNode>
     {
-        private readonly IReadOnlyModelStore _modelStore;
-        private readonly IReadOnlyDiagramStore _diagramStore;
+        private readonly IModelService _modelService;
+        private readonly IDiagramService _diagramService;
 
-        public RelatedNodeListBoxViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore)
+        public RelatedNodeListBoxViewModel(IModelService modelService, IDiagramService diagramService)
         {
-            _modelStore = modelStore;
-            _modelStore.ModelChanged += OnModelChanged;
+            _modelService = modelService;
+            _modelService.ModelChanged += OnModelChanged;
 
-            _diagramStore = diagramStore;
-            _diagramStore.DiagramChanged += OnDiagramChanged;
+            _diagramService = diagramService;
+            _diagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            _modelStore.ModelChanged -= OnModelChanged;
-            _diagramStore.DiagramChanged -= OnDiagramChanged;
+            _modelService.ModelChanged -= OnModelChanged;
+            _diagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         private RelatedNodeMiniButtonViewModel _ownerButton;

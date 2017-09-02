@@ -16,15 +16,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void CollapseAllNodes() => SetDiagramNodeDescriptionVisibility(false);
 
         public RoslynDiagramViewModel(
-            IReadOnlyModelStore modelStore, 
-            IReadOnlyDiagramStore diagramStore,
+            IModelService modelService, 
+            IDiagramService diagramService,
             bool initialIsDescriptionVisible,
             double minZoom, 
             double maxZoom, 
             double initialZoom)
             : base(
-                  modelStore, 
-                  diagramStore,
+                  modelService, 
+                  diagramService,
                   new RoslynDiagramShapeUiFactory(initialIsDescriptionVisible),
                   minZoom, 
                   maxZoom, 

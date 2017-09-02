@@ -10,13 +10,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class ModelObserverViewModelBase : ViewModelBase
     {
-        protected readonly IReadOnlyModelStore ModelStore;
-        protected readonly IReadOnlyDiagramStore DiagramStore;
+        protected readonly IModelService ModelService;
+        protected readonly IDiagramService DiagramService;
 
-        protected ModelObserverViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore)
+        protected ModelObserverViewModelBase(IModelService modelService, IDiagramService diagramService)
         {
-            ModelStore = modelStore ?? throw new ArgumentNullException(nameof(modelStore));
-            DiagramStore = diagramStore ?? throw new ArgumentNullException(nameof(diagramStore));
+            ModelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
+            DiagramService = diagramService ?? throw new ArgumentNullException(nameof(diagramService));
         }
     }
 }

@@ -15,12 +15,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         private IRoslynModelService RoslynModelService => (IRoslynModelService) ModelService;

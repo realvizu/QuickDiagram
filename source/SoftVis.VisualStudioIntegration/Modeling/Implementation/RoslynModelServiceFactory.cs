@@ -16,9 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public IModelService Create()
         {
-            return new RoslynModelService(
-                new RoslynModelStore(), 
-                _roslynModelProvider);
+            return new RoslynModelService(_roslynModelProvider);
         }
     }
 }

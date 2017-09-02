@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
@@ -14,15 +15,30 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal class RoslynDiagramService : DiagramService, IRoslynDiagramService
     {
-        public RoslynDiagramService(IReadOnlyModelStore modelStore, IDiagramStore diagramStore, IDiagramShapeFactory diagramShapeFactory) 
-            : base(modelStore, diagramStore, diagramShapeFactory)
+        private static readonly Dictionary<ModelRelationshipStereotype, ConnectorType> ModelRelationshipTypeToConnectorTypeMap =
+            new Dictionary<ModelRelationshipStereotype, ConnectorType>
+            {
+                {ModelRelationshipStereotypes.Inheritance, RoslynConnectorTypes.Generalization},
+                {ModelRelationshipStereotypes.Implementation, RoslynConnectorTypes.Implementation},
+            };
+
+        public RoslynDiagramService(IDiagram diagram, IModelService modelService, IDiagramShapeFactory diagramShapeFactory) 
+            : base(diagram, modelService,diagramShapeFactory)
         {
+        }
+
+        public override ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
+        {
+            if (!ModelRelationshipTypeToConnectorTypeMap.ContainsKey(stereotype))
+                throw new Exception($"Unexpected model relationship type {stereotype.Name}");
+
+            return ModelRelationshipTypeToConnectorTypeMap[stereotype];
         }
 
         public IEnumerable<IDiagramNode> ShowModelNodeWithHierarchy(IRoslynModelNode modelNode, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            var model = ModelStore.CurrentModel;
+            var model = ModelService.Model;
 
             var baseTypes = model.GetRelatedNodes(modelNode, DirectedRelationshipTypes.BaseType, recursive: true);
             var subtypes = model.GetRelatedNodes(modelNode, DirectedRelationshipTypes.Subtype, recursive: true);

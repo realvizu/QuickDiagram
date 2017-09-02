@@ -42,15 +42,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event Action<TransitionedTransform> TransformChanged;
 
-        public ViewportCalculatorViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        public ViewportCalculatorViewModel(IModelService modelService, IDiagramService diagramService,
             double minZoom, double maxZoom, double initialZoom)
-            : this(modelStore, diagramStore, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
+            : this(modelService, diagramService, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
         {
         }
 
-        private ViewportCalculatorViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        private ViewportCalculatorViewModel(IModelService modelService, IDiagramService diagramService,
             double minZoom, double maxZoom, double initialZoom, Size sizeInScreenSpace, Point centerInDiagramSpace)
-            : base(modelStore, diagramStore)
+            : base(modelService, diagramService)
         {
             _minZoom = minZoom;
             _maxZoom = maxZoom;
@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _diagramContentRect = diagramStore.CurrentDiagram.ContentRect.ToWpf();
+            _diagramContentRect = diagramService.Diagram.ContentRect.ToWpf();
 
             ResizeCommand = new ResizeDelegateCommand(Resize);
             PanCommand = new PanDelegateCommand(Pan);
@@ -67,14 +67,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             UpdateCalculatedProperties(TransitionSpeed.Instant);
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         public double LinearZoom

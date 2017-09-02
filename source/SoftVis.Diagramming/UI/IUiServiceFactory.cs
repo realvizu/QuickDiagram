@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IUiServiceFactory
     {
-        IUiService Create(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        IUiService Create(IModelService modelService, IDiagramService diagramService,
              double minZoom, double maxZoom, double initialZoom);
     }
 }

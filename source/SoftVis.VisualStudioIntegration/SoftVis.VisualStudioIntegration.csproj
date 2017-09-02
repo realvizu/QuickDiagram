@@ -105,7 +105,6 @@
     <Compile Include="Diagramming\IRoslynDiagramService.cs" />
     <Compile Include="Diagramming\RoslynDiagramService.cs" />
     <Compile Include="Diagramming\RoslynDiagramServiceFactory.cs" />
-    <Compile Include="Diagramming\RoslynDiagramStore.cs" />
     <Compile Include="Diagramming\RoslynDiagramShapeFactory.cs" />
     <Compile Include="Diagramming\RoslynLayoutPriorityProvider.cs" />
     <Compile Include="Diagramming\RoslynTypeDiagramNode.cs" />
@@ -176,7 +175,6 @@
     <Compile Include="Modeling\Implementation\RoslynEnumNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynStructNode.cs" />
     <Compile Include="Modeling\Implementation\RoslynInterfaceNode.cs" />
-    <Compile Include="Modeling\Implementation\RoslynModelStore.cs" />
     <Compile Include="Modeling\Implementation\RoslynTypeNode.cs" />
     <Compile Include="App\IAppServices.cs" />
     <Compile Include="Hosting\DiagramHostToolWindow.cs" />

@@ -5,9 +5,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal static class TestModelCreator
     {
-        internal static ITestModelStore Create(ITestModelStore testModelStore)
+        internal static void Create(ITestModelService testModelService)
         {
-            var modelBuilder = new TestModelBuilder(testModelStore);
+            var modelBuilder = new TestModelBuilder(testModelService);
 
             modelBuilder
 
@@ -143,8 +143,6 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddImplements("O2", "O10")
 
                 ;
-
-            return testModelStore;
         }
     }
 }

@@ -102,7 +102,7 @@
     <Compile Include="Service\IVisualizationService.cs" />
     <Compile Include="Diagramming\IDiagramServiceFactory.cs" />
     <Compile Include="Service\IDiagramPlugin.cs" />
-    <Compile Include="Diagramming\IReadOnlyDiagramStore.cs" />
+    <Compile Include="Diagramming\IDiagramMutator.cs" />
     <Compile Include="Diagramming\IDiagramShapeResolver.cs" />
     <Compile Include="Service\DiagramPluginId.cs" />
     <Compile Include="Service\Plugins\ConnectorManipulatorDiagramPluginBase.cs" />
@@ -113,14 +113,13 @@
     <Compile Include="Service\Plugins\ConnectorHandlerDiagramPlugin.cs" />
     <Compile Include="Service\Plugins\ModelTrackingDiagramPlugin.cs" />
     <Compile Include="Diagramming\Implementation\Diagram.cs" />
-    <Compile Include="Diagramming\IDiagramStore.cs" />
     <Compile Include="Diagramming\IDiagramNode.cs" />
     <Compile Include="Diagramming\IDiagramConnector.cs" />
     <Compile Include="Diagramming\IDiagram.cs" />
     <Compile Include="Diagramming\IDiagramShape.cs" />
     <Compile Include="Service\Plugins\DiagramPluginBase.cs" />
     <Compile Include="Service\Plugins\AutoLayoutDiagramPlugin.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramStoreBase.cs" />
+    <Compile Include="Diagramming\Implementation\DiagramStore.cs" />
     <Compile Include="Diagramming\IDiagramShapeFactory.cs" />
     <Compile Include="Diagramming\Layout\ILayoutPriorityProvider.cs" />
     <Compile Include="Diagramming\Layout\RemoveDiagramConnectorAction.cs" />
@@ -153,7 +152,7 @@
     <Compile Include="Modeling\Events\ModelRelationshipAddedEvent.cs" />
     <Compile Include="Modeling\Events\ModelNodeAddedEvent.cs" />
     <Compile Include="Modeling\Events\ModelNodeRemovedEvent.cs" />
-    <Compile Include="Modeling\IModelStore.cs" />
+    <Compile Include="Modeling\IModelMutator.cs" />
     <Compile Include="Modeling\ModelEventBase.cs" />
     <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
     <Compile Include="Modeling\ModelNodeStereotype.cs" />
@@ -161,7 +160,6 @@
     <Compile Include="Modeling\Implementation\ModelGraph.cs" />
     <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
     <Compile Include="Modeling\IModel.cs" />
-    <Compile Include="Modeling\IReadOnlyModelStore.cs" />
     <Compile Include="Modeling\IModelNode.cs" />
     <Compile Include="Modeling\IModelRelationship.cs" />
     <Compile Include="Modeling\Implementation\Model.cs" />

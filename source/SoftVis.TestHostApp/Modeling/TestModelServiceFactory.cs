@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     {
         public IModelService Create()
         {
-            return new TestModelService(new TestModelStore(new TestModel()));
+            return new TestModelService();
         }
     }
 }

@@ -35,16 +35,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
-        public DiagramViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        public DiagramViewModel(IModelService modelService, IDiagramService diagramService,
             IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
-            : base(modelStore, diagramStore)
+            : base(modelService, diagramService)
         {
             DiagramShapeUiFactory = diagramShapeUiFactory;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(ModelStore, DiagramStore, diagramShapeUiFactory,
+            DiagramViewportViewModel = new DiagramViewportViewModel(ModelService, DiagramService, diagramShapeUiFactory,
                 minZoom, maxZoom, initialZoom);
 
-            RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelStore, DiagramStore);
+            RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelService, DiagramService);
             RelatedNodeListBoxViewModel.ItemSelected += OnRelatedNodeSelected;
             RelatedNodeListBoxViewModel.Items.CollectionChanged += OnRelatedNodeCollectionChanged;
 
@@ -53,11 +53,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             PreviewMouseDownCommand = new DelegateCommand(OnAnyMouseDownEvent);
             MouseDownCommand = new DelegateCommand(OnUnhandledMouseDownEvent);
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
 
             SubscribeToViewportEvents();
 
-            _lastDiagram = DiagramStore.CurrentDiagram;
+            _lastDiagram = DiagramService.Diagram;
         }
 
         public override void Dispose()
@@ -68,7 +68,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedNodeListBoxViewModel.Items.CollectionChanged -= OnRelatedNodeCollectionChanged;
             RelatedNodeListBoxViewModel.Dispose();
 
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
 
             UnsubscribeFromViewportEvents();
 

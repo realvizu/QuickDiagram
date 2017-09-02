@@ -78,7 +78,7 @@
     </Compile>
     <Compile Include="Diagramming\TestConnectorTypes.cs" />
     <Compile Include="Diagramming\TestDiagram.cs" />
-    <Compile Include="Diagramming\TestDiagramStore.cs" />
+    <Compile Include="Diagramming\TestDiagramService.cs" />
     <Compile Include="Diagramming\TestDiagramShapeFactory.cs" />
     <Compile Include="Diagramming\TestLayoutPriorityProvider.cs" />
     <Compile Include="Diagramming\TypeDiagramNode.cs" />
@@ -87,7 +87,7 @@
     <Compile Include="Modeling\ImplementationRelationship.cs" />
     <Compile Include="Modeling\InheritanceRelationship.cs" />
     <Compile Include="Modeling\ITestModelService.cs" />
-    <Compile Include="Modeling\ITestModelStore.cs" />
+    <Compile Include="Modeling\ITestModelMutator.cs" />
     <Compile Include="Modeling\TestModelService.cs" />
     <Compile Include="TestData\BigTestModelCreator.cs" />
     <Compile Include="TestData\TestModelBuilder.cs" />

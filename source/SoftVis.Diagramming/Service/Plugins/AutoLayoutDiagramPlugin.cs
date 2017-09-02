@@ -32,19 +32,19 @@ namespace Codartis.SoftVis.Service.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            _layoutActionExecutor = new LayoutActionExecutorVisitor(DiagramStore);
+            _layoutActionExecutor = new LayoutActionExecutorVisitor(DiagramService);
             _automaticLayoutCancellation = new CancellationTokenSource();
             _diagramActionQueue = new Queue<DiagramAction>();
             _diagramActionArrivedEvent = new AutoResetEvent(false);
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
 
             Task.Run(() => ProcessDiagramShapeActionsAsync(_automaticLayoutCancellation.Token));
         }
 
         public override void Dispose()
         {
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
 
             _automaticLayoutCancellation.Cancel();
             _automaticLayoutCancellation.Dispose();

@@ -4,9 +4,9 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal static class BigTestModelCreator
     {
-        internal static void Create(TestModelStore modelStore, int childCount, int levels)
+        internal static void Create(ITestModelService modelService, int childCount, int levels)
         {
-            var modelBuilder = new TestModelBuilder(modelStore);
+            var modelBuilder = new TestModelBuilder(modelService);
 
             var rootName = "0";
             modelBuilder.AddClass(rootName);

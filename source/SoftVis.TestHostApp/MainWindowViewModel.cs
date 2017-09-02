@@ -71,7 +71,7 @@ namespace Codartis.SoftVis.TestHostApp
             ZoomToContentCommand = new DelegateCommand(ZoomToContent);
             CopyToClipboardCommand = new DelegateCommand(CopyToClipboardAsync);
 
-            PopulateModel(_testModelService.TestModelStore);
+            PopulateModel(_testModelService);
         }
 
         public double SelectedDpi
@@ -95,7 +95,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            var model = _testModelService.TestModelStore.CurrentTestModel;
+            var model = _testModelService.TestModel;
 
             if (_modelItemGroupIndex == model.ItemGroups.Count)
                 return;
@@ -114,7 +114,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void RemoveShapes()
         {
-            var model = _testModelService.TestModelStore.CurrentTestModel;
+            var model = _testModelService.TestModel;
 
             if (_nextToRemoveModelItemGroupIndex == model.ItemGroups.Count)
                 return;
@@ -163,9 +163,9 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
-        private static void PopulateModel(ITestModelStore testModelStore)
+        private static void PopulateModel(ITestModelService testModelService)
         {
-            TestModelCreator.Create(testModelStore);
+            TestModelCreator.Create(testModelService);
             //BigTestModelCreator.Create(_testModelService, 2, 5);
         }
     }

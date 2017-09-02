@@ -2,8 +2,7 @@
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal interface ITestModelService : IModelService
+    internal interface ITestModelService : IModelService, ITestModelMutator
     {
-        TestModelStore TestModelStore { get; }
     }
 }

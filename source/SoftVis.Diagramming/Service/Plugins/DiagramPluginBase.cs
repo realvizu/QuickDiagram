@@ -21,8 +21,5 @@ namespace Codartis.SoftVis.Service.Plugins
         public virtual void Dispose()
         {
         }
-
-        protected IModelStore ModelStore => ModelService.ModelStore;
-        protected IDiagramStore DiagramStore => DiagramService.DiagramStore;
     }
 }

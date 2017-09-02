@@ -3,20 +3,20 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal class TestModelStore : ModelStore, ITestModelStore
+    internal class TestModelStore : ModelStore, ITestModelMutator
     {
         public TestModelStore(TestModel model)
             : base(model)
         {
         }
 
-        public TestModel CurrentTestModel => (TestModel)CurrentModel;
+        public TestModel TestModel => (TestModel)Model;
 
         public void AddItemToCurrentGroup(IModelNode modelNode)
         {
             lock (ModelUpdateLockObject)
             {
-                CurrentModel = CurrentTestModel.AddItemToCurrentGroup(modelNode);
+                Model = TestModel.AddItemToCurrentGroup(modelNode);
             }
         }
 
@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         {
             lock (ModelUpdateLockObject)
             {
-                CurrentModel = CurrentTestModel.StartNewGroup();
+                Model = TestModel.StartNewGroup();
             }
         }
     }

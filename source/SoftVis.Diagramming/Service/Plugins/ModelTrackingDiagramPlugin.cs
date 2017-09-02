@@ -18,30 +18,30 @@ namespace Codartis.SoftVis.Service.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            ModelStore.ModelChanged += OnModelChanged;
+            ModelService.ModelChanged += OnModelChanged;
         }
 
         public override void Dispose()
         {
-            ModelStore.ModelChanged -= OnModelChanged;
+            ModelService.ModelChanged -= OnModelChanged;
         }
 
         private void OnModelChanged(ModelEventBase modelEvent)
         {
-            var diagram = DiagramStore.CurrentDiagram;
+            var diagram = DiagramService.Diagram;
 
             switch (modelEvent)
             {
                 case ModelNodeUpdatedEvent modelNodeUpdatedEvent:
                     var newModelNode = modelNodeUpdatedEvent.NewNode;
                     if (diagram.TryGetNodeById(newModelNode.Id, out var diagramNodeToUpdate))
-                        DiagramStore.UpdateDiagramNodeModelNode(diagramNodeToUpdate, newModelNode);
+                        DiagramService.UpdateDiagramNodeModelNode(diagramNodeToUpdate, newModelNode);
                     break;
 
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
                     var removedModelNode = modelNodeRemovedEvent.RemovedNode;
                     if (diagram.TryGetNodeById(removedModelNode.Id, out var diagramNodeToRemove))
-                        DiagramStore.RemoveNode(diagramNodeToRemove);
+                        DiagramService.RemoveNode(diagramNodeToRemove);
                     break;
 
                 case ModelRelationshipAddedEvent modelRelationshipAddedEvent:
@@ -52,11 +52,11 @@ namespace Codartis.SoftVis.Service.Plugins
                 case ModelRelationshipRemovedEvent modelRelationshipRemovedEvent:
                     var modelRelationship = modelRelationshipRemovedEvent.RemovedRelationship;
                     if (diagram.TryGetConnectorById(modelRelationship.Id, out var diagramConnector))
-                        DiagramStore.RemoveConnector(diagramConnector);
+                        DiagramService.RemoveConnector(diagramConnector);
                     break;
 
                 case ModelClearedEvent _:
-                    DiagramStore.ClearDiagram();
+                    DiagramService.ClearDiagram();
                     break;
             }
         }

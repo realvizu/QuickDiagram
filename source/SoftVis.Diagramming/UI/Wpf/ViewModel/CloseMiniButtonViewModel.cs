@@ -8,8 +8,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class CloseMiniButtonViewModel : MiniButtonViewModelBase
     {
-        public CloseMiniButtonViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore)
-            : base(modelStore, diagramStore, "Remove")
+        public CloseMiniButtonViewModel(IModelService modelService, IDiagramService diagramService)
+            : base(modelService, diagramService, "Remove")
         {
             IsEnabled = true;
         }

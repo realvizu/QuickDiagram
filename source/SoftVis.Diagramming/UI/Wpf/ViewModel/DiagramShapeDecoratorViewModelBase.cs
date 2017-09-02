@@ -14,8 +14,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DiagramShapeViewModelBase HostViewModel { get; private set; }
 
-        protected DiagramShapeDecoratorViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore)
-            : base(modelStore, diagramStore)
+        protected DiagramShapeDecoratorViewModelBase(IModelService modelService, IDiagramService diagramService)
+            : base(modelService, diagramService)
         {
             _isVisible = false;
         }

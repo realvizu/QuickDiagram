@@ -6,11 +6,11 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 {
     internal class TestModelBuilder
     {
-        public ITestModelStore ModelStore { get; }
+        public ITestModelService ModelService { get; }
 
-        public TestModelBuilder(ITestModelStore modelStore)
+        public TestModelBuilder(ITestModelService modelService)
         {
-            ModelStore = modelStore;
+            ModelService = modelService;
         }
 
         public TestModelBuilder AddClass(string name, bool isAbstract)
@@ -21,8 +21,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public TestModelBuilder AddClass(string name, string baseName = null, ModelOrigin origin = ModelOrigin.SourceCode, bool isAbstract = false)
         {
             var node = new ClassNode(ModelNodeId.Create(), name, origin, isAbstract);
-            ModelStore.AddNode(node);
-            ModelStore.AddItemToCurrentGroup(node);
+            ModelService.AddNode(node);
+            ModelService.AddItemToCurrentGroup(node);
 
             if (baseName != null)
             {
@@ -36,8 +36,8 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         public TestModelBuilder AddInterface(string name, string baseName = null, ModelOrigin origin = ModelOrigin.SourceCode)
         {
             var node = new InterfaceNode(ModelNodeId.Create(), name, origin, false);
-            ModelStore.AddNode(node);
-            ModelStore.AddItemToCurrentGroup(node);
+            ModelService.AddNode(node);
+            ModelService.AddItemToCurrentGroup(node);
 
             if (baseName != null)
             {
@@ -66,25 +66,25 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         public TestModelBuilder EndGroup()
         {
-            ModelStore.StartNewGroup();
+            ModelService.StartNewGroup();
             return this;
         }
 
         private IModelNode GetNodeByName(string name)
         {
-            return ModelStore.CurrentModel.Nodes.Single(i => i.Name == name);
+            return ModelService.Model.Nodes.Single(i => i.Name == name);
         }
 
         private void AddInheritance(IModelNode node, IModelNode baseNode)
         {
             var relationship = new InheritanceRelationship(ModelRelationshipId.Create(), node, baseNode);
-            ModelStore.AddRelationship(relationship);
+            ModelService.AddRelationship(relationship);
         }
 
         private void AddImplements(IModelNode node, IModelNode baseNode)
         {
             var relationship = new ImplementationRelationship(ModelRelationshipId.Create(), node, baseNode);
-            ModelStore.AddRelationship(relationship);
+            ModelService.AddRelationship(relationship);
         }
     }
 }

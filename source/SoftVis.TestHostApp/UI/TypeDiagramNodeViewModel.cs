@@ -9,14 +9,14 @@ namespace Codartis.SoftVis.TestHostApp.UI
 {
     internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
     {
-        public TypeDiagramNodeViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore, TypeDiagramNode diagramNode)
-            : base(modelStore, diagramStore, diagramNode)
+        public TypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, TypeDiagramNode diagramNode)
+            : base(modelService, diagramService, diagramNode)
         {
         }
 
         public override object Clone()
         {
-            return new TypeDiagramNodeViewModel(ModelStore, DiagramStore, TypeDiagramNode) { Size = Size };
+            return new TypeDiagramNodeViewModel(ModelService, DiagramService, TypeDiagramNode) { Size = Size };
         }
 
         public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode)DiagramNode;

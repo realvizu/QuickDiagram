@@ -20,20 +20,20 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ViewportAutoMoveMode Mode { get; set; }
 
-        public AutoMoveViewportViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        public AutoMoveViewportViewModel(IModelService modelService, IDiagramService diagramService,
             double minZoom, double maxZoom, double initialZoom, ViewportAutoMoveMode mode = ViewportAutoMoveMode.Contain)
-             : base(modelStore, diagramStore, minZoom, maxZoom, initialZoom)
+             : base(modelService, diagramService, minZoom, maxZoom, initialZoom)
         {
             Mode = mode;
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed)

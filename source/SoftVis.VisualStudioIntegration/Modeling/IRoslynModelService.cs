@@ -52,7 +52,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
-
-        void ClearModel();
     }
 }

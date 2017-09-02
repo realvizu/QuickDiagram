@@ -8,22 +8,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramShapeUiFactoryBase : IDiagramShapeUiFactory
     {
-        protected IReadOnlyModelStore ModelStore { get; private set; }
+        protected IModelService ModelService { get; private set; }
         protected IDiagramShapeUiRepository DiagramShapeUiRepository { get; private set; }
 
-        public void Initialize(IReadOnlyModelStore modelStore, IDiagramShapeUiRepository diagramShapeUiRepository)
+        public void Initialize(IModelService modelService, IDiagramShapeUiRepository diagramShapeUiRepository)
         {
-            ModelStore = modelStore;
+            ModelService = modelService;
             DiagramShapeUiRepository = diagramShapeUiRepository;
         }
 
-        public abstract DiagramNodeViewModelBase CreateDiagramNodeViewModel(IReadOnlyDiagramStore diagramStore, IDiagramNode diagramNode);
+        public abstract DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramService diagramService, IDiagramNode diagramNode);
 
-        public virtual DiagramConnectorViewModel CreateDiagramConnectorViewModel(IReadOnlyDiagramStore diagramStore, IDiagramConnector diagramConnector)
+        public virtual DiagramConnectorViewModel CreateDiagramConnectorViewModel(IDiagramService diagramService, IDiagramConnector diagramConnector)
         {
             var sourceNode = DiagramShapeUiRepository.GetDiagramNodeViewModel(diagramConnector.Source);
             var targetNode = DiagramShapeUiRepository.GetDiagramNodeViewModel(diagramConnector.Target);
-            return new DiagramConnectorViewModel(ModelStore, diagramStore, diagramConnector, sourceNode, targetNode);
+            return new DiagramConnectorViewModel(ModelService, diagramService, diagramConnector, sourceNode, targetNode);
         }
     }
 }

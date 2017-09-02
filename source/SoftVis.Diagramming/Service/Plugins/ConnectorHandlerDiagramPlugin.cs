@@ -19,17 +19,17 @@ namespace Codartis.SoftVis.Service.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            var model = ModelStore.CurrentModel;
+            var model = ModelService.Model;
             var diagram = diagramEvent.NewDiagram;
 
             switch (diagramEvent)
@@ -59,7 +59,7 @@ namespace Codartis.SoftVis.Service.Plugins
         {
             foreach (var connector in diagram.Connectors)
                 if (diagram.IsConnectorRedundantById(connector.Id))
-                    DiagramStore.RemoveConnector(connector);
+                    DiagramService.RemoveConnector(connector);
         }
     }
 }

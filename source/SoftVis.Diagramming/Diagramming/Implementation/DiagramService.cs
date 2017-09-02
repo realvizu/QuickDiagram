@@ -1,34 +1,58 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// Implement diagram-related operations.
+    /// Implements diagram-related operations.
     /// </summary>
-    public class DiagramService : IDiagramService
+    public abstract class DiagramService : IDiagramService
     {
-        protected IReadOnlyModelStore ModelStore { get; }
-        public IDiagramStore DiagramStore { get; }
+        protected DiagramStore DiagramStore { get; }
+        protected IModelService ModelService { get; }
         protected IDiagramShapeFactory DiagramShapeFactory { get; }
 
-        public DiagramService(IReadOnlyModelStore modelStore, IDiagramStore diagramStore, IDiagramShapeFactory diagramShapeFactory)
+        protected DiagramService(IDiagram diagram, IModelService modelService, IDiagramShapeFactory diagramShapeFactory)
         {
-            ModelStore = modelStore;
-            DiagramStore = diagramStore;
+            DiagramStore = new DiagramStore(diagram);
+            ModelService = modelService;
             DiagramShapeFactory = diagramShapeFactory;
         }
 
+        public IDiagram Diagram => DiagramStore.Diagram;
+
+        public event Action<DiagramEventBase> DiagramChanged
+        {
+            add => DiagramStore.DiagramChanged += value;
+            remove => DiagramStore.DiagramChanged -= value;
+        }
+
+        public void AddNode(IDiagramNode node) => DiagramStore.AddNode(node);
+        public void RemoveNode(IDiagramNode node) => DiagramStore.RemoveNode(node);
+        public void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode) => DiagramStore.UpdateDiagramNodeModelNode(diagramNode, newModelNode);
+        public void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize) => DiagramStore.UpdateDiagramNodeSize(diagramNode, newSize);
+        public void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter) => DiagramStore.UpdateDiagramNodeCenter(diagramNode, newCenter);
+        public void AddConnector(IDiagramConnector connector) => DiagramStore.AddConnector(connector);
+        public void RemoveConnector(IDiagramConnector connector) => DiagramStore.RemoveConnector(connector);
+        public void UpdateDiagramConnectorRoute(IDiagramConnector connector, Route newRoute) => DiagramStore.UpdateDiagramConnectorRoute(connector, newRoute);
+        public void ClearDiagram() => DiagramStore.ClearDiagram();
+
+        public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
+
+        public IDiagramNode GetDiagramNodeById(ModelNodeId id) => Diagram.GetNodeById(id);
+
         public IDiagramNode ShowModelNode(IModelNode modelNode)
         {
-            var diagram = DiagramStore.CurrentDiagram;
+            var diagram = DiagramStore.Diagram;
             if (diagram.TryGetNodeById(modelNode.Id, out var existingDiagramNode))
                 return existingDiagramNode;
 
-            var diagramNode = DiagramShapeFactory.CreateDiagramNode(DiagramStore, modelNode);
+            var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode);
             DiagramStore.AddNode(diagramNode);
             return diagramNode;
         }
@@ -54,7 +78,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void HideModelNode(IModelNode modelNode)
         {
-            var diagram = DiagramStore.CurrentDiagram;
+            var diagram = DiagramStore.Diagram;
             if (diagram.TryGetNodeById(modelNode.Id, out IDiagramNode diagramNode))
             {
                 var diagramConnectors = diagram.GetConnectorsByNodeId(modelNode.Id);
@@ -67,21 +91,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void ShowModelRelationship(IModelRelationship modelRelationship)
         {
-            var diagram = DiagramStore.CurrentDiagram;
+            var diagram = DiagramStore.Diagram;
             if (diagram.ConnectorExistsById(modelRelationship.Id))
                 return;
 
-            var diagramConnector = DiagramShapeFactory.CreateDiagramConnector(DiagramStore, modelRelationship);
+            var diagramConnector = DiagramShapeFactory.CreateDiagramConnector(this, modelRelationship);
             DiagramStore.AddConnector(diagramConnector);
         }
 
         public void HideModelRelationship(IModelRelationship modelRelationship)
         {
-            var diagram = DiagramStore.CurrentDiagram;
+            var diagram = DiagramStore.Diagram;
             if (diagram.TryGetConnectorById(modelRelationship.Id, out IDiagramConnector diagramConnector))
                 DiagramStore.RemoveConnector(diagramConnector);
         }
-
-        public void ClearDiagram() => DiagramStore.ClearDiagram();
     }
 }

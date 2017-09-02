@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.Service
             double initialZoom = DefaultInitialZoom)
         {
             var diagramId = DiagramId.Create();
-            var diagramService = DiagramServiceFactory.Create(GetModelService().ModelStore);
+            var diagramService = DiagramServiceFactory.Create(GetModelService());
             _diagramServices.Add(diagramId, diagramService);
 
             var diagramUi = CreateDiagramUi(diagramId, minZoom, maxZoom, initialZoom);
@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.Service
             double initialZoom = DefaultInitialZoom)
         {
             var diagramService = GetDiagramService(diagramId);
-            var diagramUi = UiServiceFactory.Create(ModelService.ModelStore, diagramService.DiagramStore, minZoom, maxZoom, initialZoom);
+            var diagramUi = UiServiceFactory.Create(ModelService, diagramService, minZoom, maxZoom, initialZoom);
 
             diagramUi.ShowModelItemsRequested += (modelNodes, followNewDiagramNodes) => OnShowModelItemsRequested(diagramId, modelNodes, followNewDiagramNodes);
             diagramUi.DiagramNodeSizeChanged += (diagramNode, size) => OnDiagramNodeSizeChanged(diagramId, diagramNode, size);
@@ -110,15 +110,14 @@ namespace Codartis.SoftVis.Service
 
             if (followNewDiagramNodes)
             {
-                var diagramStore = diagramService.DiagramStore;
-                var diagramNodes = modelNodes.Select(i => diagramStore.GetDiagramNodeById(i.Id)).ToArray();
+                var diagramNodes = modelNodes.Select(i => diagramService.GetDiagramNodeById(i.Id)).ToArray();
                 GetUiService(diagramId).FollowDiagramNodes(diagramNodes);
             }
         }
 
         private void OnDiagramNodeSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
         {
-            GetDiagramService(diagramId).DiagramStore.UpdateDiagramNodeSize(diagramNode, newSize);
+            GetDiagramService(diagramId).UpdateDiagramNodeSize(diagramNode, newSize);
         }
 
         private void OnDiagramNodeInvoked(DiagramId diagramId, IDiagramNode diagramNode)

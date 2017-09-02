@@ -40,9 +40,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
-        public DiagramViewportViewModel(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        public DiagramViewportViewModel(IModelService modelService, IDiagramService diagramService,
             IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
-            : base(modelStore, diagramStore)
+            : base(modelService, diagramService)
         {
             MinZoom = minZoom;
             MaxZoom = maxZoom;
@@ -51,9 +51,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramConnectorToViewModelMap = new Map<IDiagramConnector, DiagramConnectorViewModel>(new DiagramConnectorIdEqualityComparer());
 
             _diagramShapeUiFactory = diagramShapeUiFactory;
-            _diagramShapeUiFactory.Initialize(modelStore, this);
+            _diagramShapeUiFactory.Initialize(modelService, this);
 
-            ViewportCalculator = new AutoMoveViewportViewModel(modelStore, diagramStore, minZoom, maxZoom, initialZoom);
+            ViewportCalculator = new AutoMoveViewportViewModel(modelService, diagramService, minZoom, maxZoom, initialZoom);
             DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModelBase>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
             MiniButtonPanelViewModel = new MiniButtonPanelViewModel();
@@ -61,9 +61,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramNodeDoubleClickedCommand = new DelegateCommand<IDiagramNode>(i => DiagramNodeInvoked?.Invoke(i));
 
             ViewportCalculator.TransformChanged += OnViewportTransformChanged;
-            DiagramStore.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChanged;
 
-            AddDiagram(diagramStore.CurrentDiagram);
+            AddDiagram(diagramService.Diagram);
         }
 
         public override void Dispose()
@@ -71,7 +71,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             base.Dispose();
 
             ViewportCalculator.TransformChanged -= OnViewportTransformChanged;
-            DiagramStore.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
 
             ViewportCalculator.Dispose();
             MiniButtonPanelViewModel.Dispose();
@@ -142,7 +142,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramNodeViewModel = _diagramShapeUiFactory.CreateDiagramNodeViewModel(DiagramStore, diagramNode);
+            var diagramNodeViewModel = _diagramShapeUiFactory.CreateDiagramNodeViewModel(DiagramService, diagramNode);
             DiagramNodeViewModels.Add(diagramNodeViewModel);
 
             diagramNodeViewModel.SizeChanged += OnDiagramNodeSizeChanged;
@@ -155,7 +155,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddConnector(IDiagramConnector diagramConnector)
         {
-            var diagramConnectorViewModel = _diagramShapeUiFactory.CreateDiagramConnectorViewModel(DiagramStore, diagramConnector);
+            var diagramConnectorViewModel = _diagramShapeUiFactory.CreateDiagramConnectorViewModel(DiagramService, diagramConnector);
             DiagramConnectorViewModels.Add(diagramConnectorViewModel);
 
             _diagramConnectorToViewModelMap.Set(diagramConnector, diagramConnectorViewModel);

@@ -11,9 +11,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         public IDiagramShape DiagramShape { get; protected set; }
 
-        protected DiagramShapeViewModelBase(IReadOnlyModelStore modelStore, IReadOnlyDiagramStore diagramStore,
+        protected DiagramShapeViewModelBase(IModelService modelService, IDiagramService diagramService,
             IDiagramShape diagramShape)
-            :base(modelStore, diagramStore)
+            :base(modelService, diagramService)
         {
             DiagramShape = diagramShape;
         }

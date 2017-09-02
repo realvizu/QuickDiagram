@@ -43,8 +43,8 @@ namespace Codartis.SoftVis.Service.Plugins
             if (diagram.ConnectorExistsById(modelRelationship.Id))
                 return;
 
-            var newConnector = DiagramShapeFactory.CreateDiagramConnector(DiagramStore, modelRelationship);
-            DiagramStore.AddConnector(newConnector);
+            var newConnector = DiagramShapeFactory.CreateDiagramConnector(DiagramService, modelRelationship);
+            DiagramService.AddConnector(newConnector);
         }
     }
 }
