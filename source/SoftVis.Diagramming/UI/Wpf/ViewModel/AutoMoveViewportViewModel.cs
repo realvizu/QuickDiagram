@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf;
@@ -15,8 +14,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class AutoMoveViewportViewModel : ViewportCalculatorViewModel
     {
-        private IDiagramNode[] _followedDiagramNodes;
-        private TransitionSpeed _followDiagramNodesTransitionSpeed;
+        private ModelNodeId[] _followedNodeIds;
+        private TransitionSpeed _followNodesTransitionSpeed;
 
         public ViewportAutoMoveMode Mode { get; set; }
 
@@ -38,14 +37,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed)
         {
-            _followedDiagramNodes = diagramNodes?.ToArray();
-            _followDiagramNodesTransitionSpeed = transitionSpeed;
+            _followedNodeIds = diagramNodes?.Select(i => i.Id).ToArray();
+            _followNodesTransitionSpeed = transitionSpeed;
             MoveViewport();
         }
 
         public void StopFollowingDiagramNodes()
         {
-            _followedDiagramNodes = null;
+            _followedNodeIds = null;
         }
 
         public override void Pan(Vector panVectorInScreenSpace, TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
@@ -92,26 +91,26 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void FollowDiagramNode(IDiagramNode diagramNode)
         {
-            if (_followedDiagramNodes != null && _followedDiagramNodes.Contains(diagramNode))
+            if (_followedNodeIds != null && _followedNodeIds.Contains(diagramNode.Id))
                 MoveViewport();
         }
 
         private void MoveViewport()
         {
-            if (_followedDiagramNodes == null)
+            if (_followedNodeIds == null)
                 return;
 
-            var rect = _followedDiagramNodes.Where(i => i.IsRectDefined).Select(i => i.Rect).Union().ToWpf();
+            var rect = DiagramService.GetRect(_followedNodeIds).ToWpf();
             if (rect.IsUndefined())
                 return;
 
             switch (Mode)
             {
                 case ViewportAutoMoveMode.Center:
-                    ZoomToRect(rect, _followDiagramNodesTransitionSpeed);
+                    ZoomToRect(rect, _followNodesTransitionSpeed);
                     break;
                 case ViewportAutoMoveMode.Contain:
-                    ContainRect(rect, _followDiagramNodesTransitionSpeed);
+                    ContainRect(rect, _followNodesTransitionSpeed);
                     break;
             }
         }

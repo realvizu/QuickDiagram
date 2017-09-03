@@ -1,5 +1,4 @@
-﻿using System;
-using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI;
 
@@ -15,7 +14,5 @@ namespace Codartis.SoftVis.Service
         IModelService GetModelService();
         IDiagramService GetDiagramService(DiagramId diagramId);
         IUiService GetUiService(DiagramId diagramId);
-
-        event Action<IModelNode, DiagramId> ModelNodeInvoked;
     }
 }

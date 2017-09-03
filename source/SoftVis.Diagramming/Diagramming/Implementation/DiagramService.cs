@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -57,7 +56,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return diagramNode;
         }
 
-        public IEnumerable<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes, 
+        public IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes, 
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             var diagramNodes = new List<IDiagramNode>();
@@ -65,12 +64,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             foreach (var modelNode in modelNodes)
             {
                 if (cancellationToken.IsCancellationRequested)
-                    return Enumerable.Empty<IDiagramNode>();
+                    return Array.Empty<IDiagramNode>();
 
                 var diagramNode = ShowModelNode(modelNode);
                 diagramNodes.Add(diagramNode);
 
-                progress.Report(1);
+                progress?.Report(1);
             }
 
             return diagramNodes;
@@ -104,6 +103,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var diagram = DiagramStore.Diagram;
             if (diagram.TryGetConnectorById(modelRelationship.Id, out IDiagramConnector diagramConnector))
                 DiagramStore.RemoveConnector(diagramConnector);
+        }
+
+        public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
+        {
+            var diagram = Diagram;
+
+            var nodeRects = new List<Rect2D>();
+            foreach (var modelNodeId in modelNodeIds)
+            {
+                if (diagram.TryGetNodeById(modelNodeId, out var diagramNode))
+                    nodeRects.Add(diagramNode.Rect);
+            }
+
+            return nodeRects.Union();
         }
     }
 }

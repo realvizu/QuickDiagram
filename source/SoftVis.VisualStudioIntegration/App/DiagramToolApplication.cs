@@ -36,8 +36,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
             RoslynUiService.ImageExportDpi = Dpi.Dpi150;
 
-            //SubscribeToDiagramEvents(roslynDiagramService);
-            //SubscribeToUiEvents(roslynUiService);
+            RoslynUiService.DiagramNodeInvoked += OnShowSourceRequested;
+            RoslynUiService.ShowModelItemsRequested += OnShowItemsRequestedAsync;
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
@@ -52,7 +52,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
             var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
-
             if (roslynModelNodes.Any())
                 await new AddItemsToDiagramCommand(this).ExecuteAsync(roslynModelNodes, followWithViewport);
         }

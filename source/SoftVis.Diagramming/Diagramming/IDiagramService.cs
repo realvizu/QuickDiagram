@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 
@@ -11,10 +12,15 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagramService : IDiagramMutator, IDiagramShapeResolver
     {
         IDiagramNode ShowModelNode(IModelNode modelNode);
-        IEnumerable<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes, CancellationToken cancellationToken, IIncrementalProgress progress);
         void HideModelNode(IModelNode modelNode);
+
+        IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
+            CancellationToken cancellationToken = default(CancellationToken),
+            IIncrementalProgress progress = null);
 
         void ShowModelRelationship(IModelRelationship modelRelationship);
         void HideModelRelationship(IModelRelationship modelRelationship);
+
+        Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds);
     }
 }

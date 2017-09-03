@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
@@ -28,8 +27,6 @@ namespace Codartis.SoftVis.Service
         private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
         private readonly Dictionary<DiagramId, IUiService> _diagramUis;
         private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
-
-        public event Action<IModelNode, DiagramId> ModelNodeInvoked;
 
         public VisualizationService(
             IModelServiceFactory modelServiceFactory,
@@ -82,9 +79,7 @@ namespace Codartis.SoftVis.Service
             var diagramService = GetDiagramService(diagramId);
             var diagramUi = UiServiceFactory.Create(ModelService, diagramService, minZoom, maxZoom, initialZoom);
 
-            diagramUi.ShowModelItemsRequested += (modelNodes, followNewDiagramNodes) => OnShowModelItemsRequested(diagramId, modelNodes, followNewDiagramNodes);
             diagramUi.DiagramNodeSizeChanged += (diagramNode, size) => OnDiagramNodeSizeChanged(diagramId, diagramNode, size);
-            diagramUi.DiagramNodeInvoked += node => OnDiagramNodeInvoked(diagramId, node);
             diagramUi.RemoveDiagramNodeRequested += diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);
 
             return diagramUi;
@@ -101,28 +96,10 @@ namespace Codartis.SoftVis.Service
             }
         }
 
-        private void OnShowModelItemsRequested(DiagramId diagramId, IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes)
-        {
-            var diagramService = GetDiagramService(diagramId);
-
-            foreach (var modelNode in modelNodes)
-                diagramService.ShowModelNode(modelNode);
-
-            if (followNewDiagramNodes)
-            {
-                var diagramNodes = modelNodes.Select(i => diagramService.GetDiagramNodeById(i.Id)).ToArray();
-                GetUiService(diagramId).FollowDiagramNodes(diagramNodes);
-            }
-        }
 
         private void OnDiagramNodeSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
         {
             GetDiagramService(diagramId).UpdateDiagramNodeSize(diagramNode, newSize);
-        }
-
-        private void OnDiagramNodeInvoked(DiagramId diagramId, IDiagramNode diagramNode)
-        {
-            ModelNodeInvoked?.Invoke(diagramNode.ModelNode, diagramId);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramId diagramId, IDiagramNode diagramNode)
