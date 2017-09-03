@@ -205,7 +205,6 @@
     <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
       <DependentUpon>DiagramImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Service\OldDiagram.cs" />
     <Compile Include="Diagramming\Implementation\DiagramConnector.cs" />
     <Compile Include="Diagramming\Layout\DiagramConnectorAction.cs" />
     <Compile Include="Diagramming\DiagramDefaults.cs" />

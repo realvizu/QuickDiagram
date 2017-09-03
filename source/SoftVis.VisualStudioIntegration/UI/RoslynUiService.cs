@@ -35,12 +35,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             _hostUiServices = hostUiServices;
             _diagramViewModel = diagramViewModel;
+
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
             _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
+            Initialize(_resourceDictionary, _diagramControl);
 
             hostUiServices.HostDiagram(_diagramControl);
-
-            //SubscribeToDiagramViewModelEvents(_diagramViewModel);
         }
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
@@ -89,11 +89,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             ShowMessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
         }
-
-        //private void SubscribeToDiagramViewModelEvents(DiagramViewModel diagramViewModel)
-        //{
-        //    diagramViewModel.ShowSourceRequested += i => ShowSourceRequested?.Invoke(i);
-        //    diagramViewModel.ShowModelItemsRequested += (i,j) => ShowModelItemsRequested?.Invoke(i,j);
-        //}
     }
 }
