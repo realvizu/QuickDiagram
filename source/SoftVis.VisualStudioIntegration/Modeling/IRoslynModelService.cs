@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
@@ -49,8 +50,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <summary>
         /// Updates the model from the current source code.
         /// </summary>
+        /// <param name="visibleModelNodeIds">The IDs of those model nodes that are visible on any of the diagrams.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
-        void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+        void UpdateFromSource(IEnumerable<ModelNodeId> visibleModelNodeIds,
+            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
     }
 }

@@ -63,8 +63,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             foreach (var modelNode in modelNodes)
             {
-                if (cancellationToken.IsCancellationRequested)
-                    return Array.Empty<IDiagramNode>();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 var diagramNode = ShowModelNode(modelNode);
                 diagramNodes.Add(diagramNode);

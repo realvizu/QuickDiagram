@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {
@@ -23,7 +24,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
         }
 
         public void AddNode(IModelNode node, IModelNode parentNode = null) => ModelStore.AddNode(node, parentNode);
-        public void RemoveNode(IModelNode node) => ModelStore.RemoveNode(node);
+
+        public void RemoveNode(IModelNode node)
+        {
+            var relationshipsToRemove = Model.GetRelationships(node).ToArray();
+            foreach (var relationship in relationshipsToRemove)
+                RemoveRelationship(relationship);
+            
+            ModelStore.RemoveNode(node);
+        }
+
         public void UpdateNode(IModelNode oldNode, IModelNode newNode) => ModelStore.UpdateNode(oldNode, newNode);
         public void AddRelationship(IModelRelationship relationship) => ModelStore.AddRelationship(relationship);
         public void RemoveRelationship(IModelRelationship relationship) => ModelStore.RemoveRelationship(relationship);

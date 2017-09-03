@@ -30,7 +30,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    RoslynModelService.ExtendModelWithRelatedNodes(diagramNodeAddedEvent.DiagramNode.ModelNode);
+                    RoslynModelService.ExtendModelWithRelatedNodes(diagramNodeAddedEvent.DiagramNode.ModelNode, recursive: false);
                     break;
             }
         }

@@ -171,6 +171,19 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public bool PathExistsById(TVertexId sourceId, TVertexId targetId) => _graph.PathExists(sourceId, targetId);
 
+        public IEnumerable<TVertex> GetConnectedVerticesById(TVertex vertex,
+            Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
+        {
+            if (!ContainsVertexId(vertex.Id))
+                return Enumerable.Empty<TVertex>();
+
+            var vertexIds = _graph.GetConnectedVertices(vertex.Id,
+                (id, edge) => edgePredicate(GetVertexById(id), GetEdgeById(edge.Id)),
+                recursive);
+
+            return vertexIds.Select(GetVertexById);
+        }
+
         public TGraph Clear()
         {
             return CreateInstance(_vertices.Clear(), _edges.Clear(), _graph.Clear());
@@ -203,7 +216,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
             var updatedEdges = _edges;
             foreach (var edge in _edges.Values.Where(i => i.Source.Id.Equals(vertex.Id) || i.Target.Id.Equals(vertex.Id)))
-                updatedEdges = _edges.Remove(edge.Id);
+                updatedEdges = updatedEdges.Remove(edge.Id);
 
             var updatedGraph = _graph.RemoveVertex(ToVertexId(vertex));
             return CreateInstance(updatedVertices, updatedEdges, updatedGraph);

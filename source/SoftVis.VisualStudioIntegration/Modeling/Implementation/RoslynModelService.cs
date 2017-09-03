@@ -50,45 +50,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             if (roslynModelNode == null)
                 return;
 
-            ExtendModelWithRelatedNodesRecursive(roslynModelNode, directedModelRelationshipType, cancellationToken, progress, recursive);
-        }
-
-        private void ExtendModelWithRelatedNodesRecursive(IRoslynModelNode roslynModelNode, DirectedModelRelationshipType? directedModelRelationshipType,
-            CancellationToken cancellationToken, IIncrementalProgress progress, bool recursive)
-        {
-            var relatedSymbolPairs = roslynModelNode
-                .FindRelatedSymbols(_roslynModelProvider, directedModelRelationshipType)
-                .Select(GetOriginalDefinition)
-                .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
-
-            foreach (var relatedSymbolPair in relatedSymbolPairs)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var relatedSymbol = relatedSymbolPair.RelatedSymbol;
-
-                // Avoid infinite loop by stopping recursion when a node is already added.
-                if (CurrentRoslynModel.GetNodeBySymbol(relatedSymbol) != null)
-                    recursive = false;
-
-                var relatedNode = GetOrAddNode(relatedSymbol, progress);
-                AddRelationshipIfNotExists(relatedSymbolPair);
-
-                if (recursive)
-                    ExtendModelWithRelatedNodesRecursive(relatedNode, directedModelRelationshipType, cancellationToken, progress, recursive: true);
-            }
+            ExtendModelWithRelatedNodesRecursive(roslynModelNode, directedModelRelationshipType, 
+                cancellationToken, progress, recursive, new HashSet<ModelNodeId>{roslynModelNode.Id});
         }
 
         public bool HasSource(IRoslynModelNode modelNode) => _roslynModelProvider.HasSource(modelNode.RoslynSymbol);
         public void ShowSource(IRoslynModelNode modelNode) => _roslynModelProvider.ShowSource(modelNode.RoslynSymbol);
 
-        public void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
+        public void UpdateFromSource(IEnumerable<ModelNodeId> visibleModelNodeIds,
+            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
         {
             UpdateEntitiesFromSource(cancellationToken, progress);
             UpdateRelationshipsFromSource(cancellationToken, progress);
+
+            foreach (var modelNodeId in visibleModelNodeIds)
+            {
+                if (Model.TryGetNodeById(modelNodeId, out var modelNode))
+                    ExtendModelWithRelatedNodes(modelNode, null, cancellationToken, progress, recursive: false);
+            }
         }
 
-        private async Task<INamedTypeSymbol> GetCurrentSymbolAsync() 
+        private async Task<INamedTypeSymbol> GetCurrentSymbolAsync()
             => await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
 
         private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
@@ -198,6 +180,35 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             return GlobalOptions.HideTrivialBaseNodes
                    && TrivialBaseSymbolNames.Contains(roslynSymbol.GetFullyQualifiedName());
+        }
+
+        private void ExtendModelWithRelatedNodesRecursive(IRoslynModelNode roslynModelNode, DirectedModelRelationshipType? directedModelRelationshipType,
+            CancellationToken cancellationToken, IIncrementalProgress progress, bool recursive, HashSet<ModelNodeId> alreadyDiscoveredNodes)
+        {
+            var relatedSymbolPairs = roslynModelNode
+                .FindRelatedSymbols(_roslynModelProvider, directedModelRelationshipType)
+                .Select(GetOriginalDefinition)
+                .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
+
+            foreach (var relatedSymbolPair in relatedSymbolPairs)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var relatedSymbol = relatedSymbolPair.RelatedSymbol;
+                var relatedNode = GetOrAddNode(relatedSymbol, progress);
+                AddRelationshipIfNotExists(relatedSymbolPair);
+
+                if (!recursive)
+                    continue;
+
+                // Avoid infinite loop by stopping recursion when a node is already added.
+                if (alreadyDiscoveredNodes.Contains(relatedNode.Id))
+                    continue;
+
+                alreadyDiscoveredNodes.Add(relatedNode.Id);
+                ExtendModelWithRelatedNodesRecursive(relatedNode, directedModelRelationshipType, 
+                    cancellationToken, progress, true, alreadyDiscoveredNodes);
+            }
         }
     }
 }

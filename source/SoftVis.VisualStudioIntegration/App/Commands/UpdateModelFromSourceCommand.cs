@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Util;
@@ -26,17 +27,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         private async Task ShowProgressAndUpdateModelAsync()
         {
-            using (var progressDialog = UiService.CreateProgressDialog("Updating model entities:"))
+            using (var progressDialog = UiService.CreateProgressDialog("Updating model nodes:"))
             {
                 progressDialog.ShowWithDelayAsync();
 
                 try
                 {
                     await UpdateModelAsync(progressDialog.CancellationToken, progressDialog.Progress);
-
-                    //progressDialog.Reset("Updating diagram nodes:", DiagramServices.Nodes.Count);
-
-                    //await UpdateDiagramAsync(progressDialog.CancellationToken, progressDialog.Progress);
                 }
                 catch (OperationCanceledException)
                 {
@@ -44,14 +41,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             }
         }
 
-        private Task UpdateModelAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private async Task UpdateModelAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return Task.Run(() => ModelService.UpdateFromSource(cancellationToken, progress), cancellationToken);
-        }
+            var visibleModelNodeIds = DiagramServices.Diagram.Nodes.Select(i => i.ModelNode.Id);
 
-        //private Task UpdateDiagramAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
-        //{
-        //    return Task.Run(() => DiagramServices.UpdateFromSource(cancellationToken, progress), cancellationToken);
-        //}
+            await Task.Run(
+                () => ModelService.UpdateFromSource(visibleModelNodeIds, cancellationToken, progress),
+                cancellationToken);
+        }
     }
 }
