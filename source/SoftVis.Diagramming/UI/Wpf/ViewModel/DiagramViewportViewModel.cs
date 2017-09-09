@@ -97,10 +97,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void PinDecoration() => MiniButtonPanelViewModel.PinDecoration();
         public void UnpinDecoration() => MiniButtonPanelViewModel.UnpinDecoration();
 
-        public DiagramNodeViewModelBase GetDiagramNodeViewModel(IDiagramNode diagramNode)
-            => _diagramNodeToViewModelMap.Get(diagramNode);
-        public DiagramConnectorViewModel GetDiagramConnectorViewModel(IDiagramConnector diagramConnector)
-            => _diagramConnectorToViewModelMap.Get(diagramConnector);
+        public bool TryGetDiagramNodeViewModel(IDiagramNode diagramNode, out DiagramNodeViewModelBase viewModel)
+            => _diagramNodeToViewModelMap.TryGet(diagramNode, out viewModel);
+
+        public bool TryGetDiagramConnectorViewModel(IDiagramConnector diagramConnector, out DiagramConnectorViewModel viewModel)
+            => _diagramConnectorToViewModelMap.TryGet(diagramConnector, out viewModel);
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
@@ -163,14 +164,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnRemoveDiagramNodeRequested(IDiagramNode diagramNode)
         {
-            var diagramNodeViewModel = _diagramNodeToViewModelMap.Get(diagramNode);
-            if (diagramNodeViewModel != null)
+            if (_diagramNodeToViewModelMap.TryGet(diagramNode, out var diagramNodeViewModel))
                 RemoveDiagramNodeRequested?.Invoke(diagramNodeViewModel);
         }
 
         private void RemoveNode(IDiagramNode diagramNode)
         {
-            var diagramNodeViewModel = GetDiagramNodeViewModel(diagramNode);
+            if (!TryGetDiagramNodeViewModel(diagramNode, out var diagramNodeViewModel))
+                return;
 
             diagramNodeViewModel.SizeChanged -= OnDiagramNodeSizeChanged;
             diagramNodeViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
@@ -186,7 +187,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void RemoveConnector(IDiagramConnector diagramConnector)
         {
-            var diagramConnectorViewModel = GetDiagramConnectorViewModel(diagramConnector);
+            if (!TryGetDiagramConnectorViewModel(diagramConnector, out var diagramConnectorViewModel))
+                return;
 
             MiniButtonPanelViewModel.Unfocus(diagramConnectorViewModel);
             _diagramConnectorToViewModelMap.Remove(diagramConnector);

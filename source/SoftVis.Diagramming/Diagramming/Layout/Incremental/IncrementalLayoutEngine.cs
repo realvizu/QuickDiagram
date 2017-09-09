@@ -11,6 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// A stateful layout calculator that gets diagram shape actions and calculates layout actions.
+    /// Not thread-safe!
     /// </summary>
     /// <remarks>
     /// Layout rules:
@@ -178,7 +179,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             foreach (var layoutPath in RelativeLayout.LayeredLayoutGraph.Edges)
             {
-                var oldRoute = _layoutPathToPreviousRouteMap.Get(layoutPath);
+                _layoutPathToPreviousRouteMap.TryGet(layoutPath, out var oldRoute, valueForMissingKey: null);
                 var newRoute = GetRoutePoints(layoutPath, newVertexCenters);
 
                 if (newRoute.IsDefined && newRoute != oldRoute)
@@ -205,9 +206,8 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         private static Point2D GetVertexCenterOrUndefined(LayoutVertexToPointMap vertexCenters, LayoutVertexBase vertex)
         {
-            return vertexCenters.Contains(vertex)
-                ? vertexCenters.Get(vertex)
-                : Point2D.Undefined;
+            vertexCenters.TryGet(vertex, out var center, valueForMissingKey: Point2D.Undefined);
+            return center;
         }
     }
 }

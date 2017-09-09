@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using System;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -21,8 +22,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public virtual DiagramConnectorViewModel CreateDiagramConnectorViewModel(IDiagramService diagramService, IDiagramConnector diagramConnector)
         {
-            var sourceNode = DiagramShapeUiRepository.GetDiagramNodeViewModel(diagramConnector.Source);
-            var targetNode = DiagramShapeUiRepository.GetDiagramNodeViewModel(diagramConnector.Target);
+            if (!DiagramShapeUiRepository.TryGetDiagramNodeViewModel(diagramConnector.Source, out var sourceNode))
+                throw new InvalidOperationException($"ViewModel not found for node {diagramConnector.Source}");
+
+            if (!DiagramShapeUiRepository.TryGetDiagramNodeViewModel(diagramConnector.Target, out var targetNode))
+                throw new InvalidOperationException($"ViewModel not found for node {diagramConnector.Target}");
+
             return new DiagramConnectorViewModel(ModelService, diagramService, diagramConnector, sourceNode, targetNode);
         }
     }

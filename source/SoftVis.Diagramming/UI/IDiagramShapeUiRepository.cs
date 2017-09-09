@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUiRepository
     {
-        DiagramNodeViewModelBase GetDiagramNodeViewModel(IDiagramNode diagramNode);
-        DiagramConnectorViewModel GetDiagramConnectorViewModel(IDiagramConnector diagramConnector);
+        bool TryGetDiagramNodeViewModel(IDiagramNode diagramNode, out DiagramNodeViewModelBase viewModel);
+        bool TryGetDiagramConnectorViewModel(IDiagramConnector diagramConnector, out DiagramConnectorViewModel viewModel);
     }
 }

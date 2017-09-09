@@ -99,7 +99,9 @@ namespace Codartis.SoftVis.TestHostApp
         private void OnShowModelItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes)
         {
             var diagramNodes = _diagramService.ShowModelNodes(modelNodes);
-            _uiService.FollowDiagramNodes(diagramNodes);
+
+            if (followNewDiagramNodes)
+                _uiService.FollowDiagramNodes(diagramNodes);
         }
 
         private void AddShapes()
