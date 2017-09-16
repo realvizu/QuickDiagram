@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI;
@@ -36,7 +37,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event Action<DiagramNodeViewModelBase> RemoveDiagramNodeRequested;
         public event Action<IDiagramNode> DiagramNodeInvoked;
-        public event Action<IDiagramNode, Size> DiagramNodeSizeChanged;
+        public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
 
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
@@ -97,10 +98,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void PinDecoration() => MiniButtonPanelViewModel.PinDecoration();
         public void UnpinDecoration() => MiniButtonPanelViewModel.UnpinDecoration();
 
-        public bool TryGetDiagramNodeViewModel(IDiagramNode diagramNode, out DiagramNodeViewModelBase viewModel)
+        public bool TryGetDiagramNodeUi(IDiagramNode diagramNode, out IDiagramNodeUi viewModel)
+        {
+            var result = TryGetDiagramNodeViewModel(diagramNode, out var diagramNodeViewModel);
+            viewModel = diagramNodeViewModel;
+            return result;
+        }
+
+        private bool TryGetDiagramNodeViewModel(IDiagramNode diagramNode, out DiagramNodeViewModelBase viewModel) 
             => _diagramNodeToViewModelMap.TryGet(diagramNode, out viewModel);
 
-        public bool TryGetDiagramConnectorViewModel(IDiagramConnector diagramConnector, out DiagramConnectorViewModel viewModel)
+        private bool TryGetDiagramConnectorViewModel(IDiagramConnector diagramConnector, out DiagramConnectorViewModel viewModel)
             => _diagramConnectorToViewModelMap.TryGet(diagramConnector, out viewModel);
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)
@@ -143,7 +151,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramNodeViewModel = _diagramShapeUiFactory.CreateDiagramNodeViewModel(DiagramService, diagramNode);
+            var diagramNodeViewModel = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode);
             DiagramNodeViewModels.Add(diagramNodeViewModel);
 
             diagramNodeViewModel.SizeChanged += OnDiagramNodeSizeChanged;
@@ -156,7 +164,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddConnector(IDiagramConnector diagramConnector)
         {
-            var diagramConnectorViewModel = _diagramShapeUiFactory.CreateDiagramConnectorViewModel(DiagramService, diagramConnector);
+            var diagramConnectorViewModel = (DiagramConnectorViewModel)_diagramShapeUiFactory.CreateDiagramConnectorUi(DiagramService, diagramConnector);
             DiagramConnectorViewModels.Add(diagramConnectorViewModel);
 
             _diagramConnectorToViewModelMap.Set(diagramConnector, diagramConnectorViewModel);
@@ -218,7 +226,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnEntitySelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size newSize)
+        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize)
             => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
     }
 }

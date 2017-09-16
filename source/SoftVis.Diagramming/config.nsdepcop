@@ -60,7 +60,4 @@
     <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
     <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Graphs.*" />
 
-    <!--Temp-->
-    <Allowed From="Codartis.SoftVis.UI" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-
 </NsDepCopConfig>

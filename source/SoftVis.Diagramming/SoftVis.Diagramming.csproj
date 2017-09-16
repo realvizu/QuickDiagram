@@ -171,6 +171,8 @@
     <Compile Include="UI\Wpf\IWpfUiService..cs" />
     <Compile Include="UI\Wpf\RouteExtensions.cs" />
     <Compile Include="UI\IDiagramShapeUiFactory.cs" />
+    <Compile Include="UI\IDiagramNodeUi.cs" />
+    <Compile Include="UI\IDiagramConnectorUi.cs" />
     <Compile Include="UI\Wpf\ViewModel\MiniButtonPanelViewModel.cs" />
     <Compile Include="UI\IDiagramShapeUiRepository.cs" />
     <Compile Include="UI\ShowModelItemsEventHandler.cs" />

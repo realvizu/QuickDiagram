@@ -18,7 +18,10 @@
         }
 
         public bool IsDefined => !IsUndefined;
-        public bool IsUndefined => double.IsNaN(Width) || double.IsNaN(Height);
+
+        public bool IsUndefined => 
+            double.IsNaN(Width) || double.IsNaN(Height) || 
+            double.IsInfinity(Width) || double.IsInfinity(Height);
 
         public static bool Equals(Size2D size1, Size2D size2)
         {

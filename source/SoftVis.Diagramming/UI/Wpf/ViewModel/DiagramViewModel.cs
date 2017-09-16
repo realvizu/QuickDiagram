@@ -7,7 +7,6 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Commands;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -141,10 +140,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.DiagramNodeSizeChanged -= OnDiagramNodeSizeChanged;
         }
 
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size newSize)
+        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize)
         {
-            if (newSize.IsDefined())
-                DiagramNodeSizeChanged?.Invoke(diagramNode, newSize.FromWpf());
+            if (newSize.IsDefined)
+                DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramNodeViewModelBase diagramNodeViewModel)

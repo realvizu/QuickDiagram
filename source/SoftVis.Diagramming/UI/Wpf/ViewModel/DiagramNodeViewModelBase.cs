@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -11,7 +12,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Abstract base class for view models that define the visible properties of a diagram node.
     /// </summary>
-    public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, ICloneable
+    public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, IDiagramNodeUi
     {
         private string _name;
         private Point _center;
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
-        public event Action<IDiagramNode, Size> SizeChanged;
+        public event Action<IDiagramNode, Size2D> SizeChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event Action<IDiagramNode> RemoveRequested;
@@ -104,7 +105,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     OnPropertyChanged();
 
                     // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
-                    SizeChanged?.Invoke(DiagramNode, _size);
+                    SizeChanged?.Invoke(DiagramNode, _size.FromWpf());
                 }
             }
         }

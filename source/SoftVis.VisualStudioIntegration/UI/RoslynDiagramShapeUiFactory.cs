@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 
@@ -17,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             IsDescriptionVisible = isDescriptionVisible;
         }
 
-        public override DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramService diagramService, IDiagramNode diagramNode)
+        public override IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode)
         {
             if (diagramNode is RoslynTypeDiagramNode roslynTypeDiagramNode)
                 return new RoslynTypeDiagramNodeViewModel(ModelService, diagramService, roslynTypeDiagramNode, IsDescriptionVisible);

@@ -1,17 +1,16 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.UI
 {
     /// <summary>
-    /// Creates diagram shape view model instances.
+    /// Creates diagram shape UI instances.
     /// </summary>
     public interface IDiagramShapeUiFactory
     {
         void Initialize(IModelService modelService, IDiagramShapeUiRepository diagramShapeUiRepository);
 
-        DiagramNodeViewModelBase CreateDiagramNodeViewModel(IDiagramService diagramService, IDiagramNode diagramNode);
-        DiagramConnectorViewModel CreateDiagramConnectorViewModel(IDiagramService diagramService, IDiagramConnector diagramConnector);
+        IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode);
+        IDiagramConnectorUi CreateDiagramConnectorUi(IDiagramService diagramService, IDiagramConnector diagramConnector);
     }
 }

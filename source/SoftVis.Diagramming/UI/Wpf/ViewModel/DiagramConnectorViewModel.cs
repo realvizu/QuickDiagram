@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
@@ -11,7 +10,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Defines the visible properties of diagram connectors.
     /// </summary>
-    public sealed class DiagramConnectorViewModel : DiagramShapeViewModelBase, ICloneable, IDisposable
+    public sealed class DiagramConnectorViewModel : DiagramShapeViewModelBase, IDiagramConnectorUi
     {
         // This member cannot be static because it will be bound to UI elements created on different threads.
         private readonly DoubleCollection _dashPattern = new DoubleCollection(new[] { 5d, 5d });
