@@ -37,13 +37,27 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ModelRelationshipId Id => ModelRelationship.Id;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
 
-        public IDiagramConnector WithSource(IDiagramNode newSourceNode) => CreateInstance(newSourceNode, Target, Route);
-        public IDiagramConnector WithTarget(IDiagramNode newTargetNode) => CreateInstance(Source, newTargetNode, Route);
+        public IDiagramConnector WithSource(IDiagramNode newSourceNode)
+        {
+            if (Source.Id != newSourceNode.Id)
+                throw new InvalidOperationException($"New source node must have the same id as the old one. OldId={Source.Id}, NewId={newSourceNode.Id}");
+
+            return CreateInstance(newSourceNode, Target, Route);
+        }
+
+        public IDiagramConnector WithTarget(IDiagramNode newTargetNode)
+        {
+            if (Target.Id != newTargetNode.Id)
+                throw new InvalidOperationException($"New target node must have the same id as the old one. OldId={Source.Id}, NewId={newTargetNode.Id}");
+
+            return CreateInstance(Source, newTargetNode, Route);
+        }
+
         public IDiagramConnector WithRoute(Route newRoute) => CreateInstance(Source, Target, newRoute);
 
         public override string ToString() => Source + "---" + ModelRelationship.Stereotype + "-->" + Target;
 
         protected virtual IDiagramConnector CreateInstance(IDiagramNode source, IDiagramNode target, Route route)
-        => new DiagramConnector(ModelRelationship, source, target, ConnectorType, route);
+            => new DiagramConnector(ModelRelationship, source, target, ConnectorType, route);
     }
 }

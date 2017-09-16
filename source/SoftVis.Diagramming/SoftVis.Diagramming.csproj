@@ -133,9 +133,9 @@
     <Compile Include="Diagramming\Layout\Incremental\DiagramActionDispatcherVisitor.cs" />
     <Compile Include="Diagramming\DiagramEventBase.cs" />
     <Compile Include="Graphs\Concurrent\ConcurrentBidirectionalGraph.cs" />
-    <Compile Include="Graphs\Immutable\IImmutableVertex.cs" />
+    <Compile Include="Graphs\Immutable\IReplaceableImmutableVertex.cs" />
     <Compile Include="Graphs\Immutable\IImmutableBidirectionalGraph.cs" />
-    <Compile Include="Graphs\Immutable\IImmutableEdge.cs" />
+    <Compile Include="Graphs\Immutable\IReplaceableImmutableEdge.cs" />
     <Compile Include="Graphs\Immutable\ReplaceableImmutableBidirectionalGraph.cs" />
     <Compile Include="Graphs\Immutable\IReplaceableImmutableBidirectionalGraph.cs" />
     <Compile Include="Graphs\Concurrent\RemoveVertexResult.cs" />

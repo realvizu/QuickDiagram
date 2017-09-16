@@ -38,8 +38,21 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 && this.ContainsNodeOnGivenEnd(modelNode, directedModelRelationshipType.Direction);
         }
 
-        public IModelRelationship WithSource(IModelNode newSourceNode) => CreateInstance(Id, newSourceNode, Target, Stereotype);
-        public IModelRelationship WithTarget(IModelNode newTargetNode) => CreateInstance(Id, Source, newTargetNode, Stereotype);
+        public IModelRelationship WithSource(IModelNode newSourceNode)
+        {
+            if (Source.Id != newSourceNode.Id)
+                throw new InvalidOperationException($"New source node must have the same id as the old one. OldId={Source.Id}, NewId={newSourceNode.Id}");
+
+            return CreateInstance(Id, newSourceNode, Target, Stereotype);
+        }
+
+        public IModelRelationship WithTarget(IModelNode newTargetNode)
+        {
+            if (Target.Id != newTargetNode.Id)
+                throw new InvalidOperationException($"New target node must have the same id as the old one. OldId={Source.Id}, NewId={newTargetNode.Id}");
+
+            return CreateInstance(Id, Source, newTargetNode, Stereotype);
+        }
 
         protected virtual ModelRelationship CreateInstance(ModelRelationshipId id, IModelNode source, IModelNode target, ModelRelationshipStereotype stereotype) 
             => new ModelRelationship(id, source, target, stereotype);

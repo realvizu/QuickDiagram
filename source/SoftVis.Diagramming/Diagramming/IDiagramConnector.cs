@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming
     /// Eg. an inheritance arrow pointing from a derived class shape to its base class shape.
     /// Immutable.
     /// </summary>
-    public interface IDiagramConnector : IDiagramShape, IImmutableEdge<IDiagramNode, IDiagramConnector, ModelRelationshipId>
+    public interface IDiagramConnector : IDiagramShape, IReplaceableImmutableEdge<IDiagramNode, ModelRelationshipId, IDiagramConnector>
     {
         IModelRelationship ModelRelationship { get; }
 

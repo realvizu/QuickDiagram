@@ -12,9 +12,9 @@ namespace Codartis.SoftVis.Graphs.Immutable
     public class ReplaceableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>
         : IBidirectionalGraph<TVertex, TEdge>,
         IReplaceableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>
-        where TVertex : IImmutableVertex<TVertexId>
+        where TVertex : IReplaceableImmutableVertex<TVertexId>
         where TVertexId : IEquatable<TVertexId>, IComparable<TVertexId>
-        where TEdge : IImmutableEdge<TVertex, TEdge, TEdgeId>
+        where TEdge : IReplaceableImmutableEdge<TVertex, TEdgeId, TEdge>
         where TEdgeId : IEquatable<TEdgeId>, IComparable<TEdgeId>
         where TGraph : ReplaceableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>
     {
@@ -39,9 +39,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
             _graph = graph;
         }
 
+        public bool ContainsVertexId(TVertexId id) => _vertices.ContainsKey(id);
+
         public TVertex GetVertexById(TVertexId id)
         {
-            EnsureVertexId(id);
+            EnsureVertexIdExists(id);
             return FromVertexId(id);
         }
 
@@ -57,9 +59,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return false;
         }
 
+        public bool ContainsEdgeId(TEdgeId id) => _edges.ContainsKey(id);
+
         public TEdge GetEdgeById(TEdgeId id)
         {
-            EnsureEdgeId(id);
+            EnsureEdgeIdExists(id);
             return FromEdgeId(id);
         }
 
@@ -75,15 +79,15 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return false;
         }
 
+        public bool PathExistsById(TVertexId sourceId, TVertexId targetId) => _graph.PathExists(sourceId, targetId);
+
         public IEnumerable<TVertex> Vertices => _vertices.Values;
         public bool ContainsVertex(TVertex vertex) => _vertices.ContainsValue(vertex);
-        public bool ContainsVertexId(TVertexId id) => _vertices.ContainsKey(id);
         public int VertexCount => _vertices.Count;
         public bool IsVerticesEmpty => !_vertices.Any();
 
         public IEnumerable<TEdge> Edges => _edges.Values;
         public bool ContainsEdge(TEdge edge) => _edges.ContainsValue(edge);
-        public bool ContainsEdgeId(TEdgeId id) => _edges.ContainsKey(id);
         public int EdgeCount => _edges.Count;
         public bool IsEdgesEmpty => !_edges.Any();
 
@@ -169,8 +173,6 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return result;
         }
 
-        public bool PathExistsById(TVertexId sourceId, TVertexId targetId) => _graph.PathExists(sourceId, targetId);
-
         public IEnumerable<TVertex> GetConnectedVerticesById(TVertex vertex,
             Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
         {
@@ -210,7 +212,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph RemoveVertex(TVertex vertex)
         {
-            EnsureVertexId(vertex.Id);
+            EnsureVertexIdExists(vertex.Id);
 
             var updatedVertices = _vertices.Remove(vertex.Id);
 
@@ -225,8 +227,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public TGraph AddEdge(TEdge edge)
         {
             EnsureNoEdgeId(edge.Id);
-            EnsureVertexId(edge.Source.Id);
-            EnsureVertexId(edge.Target.Id);
+            EnsureVertexIdExists(edge.Source.Id);
+            EnsureVertexIdExists(edge.Target.Id);
 
             var updatedEdges = _edges.Add(edge.Id,edge);
             var updatedGraph = _graph.AddEdge(ToVertexIdEdge(edge));
@@ -245,7 +247,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph RemoveEdge(TEdge edge)
         {
-            EnsureEdgeId(edge.Id);
+            EnsureEdgeIdExists(edge.Id);
 
             var updatedEdges = _edges.Remove(edge.Id);
             var updatedGraph = _graph.RemoveEdge(ToVertexIdEdge(edge));
@@ -284,7 +286,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph ReplaceVertex(TVertex oldVertex, TVertex newVertex)
         {
-            EnsureVertexId(oldVertex.Id);
+            EnsureVertexIdExists(oldVertex.Id);
             EnsureSameVertexId(oldVertex, newVertex);
 
             var updatedVertices = _vertices.SetItem(oldVertex.Id, newVertex);
@@ -309,10 +311,10 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public TGraph ReplaceEdge(TEdge oldEdge, TEdge newEdge)
         {
-            EnsureEdgeId(oldEdge.Id);
+            EnsureEdgeIdExists(oldEdge.Id);
             EnsureSameEdgeId(oldEdge, newEdge);
-            EnsureVertexId(newEdge.Source.Id);
-            EnsureVertexId(newEdge.Target.Id);
+            EnsureVertexIdExists(newEdge.Source.Id);
+            EnsureVertexIdExists(newEdge.Target.Id);
 
             var updatedEdges = _edges.SetItem(oldEdge.Id, newEdge);
             return CreateInstance(_vertices, updatedEdges, _graph);
@@ -324,7 +326,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
             ImmutableBidirectionalGraph<TVertexId, VertexIdEdge<TVertexId, TEdgeId>> graph)
             => (TGraph)new ReplaceableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>(vertices, edges, graph);
 
-        private void EnsureVertexId(TVertexId id)
+        private void EnsureVertexIdExists(TVertexId id)
         {
             if (!ContainsVertexId(id))
                 throw new InvalidOperationException($"Graph does not contain a vertex with id: {id}");
@@ -332,7 +334,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         private void EnsureVertex(TVertex vertex)
         {
-            EnsureVertexId(vertex.Id);
+            EnsureVertexIdExists(vertex.Id);
             if (!FromVertexId(vertex.Id).Equals(vertex))
                 throw new InvalidOperationException($"Graph contains a different vertex with id: {vertex.Id}");
         }
@@ -349,7 +351,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
                 throw new InvalidOperationException($"Old vertex with id {oldVertex.Id} does not match new vertex with id {newVertex.Id}");
         }
 
-        private void EnsureEdgeId(TEdgeId id)
+        private void EnsureEdgeIdExists(TEdgeId id)
         {
             if (!ContainsEdgeId(id))
                 throw new InvalidOperationException($"Graph does not contain an edge with id: {id}");
@@ -357,7 +359,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         private void EnsureEdge(TEdge edge)
         {
-            EnsureEdgeId(edge.Id);
+            EnsureEdgeIdExists(edge.Id);
             if (!FromEdgeId(edge.Id).Equals(edge))
                 throw new InvalidOperationException($"Graph contains a different edge with id: {edge.Id}");
         }
