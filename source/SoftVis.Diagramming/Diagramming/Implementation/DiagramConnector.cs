@@ -28,10 +28,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Target = target ?? throw new ArgumentNullException(nameof(target));
             ConnectorType = connectorType ?? throw new ArgumentNullException(nameof(connectorType));
-            Route = route ?? throw new ArgumentNullException(nameof(route));
+            Route = route;
         }
 
-        public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined && Route != null;
+        public override bool IsRectDefined => Source.IsRectDefined && Target.IsRectDefined;
         public override Rect2D Rect => Source.Rect.Union(Target.Rect).Union(Route);
 
         public ModelRelationshipId Id => ModelRelationship.Id;

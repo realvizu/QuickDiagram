@@ -179,7 +179,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         {
             foreach (var layoutPath in RelativeLayout.LayeredLayoutGraph.Edges)
             {
-                _layoutPathToPreviousRouteMap.TryGet(layoutPath, out var oldRoute, valueForMissingKey: null);
+                _layoutPathToPreviousRouteMap.TryGet(layoutPath, out var oldRoute, valueForMissingKey: Route.Empty);
                 var newRoute = GetRoutePoints(layoutPath, newVertexCenters);
 
                 if (newRoute.IsDefined && newRoute != oldRoute)
@@ -192,16 +192,14 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var sourceRect = vertexCenters.GetRect(layoutPath.PathSource);
             var targetRect = vertexCenters.GetRect(layoutPath.PathTarget);
 
-            var routePoints = new Route
-            {
+            var routePoints = new Route.Builder
+            { 
                 sourceRect.Center,
                 layoutPath.InterimVertices.Select(vertexCenters.Get),
                 targetRect.Center
-            };
+            }.ToRoute();
 
-            routePoints.AttachToSourceRectAndTargetRect(sourceRect, targetRect);
-
-            return routePoints;
+            return routePoints.AttachToSourceRectAndTargetRect(sourceRect, targetRect);
         }
 
         private static Point2D GetVertexCenterOrUndefined(LayoutVertexToPointMap vertexCenters, LayoutVertexBase vertex)

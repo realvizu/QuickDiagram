@@ -48,16 +48,19 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
                 var source = edge.Source;
                 var target = edge.Target;
 
-                Route interimRoutePoints;
-                _interimRoutePointsOfEdges.TryGetValue(edge, out interimRoutePoints);
+                var secondPoint = target.Center;
+                var penultimatePoint = source.Center;
 
-                var secondPoint = interimRoutePoints?.FirstOrDefault() ?? target.Center;
+                if (_interimRoutePointsOfEdges.TryGetValue(edge, out var interimRoutePoints))
+                {
+                    secondPoint = interimRoutePoints.First();
+                    penultimatePoint = interimRoutePoints.Last();
+                }
+
                 var firstPoint = source.Rect.GetAttachPointToward(secondPoint);
-
-                var penultimatePoint = interimRoutePoints?.LastOrDefault() ?? source.Center;
                 var lastPoint = target.Rect.GetAttachPointToward(penultimatePoint);
 
-                var route = new Route {firstPoint, interimRoutePoints, lastPoint};
+                var route = new Route.Builder {firstPoint, interimRoutePoints, lastPoint}.ToRoute();
                 edgeRoutes.Add(edge, route);
             }
 

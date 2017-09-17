@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Util;
 using MoreLinq;
@@ -9,98 +10,128 @@ namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// A route is a series of points in 2D space.
+    /// Immutable.
     /// </summary>
     /// <remarks>
     /// The route makes sure that all consecutive points are different.
     /// If the same point is added consecutively multiple times then it gets added only once.
     /// </remarks>
-    public class Route : IEnumerable<Point2D>
+    public struct Route : IEnumerable<Point2D>, IEquatable<Route>
     {
         public static readonly Route Empty = new Route();
 
-        private readonly List<Point2D> _routePoints;
+        private readonly ImmutableList<Point2D> _routePoints;
 
         public Route(IEnumerable<Point2D> routePoints = null)
         {
-            _routePoints = new List<Point2D>();
-            Add(routePoints);
+            var normalizedRoutePoints = Normalize(routePoints).ToImmutableList();
+
+            _routePoints = normalizedRoutePoints.Any() 
+                ? normalizedRoutePoints 
+                : null;
         }
 
-        public IEnumerator<Point2D> GetEnumerator()
+        public IEnumerator<Point2D> GetEnumerator() => _routePoints?.GetEnumerator() ?? Enumerable.Empty<Point2D>().GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public bool IsDefined => _routePoints != null && _routePoints.Any();
+
+        public Route AddPoint(Point2D point) => AddPoints(point.ToEnumerable());
+
+        public Route AddPoints(IEnumerable<Point2D> points)
         {
-            return _routePoints.GetEnumerator();
+            return points == null 
+                ? this 
+                : new Route(_routePoints?.Concat(points) ?? points);
         }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(Point2D point)
-        {
-            if (point.IsDefined && IsNewPointInRoute(point))
-                _routePoints.Add(point);
-        }
-
-        public void Add(IEnumerable<Point2D> points)
-        {
-            foreach (var point in points.EmptyIfNull())
-                Add(point);
-        }
-
-        public bool IsDefined => _routePoints.Any();
 
         /// <summary>
         /// Modifies the first and last point of a route to attach to the suppied source and target rect's perimeter.
         /// </summary>
-        /// <param name="sourceRect"></param>
-        /// <param name="targetRect"></param>
-        public void AttachToSourceRectAndTargetRect(Rect2D sourceRect, Rect2D targetRect)
+        public Route AttachToSourceRectAndTargetRect(Rect2D sourceRect, Rect2D targetRect)
         {
-            var routePointCount = _routePoints.Count;
-            if (routePointCount < 2)
+            if (_routePoints == null || _routePoints.Count < 2)
                 throw new InvalidOperationException("AttachToSourceRectAndTargetRect requires a route with at least 2 points.");
 
-            _routePoints[0] = sourceRect.GetAttachPointToward(_routePoints[1]);
-            _routePoints[routePointCount - 1] = targetRect.GetAttachPointToward(_routePoints[routePointCount - 2]);
+            var firstPoint = sourceRect.GetAttachPointToward(_routePoints[1]);
+            var lastPoint = targetRect.GetAttachPointToward(_routePoints[_routePoints.Count - 2]);
+
+            return new Route(firstPoint.Concat(_routePoints.Skip(1).TakeButLast()).Concat(lastPoint));
         }
 
-        private bool IsNewPointInRoute(Point2D point)
+        public bool Equals(Route other)
         {
-            return !_routePoints.Any() || point != _routePoints.Last();
-        }
-
-        protected bool Equals(Route other)
-        {
-            return other != null && _routePoints.SequenceEqual(other._routePoints);
+            return (_routePoints == null && other._routePoints == null) 
+                || (_routePoints != null && other._routePoints != null && _routePoints.SequenceEqual(other._routePoints));
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Route)obj);
+            return obj is Route && Equals((Route)obj);
         }
 
         public override int GetHashCode()
         {
-            return _routePoints.GetHashCode();
+            return (_routePoints != null ? _routePoints.GetHashCode() : 0);
         }
 
         public static bool operator ==(Route left, Route right)
         {
-            return Equals(left, right);
+            return left.Equals(right);
         }
 
         public static bool operator !=(Route left, Route right)
         {
-            return !Equals(left, right);
+            return !left.Equals(right);
         }
 
         public override string ToString()
         {
-            return $"[{_routePoints.ToDelimitedString("->")}]";
+            return $"[{_routePoints?.ToDelimitedString("->")}]";
+        }
+
+        /// <summary>
+        /// Substitutes consecutive same points with just one instance of that point and filters out undefined points.
+        /// </summary>
+        /// <param name="routePoints">A collection of points.</param>
+        /// <returns>Normalized collection of points.</returns>
+        private static IEnumerable<Point2D> Normalize(IEnumerable<Point2D> routePoints)
+        {
+            if (routePoints == null)
+                yield break;
+
+            Point2D? previousPoint = null;
+            foreach (var routePoint in routePoints.Where(i => i.IsDefined))
+            {
+                if (routePoint == previousPoint)
+                    continue;
+
+                yield return routePoint;
+                previousPoint = routePoint;
+            }
+        }
+
+        public class Builder : IEnumerable<Point2D>
+        {
+            private readonly List<Point2D> _builderPoints;
+
+            public Builder(List<Point2D> builderPoints = null)
+            {
+                _builderPoints = builderPoints ?? new List<Point2D>();
+            }
+
+            public IEnumerator<Point2D> GetEnumerator() => _builderPoints.GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            public void Add(Point2D point) => _builderPoints.Add(point);
+            public void Add(IEnumerable<Point2D> points)
+            {
+                foreach (var point in points)
+                    Add(point);
+            }
+
+            public Route ToRoute() => new Route(_builderPoints);
         }
     }
 }

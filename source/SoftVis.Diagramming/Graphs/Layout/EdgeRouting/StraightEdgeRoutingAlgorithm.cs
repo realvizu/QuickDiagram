@@ -38,11 +38,11 @@ namespace Codartis.SoftVis.Graphs.Layout.EdgeRouting
             var sourceRect = edge.Source.Rect;
             var targetRect = edge.Target.Rect;
 
-            return new Route
+            return new Route.Builder
             {
                 sourceRect.GetAttachPointToward(targetRect.Center),
                 targetRect.GetAttachPointToward(sourceRect.Center)
-            };
+            }.ToRoute();
         }
     }
 }
