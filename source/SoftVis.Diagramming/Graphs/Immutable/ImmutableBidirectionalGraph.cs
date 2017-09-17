@@ -55,56 +55,26 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges) => _graph.TryGetEdges(source, target, out edges);
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge) => _graph.TryGetEdge(source, target, out edge);
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> Clear()
-            => CloneAndMutate(i => i.Clear());
-
         public ImmutableBidirectionalGraph<TVertex, TEdge> AddVertex(TVertex v)
             => CloneAndMutate(i => i.AddVertex(v));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> AddVertexRange(IEnumerable<TVertex> vertices)
-            => CloneAndMutate(i => i.AddVertexRange(vertices));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveOutEdgeIf(TVertex v, EdgePredicate<TVertex, TEdge> predicate)
-            => CloneAndMutate(i => i.RemoveOutEdgeIf(v, predicate.Invoke));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> ClearOutEdges(TVertex v)
-            => CloneAndMutate(i => i.ClearOutEdges(v));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> TrimEdgeExcess()
-            => CloneAndMutate(i => i.TrimEdgeExcess());
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertex(TVertex v)
-            => CloneAndMutate(i => i.RemoveVertex(v));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertexIf(VertexPredicate<TVertex> pred)
-            => CloneAndMutate(i => i.RemoveVertexIf(e => pred.Invoke((e))));
 
         public ImmutableBidirectionalGraph<TVertex, TEdge> AddEdge(TEdge edge)
             => CloneAndMutate(i => i.AddEdge(edge));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> AddEdgeRange(IEnumerable<TEdge> edges)
-            => CloneAndMutate(i => i.AddEdgeRange(edges));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertex(TVertex v)
+            => CloneAndMutate(i => i.RemoveVertex(v));
+
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertexIf(VertexPredicate<TVertex> p)
+            => CloneAndMutate(i => i.RemoveVertexIf(p));
 
         public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdge(TEdge edge)
             => CloneAndMutate(i => i.RemoveEdge(edge));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
-            => CloneAndMutate(i => i.RemoveEdgeIf(predicate.Invoke));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdgeIf(EdgePredicate<TVertex, TEdge> p)
+            => CloneAndMutate(i => i.RemoveEdgeIf(p));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> AddVerticesAndEdge(TEdge edge)
-            => CloneAndMutate(i => i.AddVerticesAndEdge(edge));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
-            => CloneAndMutate(i => i.AddVerticesAndEdgeRange(edges));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveInEdgeIf(TVertex v, EdgePredicate<TVertex, TEdge> edgePredicate)
-            => CloneAndMutate(i => i.RemoveInEdgeIf(v, edgePredicate.Invoke));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> ClearInEdges(TVertex v)
-            => CloneAndMutate(i => i.ClearInEdges(v));
-
-        public ImmutableBidirectionalGraph<TVertex, TEdge> ClearEdges(TVertex v)
-            => CloneAndMutate(i => i.ClearEdges(v));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> Clear()
+            => CloneAndMutate(i => i.Clear());
 
         protected virtual ImmutableBidirectionalGraph<TVertex, TEdge> CreateInstance(BidirectionalGraph<TVertex, TEdge> graph)
             => new ImmutableBidirectionalGraph<TVertex, TEdge>(graph);

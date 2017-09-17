@@ -27,39 +27,43 @@ namespace Codartis.SoftVis.Modeling.Implementation
         // TODO: implement node hierarchy
         public IEnumerable<IModelNode> RootNodes => Nodes;
 
-        public IModelNode GetNodeById(ModelNodeId nodeId) => Graph.GetVertexById(nodeId);
-        public bool TryGetNodeById(ModelNodeId nodeId, out IModelNode node) => Graph.TryGetVertexById(nodeId, out node);
+        public IModelNode GetNode(ModelNodeId nodeId) => Graph.GetVertex(nodeId);
+        public bool TryGetNode(ModelNodeId nodeId, out IModelNode node) => Graph.TryGetVertex(nodeId, out node);
+
+        public IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => Graph.GetEdge(relationshipId);
+        public bool TryGetRelationship(ModelRelationshipId relationshipId, out IModelRelationship relationship) 
+            => Graph.TryGetEdge(relationshipId, out relationship);
 
         // TODO: implement node hierarchy
-        public IEnumerable<IModelNode> GetChildNodes(IModelNode node) => throw new NotImplementedException();
+        public IEnumerable<IModelNode> GetChildNodes(ModelNodeId nodeId) => throw new NotImplementedException();
 
-        public IEnumerable<IModelNode> GetRelatedNodes(IModelNode node,
+        public IEnumerable<IModelNode> GetRelatedNodes(ModelNodeId nodeId,
             DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false)
         {
-            return Graph.GetConnectedVerticesById(node,
-                (otherNode, relationship) => IsNodeRelatedById(relationship, otherNode, directedModelRelationshipType),
+            return Graph.GetConnectedVertices(nodeId,
+                (otherNode, relationship) => IsNodeRelated(relationship, otherNode, directedModelRelationshipType),
                 recursive);
         }
 
-        public IEnumerable<IModelRelationship> GetRelationships(IModelNode node) => Graph.GetAllEdges(node);
+        public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => Graph.GetAllEdges(nodeId);
 
         public IModel AddNode(IModelNode node) => CreateInstance(Graph.AddVertex(node));
-        public IModel RemoveNode(IModelNode node) => CreateInstance(Graph.RemoveVertex(node));
-        public IModel ReplaceNode(IModelNode oldNode, IModelNode newNode) => CreateInstance(Graph.ReplaceVertex(oldNode, newNode));
+        public IModel RemoveNode(ModelNodeId nodeId) => CreateInstance(Graph.RemoveVertex(nodeId));
+        public IModel ReplaceNode(IModelNode newNode) => CreateInstance(Graph.UpdateVertex(newNode));
         public IModel AddRelationship(IModelRelationship relationship) => CreateInstance(Graph.AddEdge(relationship));
-        public IModel RemoveRelationship(IModelRelationship relationship) => CreateInstance(Graph.RemoveEdge(relationship));
+        public IModel RemoveRelationship(ModelRelationshipId relationshipId) => CreateInstance(Graph.RemoveEdge(relationshipId));
         public IModel Clear() => CreateInstance(new ModelGraph());
 
         protected virtual IModel CreateInstance(ModelGraph graph) => new Model(graph);
 
-        private static bool IsNodeRelatedById(IModelRelationship relationship, IModelNode modelNode,
-        DirectedModelRelationshipType directedModelRelationshipType)
+        private static bool IsNodeRelated(IModelRelationship relationship, IModelNode modelNode,
+            DirectedModelRelationshipType directedModelRelationshipType)
         {
             return relationship.Stereotype == directedModelRelationshipType.Stereotype
-                   && ContainsNodeOnGivenEndById(relationship, modelNode, directedModelRelationshipType.Direction);
+                   && ContainsNodeOnGivenEnd(relationship, modelNode, directedModelRelationshipType.Direction);
         }
 
-        private static bool ContainsNodeOnGivenEndById(IModelRelationship relationship, IModelNode modelNode,
+        private static bool ContainsNodeOnGivenEnd(IModelRelationship relationship, IModelNode modelNode,
             EdgeDirection direction)
         {
             switch (direction)

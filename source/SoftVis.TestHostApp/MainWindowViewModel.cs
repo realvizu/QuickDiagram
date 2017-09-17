@@ -133,7 +133,7 @@ namespace Codartis.SoftVis.TestHostApp
             var modelNodes = model.ItemGroups[_nextToRemoveModelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
-                _diagramService.HideModelNode(modelNode);
+                _diagramService.HideModelNode(modelNode.Id);
 
             _nextToRemoveModelItemGroupIndex++;
 

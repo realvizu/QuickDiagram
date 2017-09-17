@@ -25,18 +25,18 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public void AddNode(IModelNode node, IModelNode parentNode = null) => ModelStore.AddNode(node, parentNode);
 
-        public void RemoveNode(IModelNode node)
+        public void RemoveNode(ModelNodeId nodeId)
         {
-            var relationshipsToRemove = Model.GetRelationships(node).ToArray();
+            var relationshipsToRemove = Model.GetRelationships(nodeId).ToArray();
             foreach (var relationship in relationshipsToRemove)
-                RemoveRelationship(relationship);
+                RemoveRelationship(relationship.Id);
             
-            ModelStore.RemoveNode(node);
+            ModelStore.RemoveNode(nodeId);
         }
 
-        public void UpdateNode(IModelNode oldNode, IModelNode newNode) => ModelStore.UpdateNode(oldNode, newNode);
+        public void UpdateNode(IModelNode newNode) => ModelStore.UpdateNode(newNode);
         public void AddRelationship(IModelRelationship relationship) => ModelStore.AddRelationship(relationship);
-        public void RemoveRelationship(IModelRelationship relationship) => ModelStore.RemoveRelationship(relationship);
+        public void RemoveRelationship(ModelRelationshipId relationshipId) => ModelStore.RemoveRelationship(relationshipId);
         public void ClearModel() => ModelStore.ClearModel();
     }
 }

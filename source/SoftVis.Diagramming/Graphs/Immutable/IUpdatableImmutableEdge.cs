@@ -4,22 +4,25 @@ using QuickGraph;
 namespace Codartis.SoftVis.Graphs.Immutable
 {
     /// <summary>
-    /// An immutable edge with a unique identifier that can be used to correlate different versions of the same edge.
+    /// An immutable edge with a unique identifier that can be used to correlate updated versions of the same edge.
     /// </summary>
     /// <typeparam name="TVertex">The type of the vertices that the edge connects.</typeparam>
+    /// <typeparam name="TVertexId">The type of the vertex id. Must be equatable.</typeparam>
     /// <typeparam name="TEdgeId">The type of the edge id. Must be equatable.</typeparam>
     /// <typeparam name="TEdge">The implementing type. It will be returned by mutators.</typeparam>
-    public interface IReplaceableImmutableEdge<TVertex, out TEdgeId, out TEdge> : IEdge<TVertex>
+    public interface IUpdatableImmutableEdge<TVertex, TVertexId, out TEdge, out TEdgeId> : IEdge<TVertex>
+        where TVertex : IUpdatableImmutableVertex<TVertexId>
+        where TVertexId : IEquatable<TVertexId>
+        where TEdge : IUpdatableImmutableEdge<TVertex, TVertexId, TEdge, TEdgeId>
         where TEdgeId : IEquatable<TEdgeId>
-        where TEdge : IReplaceableImmutableEdge<TVertex, TEdgeId, TEdge>
     {
         /// <summary>
-        /// Identifies the edge through mutated versions. Must be kept by mutators.
+        /// Identifies the edge through updated versions. Must be kept by mutators.
         /// </summary>
         TEdgeId Id { get; }
 
         /// <summary>
-        /// Creates a new version of the edge by replacing the source vertex with a new version.
+        /// Creates a new version of the edge by replacing the source vertex with an updated version.
         /// </summary>
         /// <param name="vertex">The new vertex.</param>
         /// <returns>A new version of the edge with the source vertex replaced.</returns>

@@ -40,8 +40,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         {
             var model = ModelService.Model;
 
-            var baseTypes = model.GetRelatedNodes(modelNode, DirectedRelationshipTypes.BaseType, recursive: true);
-            var subtypes = model.GetRelatedNodes(modelNode, DirectedRelationshipTypes.Subtype, recursive: true);
+            var baseTypes = model.GetRelatedNodes(modelNode.Id, DirectedRelationshipTypes.BaseType, recursive: true);
+            var subtypes = model.GetRelatedNodes(modelNode.Id, DirectedRelationshipTypes.Subtype, recursive: true);
             var modelNodes = new[] { modelNode }.Union(baseTypes).Union(subtypes);
 
             return ShowModelNodes(modelNodes, cancellationToken, progress);

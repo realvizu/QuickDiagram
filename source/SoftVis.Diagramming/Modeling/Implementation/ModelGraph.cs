@@ -4,10 +4,10 @@ using Codartis.SoftVis.Graphs.Immutable;
 namespace Codartis.SoftVis.Modeling.Implementation
 {
     /// <summary>
-    /// An immutable graph that represents model nodes and relationships.
+    /// An immutable graph that represents model nodes and relationships. Mutators return a new graph.
     /// </summary>
     public sealed class ModelGraph 
-        : ReplaceableImmutableBidirectionalGraph<IModelNode, ModelNodeId, IModelRelationship, ModelRelationshipId, ModelGraph>
+        : UpdatableImmutableBidirectionalGraph<IModelNode, ModelNodeId, IModelRelationship, ModelRelationshipId, ModelGraph>
     {
         public ModelGraph() 
             : base(allowParallelEdges: true)

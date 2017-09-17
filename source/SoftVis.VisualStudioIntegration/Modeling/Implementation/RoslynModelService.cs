@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             foreach (var modelNodeId in visibleModelNodeIds)
             {
-                if (Model.TryGetNodeById(modelNodeId, out var modelNode))
+                if (Model.TryGetNode(modelNodeId, out var modelNode))
                     ExtendModelWithRelatedNodes(modelNode, null, cancellationToken, progress, recursive: false);
             }
         }
@@ -89,11 +89,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 var newVersionOfSymbol = FindSymbolInCompilations(namedTypeSymbol, compilations, cancellationToken);
 
                 if (newVersionOfSymbol == null)
-                    RemoveNode(roslynTypeNode);
+                    RemoveNode(roslynTypeNode.Id);
                 else
                 {
                     var updatedNode = roslynTypeNode.UpdateRoslynSymbol(newVersionOfSymbol);
-                    UpdateNode(roslynTypeNode, updatedNode);
+                    UpdateNode(updatedNode);
                 }
 
                 progress?.Report(1);
@@ -135,7 +135,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 cancellationToken.ThrowIfCancellationRequested();
 
                 if (allSymbolRelations.All(i => !i.Matches(relationship)))
-                    RemoveRelationship(relationship);
+                    RemoveRelationship(relationship.Id);
 
                 progress?.Report(1);
             }

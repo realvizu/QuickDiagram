@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
@@ -18,21 +17,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
         where TGraph : IImmutableBidirectionalGraph<TVertex, TEdge, TGraph>
     {
         TGraph AddVertex(TVertex vertex);
-        TGraph AddVertexRange(IEnumerable<TVertex> vertices);
         TGraph AddEdge(TEdge edge);
-        TGraph AddEdgeRange(IEnumerable<TEdge> edges);
-        TGraph AddVerticesAndEdge(TEdge edge);
-        TGraph AddVerticesAndEdgeRange(IEnumerable<TEdge> edges);
         TGraph RemoveVertex(TVertex vertex);
         TGraph RemoveVertexIf(VertexPredicate<TVertex> vertexPredicate);
         TGraph RemoveEdge(TEdge edge);
         TGraph RemoveEdgeIf(EdgePredicate<TVertex, TEdge> edgePredicate);
-        TGraph RemoveInEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> edgePredicate);
-        TGraph RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> edgePredicate);
-        TGraph TrimEdgeExcess();
-        TGraph ClearEdges(TVertex vertex);
-        TGraph ClearInEdges(TVertex vertex);
-        TGraph ClearOutEdges(TVertex vertex);
         TGraph Clear();
     }
 }

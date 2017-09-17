@@ -14,15 +14,15 @@ namespace Codartis.SoftVis.Service.Plugins
 
         protected void ShowModelRelationshipsIfBothEndsAreVisible(IModelNode modelNode, IModel model, IDiagram diagram)
         {
-            foreach (var modelRelationship in model.GetRelationships(modelNode))
+            foreach (var modelRelationship in model.GetRelationships(modelNode.Id))
                 ShowModelRelationshipIfBothEndsAreVisible(modelRelationship, diagram);
         }
 
         protected void ShowModelRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship, IDiagram diagram)
         {
             var shouldShowModelRelationship =
-                diagram.NodeExistsById(modelRelationship.Source.Id) &&
-                diagram.NodeExistsById(modelRelationship.Target.Id) &&
+                diagram.NodeExists(modelRelationship.Source.Id) &&
+                diagram.NodeExists(modelRelationship.Target.Id) &&
                 !DiagramConnectorWouldBeRedundant(modelRelationship, diagram);
 
             if (shouldShowModelRelationship)
@@ -31,16 +31,16 @@ namespace Codartis.SoftVis.Service.Plugins
 
         protected static bool DiagramConnectorWouldBeRedundant(IModelRelationship modelRelationship, IDiagram diagram)
         {
-            if (diagram.TryGetNodeById(modelRelationship.Source.Id, out IDiagramNode sourceNode) &&
-                diagram.TryGetNodeById(modelRelationship.Target.Id, out IDiagramNode targetNode))
-                return diagram.PathExistsById(sourceNode.Id, targetNode.Id);
+            if (diagram.TryGetNode(modelRelationship.Source.Id, out IDiagramNode sourceNode) &&
+                diagram.TryGetNode(modelRelationship.Target.Id, out IDiagramNode targetNode))
+                return diagram.PathExists(sourceNode.Id, targetNode.Id);
 
             return false;
         }
 
         protected void AddDiagramConnectorIfNotExists(IModelRelationship modelRelationship, IDiagram diagram)
         {
-            if (diagram.ConnectorExistsById(modelRelationship.Id))
+            if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
 
             var newConnector = DiagramShapeFactory.CreateDiagramConnector(DiagramService, modelRelationship);

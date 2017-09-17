@@ -21,23 +21,23 @@ namespace Codartis.SoftVis.Diagramming
         IEnumerable<IDiagramNode> Nodes { get; }
         IEnumerable<IDiagramConnector> Connectors { get; }
 
-        bool NodeExistsById(ModelNodeId modelNodeId);
-        bool ConnectorExistsById(ModelRelationshipId modelRelationshipId);
-        bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
-        bool IsConnectorRedundantById(ModelRelationshipId modelRelationshipId);
+        bool NodeExists(ModelNodeId modelNodeId);
+        bool ConnectorExists(ModelRelationshipId modelRelationshipId);
+        bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
+        bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId);
 
-        IDiagramNode GetNodeById(ModelNodeId modelNodeId);
-        bool TryGetNodeById(ModelNodeId modelNodeId, out IDiagramNode node);
-        IDiagramConnector GetConnectorById(ModelRelationshipId modelRelationshipId);
-        bool TryGetConnectorById(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector);
-        IEnumerable<IDiagramConnector> GetConnectorsByNodeId(ModelNodeId id);
+        IDiagramNode GetNode(ModelNodeId modelNodeId);
+        bool TryGetNode(ModelNodeId modelNodeId, out IDiagramNode node);
+        IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId);
+        bool TryGetConnector(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector);
+        IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
 
         IDiagram AddNode(IDiagramNode node);
-        IDiagram RemoveNode(IDiagramNode node);
-        IDiagram ReplaceNode(IDiagramNode oldNode, IDiagramNode newNode);
+        IDiagram RemoveNode(ModelNodeId nodeId);
+        IDiagram UpdateNode(IDiagramNode newNode);
         IDiagram AddConnector(IDiagramConnector connector);
-        IDiagram RemoveConnector(IDiagramConnector connector);
-        IDiagram ReplaceConnector(IDiagramConnector oldConnector, IDiagramConnector newConnector);
+        IDiagram RemoveConnector(ModelRelationshipId connectorId);
+        IDiagram UpdateConnector(IDiagramConnector newConnector);
         IDiagram Clear();
     }
 }

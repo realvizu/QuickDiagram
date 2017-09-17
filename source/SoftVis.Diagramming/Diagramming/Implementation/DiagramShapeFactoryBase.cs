@@ -21,8 +21,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (modelRelationship == null)
                 throw new ArgumentNullException(nameof(modelRelationship));
 
-            var sourceNode = diagramShapeResolver.GetDiagramNodeById(modelRelationship.Source.Id);
-            var targetNode = diagramShapeResolver.GetDiagramNodeById(modelRelationship.Target.Id);
+            var sourceNode = diagramShapeResolver.GetDiagramNode(modelRelationship.Source.Id);
+            var targetNode = diagramShapeResolver.GetDiagramNode(modelRelationship.Target.Id);
             var connectorType = diagramShapeResolver.GetConnectorType(modelRelationship.Stereotype);
             return new DiagramConnector(modelRelationship, sourceNode, targetNode, connectorType);
         }

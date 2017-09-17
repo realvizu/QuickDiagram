@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Modeling
     /// Represents a named item in the model, e.g. a package, a type, a member.
     /// Immutable.
     /// </summary>
-    public interface IModelNode : IReplaceableImmutableVertex<ModelNodeId>
+    public interface IModelNode : IUpdatableImmutableVertex<ModelNodeId>
     {
         string Name { get; }
 

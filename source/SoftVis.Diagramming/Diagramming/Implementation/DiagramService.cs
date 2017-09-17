@@ -32,23 +32,23 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public void AddNode(IDiagramNode node) => DiagramStore.AddNode(node);
-        public void RemoveNode(IDiagramNode node) => DiagramStore.RemoveNode(node);
+        public void RemoveNode(ModelNodeId nodeId) => DiagramStore.RemoveNode(nodeId);
         public void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode) => DiagramStore.UpdateDiagramNodeModelNode(diagramNode, newModelNode);
         public void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize) => DiagramStore.UpdateDiagramNodeSize(diagramNode, newSize);
         public void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter) => DiagramStore.UpdateDiagramNodeCenter(diagramNode, newCenter);
         public void AddConnector(IDiagramConnector connector) => DiagramStore.AddConnector(connector);
-        public void RemoveConnector(IDiagramConnector connector) => DiagramStore.RemoveConnector(connector);
+        public void RemoveConnector(ModelRelationshipId connectorId) => DiagramStore.RemoveConnector(connectorId);
         public void UpdateDiagramConnectorRoute(IDiagramConnector connector, Route newRoute) => DiagramStore.UpdateDiagramConnectorRoute(connector, newRoute);
         public void ClearDiagram() => DiagramStore.ClearDiagram();
 
         public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
 
-        public IDiagramNode GetDiagramNodeById(ModelNodeId id) => Diagram.GetNodeById(id);
+        public IDiagramNode GetDiagramNode(ModelNodeId id) => Diagram.GetNode(id);
 
         public IDiagramNode ShowModelNode(IModelNode modelNode)
         {
             var diagram = DiagramStore.Diagram;
-            if (diagram.TryGetNodeById(modelNode.Id, out var existingDiagramNode))
+            if (diagram.TryGetNode(modelNode.Id, out var existingDiagramNode))
                 return existingDiagramNode;
 
             var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode);
@@ -74,34 +74,34 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return diagramNodes;
         }
 
-        public void HideModelNode(IModelNode modelNode)
+        public void HideModelNode(ModelNodeId modelNodeId)
         {
             var diagram = DiagramStore.Diagram;
-            if (diagram.TryGetNodeById(modelNode.Id, out IDiagramNode diagramNode))
+            if (diagram.TryGetNode(modelNodeId, out IDiagramNode diagramNode))
             {
-                var diagramConnectors = diagram.GetConnectorsByNodeId(modelNode.Id);
+                var diagramConnectors = diagram.GetConnectorsByNode(modelNodeId);
                 foreach (var diagramConnector in diagramConnectors)
-                    DiagramStore.RemoveConnector(diagramConnector);
+                    DiagramStore.RemoveConnector(diagramConnector.Id);
 
-                DiagramStore.RemoveNode(diagramNode);
+                DiagramStore.RemoveNode(diagramNode.Id);
             }
         }
 
         public void ShowModelRelationship(IModelRelationship modelRelationship)
         {
             var diagram = DiagramStore.Diagram;
-            if (diagram.ConnectorExistsById(modelRelationship.Id))
+            if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
 
             var diagramConnector = DiagramShapeFactory.CreateDiagramConnector(this, modelRelationship);
             DiagramStore.AddConnector(diagramConnector);
         }
 
-        public void HideModelRelationship(IModelRelationship modelRelationship)
+        public void HideModelRelationship(ModelRelationshipId modelRelationshipId)
         {
             var diagram = DiagramStore.Diagram;
-            if (diagram.TryGetConnectorById(modelRelationship.Id, out IDiagramConnector diagramConnector))
-                DiagramStore.RemoveConnector(diagramConnector);
+            if (diagram.TryGetConnector(modelRelationshipId, out IDiagramConnector diagramConnector))
+                DiagramStore.RemoveConnector(diagramConnector.Id);
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
@@ -111,7 +111,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var nodeRects = new List<Rect2D>();
             foreach (var modelNodeId in modelNodeIds)
             {
-                if (diagram.TryGetNodeById(modelNodeId, out var diagramNode))
+                if (diagram.TryGetNode(modelNodeId, out var diagramNode))
                     nodeRects.Add(diagramNode.Rect);
             }
 

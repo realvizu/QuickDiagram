@@ -12,14 +12,14 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagramService : IDiagramMutator, IDiagramShapeResolver
     {
         IDiagramNode ShowModelNode(IModelNode modelNode);
-        void HideModelNode(IModelNode modelNode);
+        void HideModelNode(ModelNodeId modelNodeId);
 
         IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
             CancellationToken cancellationToken = default(CancellationToken),
             IIncrementalProgress progress = null);
 
         void ShowModelRelationship(IModelRelationship modelRelationship);
-        void HideModelRelationship(IModelRelationship modelRelationship);
+        void HideModelRelationship(ModelRelationshipId modelRelationshipId);
 
         Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds);
     }

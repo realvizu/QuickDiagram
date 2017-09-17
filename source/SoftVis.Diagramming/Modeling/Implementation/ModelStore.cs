@@ -34,20 +34,22 @@ namespace Codartis.SoftVis.Modeling.Implementation
             }
         }
 
-        public void RemoveNode(IModelNode node)
+        public void RemoveNode(ModelNodeId nodeId)
         {
             lock (ModelUpdateLockObject)
             {
-                Model = Model.RemoveNode(node);
-                ModelChanged?.Invoke(new ModelNodeRemovedEvent(Model, node));
+                var oldNode = Model.GetNode(nodeId);
+                Model = Model.RemoveNode(nodeId);
+                ModelChanged?.Invoke(new ModelNodeRemovedEvent(Model, oldNode));
             }
         }
 
-        public void UpdateNode(IModelNode oldNode, IModelNode newNode)
+        public void UpdateNode(IModelNode newNode)
         {
             lock (ModelUpdateLockObject)
             {
-                Model = Model.ReplaceNode(oldNode, newNode);
+                var oldNode = Model.GetNode(newNode.Id);
+                Model = Model.ReplaceNode(newNode);
                 ModelChanged?.Invoke(new ModelNodeUpdatedEvent(Model, oldNode, newNode));
             }
         }
@@ -61,12 +63,13 @@ namespace Codartis.SoftVis.Modeling.Implementation
             }
         }
 
-        public void RemoveRelationship(IModelRelationship relationship)
+        public void RemoveRelationship(ModelRelationshipId relationshipId)
         {
             lock (ModelUpdateLockObject)
             {
-                Model = Model.RemoveRelationship(relationship);
-                ModelChanged?.Invoke(new ModelRelationshipRemovedEvent(Model, relationship));
+                var oldRelationship = Model.GetRelationship(relationshipId);
+                Model = Model.RemoveRelationship(relationshipId);
+                ModelChanged?.Invoke(new ModelRelationshipRemovedEvent(Model, oldRelationship));
             }
         }
 

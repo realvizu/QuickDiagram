@@ -103,7 +103,7 @@ namespace Codartis.SoftVis.Service
 
         private void OnRemoveDiagramNodeRequested(DiagramId diagramId, IDiagramNode diagramNode)
         {
-            GetDiagramService(diagramId).HideModelNode(diagramNode.ModelNode);
+            GetDiagramService(diagramId).HideModelNode(diagramNode.Id);
         }
     }
 }

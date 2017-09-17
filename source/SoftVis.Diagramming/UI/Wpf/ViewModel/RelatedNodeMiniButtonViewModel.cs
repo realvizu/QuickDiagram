@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private IEnumerable<IModelNode> GetUndisplayedRelatedModelNodes(IModelNode modelNode)
         {
-            return _lastModel.GetRelatedNodes(modelNode, _directedModelRelationshipType)
+            return _lastModel.GetRelatedNodes(modelNode.Id, _directedModelRelationshipType)
                 .Except(_lastDiagram.Nodes.Select(j => j.ModelNode));
         }
     }

@@ -34,14 +34,14 @@ namespace Codartis.SoftVis.Service.Plugins
             {
                 case ModelNodeUpdatedEvent modelNodeUpdatedEvent:
                     var newModelNode = modelNodeUpdatedEvent.NewNode;
-                    if (diagram.TryGetNodeById(newModelNode.Id, out var diagramNodeToUpdate))
+                    if (diagram.TryGetNode(newModelNode.Id, out var diagramNodeToUpdate))
                         DiagramService.UpdateDiagramNodeModelNode(diagramNodeToUpdate, newModelNode);
                     break;
 
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
                     var removedModelNode = modelNodeRemovedEvent.RemovedNode;
-                    if (diagram.TryGetNodeById(removedModelNode.Id, out var diagramNodeToRemove))
-                        DiagramService.RemoveNode(diagramNodeToRemove);
+                    if (diagram.TryGetNode(removedModelNode.Id, out var diagramNodeToRemove))
+                        DiagramService.RemoveNode(diagramNodeToRemove.Id);
                     break;
 
                 case ModelRelationshipAddedEvent modelRelationshipAddedEvent:
@@ -51,8 +51,8 @@ namespace Codartis.SoftVis.Service.Plugins
 
                 case ModelRelationshipRemovedEvent modelRelationshipRemovedEvent:
                     var modelRelationship = modelRelationshipRemovedEvent.RemovedRelationship;
-                    if (diagram.TryGetConnectorById(modelRelationship.Id, out var diagramConnector))
-                        DiagramService.RemoveConnector(diagramConnector);
+                    if (diagram.TryGetConnector(modelRelationship.Id, out var diagramConnector))
+                        DiagramService.RemoveConnector(diagramConnector.Id);
                     break;
 
                 case ModelClearedEvent _:

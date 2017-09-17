@@ -9,6 +9,6 @@ namespace Codartis.SoftVis.Diagramming
     {
         ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
 
-        IDiagramNode GetDiagramNodeById(ModelNodeId id);
+        IDiagramNode GetDiagramNode(ModelNodeId id);
     }
 }

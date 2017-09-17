@@ -29,35 +29,34 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IEnumerable<IDiagramNode> Nodes => _graph.Vertices;
         public IEnumerable<IDiagramConnector> Connectors => _graph.Edges;
 
-        public bool NodeExistsById(ModelNodeId modelNodeId) => _graph.ContainsVertexId(modelNodeId);
-        public bool ConnectorExistsById(ModelRelationshipId modelRelationshipId) => _graph.ContainsEdgeId(modelRelationshipId);
-        public bool PathExistsById(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId)
-            => NodeExistsById(sourceModelNodeId)
-            && NodeExistsById(targetModelNodeId)
-            && _graph.PathExistsById(sourceModelNodeId, targetModelNodeId);
+        public bool NodeExists(ModelNodeId modelNodeId) => _graph.ContainsVertex(modelNodeId);
+        public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => _graph.ContainsEdge(modelRelationshipId);
+        public bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId)
+            => NodeExists(sourceModelNodeId)
+            && NodeExists(targetModelNodeId)
+            && _graph.PathExists(sourceModelNodeId, targetModelNodeId);
 
-        public bool IsConnectorRedundantById(ModelRelationshipId modelRelationshipId) 
-            => TryGetConnectorById(modelRelationshipId, out var connector) 
+        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId) 
+            => TryGetConnector(modelRelationshipId, out var connector) 
             && _graph.IsEdgeRedundant(connector);
 
-        public IDiagramNode GetNodeById(ModelNodeId modelNodeId) => _graph.GetVertexById(modelNodeId);
-        public bool TryGetNodeById(ModelNodeId modelNodeId, out IDiagramNode node)
-            => _graph.TryGetVertexById(modelNodeId, out node);
+        public IDiagramNode GetNode(ModelNodeId modelNodeId) => _graph.GetVertex(modelNodeId);
+        public bool TryGetNode(ModelNodeId modelNodeId, out IDiagramNode node)
+            => _graph.TryGetVertex(modelNodeId, out node);
 
-        public IDiagramConnector GetConnectorById(ModelRelationshipId modelRelationshipId) => _graph.GetEdgeById(modelRelationshipId);
-        public bool TryGetConnectorById(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector)
-            => _graph.TryGetEdgeById(modelRelationshipId, out connector);
+        public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => _graph.GetEdge(modelRelationshipId);
+        public bool TryGetConnector(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector)
+            => _graph.TryGetEdge(modelRelationshipId, out connector);
 
-        public IEnumerable<IDiagramConnector> GetConnectorsByNodeId(ModelNodeId id)
+        public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id)
             => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
 
         public IDiagram AddNode(IDiagramNode node) => CreateInstance(_graph.AddVertex(node));
-        public IDiagram RemoveNode(IDiagramNode node) => CreateInstance(_graph.RemoveVertex(node));
-        public IDiagram ReplaceNode(IDiagramNode oldNode, IDiagramNode newNode) => CreateInstance(_graph.ReplaceVertex(oldNode, newNode));
+        public IDiagram RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));
+        public IDiagram UpdateNode(IDiagramNode newNode) => CreateInstance(_graph.UpdateVertex(newNode));
         public IDiagram AddConnector(IDiagramConnector connector) => CreateInstance(_graph.AddEdge(connector));
-        public IDiagram RemoveConnector(IDiagramConnector connector) => CreateInstance(_graph.RemoveEdge(connector));
-        public IDiagram ReplaceConnector(IDiagramConnector oldConnector, IDiagramConnector newConnector)
-            => CreateInstance(_graph.ReplaceEdge(oldConnector, newConnector));
+        public IDiagram RemoveConnector(ModelRelationshipId connectorId) => CreateInstance(_graph.RemoveEdge(connectorId));
+        public IDiagram UpdateConnector(IDiagramConnector newConnector) => CreateInstance(_graph.UpdateEdge(newConnector));
         public IDiagram Clear() => CreateInstance(new DiagramGraph());
 
         protected virtual IDiagram CreateInstance(DiagramGraph graph) => new Diagram(graph);

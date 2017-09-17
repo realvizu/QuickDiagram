@@ -13,20 +13,23 @@ namespace Codartis.SoftVis.Modeling
         IEnumerable<IModelRelationship> Relationships { get; }
         IEnumerable<IModelNode> RootNodes { get; }
 
-        IModelNode GetNodeById(ModelNodeId nodeId);
-        bool TryGetNodeById(ModelNodeId nodeId, out IModelNode node);
+        IModelNode GetNode(ModelNodeId nodeId);
+        bool TryGetNode(ModelNodeId nodeId, out IModelNode node);
 
-        IEnumerable<IModelNode> GetChildNodes(IModelNode node);
-        IEnumerable<IModelNode> GetRelatedNodes(IModelNode node, 
+        IModelRelationship GetRelationship(ModelRelationshipId relationshipId);
+        bool TryGetRelationship(ModelRelationshipId relationshipId, out IModelRelationship relationship);
+
+        IEnumerable<IModelNode> GetChildNodes(ModelNodeId nodeId);
+        IEnumerable<IModelNode> GetRelatedNodes(ModelNodeId nodeId, 
             DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false);
 
-        IEnumerable<IModelRelationship> GetRelationships(IModelNode node);
+        IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId);
 
         IModel AddNode(IModelNode node);
-        IModel RemoveNode(IModelNode node);
-        IModel ReplaceNode(IModelNode oldNode, IModelNode newNode);
+        IModel RemoveNode(ModelNodeId nodeId);
+        IModel ReplaceNode(IModelNode newNode);
         IModel AddRelationship(IModelRelationship relationship);
-        IModel RemoveRelationship(IModelRelationship relationship);
+        IModel RemoveRelationship(ModelRelationshipId relationshipId);
         IModel Clear();
     }
 }

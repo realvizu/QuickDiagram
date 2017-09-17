@@ -5,10 +5,10 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// An immutable graph of digaram nodes and connectors. Mutators return a new graph.
+    /// An immutable graph of diagram nodes and connectors. Mutators return a new graph.
     /// </summary>
     public class DiagramGraph
-        : ReplaceableImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId, DiagramGraph>
+        : UpdatableImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId, DiagramGraph>
 
     {
         public DiagramGraph()
