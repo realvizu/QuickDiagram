@@ -5,6 +5,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Util
 {
     public static class SymbolExtensions
     {
+        public static TypeKind? GetTypeKind(this ISymbol symbol)
+        {
+            return (symbol as INamedTypeSymbol)?.TypeKind;
+        }
+
         public static string GetFullyQualifiedName(this ISymbol symbol)
         {
             return symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
@@ -37,13 +42,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Util
         }
 
         /// TODO: This is naive. Any way to make it smarter?
-        public static bool SymbolEquals(this ISymbol namedTypeSymbol1, ISymbol namedTypeSymbol2)
+        public static bool SymbolEquals(this ISymbol symbol1, ISymbol symbol2)
         {
-            var originalNamedTypeSymbol1 = namedTypeSymbol1?.OriginalDefinition;
-            var originalNamedTypeSymbol2 = namedTypeSymbol2?.OriginalDefinition;
+            var originalSymbol1 = symbol1?.OriginalDefinition;
+            var originalSymbol2 = symbol2?.OriginalDefinition;
 
-            return originalNamedTypeSymbol1?.GetType() == originalNamedTypeSymbol2?.GetType()
-                && originalNamedTypeSymbol1?.GetFullyQualifiedName() == originalNamedTypeSymbol2?.GetFullyQualifiedName();
+            return originalSymbol1?.GetTypeKind() == originalSymbol2?.GetTypeKind()
+                // TODO: add member kind equality check
+                && originalSymbol1?.GetFullyQualifiedName() == originalSymbol2?.GetFullyQualifiedName();
         }
 
         public static int GetHashCodeForSymbolEquals(this ISymbol namedTypeSymbol)

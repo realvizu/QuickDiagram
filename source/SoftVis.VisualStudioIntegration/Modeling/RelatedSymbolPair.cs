@@ -59,5 +59,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
                    && ((IRoslynModelNode) relationship.Source).SymbolEquals(SourceSymbol)
                    && ((IRoslynModelNode) relationship.Target).SymbolEquals(TargetSymbol);
         }
+
+        public override string ToString()
+        {
+            return $"{BaseSymbol.Name}--{DirectedRelationshipType}->{RelatedSymbol.Name}";
+        }
     }
 }
