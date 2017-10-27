@@ -105,7 +105,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return result;
         }
 
-        private bool TryGetDiagramNodeViewModel(IDiagramNode diagramNode, out DiagramNodeViewModelBase viewModel) 
+        private bool TryGetDiagramNodeViewModel(IDiagramNode diagramNode, out DiagramNodeViewModelBase viewModel)
             => _diagramNodeToViewModelMap.TryGet(diagramNode, out viewModel);
 
         private bool TryGetDiagramConnectorViewModel(IDiagramConnector diagramConnector, out DiagramConnectorViewModel viewModel)
@@ -151,15 +151,35 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramNodeViewModel = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode);
-            DiagramNodeViewModels.Add(diagramNodeViewModel);
+            var diagramNodeUi = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode);
 
-            diagramNodeViewModel.SizeChanged += OnDiagramNodeSizeChanged;
-            diagramNodeViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
-            diagramNodeViewModel.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
-            diagramNodeViewModel.RemoveRequested += OnRemoveDiagramNodeRequested;
+            diagramNodeUi.SizeChanged += OnDiagramNodeSizeChanged;
+            diagramNodeUi.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
+            diagramNodeUi.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
+            diagramNodeUi.RemoveRequested += OnRemoveDiagramNodeRequested;
 
-            _diagramNodeToViewModelMap.Set(diagramNode, diagramNodeViewModel);
+            _diagramNodeToViewModelMap.Set(diagramNode, diagramNodeUi);
+
+            if (DiagramService.TryGetContainerNode(diagramNode, out var containerNode)
+                && IsDiagramNodeVisibleOnDiagram(containerNode, out var containerNodeUi))
+            {
+                containerNodeUi.AddChildNode(diagramNodeUi);
+            }
+            else
+            {
+                DiagramNodeViewModels.Add(diagramNodeUi);
+            }
+        }
+
+        private bool IsDiagramNodeVisibleOnDiagram(IDiagramNode diagramNode, out IDiagramNodeUi diagramNodeUi)
+        {
+            diagramNodeUi = null;
+
+            var result = _diagramNodeToViewModelMap.TryGet(diagramNode, out var diagramNodeViewModel);
+            if (result)
+                diagramNodeUi = diagramNodeViewModel;
+
+            return result;
         }
 
         private void AddConnector(IDiagramConnector diagramConnector)

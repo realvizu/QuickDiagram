@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.Modeling
 
         event Action<ModelEventBase> ModelChanged;
 
-        void AddNode(IModelNode node, IModelNode parentNode = null);
+        void AddNode(IModelNode node);
         void RemoveNode(ModelNodeId nodeId);
         void UpdateNode(IModelNode newNode);
         void AddRelationship(IModelRelationship relationship);

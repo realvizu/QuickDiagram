@@ -5,5 +5,6 @@
     /// </summary>
     public interface IModelService : IModelMutator
     {
+        void AddNode(IModelNode node, IModelNode parentNode);
     }
 }

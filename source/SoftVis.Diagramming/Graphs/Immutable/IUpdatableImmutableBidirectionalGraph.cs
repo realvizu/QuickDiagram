@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
 {
@@ -34,7 +35,9 @@ namespace Codartis.SoftVis.Graphs.Immutable
         bool TryGetEdge(TEdgeId edgeId, out TEdge edge);
 
         IEnumerable<TEdge> GetAllEdges(TVertexId vertexId);
-        IEnumerable<TVertex> GetConnectedVertices(TVertexId vertexId, Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false);
+        IEnumerable<TVertex> GetAdjacentVertices(TVertexId vertexId, EdgeDirection direction, 
+            EdgePredicate<TVertex, TEdge> edgePredicate = null, bool recursive = false);
+
         bool PathExists(TVertexId sourceVertexId, TVertexId targetVertexId);
 
         TGraph AddVertex(TVertex vertex);

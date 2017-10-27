@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -56,7 +57,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return diagramNode;
         }
 
-        public IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes, 
+        public IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             var diagramNodes = new List<IDiagramNode>();
@@ -89,6 +90,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void ShowModelRelationship(IModelRelationship modelRelationship)
         {
+            if (modelRelationship.Stereotype == ModelRelationshipStereotype.Containment)
+                return;
+
             var diagram = DiagramStore.Diagram;
             if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
@@ -102,6 +106,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var diagram = DiagramStore.Diagram;
             if (diagram.TryGetConnector(modelRelationshipId, out IDiagramConnector diagramConnector))
                 DiagramStore.RemoveConnector(diagramConnector.Id);
+        }
+
+        public bool TryGetContainerNode(IDiagramNode diagramNode, out IDiagramNode containerNode)
+        {
+            var diagram = DiagramStore.Diagram;
+            var containerNodes = diagram.GetConnectedNodes(diagramNode.Id, CommonDirectedModelRelationshipTypes.Container).ToArray();
+
+            if (containerNodes.Length > 1)
+                throw new Exception($"There are {containerNodes.Length} container nodes for node {diagramNode}.");
+
+            containerNode = containerNodes.SingleOrDefault();
+            return containerNode != null;
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)

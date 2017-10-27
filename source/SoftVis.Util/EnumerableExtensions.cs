@@ -57,5 +57,7 @@ namespace Codartis.SoftVis.Util
         {
             return collection.EmptyIfNull().SequenceEqual(otherCollection.EmptyIfNull());
         }
+
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> collection, T item) => collection.Except(item.ToEnumerable());
     }
 }

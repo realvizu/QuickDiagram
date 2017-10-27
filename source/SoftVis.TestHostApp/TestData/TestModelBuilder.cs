@@ -64,6 +64,19 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
+        public TestModelBuilder AddProperty(string typeName, string propertyName, string propertyTypeName)
+        {
+            var ownerTypeNode = GetNodeByName(typeName);
+            var propertyNode = new PropertyNode(ModelNodeId.Create(), propertyName);
+            ModelService.AddNode(propertyNode, ownerTypeNode);
+
+            var propertyTypeNode = GetNodeByName(propertyTypeName);
+            var association = new AssociationRelationship(ModelRelationshipId.Create(), propertyNode, propertyTypeNode); 
+            ModelService.AddRelationship(association);
+
+            return this;
+        }
+
         public TestModelBuilder EndGroup()
         {
             ModelService.StartNewGroup();

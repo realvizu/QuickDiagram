@@ -8,6 +8,7 @@ using QuickGraph;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Serialization;
+using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Graphs
 {
@@ -200,37 +201,42 @@ namespace Codartis.SoftVis.Graphs
         /// Recursively collects all vertices that can be reached from a given vertex 
         /// by traversing only those edges that are chosen by a given predicate.
         /// </summary>
-        public static IEnumerable<TVertex> GetConnectedVertices<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, TVertex vertex,
-            Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
+        public static IEnumerable<TVertex> GetAdjacentVertices<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph, 
+            TVertex vertex, EdgeDirection direction, EdgePredicate<TVertex, TEdge> edgePredicate = null, bool recursive = false)
             where TEdge : IEdge<TVertex>
         {
             if (!graph.ContainsVertex(vertex))
                 return Enumerable.Empty<TVertex>();
 
             var collectedVertices = new List<TVertex>();
-            CollectConnectedVerticesRecursive(graph, vertex, edgePredicate, collectedVertices, recursive);
-            return collectedVertices;
+            CollectAdjacentVerticesRecursive(graph, vertex, direction, collectedVertices, edgePredicate, recursive);
+            return collectedVertices.Except(vertex);
         }
 
-        private static void CollectConnectedVerticesRecursive<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> graph,
-            TVertex vertex, Func<TVertex, TEdge, bool> edgePredicate, ICollection<TVertex> collectedVertices, bool recursive = false)
+        private static void CollectAdjacentVerticesRecursive<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> graph,
+            TVertex vertex, EdgeDirection direction, ICollection<TVertex> collectedVertices,
+            EdgePredicate<TVertex, TEdge> edgePredicate = null, bool recursive = false)
             where TEdge : IEdge<TVertex>
         {
-            var connectedVertices = graph.GetAllEdges(vertex)
-                .Where(edge => edgePredicate(vertex, edge))
+            var adjacentEdges = direction == EdgeDirection.In
+                ? graph.InEdges(vertex)
+                : graph.OutEdges(vertex);
+
+            var adjacentVertices = adjacentEdges
+                .Where(edge => edgePredicate == null || edgePredicate(edge))
                 .Select(edge => edge.GetOtherEnd(vertex))
                 .Distinct();
 
-            foreach (var connectedVertex in connectedVertices)
+            foreach (var adjacentVertex in adjacentVertices)
             {
                 // Loop detection
-                if (collectedVertices.Contains(connectedVertex))
+                if (collectedVertices.Contains(adjacentVertex))
                     continue;
 
-                collectedVertices.Add(connectedVertex);
+                collectedVertices.Add(adjacentVertex);
 
                 if (recursive)
-                    CollectConnectedVerticesRecursive(graph, connectedVertex, edgePredicate, collectedVertices, recursive: true);
+                    CollectAdjacentVerticesRecursive(graph, adjacentVertex, direction, collectedVertices, edgePredicate, recursive: true);
             }
         }
 

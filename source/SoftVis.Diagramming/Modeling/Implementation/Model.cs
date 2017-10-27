@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {
@@ -40,8 +39,8 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IEnumerable<IModelNode> GetRelatedNodes(ModelNodeId nodeId,
             DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false)
         {
-            return Graph.GetConnectedVertices(nodeId,
-                (otherNode, relationship) => IsNodeRelated(relationship, otherNode, directedModelRelationshipType),
+            return Graph.GetAdjacentVertices(nodeId, directedModelRelationshipType.Direction,
+                i => i.Stereotype == directedModelRelationshipType.Stereotype,
                 recursive);
         }
 
@@ -55,24 +54,5 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IModel Clear() => CreateInstance(new ModelGraph());
 
         protected virtual IModel CreateInstance(ModelGraph graph) => new Model(graph);
-
-        private static bool IsNodeRelated(IModelRelationship relationship, IModelNode modelNode,
-            DirectedModelRelationshipType directedModelRelationshipType)
-        {
-            return relationship.Stereotype == directedModelRelationshipType.Stereotype
-                   && ContainsNodeOnGivenEnd(relationship, modelNode, directedModelRelationshipType.Direction);
-        }
-
-        private static bool ContainsNodeOnGivenEnd(IModelRelationship relationship, IModelNode modelNode,
-            EdgeDirection direction)
-        {
-            switch (direction)
-            {
-                case EdgeDirection.Out: return modelNode.Id.Equals(relationship.Source.Id);
-                case EdgeDirection.In: return modelNode.Id.Equals(relationship.Target.Id);
-                default: throw new ArgumentException($"Unexpected EdgeDirection: {direction}");
-            }
-        }
-
     }
 }

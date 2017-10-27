@@ -14,7 +14,5 @@ namespace Codartis.SoftVis.Modeling
         : IUpdatableImmutableEdge<IModelNode, ModelNodeId, IModelRelationship, ModelRelationshipId>
     {
         ModelRelationshipStereotype Stereotype { get; }
-
-        bool IsNodeRelated(IModelNode modelNode, DirectedModelRelationshipType directedModelRelationshipType);
     }
 }

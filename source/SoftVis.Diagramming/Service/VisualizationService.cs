@@ -9,6 +9,8 @@ namespace Codartis.SoftVis.Service
 {
     /// <summary>
     /// Creates, aggregates and orchestrates model, diagram and UI services.
+    /// Manages 1 model and any number of diagrams based on that model.
+    /// Diagrams can have plugins that react to model and/or diagram events to perform useful tasks, eg. arrange the diagram.
     /// </summary>
     public class VisualizationService : IVisualizationService
     {

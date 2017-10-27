@@ -1,5 +1,4 @@
-﻿using System;
-using QuickGraph;
+﻿using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs
 {
@@ -8,16 +7,6 @@ namespace Codartis.SoftVis.Graphs
         public static bool ContainsVertex<TVertex>(this IEdge<TVertex> edge, TVertex vertex)
         {
             return vertex.Equals(edge.Source) || vertex.Equals(edge.Target);
-        }
-
-        public static bool ContainsNodeOnGivenEnd<TVertex>(this IEdge<TVertex> edge, TVertex vertex, EdgeDirection direction)
-        {
-            switch (direction)
-            {
-                case EdgeDirection.Out : return vertex.Equals(edge.Source);
-                case EdgeDirection.In : return vertex.Equals(edge.Target);
-                default: throw new ArgumentException($"Unexpected EdgeDirection: {direction}");
-            }
         }
 
         public static TVertex GetEndVertex<TVertex>(this IEdge<TVertex> edge, EdgeDirection edgeDirection)

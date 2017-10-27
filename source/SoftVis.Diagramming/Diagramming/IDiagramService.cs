@@ -21,6 +21,8 @@ namespace Codartis.SoftVis.Diagramming
         void ShowModelRelationship(IModelRelationship modelRelationship);
         void HideModelRelationship(ModelRelationshipId modelRelationshipId);
 
+        bool TryGetContainerNode(IDiagramNode diagramNode, out IDiagramNode containerNode);
+
         Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds);
     }
 }

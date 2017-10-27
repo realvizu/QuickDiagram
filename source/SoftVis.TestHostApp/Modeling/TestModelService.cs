@@ -3,10 +3,10 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal sealed class TestModelService : ModelService, ITestModelService
+    internal sealed class TestModelService : ModelServiceBase, ITestModelService
     {
         public TestModelService()
-            : base(new TestModelStore(new TestModel()))
+            : base(new TestModelStore(new TestModel()), new TestModelRelationshipFactory())
         {
         }
 

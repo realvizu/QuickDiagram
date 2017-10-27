@@ -6,13 +6,15 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// <summary>
     /// Implements model-related operations.
     /// </summary>
-    public abstract class ModelService : IModelService
+    public abstract class ModelServiceBase : IModelService
     {
         protected readonly ModelStore ModelStore;
+        protected readonly IModelRelationshipFactory ModelRelationshipFactory;
 
-        protected ModelService(ModelStore modelStore)
+        protected ModelServiceBase(ModelStore modelStore, IModelRelationshipFactory modelRelationshipFactory)
         {
             ModelStore = modelStore;
+            ModelRelationshipFactory = modelRelationshipFactory;
         }
 
         public IModel Model => ModelStore.Model;
@@ -23,7 +25,19 @@ namespace Codartis.SoftVis.Modeling.Implementation
             remove => ModelStore.ModelChanged -= value;
         }
 
-        public void AddNode(IModelNode node, IModelNode parentNode = null) => ModelStore.AddNode(node, parentNode);
+        public void AddNode(IModelNode node, IModelNode parentNode)
+        {
+            if (!Model.Nodes.Contains(parentNode))
+                throw new ArgumentException($"{parentNode} is not found in the model.");
+
+            AddNode(node);
+
+            var containsRelationship = ModelRelationshipFactory.CreateRelationship(parentNode, node, ModelRelationshipStereotype.Containment);
+            
+            AddRelationship(containsRelationship);
+        }
+
+        public void AddNode(IModelNode node) => ModelStore.AddNode(node);
 
         public void RemoveNode(ModelNodeId nodeId)
         {

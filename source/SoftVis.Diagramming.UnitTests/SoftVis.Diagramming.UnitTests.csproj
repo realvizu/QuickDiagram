@@ -106,6 +106,7 @@
     <Compile Include="Diagramming\Layout\Incremental\Relative\VerticesInLayerComparerTests.cs" />
     <Compile Include="Geometry\RouteTests.cs" />
     <Compile Include="Graphs\Concurrent\RemovedVertexResultTests.cs" />
+    <Compile Include="Graphs\GraphExtensionsTests.cs" />
     <Compile Include="Modeling\Implementation\ModelTests.cs" />
     <Compile Include="TestSubjects\TestDiagramConnector.cs" />
     <Compile Include="TestSubjects\TestModelNodeStereotypes.cs" />

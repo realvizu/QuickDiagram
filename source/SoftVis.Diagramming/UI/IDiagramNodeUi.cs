@@ -11,6 +11,8 @@ namespace Codartis.SoftVis.UI
     {
         IDiagramNode DiagramNode { get; }
 
+        void AddChildNode(IDiagramNodeUi childNode);
+
         event Action<IDiagramNode, Size2D> SizeChanged;
         event Action<IDiagramNode> RemoveRequested;
         //event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;

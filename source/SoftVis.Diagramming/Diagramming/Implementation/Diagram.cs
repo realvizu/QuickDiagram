@@ -36,8 +36,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             && NodeExists(targetModelNodeId)
             && _graph.PathExists(sourceModelNodeId, targetModelNodeId);
 
-        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId) 
-            => TryGetConnector(modelRelationshipId, out var connector) 
+        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId)
+            => TryGetConnector(modelRelationshipId, out var connector)
             && _graph.IsEdgeRedundant(connector);
 
         public IDiagramNode GetNode(ModelNodeId modelNodeId) => _graph.GetVertex(modelNodeId);
@@ -50,6 +50,24 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id)
             => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
+
+        public IEnumerable<IDiagramNode> GetConnectedNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
+        {
+            IEnumerable<IDiagramNode> result;
+
+            if (directedModelRelationshipType != null)
+            {
+                result = _graph.GetAdjacentVertices(id, directedModelRelationshipType.Value.Direction,
+                    e => e.ModelRelationship.Stereotype == directedModelRelationshipType.Value.Stereotype);
+            }
+            else
+            {
+                result = _graph.GetAdjacentVertices(id, EdgeDirection.In)
+                    .Union(_graph.GetAdjacentVertices(id, EdgeDirection.Out));
+            }
+
+            return result;
+        }
 
         public IDiagram AddNode(IDiagramNode node) => CreateInstance(_graph.AddVertex(node));
         public IDiagram RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));

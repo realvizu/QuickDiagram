@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             Model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
-        public void AddNode(IModelNode node, IModelNode parentNode = null)
+        public void AddNode(IModelNode node)
         {
             lock (ModelUpdateLockObject)
             {

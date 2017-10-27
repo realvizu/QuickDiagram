@@ -186,14 +186,14 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public IEnumerable<TEdge> GetAllEdges(TVertexId vertexId) 
             => _graph.GetAllEdges(vertexId).Select(FromVertexIdEdge);
 
-        public IEnumerable<TVertex> GetConnectedVertices(TVertexId vertexId,
-            Func<TVertex, TEdge, bool> edgePredicate, bool recursive = false)
+        public IEnumerable<TVertex> GetAdjacentVertices(TVertexId vertexId, EdgeDirection direction,
+            EdgePredicate<TVertex, TEdge> edgePredicate = null, bool recursive = false)
         {
             if (!ContainsVertex(vertexId))
                 return Enumerable.Empty<TVertex>();
 
-            var vertexIds = _graph.GetConnectedVertices(vertexId,
-                (id, edge) => edgePredicate(GetVertex(id), GetEdge(edge.Id)),
+            var vertexIds = _graph.GetAdjacentVertices(vertexId, direction,
+                edge => edgePredicate == null || edgePredicate(GetEdge(edge.Id)),
                 recursive);
 
             return vertexIds.Select(GetVertex);

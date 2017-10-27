@@ -83,12 +83,17 @@
     <Compile Include="Diagramming\TestLayoutPriorityProvider.cs" />
     <Compile Include="Diagramming\TypeDiagramNode.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Modeling\ContainmentRelationship.cs" />
     <Compile Include="Modeling\DirectedModelRelationshipTypes.cs" />
     <Compile Include="Modeling\ImplementationRelationship.cs" />
+    <Compile Include="Modeling\AssociationRelationship.cs" />
     <Compile Include="Modeling\InheritanceRelationship.cs" />
     <Compile Include="Modeling\ITestModelService.cs" />
     <Compile Include="Modeling\ITestModelMutator.cs" />
+    <Compile Include="Modeling\TestModelRelationshipFactory.cs" />
     <Compile Include="Modeling\TestModelService.cs" />
+    <Compile Include="Modeling\PropertyNode.cs" />
+    <Compile Include="Modeling\TypeMemberNode.cs" />
     <Compile Include="TestData\BigTestModelCreator.cs" />
     <Compile Include="TestData\TestModelBuilder.cs" />
     <Compile Include="TestData\TestModelCreator.cs" />

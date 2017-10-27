@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Graphs;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {
@@ -31,12 +30,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
         }
 
         public override string ToString() => $"{Source.Name}--{Stereotype}-->{Target.Name} [{Id}]";
-
-        public bool IsNodeRelated(IModelNode modelNode, DirectedModelRelationshipType directedModelRelationshipType)
-        {
-            return Stereotype == directedModelRelationshipType.Stereotype 
-                && this.ContainsNodeOnGivenEnd(modelNode, directedModelRelationshipType.Direction);
-        }
 
         public IModelRelationship WithSource(IModelNode newSourceNode)
         {

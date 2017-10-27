@@ -96,8 +96,11 @@
     <Compile Include="Diagramming\DiagramNodeIdEqualityComparer.cs" />
     <Compile Include="Diagramming\IDiagramService.cs" />
     <Compile Include="Diagramming\Implementation\DiagramService.cs" />
+    <Compile Include="Modeling\IModelRelationshipFactory.cs" />
     <Compile Include="Modeling\IModelService.cs" />
-    <Compile Include="Modeling\Implementation\ModelService.cs" />
+    <Compile Include="Modeling\Implementation\ContainmentRelationship.cs" />
+    <Compile Include="Modeling\CommonDirectedModelRelationshipTypes.cs" />
+    <Compile Include="Modeling\Implementation\ModelServiceBase.cs" />
     <Compile Include="Service\IDiagramPluginFactory.cs" />
     <Compile Include="Service\IVisualizationService.cs" />
     <Compile Include="Diagramming\IDiagramServiceFactory.cs" />
