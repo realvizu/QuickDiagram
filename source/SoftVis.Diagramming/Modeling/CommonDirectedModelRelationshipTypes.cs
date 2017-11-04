@@ -8,9 +8,9 @@ namespace Codartis.SoftVis.Modeling
     public static class CommonDirectedModelRelationshipTypes
     {
         public static readonly DirectedModelRelationshipType Container = 
-            new DirectedModelRelationshipType(ModelRelationshipStereotype.Containment, EdgeDirection.Out);
+            new DirectedModelRelationshipType(ModelRelationshipStereotype.Containment, EdgeDirection.In);
 
         public static readonly DirectedModelRelationshipType Contained =
-            new DirectedModelRelationshipType(ModelRelationshipStereotype.Containment, EdgeDirection.In);
+            new DirectedModelRelationshipType(ModelRelationshipStereotype.Containment, EdgeDirection.Out);
     }
 }

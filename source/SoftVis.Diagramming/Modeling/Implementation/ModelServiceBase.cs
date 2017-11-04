@@ -33,8 +33,19 @@ namespace Codartis.SoftVis.Modeling.Implementation
             AddNode(node);
 
             var containsRelationship = ModelRelationshipFactory.CreateRelationship(parentNode, node, ModelRelationshipStereotype.Containment);
-            
+
             AddRelationship(containsRelationship);
+        }
+
+        public bool TryGetParentNode(ModelNodeId modelNodeId, out IModelNode parentNode)
+        {
+            var parentNodes = Model.GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Container).ToArray();
+
+            if (parentNodes.Length > 1)
+                throw new Exception($"There are {parentNodes.Length} parent nodes for node {modelNodeId}.");
+
+            parentNode = parentNodes.SingleOrDefault();
+            return parentNode != null;
         }
 
         public void AddNode(IModelNode node) => ModelStore.AddNode(node);
@@ -44,7 +55,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             var relationshipsToRemove = Model.GetRelationships(nodeId).ToArray();
             foreach (var relationship in relationshipsToRemove)
                 RemoveRelationship(relationship.Id);
-            
+
             ModelStore.RemoveNode(nodeId);
         }
 

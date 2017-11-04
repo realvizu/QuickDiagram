@@ -16,6 +16,7 @@
 
              ClipToBounds="True"
              SnapsToDevicePixels="False"
+             UseLayoutRounding="True"
              RenderOptions.EdgeMode="Unspecified"
              RenderOptions.ClearTypeHint="Enabled"
              TextOptions.TextRenderingMode="Auto"

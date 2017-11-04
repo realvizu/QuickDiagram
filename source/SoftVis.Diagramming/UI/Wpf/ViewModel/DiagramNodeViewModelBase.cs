@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming;
@@ -21,7 +20,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _size;
         private Rect _animatedRect;
 
-        public ICollection<DiagramNodeViewModelBase> ChildNodes { get; }
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
@@ -38,7 +36,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             TopLeft = diagramNode.TopLeft.ToWpf();
             // Must NOT populate size from model because its value flows from the controls to the models.
 
-            ChildNodes = new ObservableCollection<DiagramNodeViewModelBase>();
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
             DiagramService.DiagramChanged += OnDiagramChanged;
@@ -126,11 +123,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public abstract object Clone();
-
-        public void AddChildNode(IDiagramNodeUi childNode)
-        {
-            ChildNodes.Add(childNode as DiagramNodeViewModelBase);
-        }
 
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 

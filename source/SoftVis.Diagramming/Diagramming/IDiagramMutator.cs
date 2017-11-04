@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming
 
         event Action<DiagramEventBase> DiagramChanged;
 
-        void AddNode(IDiagramNode node);
+        void AddNode(IDiagramNode node, IContainerDiagramNode parentNode = null);
         void RemoveNode(ModelNodeId nodeId);
         void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode);
         void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize);

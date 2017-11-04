@@ -26,6 +26,12 @@
             <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
+            <DataTemplate DataType="{x:Type viewModel:ContainerDiagramNodeViewModelBase}">
+                <view:ContainerDiagramNodeControl x:Name="ContainerDiagramNodeControl"
+                                                  ActualSize="{Binding Path=Size, Mode=OneWayToSource}">
+                </view:ContainerDiagramNodeControl>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                                          ActualSize="{Binding Path=Size, Mode=OneWayToSource}"

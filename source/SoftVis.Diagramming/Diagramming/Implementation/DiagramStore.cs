@@ -26,14 +26,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Diagram = diagram ?? throw new ArgumentNullException(nameof(diagram));
         }
 
-        public void AddNode(IDiagramNode node)
+        public void AddNode(IDiagramNode node, IContainerDiagramNode parentNode = null)
         {
             lock (_diagramUpdateLockObject)
             {
                 if (Diagram.NodeExists(node.Id))
                     return;
 
-                Diagram = Diagram.AddNode(node);
+                Diagram = Diagram.AddNode(node, parentNode);
                 DiagramChanged?.Invoke(new DiagramNodeAddedEvent(Diagram, node));
             }
         }

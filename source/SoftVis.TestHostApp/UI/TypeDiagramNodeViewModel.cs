@@ -7,7 +7,7 @@ using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.TestHostApp.UI
 {
-    internal class TypeDiagramNodeViewModel : DiagramNodeViewModelBase
+    internal class TypeDiagramNodeViewModel : ContainerDiagramNodeViewModelBase
     {
         public TypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, TypeDiagramNode diagramNode)
             : base(modelService, diagramService, diagramNode)

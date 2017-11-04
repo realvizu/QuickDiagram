@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.Service.Plugins
         protected void ShowModelRelationshipIfBothEndsAreVisible(IModelRelationship modelRelationship, IDiagram diagram)
         {
             var shouldShowModelRelationship =
+                modelRelationship.Stereotype != ModelRelationshipStereotype.Containment &&
                 diagram.NodeExists(modelRelationship.Source.Id) &&
                 diagram.NodeExists(modelRelationship.Target.Id) &&
                 !DiagramConnectorWouldBeRedundant(modelRelationship, diagram);
@@ -43,8 +44,7 @@ namespace Codartis.SoftVis.Service.Plugins
             if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
 
-            var newConnector = DiagramShapeFactory.CreateDiagramConnector(DiagramService, modelRelationship);
-            DiagramService.AddConnector(newConnector);
+            DiagramService.ShowModelRelationship(modelRelationship);
         }
     }
 }

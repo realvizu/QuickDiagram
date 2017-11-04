@@ -13,10 +13,13 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             if (modelNode == null)
                 throw new ArgumentNullException(nameof(modelNode));
 
-            if (modelNode is TypeNode testType)
-                return new TypeDiagramNode(testType);
+            if (modelNode is TypeNode typeNode)
+                return new TypeDiagramNode(typeNode);
 
-            throw new ArgumentException($"Expected {typeof(TypeNode).Name} but received {modelNode.GetType().Name}");
+            if (modelNode is PropertyNode propertyNode)
+                return new PropertyDiagramNode(propertyNode);
+
+            throw new ArgumentException($"Unexpected type {modelNode.GetType().Name} in {GetType().Name}");
         }
     }
 }

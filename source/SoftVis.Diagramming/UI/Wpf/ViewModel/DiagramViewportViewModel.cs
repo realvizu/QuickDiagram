@@ -161,9 +161,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramNodeToViewModelMap.Set(diagramNode, diagramNodeUi);
 
             if (DiagramService.TryGetContainerNode(diagramNode, out var containerNode)
-                && IsDiagramNodeVisibleOnDiagram(containerNode, out var containerNodeUi))
+                && IsNodeVisibleOnDiagram(containerNode, out var containerNodeUi))
             {
-                containerNodeUi.AddChildNode(diagramNodeUi);
+                ((IContainerDiagramNodeUi)containerNodeUi).AddChildNode(diagramNodeUi);
             }
             else
             {
@@ -171,7 +171,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private bool IsDiagramNodeVisibleOnDiagram(IDiagramNode diagramNode, out IDiagramNodeUi diagramNodeUi)
+        private bool IsNodeVisibleOnDiagram(IDiagramNode diagramNode, out IDiagramNodeUi diagramNodeUi)
         {
             diagramNodeUi = null;
 

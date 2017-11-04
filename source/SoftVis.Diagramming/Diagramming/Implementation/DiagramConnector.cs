@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// An immutable implementation of a diagram connector.
     /// </summary>
-    public class DiagramConnector : DiagramShapeBase, IDiagramConnector
+    public sealed class DiagramConnector : DiagramShapeBase, IDiagramConnector
     {
         public IModelRelationship ModelRelationship { get; }
         public IDiagramNode Source { get; }
@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public override string ToString() => Source + "---" + ModelRelationship.Stereotype + "-->" + Target;
 
-        protected virtual IDiagramConnector CreateInstance(IDiagramNode source, IDiagramNode target, Route route)
+        private IDiagramConnector CreateInstance(IDiagramNode source, IDiagramNode target, Route route)
             => new DiagramConnector(ModelRelationship, source, target, ConnectorType, route);
     }
 }

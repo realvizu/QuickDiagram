@@ -6,5 +6,6 @@
     public interface IModelService : IModelMutator
     {
         void AddNode(IModelNode node, IModelNode parentNode);
+        bool TryGetParentNode(ModelNodeId modelNodeId, out IModelNode parentNode);
     }
 }

@@ -69,6 +69,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             var ownerTypeNode = GetNodeByName(typeName);
             var propertyNode = new PropertyNode(ModelNodeId.Create(), propertyName);
             ModelService.AddNode(propertyNode, ownerTypeNode);
+            ModelService.AddItemToCurrentGroup(propertyNode);
 
             var propertyTypeNode = GetNodeByName(propertyTypeName);
             var association = new AssociationRelationship(ModelRelationshipId.Create(), propertyNode, propertyTypeNode); 

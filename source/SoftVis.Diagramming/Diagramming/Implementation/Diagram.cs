@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id)
             => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
 
-        public IEnumerable<IDiagramNode> GetConnectedNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
+        public IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
             IEnumerable<IDiagramNode> result;
 
@@ -69,8 +69,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return result;
         }
 
-        public IDiagram AddNode(IDiagramNode node) => CreateInstance(_graph.AddVertex(node));
-        public IDiagram RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));
+        public IDiagram AddNode(IDiagramNode node, IContainerDiagramNode parentNode = null)
+        {
+            var updatedGraph = parentNode == null 
+                ? _graph.AddVertex(node) 
+                : _graph.UpdateVertex(parentNode.AddChildNode(node));
+
+            return CreateInstance(updatedGraph);
+        }
+
+        public IDiagram RemoveNode(ModelNodeId nodeId)
+        {
+            // TODO: if it's a child node then remove from parent instead of removing from graph
+            return CreateInstance(_graph.RemoveVertex(nodeId));
+        }
+
         public IDiagram UpdateNode(IDiagramNode newNode) => CreateInstance(_graph.UpdateVertex(newNode));
         public IDiagram AddConnector(IDiagramConnector connector) => CreateInstance(_graph.AddEdge(connector));
         public IDiagram RemoveConnector(ModelRelationshipId connectorId) => CreateInstance(_graph.RemoveEdge(connectorId));

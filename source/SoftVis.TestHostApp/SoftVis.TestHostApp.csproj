@@ -81,6 +81,7 @@
     <Compile Include="Diagramming\TestDiagramService.cs" />
     <Compile Include="Diagramming\TestDiagramShapeFactory.cs" />
     <Compile Include="Diagramming\TestLayoutPriorityProvider.cs" />
+    <Compile Include="Diagramming\PropertyDiagramNode.cs" />
     <Compile Include="Diagramming\TypeDiagramNode.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Modeling\ContainmentRelationship.cs" />
@@ -110,6 +111,7 @@
       <DependentUpon>TextWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\TestDiagramShapeUiFactory.cs" />
+    <Compile Include="UI\PropertyDiagramNodeViewModel.cs" />
     <Compile Include="UI\TypeDiagramNodeViewModel.cs" />
     <Compile Include="UI\TestUiServiceFactory.cs" />
     <Page Include="MainWindow.xaml">

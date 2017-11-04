@@ -1,4 +1,6 @@
-﻿using Codartis.SoftVis.Diagramming.Implementation;
+﻿using System.Collections.Immutable;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
@@ -8,22 +10,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// <summary>
     /// An immutable diagram node that represents a Roslyn type.
     /// </summary>
-    internal sealed class RoslynTypeDiagramNode : DiagramNode
+    internal sealed class RoslynTypeDiagramNode : ContainerDiagramNodeBase
     {
         public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode) 
-            : this(roslynTypeNode, Size2D.Undefined, Point2D.Undefined)
+            : base(roslynTypeNode)
         {
         }
 
-        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode, Size2D size, Point2D center)
-            : base(roslynTypeNode, size, center)
+        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
+            : base(roslynTypeNode, size, center, childNodes)
         {
         }
 
         public IRoslynTypeNode RoslynTypeNode => (IRoslynTypeNode)ModelNode;
         public bool IsAbstract => RoslynTypeNode.IsAbstract;
 
-        protected override DiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center) 
-            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center);
+        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
+            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, childNodes);
     }
 }

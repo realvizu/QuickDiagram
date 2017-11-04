@@ -94,7 +94,9 @@
     <Compile Include="Diagramming\Events\DiagramConnectorEventBase.cs" />
     <Compile Include="Diagramming\Events\DiagramConnectorRemovedEvent.cs" />
     <Compile Include="Diagramming\DiagramNodeIdEqualityComparer.cs" />
+    <Compile Include="Diagramming\IContainerDiagramNode.cs" />
     <Compile Include="Diagramming\IDiagramService.cs" />
+    <Compile Include="Diagramming\Implementation\ContainerDiagramNodeBase.cs" />
     <Compile Include="Diagramming\Implementation\DiagramService.cs" />
     <Compile Include="Modeling\IModelRelationshipFactory.cs" />
     <Compile Include="Modeling\IModelService.cs" />
@@ -168,6 +170,7 @@
     <Compile Include="Modeling\Implementation\Model.cs" />
     <Compile Include="Modeling\Implementation\ModelStore.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
+    <Compile Include="UI\IContainerDiagramNodeUi.cs" />
     <Compile Include="UI\IUiService.cs" />
     <Compile Include="UI\IUiServiceFactory.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
@@ -176,6 +179,7 @@
     <Compile Include="UI\IDiagramShapeUiFactory.cs" />
     <Compile Include="UI\IDiagramNodeUi.cs" />
     <Compile Include="UI\IDiagramConnectorUi.cs" />
+    <Compile Include="UI\Wpf\ViewModel\ContainerDiagramNodeViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\MiniButtonPanelViewModel.cs" />
     <Compile Include="UI\IDiagramShapeUiRepository.cs" />
     <Compile Include="UI\ShowModelItemsEventHandler.cs" />
@@ -185,6 +189,9 @@
     <Compile Include="UI\Wpf\ViewModel\AutoMoveViewportViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedNodeListBoxViewModel.cs" />
+    <Compile Include="UI\Wpf\View\ContainerDiagramNodeControl.xaml.cs">
+      <DependentUpon>ContainerDiagramNodeControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Wpf\View\MiniButtonControl.xaml.cs">
       <DependentUpon>MiniButtonControl.xaml</DependentUpon>
     </Compile>
@@ -276,7 +283,7 @@
     <Compile Include="Graphs\PathException.cs" />
     <Compile Include="Graphs\Algorithms\TopologicalSortOrder.cs" />
     <Compile Include="Graphs\Layout\VertexPlacement\SimpleTreeLayoutAlgorithm.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramNode.cs" />
+    <Compile Include="Diagramming\Implementation\DiagramNodeBase.cs" />
     <Compile Include="Diagramming\Implementation\DiagramShapeBase.cs" />
     <Compile Include="Graphs\Layout\EdgeRouting\StraightEdgeRoutingAlgorithm.cs" />
     <Compile Include="Geometry\IPositioned.cs" />
@@ -344,6 +351,10 @@
     <Page Include="UI\Wpf\View\DefaultDecoratorPlacementDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\ContainerDiagramNodeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\MiniButtonControl.xaml">
       <SubType>Designer</SubType>

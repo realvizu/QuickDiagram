@@ -20,5 +20,10 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         public static readonly DirectedModelRelationshipType ImplementerType =
             new DirectedModelRelationshipType(ModelRelationshipStereotypes.Implementation, EdgeDirection.In);
 
+        public static readonly DirectedModelRelationshipType AssociatedType =
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Association, EdgeDirection.Out);
+
+        public static readonly DirectedModelRelationshipType AssociatingType =
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Association, EdgeDirection.In);
     }
 }

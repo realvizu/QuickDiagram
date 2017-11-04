@@ -31,9 +31,9 @@ namespace Codartis.SoftVis.Diagramming
         IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId);
         bool TryGetConnector(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector);
         IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
-        IEnumerable<IDiagramNode> GetConnectedNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
+        IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
 
-        IDiagram AddNode(IDiagramNode node);
+        IDiagram AddNode(IDiagramNode node, IContainerDiagramNode parentNode = null);
         IDiagram RemoveNode(ModelNodeId nodeId);
         IDiagram UpdateNode(IDiagramNode newNode);
         IDiagram AddConnector(IDiagramConnector connector);

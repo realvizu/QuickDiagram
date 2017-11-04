@@ -14,6 +14,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             {
                 {ModelRelationshipStereotypes.Inheritance, TestConnectorTypes.Generalization},
                 {ModelRelationshipStereotypes.Implementation, TestConnectorTypes.Implementation},
+                {ModelRelationshipStereotypes.Association, TestConnectorTypes.Association},
             };
 
         public TestDiagramService(TestDiagram testDiagram, IModelService modelService, IDiagramShapeFactory diagramShapeFactory) 
