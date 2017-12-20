@@ -28,14 +28,14 @@
 
             <DataTemplate DataType="{x:Type viewModel:ContainerDiagramNodeViewModelBase}">
                 <view:ContainerDiagramNodeControl x:Name="ContainerDiagramNodeControl"
-                                                  ActualSize="{Binding Path=Size, Mode=OneWayToSource}">
+                                                  ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
+                                                  FocusRequestedCommand="{Binding Path=DataContext.MiniButtonPanelViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
                 </view:ContainerDiagramNodeControl>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
-                                         ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                                         FocusRequestedCommand="{Binding Path=DataContext.MiniButtonPanelViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
+                                         ActualSize="{Binding Path=Size, Mode=OneWayToSource}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.DiagramNodeDoubleClickedCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}"

@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public UIElement GetPresenterOf(DiagramShapeViewModelBase diagramShape)
         {
             return this.
-                FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == diagramShape)?.
+                FindFirstDescendant<ContainerDiagramNodeControl>(i => i.DataContext == diagramShape)?.
                 FindAncestor<AnimatedRectContentPresenter>();
         }
     }
