@@ -29,20 +29,15 @@
         <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}"/>
     </Style>
 
-    <Style TargetType="{x:Type view:ContainerDiagramNodeControl}">
-        <Setter Property="MaxWidth" Value="250"/>
-    </Style>
-
     <Style TargetType="{x:Type view:DiagramNodeControl}">
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
+        <Setter Property="MinWidth" Value="50"/>
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:PropertyDiagramNodeViewModel}">
-        <view:DiagramNodeCoreControl>
-            <view:DiagramNodeCoreControl.Style>
-                <Style TargetType="view:DiagramNodeCoreControl">
+        <view:DiagramNodeControl>
+            <view:DiagramNodeControl.Style>
+                <Style TargetType="view:DiagramNodeControl">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate>
@@ -56,8 +51,8 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-            </view:DiagramNodeCoreControl.Style>
-        </view:DiagramNodeCoreControl>
+            </view:DiagramNodeControl.Style>
+        </view:DiagramNodeControl>
     </DataTemplate>
 
     <Style TargetType="{x:Type view:DiagramNodeCoreControl}"

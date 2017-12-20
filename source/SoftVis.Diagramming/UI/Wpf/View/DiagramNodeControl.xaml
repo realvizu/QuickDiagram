@@ -9,11 +9,11 @@
              xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:ContainerDiagramNodeViewModelBase}}">
 
     <UserControl.Resources>
         <ResourceDictionary>
-            
+
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <ItemsPanelTemplate x:Key="RelatedNodeCueItemsPanel">
@@ -37,17 +37,52 @@
                 <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
                 <Setter Property="ContentTemplate" Value="{StaticResource RelatedNodeCue}"/>
             </Style>
+            
+            <ItemsPanelTemplate x:Key="ChildNodesItemsPanel">
+                <StackPanel Orientation="Vertical" Margin="4,4,4,0"/>
+            </ItemsPanelTemplate>
+
+            <Style x:Key="ChildNodeContainerStyle" 
+                   TargetType="{x:Type ContentPresenter}">
+                <Setter Property="Margin" Value="0,0,0,4"/>
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        
-        <view:DiagramNodeCoreControl />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}" 
-                      ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"
-                      ItemContainerStyle="{StaticResource RelatedNodeCueContainerStyle}"
-                      Background="{x:Null}" />
+        <Grid Grid.Row="0">
+            <view:DiagramNodeCoreControl />
+            <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}" 
+                          ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"
+                          ItemContainerStyle="{StaticResource RelatedNodeCueContainerStyle}"
+                          Background="{x:Null}" />
+        </Grid>
+
+        <Border Grid.Row="1" 
+                BorderThickness="1,0,1,1"
+                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                Background="{Binding DiagramFill, ElementName=ThisControl}">
+            
+            <ItemsControl x:Name="ChildItemsControl"
+                          ItemsSource="{Binding ChildNodes}" 
+                          ItemsPanel="{StaticResource ChildNodesItemsPanel}"
+                          ItemContainerStyle="{StaticResource ChildNodeContainerStyle}"/>
+            
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=ChildItemsControl, Path=HasItems}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
     </Grid>
 </UserControl>

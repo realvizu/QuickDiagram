@@ -189,8 +189,8 @@
     <Compile Include="UI\Wpf\ViewModel\AutoMoveViewportViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedNodeListBoxViewModel.cs" />
-    <Compile Include="UI\Wpf\View\ContainerDiagramNodeControl.xaml.cs">
-      <DependentUpon>ContainerDiagramNodeControl.xaml</DependentUpon>
+    <Compile Include="UI\Wpf\View\DiagramNodeControl.xaml.cs">
+      <DependentUpon>DiagramNodeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\MiniButtonControl.xaml.cs">
       <DependentUpon>MiniButtonControl.xaml</DependentUpon>
@@ -324,9 +324,6 @@
       <DependentUpon>DiagramControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Wpf\View\DiagramNodeItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\DiagramNodeControl.xaml.cs">
-      <DependentUpon>DiagramNodeControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Wpf\View\DiagramViewportControl.DepProps.cs" />
     <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
       <DependentUpon>DiagramViewportControl.xaml</DependentUpon>
@@ -352,7 +349,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\ContainerDiagramNodeControl.xaml">
+    <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -377,10 +374,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\DiagramControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

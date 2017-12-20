@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -18,6 +21,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty ActualSizeProperty =
             DependencyProperty.Register("ActualSize", typeof(Size), typeof(DiagramNodeControl),
                 new FrameworkPropertyMetadata(Size.Empty));
+
+        public static readonly DependencyProperty FocusRequestedCommandProperty =
+            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<DiagramShapeViewModelBase>), typeof(DiagramNodeControl));
 
         public DiagramNodeControl()
         {
@@ -41,6 +47,20 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (Size)GetValue(ActualSizeProperty); }
             set { SetValue(ActualSizeProperty, value); }
+        }
+
+        public DelegateCommand<DiagramShapeViewModelBase> FocusRequestedCommand
+        {
+            get { return (DelegateCommand<DiagramShapeViewModelBase>)GetValue(FocusRequestedCommandProperty); }
+            set { SetValue(FocusRequestedCommandProperty, value); }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            FocusRequestedCommand?.Execute(DataContext as DiagramShapeViewModelBase);
+
+            // Must stop the event from bubbling up because if its viewport parent receives MouseMove then it forces the node to lose focus.
+            e.Handled = true;
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
