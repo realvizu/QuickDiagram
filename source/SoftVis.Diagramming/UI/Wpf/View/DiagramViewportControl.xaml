@@ -26,10 +26,10 @@
             <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
-            <DataTemplate DataType="{x:Type viewModel:ContainerDiagramNodeViewModelBase}">
-                <view:DiagramNodeControl x:Name="ContainerDiagramNodeControl"
-                                                  ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                                                  FocusRequestedCommand="{Binding Path=DataContext.MiniButtonPanelViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
+            <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
+                <view:DiagramNodeControl x:Name="DiagramNodeControl"
+                                         ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
+                                         FocusRequestedCommand="{Binding Path=DataContext.MiniButtonPanelViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.DiagramNodeDoubleClickedCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}"
@@ -39,7 +39,7 @@
                 </view:DiagramNodeControl>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
+            <DataTemplate x:Key="DiagramConnectorItemTemplate" DataType="{x:Type viewModel:DiagramConnectorViewModel}">
                 <view:DiagramConnectorControl
                     AnimationDuration="{StaticResource DiagramShapeAnimationDuration}"
                     RoutePointsToAnimate="{Binding Path=RoutePoints, Mode=OneWay}">
@@ -143,10 +143,12 @@
 
         <view:DiagramConnectorItemsControl ItemsSource="{Binding DiagramConnectorViewModels}"
                                            ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
+                                           ItemTemplate="{StaticResource DiagramConnectorItemTemplate}"
                                            ItemContainerStyle="{StaticResource DiagramConnectorItemContainerStyle}"/>
 
         <view:DiagramNodeItemsControl ItemsSource="{Binding DiagramNodeViewModels}"
                                       ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
+                                      ItemTemplate="{StaticResource DiagramNodeItemTemplate}"
                                       ItemContainerStyle="{StaticResource DiagramNodeItemContainerStyle}"/>
 
         <ItemsControl DataContext="{Binding MiniButtonPanelViewModel}"

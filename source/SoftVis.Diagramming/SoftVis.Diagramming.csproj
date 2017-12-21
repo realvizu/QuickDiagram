@@ -295,9 +295,6 @@
     <Compile Include="UI\Wpf\Size2DExtensions.cs" />
     <Compile Include="UI\Wpf\Point2DExtensions.cs" />
     <Compile Include="UI\Wpf\Rect2DExtensions.cs" />
-    <Compile Include="UI\Wpf\View\DiagramNodeCoreControl.xaml.cs">
-      <DependentUpon>DiagramNodeCoreControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Wpf\View\IDiagramStlyeProvider.cs" />
     <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
@@ -362,10 +359,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Wpf\View\DiagramImageControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeCoreControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

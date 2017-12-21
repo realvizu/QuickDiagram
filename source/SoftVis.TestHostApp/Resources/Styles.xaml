@@ -35,64 +35,40 @@
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:PropertyDiagramNodeViewModel}">
-        <view:DiagramNodeControl>
-            <view:DiagramNodeControl.Style>
-                <Style TargetType="view:DiagramNodeControl">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-
-                                <Border Background="{Binding DiagramFill, ElementName=ThisControl}">
-                                    <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
-                                               HorizontalAlignment="Left" />
-                                </Border>
-
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </view:DiagramNodeControl.Style>
-        </view:DiagramNodeControl>
+        <Border Background="{Binding DiagramFill, ElementName=ThisControl}"
+                ToolTip="{Binding Path=PropertyDiagramNode.PropertyNode.HasSetter}">
+            <TextBlock Background="Yellow" Text="{Binding Path=Name, Mode=OneWay}" HorizontalAlignment="Left" />
+        </Border>
     </DataTemplate>
 
-    <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:TypeDiagramNodeViewModel}}">
-        <Setter Property="ToolTip" Value="{Binding Path=TypeDiagramNode.TypeNode.FullName}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-
-                    <Border BorderThickness="1"
-                            BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                            Background="{Binding DiagramFill, ElementName=ThisControl}">
-                        <StackPanel Orientation="Vertical" 
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Path=Stereotype}" 
-                                       FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
-                                        Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
-                                       HorizontalAlignment="Center"/>
-                            <StackPanel HorizontalAlignment="Center">
-                                <TextBlock x:Name="TextBlock"
-                                           Text="{Binding Path=Name, Mode=OneWay}" 
-                                           HorizontalAlignment="Left" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
-                            <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=TypeDiagramNode.TypeNode.IsAbstract}" Value="true">
-                            <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
-
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <DataTemplate DataType="{x:Type viewModel:TypeDiagramNodeViewModel}">
+        <Border BorderThickness="1"
+                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                Background="{Binding DiagramFill, ElementName=ThisControl}"
+                ToolTip="{Binding Path=TypeDiagramNode.TypeNode.FullName}">
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <TextBlock Text="{Binding Path=Stereotype}" 
+                           FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
+                           Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
+                           HorizontalAlignment="Center"/>
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock x:Name="TextBlock"
+                               Text="{Binding Path=Name, Mode=OneWay}" 
+                               HorizontalAlignment="Left" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=TypeDiagramNode.TypeNode.IsAbstract}" Value="true">
+                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
 
     <Style TargetType="{x:Type controls:BubbleListBoxItem}"
            d:DataContext="{d:DesignInstance {x:Type testHostAppModeling:TypeNode}}">

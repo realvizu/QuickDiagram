@@ -18,8 +18,10 @@
             <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
             <util:DoubleEnsureNumberConverter x:Key="DoubleEnsureNumberConverter" />
 
-            <DataTemplate DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
-                <view:DiagramNodeCoreControl />
+            <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
+                <view:DiagramNodeControl x:Name="DiagramNodeControl"
+                                         ActualSize="{Binding Path=Size, Mode=OneWayToSource}">
+                </view:DiagramNodeControl>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:DiagramConnectorViewModel}">
@@ -59,6 +61,7 @@
         <ItemsControl
             ItemsSource="{Binding Path=DiagramNodeViewModels}"
             ItemsPanel="{StaticResource DiagramImageItemsPanel}"
+            ItemTemplate="{StaticResource DiagramNodeItemTemplate}"
             ItemContainerStyle="{StaticResource DiagramNodeContainerStyle}"/>
     </Grid>
 </UserControl>

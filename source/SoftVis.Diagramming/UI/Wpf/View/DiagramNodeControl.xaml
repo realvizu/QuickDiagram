@@ -57,7 +57,9 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <view:DiagramNodeCoreControl />
+            
+            <ContentPresenter Content="{Binding}"/>
+            
             <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}" 
                           ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"
                           ItemContainerStyle="{StaticResource RelatedNodeCueContainerStyle}"

@@ -32,68 +32,60 @@
         <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}"/>
     </Style>
 
-    <Style TargetType="{x:Type view:DiagramNodeControl}">
+    <Style TargetType="{x:Type view:DiagramNodeControl}"
+           d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynTypeDiagramNodeViewModel}}">
         <Setter Property="MinHeight" Value="46"/>
         <Setter Property="MaxHeight" Value="112"/>
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
+        <Setter Property="DiagramFill" Value="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
     </Style>
 
-    <Style TargetType="{x:Type view:DiagramNodeCoreControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynTypeDiagramNodeViewModel}}">
-        <Setter Property="DiagramFill" Value="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-
-                    <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
+    <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeViewModel}">
+        <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
 							BorderThickness="1"
                             ToolTip="{Binding Path=FullName}">
-                        <StackPanel Orientation="Vertical">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="16"></RowDefinition>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Image Grid.Row="0" 
-                                   Margin="1" 
-                                   HorizontalAlignment="Left" 
-                                   Source="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
-                                <TextBlock x:Name="TextBlock"
-                                       Grid.Row="1" 
-                                       Margin="4,0,4,0" 
-                                       VerticalAlignment="Top" 
-                                       HorizontalAlignment="Center"
-                                       Text="{Binding Path=Name, Mode=OneWay}" 
-                                       TextWrapping="Wrap"/>
-                            </Grid>
-                            <controls:ConcealableExpander Margin="4,6,4,4"
-                                                          IsButtonVisible="False"
-                                                          Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                          BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-                                                          BorderThickness=".5"
-                                                          IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
-                                <TextBlock FontSize="10"
-                                           TextWrapping="Wrap"
-                                           Text="{Binding Path=Description}"
-                                           ToolTip="{Binding Path=Description}"/>
-                            </controls:ConcealableExpander>
-                        </StackPanel>
-                    </Border>
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="16"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Image Grid.Row="0" 
+                           Margin="1" 
+                           HorizontalAlignment="Left" 
+                           Source="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
+                    <TextBlock x:Name="TextBlock"
+                               Grid.Row="1" 
+                               Margin="4,0,4,0" 
+                               VerticalAlignment="Top" 
+                               HorizontalAlignment="Center"
+                               Text="{Binding Path=Name, Mode=OneWay}" 
+                               TextWrapping="Wrap"/>
+                </Grid>
+                <controls:ConcealableExpander Margin="4,6,4,4"
+                                              IsButtonVisible="False"
+                                              Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                              BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
+                                              BorderThickness=".5"
+                                              IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
+                    <TextBlock FontSize="10"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=Description}"
+                               ToolTip="{Binding Path=Description}"/>
+                </controls:ConcealableExpander>
+            </StackPanel>
+        </Border>
 
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=RoslynTypeDiagramNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
-                            <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
-                            <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
-
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=RoslynTypeDiagramNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+                <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
+                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
 
 </ResourceDictionary>
