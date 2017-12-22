@@ -8,14 +8,14 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// The decoration can be pinned meaning that it won't follow the focus until unpinned.
     /// </summary>
     /// <typeparam name="THostViewModel">The type of the view model that hosts the decorators.</typeparam>
-    public abstract class DecorationManagerViewModelBase<THostViewModel> : ViewModelBase, IFocusTracker<THostViewModel>
-        where THostViewModel : class
+    public abstract class DecorationManagerViewModelBase<THostViewModel> : ViewModelBase, IWpfFocusTracker<THostViewModel>
+        where THostViewModel : class 
     {
         /// <summary>The focused host is the one that the user points to.</summary>
         private THostViewModel _focusedHost;
 
         /// <summary>The current decorators. Null if there's no focused host. </summary>
-        private IEnumerable<IDecoratorViewModel<THostViewModel>> _decorators;
+        private IEnumerable<IUiDecorator<THostViewModel>> _decorators;
 
         /// <summary>The decoration is pinned if it stays visible even when focus is lost from the host.</summary>
         private bool _isDecorationPinned;
@@ -47,18 +47,18 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             }
         }
 
-        public void Focus(THostViewModel hostViewModel)
+        public void Focus(THostViewModel host)
         {
-            if (hostViewModel == _focusedHost)
+            if (host == _focusedHost)
                 return;
 
             Unfocus(_focusedHost);
-            SetFocus(hostViewModel);
+            SetFocus(host);
         }
 
-        public void Unfocus(THostViewModel hostViewModel)
+        public void Unfocus(THostViewModel host)
         {
-            if (_focusedHost == hostViewModel)
+            if (_focusedHost == host)
                 SetFocus(null);
         }
 
@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
             ChangeDecorationTo(_focusedHost);
         }
 
-        protected abstract IEnumerable<IDecoratorViewModel<THostViewModel>> GetDecoratorsFor(THostViewModel hostViewModel);
+        protected abstract IEnumerable<IUiDecorator<THostViewModel>> GetDecoratorsFor(THostViewModel hostViewModel);
 
         private void SetFocus(THostViewModel hostViewModel)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
@@ -9,7 +8,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a visual cue that indicates the availability of related nodes that are not on the diagram yet.
     /// </summary>
-    public class RelatedNodeCueViewModel : DiagramShapeDecoratorViewModelBase
+    public class RelatedNodeCueViewModel : DiagramShapeUiDecoratorViewModelBase
     {
         private readonly IDiagramNode _diagramNode;
         private readonly DirectedModelRelationshipType _directedModelRelationshipType;

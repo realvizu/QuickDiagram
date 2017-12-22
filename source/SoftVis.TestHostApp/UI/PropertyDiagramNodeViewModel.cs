@@ -5,7 +5,7 @@ using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.SoftVis.Util.UI;
 
 namespace Codartis.SoftVis.TestHostApp.UI
 {

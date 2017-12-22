@@ -1,7 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf.Collections;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.Util.UI.Wpf.Collections;
 using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
@@ -36,7 +37,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 buttonViewModel.Dispose();
         }
 
-        protected override IEnumerable<IDecoratorViewModel<IDiagramShapeUi>> GetDecoratorsFor(IDiagramShapeUi hostViewModel)
+        protected override IEnumerable<IUiDecorator<IDiagramShapeUi>> GetDecoratorsFor(IDiagramShapeUi hostViewModel)
         {
             lock (_cacheLockObject)
             {

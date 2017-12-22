@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.SoftVis.Util.UI;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI

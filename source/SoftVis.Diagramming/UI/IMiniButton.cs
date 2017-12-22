@@ -1,12 +1,12 @@
 ﻿using System;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.SoftVis.Util.UI;
 
 namespace Codartis.SoftVis.UI
 {
     /// <summary>
     /// Abstraction of a MiniButton that can be placed on a diagram shape.
     /// </summary>
-    public interface IMiniButton : IDecoratorViewModel<IDiagramShapeUi>, IDisposable
+    public interface IMiniButton : IUiDecorator<IDiagramShapeUi>, IDisposable
     {
     }
 }

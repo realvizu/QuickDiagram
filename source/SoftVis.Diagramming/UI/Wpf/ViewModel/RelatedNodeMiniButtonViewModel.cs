@@ -42,9 +42,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private DiagramNodeViewModelBase HostDiagramNodeViewModel => HostViewModel as DiagramNodeViewModelBase;
 
-        public override void AssociateWith(IDiagramShapeUi diagramNodeViewModel)
+        public override void AssociateWith(IDiagramShapeUi host)
         {
-            base.AssociateWith(diagramNodeViewModel);
+            base.AssociateWith(host);
             UpdateEnabledState();
         }
 

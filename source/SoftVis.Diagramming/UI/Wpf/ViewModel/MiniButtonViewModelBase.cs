@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// A button on a diagram shape.
     /// </summary>
-    public abstract class MiniButtonViewModelBase : DiagramShapeDecoratorViewModelBase, IMiniButton
+    public abstract class MiniButtonViewModelBase : DiagramShapeUiDecoratorViewModelBase, IMiniButton
     {
         private bool _isEnabled;
         private string _name;
