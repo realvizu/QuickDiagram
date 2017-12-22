@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI
 {
@@ -10,7 +11,7 @@ namespace Codartis.SoftVis.UI
     {
         void Initialize(IModelService modelService, IDiagramShapeUiRepository diagramShapeUiRepository);
 
-        IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode);
+        IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode, IFocusTracker<IDiagramShapeUi> focusTracker);
         IDiagramConnectorUi CreateDiagramConnectorUi(IDiagramService diagramService, IDiagramConnector diagramConnector);
     }
 }

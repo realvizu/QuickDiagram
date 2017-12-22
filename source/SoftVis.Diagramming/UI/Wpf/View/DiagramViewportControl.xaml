@@ -29,7 +29,7 @@
             <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                                          ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                                         FocusRequestedCommand="{Binding Path=DataContext.MiniButtonPanelViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}">
+                                         FocusRequestedCommand="{Binding Path=FocusTracker.FocusCommand}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.DiagramNodeDoubleClickedCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}"

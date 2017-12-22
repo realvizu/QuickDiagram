@@ -35,9 +35,11 @@
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:PropertyDiagramNodeViewModel}">
-        <Border Background="{Binding DiagramFill, ElementName=ThisControl}"
-                ToolTip="{Binding Path=PropertyDiagramNode.PropertyNode.HasSetter}">
-            <TextBlock Background="Yellow" Text="{Binding Path=Name, Mode=OneWay}" HorizontalAlignment="Left" />
+        <Border Background="LightGray"
+                HorizontalAlignment="Stretch">
+            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
+                       HorizontalAlignment="Left"
+                       Margin="2"/>
         </Border>
     </DataTemplate>
 

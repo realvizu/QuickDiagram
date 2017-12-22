@@ -151,7 +151,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramNodeUi = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode);
+            var diagramNodeUi = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
 
             diagramNodeUi.SizeChanged += OnDiagramNodeSizeChanged;
             diagramNodeUi.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;

@@ -171,6 +171,8 @@
     <Compile Include="Modeling\Implementation\ModelStore.cs" />
     <Compile Include="Modeling\ModelOrigin.cs" />
     <Compile Include="UI\IContainerDiagramNodeUi.cs" />
+    <Compile Include="UI\IDiagramShapeUi.cs" />
+    <Compile Include="UI\IMiniButton.cs" />
     <Compile Include="UI\IUiService.cs" />
     <Compile Include="UI\IUiServiceFactory.cs" />
     <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />

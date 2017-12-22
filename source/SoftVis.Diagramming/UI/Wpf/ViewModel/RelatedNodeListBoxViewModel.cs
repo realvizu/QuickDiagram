@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
@@ -46,7 +45,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public DiagramShapeViewModelBase OwnerDiagramShape => _ownerButton?.HostViewModel;
+        public IDiagramShapeUi OwnerDiagramShape => _ownerButton?.HostViewModel;
 
         public void Show(RelatedNodeMiniButtonViewModel ownerButton, IEnumerable<IModelNode> items)
         {

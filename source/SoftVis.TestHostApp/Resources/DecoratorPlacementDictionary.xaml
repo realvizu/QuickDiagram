@@ -28,6 +28,12 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatedType}" 
+                                   Vertical="Center" Horizontal="Right" Translate="-0.5,0"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}" 
+                                   Vertical="Center" Horizontal="Left" Translate="0.5,0"/>
     </ext:Dictionary>
 
     <ext:Dictionary x:Key="MiniButtonPlacementDictionary" 
@@ -46,6 +52,12 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatedType}" 
+                                   Vertical="Center" Horizontal="Right" Translate="-3,0"/>
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}" 
+                                   Vertical="Center" Horizontal="Left" Translate="3,0"/>
     </ext:Dictionary>
 
 </ResourceDictionary>

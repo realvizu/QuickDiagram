@@ -3,21 +3,22 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
+using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp.UI
 {
     internal class PropertyDiagramNodeViewModel : DiagramNodeViewModelBase
     {
-        public PropertyDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, PropertyDiagramNode diagramNode)
-            : base(modelService, diagramService, diagramNode)
+        public PropertyDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, IFocusTracker<IDiagramShapeUi> focusTracker,
+            PropertyDiagramNode diagramNode)
+            : base(modelService, diagramService, focusTracker, diagramNode)
         {
         }
 
-        public override object Clone()
-        {
-            return new PropertyDiagramNodeViewModel(ModelService, DiagramService, PropertyDiagramNode) { Size = Size };
-        }
+        public override object Clone() 
+            => new PropertyDiagramNodeViewModel(ModelService, DiagramService, FocusTracker, PropertyDiagramNode) { Size = Size };
 
         public PropertyDiagramNode PropertyDiagramNode => (PropertyDiagramNode)DiagramNode;
 

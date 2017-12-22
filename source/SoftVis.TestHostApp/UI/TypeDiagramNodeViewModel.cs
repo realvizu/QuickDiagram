@@ -3,21 +3,22 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
+using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp.UI
 {
     internal class TypeDiagramNodeViewModel : ContainerDiagramNodeViewModelBase
     {
-        public TypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, TypeDiagramNode diagramNode)
-            : base(modelService, diagramService, diagramNode)
+        public TypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService,
+            IFocusTracker<IDiagramShapeUi> focusTracker, TypeDiagramNode diagramNode)
+            : base(modelService, diagramService, focusTracker, diagramNode)
         {
         }
 
-        public override object Clone()
-        {
-            return new TypeDiagramNodeViewModel(ModelService, DiagramService, TypeDiagramNode) { Size = Size };
-        }
+        public override object Clone() 
+            => new TypeDiagramNodeViewModel(ModelService, DiagramService, FocusTracker, TypeDiagramNode) { Size = Size };
 
         public TypeDiagramNode TypeDiagramNode => (TypeDiagramNode)DiagramNode;
         public string Stereotype => $"<<{TypeDiagramNode.TypeNode.Stereotype.Name.ToLower()}>>";

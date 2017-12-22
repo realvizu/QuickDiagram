@@ -8,8 +8,8 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
     /// The decoration can be pinned meaning that it won't follow the focus until unpinned.
     /// </summary>
     /// <typeparam name="THostViewModel">The type of the view model that hosts the decorators.</typeparam>
-    public abstract class DecorationManagerViewModelBase<THostViewModel> : ViewModelBase
-        where THostViewModel : ViewModelBase
+    public abstract class DecorationManagerViewModelBase<THostViewModel> : ViewModelBase, IFocusTracker<THostViewModel>
+        where THostViewModel : class
     {
         /// <summary>The focused host is the one that the user points to.</summary>
         private THostViewModel _focusedHost;
@@ -68,17 +68,11 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
                 Unfocus(_focusedHost);
         }
 
-        /// <summary>
-        /// Keeps the decorations visible even when the host loses focus.
-        /// </summary>
         public void PinDecoration()
         {
             _isDecorationPinned = true;
         }
 
-        /// <summary>
-        /// Exits the "pinned" mode, that is, lets the decorators disappear when the host loses focus.
-        /// </summary>
         public void UnpinDecoration()
         {
             _isDecorationPinned = false;

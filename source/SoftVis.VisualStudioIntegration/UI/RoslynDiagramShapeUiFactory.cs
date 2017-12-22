@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -18,10 +19,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             IsDescriptionVisible = isDescriptionVisible;
         }
 
-        public override IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode)
+        public override IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode, 
+            IFocusTracker<IDiagramShapeUi> focusTracker)
         {
             if (diagramNode is RoslynTypeDiagramNode roslynTypeDiagramNode)
-                return new RoslynTypeDiagramNodeViewModel(ModelService, diagramService, roslynTypeDiagramNode, IsDescriptionVisible);
+                return new RoslynTypeDiagramNodeViewModel(ModelService, diagramService, focusTracker, roslynTypeDiagramNode, IsDescriptionVisible);
 
             throw new InvalidOperationException($"Unexpected diagram node type {diagramNode?.GetType().Name}");
         }

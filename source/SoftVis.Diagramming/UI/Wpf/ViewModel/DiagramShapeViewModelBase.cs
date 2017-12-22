@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// Abstract base class for diagram shape view models.
     /// </summary>
-    public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase
+    public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase, IDiagramShapeUi
     {
         public IDiagramShape DiagramShape { get; protected set; }
 
@@ -18,7 +18,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramShape = diagramShape;
         }
 
-        public virtual IEnumerable<MiniButtonViewModelBase> CreateMiniButtonViewModels()
+        public abstract object Clone();
+
+        public virtual IEnumerable<IMiniButton> CreateMiniButtons()
         {
             yield break;
         }

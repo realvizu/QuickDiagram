@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.UI
     /// <summary>
     /// Abstraction for the UI of a diagram node.
     /// </summary>
-    public interface IDiagramNodeUi : ICloneable
+    public interface IDiagramNodeUi : IDiagramShapeUi
     {
         IDiagramNode DiagramNode { get; }
 

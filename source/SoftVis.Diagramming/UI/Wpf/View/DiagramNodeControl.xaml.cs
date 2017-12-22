@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 new FrameworkPropertyMetadata(Size.Empty));
 
         public static readonly DependencyProperty FocusRequestedCommandProperty =
-            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<DiagramShapeViewModelBase>), typeof(DiagramNodeControl));
+            DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<IDiagramShapeUi>), typeof(DiagramNodeControl));
 
         public DiagramNodeControl()
         {
@@ -49,9 +49,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ActualSizeProperty, value); }
         }
 
-        public DelegateCommand<DiagramShapeViewModelBase> FocusRequestedCommand
+        public DelegateCommand<IDiagramShapeUi> FocusRequestedCommand
         {
-            get { return (DelegateCommand<DiagramShapeViewModelBase>)GetValue(FocusRequestedCommandProperty); }
+            get { return (DelegateCommand<IDiagramShapeUi>)GetValue(FocusRequestedCommandProperty); }
             set { SetValue(FocusRequestedCommandProperty, value); }
         }
 

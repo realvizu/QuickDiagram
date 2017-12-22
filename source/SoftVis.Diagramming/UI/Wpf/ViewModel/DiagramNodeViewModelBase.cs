@@ -6,6 +6,7 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -19,7 +20,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point _topLeft;
         private Size _size;
         private Rect _animatedRect;
-
+        
+        public  IFocusTracker<IDiagramShapeUi> FocusTracker { get; }
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
@@ -28,7 +30,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> RemoveRequested;
 
         protected DiagramNodeViewModelBase(IModelService modelService, IDiagramService diagramService,
-            IDiagramNode diagramNode)
+            IFocusTracker<IDiagramShapeUi> focusTracker, IDiagramNode diagramNode)
               : base(modelService, diagramService, diagramNode)
         {
             Name = diagramNode.Name;
@@ -36,6 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             TopLeft = diagramNode.TopLeft.ToWpf();
             // Must NOT populate size from model because its value flows from the controls to the models.
 
+            FocusTracker = focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
             DiagramService.DiagramChanged += OnDiagramChanged;
@@ -122,8 +125,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public abstract object Clone();
-
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 
         public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
@@ -132,7 +133,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void ShowRelatedModelNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
             RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        public override IEnumerable<MiniButtonViewModelBase> CreateMiniButtonViewModels()
+        public override IEnumerable<IMiniButton> CreateMiniButtons()
         {
             yield return new CloseMiniButtonViewModel(ModelService, DiagramService);
 

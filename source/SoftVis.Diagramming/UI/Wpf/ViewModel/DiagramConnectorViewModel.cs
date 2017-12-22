@@ -42,10 +42,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramConnector DiagramConnector => (IDiagramConnector) DiagramShape;
 
-        public object Clone()
-        {
-            return new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel);
-        }
+        public override object Clone() 
+            => new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel);
 
         private ConnectorType ConnectorType => DiagramConnector.ConnectorType;
         private bool IsDashed => ConnectorType.ShaftLineType == LineType.Dashed;

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Util.UI.Wpf.Collections;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -10,12 +10,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class ContainerDiagramNodeViewModelBase : DiagramNodeViewModelBase, IContainerDiagramNodeUi
     {
-        public ICollection<DiagramNodeViewModelBase> ChildNodes { get; }
+        public ThreadSafeObservableCollection<DiagramNodeViewModelBase> ChildNodes { get; }
 
-        protected ContainerDiagramNodeViewModelBase(IModelService modelService, IDiagramService diagramService, IDiagramNode diagramNode) 
-            : base(modelService, diagramService, diagramNode)
+        protected ContainerDiagramNodeViewModelBase(IModelService modelService, IDiagramService diagramService,
+            IFocusTracker<IDiagramShapeUi> focusTracker, IDiagramNode diagramNode) 
+            : base(modelService, diagramService, focusTracker, diagramNode)
         {
-            ChildNodes = new ObservableCollection<DiagramNodeViewModelBase>();
+            ChildNodes = new ThreadSafeObservableCollection<DiagramNodeViewModelBase>();
         }
 
         public override void Dispose()

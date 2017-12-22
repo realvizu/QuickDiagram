@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -18,9 +20,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
 
-        public RoslynTypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, 
+        public RoslynTypeDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, IFocusTracker<IDiagramShapeUi> focusTracker,
             RoslynTypeDiagramNode roslynTypeDiagramNode, bool isDescriptionVisible)
-            : base(modelService, diagramService, roslynTypeDiagramNode)
+            : base(modelService, diagramService, focusTracker, roslynTypeDiagramNode)
         {
             IsDescriptionVisible = isDescriptionVisible;
             PopulateFromDiagramNode(roslynTypeDiagramNode);
@@ -29,7 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public RoslynTypeDiagramNode RoslynTypeDiagramNode => (RoslynTypeDiagramNode) DiagramNode;
 
         public override object Clone() 
-            => new RoslynTypeDiagramNodeViewModel(ModelService, DiagramService, RoslynTypeDiagramNode, IsDescriptionVisible) {Size = Size};
+            => new RoslynTypeDiagramNodeViewModel(ModelService, DiagramService, FocusTracker, RoslynTypeDiagramNode, IsDescriptionVisible) {Size = Size};
 
         protected override IEnumerable<RelatedNodeType> GetRelatedNodeTypes()
         {
