@@ -47,7 +47,7 @@
                                      ViewportPanCommand="{Binding Path=ViewportCalculator.PanCommand}"
                                      ViewportZoomCommand="{Binding Path=ViewportCalculator.ZoomCommand}"
                                      ViewportZoomToContentCommand="{Binding Path=ViewportCalculator.ZoomToContentCommand}"
-                                     DecoratedDiagramShape="{Binding Path=MiniButtonPanelViewModel.DecoratedHost}"
+                                     MiniButtonHostDiagramShape="{Binding Path=MiniButtonPanelViewModel.DecoratedHost}"
                                      UnfocusAllCommand="{Binding Path=MiniButtonPanelViewModel.UnfocusAllCommand}"
                                      Width="{Binding Path=ActualWidth, ElementName=Canvas}" 
                                      Height="{Binding Path=ActualHeight, ElementName=Canvas}"/>

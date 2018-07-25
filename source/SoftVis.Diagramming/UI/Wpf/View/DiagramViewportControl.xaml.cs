@@ -56,8 +56,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// <summary>
         /// The diagram node view model that currently owns the decorators (mini buttons).
         /// </summary>
-        public static readonly DependencyProperty DecoratedDiagramShapeProperty =
-            DependencyProperty.Register("DecoratedDiagramShape", typeof(DiagramShapeViewModelBase), typeof(DiagramViewportControl),
+        public static readonly DependencyProperty MiniButtonHostDiagramShapeProperty =
+            DependencyProperty.Register("MiniButtonHostDiagramShape", typeof(DiagramShapeViewModelBase), typeof(DiagramViewportControl),
                 new PropertyMetadata(OnDecoratedDiagramShapeChanged));
 
         private static void OnDecoratedDiagramShapeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -65,10 +65,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         /// <summary>
         /// The control that presents the currently decorated diagram node.
-        /// Populated automatically when DecoratedDiagramShape changes.
+        /// Populated automatically when MiniButtonHostDiagramShape changes.
         /// </summary>
-        public static readonly DependencyProperty DecoratedDiagramNodeControlProperty =
-            DependencyProperty.Register("DecoratedDiagramNodeControl", typeof(UIElement), typeof(DiagramViewportControl));
+        public static readonly DependencyProperty MiniButtonHostControlProperty =
+            DependencyProperty.Register("MiniButtonHostControl", typeof(UIElement), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty WidgetPanCommandProperty =
             DependencyProperty.Register("WidgetPanCommand", typeof(VectorDelegateCommand), typeof(DiagramViewportControl));
@@ -243,7 +243,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnDecoratedDiagramShapeChanged()
         {
-            DecoratedDiagramNodeControl = this.FindFirstDescendant<DiagramNodeItemsControl>()?.GetPresenterOf(DecoratedDiagramShape);
+            MiniButtonHostControl = this.FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == MiniButtonHostDiagramShape);
         }
 
         private void UnfocusAllDiagramShapes()

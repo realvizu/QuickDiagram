@@ -44,16 +44,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportTransformProperty, value); }
         }
 
-        public DiagramShapeViewModelBase DecoratedDiagramShape
+        public DiagramShapeViewModelBase MiniButtonHostDiagramShape
         {
-            get { return (DiagramShapeViewModelBase)GetValue(DecoratedDiagramShapeProperty); }
-            set { SetValue(DecoratedDiagramShapeProperty, value); }
+            get { return (DiagramShapeViewModelBase)GetValue(MiniButtonHostDiagramShapeProperty); }
+            set { SetValue(MiniButtonHostDiagramShapeProperty, value); }
         }
 
-        public UIElement DecoratedDiagramNodeControl
+        public UIElement MiniButtonHostControl
         {
-            get { return (UIElement)GetValue(DecoratedDiagramNodeControlProperty); }
-            set { SetValue(DecoratedDiagramNodeControlProperty, value); }
+            get { return (UIElement)GetValue(MiniButtonHostControlProperty); }
+            set { SetValue(MiniButtonHostControlProperty, value); }
         }
 
         public VectorDelegateCommand WidgetPanCommand

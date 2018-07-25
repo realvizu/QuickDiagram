@@ -8,13 +8,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// A widget on a diagram shape. 
     /// Its placement is calculated by the view using the PlacementKey.
     /// </summary>
-    public abstract class DiagramShapeUiDecoratorViewModelBase : ModelObserverViewModelBase, IUiDecorator<IDiagramShapeUi>
+    public abstract class DiagramShapeDecoratorViewModelBase : ModelObserverViewModelBase, IUiDecorator<IDiagramShapeUi>
     {
         private bool _isVisible;
 
         public IDiagramShapeUi HostViewModel { get; private set; }
 
-        protected DiagramShapeUiDecoratorViewModelBase(IModelService modelService, IDiagramService diagramService)
+        protected DiagramShapeDecoratorViewModelBase(IModelService modelService, IDiagramService diagramService)
             : base(modelService, diagramService)
         {
             _isVisible = false;

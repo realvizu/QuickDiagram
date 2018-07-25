@@ -212,7 +212,7 @@
     <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
     <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeUiDecoratorViewModelBase.cs" />
+    <Compile Include="UI\Wpf\ViewModel\DiagramShapeDecoratorViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\ModelObserverViewModelBase.cs" />
     <Compile Include="UI\Wpf\ViewModel\RelatedNodeCueViewModel.cs" />
     <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />

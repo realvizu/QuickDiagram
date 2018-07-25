@@ -6,9 +6,9 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// This panel arranges its children relative to a chosen UI element (the decorated element).
-    /// The decorated UI element must be a canvas child. 
-    /// This panel binds to the decorated elements's positions and transform properties 
-    /// and also to its parent canvas' transform so it can arrange its children accordingly.
+    /// The decorated UI element must be a canvas child inside an AnimatedContentPresenter. 
+    /// This panel binds to the presenter's positions and transform properties 
+    /// and also to the canvas' transform so it can arrange its children accordingly.
     /// The decorated element can be changed dynamically.
     /// The children's arrangement relative to the decorated element are specified with placement specifications.
     /// (See DecoratorPanel.)
@@ -20,18 +20,18 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
                 new FrameworkPropertyMetadata(OnDecoratedElementChanged));
 
         private static void OnDecoratedElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((CanvasChildDecoratorPanel)d).OnDecoratedElementChanged();
+            => ((CanvasChildDecoratorPanel) d).OnDecoratedElementChanged();
 
-        public static readonly DependencyProperty DecoratedElementTopProperty =
-            DependencyProperty.Register("DecoratedElementTop", typeof(double), typeof(CanvasChildDecoratorPanel),
+        public static readonly DependencyProperty DecoratedPresenterTopProperty =
+            DependencyProperty.Register("DecoratedPresenterTop", typeof(double), typeof(CanvasChildDecoratorPanel),
                 new PropertyMetadata(0d, UpdateRenderTransform));
 
-        public static readonly DependencyProperty DecoratedElementLeftProperty =
-            DependencyProperty.Register("DecoratedElementLeft", typeof(double), typeof(CanvasChildDecoratorPanel),
+        public static readonly DependencyProperty DecoratedPresenterLeftProperty =
+            DependencyProperty.Register("DecoratedPresenterLeft", typeof(double), typeof(CanvasChildDecoratorPanel),
                 new PropertyMetadata(0d, UpdateRenderTransform));
 
-        public static readonly DependencyProperty DecoratedElementTransformProperty =
-            DependencyProperty.Register("DecoratedElementTransform", typeof(Transform), typeof(CanvasChildDecoratorPanel),
+        public static readonly DependencyProperty DecoratedPresenterTransformProperty =
+            DependencyProperty.Register("DecoratedPresenterTransform", typeof(Transform), typeof(CanvasChildDecoratorPanel),
                 new PropertyMetadata(Transform.Identity, UpdateRenderTransform));
 
         public static readonly DependencyProperty DecoratedCanvasTransformProperty =
@@ -39,35 +39,35 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
                 new PropertyMetadata(Transform.Identity, UpdateRenderTransform));
 
         private static void UpdateRenderTransform(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((CanvasChildDecoratorPanel)d).UpdateRenderTransform();
+            => ((CanvasChildDecoratorPanel) d).UpdateRenderTransform();
 
         public UIElement DecoratedElement
         {
-            get { return (UIElement)GetValue(DecoratedElementProperty); }
+            get { return (UIElement) GetValue(DecoratedElementProperty); }
             set { SetValue(DecoratedElementProperty, value); }
         }
 
-        public double DecoratedElementTop
+        public double DecoratedPresenterTop
         {
-            get { return (double)GetValue(DecoratedElementTopProperty); }
-            set { SetValue(DecoratedElementTopProperty, value); }
+            get { return (double) GetValue(DecoratedPresenterTopProperty); }
+            set { SetValue(DecoratedPresenterTopProperty, value); }
         }
 
-        public double DecoratedElementLeft
+        public double DecoratedPresenterLeft
         {
-            get { return (double)GetValue(DecoratedElementLeftProperty); }
-            set { SetValue(DecoratedElementLeftProperty, value); }
+            get { return (double) GetValue(DecoratedPresenterLeftProperty); }
+            set { SetValue(DecoratedPresenterLeftProperty, value); }
         }
 
-        public Transform DecoratedElementTransform
+        public Transform DecoratedPresenterTransform
         {
-            get { return (Transform)GetValue(DecoratedElementTransformProperty); }
-            set { SetValue(DecoratedElementTransformProperty, value); }
+            get { return (Transform) GetValue(DecoratedPresenterTransformProperty); }
+            set { SetValue(DecoratedPresenterTransformProperty, value); }
         }
 
         public Transform DecoratedCanvasTransform
         {
-            get { return (Transform)GetValue(DecoratedCanvasTransformProperty); }
+            get { return (Transform) GetValue(DecoratedCanvasTransformProperty); }
             set { SetValue(DecoratedCanvasTransformProperty, value); }
         }
 
@@ -84,19 +84,25 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             if (DecoratedElement == null)
             {
                 this.ClearBinding(DecoratedCanvasTransformProperty);
-                this.ClearBinding(DecoratedElementTransformProperty);
-                this.ClearBinding(DecoratedElementTopProperty);
-                this.ClearBinding(DecoratedElementLeftProperty);
+                this.ClearBinding(DecoratedPresenterTransformProperty);
+                this.ClearBinding(DecoratedPresenterTopProperty);
+                this.ClearBinding(DecoratedPresenterLeftProperty);
             }
             else
             {
                 var decoratedCanvas = DecoratedElement.FindAncestor<Canvas>();
                 if (decoratedCanvas != null)
+                {
                     this.SetBinding(DecoratedCanvasTransformProperty, decoratedCanvas, RenderTransformProperty);
+                }
 
-                this.SetBinding(DecoratedElementTransformProperty, DecoratedElement, RenderTransformProperty);
-                this.SetBinding(DecoratedElementTopProperty, DecoratedElement, Canvas.TopProperty);
-                this.SetBinding(DecoratedElementLeftProperty, DecoratedElement, Canvas.LeftProperty);
+                var decoratedPresenter = DecoratedElement.FindAncestor<AnimatedContentPresenter>();
+                if (decoratedPresenter != null)
+                {
+                    this.SetBinding(DecoratedPresenterTransformProperty, decoratedPresenter, RenderTransformProperty);
+                    this.SetBinding(DecoratedPresenterTopProperty, decoratedPresenter, Canvas.TopProperty);
+                    this.SetBinding(DecoratedPresenterLeftProperty, decoratedPresenter, Canvas.LeftProperty);
+                }
             }
         }
 
@@ -107,14 +113,16 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
 
         private Transform CreateRenderTransform()
         {
-            if (DecoratedElement == null)
+            var decoratedCanvas = DecoratedElement?.FindAncestor<Canvas>();
+            if (decoratedCanvas == null)
                 return Transform.Identity;
 
-            var decoratedTranslateTransform = new TranslateTransform(DecoratedElementLeft, DecoratedElementTop);
+            var transformFromDecoratedElementToCanvas = DecoratedElement.TransformToAncestor(decoratedCanvas) as Transform;
+            if (transformFromDecoratedElementToCanvas == null)
+                return Transform.Identity;
 
             var transformGroup = new TransformGroup();
-            transformGroup.Children.Add(DecoratedElementTransform);
-            transformGroup.Children.Add(decoratedTranslateTransform);
+            transformGroup.Children.Add(transformFromDecoratedElementToCanvas);
             transformGroup.Children.Add(DecoratedCanvasTransform);
             return transformGroup;
         }

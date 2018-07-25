@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for a visual cue that indicates the availability of related nodes that are not on the diagram yet.
     /// </summary>
-    public class RelatedNodeCueViewModel : DiagramShapeUiDecoratorViewModelBase
+    public class RelatedNodeCueViewModel : DiagramShapeDecoratorViewModelBase
     {
         private readonly IDiagramNode _diagramNode;
         private readonly DirectedModelRelationshipType _directedModelRelationshipType;

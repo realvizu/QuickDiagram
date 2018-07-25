@@ -1,6 +1,4 @@
-﻿using System.Windows;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util.UI.Wpf;
+﻿using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util.UI.Wpf.Controls;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -10,16 +8,5 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     internal class DiagramNodeItemsControl : AnimatedItemsControl<DiagramNodeViewModelBase, AnimatedRectContentPresenter>
     {
-        /// <summary>
-        /// Returns the control that presents the given diagram shape.
-        /// </summary>
-        /// <param name="diagramShape">A diagram shape view model.</param>
-        /// <returns>The control that presents the given diagram shape.</returns>
-        public UIElement GetPresenterOf(DiagramShapeViewModelBase diagramShape)
-        {
-            return this.
-                FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == diagramShape)?.
-                FindAncestor<AnimatedRectContentPresenter>();
-        }
     }
 }
