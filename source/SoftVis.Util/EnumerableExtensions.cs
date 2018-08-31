@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Util
 {
@@ -44,6 +45,7 @@ namespace Codartis.SoftVis.Util
                 if (comparer.Equals(item, value)) return index;
                 index++;
             }
+
             return -1;
         }
 
@@ -61,6 +63,20 @@ namespace Codartis.SoftVis.Util
         }
 
         public static IEnumerable<T> Except<T>(this IEnumerable<T> collection, T item) => collection.Except(item.ToEnumerable());
+
+        [NotNull]
+        [ItemNotNull]
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> enumeration)
+        {
+            return enumeration.Where(i => i != null);
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        public static async Task<IEnumerable<TResult>> SelectAsync<T, TResult>(this IEnumerable<T> enumeration, Func<T, Task<TResult>> func)
+        {
+            return await Task.WhenAll(enumeration.Select(func));
+        }
 
         public static async Task<IEnumerable<TResult>> SelectManyAsync<T, TResult>(this IEnumerable<T> enumeration, Func<T, Task<IEnumerable<TResult>>> func)
         {

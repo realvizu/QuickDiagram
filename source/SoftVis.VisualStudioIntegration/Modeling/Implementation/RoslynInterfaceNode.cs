@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
             => new RoslynInterfaceNode(id, EnsureNamedTypeSymbol(newSymbol));
 
-        public override Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider,
+        public override async Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
             var result = Enumerable.Empty<RelatedSymbolPair>();
@@ -28,12 +28,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 result = result.Concat(GetBaseInterfaces(NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.Subtype)
-                result = result.Concat(GetDerivedInterfaces(roslynModelProvider, NamedTypeSymbol));
+                result = result.Concat(await GetDerivedInterfacesAsync(roslynModelProvider, NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.ImplementerType)
-                result = result.Concat(GetImplementingTypes(roslynModelProvider, NamedTypeSymbol));
+                result = result.Concat(await GetImplementingTypesAsync(roslynModelProvider, NamedTypeSymbol));
 
-            return Task.FromResult(result);
+            return result;
         }
 
         private static IEnumerable<RelatedSymbolPair> GetBaseInterfaces(INamedTypeSymbol interfaceSymbol)

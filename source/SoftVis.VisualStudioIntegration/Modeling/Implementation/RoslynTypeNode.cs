@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,52 +55,58 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 .Select(i => new RelatedSymbolPair(classSymbol, i, DirectedRelationshipTypes.Subtype));
         }
 
-        protected static IEnumerable<RelatedSymbolPair> GetImplementingTypes(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
+        protected static async Task<IEnumerable<RelatedSymbolPair>> GetImplementingTypesAsync(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
-            return FindImplementingTypes(workspace, interfaceSymbol)
-                .Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.ImplementerType));
+            var implementingTypes = await FindImplementingTypesAsync(workspace, interfaceSymbol);
+            return implementingTypes.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.ImplementerType));
         }
 
-        protected static IEnumerable<RelatedSymbolPair> GetDerivedInterfaces(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
+        protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedInterfacesAsync(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
-            return FindDerivedInterfaces(workspace, interfaceSymbol)
-                .Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.Subtype));
+            var derivedInterfaces = await FindDerivedInterfacesAsync(workspace, interfaceSymbol);
+            return derivedInterfaces.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.Subtype));
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindImplementingTypes(Workspace workspace, INamedTypeSymbol interfaceSymbol)
+        private static async Task<IEnumerable<INamedTypeSymbol>> FindImplementingTypesAsync(Workspace workspace, INamedTypeSymbol interfaceSymbol)
         {
-            var implementerSymbols = SymbolFinder.FindImplementationsAsync(interfaceSymbol, workspace.CurrentSolution).Result;
+            var result = new List<INamedTypeSymbol>();
+
+            var implementerSymbols = await SymbolFinder.FindImplementationsAsync(interfaceSymbol, workspace.CurrentSolution);
             foreach (var namedTypeSymbol in implementerSymbols.OfType<INamedTypeSymbol>())
             {
                 var interfaces = namedTypeSymbol.Interfaces.Select(i => i.OriginalDefinition);
                 if (interfaces.Any(i => i.SymbolEquals(interfaceSymbol)))
-                    yield return namedTypeSymbol;
+                    result.Add(namedTypeSymbol);
             }
 
             // For some reason SymbolFinder does not find implementer structs. So we also make a search with a visitor.
 
-            foreach (var compilation in GetCompilations(workspace))
+            foreach (var compilation in await GetCompilationsAsync(workspace))
             {
                 var visitor = new ImplementingTypesFinderVisitor(interfaceSymbol);
                 compilation.Assembly?.Accept(visitor);
 
-                foreach (var descendant in visitor.ImplementingTypeSymbols.Where(i => i.TypeKind == TypeKind.Struct))
-                    yield return descendant;
+                result.AddRange(visitor.ImplementingTypeSymbols.Where(i => i.TypeKind == TypeKind.Struct));
             }
+
+            return result;
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindDerivedInterfaces(Workspace workspace, INamedTypeSymbol interfaceSymbol)
+        private static async Task<IEnumerable<INamedTypeSymbol>> FindDerivedInterfacesAsync(Workspace workspace, INamedTypeSymbol interfaceSymbol)
         {
-            foreach (var compilation in GetCompilations(workspace))
+            var result = new List<INamedTypeSymbol>();
+
+            foreach (var compilation in await GetCompilationsAsync(workspace))
             {
                 var visitor = new DerivedInterfacesFinderVisitor(interfaceSymbol);
                 compilation.Assembly?.Accept(visitor);
 
-                foreach (var descendant in visitor.DerivedInterfaces)
-                    yield return descendant;
+                result.AddRange(visitor.DerivedInterfaces);
             }
+
+            return result;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 
@@ -32,10 +33,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return Task.FromResult(Enumerable.Empty<RelatedSymbolPair>());
         }
 
-        protected static IEnumerable<Compilation> GetCompilations(Workspace workspace)
+        protected static async Task<IEnumerable<Compilation>> GetCompilationsAsync(Workspace workspace)
         {
-            return workspace?.CurrentSolution?.Projects.Select(i => i?.GetCompilationAsync().Result).Where(i => i != null) 
-                ?? Enumerable.Empty<Compilation>();
+            var enumerable = workspace?.CurrentSolution?.Projects?.Where(i => i != null);
+            var compilations = await enumerable.SelectAsync(async i => await i.GetCompilationAsync());
+            return compilations.WhereNotNull();
         }
 
         public IRoslynModelNode UpdateRoslynSymbol(ISymbol newSymbol)
