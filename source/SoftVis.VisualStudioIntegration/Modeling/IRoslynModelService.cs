@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related node. Default is false.</param>
-        void ExtendModelWithRelatedNodes(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null, 
+        Task ExtendModelWithRelatedNodesAsync(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null, 
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
 
         /// <summary>
@@ -55,7 +55,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="visibleModelNodeIds">The IDs of those model nodes that are visible on any of the diagrams.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
-        void UpdateFromSource(IEnumerable<ModelNodeId> visibleModelNodeIds,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+        Task UpdateFromSourceAsync(
+            IEnumerable<ModelNodeId> visibleModelNodeIds,
+            CancellationToken cancellationToken = default(CancellationToken), 
+            IIncrementalProgress progress = null);
     }
 }

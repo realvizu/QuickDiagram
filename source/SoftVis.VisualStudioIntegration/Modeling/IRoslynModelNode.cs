@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -28,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// Null means all.
         /// </param>
         /// <returns>Related Roslyn symbols.</returns>
-        IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, 
+        Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider, 
             DirectedModelRelationshipType? directedModelRelationshipType = null);
     }
 }

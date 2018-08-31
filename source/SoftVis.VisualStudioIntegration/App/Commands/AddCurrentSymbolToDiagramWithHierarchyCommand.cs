@@ -58,23 +58,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             return diagramNodes;
         }
 
-        private async Task ExtendModelWithRelatedEntitiesAsync(IRoslynModelNode modelEntity, 
+        private async Task ExtendModelWithRelatedEntitiesAsync(IRoslynModelNode modelEntity,
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            await Task.Run(() => ExtendModelWithRelatedEntities(modelEntity, cancellationToken, progress), cancellationToken);
+            await Task.WhenAll(
+                ModelService.ExtendModelWithRelatedNodesAsync(modelEntity, DirectedRelationshipTypes.BaseType, cancellationToken, progress, recursive: true),
+                ModelService.ExtendModelWithRelatedNodesAsync(modelEntity, DirectedRelationshipTypes.Subtype, cancellationToken, progress, recursive: true)
+            );
         }
 
-        private void ExtendModelWithRelatedEntities(IRoslynModelNode modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress)
-        {
-            ModelService.ExtendModelWithRelatedNodes(modelEntity, DirectedRelationshipTypes.BaseType, cancellationToken, progress, recursive: true);
-            ModelService.ExtendModelWithRelatedNodes(modelEntity, DirectedRelationshipTypes.Subtype, cancellationToken, progress, recursive: true);
-        }
-
-        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynModelNode modelNode, 
+        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynModelNode modelNode,
             CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             return await Task.Run(
-                () => DiagramServices.ShowModelNodeWithHierarchy(modelNode, cancellationToken, progress).ToArray(), 
+                () => DiagramServices.ShowModelNodeWithHierarchy(modelNode, cancellationToken, progress).ToArray(),
                 cancellationToken);
         }
     }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -17,12 +19,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
             => new RoslynStructNode(id, EnsureNamedTypeSymbol(newSymbol));
 
-        public override IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
+        public override Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
+            var result = Enumerable.Empty<RelatedSymbolPair>();
+
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.ImplementedInterface)
-                foreach (var implementedSymbolRelation in GetImplementedInterfaces(NamedTypeSymbol))
-                    yield return implementedSymbolRelation;
+                result = result.Concat(GetImplementedInterfaces(NamedTypeSymbol));
+
+            return Task.FromResult(result);
         }
     }
 }

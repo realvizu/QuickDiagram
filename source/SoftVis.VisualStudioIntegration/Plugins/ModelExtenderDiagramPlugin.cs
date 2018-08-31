@@ -15,22 +15,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            DiagramService.DiagramChanged += OnDiagramChangedAsync;
         }
 
         public override void Dispose()
         {
-            DiagramService.DiagramChanged -= OnDiagramChanged;
+            DiagramService.DiagramChanged -= OnDiagramChangedAsync;
         }
 
         private IRoslynModelService RoslynModelService => (IRoslynModelService) ModelService;
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChangedAsync(DiagramEventBase diagramEvent)
         {
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    RoslynModelService.ExtendModelWithRelatedNodes(diagramNodeAddedEvent.DiagramNode.ModelNode, recursive: false);
+                    // It's a fire-and-forget async call, no need to await.
+                    var task = RoslynModelService.ExtendModelWithRelatedNodesAsync(diagramNodeAddedEvent.DiagramNode.ModelNode, recursive: false);
                     break;
             }
         }

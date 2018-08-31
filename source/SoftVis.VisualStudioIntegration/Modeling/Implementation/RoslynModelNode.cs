@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
@@ -24,8 +25,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public bool SymbolEquals(ISymbol roslynSymbol) => RoslynSymbol.SymbolEquals(roslynSymbol);
 
-        public virtual IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
-            DirectedModelRelationshipType? directedModelRelationshipType = null) => Enumerable.Empty<RelatedSymbolPair>();
+        public virtual Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
+            IRoslynModelProvider roslynModelProvider,
+            DirectedModelRelationshipType? directedModelRelationshipType = null)
+        {
+            return Task.FromResult(Enumerable.Empty<RelatedSymbolPair>());
+        }
 
         protected static IEnumerable<Compilation> GetCompilations(Workspace workspace)
         {

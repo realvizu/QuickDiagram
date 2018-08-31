@@ -45,9 +45,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             var visibleModelNodeIds = DiagramServices.Diagram.Nodes.Select(i => i.ModelNode.Id);
 
-            await Task.Run(
-                () => ModelService.UpdateFromSource(visibleModelNodeIds, cancellationToken, progress),
-                cancellationToken);
+            await ModelService.UpdateFromSourceAsync(visibleModelNodeIds, cancellationToken, progress);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -19,20 +21,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
             => new RoslynClassNode(id, EnsureNamedTypeSymbol(newSymbol));
 
-        public override IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
+        public override async Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
+            var result = Enumerable.Empty<RelatedSymbolPair>();
+
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.BaseType)
-                foreach (var baseSymbolRelation in GetBaseTypes(NamedTypeSymbol))
-                    yield return baseSymbolRelation;
+                result = result.Concat(GetBaseTypes(NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.Subtype)
-                foreach (var derivedSymbolRelation in GetDerivedTypes(roslynModelProvider, NamedTypeSymbol))
-                    yield return derivedSymbolRelation;
+                result = result.Concat(await GetDerivedTypesAsync(roslynModelProvider, NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.ImplementedInterface)
-                foreach (var implementedSymbolRelation in GetImplementedInterfaces(NamedTypeSymbol))
-                    yield return implementedSymbolRelation;
+                result = result.Concat(GetImplementedInterfaces(NamedTypeSymbol));
+
+            return result;
         }
 
         private static IEnumerable<RelatedSymbolPair> GetBaseTypes(INamedTypeSymbol roslynSymbol)

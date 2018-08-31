@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -18,20 +19,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
             => new RoslynInterfaceNode(id, EnsureNamedTypeSymbol(newSymbol));
 
-        public override IEnumerable<RelatedSymbolPair> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider,
+        public override Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
+            var result = Enumerable.Empty<RelatedSymbolPair>();
+
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.BaseType)
-                foreach (var baseSymbolRelation in GetBaseInterfaces(NamedTypeSymbol))
-                    yield return baseSymbolRelation;
+                result = result.Concat(GetBaseInterfaces(NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.Subtype)
-                foreach (var derivedSymbolRelation in GetDerivedInterfaces(roslynModelProvider, NamedTypeSymbol))
-                    yield return derivedSymbolRelation;
+                result = result.Concat(GetDerivedInterfaces(roslynModelProvider, NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.ImplementerType)
-                foreach (var implementingSymbolRelation in GetImplementingTypes(roslynModelProvider, NamedTypeSymbol))
-                    yield return implementingSymbolRelation;
+                result = result.Concat(GetImplementingTypes(roslynModelProvider, NamedTypeSymbol));
+
+            return Task.FromResult(result);
         }
 
         private static IEnumerable<RelatedSymbolPair> GetBaseInterfaces(INamedTypeSymbol interfaceSymbol)

@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
@@ -41,11 +43,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     DirectedRelationshipTypes.ImplementedInterface);
         }
 
-        protected static IEnumerable<RelatedSymbolPair> GetDerivedTypes(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol classSymbol)
+        protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedTypesAsync(
+            IRoslynModelProvider roslynModelProvider, 
+            INamedTypeSymbol classSymbol)
         {
             var workspace = roslynModelProvider.GetWorkspace();
 
-            return SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution).Result
+            var derivedClasses = await SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution);
+
+            return derivedClasses
                 .Where(i => classSymbol.SymbolEquals(i.BaseType.OriginalDefinition) && i.TypeKind == TypeKind.Class)
                 .Select(i => new RelatedSymbolPair(classSymbol, i, DirectedRelationshipTypes.Subtype));
         }

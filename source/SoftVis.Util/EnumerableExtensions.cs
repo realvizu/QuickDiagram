@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Codartis.SoftVis.Util
 {
@@ -59,5 +61,10 @@ namespace Codartis.SoftVis.Util
         }
 
         public static IEnumerable<T> Except<T>(this IEnumerable<T> collection, T item) => collection.Except(item.ToEnumerable());
+
+        public static async Task<IEnumerable<TResult>> SelectManyAsync<T, TResult>(this IEnumerable<T> enumeration, Func<T, Task<IEnumerable<TResult>>> func)
+        {
+            return (await Task.WhenAll(enumeration.Select(func))).SelectMany(s => s);
+        }
     }
 }
