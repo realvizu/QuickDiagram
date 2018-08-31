@@ -72,7 +72,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public async Task UpdateFromSourceAsync(IEnumerable<ModelNodeId> visibleModelNodeIds,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
         {
-            UpdateEntitiesFromSource(cancellationToken, progress);
+            await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
             await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);
 
             foreach (var modelNodeId in visibleModelNodeIds)
@@ -85,13 +85,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private async Task<INamedTypeSymbol> GetCurrentSymbolAsync()
             => await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
 
-        private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private async Task UpdateEntitiesFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var workspace = _roslynModelProvider.GetWorkspace();
-            var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken))
-                .Select(i => i.Result).ToArray();
+            var projects = workspace.CurrentSolution.Projects;
+            var compilations = (await projects.SelectAsync(async i => await i.GetCompilationAsync(cancellationToken))).ToArray();
 
             foreach (var roslynTypeNode in CurrentRoslynModel.RoslynNodes)
             {

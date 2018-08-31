@@ -98,7 +98,6 @@
     <Compile Include="App\Commands\AsyncCommandWithParameterBase.cs" />
     <Compile Include="App\Commands\DiagramImageCreatorCommandBase.cs" />
     <Compile Include="App\AsyncCommandBase.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Plugins\ModelExtenderDiagramPlugin.cs" />
     <Compile Include="App\Selectors\DpiSelector.cs" />
     <Compile Include="App\Selectors\ISelector.cs" />
