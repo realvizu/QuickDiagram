@@ -87,13 +87,13 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
-        public void OnUiInitialized(Window mainWindow, IDiagramStlyeProvider diagramStlyeProvider)
+        public void OnUiInitialized(Window mainWindow, IDiagramStyleProvider diagramStyleProvider)
         {
             _window = mainWindow;
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            _uiService.Initialize(resourceDictionary, diagramStlyeProvider);
+            _uiService.Initialize(resourceDictionary, diagramStyleProvider);
         }
 
         private void OnShowModelItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes)

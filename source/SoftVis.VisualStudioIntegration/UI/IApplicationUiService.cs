@@ -3,23 +3,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
     /// <summary>
-    /// Extends UI operations with roslyn-specific ones.
+    /// Extends UI service with application specific operations.
     /// </summary>
-    internal interface IRoslynUiService : IWpfUiService
+    internal interface IApplicationUiService : IWpfUiService
     {
+        DiagramControl DiagramControl { get; }
+
         Dpi ImageExportDpi { get; set; }
 
         void ShowDiagramWindow();
         void ShowMessageBox(string message);
         void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
         string SelectSaveFilename(string title, string filter);
-        ProgressDialog CreateProgressDialog(string text, int maxProgress = 0);
+        Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0);
 
         void ExpandAllNodes();
         void CollapseAllNodes();

@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.UI.Wpf
     public class WpfUiService : IWpfUiService
     {
         private ResourceDictionary _resourceDictionary;
-        private IDiagramStlyeProvider _diagramStlyeProvider;
+        private IDiagramStyleProvider _diagramStyleProvider;
 
         public DiagramViewModel DiagramViewModel { get; }
 
@@ -27,10 +27,10 @@ namespace Codartis.SoftVis.UI.Wpf
             DiagramViewModel = diagramViewModel;
         }
 
-        public void Initialize(ResourceDictionary resourceDictionary, IDiagramStlyeProvider diagramStlyeProvider)
+        public void Initialize(ResourceDictionary resourceDictionary, IDiagramStyleProvider diagramStyleProvider)
         {
             _resourceDictionary = resourceDictionary;
-            _diagramStlyeProvider = diagramStlyeProvider;
+            _diagramStyleProvider = diagramStyleProvider;
         }
 
         public async Task<BitmapSource> CreateDiagramImageAsync(double dpi, double margin,
@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf
             try
             {
                 // The image creator must be created on the UI thread so it can read the necessary view and view model data.
-                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, _diagramStlyeProvider, _resourceDictionary);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, _diagramStyleProvider, _resourceDictionary);
 
                 return await Task.Factory.StartSTA(() =>
                     diagramImageCreator.CreateImage(dpi, margin, cancellationToken, progress, maxProgress), cancellationToken);

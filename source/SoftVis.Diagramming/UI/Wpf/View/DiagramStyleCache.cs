@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// Stores diagram style properties.
     /// </summary>
-    internal class DiagramStyleCache : IDiagramStlyeProvider
+    internal class DiagramStyleCache : IDiagramStyleProvider
     {
         public Brush Background { get; }
         public Brush Foreground { get; }
@@ -18,17 +18,17 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public FontStretch FontStretch { get; }
         public FontWeight FontWeight { get; }
 
-        public DiagramStyleCache(IDiagramStlyeProvider diagramStlyeProvider)
+        public DiagramStyleCache(IDiagramStyleProvider diagramStyleProvider)
         {
-            Background = diagramStlyeProvider.Background;
-            Foreground = diagramStlyeProvider.Foreground;
-            DiagramFill = diagramStlyeProvider.DiagramFill;
-            DiagramStroke = diagramStlyeProvider.DiagramStroke;
-            FontStyle = diagramStlyeProvider.FontStyle;
-            FontSize = diagramStlyeProvider.FontSize;
-            FontFamily = diagramStlyeProvider.FontFamily;
-            FontStretch = diagramStlyeProvider.FontStretch;
-            FontWeight = diagramStlyeProvider.FontWeight;
+            Background = diagramStyleProvider.Background;
+            Foreground = diagramStyleProvider.Foreground;
+            DiagramFill = diagramStyleProvider.DiagramFill;
+            DiagramStroke = diagramStyleProvider.DiagramStroke;
+            FontStyle = diagramStyleProvider.FontStyle;
+            FontSize = diagramStyleProvider.FontSize;
+            FontFamily = diagramStyleProvider.FontFamily;
+            FontStretch = diagramStyleProvider.FontStretch;
+            FontWeight = diagramStyleProvider.FontWeight;
         }
     }
 }

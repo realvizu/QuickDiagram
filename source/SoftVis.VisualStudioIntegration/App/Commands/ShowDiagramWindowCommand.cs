@@ -3,7 +3,7 @@
     /// <summary>
     /// Makes the diagram window visible.
     /// </summary>
-    internal sealed class ShowDiagramWindowCommand : SyncCommandBase
+    internal sealed class ShowDiagramWindowCommand : SyncCommandWithoutParameterBase
     {
         public ShowDiagramWindowCommand(IAppServices appServices)
             : base(appServices)

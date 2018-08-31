@@ -6,18 +6,18 @@ using Codartis.SoftVis.Service.Plugins;
 namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
 {
     /// <summary>
-    /// Extends the diagram plugin factory with Rosly-specific plugin creation logic.
+    /// Extends the diagram plugin factory with application-specific plugin creation logic.
     /// </summary>
-    internal class RoslynDiagramPluginFactory : DiagramPluginFactory
+    internal class ApplicationDiagramPluginFactory : DiagramPluginFactory
     {
-        public RoslynDiagramPluginFactory(ILayoutPriorityProvider layoutPriorityProvider, IDiagramShapeFactory diagramShapeFactory)
+        public ApplicationDiagramPluginFactory(ILayoutPriorityProvider layoutPriorityProvider, IDiagramShapeFactory diagramShapeFactory)
             : base(layoutPriorityProvider, diagramShapeFactory)
         {
         }
 
         public override IDiagramPlugin Create(DiagramPluginId diagramPluginId)
         {
-            if (diagramPluginId == RoslynDiagramPluginId.ModelExtenderDiagramPlugin)
+            if (diagramPluginId == ApplicationDiagramPluginId.ModelExtenderDiagramPlugin)
                 return new ModelExtenderDiagramPlugin();
 
             return base.Create(diagramPluginId);

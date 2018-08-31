@@ -297,7 +297,7 @@
     <Compile Include="UI\Wpf\Size2DExtensions.cs" />
     <Compile Include="UI\Wpf\Point2DExtensions.cs" />
     <Compile Include="UI\Wpf\Rect2DExtensions.cs" />
-    <Compile Include="UI\Wpf\View\IDiagramStlyeProvider.cs" />
+    <Compile Include="UI\Wpf\View\IDiagramStyleProvider.cs" />
     <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
     <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
     <Compile Include="UI\Wpf\View\PathControl.xaml.cs">

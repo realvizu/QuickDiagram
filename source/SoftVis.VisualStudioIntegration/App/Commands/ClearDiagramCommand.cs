@@ -3,7 +3,7 @@
     /// <summary>
     /// Clears the diagram.
     /// </summary>
-    internal sealed class ClearDiagramCommand : SyncCommandBase
+    internal sealed class ClearDiagramCommand : SyncCommandWithoutParameterBase
     {
         public ClearDiagramCommand(IAppServices appServices)
             : base(appServices)

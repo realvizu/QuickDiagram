@@ -3,7 +3,7 @@
     /// <summary>
     /// Positions the viewport so that the whole diagram is visible.
     /// </summary>
-    internal sealed class ZoomToDiagramCommand : SyncCommandBase
+    internal sealed class ZoomToDiagramCommand : SyncCommandWithoutParameterBase
     {
         public ZoomToDiagramCommand(IAppServices appServices)
             : base(appServices)

@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// Provide visual appearance properties of diagrams.
     /// </summary>
-    public interface IDiagramStlyeProvider
+    public interface IDiagramStyleProvider
     {
         Brush DiagramFill { get; }
         Brush DiagramStroke { get; }

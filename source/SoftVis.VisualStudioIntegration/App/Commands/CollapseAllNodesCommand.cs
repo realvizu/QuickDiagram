@@ -3,7 +3,7 @@
     /// <summary>
     /// Collapses all diagram nodes (hide type descriptions).
     /// </summary>
-    internal sealed class CollapseAllNodesCommand : SyncCommandBase
+    internal sealed class CollapseAllNodesCommand : SyncCommandWithoutParameterBase
     {
         public CollapseAllNodesCommand(IAppServices appServices)
             : base(appServices)

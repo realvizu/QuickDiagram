@@ -17,19 +17,19 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private readonly IEnumerable<DiagramNodeViewModelBase> _diagramNodeViewModels;
         private readonly IEnumerable<DiagramConnectorViewModel> _diagramConnectorViewModels;
         private readonly Rect _diagramRect;
-        private readonly IDiagramStlyeProvider _diagramStlyeProvider;
+        private readonly IDiagramStyleProvider _diagramStyleProvider;
         private readonly ResourceDictionary _resourceDictionary;
 
         public DiagramImageCreator(IEnumerable<DiagramNodeViewModelBase> diagramNodeViewModels,
             IEnumerable<DiagramConnectorViewModel> diagramConnectorViewModels,
             Rect diagramRect,
-            IDiagramStlyeProvider diagramStlyeProvider,
+            IDiagramStyleProvider diagramStyleProvider,
             ResourceDictionary resourceDictionary = null)
         {
             _diagramNodeViewModels = diagramNodeViewModels;
             _diagramConnectorViewModels = diagramConnectorViewModels;
             _diagramRect = diagramRect;
-            _diagramStlyeProvider = diagramStlyeProvider;
+            _diagramStyleProvider = diagramStyleProvider;
             _resourceDictionary = resourceDictionary;
         }
 
@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             using (var diagramImageViewModel = new DiagramImageViewModel(_diagramNodeViewModels, _diagramConnectorViewModels, _diagramRect, margin))
             {
                 var diagramImageControl = new DiagramImageControl(_resourceDictionary) {DataContext = diagramImageViewModel};
-                ApplyVisualProperties(diagramImageControl, _diagramStlyeProvider);
+                ApplyVisualProperties(diagramImageControl, _diagramStyleProvider);
                 diagramImageControl.EnsureUpToDate();
 
                 var bounds = new Rect(0, 0, diagramImageControl.ActualWidth, diagramImageControl.ActualHeight);
@@ -48,17 +48,17 @@ namespace Codartis.SoftVis.UI.Wpf.View
             }
         }
 
-        private static void ApplyVisualProperties(DiagramImageControl diagramImageControl, IDiagramStlyeProvider diagramStlyeProvider)
+        private static void ApplyVisualProperties(DiagramImageControl diagramImageControl, IDiagramStyleProvider diagramStyleProvider)
         {
-            diagramImageControl.Background = diagramStlyeProvider.Background;
-            diagramImageControl.Foreground = diagramStlyeProvider.Foreground;
-            diagramImageControl.DiagramFill = diagramStlyeProvider.DiagramFill;
-            diagramImageControl.DiagramStroke = diagramStlyeProvider.DiagramStroke;
-            diagramImageControl.FontStyle = diagramStlyeProvider.FontStyle;
-            diagramImageControl.FontSize = diagramStlyeProvider.FontSize;
-            diagramImageControl.FontFamily = diagramStlyeProvider.FontFamily;
-            diagramImageControl.FontStretch = diagramStlyeProvider.FontStretch;
-            diagramImageControl.FontWeight = diagramStlyeProvider.FontWeight;
+            diagramImageControl.Background = diagramStyleProvider.Background;
+            diagramImageControl.Foreground = diagramStyleProvider.Foreground;
+            diagramImageControl.DiagramFill = diagramStyleProvider.DiagramFill;
+            diagramImageControl.DiagramStroke = diagramStyleProvider.DiagramStroke;
+            diagramImageControl.FontStyle = diagramStyleProvider.FontStyle;
+            diagramImageControl.FontSize = diagramStyleProvider.FontSize;
+            diagramImageControl.FontFamily = diagramStyleProvider.FontFamily;
+            diagramImageControl.FontStretch = diagramStyleProvider.FontStretch;
+            diagramImageControl.FontWeight = diagramStyleProvider.FontWeight;
         }
     }
 }

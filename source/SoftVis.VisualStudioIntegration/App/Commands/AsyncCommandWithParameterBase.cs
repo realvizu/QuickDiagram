@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Base class for commands that can be invoked asynchronously with a parameter.
     /// </summary>
     /// <typeparam name="T">The type of command parameter.</typeparam>
-    internal abstract class AsyncCommandWithParameterBase<T> : CommandBase
+    internal abstract class AsyncCommandWithParameterBase<T> : AsyncCommandBase
     {
         protected AsyncCommandWithParameterBase(IAppServices appServices)
             : base(appServices)
@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         public abstract Task ExecuteAsync(T param);
     }
 
-    internal abstract class AsyncCommandWithParameterBase<T1,T2> : CommandBase
+    internal abstract class AsyncCommandWithParameterBase<T1,T2> : AsyncCommandBase
     {
         protected AsyncCommandWithParameterBase(IAppServices appServices)
             : base(appServices)

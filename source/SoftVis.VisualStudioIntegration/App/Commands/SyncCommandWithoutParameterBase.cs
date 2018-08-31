@@ -3,9 +3,9 @@
     /// <summary>
     /// Base class for commands that can be invoked synchronously without a parameter.
     /// </summary>
-    internal abstract class SyncCommandBase : CommandBase
+    internal abstract class SyncCommandWithoutParameterBase : SyncCommandBase
     {
-        protected SyncCommandBase(IAppServices appServices)
+        protected SyncCommandWithoutParameterBase(IAppServices appServices)
             : base(appServices)
         {
         }

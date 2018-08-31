@@ -25,13 +25,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 "object"
             };
 
+        public bool HideTrivialBaseNodes { get; set; }
+
         internal RoslynModelService(IRoslynModelProvider roslynModelProvider)
             : base(new ModelStore(new RoslynModel()), null)
         {
             _roslynModelProvider = roslynModelProvider;
         }
 
-        private RoslynModel CurrentRoslynModel => (RoslynModel)Model;
+        private RoslynModel CurrentRoslynModel => (RoslynModel) Model;
 
         public async Task<bool> IsCurrentSymbolAvailableAsync() => await GetCurrentSymbolAsync() != null;
 
@@ -50,8 +52,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             if (roslynModelNode == null)
                 return;
 
-            ExtendModelWithRelatedNodesRecursive(roslynModelNode, directedModelRelationshipType, 
-                cancellationToken, progress, recursive, new HashSet<ModelNodeId>{roslynModelNode.Id});
+            ExtendModelWithRelatedNodesRecursive(roslynModelNode, directedModelRelationshipType,
+                cancellationToken, progress, recursive, new HashSet<ModelNodeId> {roslynModelNode.Id});
         }
 
         public bool HasSource(IRoslynModelNode modelNode) => _roslynModelProvider.HasSource(modelNode.RoslynSymbol);
@@ -176,10 +178,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             AddRelationship(newRelationship);
         }
 
-        private static bool IsHidden(ISymbol roslynSymbol)
+        private bool IsHidden(ISymbol roslynSymbol)
         {
-            return GlobalOptions.HideTrivialBaseNodes
-                   && TrivialBaseSymbolNames.Contains(roslynSymbol.GetFullyQualifiedName());
+            return HideTrivialBaseNodes && TrivialBaseSymbolNames.Contains(roslynSymbol.GetFullyQualifiedName());
         }
 
         private void ExtendModelWithRelatedNodesRecursive(IRoslynModelNode roslynModelNode, DirectedModelRelationshipType? directedModelRelationshipType,
@@ -206,7 +207,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     continue;
 
                 alreadyDiscoveredNodes.Add(relatedNode.Id);
-                ExtendModelWithRelatedNodesRecursive(relatedNode, directedModelRelationshipType, 
+                ExtendModelWithRelatedNodesRecursive(relatedNode, directedModelRelationshipType,
                     cancellationToken, progress, true, alreadyDiscoveredNodes);
             }
         }

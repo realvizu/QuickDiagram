@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands;
@@ -13,12 +15,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
     /// <summary>
     /// Implements logic to register commands with the VS host.
     /// </summary>
-    internal class CommandRegistrator
+    internal class CommandRegistrant
     {
         private readonly IMenuCommandService _menuCommandService;
         private readonly IAppServices _appServices;
 
-        public CommandRegistrator(IMenuCommandService menuCommandService, IAppServices appServices)
+        public CommandRegistrant(IMenuCommandService menuCommandService, IAppServices appServices)
         {
             _menuCommandService = menuCommandService;
             _appServices = appServices;
@@ -26,8 +28,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
 
         public void RegisterCommands(Guid commandSetGuid, List<ICommandSpecification> commandSpecifications)
         {
-            RegisterSyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(SyncCommandBase))));
-            RegisterAsyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(AsyncCommandBase))));
+            RegisterSyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(SyncCommandWithoutParameterBase))));
+            RegisterAsyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(AsyncCommandWithoutParameterBase))));
             RegisterToggleCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(ToggleCommandBase))));
         }
 
@@ -45,13 +47,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (SyncCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (SyncCommandWithoutParameterBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
 
                 AddMenuCommand(
                     commandSetGuid, 
                     commandSpecification.CommandId, 
                     (o, e) => command.Execute(),
-                    CreateCommandEnablerHandler(command.IsEnabled));
+                    CreateCommandEnablerHandler(() => command.IsEnabled()));
             }
         }
 
@@ -59,13 +61,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (AsyncCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (AsyncCommandWithoutParameterBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
 
                 AddMenuCommand(
                     commandSetGuid, 
                     commandSpecification.CommandId, 
                     (o, e) => command.ExecuteAsync(), 
-                    CreateCommandEnablerHandler(command.IsEnabled));
+                    CreateCommandEnablerHandler(() => command.IsEnabledAsync()));
             }
         }
 
@@ -73,9 +75,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             return (sender, e) =>
             {
-                var menuCommand = sender as OleMenuCommand;
-                if (menuCommand != null && isCommandEnabledPredicate != null)
+                if (sender is OleMenuCommand menuCommand && isCommandEnabledPredicate != null)
                     menuCommand.Visible = isCommandEnabledPredicate.Invoke();
+            };
+        }
+
+        private static EventHandler CreateCommandEnablerHandler(Func<Task<bool>> asyncIsCommandEnabledPredicate)
+        {
+            return (sender, e) =>
+            {
+                if (sender is OleMenuCommand menuCommand && asyncIsCommandEnabledPredicate != null)
+                {
+                    menuCommand.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await asyncIsCommandEnabledPredicate());
+                }
             };
         }
 
@@ -97,8 +109,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             return (sender, e) =>
             {
-                var menuCommand = sender as OleMenuCommand;
-                if (menuCommand != null && toggleCommand != null)
+                if (sender is OleMenuCommand menuCommand && toggleCommand != null)
                     menuCommand.Checked = toggleCommand.IsChecked;
             };
         }

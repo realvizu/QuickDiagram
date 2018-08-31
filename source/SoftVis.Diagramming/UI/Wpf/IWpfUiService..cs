@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf
     {
         DiagramViewModel DiagramViewModel { get; }
 
-        void Initialize(ResourceDictionary resourceDictionary, IDiagramStlyeProvider diagramStlyeProvider);
+        void Initialize(ResourceDictionary resourceDictionary, IDiagramStyleProvider diagramStyleProvider);
 
         Task<BitmapSource> CreateDiagramImageAsync(double dpi, double margin,
             CancellationToken cancellationToken = default(CancellationToken),

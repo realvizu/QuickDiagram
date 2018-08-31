@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             }
             else
             {
-                var diagramVisualProvider = DecoratedElement.FindFirstDescendant<UIElement>(i => i is IDiagramStlyeProvider);
+                var diagramVisualProvider = DecoratedElement.FindFirstDescendant<UIElement>(i => i is IDiagramStyleProvider);
                 if (diagramVisualProvider != null)
                 {
                     this.SetBinding(DiagramFillProperty, diagramVisualProvider, DiagramVisual.DiagramFillProperty);

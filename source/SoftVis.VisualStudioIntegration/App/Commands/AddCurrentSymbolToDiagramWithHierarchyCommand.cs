@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             IReadOnlyList<IDiagramNode> diagramNodes = null;
 
-            using (var progressDialog = UiService.CreateProgressDialog("Extending model with entities:"))
+            using (var progressDialog = await UiService.CreateProgressDialogAsync("Extending model with entities:"))
             {
                 progressDialog.ShowWithDelayAsync();
 

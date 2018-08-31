@@ -6,7 +6,7 @@
     internal class ShowHideNodeDescriptionsToggleCommand : ToggleCommandBase
     {
         public ShowHideNodeDescriptionsToggleCommand(IAppServices appServices)
-            : base(appServices, initialIsChecked: GlobalOptions.NodeDescriptionsVisibleByDefault)
+            : base(appServices, initialIsChecked: AppDefaults.NodeDescriptionsVisibleByDefault)
         {
             UiService.ExpandAllNodes();
         }

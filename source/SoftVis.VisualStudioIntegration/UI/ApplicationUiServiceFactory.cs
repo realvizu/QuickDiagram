@@ -5,14 +5,14 @@ using Codartis.SoftVis.UI;
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
     /// <summary>
-    /// Creates UI service instaces for roslyn-based diagrams.
+    /// Creates UI service instances for roslyn-based diagrams.
     /// </summary>
-    internal class RoslynUiServiceFactory : IUiServiceFactory
+    internal class ApplicationUiServiceFactory : IUiServiceFactory
     {
         private readonly IHostUiServices _hostUiServices;
         private readonly bool _initialIsDescriptionVisible;
 
-        public RoslynUiServiceFactory(IHostUiServices hostUiServices, bool initialIsDescriptionVisible)
+        public ApplicationUiServiceFactory(IHostUiServices hostUiServices, bool initialIsDescriptionVisible)
         {
             _hostUiServices = hostUiServices;
             _initialIsDescriptionVisible = initialIsDescriptionVisible;
@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             var diagramViewModel = new RoslynDiagramViewModel(modelService, diagramService, 
                 _initialIsDescriptionVisible, minZoom, maxZoom, initialZoom);
 
-            return new RoslynUiService(_hostUiServices, diagramViewModel);
+            return new ApplicationUiService(_hostUiServices, diagramViewModel);
         }
     }
 }

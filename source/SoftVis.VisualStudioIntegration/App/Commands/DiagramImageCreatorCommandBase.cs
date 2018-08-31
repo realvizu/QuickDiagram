@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Abstract base class for commands that generate a diagram image.
     /// </summary>
-    internal abstract class DiagramImageCreatorCommandBase : AsyncCommandBase
+    internal abstract class DiagramImageCreatorCommandBase : AsyncCommandWithoutParameterBase
     {
         protected DiagramImageCreatorCommandBase(IAppServices appServices)
             : base(appServices)
@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         protected async Task CreateAndProcessDiagramImageAsync(Action<BitmapSource> imageProcessingAction, string imageProcessingMessage)
         {
             // Using int.MaxValue for max progress because the real max value is not yet known.
-            using (var progressDialog = UiService.CreateProgressDialog("Generating image..", int.MaxValue))
+            using (var progressDialog = await UiService.CreateProgressDialogAsync("Generating image..", int.MaxValue))
             {
                 progressDialog.ShowProgressNumber = false;
                 progressDialog.ShowWithDelayAsync();

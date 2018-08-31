@@ -3,9 +3,9 @@
 namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
 {
     /// <summary>
-    /// Defines Roslyn-specific diagram plugin IDs.
+    /// Defines application-specific diagram plugin IDs.
     /// </summary>
-    internal static class RoslynDiagramPluginId
+    internal static class ApplicationDiagramPluginId
     {
         public static readonly DiagramPluginId ModelExtenderDiagramPlugin = new DiagramPluginId(nameof(ModelExtenderDiagramPlugin));
     }

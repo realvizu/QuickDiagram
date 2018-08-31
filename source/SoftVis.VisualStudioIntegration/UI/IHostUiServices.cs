@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Threading.Tasks;
+using System.Windows;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -9,12 +9,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     public interface IHostUiServices
     {
         /// <summary>
-        /// Hosts a diagram control in a host-provided tool window.
-        /// </summary>
-        /// <param name="diagramControl">The diagram control.</param>
-        void HostDiagram(ContentControl diagramControl);
-
-        /// <summary>
         /// Shows the diagram-hosting tool window.
         /// </summary>
         void ShowDiagramWindow();
@@ -23,6 +17,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         /// Returns the main window of the host process.
         /// </summary>
         /// <returns>The main window of the host process.</returns>
-        Window GetMainWindow();
+        Task<Window> GetMainWindowAsync();
     }
 }

@@ -11,6 +11,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     {
         IRoslynModelService RoslynModelService { get; }
         IRoslynDiagramService RoslynDiagramService { get; }
-        IRoslynUiService RoslynUiService { get; }
+        IApplicationUiService ApplicationUiService { get; }
     }
 }

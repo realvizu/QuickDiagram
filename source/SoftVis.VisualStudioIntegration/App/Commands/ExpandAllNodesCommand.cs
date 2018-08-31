@@ -3,7 +3,7 @@
     /// <summary>
     /// Expands all diagram nodes (show type descriptions).
     /// </summary>
-    internal sealed class ExpandAllNodesCommand : SyncCommandBase
+    internal sealed class ExpandAllNodesCommand : SyncCommandWithoutParameterBase
     {
         public ExpandAllNodesCommand(IAppServices appServices)
             : base(appServices)

@@ -11,6 +11,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal interface IRoslynModelService : IModelService
     {
+        bool HideTrivialBaseNodes { get; set; }
+
         /// <summary>
         /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
         /// </summary>

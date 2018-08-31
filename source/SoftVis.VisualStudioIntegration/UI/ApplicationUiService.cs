@@ -2,10 +2,8 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.Util;
@@ -17,7 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// Provides diagram UI services. Bundles the diagram control and its view model together.
     /// </summary>
-    internal sealed class RoslynUiService : WpfUiService, IRoslynUiService
+    internal sealed class ApplicationUiService : WpfUiService, IApplicationUiService
     {
         private const string DialogTitle = "Quick Diagram Tool";
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
@@ -25,22 +23,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private readonly IHostUiServices _hostUiServices;
         private readonly RoslynDiagramViewModel _diagramViewModel;
-        private readonly ResourceDictionary _resourceDictionary;
-        private readonly DiagramControl _diagramControl;
 
+        public DiagramControl DiagramControl { get; }
         public Dpi ImageExportDpi { get; set; }
 
-        public RoslynUiService(IHostUiServices hostUiServices, RoslynDiagramViewModel diagramViewModel)
+        public ApplicationUiService(IHostUiServices hostUiServices, RoslynDiagramViewModel diagramViewModel)
             : base(diagramViewModel)
         {
             _hostUiServices = hostUiServices;
             _diagramViewModel = diagramViewModel;
 
-            _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-            _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
-            Initialize(_resourceDictionary, _diagramControl);
+            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+            DiagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};
 
-            hostUiServices.HostDiagram(_diagramControl);
+            Initialize(resourceDictionary, DiagramControl);
         }
 
         public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
@@ -53,7 +49,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public string SelectSaveFilename(string title, string filter)
         {
-            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
+            var saveFileDialog = new SaveFileDialog {Title = title, Filter = filter};
             saveFileDialog.ShowDialog();
             return saveFileDialog.FileName;
         }
@@ -61,12 +57,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void ExpandAllNodes() => _diagramViewModel.ExpandAllNodes();
         public void CollapseAllNodes() => _diagramViewModel.CollapseAllNodes();
 
-        public void ExecuteWhenUiIsIdle(Action action)
-            => Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
-
-        public ProgressDialog CreateProgressDialog(string text, int maxProgress = 0)
+        public async Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0)
         {
-            var hostMainWindow = _hostUiServices.GetMainWindow();
+            var hostMainWindow = await _hostUiServices.GetMainWindowAsync();
             return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
@@ -75,7 +68,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             try
             {
-                return await CreateDiagramImageAsync(ImageExportDpi.Value, ExportedImageMargin, 
+                return await CreateDiagramImageAsync(ImageExportDpi.Value, ExportedImageMargin,
                     cancellationToken, progress, maxProgress);
             }
             catch (OutOfMemoryException)

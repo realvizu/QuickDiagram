@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             switch (workspaceChangeEventArgs.Kind)
             {
                 case WorkspaceChangeKind.DocumentChanged:
-                    await ProcessDocumentChangedEvent(workspaceChangeEventArgs);
+                    await ProcessDocumentChangedEventAsync(workspaceChangeEventArgs);
                     break;
                 case WorkspaceChangeKind.DocumentRemoved:
                     // TODO
@@ -41,9 +41,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        private async Task ProcessDocumentChangedEvent(WorkspaceChangeEventArgs workspaceChangeEventArgs)
+        private async Task ProcessDocumentChangedEventAsync(WorkspaceChangeEventArgs workspaceChangeEventArgs)
         {
-            var declaredTypeSymbols = await GetDeclaredTypeSymbols(workspaceChangeEventArgs.NewSolution,
+            var declaredTypeSymbols = await GetDeclaredTypeSymbolsAsync(workspaceChangeEventArgs.NewSolution,
                 workspaceChangeEventArgs.ProjectId, workspaceChangeEventArgs.DocumentId);
 
             foreach (var declaredTypeSymbol in declaredTypeSymbols)
@@ -68,11 +68,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        private static async Task<List<INamedTypeSymbol>> GetDeclaredTypeSymbols(Solution solution, ProjectId projectId, DocumentId documentId)
+        private static async Task<List<INamedTypeSymbol>> GetDeclaredTypeSymbolsAsync(Solution solution, ProjectId projectId, DocumentId documentId)
         {
             var document = solution.GetDocument(documentId);
             var syntaxTree = await document.GetSyntaxTreeAsync();
-            var typeDeclarationSyntaxNodes = syntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>();
+            var typeDeclarationSyntaxNodes = (await syntaxTree.GetRootAsync()).DescendantNodes().OfType<TypeDeclarationSyntax>();
 
             var project = solution.GetProject(projectId);
             var compilation = await project.GetCompilationAsync();

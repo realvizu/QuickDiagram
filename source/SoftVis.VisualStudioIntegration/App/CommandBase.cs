@@ -16,13 +16,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         protected IRoslynModelService ModelService => _appServices.RoslynModelService;
         protected IRoslynDiagramService DiagramServices => _appServices.RoslynDiagramService;
-        protected IRoslynUiService UiService => _appServices.RoslynUiService;
+        protected IApplicationUiService UiService => _appServices.ApplicationUiService;
 
         protected CommandBase(IAppServices appServices)
         {
             _appServices = appServices;
         }
-
-        public virtual bool IsEnabled() => true;
     }
 }

@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Updates the model (and consequently the diagram) to reflect the current state of the source code.
     /// Removes entities and relationships that no longer exist in code.
     /// </summary>
-    internal sealed class UpdateModelFromSourceCommand : AsyncCommandBase
+    internal sealed class UpdateModelFromSourceCommand : AsyncCommandWithoutParameterBase
     {
         public UpdateModelFromSourceCommand(IAppServices appServices)
             : base(appServices)
@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         private async Task ShowProgressAndUpdateModelAsync()
         {
-            using (var progressDialog = UiService.CreateProgressDialog("Updating model nodes:"))
+            using (var progressDialog = await UiService.CreateProgressDialogAsync("Updating model nodes:"))
             {
                 progressDialog.ShowWithDelayAsync();
 

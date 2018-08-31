@@ -4,7 +4,7 @@
     /// Base class for commands that are executed synchronously with a parameter.
     /// </summary>
     /// <typeparam name="T">The type of the command's parameter.</typeparam>
-    internal abstract class SyncCommandWithParameterBase<T> : CommandBase
+    internal abstract class SyncCommandWithParameterBase<T> : SyncCommandBase
     {
         protected SyncCommandWithParameterBase(IAppServices appServices)
             : base(appServices)

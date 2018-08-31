@@ -12,7 +12,7 @@
 
             InitializeComponent();
 
-            viewModel.OnUiInitialized(mainWindow: this, diagramStlyeProvider: DiagramControl);
+            viewModel.OnUiInitialized(mainWindow: this, diagramStyleProvider: DiagramControl);
         }
     }
 }

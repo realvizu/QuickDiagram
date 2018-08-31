@@ -3,7 +3,7 @@
     /// <summary>
     /// Clears the model (and subsequently the diagram).
     /// </summary>
-    internal sealed class ClearModelCommand : SyncCommandBase
+    internal sealed class ClearModelCommand : SyncCommandWithoutParameterBase
     {
         public ClearModelCommand(IAppServices appServices)
             : base(appServices)

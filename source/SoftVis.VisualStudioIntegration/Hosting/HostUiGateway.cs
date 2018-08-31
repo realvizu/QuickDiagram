@@ -1,8 +1,10 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
+using Microsoft.VisualStudio.Shell;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -12,27 +14,31 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     public sealed class HostUiGateway : IHostUiServices
     {
         private readonly IPackageServices _packageServices;
-        private readonly DiagramHostToolWindow _diagramHostWindow;
+        private DiagramHostToolWindow _diagramHostWindow;
 
         public HostUiGateway(IPackageServices packageServices)
         {
             _packageServices = packageServices;
-            _diagramHostWindow = _packageServices.CreateToolWindow<DiagramHostToolWindow>();
         }
 
         public void HostDiagram(ContentControl diagramControl)
         {
-            _diagramHostWindow.Initialize("Quick Diagram", diagramControl);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                _diagramHostWindow = await _packageServices.CreateToolWindowAsync<DiagramHostToolWindow>();
+            });
         }
 
         public void ShowDiagramWindow()
         {
-            _diagramHostWindow.Show();
+            _packageServices.ShowToolWindow<DiagramHostToolWindow>();
         }
 
-        public Window GetMainWindow()
+        public async Task<Window> GetMainWindowAsync()
         {
             var hostService = _packageServices.GetHostEnvironmentService();
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var parentWindowHandle = new IntPtr(hostService.MainWindow.HWnd);
             var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
             return (Window)hwndSource?.RootVisual;

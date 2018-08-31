@@ -42,10 +42,10 @@
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeViewModel}">
-        <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
-                            BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-							BorderThickness="1"
-                            ToolTip="{Binding Path=FullName}">
+        <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
+                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
+                BorderThickness="1"
+                ToolTip="{Binding Path=FullName}">
             <StackPanel Orientation="Vertical">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -67,7 +67,7 @@
                 <controls:ConcealableExpander Margin="4,6,4,4"
                                               IsButtonVisible="False"
                                               Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                              BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
+                                              BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
                                               BorderThickness=".5"
                                               IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
                     <TextBlock FontSize="10"

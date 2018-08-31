@@ -3,7 +3,7 @@
     /// <summary>
     /// Base class for those commands that behave like a toggle button.
     /// </summary>
-    internal abstract class ToggleCommandBase : CommandBase
+    internal abstract class ToggleCommandBase : SyncCommandBase
     {
         public bool IsChecked { get; private set; }
 

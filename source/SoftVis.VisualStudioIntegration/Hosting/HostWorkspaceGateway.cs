@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Document = Microsoft.CodeAnalysis.Document;
+using Task = System.Threading.Tasks.Task;
 using TextSpan = Microsoft.CodeAnalysis.Text.TextSpan;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
@@ -32,7 +33,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         internal HostWorkspaceGateway(IPackageServices packageServices)
         {
             _packageServices = packageServices;
-            InitializeRunningDocumentTable();
+        }
+
+        public async Task InitAsync()
+        {
+            _runningDocumentTable = await _packageServices.GetRunningDocumentTableServiceAsync();
+            await InitializeRunningDocumentTableAsync();
         }
 
         public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
@@ -87,7 +93,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 return null;
 
             var syntaxTree = await document.GetSyntaxTreeAsync();
-            var syntaxRoot = syntaxTree.GetRoot();
+            var syntaxRoot = await syntaxTree.GetRootAsync();
             var span = GetSelection();
             var currentNode = syntaxRoot.FindNode(span);
 
@@ -132,6 +138,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public void ShowSource(ISymbol symbol)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var location = symbol?.Locations.FirstOrDefault();
             if (location == null)
                 return;
@@ -148,6 +155,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private void SelectSourceLocation(LinePositionSpan span)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var hostService = _packageServices.GetHostEnvironmentService();
             var selection = hostService.ActiveDocument.Selection as TextSelection;
             if (selection == null)
@@ -204,27 +212,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return wpfTextView;
         }
 
-        private void InitializeRunningDocumentTable()
+        private async Task InitializeRunningDocumentTableAsync()
         {
-            RunningDocumentTable?.AdviseRunningDocTableEvents(this, out _runningDocumentTableCookie);
-        }
-
-        private IVsRunningDocumentTable RunningDocumentTable
-        {
-            get
-            {
-                if (_runningDocumentTable == null)
-                    _runningDocumentTable = _packageServices.GetRunningDocumentTableService();
-                return _runningDocumentTable;
-            }
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            _runningDocumentTable?.AdviseRunningDocTableEvents(this, out _runningDocumentTableCookie);
         }
 
         void IDisposable.Dispose()
         {
             if ((int)_runningDocumentTableCookie == 0)
                 return;
-            _runningDocumentTable.UnadviseRunningDocTableEvents(_runningDocumentTableCookie);
-            _runningDocumentTableCookie = 0U;
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                _runningDocumentTable.UnadviseRunningDocTableEvents(_runningDocumentTableCookie);
+                _runningDocumentTableCookie = 0U;
+            });
         }
     }
 }

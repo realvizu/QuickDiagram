@@ -2,36 +2,31 @@
 using System.ComponentModel.Design;
 using System.Diagnostics; // Do not remove, used in Release config.
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
-using Codartis.SoftVis.Service;
 using Codartis.SoftVis.VisualStudioIntegration.App;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
-using Codartis.SoftVis.VisualStudioIntegration.Plugins;
-using Codartis.SoftVis.VisualStudioIntegration.UI;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using IVisualStudioServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Task = System.Threading.Tasks.Task;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", PackageInfo.Version, IconResourceID = 401)]
     [Guid(PackageGuids.SoftVisPackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(DiagramHostToolWindow))]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
-    public sealed class SoftVisPackage : Package, IPackageServices
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    public sealed class SoftVisPackage : AsyncPackage, IPackageServices
     {
         static SoftVisPackage()
         {
@@ -40,16 +35,79 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             typeof(System.Windows.Interactivity.Behavior).ToString();
         }
 
-        private IVisualStudioServiceProvider _visualStudioServiceProvider;
         private IComponentModel _componentModel;
-
-        private IRoslynVisualizationService _visualizationService;
         private DiagramToolApplication _diagramToolApplication;
 
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
+            await base.InitializeAsync(cancellationToken, progress);
 
+            RegisterExceptionHandler();
+
+            _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
+
+            var hostWorkspaceGateway = new HostWorkspaceGateway(this);
+            await hostWorkspaceGateway.InitAsync();
+            var hostUiGateway = new HostUiGateway(this);
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            _diagramToolApplication = new DiagramToolApplication(hostWorkspaceGateway, hostUiGateway);
+
+            RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
+        }
+
+        public void ShowToolWindow<TWindow>(int instanceId = 0) 
+            where TWindow : ToolWindowPane
+        {
+            JoinableTaskFactory.Run(async () =>
+            {
+                await ShowToolWindowAsync(
+                    typeof(DiagramHostToolWindow),
+                    0,
+                    create: true,
+                    cancellationToken: DisposalToken);
+            });
+        }
+
+        public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
+        {
+            return toolWindowType.Equals(PackageGuids.DiagramToolWindowGuid) ? this : null;
+        }
+
+        protected override string GetToolWindowTitle(Type toolWindowType, int id)
+        {
+            return toolWindowType == typeof(DiagramHostToolWindow) ? DiagramHostToolWindow.WindowTitle : null;
+        }
+
+        protected override Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
+        {
+            // Perform as much work as possible in this method which is being run on a background thread.
+            // The object returned from this method is passed into the constructor of the SampleToolWindow 
+
+            return Task.FromResult((object)_diagramToolApplication.ApplicationUiService.DiagramControl);
+        }
+
+        public void Await(Func<Task> action)
+        {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate {
+                await action();
+            });
+        }
+
+        private async Task<TInterface> GetServiceAsync<TService, TInterface>()
+            where TService : class
+            where TInterface : class
+        {
+            var service = await GetServiceAsync(typeof(TService));
+            if (service == null)
+                throw new Exception($"Unable to get {typeof(TService).FullName}.");
+            if (!(service is TInterface))
+                throw new Exception($"The requested service {typeof(TService).FullName} is not of type {typeof(TInterface).FullName}.");
+            return service as TInterface;
+        }
+
+        private static void RegisterExceptionHandler()
+        {
             // This is needed otherwise VS catches the exception and shows no stack trace.
             Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) =>
             {
@@ -59,27 +117,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 Trace.WriteLine($"[{PackageInfo.ToolName}] unhandled exception: {args.Exception}");
 #endif
             };
-
-            _visualStudioServiceProvider = GetGlobalService(typeof(IVisualStudioServiceProvider)) as IVisualStudioServiceProvider;
-            if (_visualStudioServiceProvider == null)
-                throw new Exception("Unable to get IVisualStudioServiceProvider.");
-
-            _componentModel = GetGlobalService(typeof(SComponentModel)) as IComponentModel;
-            if (_componentModel == null)
-                throw new Exception("Unable to get IComponentModel.");
-
-            var hostWorkspaceGateway = new HostWorkspaceGateway(this);
-            var hostUiGateway = new HostUiGateway(this);
-
-            _visualizationService = CreateVisualizationService(hostWorkspaceGateway, hostUiGateway);
-            var diagramId = _visualizationService.CreateDiagram(minZoom: .1, maxZoom: 10, initialZoom: 1);
-            
-            _diagramToolApplication = new DiagramToolApplication(
-                _visualizationService.GetRoslynModelService(),
-                _visualizationService.GetRoslynDiagramService(diagramId),
-                _visualizationService.GetRoslynUiService(diagramId));
-
-            RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
 
         public DTE2 GetHostEnvironmentService()
@@ -90,9 +127,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return hostService;
         }
 
-        public IVsRunningDocumentTable GetRunningDocumentTableService()
+        public async Task<IVsRunningDocumentTable> GetRunningDocumentTableServiceAsync()
         {
-            return GetVisualStudioService<IVsRunningDocumentTable, SVsRunningDocumentTable>();
+            return await GetServiceAsync<SVsRunningDocumentTable, IVsRunningDocumentTable>();
         }
 
         public OleMenuCommandService GetMenuCommandService()
@@ -108,69 +145,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return _componentModel.GetService<VisualStudioWorkspace>();
         }
 
-        public TWindow CreateToolWindow<TWindow>(int instanceId = 0)
+        public async Task<TWindow> CreateToolWindowAsync<TWindow>(int instanceId = 0)
             where TWindow : ToolWindowPane
         {
-            var toolWindow = CreateToolWindow(typeof(TWindow), instanceId) as TWindow;
-            if (toolWindow?.Frame == null)
-                throw new NotSupportedException("Cannot create tool window.");
-            return toolWindow;
+            return await ShowToolWindowAsync(typeof(TWindow), instanceId, create: true, cancellationToken: DisposalToken) as TWindow;
         }
 
-        private TServiceInterface GetVisualStudioService<TServiceInterface, TService>()
-            where TServiceInterface : class
-            where TService : class
-        {
-            return (TServiceInterface)GetVisualStudioService(_visualStudioServiceProvider, typeof(TService).GUID, false);
-        }
-
-        private static object GetVisualStudioService(IVisualStudioServiceProvider serviceProvider, Guid guidService, bool unique)
-        {
-            var riid = VSConstants.IID_IUnknown;
-            var ppvObject = IntPtr.Zero;
-            object obj = null;
-            if (serviceProvider.QueryService(ref guidService, ref riid, out ppvObject) == 0)
-            {
-                if (ppvObject != IntPtr.Zero)
-                {
-                    try
-                    {
-                        obj = !unique
-                            ? Marshal.GetObjectForIUnknown(ppvObject)
-                            : Marshal.GetUniqueObjectForIUnknown(ppvObject);
-                    }
-                    finally
-                    {
-                        Marshal.Release(ppvObject);
-                    }
-                }
-            }
-            return obj;
-        }
-
-        private static void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
+        private void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
         {
             var commandSetGuid = PackageGuids.SoftVisCommandSetGuid;
-            var commandRegistrator = new CommandRegistrator(menuCommandService, appServices);
-            commandRegistrator.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
-            commandRegistrator.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
-        }
-
-        private static RoslynVisualizationService CreateVisualizationService(
-            IRoslynModelProvider roslynModelProvider, IHostUiServices hostUiServices)
-        {
-            return new RoslynVisualizationService(
-                new RoslynModelServiceFactory(roslynModelProvider),
-                new RoslynDiagramServiceFactory(),
-                new RoslynUiServiceFactory(hostUiServices, GlobalOptions.NodeDescriptionsVisibleByDefault),
-                new RoslynDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory()),
-                new[]
-                {
-                    DiagramPluginId.AutoLayoutDiagramPlugin,
-                    DiagramPluginId.ModelTrackingDiagramPlugin,
-                    DiagramPluginId.ConnectorHandlerDiagramPlugin,
-                    RoslynDiagramPluginId.ModelExtenderDiagramPlugin
-                });
+            var commandRegistrant = new CommandRegistrant(menuCommandService, appServices);
+            commandRegistrant.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
+            commandRegistrant.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
         }
     }
 }

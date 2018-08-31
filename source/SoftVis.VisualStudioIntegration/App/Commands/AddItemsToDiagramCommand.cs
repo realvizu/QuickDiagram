@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             IReadOnlyList<IDiagramNode> diagramNodes = null;
 
-            using (var progressDialog = UiService.CreateProgressDialog("Adding model items:", modelEntities.Count))
+            using (var progressDialog = await UiService.CreateProgressDialogAsync("Adding model items:", modelEntities.Count))
             {
                 progressDialog.ShowWithDelayAsync();
 

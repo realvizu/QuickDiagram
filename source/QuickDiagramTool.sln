@@ -37,8 +37,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegration.Vs2017", "SoftVis.VisualStudioIntegration.Vs2017\SoftVis.VisualStudioIntegration.Vs2017.csproj", "{6A8C12E8-4123-4F81-899B-21D55DD5F3A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegration.Vs2015", "SoftVis.VisualStudioIntegration.Vs2015\SoftVis.VisualStudioIntegration.Vs2015.csproj", "{FC2A193E-D1ED-4D24-A36F-F265FE397E1E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,12 +75,11 @@ Global
 		{6A8C12E8-4123-4F81-899B-21D55DD5F3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A8C12E8-4123-4F81-899B-21D55DD5F3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A8C12E8-4123-4F81-899B-21D55DD5F3A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FC2A193E-D1ED-4D24-A36F-F265FE397E1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC2A193E-D1ED-4D24-A36F-F265FE397E1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC2A193E-D1ED-4D24-A36F-F265FE397E1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC2A193E-D1ED-4D24-A36F-F265FE397E1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A557DF75-7BF8-474F-A6F9-0333ABDE0477}
 	EndGlobalSection
 EndGlobal
