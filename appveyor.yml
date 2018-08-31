@@ -21,7 +21,6 @@ assembly_info:
 before_build:
 # vsixmanifest file must be specified with full path.
 - ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration.Vs2017\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration.Vs2015\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\QuickDiagramTool.sln
 
 build:
