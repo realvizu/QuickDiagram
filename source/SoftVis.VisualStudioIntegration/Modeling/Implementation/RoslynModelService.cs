@@ -66,8 +66,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             );
         }
 
-        public bool HasSource(IRoslynModelNode modelNode) => _roslynModelProvider.HasSource(modelNode.RoslynSymbol);
-        public void ShowSource(IRoslynModelNode modelNode) => _roslynModelProvider.ShowSource(modelNode.RoslynSymbol);
+        public Task<bool> HasSourceAsync(IRoslynModelNode modelNode) => _roslynModelProvider.HasSourceAsync(modelNode.RoslynSymbol);
+        public Task ShowSourceAsync(IRoslynModelNode modelNode) => _roslynModelProvider.ShowSourceAsync(modelNode.RoslynSymbol);
 
         public async Task UpdateFromSourceAsync(IEnumerable<ModelNodeId> visibleModelNodeIds,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
@@ -89,7 +89,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var workspace = _roslynModelProvider.GetWorkspace();
+            var workspace = await _roslynModelProvider.GetWorkspaceAsync();
             var projects = workspace.CurrentSolution.Projects;
             var compilations = (await projects.SelectAsync(async i => await i.GetCompilationAsync(cancellationToken))).ToArray();
 

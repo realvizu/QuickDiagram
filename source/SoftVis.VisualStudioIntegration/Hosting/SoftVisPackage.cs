@@ -35,16 +35,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             typeof(System.Windows.Interactivity.Behavior).ToString();
         }
 
-        private IComponentModel _componentModel;
         private DiagramToolApplication _diagramToolApplication;
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            await base.InitializeAsync(cancellationToken, progress);
-
             RegisterExceptionHandler();
 
-            _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
+            await base.InitializeAsync(cancellationToken, progress);
+
 
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
             await hostWorkspaceGateway.InitAsync();
@@ -140,9 +138,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return commandService;
         }
 
-        public VisualStudioWorkspace GetVisualStudioWorkspace()
+        public async Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync()
         {
-            return _componentModel.GetService<VisualStudioWorkspace>();
+            var componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
+            return componentModel.GetService<VisualStudioWorkspace>();
         }
 
         public async Task<TWindow> CreateToolWindowAsync<TWindow>(int instanceId = 0)

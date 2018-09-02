@@ -12,9 +12,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override async Task<bool> IsEnabledAsync()
-        {
-            return await ModelService.IsCurrentSymbolAvailableAsync();
-        }
+        public override Task<bool> IsEnabledAsync() => ModelService.IsCurrentSymbolAvailableAsync();
     }
 }

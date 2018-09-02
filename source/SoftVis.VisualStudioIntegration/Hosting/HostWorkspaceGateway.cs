@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
@@ -68,27 +69,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
         {
+            Debug.WriteLine("OnBeforeDocumentWindowShow started.");
             var wpfTextView = VsWindowFrameToWpfTextView(pFrame);
+            Debug.WriteLine($"wpfTextView={wpfTextView}");
             if (wpfTextView != null)
             {
                 var contentType = wpfTextView.TextBuffer.ContentType;
+                Debug.WriteLine($"contentType={contentType}");
 
                 _activeWpfTextView = contentType.IsOfType(CSharpContentTypeName)
                     ? wpfTextView
                     : null;
             }
 
+            Debug.WriteLine("OnBeforeDocumentWindowShow finished.");
             return VSConstants.S_OK;
         }
 
-        public Workspace GetWorkspace()
+        public async Task<Workspace> GetWorkspaceAsync()
         {
-            return _packageServices.GetVisualStudioWorkspace();
+            return await _packageServices.GetVisualStudioWorkspaceAsync();
         }
 
         public async Task<ISymbol> GetCurrentSymbolAsync()
         {
             var document = GetCurrentDocument();
+            Debug.WriteLine($"document={document}");
             if (document == null)
                 return null;
 
@@ -99,6 +105,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             var semanticModel = await document.GetSemanticModelAsync();
             var symbol = GetSymbolForSyntaxNode(semanticModel, currentNode);
+            Debug.WriteLine($"symbol={symbol}");
             return symbol;
         }
 
@@ -131,25 +138,25 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return simpleNameSyntax;
         }
 
-        public bool HasSource(ISymbol symbol)
+        public async Task<bool> HasSourceAsync(ISymbol symbol)
         {
-            return GetDocumentId(symbol) != null;
+            return await GetDocumentIdAsync(symbol) != null;
         }
 
-        public void ShowSource(ISymbol symbol)
+        public async Task ShowSourceAsync(ISymbol symbol)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             var location = symbol?.Locations.FirstOrDefault();
             if (location == null)
                 return;
 
-            var documentId = GetDocumentId(symbol);
+            var documentId = await GetDocumentIdAsync(symbol);
             if (documentId == null)
                 return;
 
-            var workspace = GetWorkspace();
+            var workspace = await GetWorkspaceAsync();
             workspace.OpenDocument(documentId, activate: true);
 
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             SelectSourceLocation(location.GetLineSpan().Span);
         }
 
@@ -179,9 +186,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return document;
         }
 
-        private DocumentId GetDocumentId(ISymbol symbol)
+        private async Task<DocumentId> GetDocumentIdAsync(ISymbol symbol)
         {
-            var workspace = GetWorkspace();
+            var workspace = await GetWorkspaceAsync();
 
             var location = symbol?.Locations.FirstOrDefault();
             if (location == null)
@@ -214,8 +221,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private async Task InitializeRunningDocumentTableAsync()
         {
+            Debug.WriteLine("InitializeRunningDocumentTableAsync started.");
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             _runningDocumentTable?.AdviseRunningDocTableEvents(this, out _runningDocumentTableCookie);
+            Debug.WriteLine("InitializeRunningDocumentTableAsync finished.");
         }
 
         void IDisposable.Dispose()

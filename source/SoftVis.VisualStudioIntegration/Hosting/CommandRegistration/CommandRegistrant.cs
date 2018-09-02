@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var comboSpecification in comboSpecifications)
             {
-                var comboAdapter = (IComboAdapter)Activator.CreateInstance(comboSpecification.ComboAdapterType, _appServices);
+                var comboAdapter = (IComboAdapter) Activator.CreateInstance(comboSpecification.ComboAdapterType, _appServices);
                 AddMenuCommand(commandSetGuid, comboSpecification.GetItemsCommandId, comboAdapter.GetItemsCommandHandler);
                 AddMenuCommand(commandSetGuid, comboSpecification.ComboCommandId, comboAdapter.ComboCommandHandler);
             }
@@ -47,11 +47,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (SyncCommandWithoutParameterBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (SyncCommandWithoutParameterBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
 
                 AddMenuCommand(
-                    commandSetGuid, 
-                    commandSpecification.CommandId, 
+                    commandSetGuid,
+                    commandSpecification.CommandId,
                     (o, e) => command.Execute(),
                     CreateCommandEnablerHandler(() => command.IsEnabled()));
             }
@@ -61,12 +61,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (AsyncCommandWithoutParameterBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (AsyncCommandWithoutParameterBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
 
                 AddMenuCommand(
-                    commandSetGuid, 
-                    commandSpecification.CommandId, 
-                    (o, e) => command.ExecuteAsync(), 
+                    commandSetGuid,
+                    commandSpecification.CommandId,
+                    (o, e) => command.ExecuteAsync(),
                     CreateCommandEnablerHandler(() => command.IsEnabledAsync()));
             }
         }
@@ -86,7 +86,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
             {
                 if (sender is OleMenuCommand menuCommand && asyncIsCommandEnabledPredicate != null)
                 {
-                    menuCommand.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await asyncIsCommandEnabledPredicate());
+                    var menuCommandVisible = ThreadHelper.JoinableTaskFactory.Run(asyncIsCommandEnabledPredicate);
+                    Debug.WriteLine($"menuCommandVisible={menuCommandVisible}");
+                    menuCommand.Visible = menuCommandVisible;
                 }
             };
         }
@@ -95,7 +97,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (ToggleCommandBase)Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (ToggleCommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
 
                 AddMenuCommand(
                     commandSetGuid,

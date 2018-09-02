@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// Returns the Roslyn workspace that can be used to access the current solution's compilation.
         /// </summary>
         /// <returns>The Roslyn workspace of the current solution.</returns>
-        VisualStudioWorkspace GetVisualStudioWorkspace();
+        Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync();
 
         /// <summary>
         /// Creates a tool window of the given type.

@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             IRoslynModelProvider roslynModelProvider, 
             INamedTypeSymbol classSymbol)
         {
-            var workspace = roslynModelProvider.GetWorkspace();
+            var workspace = await roslynModelProvider.GetWorkspaceAsync();
 
             var derivedClasses = await SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution);
 
@@ -57,14 +57,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         protected static async Task<IEnumerable<RelatedSymbolPair>> GetImplementingTypesAsync(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
         {
-            var workspace = roslynModelProvider.GetWorkspace();
+            var workspace = await roslynModelProvider.GetWorkspaceAsync();
             var implementingTypes = await FindImplementingTypesAsync(workspace, interfaceSymbol);
             return implementingTypes.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.ImplementerType));
         }
 
         protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedInterfacesAsync(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
         {
-            var workspace = roslynModelProvider.GetWorkspace();
+            var workspace = await roslynModelProvider.GetWorkspaceAsync();
             var derivedInterfaces = await FindDerivedInterfacesAsync(workspace, interfaceSymbol);
             return derivedInterfaces.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.Subtype));
         }

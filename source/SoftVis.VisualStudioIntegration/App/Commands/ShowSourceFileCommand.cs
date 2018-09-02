@@ -17,14 +17,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override void Execute(IDiagramNode diagramNode)
+#pragma warning disable VSTHRD100 // Avoid async void methods
+        public override async void Execute(IDiagramNode diagramNode)
+#pragma warning restore VSTHRD100 // Avoid async void methods
         {
-            var roslynModelNode = diagramNode?.ModelNode as IRoslynModelNode;
-            if (roslynModelNode == null)
+            if (!(diagramNode?.ModelNode is IRoslynModelNode roslynModelNode))
                 throw new Exception("DiagramNode or ModelNode is null or not an IRoslynModelNode.");
 
-            if (ModelService.HasSource(roslynModelNode))
-                ModelService.ShowSource(roslynModelNode);
+            if (await ModelService.HasSourceAsync(roslynModelNode))
+                await ModelService.ShowSourceAsync(roslynModelNode);
             else
                 UiService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
         }

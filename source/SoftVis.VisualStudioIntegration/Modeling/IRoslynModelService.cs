@@ -41,13 +41,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <param name="modelNode">A model node.</param>
         /// <remarks>True if the model node has source code, false otherwise.</remarks>
-        bool HasSource(IRoslynModelNode modelNode);
+        Task<bool> HasSourceAsync(IRoslynModelNode modelNode);
 
         /// <summary>
         /// Shows the source in the host environment that corresponds to the given model node.
         /// </summary>
         /// <param name="modelNode">A model node.</param>
-        void ShowSource(IRoslynModelNode modelNode);
+        Task ShowSourceAsync(IRoslynModelNode modelNode);
 
         /// <summary>
         /// Updates the model from the current source code.
