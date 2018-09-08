@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Util;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -10,7 +11,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Updates the model (and consequently the diagram) to reflect the current state of the source code.
     /// Removes entities and relationships that no longer exist in code.
     /// </summary>
-    internal sealed class UpdateModelFromSourceCommand : AsyncCommandWithoutParameterBase
+    [UsedImplicitly]
+    internal sealed class UpdateModelFromSourceCommand : CommandBase
     {
         public UpdateModelFromSourceCommand(IAppServices appServices)
             : base(appServices)
@@ -20,8 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         public override async Task ExecuteAsync()
         {
             await ShowProgressAndUpdateModelAsync();
-
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
             UiService.ZoomToDiagram();
         }
 
@@ -29,7 +30,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             using (var progressDialog = await UiService.CreateProgressDialogAsync("Updating model nodes:"))
             {
-                progressDialog.ShowWithDelayAsync();
+                await progressDialog.ShowWithDelayAsync();
 
                 try
                 {

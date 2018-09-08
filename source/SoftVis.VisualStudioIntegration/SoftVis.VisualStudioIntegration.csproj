@@ -86,23 +86,20 @@
     <Compile Include="..\Include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="App\AppLogicBase.cs" />
     <Compile Include="App\Commands\AddCurrentSymbolToDiagramCommandBase.cs" />
-    <Compile Include="App\Commands\AsyncCommandWithoutParameterBase.cs" />
     <Compile Include="App\Commands\CollapseAllNodesCommand.cs" />
     <Compile Include="App\Commands\ExpandAllNodesCommand.cs" />
-    <Compile Include="App\SyncCommandBase.cs" />
     <Compile Include="App\Commands\ZoomToDiagramCommand.cs" />
     <Compile Include="App\Commands\ClearModelCommand.cs" />
     <Compile Include="App\Commands\UpdateModelFromSourceCommand.cs" />
     <Compile Include="App\Commands\AddItemsToDiagramCommand.cs" />
-    <Compile Include="App\Commands\AsyncCommandWithParameterBase.cs" />
     <Compile Include="App\Commands\DiagramImageCreatorCommandBase.cs" />
-    <Compile Include="App\AsyncCommandBase.cs" />
     <Compile Include="Plugins\ModelExtenderDiagramPlugin.cs" />
     <Compile Include="App\Selectors\DpiSelector.cs" />
     <Compile Include="App\Selectors\ISelector.cs" />
-    <Compile Include="App\ToggleCommands\ShowHideNodeDescriptionsToggleCommand.cs" />
-    <Compile Include="App\ToggleCommands\ToggleCommandBase.cs" />
+    <Compile Include="App\Commands\Toggle\ShowHideNodeDescriptionsToggleCommand.cs" />
+    <Compile Include="App\Commands\Toggle\ToggleCommandBase.cs" />
     <Compile Include="Diagramming\IRoslynDiagramService.cs" />
     <Compile Include="Diagramming\RoslynDiagramService.cs" />
     <Compile Include="Diagramming\RoslynDiagramServiceFactory.cs" />
@@ -114,12 +111,10 @@
     <Compile Include="Hosting\CommandRegistration\ComboSpecification.cs" />
     <Compile Include="Hosting\ComboAdapters\DpiComboAdapter.cs" />
     <Compile Include="Hosting\ComboAdapters\ComboCommandType.cs" />
-    <Compile Include="App\Commands\SyncCommandWithParameterBase.cs" />
     <Compile Include="App\Commands\AddCurrentSymbolToDiagramWithHierarchyCommand.cs" />
     <Compile Include="App\Commands\AddCurrentSymbolToDiagramCommand.cs" />
     <Compile Include="App\Commands\ClearDiagramCommand.cs" />
-    <Compile Include="App\CommandBase.cs" />
-    <Compile Include="App\Commands\SyncCommandWithoutParameterBase.cs" />
+    <Compile Include="App\Commands\CommandBase.cs" />
     <Compile Include="App\Commands\CopyToClipboardCommand.cs" />
     <Compile Include="App\Commands\ExportToFileCommand.cs" />
     <Compile Include="App\Commands\ShowDiagramWindowCommand.cs" />
@@ -257,6 +252,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\packages\EnvDTE90a.9.0.1\lib\net10\EnvDTE90a.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.2.2\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>

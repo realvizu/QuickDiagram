@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -13,6 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Adds the current symbol (the one at the caret) and its hierarchy (base type and subtypes) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
+    [UsedImplicitly]
     internal sealed class AddCurrentSymbolToDiagramWithHierarchyCommand : AddCurrentSymbolToDiagramCommandBase
     {
         public AddCurrentSymbolToDiagramWithHierarchyCommand(IAppServices appServices)
@@ -30,7 +32,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (diagramNodes == null)
                 return;
 
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
             UiService.FollowDiagramNodes(diagramNodes);
         }
 
@@ -40,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             using (var progressDialog = await UiService.CreateProgressDialogAsync("Extending model with entities:"))
             {
-                progressDialog.ShowWithDelayAsync();
+                await progressDialog.ShowWithDelayAsync();
 
                 try
                 {

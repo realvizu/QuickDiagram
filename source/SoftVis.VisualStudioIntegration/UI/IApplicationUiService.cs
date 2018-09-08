@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         Dpi ImageExportDpi { get; set; }
 
-        void ShowDiagramWindow();
+        Task ShowDiagramWindowAsync();
         void ShowMessageBox(string message);
         void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
         string SelectSaveFilename(string title, string filter);

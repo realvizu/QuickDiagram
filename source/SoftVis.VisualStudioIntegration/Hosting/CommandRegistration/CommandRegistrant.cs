@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
-using Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands;
+using Codartis.SoftVis.VisualStudioIntegration.App.Commands.Toggle;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.ComboAdapters;
 using Microsoft.VisualStudio.Shell;
 
@@ -26,11 +24,34 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
             _appServices = appServices;
         }
 
-        public void RegisterCommands(Guid commandSetGuid, List<ICommandSpecification> commandSpecifications)
+        public void RegisterCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
         {
-            RegisterSyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(SyncCommandWithoutParameterBase))));
-            RegisterAsyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(AsyncCommandWithoutParameterBase))));
-            RegisterToggleCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(ToggleCommandBase))));
+            foreach (var commandSpecification in commandSpecifications)
+            {
+                var command = (CommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+
+                AddMenuCommand(
+                    commandSetGuid,
+                    commandSpecification.CommandId,
+                    (o, e) => command.ExecuteAsync(),
+                    CreateCommandEnablerHandler(() => command.IsEnabledAsync()));
+            }
+        }
+
+        public void RegisterToggleCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
+        {
+            foreach (var commandSpecification in commandSpecifications)
+            {
+                var command = (ToggleCommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+
+                AddMenuCommand(
+                    commandSetGuid,
+                    commandSpecification.CommandId,
+#pragma warning disable 4014
+                    (o, e) => command.ExecuteAsync(),
+#pragma warning restore 4014
+                    CreateCommandToggleHandler(command));
+            }
         }
 
         public void RegisterCombos(Guid commandSetGuid, IEnumerable<IComboSpecification> comboSpecifications)
@@ -43,68 +64,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
             }
         }
 
-        private void RegisterSyncCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
-        {
-            foreach (var commandSpecification in commandSpecifications)
-            {
-                var command = (SyncCommandWithoutParameterBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
-
-                AddMenuCommand(
-                    commandSetGuid,
-                    commandSpecification.CommandId,
-                    (o, e) => command.Execute(),
-                    CreateCommandEnablerHandler(() => command.IsEnabled()));
-            }
-        }
-
-        private void RegisterAsyncCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
-        {
-            foreach (var commandSpecification in commandSpecifications)
-            {
-                var command = (AsyncCommandWithoutParameterBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
-
-                AddMenuCommand(
-                    commandSetGuid,
-                    commandSpecification.CommandId,
-                    (o, e) => command.ExecuteAsync(),
-                    CreateCommandEnablerHandler(() => command.IsEnabledAsync()));
-            }
-        }
-
-        private static EventHandler CreateCommandEnablerHandler(Func<bool> isCommandEnabledPredicate)
-        {
-            return (sender, e) =>
-            {
-                if (sender is OleMenuCommand menuCommand && isCommandEnabledPredicate != null)
-                    menuCommand.Visible = isCommandEnabledPredicate.Invoke();
-            };
-        }
-
         private static EventHandler CreateCommandEnablerHandler(Func<Task<bool>> asyncIsCommandEnabledPredicate)
         {
             return (sender, e) =>
             {
                 if (sender is OleMenuCommand menuCommand && asyncIsCommandEnabledPredicate != null)
-                {
-                    var menuCommandVisible = ThreadHelper.JoinableTaskFactory.Run(asyncIsCommandEnabledPredicate);
-                    Debug.WriteLine($"menuCommandVisible={menuCommandVisible}");
-                    menuCommand.Visible = menuCommandVisible;
-                }
+                    menuCommand.Visible = ThreadHelper.JoinableTaskFactory.Run(asyncIsCommandEnabledPredicate);
             };
-        }
-
-        private void RegisterToggleCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
-        {
-            foreach (var commandSpecification in commandSpecifications)
-            {
-                var command = (ToggleCommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
-
-                AddMenuCommand(
-                    commandSetGuid,
-                    commandSpecification.CommandId,
-                    (o, e) => command.Execute(),
-                    CreateCommandToggleHandler(command));
-            }
         }
 
         private static EventHandler CreateCommandToggleHandler(ToggleCommandBase toggleCommand)

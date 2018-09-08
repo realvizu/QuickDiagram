@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         /// <summary>
         /// Shows the diagram-hosting tool window.
         /// </summary>
-        void ShowDiagramWindow();
+        Task ShowDiagramWindowAsync();
 
         /// <summary>
         /// Returns the main window of the host process.

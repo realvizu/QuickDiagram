@@ -59,13 +59,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
                 });
         }
 
-        private void OnShowSourceRequested(IDiagramShape diagramShape)
+#pragma warning disable VSTHRD100 // Avoid async void methods
+        private async void OnShowSourceRequested(IDiagramShape diagramShape)
+#pragma warning restore VSTHRD100 // Avoid async void methods
         {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
                 return;
 
-            new ShowSourceFileCommand(this).Execute(diagramNode);
+            await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
         }
 
 #pragma warning disable VSTHRD100 // Avoid async void methods
@@ -74,7 +76,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         {
             var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
             if (roslynModelNodes.Any())
-                await new AddItemsToDiagramCommand(this).ExecuteAsync(roslynModelNodes, followWithViewport);
+                await new AddItemsToDiagramCommand(this, roslynModelNodes, followWithViewport).ExecuteAsync();
         }
     }
 }

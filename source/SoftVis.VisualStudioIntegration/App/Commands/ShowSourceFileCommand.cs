@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
@@ -7,21 +8,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Activates the source code editor window for a given Symbol.
     /// </summary>
-    internal class ShowSourceFileCommand : SyncCommandWithParameterBase<IDiagramNode>
+    internal class ShowSourceFileCommand : CommandBase
     {
         private const string NoSourceMessage = "There's no source file for this item.";
         private static readonly TimeSpan NoSourceMessageDuration = TimeSpan.FromSeconds(5);
 
-        public ShowSourceFileCommand(IAppServices appServices)
+        private readonly IDiagramNode _diagramNode;
+
+        public ShowSourceFileCommand(IAppServices appServices, IDiagramNode diagramNode)
             : base(appServices)
         {
+            _diagramNode = diagramNode;
         }
 
-#pragma warning disable VSTHRD100 // Avoid async void methods
-        public override async void Execute(IDiagramNode diagramNode)
-#pragma warning restore VSTHRD100 // Avoid async void methods
+        public override async Task ExecuteAsync()
         {
-            if (!(diagramNode?.ModelNode is IRoslynModelNode roslynModelNode))
+            if (!(_diagramNode?.ModelNode is IRoslynModelNode roslynModelNode))
                 throw new Exception("DiagramNode or ModelNode is null or not an IRoslynModelNode.");
 
             if (await ModelService.HasSourceAsync(roslynModelNode))

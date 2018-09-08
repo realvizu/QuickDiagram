@@ -1,17 +1,21 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Expands all diagram nodes (show type descriptions).
     /// </summary>
-    internal sealed class ExpandAllNodesCommand : SyncCommandWithoutParameterBase
+    [UsedImplicitly]
+    internal sealed class ExpandAllNodesCommand : CommandBase
     {
         public ExpandAllNodesCommand(IAppServices appServices)
             : base(appServices)
         { }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
             UiService.ExpandAllNodes();
             UiService.KeepDiagramCentered();
         }

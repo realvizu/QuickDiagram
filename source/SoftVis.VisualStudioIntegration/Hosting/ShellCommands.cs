@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
-using Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands;
+using Codartis.SoftVis.VisualStudioIntegration.App.Commands.Toggle;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.ComboAdapters;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
 
@@ -23,9 +23,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 new CommandSpecification<ExportToFileCommand>(PackageIds.ExportToFileCommand),
                 new CommandSpecification<ShowDiagramWindowCommand>(PackageIds.ShowDiagramWindowCommand),
                 new CommandSpecification<ZoomToDiagramCommand>(PackageIds.ZoomToDiagramCommand),
-                // Individual expand/collapse is not supported at the moment.
-                //new CommandSpecification<ExpandAllNodesCommand>(PackageIds.ExpandAllNodesCommand),
-                //new CommandSpecification<CollapseAllNodesCommand>(PackageIds.CollapseAllNodesCommand),
+            };
+
+        public static readonly List<ICommandSpecification> ToggleCommandSpecifications =
+            new List<ICommandSpecification>
+            {
                 new CommandSpecification<ShowHideNodeDescriptionsToggleCommand>(PackageIds.ShowHideNodeDescriptionsCommand),
             };
 

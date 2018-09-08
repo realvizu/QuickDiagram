@@ -12,20 +12,25 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Adds the given model items to the diagram and shows a progress dialog.
     /// </summary>
-    internal sealed class AddItemsToDiagramCommand : AsyncCommandWithParameterBase<IReadOnlyList<IRoslynModelNode>, bool>
+    internal sealed class AddItemsToDiagramCommand : CommandBase
     {
-        public AddItemsToDiagramCommand(IAppServices appServices)
+        private readonly IReadOnlyList<IRoslynModelNode> _modelEntities;
+        private readonly bool _followWithViewport;
+
+        public AddItemsToDiagramCommand(IAppServices appServices, IReadOnlyList<IRoslynModelNode> modelEntities, bool followWithViewport)
             : base(appServices)
         {
+            _modelEntities = modelEntities;
+            _followWithViewport = followWithViewport;
         }
 
-        public override async Task ExecuteAsync(IReadOnlyList<IRoslynModelNode> modelEntities, bool followWithViewport)
+        public override async Task ExecuteAsync()
         {
-            var diagramNodes = await ShowProgressAndAddItemsAsync(modelEntities);
+            var diagramNodes = await ShowProgressAndAddItemsAsync(_modelEntities);
 
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
 
-            if (followWithViewport)
+            if (_followWithViewport)
                 UiService.FollowDiagramNodes(diagramNodes);
         }
 
@@ -35,7 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             using (var progressDialog = await UiService.CreateProgressDialogAsync("Adding model items:", modelEntities.Count))
             {
-                progressDialog.ShowWithDelayAsync();
+                await progressDialog.ShowWithDelayAsync();
 
                 try
                 {

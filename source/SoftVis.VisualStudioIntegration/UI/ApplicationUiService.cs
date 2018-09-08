@@ -39,7 +39,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             Initialize(resourceDictionary, DiagramControl);
         }
 
-        public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
+        public Task ShowDiagramWindowAsync() => _hostUiServices.ShowDiagramWindowAsync();
 
         public void ShowMessageBox(string message)
             => System.Windows.MessageBox.Show(message, DialogTitle);

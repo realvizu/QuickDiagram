@@ -1,17 +1,21 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Collapses all diagram nodes (hide type descriptions).
     /// </summary>
-    internal sealed class CollapseAllNodesCommand : SyncCommandWithoutParameterBase
+    [UsedImplicitly]
+    internal sealed class CollapseAllNodesCommand : CommandBase
     {
         public CollapseAllNodesCommand(IAppServices appServices)
             : base(appServices)
         { }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
             UiService.CollapseAllNodes();
             UiService.KeepDiagramCentered();
         }

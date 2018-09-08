@@ -3,12 +3,14 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Util.UI.Wpf.Imaging;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Exports the current diagram to a file.
     /// </summary>
+    [UsedImplicitly]
     internal sealed class ExportToFileCommand : DiagramImageCreatorCommandBase
     {
         public ExportToFileCommand(IAppServices appServices)

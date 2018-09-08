@@ -1,9 +1,11 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands
+﻿using System.Threading.Tasks;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.Toggle
 {
     /// <summary>
     /// Base class for those commands that behave like a toggle button.
     /// </summary>
-    internal abstract class ToggleCommandBase : SyncCommandBase
+    internal abstract class ToggleCommandBase : CommandBase
     {
         public bool IsChecked { get; private set; }
 
@@ -13,17 +15,17 @@
             IsChecked = initialIsChecked;
         }
 
-        public void Execute()
+        public sealed override async Task ExecuteAsync()
         {
             IsChecked = !IsChecked;
 
             if (IsChecked)
-                OnChecked();
+                await OnCheckedAsync();
             else
-                OnUnchecked();
+                await OnUncheckedAsync();
         }
 
-        protected abstract void OnChecked();
-        protected abstract void OnUnchecked();
+        protected abstract Task OnCheckedAsync();
+        protected abstract Task OnUncheckedAsync();
     }
 }

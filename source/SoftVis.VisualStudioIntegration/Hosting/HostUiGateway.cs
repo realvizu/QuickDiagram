@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -21,17 +22,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             _packageServices = packageServices;
         }
 
+        // TODO: delete?
         public void HostDiagram(ContentControl diagramControl)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 _diagramHostWindow = await _packageServices.CreateToolWindowAsync<DiagramHostToolWindow>();
             });
         }
 
-        public void ShowDiagramWindow()
+        public Task ShowDiagramWindowAsync()
         {
-            _packageServices.ShowToolWindow<DiagramHostToolWindow>();
+            return _packageServices.ShowToolWindowAsync<DiagramHostToolWindow>();
         }
 
         public async Task<Window> GetMainWindowAsync()
@@ -41,7 +44,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var parentWindowHandle = new IntPtr(hostService.MainWindow.HWnd);
             var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
-            return (Window)hwndSource?.RootVisual;
+            return (Window) hwndSource?.RootVisual;
         }
     }
 }

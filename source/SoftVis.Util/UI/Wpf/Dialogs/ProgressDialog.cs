@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
             set { _viewModel.ShowProgressNumber = value; }
         }
 
-        public async void ShowWithDelayAsync(int delayMillisec = 500)
+        public async Task ShowWithDelayAsync(int delayMillisec = 500)
         {
             try
             {

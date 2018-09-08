@@ -1,17 +1,21 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Makes the diagram window visible.
     /// </summary>
-    internal sealed class ShowDiagramWindowCommand : SyncCommandWithoutParameterBase
+    [UsedImplicitly]
+    internal sealed class ShowDiagramWindowCommand : CommandBase
     {
         public ShowDiagramWindowCommand(IAppServices appServices)
             : base(appServices)
         { }
 
-        public override void Execute()
+        public override Task ExecuteAsync()
         {
-            UiService.ShowDiagramWindow();
+            return UiService.ShowDiagramWindowAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -6,6 +7,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// Adds the current symbol (the one at the caret) to the diagram.
     /// Shows the diagram if it was not visible.
     /// </summary>
+    [UsedImplicitly]
     internal sealed class AddCurrentSymbolToDiagramCommand : AddCurrentSymbolToDiagramCommandBase
     {
         public AddCurrentSymbolToDiagramCommand(IAppServices appServices)
@@ -20,7 +22,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
                 return;
 
             var diagramNode = DiagramServices.ShowModelNode(modelEntity);
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
             UiService.FollowDiagramNode(diagramNode);
         }
     }

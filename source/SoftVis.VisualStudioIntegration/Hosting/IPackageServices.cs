@@ -45,8 +45,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// <returns>The created tool window.</returns>
         Task<TWindow> CreateToolWindowAsync<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
 
-        void ShowToolWindow<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
+        Task ShowToolWindowAsync<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
 
+        // TODO: delete?
         /// <summary>
         /// Performs an async task and awaits it.
         /// </summary>

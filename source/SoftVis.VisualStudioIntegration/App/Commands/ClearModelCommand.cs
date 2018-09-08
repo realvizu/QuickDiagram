@@ -1,17 +1,21 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Clears the model (and subsequently the diagram).
     /// </summary>
-    internal sealed class ClearModelCommand : SyncCommandWithoutParameterBase
+    [UsedImplicitly]
+    internal sealed class ClearModelCommand : CommandBase
     {
         public ClearModelCommand(IAppServices appServices)
             : base(appServices)
         { }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
-            UiService.ShowDiagramWindow();
+            await UiService.ShowDiagramWindowAsync();
             ModelService.ClearModel();
         }
     }

@@ -54,17 +54,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
 
-        public void ShowToolWindow<TWindow>(int instanceId = 0) 
+        public async Task ShowToolWindowAsync<TWindow>(int instanceId = 0) 
             where TWindow : ToolWindowPane
         {
-            JoinableTaskFactory.Run(async () =>
-            {
                 await ShowToolWindowAsync(
                     typeof(DiagramHostToolWindow),
                     0,
                     create: true,
                     cancellationToken: DisposalToken);
-            });
         }
 
         public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
@@ -155,6 +152,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var commandSetGuid = PackageGuids.SoftVisCommandSetGuid;
             var commandRegistrant = new CommandRegistrant(menuCommandService, appServices);
             commandRegistrant.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
+            commandRegistrant.RegisterToggleCommands(commandSetGuid, ShellCommands.ToggleCommandSpecifications);
             commandRegistrant.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
         }
     }

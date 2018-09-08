@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
 {
