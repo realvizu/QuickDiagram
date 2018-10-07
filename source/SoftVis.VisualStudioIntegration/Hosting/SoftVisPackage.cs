@@ -10,9 +10,11 @@ using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
@@ -43,9 +45,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             await base.InitializeAsync(cancellationToken, progress);
 
-
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
-            await hostWorkspaceGateway.InitAsync();
             var hostUiGateway = new HostUiGateway(this);
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -82,13 +82,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return Task.FromResult((object)_diagramToolApplication.ApplicationUiService.DiagramControl);
         }
 
-        public void Await(Func<Task> action)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate {
-                await action();
-            });
-        }
-
         private async Task<TInterface> GetServiceAsync<TService, TInterface>()
             where TService : class
             where TInterface : class
@@ -122,9 +115,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return hostService;
         }
 
-        public async Task<IVsRunningDocumentTable> GetRunningDocumentTableServiceAsync()
+        public async Task<IVsTextManager> GetTextManagerServiceAsync()
         {
-            return await GetServiceAsync<SVsRunningDocumentTable, IVsRunningDocumentTable>();
+            return (IVsTextManager) await GetServiceAsync(typeof(SVsTextManager));
+        }
+
+        public async Task<IVsEditorAdaptersFactoryService> GetEditorAdaptersFactoryServiceAsync()
+        {
+            var componentModel = (IComponentModel) await GetServiceAsync(typeof(SComponentModel));
+            if (componentModel == null)
+                throw new ArgumentNullException(nameof(componentModel));
+
+            return componentModel.GetService<IVsEditorAdaptersFactoryService>();
         }
 
         public OleMenuCommandService GetMenuCommandService()
@@ -147,7 +149,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return await ShowToolWindowAsync(typeof(TWindow), instanceId, create: true, cancellationToken: DisposalToken) as TWindow;
         }
 
-        private void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
+        private static void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
         {
             var commandSetGuid = PackageGuids.SoftVisCommandSetGuid;
             var commandRegistrant = new CommandRegistrant(menuCommandService, appServices);
