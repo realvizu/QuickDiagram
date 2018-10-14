@@ -32,6 +32,11 @@ namespace Codartis.SoftVis.Util
                 yield return item;
         }
 
+        public static IEnumerable<T> Concat<T>(this T o, IEnumerable<T> others)
+        {
+            return o.ToEnumerable().Concat(others);
+        }
+
         public static int IndexOf<T>(this IEnumerable<T> source, T value)
         {
             var sourceAsList = source as IList<T>;

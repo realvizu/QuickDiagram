@@ -156,7 +156,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
 
             var nextLayerChildren = affectedVertices.SelectMany(ProperLayoutGraph.GetPrimaryChildren).ToArray();
             if (nextLayerChildren.Any())
-                ShiftWithRightNeighboursRecursive(nextLayerChildren.MinBy(Left), shiftBy);
+                ShiftWithRightNeighboursRecursive(nextLayerChildren.MinBy(Left).First(), shiftBy);
         }
 
         private double Left(LayoutVertexBase vertex)

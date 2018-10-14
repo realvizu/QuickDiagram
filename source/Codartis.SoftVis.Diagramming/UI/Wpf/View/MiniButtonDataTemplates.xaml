@@ -4,7 +4,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-                    xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=SoftVis.Util"
+                    xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.SoftVis.Util"
                     mc:Ignorable="d">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

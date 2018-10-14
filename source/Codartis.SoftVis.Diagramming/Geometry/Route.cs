@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Util;
-using MoreLinq;
+using static MoreLinq.Extensions.ToDelimitedStringExtension;
 
 namespace Codartis.SoftVis.Geometry
 {
@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.Geometry
         }
 
         /// <summary>
-        /// Modifies the first and last point of a route to attach to the suppied source and target rect's perimeter.
+        /// Modifies the first and last point of a route to attach to the supplied source and target rect's perimeter.
         /// </summary>
         public Route AttachToSourceRectAndTargetRect(Rect2D sourceRect, Rect2D targetRect)
         {
@@ -56,7 +56,7 @@ namespace Codartis.SoftVis.Geometry
             var firstPoint = sourceRect.GetAttachPointToward(_routePoints[1]);
             var lastPoint = targetRect.GetAttachPointToward(_routePoints[_routePoints.Count - 2]);
 
-            return new Route(firstPoint.Concat(_routePoints.Skip(1).TakeButLast()).Concat(lastPoint));
+            return new Route(firstPoint.Concat(_routePoints.Skip(1).TakeButLast()).Append(lastPoint));
         }
 
         public bool Equals(Route other)

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Util;
-using MoreLinq;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs
@@ -36,7 +35,7 @@ namespace Codartis.SoftVis.Graphs
         public int Length => Edges.Count;
         public TVertex Source => Edges.Any() ? Edges.First().Source : throw new InvalidOperationException("The path is empty.");
         public TVertex Target => Edges.Any() ? Edges.Last().Target : throw new InvalidOperationException("The path is empty.");
-        public IEnumerable<TVertex> Vertices => this.Select(i => i.Source).Concat(this.Last().Target);
+        public IEnumerable<TVertex> Vertices => this.Select(i => i.Source).Append(this.Last().Target);
         public TEdge this[int i] => Edges[i];
 
         public IEnumerator<TEdge> GetEnumerator() => Edges.AsEnumerable().GetEnumerator();

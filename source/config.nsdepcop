@@ -26,7 +26,7 @@
     <Allowed From="*" To="System.Text.RegularExpressions" />
     <Allowed From="*" To="System.IO" />
     
-    <Allowed From="*" To="MoreLinq" />
+    <Allowed From="*" To="MoreLinq.*" />
     <Allowed From="*" To="JetBrains.Annotations" />
     <Allowed From="*" To="Codartis.SoftVis.Util.*" />
 
