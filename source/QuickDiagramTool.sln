@@ -21,21 +21,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{6F49
 		include\VersionInfo.cs = include\VersionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.TestHostApp", "SoftVis.TestHostApp\SoftVis.TestHostApp.csproj", "{E8E3E172-0A9D-493E-A932-531066699E35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.TestHostApp", "Codartis.SoftVis.TestHostApp\Codartis.SoftVis.TestHostApp.csproj", "{E8E3E172-0A9D-493E-A932-531066699E35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.Diagramming", "SoftVis.Diagramming\SoftVis.Diagramming.csproj", "{9A600B8E-7C32-4DAE-B61C-55FB78051F81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.Diagramming", "Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj", "{9A600B8E-7C32-4DAE-B61C-55FB78051F81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegration", "SoftVis.VisualStudioIntegration\SoftVis.VisualStudioIntegration.csproj", "{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.VisualStudioIntegration", "Codartis.SoftVis.VisualStudioIntegration\Codartis.SoftVis.VisualStudioIntegration.csproj", "{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.Diagramming.UnitTests", "SoftVis.Diagramming.UnitTests\SoftVis.Diagramming.UnitTests.csproj", "{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.Diagramming.UnitTests", "Codartis.SoftVis.Diagramming.UnitTests\Codartis.SoftVis.Diagramming.UnitTests.csproj", "{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.Util", "SoftVis.Util\SoftVis.Util.csproj", "{04B8C468-787F-45B2-BD98-31E05C646099}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.Util", "Codartis.SoftVis.Util\Codartis.SoftVis.Util.csproj", "{04B8C468-787F-45B2-BD98-31E05C646099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.Util.UnitTests", "SoftVis.Util.UnitTests\SoftVis.Util.UnitTests.csproj", "{715F370E-3A0C-4214-B51D-BC0A2C3259F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.Util.UnitTests", "Codartis.SoftVis.Util.UnitTests\Codartis.SoftVis.Util.UnitTests.csproj", "{715F370E-3A0C-4214-B51D-BC0A2C3259F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegration.UnitTests", "SoftVis.VisualStudioIntegration.UnitTests\SoftVis.VisualStudioIntegration.UnitTests.csproj", "{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.VisualStudioIntegration.UnitTests", "Codartis.SoftVis.VisualStudioIntegration.UnitTests\Codartis.SoftVis.VisualStudioIntegration.UnitTests.csproj", "{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftVis.VisualStudioIntegration.Vs2017", "SoftVis.VisualStudioIntegration.Vs2017\SoftVis.VisualStudioIntegration.Vs2017.csproj", "{6A8C12E8-4123-4F81-899B-21D55DD5F3A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codartis.SoftVis.VisualStudioIntegration.Vs2017", "Codartis.SoftVis.VisualStudioIntegration.Vs2017\Codartis.SoftVis.VisualStudioIntegration.Vs2017.csproj", "{6A8C12E8-4123-4F81-899B-21D55DD5F3A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

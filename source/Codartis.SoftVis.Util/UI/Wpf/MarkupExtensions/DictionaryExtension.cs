@@ -7,7 +7,7 @@ using System.Windows.Markup;
 namespace Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions
 {
     /// <summary>
-    /// Makes it possible to define and populate a dictionary instace in XAML.
+    /// Makes it possible to define and populate a dictionary instance in XAML.
     /// </summary>
     [MarkupExtensionReturnType(typeof(IDictionary))]
     public class DictionaryExtension : MarkupExtension, IDictionary
