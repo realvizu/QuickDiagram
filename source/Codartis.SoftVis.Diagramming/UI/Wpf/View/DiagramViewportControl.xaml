@@ -17,8 +17,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
+                <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
+                <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

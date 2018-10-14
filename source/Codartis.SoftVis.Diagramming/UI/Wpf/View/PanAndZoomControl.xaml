@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/SoftVis.Util;component/UI/Wpf/Resources/CommonGeometries.xaml" />
+                <ResourceDictionary Source="/Codartis.SoftVis.Util;component/UI/Wpf/Resources/CommonGeometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />

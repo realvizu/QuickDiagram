@@ -34,10 +34,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="UI\Wpf\Controls\BubbleListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Wpf\Controls\PopupTextControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\Controls\ProgressWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\Resources\CommonGeometries.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

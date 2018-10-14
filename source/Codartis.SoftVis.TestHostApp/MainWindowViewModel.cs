@@ -157,7 +157,7 @@ namespace Codartis.SoftVis.TestHostApp
             {
                 using (var progressDialog = new ProgressDialog(_window, "TestHostApp", "Generating image.."))
                 {
-                    progressDialog.ShowWithDelayAsync();
+                    await progressDialog.ShowWithDelayAsync();
 
                     var bitmapSource = await _uiService.CreateDiagramImageAsync(SelectedDpi, 10,
                         progressDialog.CancellationToken, progressDialog.Progress, progressDialog.MaxProgress);
