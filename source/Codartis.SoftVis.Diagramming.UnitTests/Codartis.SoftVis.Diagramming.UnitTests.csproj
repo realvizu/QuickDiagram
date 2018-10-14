@@ -1,150 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Codartis.SoftVis.Diagramming.UnitTests</RootNamespace>
-    <AssemblyName>SoftVis.Diagramming.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Platforms>AnyCPU</Platforms>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
+    <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn></NoWarn>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn />
+    <WarningsAsErrors />
+  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="FluentAssertions, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentAssertions.Core, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>..\packages\morelinq.2.3.0\lib\net35\MoreLinq.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.4.2" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.console" Version="2.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="QuickGraph">
       <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
     </Reference>
-    <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="QuickGraph.Serialization">
       <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.core, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.core.2.2.0\lib\netstandard1.1\xunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.execution.desktop, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.execution.2.2.0\lib\net452\xunit.execution.desktop.dll</HintPath>
-    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Include\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Include\VersionInfo.cs">
-      <Link>Properties\VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="Diagramming\Layout\Incremental\Builders\BuilderBase.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\RelativeLayoutCalculatorBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\GraphRelatedBuilderBase.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutVertexLayersBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Helpers\EdgeSpecification.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\GraphBuilderBase.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\LayeredLayoutGraphBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\LayoutPathBuilder.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Helpers\PathSpecification.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Helpers\VertexList.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutPathTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\LayeredLayoutGraphTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\QuasiProperLayoutGraphTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLayoutCalculatorTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocationCalculatorTests.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\VerticesInLayerComparerTests.cs" />
-    <Compile Include="Geometry\RouteTests.cs" />
-    <Compile Include="Graphs\Concurrent\RemovedVertexResultTests.cs" />
-    <Compile Include="Graphs\GraphExtensionsTests.cs" />
-    <Compile Include="TestSubjects\TestModelNodeStereotypes.cs" />
-    <Compile Include="TestSubjects\TestModelRelationship.cs" />
-    <Compile Include="TestSubjects\TestDiagramNode.cs" />
-    <Compile Include="TestSubjects\TestDummyLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Builders\QuasiProperLayoutGraphBuilder.cs" />
-    <Compile Include="TestSubjects\TestLayoutVertex.cs" />
-    <Compile Include="TestSubjects\TestModelNode.cs" />
-    <Compile Include="Graphs\Concurrent\ConcurrentBidirectionalGraphTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SoftVis.Diagramming\SoftVis.Diagramming.csproj">
-      <Project>{9a600b8e-7c32-4dae-b61c-55fb78051f81}</Project>
-      <Name>SoftVis.Diagramming</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj">
-      <Project>{04b8c468-787f-45b2-bd98-31e05c646099}</Project>
-      <Name>SoftVis.Util</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Key.snk">
-      <Link>Key.snk</Link>
-    </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

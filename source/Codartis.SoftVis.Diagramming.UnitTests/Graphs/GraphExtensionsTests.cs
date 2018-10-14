@@ -12,14 +12,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Graphs
         {
             var graph = CreateGraph();
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out).ShouldBeEquivalentTo(new[] { 2, 3, 4 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In).ShouldBeEquivalentTo(new[] { 5, 6, 7 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out).Should().BeEquivalentTo(new[] { 2, 3, 4 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In).Should().BeEquivalentTo(new[] { 5, 6, 7 });
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "a").ShouldBeEquivalentTo(new[] { 2, 3, });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "a").ShouldBeEquivalentTo(new[] { 5, 6 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "a").Should().BeEquivalentTo(new[] { 2, 3, });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "a").Should().BeEquivalentTo(new[] { 5, 6 });
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "b").ShouldBeEquivalentTo(new[] { 2, 4, });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "b").ShouldBeEquivalentTo(new[] { 5, 7 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "b").Should().BeEquivalentTo(new[] { 2, 4, });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "b").Should().BeEquivalentTo(new[] { 5, 7 });
         }
 
         [Fact]
@@ -27,14 +27,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Graphs
         {
             var graph = CreateGraph();
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, recursive: true).ShouldBeEquivalentTo(new[] { 2, 3, 4, 8, 9, 10, 11 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, recursive: true).ShouldBeEquivalentTo(new[] { 5, 6, 7, 12, 13 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, recursive: true).Should().BeEquivalentTo(new[] { 2, 3, 4, 8, 9, 10, 11 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, recursive: true).Should().BeEquivalentTo(new[] { 5, 6, 7, 12, 13 });
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "a", true).ShouldBeEquivalentTo(new[] { 2, 3, 8, 10 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "a", true).ShouldBeEquivalentTo(new[] { 5, 6, 12 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "a", true).Should().BeEquivalentTo(new[] { 2, 3, 8, 10 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "a", true).Should().BeEquivalentTo(new[] { 5, 6, 12 });
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "b", true).ShouldBeEquivalentTo(new[] { 2, 4, 9 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "b", true).ShouldBeEquivalentTo(new[] { 5, 7, 13 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "b", true).Should().BeEquivalentTo(new[] { 2, 4, 9 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "b", true).Should().BeEquivalentTo(new[] { 5, 7, 13 });
         }
 
         [Fact]
@@ -42,14 +42,14 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Graphs
         {
             var graph = CreateGraphWithCycle();
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, recursive: true).ShouldBeEquivalentTo(new[] { 2, 3, 4, 8, 9, 10, 11, 12, 6 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, recursive: true).ShouldBeEquivalentTo(new[] { 5, 6, 7, 12, 13, 10, 3 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, recursive: true).Should().BeEquivalentTo(new[] { 2, 3, 4, 8, 9, 10, 11, 12, 6 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, recursive: true).Should().BeEquivalentTo(new[] { 5, 6, 7, 12, 13, 10, 3 });
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "a", true).ShouldBeEquivalentTo(new[] { 2, 3, 8, 10, 12, 6 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "a", true).ShouldBeEquivalentTo(new[] { 5, 6, 12, 10, 3 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "a", true).Should().BeEquivalentTo(new[] { 2, 3, 8, 10, 12, 6 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "a", true).Should().BeEquivalentTo(new[] { 5, 6, 12, 10, 3 });
 
-            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "b", true).ShouldBeEquivalentTo(new[] { 2, 4, 9 });
-            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "b", true).ShouldBeEquivalentTo(new[] { 5, 7, 13 });
+            graph.GetAdjacentVertices(1, EdgeDirection.Out, e => e.Label == "b", true).Should().BeEquivalentTo(new[] { 2, 4, 9 });
+            graph.GetAdjacentVertices(1, EdgeDirection.In, e => e.Label == "b", true).Should().BeEquivalentTo(new[] { 5, 7, 13 });
         }
 
         private static IntGraph CreateGraph()

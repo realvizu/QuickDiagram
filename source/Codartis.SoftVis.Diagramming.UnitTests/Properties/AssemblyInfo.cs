@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("SoftVis.Diagramming.UnitTests")]
+[assembly: AssemblyTitle("Codartis.SoftVis.Diagramming.UnitTests")]
 [assembly: AssemblyDescription("Unit tests for diagramming library")]
