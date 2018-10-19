@@ -29,11 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="UI\Wpf\Controls\PopupTextControl.xaml" />
-    <None Remove="UI\Wpf\Controls\ProgressWindow.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Include="UI\Wpf\Controls\BubbleListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
