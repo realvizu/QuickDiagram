@@ -4,16 +4,16 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"
                     xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
-                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=SoftVis.Diagramming"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis.Diagramming"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
-                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=SoftVis.Util"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=SoftVis.Diagramming">
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.SoftVis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis.Diagramming">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-        <ResourceDictionary Source="/SoftVis.VisualStudioIntegration;component/UI/DecoratorPlacementDictionary.xaml" />
-        <ResourceDictionary Source="/SoftVis.VisualStudioIntegration;component/UI/DiagramNodeExpander.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis.VisualStudioIntegration;component/UI/DecoratorPlacementDictionary.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis.VisualStudioIntegration;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

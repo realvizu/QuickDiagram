@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
             ApplicationUiService.ImageExportDpi = Dpi.Dpi150;
             ApplicationUiService.DiagramNodeInvoked += OnShowSourceRequested;
-            ApplicationUiService.ShowModelItemsRequested += OnShowItemsRequestedAsync;
+            ApplicationUiService.ShowModelItemsRequested += OnShowItemsRequested;
         }
 
         private static IVisualizationService CreateVisualizationService(IRoslynModelProvider roslynModelProvider, IHostUiServices hostUiServices)
@@ -71,7 +71,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         }
 
 #pragma warning disable VSTHRD100 // Avoid async void methods
-        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
+        private async void OnShowItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
 #pragma warning restore VSTHRD100 // Avoid async void methods
         {
             var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();

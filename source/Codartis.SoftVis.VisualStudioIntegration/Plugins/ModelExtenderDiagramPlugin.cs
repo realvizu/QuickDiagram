@@ -15,17 +15,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            DiagramService.DiagramChanged += OnDiagramChangedAsync;
+            DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
-            DiagramService.DiagramChanged -= OnDiagramChangedAsync;
+            DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
         private IRoslynModelService RoslynModelService => (IRoslynModelService) ModelService;
 
-        private void OnDiagramChangedAsync(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
             switch (diagramEvent)
             {
