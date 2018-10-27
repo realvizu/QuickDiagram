@@ -1,104 +1,157 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
 
-  <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Platforms>AnyCPU</Platforms>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+    <!-- 
+        The VSSDK targets muat be imported after importing Microsoft.NET.Sdk so the <Project Sdk="Microsoft.NET.Sdk"> cannot be used. 
+        Must import Sdk.props and Sdk.targets explicitly at the begining and at the end of the project file but VSSDK import must come last.
+    -->
+    <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" />
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn></NoWarn>
-    <WarningsAsErrors />
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net471</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Platforms>AnyCPU</Platforms>
+        <SignAssembly>true</SignAssembly>
+        <DelaySign>false</DelaySign>
+        <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn />
-    <WarningsAsErrors />
-  </PropertyGroup>
+    <PropertyGroup>
+        <IsVsixProject>True</IsVsixProject>
+        <GeneratePkgDefFile>true</GeneratePkgDefFile>
+        <CreateVsixContainer>True</CreateVsixContainer>
+        <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+        <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+        <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+        <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+        <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn></NoWarn>
+        <WarningsAsErrors />
+        <DeployExtension>True</DeployExtension>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Resource Include="UI\Images\Class.png" />
-    <Resource Include="UI\Images\Delegate.png" />
-    <Resource Include="UI\Images\Enum.png" />
-    <Resource Include="UI\Images\Interface.png" />
-    <Resource Include="UI\Images\Struct.png" />
-    <Content Include="Resources\AddClause_16x16.png" />
-    <Content Include="Resources\AddToDependancyGraph_16x16.png" />
-    <Content Include="Resources\AutoSizeOptimize_16x16.png" />
-    <Content Include="Resources\Cancel_16x16.png" />
-    <Content Include="Resources\CollapseAll_16x16.png" />
-    <Content Include="Resources\Copy_16x16.png" />
-    <Content Include="Resources\DependancyGraph_16x16.png" />
-    <Content Include="Resources\ExpandAll_16x16.png" />
-    <Content Include="Resources\Refresh_16x16.png" />
-    <Content Include="Resources\Save_16x16.png" />
-    <Content Include="Resources\SmallInfo_16x16.png" />
-    <Content Include="Resources\QuickDiagramTool_128.ico" />
-    <VSCTCompile Include="SoftVisPackage.vsct">
-      <ResourceName>Menus.ctmenu</ResourceName>
-      <Generator>VsctGenerator</Generator>
-      <LastGenOutput>SoftVisPackage.cs</LastGenOutput>
-    </VSCTCompile>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Page Include="UI\DiagramNodeExpander.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\DecoratorPlacementDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\DiagramStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn />
+        <WarningsAsErrors />
+        <DeployExtension>False</DeployExtension>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj" />
-    <ProjectReference Include="..\Codartis.SoftVis.Util\Codartis.SoftVis.Util.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+        <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="EnvDTE100" Version="10.0.3" />
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
-    <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost" Version="15.8.525" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.8.168" />
-    <PackageReference Include="NsDepCop" Version="1.8.1-beta1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="2.9.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Editor" Version="15.8.525" />
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="2.9.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="15.8.28010" />
-  </ItemGroup>
+    <ItemGroup>
+        <Resource Include="UI\Images\Class.png" />
+        <Resource Include="UI\Images\Delegate.png" />
+        <Resource Include="UI\Images\Enum.png" />
+        <Resource Include="UI\Images\Interface.png" />
+        <Resource Include="UI\Images\Struct.png" />
+        <Content Include="Resources\AddClause_16x16.png" />
+        <Content Include="Resources\AddToDependancyGraph_16x16.png" />
+        <Content Include="Resources\AutoSizeOptimize_16x16.png" />
+        <Content Include="Resources\Cancel_16x16.png" />
+        <Content Include="Resources\CollapseAll_16x16.png" />
+        <Content Include="Resources\Copy_16x16.png" />
+        <Content Include="Resources\DependancyGraph_16x16.png" />
+        <Content Include="Resources\ExpandAll_16x16.png" />
+        <Content Include="Resources\Refresh_16x16.png" />
+        <Content Include="Resources\Save_16x16.png" />
+        <Content Include="Resources\SmallInfo_16x16.png" />
+        <Content Include="Resources\QuickDiagramTool_128.ico">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <IncludeInVSIX>true</IncludeInVSIX>
+        </Content>
+        <Content Include="Resources\QuickDiagramTool_256.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <IncludeInVSIX>true</IncludeInVSIX>
+        </Content>
+        <Content Include="..\..\LICENSE">
+            <Link>Resources\LICENSE</Link>
+            <IncludeInVSIX>true</IncludeInVSIX>
+        </Content>
+        <EmbeddedResource Include="VSPackage.resx">
+            <MergeWithCTO>true</MergeWithCTO>
+            <ManifestResourceName>VSPackage</ManifestResourceName>
+        </EmbeddedResource>
+        <VSCTCompile Include="SoftVisPackage.vsct">
+            <ResourceName>Menus.ctmenu</ResourceName>
+        </VSCTCompile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="QuickGraph">
-      <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickGraph.Serialization">
-      <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Design" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+    <ItemGroup>
+        <Page Include="UI\DiagramNodeExpander.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="UI\DecoratorPlacementDictionary.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="UI\DiagramStyles.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj" />
+        <ProjectReference Include="..\Codartis.SoftVis.Util\Codartis.SoftVis.Util.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="EnvDTE100" Version="10.0.3" />
+        <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
+        <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost" Version="15.8.525" />
+        <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.8.168" />
+        <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.8.3252">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NsDepCop" Version="1.8.1-beta1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="2.9.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Editor" Version="15.8.525" />
+        <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="2.9.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="15.8.28010" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
+        <Reference Include="QuickGraph">
+            <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
+        </Reference>
+        <Reference Include="QuickGraph.Serialization">
+            <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Design" />
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xaml" />
+        <Reference Include="WindowsBase" />
+    </ItemGroup>
+
+    <!-- Disabling extension deployment for command line builds; required for AppVeyor. -->
+    <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+        <DeployExtension>False</DeployExtension>
+    </PropertyGroup>
+
+    <!-- Workaround to include NuGet DLLs into the VSIX. Needs more tweaking because it includes too many. -->
+    <Target Name="IncludePackageReferenceDependencies" AfterTargets="CoreCompile">
+        <ItemGroup>
+            <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" />
+        </ItemGroup>
+    </Target>
+
+    <!-- This is a workaround to enable importing VSSDK targets after Microsoft.NET.Sdk. See details at the top of the file. -->
+    <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
+    <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
 
 </Project>
