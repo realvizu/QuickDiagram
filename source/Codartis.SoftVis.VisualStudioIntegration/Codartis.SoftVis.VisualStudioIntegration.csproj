@@ -1,12 +1,13 @@
 ﻿<Project>
 
     <!-- 
-        The VSSDK targets muat be imported after importing Microsoft.NET.Sdk so the <Project Sdk="Microsoft.NET.Sdk"> cannot be used. 
+        The VSSDK targets must be imported after importing Microsoft.NET.Sdk so the <Project Sdk="Microsoft.NET.Sdk"> cannot be used. 
         Must import Sdk.props and Sdk.targets explicitly at the begining and at the end of the project file but VSSDK import must come last.
     -->
     <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" />
 
     <PropertyGroup>
+        <AssemblyName>QuickDiagramTool</AssemblyName>
         <TargetFramework>net471</TargetFramework>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Platforms>AnyCPU</Platforms>
