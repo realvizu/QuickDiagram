@@ -20,7 +20,7 @@ assembly_info:
 
 before_build:
 # vsixmanifest file must be specified with full path.
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration.Vs2017\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
+- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\SoftVis.VisualStudioIntegration\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\QuickDiagramTool.sln
 
 build:
@@ -31,4 +31,4 @@ test:
   assemblies: '**\*UnitTests.dll'
 
 artifacts:
-- path: source\SoftVis.VisualStudioIntegration.Vs2017\bin\Release\QuickDiagramTool.vsix
+- path: source\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix
