@@ -31,6 +31,10 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <PackageReference Include="NsDepCop" Version="1.9.0-beta2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -47,13 +51,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NsDepCop" Version="1.8.1-beta1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

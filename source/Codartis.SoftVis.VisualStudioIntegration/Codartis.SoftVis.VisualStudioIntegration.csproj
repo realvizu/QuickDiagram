@@ -112,15 +112,15 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="NsDepCop" Version="1.8.1-beta1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="2.9.0" />
         <PackageReference Include="Microsoft.VisualStudio.Editor" Version="15.8.525" />
         <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="2.9.0" />
         <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="15.8.28010" />
+        <PackageReference Include="NsDepCop" Version="1.9.0-beta2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
