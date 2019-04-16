@@ -26,6 +26,7 @@
             <Path.Data>
                 <MultiBinding Converter="{StaticResource PointsToArrowShaftPathConverter}">
                     <Binding Path="DisplayedRoutePoints" ElementName="ThisControl" Mode="OneWay"/>
+                    <Binding Path="ArrowHeadType"/>
                     <Binding Source="{StaticResource ArrowHeadSize}"/>
                 </MultiBinding>
             </Path.Data>

@@ -16,29 +16,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length != 4 || 
+            if (values.Length != 4 ||
                 !(values[0] is IList<Point>) ||
                 !(values[1] is ArrowHeadType) ||
                 !(values[2] is double) ||
                 !(values[3] is double))
                 return null;
 
-            var routePoints = (IList<Point>)values[0];
-            var arrowHeadType = (ArrowHeadType)values[1];
-            var arrowHeadSize = (double)values[2];
-            var arrowHeadLengthPerWidth = (double)values[3];
-
-            // TODO: use arrowHeadType to implement more arrow head type figures.
+            var routePoints = (IList<Point>) values[0];
+            var arrowHeadType = (ArrowHeadType) values[1];
+            var arrowHeadSize = (double) values[2];
+            var arrowHeadLengthPerWidth = (double) values[3];
 
             if (routePoints.Count < 1)
                 return null;
 
-            var pathFigures = CreatePathFigures(routePoints, arrowHeadSize, arrowHeadLengthPerWidth);
+            var pathFigures = CreatePathFigures(routePoints, arrowHeadType, arrowHeadSize, arrowHeadLengthPerWidth);
             return new PathGeometry(pathFigures);
         }
 
-        private static IEnumerable<PathFigure> CreatePathFigures(IList<Point> points, 
-            double arrowHeadSize, double arrowHeadLengthPerWidth)
+        private static IEnumerable<PathFigure> CreatePathFigures(IList<Point> points,
+            ArrowHeadType arrowHeadType, double arrowHeadSize, double arrowHeadLengthPerWidth)
         {
             var startPoint = points[points.Count - 2];
             var endPoint = points[points.Count - 1];
@@ -46,11 +44,19 @@ namespace Codartis.SoftVis.UI.Wpf.View
             var arrowVector = endPoint - startPoint;
             var arrowHeadVector = arrowVector / arrowVector.Length * arrowHeadSize;
 
-            yield return CreateGeneralizationArrowHead(endPoint, arrowHeadVector, arrowHeadLengthPerWidth);
+            switch (arrowHeadType)
+            {
+                case ArrowHeadType.Hollow:
+                    yield return CreateArrowHead(endPoint, arrowHeadVector, arrowHeadLengthPerWidth, isClosed: true);
+                    yield break;
+                case ArrowHeadType.Simple:
+                    yield return CreateArrowHead(endPoint, arrowHeadVector, arrowHeadLengthPerWidth, isClosed: false);
+                    yield break;
+            }
         }
 
-        private static PathFigure CreateGeneralizationArrowHead(Point arrowEndPoint, 
-            Vector arrowHeadVector, double arrowHeadLengthPerWidth)
+        private static PathFigure CreateArrowHead(Point arrowEndPoint,
+            Vector arrowHeadVector, double arrowHeadLengthPerWidth, bool isClosed)
         {
             var arrowHeadWidthVector = new Vector(arrowHeadVector.Y, -arrowHeadVector.X) / arrowHeadLengthPerWidth;
 
@@ -61,7 +67,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 arrowEndPoint - arrowHeadVector + arrowHeadWidthVector
             };
 
-            return arrowHeadPoints.ToPathFigure(closed: true);
+            return arrowHeadPoints.ToPathFigure(isClosed);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
