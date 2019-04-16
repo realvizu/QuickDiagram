@@ -100,8 +100,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj" />
-        <ProjectReference Include="..\Codartis.SoftVis.Util\Codartis.SoftVis.Util.csproj" />
+        <ProjectReference Include="..\Codartis.SoftVis\Codartis.SoftVis.csproj" />
+        <ProjectReference Include="..\Codartis.Util\Codartis.Util.csproj" />
     </ItemGroup>
 
     <ItemGroup>

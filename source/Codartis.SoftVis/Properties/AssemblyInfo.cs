@@ -2,13 +2,13 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-[assembly: AssemblyTitle("Codartis.SoftVis.Diagramming")]
+[assembly: AssemblyTitle("Codartis.SoftVis")]
 [assembly: AssemblyDescription("Diagramming library")]
 
 [assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
 
 // Ouch, this is ugly. Is there a better way?
-[assembly: InternalsVisibleTo("Codartis.SoftVis.Diagramming.UnitTests, PublicKey=" +
+[assembly: InternalsVisibleTo("Codartis.SoftVis.UnitTests, PublicKey=" +
 "00240000048000009400000006020000002400005253413100040000010001002fc63df7391181" +
 "6032620346b7deb6a3356ed095c21e137f25b0eb7c5c989179ef7f01f3616bf57741511fd5247a" +
 "a1d21483c58ed33b8b8ce8b7b0e1913b484b56514f1f6c5074889e04ecf3693b406a0a6b888e2e" +

@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj" />
+    <ProjectReference Include="..\Codartis.SoftVis\Codartis.SoftVis.csproj" />
   </ItemGroup>
 
   <ItemGroup>

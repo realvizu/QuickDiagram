@@ -23,15 +23,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{6F49
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.TestHostApp", "Codartis.SoftVis.TestHostApp\Codartis.SoftVis.TestHostApp.csproj", "{E8E3E172-0A9D-493E-A932-531066699E35}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.Diagramming", "Codartis.SoftVis.Diagramming\Codartis.SoftVis.Diagramming.csproj", "{9A600B8E-7C32-4DAE-B61C-55FB78051F81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis", "Codartis.SoftVis\Codartis.SoftVis.csproj", "{9A600B8E-7C32-4DAE-B61C-55FB78051F81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.VisualStudioIntegration", "Codartis.SoftVis.VisualStudioIntegration\Codartis.SoftVis.VisualStudioIntegration.csproj", "{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.Diagramming.UnitTests", "Codartis.SoftVis.Diagramming.UnitTests\Codartis.SoftVis.Diagramming.UnitTests.csproj", "{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.UnitTests", "Codartis.SoftVis.UnitTests\Codartis.SoftVis.UnitTests.csproj", "{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.Util", "Codartis.SoftVis.Util\Codartis.SoftVis.Util.csproj", "{04B8C468-787F-45B2-BD98-31E05C646099}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.Util", "Codartis.Util\Codartis.Util.csproj", "{04B8C468-787F-45B2-BD98-31E05C646099}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.Util.UnitTests", "Codartis.SoftVis.Util.UnitTests\Codartis.SoftVis.Util.UnitTests.csproj", "{715F370E-3A0C-4214-B51D-BC0A2C3259F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.Util.UnitTests", "Codartis.Util.UnitTests\Codartis.Util.UnitTests.csproj", "{715F370E-3A0C-4214-B51D-BC0A2C3259F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.VisualStudioIntegration.UnitTests", "Codartis.SoftVis.VisualStudioIntegration.UnitTests\Codartis.SoftVis.VisualStudioIntegration.UnitTests.csproj", "{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}"
 EndProject

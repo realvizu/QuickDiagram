@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis.Diagramming"
+        xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
         Title="MainWindow" Height="600" Width="1200"

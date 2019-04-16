@@ -4,14 +4,14 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"
                     xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
-                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis.Diagramming"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
-                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.SoftVis.Util"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis.Diagramming">
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DecoratorPlacementDictionary.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>

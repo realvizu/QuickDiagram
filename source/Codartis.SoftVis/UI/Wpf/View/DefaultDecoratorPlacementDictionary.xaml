@@ -3,9 +3,9 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
-                    xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.SoftVis.Util"
+                    xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.Util"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-                    xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=Codartis.SoftVis.Util"
+                    xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=Codartis.Util"
                     mc:Ignorable="d">
     
     <!-- Warning: If in the xmlns attributes above I specify the assembly for the same-assembly namespaces then compile error: MC3050 -->

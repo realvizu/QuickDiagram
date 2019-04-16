@@ -2,16 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis.Diagramming"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.TestHostApp.UI"
-                    xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.SoftVis.Util"
+                    xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
                     xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
-                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.SoftVis.Util"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis.Diagramming"
+                    xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis"
                     mc:Ignorable="d" >
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/TestHostApp;component/Resources/DecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 

@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-             xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.SoftVis.Util"
+             xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling"

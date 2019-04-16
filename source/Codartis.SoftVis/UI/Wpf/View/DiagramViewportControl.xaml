@@ -8,8 +8,8 @@
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
-             xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.SoftVis.Util"
-             xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.SoftVis.Util"
+             xmlns:converters="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
+             xmlns:controls="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
@@ -17,8 +17,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/Codartis.SoftVis.Diagramming;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
+                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
+                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
