@@ -4,11 +4,11 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-                    xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
+                    xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
                     mc:Ignorable="d">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
+    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
     <view:ConnectorTypeToGeometryConverter x:Key="ConnectorTypeToGeometryConverter"/>
 
     <DataTemplate DataType="{x:Type viewModel:CloseMiniButtonViewModel}">

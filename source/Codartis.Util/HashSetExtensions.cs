@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Codartis.SoftVis.Util
+namespace Codartis.Util
 {
     public static class HashSetExtensions
     {

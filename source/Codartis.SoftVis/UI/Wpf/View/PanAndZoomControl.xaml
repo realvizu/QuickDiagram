@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:common="clr-namespace:Codartis.SoftVis.UI"
-             xmlns:util="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
+             xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="/Codartis.Util;component/UI/Wpf/Resources/CommonGeometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <util:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
+            <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
             <Style x:Key="RepeatButtonStyleBase" TargetType="{x:Type RepeatButton}">
                 <Setter Property="IsTabStop" Value="false" />

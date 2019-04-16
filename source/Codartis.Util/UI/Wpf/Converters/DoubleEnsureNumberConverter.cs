@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Converters
+namespace Codartis.Util.UI.Wpf.Converters
 {
     /// <summary>
     /// If a double value is not a number (NaN or infinity) then substitutes it with the given parameter value.

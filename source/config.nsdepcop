@@ -28,7 +28,7 @@
     
     <Allowed From="*" To="MoreLinq.*" />
     <Allowed From="*" To="JetBrains.Annotations" />
-    <Allowed From="*" To="Codartis.SoftVis.Util.*" />
+    <Allowed From="*" To="Codartis.Util.*" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
     

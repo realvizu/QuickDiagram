@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf
 {

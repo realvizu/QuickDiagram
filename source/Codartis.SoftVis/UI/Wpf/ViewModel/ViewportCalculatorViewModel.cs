@@ -4,10 +4,10 @@ using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI;
-using Codartis.SoftVis.Util.UI.Wpf;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
-using Codartis.SoftVis.Util.UI.Wpf.Transforms;
+using Codartis.Util.UI;
+using Codartis.Util.UI.Wpf;
+using Codartis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Transforms;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

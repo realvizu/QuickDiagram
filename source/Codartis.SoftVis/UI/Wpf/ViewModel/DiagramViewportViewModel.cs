@@ -6,11 +6,11 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI;
-using Codartis.SoftVis.Util.UI.Wpf.Collections;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
-using Codartis.SoftVis.Util.UI.Wpf.Transforms;
+using Codartis.Util;
+using Codartis.Util.UI;
+using Codartis.Util.UI.Wpf.Collections;
+using Codartis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Transforms;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

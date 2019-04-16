@@ -3,9 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.Util.UI.Wpf.ViewModels;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Controls
+namespace Codartis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// Wraps an item that is positioned on a panel and animates appear, move, disappear.

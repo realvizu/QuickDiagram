@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Converters
+namespace Codartis.Util.UI.Wpf.Converters
 {
     /// <summary>
     /// Multiplies the given thickness with the given parameter amount.

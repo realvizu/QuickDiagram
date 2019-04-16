@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Codartis.SoftVis.Util.UI;
-using Codartis.SoftVis.Util.UI.Wpf.Collections;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.Util.UI;
+using Codartis.Util.UI.Wpf.Collections;
+using Codartis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

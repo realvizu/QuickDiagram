@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Codartis.SoftVis.Util.UI.Wpf;
+using Codartis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

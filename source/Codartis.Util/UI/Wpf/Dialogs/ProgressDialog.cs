@@ -2,10 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Codartis.SoftVis.Util.UI.Wpf.Controls;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.Util.UI.Wpf.Controls;
+using Codartis.Util.UI.Wpf.ViewModels;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Dialogs
+namespace Codartis.Util.UI.Wpf.Dialogs
 {
     /// <summary>
     /// A modal popup window that shows the progress of a process while not blocking the execution thread.

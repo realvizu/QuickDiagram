@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Util
+﻿namespace Codartis.Util
 {
     /// <summary>
     /// The actions that a GetOrAdd-type operation can take.

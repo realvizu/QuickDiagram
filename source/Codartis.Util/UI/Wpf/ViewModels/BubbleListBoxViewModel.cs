@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Util.UI.Wpf.Collections;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Collections;
+using Codartis.Util.UI.Wpf.Commands;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
+namespace Codartis.Util.UI.Wpf.ViewModels
 {
     /// <summary>
     /// View model for a bubble listbox control.

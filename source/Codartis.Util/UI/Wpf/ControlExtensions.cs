@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.Util.UI.Wpf
 {
     public static class ControlExtensions
     {

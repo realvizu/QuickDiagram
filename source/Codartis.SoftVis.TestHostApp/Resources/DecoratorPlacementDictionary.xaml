@@ -3,16 +3,16 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
-                    xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.Util"
-                    xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=Codartis.Util"
                     xmlns:modeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
+                    xmlns:markupExtensions="clr-namespace:Codartis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.Util"
+                    xmlns:wpf="clr-namespace:Codartis.Util.UI.Wpf;assembly=Codartis.Util"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/DefaultDecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <ext:Dictionary x:Key="RelatedNodeCuePlacementDictionary" 
+    <markupExtensions:Dictionary x:Key="RelatedNodeCuePlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultRelatedNodeCuePlacementDictionary}">
@@ -34,9 +34,9 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}" 
                                    Vertical="Center" Horizontal="Left" Translate="0.5,0"/>
-    </ext:Dictionary>
+    </markupExtensions:Dictionary>
 
-    <ext:Dictionary x:Key="MiniButtonPlacementDictionary" 
+    <markupExtensions:Dictionary x:Key="MiniButtonPlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultMiniButtonPlacementDictionary}">
@@ -58,6 +58,6 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}" 
                                    Vertical="Center" Horizontal="Left" Translate="3,0"/>
-    </ext:Dictionary>
+    </markupExtensions:Dictionary>
 
 </ResourceDictionary>

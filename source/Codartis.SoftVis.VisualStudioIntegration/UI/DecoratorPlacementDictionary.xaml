@@ -4,15 +4,15 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:roslynModeling="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling"
-                    xmlns:ext="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.Util"
-                    xmlns:wpf="clr-namespace:Codartis.SoftVis.Util.UI.Wpf;assembly=Codartis.Util"
+                    xmlns:markupExtensions="clr-namespace:Codartis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.Util"
+                    xmlns:wpf="clr-namespace:Codartis.Util.UI.Wpf;assembly=Codartis.Util"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/DefaultDecoratorPlacementDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <ext:Dictionary x:Key="RelatedNodeCuePlacementDictionary" 
+    <markupExtensions:Dictionary x:Key="RelatedNodeCuePlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultRelatedNodeCuePlacementDictionary}">
@@ -28,9 +28,9 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5"/>
-    </ext:Dictionary>
+    </markupExtensions:Dictionary>
 
-    <ext:Dictionary x:Key="MiniButtonPlacementDictionary" 
+    <markupExtensions:Dictionary x:Key="MiniButtonPlacementDictionary" 
                     KeyType="{x:Type system:Object}" 
                     ValueType="{x:Type wpf:RectRelativePlacement}"
                     Init="{StaticResource DefaultMiniButtonPlacementDictionary}">
@@ -46,6 +46,6 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedRelationshipTypes.ImplementerType}" 
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3"/>
-    </ext:Dictionary>
+    </markupExtensions:Dictionary>
     
 </ResourceDictionary>

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Threading;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
+namespace Codartis.Util.UI.Wpf.ViewModels
 {
     /// <summary>
     /// Abstract base class for all ViewModels. Implements INotifyPropertyChanged.

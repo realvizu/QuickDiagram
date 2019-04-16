@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Controls
+namespace Codartis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// Interaction logic for ProgressWindow.xaml

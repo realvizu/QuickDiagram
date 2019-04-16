@@ -1,6 +1,6 @@
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Commands;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
+namespace Codartis.Util.UI.Wpf.ViewModels
 {
     /// <summary>
     /// WPF-specific focus tracker where methods can be invoked via DelegateCommands too.

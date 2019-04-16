@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Util.UI
+﻿namespace Codartis.Util.UI
 {
     /// <summary>
     /// A UI element that can be added as a decorator of another (host) UI element.

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {

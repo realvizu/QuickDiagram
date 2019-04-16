@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Markup;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.MarkupExtensions
+namespace Codartis.Util.UI.Wpf.MarkupExtensions
 {
     /// <summary>
     /// Makes it possible to define and populate a dictionary instance in XAML.

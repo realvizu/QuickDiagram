@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Codartis.SoftVis.Util.UI.Wpf.Animations;
-using Codartis.SoftVis.Util.UI.Wpf.Transforms;
+using Codartis.Util.UI.Wpf.Animations;
+using Codartis.Util.UI.Wpf.Transforms;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Controls
+namespace Codartis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// A canvas whose RenderTransform is animated.

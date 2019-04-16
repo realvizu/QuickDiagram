@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
+namespace Codartis.Util.UI.Wpf.Imaging
 {
     public static class BitmapSourceExtensions
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.SoftVis.Util.UI;
+using Codartis.Util.UI;
 
 namespace Codartis.SoftVis.UI
 {

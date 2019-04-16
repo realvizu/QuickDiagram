@@ -17,11 +17,11 @@ using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
-using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
-using Codartis.SoftVis.Util.UI.Wpf.Resources;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.Util;
+using Codartis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Dialogs;
+using Codartis.Util.UI.Wpf.Resources;
+using Codartis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp
 {

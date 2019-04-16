@@ -3,7 +3,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
-                    xmlns:view="clr-namespace:Codartis.SoftVis.Util.UI.Wpf.Controls"
+                    xmlns:view="clr-namespace:Codartis.Util.UI.Wpf.Controls"
                     mc:Ignorable="d">
 
     <system:Double x:Key="ScrollBarWidth">12</system:Double>

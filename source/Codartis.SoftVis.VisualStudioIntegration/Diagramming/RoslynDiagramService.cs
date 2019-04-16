@@ -5,8 +5,8 @@ using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 {

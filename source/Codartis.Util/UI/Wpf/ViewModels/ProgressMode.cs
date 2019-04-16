@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
+﻿namespace Codartis.Util.UI.Wpf.ViewModels
 {
     /// <summary>
     /// Enumerates the progress reporting modes.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Util
+namespace Codartis.Util
 {
     /// <summary>
     /// A progress reporting class that takes count increments and report them further as a cumulated count value.

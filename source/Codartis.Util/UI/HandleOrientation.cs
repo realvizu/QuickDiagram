@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Util.UI
+﻿namespace Codartis.Util.UI
 {
     public enum HandleOrientation
     {

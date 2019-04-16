@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Util.UI.Wpf.Imaging;
+using Codartis.Util.UI.Wpf.Imaging;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands

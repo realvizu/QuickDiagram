@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Implementation;
-using Codartis.SoftVis.Util;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
+using Codartis.Util;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation

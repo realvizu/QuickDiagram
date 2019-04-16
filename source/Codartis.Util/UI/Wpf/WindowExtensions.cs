@@ -5,7 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.Util.UI.Wpf
 {
     public static class WindowExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.Util.UI.Wpf
 {
     public static class FrameworkElementExtensions
     {

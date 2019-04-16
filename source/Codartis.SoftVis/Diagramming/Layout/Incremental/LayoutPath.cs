@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental

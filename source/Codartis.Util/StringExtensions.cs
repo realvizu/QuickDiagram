@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Codartis.SoftVis.Util
+namespace Codartis.Util
 {
     public static class StringExtensions
     {

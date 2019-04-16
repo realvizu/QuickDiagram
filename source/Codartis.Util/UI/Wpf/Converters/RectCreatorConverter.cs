@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Converters
+namespace Codartis.Util.UI.Wpf.Converters
 {
     /// <summary>
     /// Creates a Rect from X, Y, Width, Height properties.

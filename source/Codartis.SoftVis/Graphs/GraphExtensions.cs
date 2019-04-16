@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Codartis.Util;
 using QuickGraph;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Serialization;
-using Codartis.SoftVis.Util;
 
 namespace Codartis.SoftVis.Graphs
 {

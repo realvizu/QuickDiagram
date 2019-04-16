@@ -4,8 +4,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI.Wpf.Imaging;
+using Codartis.Util;
+using Codartis.Util.UI.Wpf.Imaging;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

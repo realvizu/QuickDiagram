@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 using static MoreLinq.Extensions.ToDelimitedStringExtension;
 
 namespace Codartis.SoftVis.Geometry

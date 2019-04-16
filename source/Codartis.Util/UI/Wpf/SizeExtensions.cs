@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Codartis.SoftVis.Util.UI.Wpf
+namespace Codartis.Util.UI.Wpf
 {
     public static class SizeExtensions
     {

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 using MoreLinq;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute

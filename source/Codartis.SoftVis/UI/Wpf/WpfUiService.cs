@@ -8,7 +8,7 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf
 {

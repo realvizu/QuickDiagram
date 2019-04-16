@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
+namespace Codartis.Util.UI.Wpf.Imaging
 {
     /// <summary>
     /// Static helper class that renders WPF UI into bitmap.

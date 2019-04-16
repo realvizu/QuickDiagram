@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Transforms
+namespace Codartis.Util.UI.Wpf.Transforms
 {
     public static class TransformExtensions
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Animation;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Animations
+namespace Codartis.Util.UI.Wpf.Animations
 {
     /// <summary>
     /// Animates a point array into another point array.

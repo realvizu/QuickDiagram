@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.Util.UI.Wpf;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {

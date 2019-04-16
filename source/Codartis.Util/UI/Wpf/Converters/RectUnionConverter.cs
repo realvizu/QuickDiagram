@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Converters
+namespace Codartis.Util.UI.Wpf.Converters
 {
     /// <summary>
     /// Returns the union of rects and point collections.

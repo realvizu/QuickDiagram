@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.ViewModels;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Controls
+namespace Codartis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// A listbox control with a visual handle that must be attached to another control (the owner).

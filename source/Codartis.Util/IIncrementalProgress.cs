@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Util
+namespace Codartis.Util
 {
     /// <summary>
     /// A provider for progress updates where the updates are increments of a counter.

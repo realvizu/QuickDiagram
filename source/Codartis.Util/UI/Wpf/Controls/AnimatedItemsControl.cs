@@ -4,10 +4,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Codartis.SoftVis.Util.UI.Wpf.Collections;
-using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
+using Codartis.Util.UI.Wpf.Collections;
+using Codartis.Util.UI.Wpf.ViewModels;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Controls
+namespace Codartis.Util.UI.Wpf.Controls
 {
     /// <summary>
     /// Presents a collection of view model items with animated position changes.

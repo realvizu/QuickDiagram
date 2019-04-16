@@ -6,9 +6,9 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
-using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
-using Codartis.SoftVis.Util.UI.Wpf.Resources;
+using Codartis.Util;
+using Codartis.Util.UI.Wpf.Dialogs;
+using Codartis.Util.UI.Wpf.Resources;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {

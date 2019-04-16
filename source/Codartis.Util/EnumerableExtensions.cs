@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace Codartis.SoftVis.Util
+namespace Codartis.Util
 {
     public static class EnumerableExtensions
     {

@@ -26,14 +26,14 @@
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.Events" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.*" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.Util.UI.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.View" />
     <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
 
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.Controls" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.Util.UI.Wpf.ViewModels" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.Util.UI.Wpf.Controls" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.Util.UI.Wpf.ViewModels" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
 
     <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.Modeling" />

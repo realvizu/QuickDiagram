@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Xunit;
 
-namespace Codartis.SoftVis.Util.UnitTests
+namespace Codartis.Util.UnitTests
 {
     public class StringExtensionsTests
     {

@@ -5,7 +5,7 @@ using Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {

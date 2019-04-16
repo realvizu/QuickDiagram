@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
-using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
+using Codartis.Util;
+using Codartis.Util.UI.Wpf.Dialogs;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {

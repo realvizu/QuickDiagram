@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Util.UI;
+using Codartis.Util.UI;
 
 namespace Codartis.SoftVis.UI
 {

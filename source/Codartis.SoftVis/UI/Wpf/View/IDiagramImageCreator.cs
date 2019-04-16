@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Util;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {

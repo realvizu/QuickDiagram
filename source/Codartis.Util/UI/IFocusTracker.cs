@@ -1,4 +1,4 @@
-namespace Codartis.SoftVis.Util.UI
+namespace Codartis.Util.UI
 {
     /// <summary>
     /// Tracks focus changes and assigns a collection of UI decorators to a host UI element.

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Collections
+namespace Codartis.Util.UI.Wpf.Collections
 {
     /// <summary>
     /// A thread-safe implementation of an observable collection.

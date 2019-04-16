@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.Transforms
+namespace Codartis.Util.UI.Wpf.Transforms
 {
     /// <summary>
     /// A WPF Transform bundled together with a transition speed.

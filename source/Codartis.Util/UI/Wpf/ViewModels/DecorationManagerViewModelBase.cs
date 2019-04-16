@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Commands;
 
-namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
+namespace Codartis.Util.UI.Wpf.ViewModels
 {
     /// <summary>
     /// Abstract base class for tracking focus changes and assigning a collection of decorators to a host view model.

@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.SoftVis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.Commands
 {
