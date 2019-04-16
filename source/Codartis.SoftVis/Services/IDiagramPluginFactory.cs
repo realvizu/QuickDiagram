@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Service
+﻿namespace Codartis.SoftVis.Services
 {
     /// <summary>
     /// Creates diagram plugin instances.

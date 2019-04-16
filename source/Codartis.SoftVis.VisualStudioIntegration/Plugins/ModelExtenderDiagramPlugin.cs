@@ -1,7 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Service.Plugins;
+using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Plugins

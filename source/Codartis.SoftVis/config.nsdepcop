@@ -36,28 +36,28 @@
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.Util.UI.Wpf.ViewModels" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
 
-    <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.Modeling" />
-    <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.Diagramming" />
-    <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.UI" />
-    <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.UI.Wpf.View" />
-    <Allowed From="Codartis.SoftVis.Service" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-    <Allowed From="Codartis.SoftVis.Service" To="System.Windows">
+    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Diagramming" />
+    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI" />
+    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.View" />
+    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+    <Allowed From="Codartis.SoftVis.Services" To="System.Windows">
         <VisibleMembers>
             <Type Name="ResourceDictionary"/>
         </VisibleMembers>
     </Allowed>
-    <Allowed From="Codartis.SoftVis.Service" To="System.Windows.Media.Imaging">
+    <Allowed From="Codartis.SoftVis.Services" To="System.Windows.Media.Imaging">
         <VisibleMembers>
             <Type Name="BitmapSource"/>
         </VisibleMembers>
     </Allowed>
 
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Modeling" />
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Modeling.Events" />
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Diagramming" />
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Diagramming.Events" />
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Diagramming.Layout" />
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
-    <Allowed From="Codartis.SoftVis.Service.Plugins" To="Codartis.SoftVis.Graphs.*" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Modeling" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Modeling.Events" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Events" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Graphs.*" />
 
 </NsDepCopConfig>

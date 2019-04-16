@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Events;
 
-namespace Codartis.SoftVis.Service.Plugins
+namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
     /// Listens to model events and corrects the model accordingly.

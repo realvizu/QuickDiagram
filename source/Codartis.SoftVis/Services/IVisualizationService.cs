@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI;
 
-namespace Codartis.SoftVis.Service
+namespace Codartis.SoftVis.Services
 {
     /// <summary>
     /// Provides model, diagram and UI services.

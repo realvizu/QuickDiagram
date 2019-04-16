@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout;
 
-namespace Codartis.SoftVis.Service.Plugins
+namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
     /// Creates diagram plugin instances.

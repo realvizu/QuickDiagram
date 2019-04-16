@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Service;
+﻿using Codartis.SoftVis.Services;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
 {

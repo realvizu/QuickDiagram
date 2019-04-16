@@ -9,7 +9,7 @@ using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Service.Plugins
+namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
     /// A diagram that maintains it own layout.

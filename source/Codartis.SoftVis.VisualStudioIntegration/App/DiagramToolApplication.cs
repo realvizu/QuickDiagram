@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Service;
+using Codartis.SoftVis.Services;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;

@@ -1,7 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout;
-using Codartis.SoftVis.Service;
-using Codartis.SoftVis.Service.Plugins;
+using Codartis.SoftVis.Services;
+using Codartis.SoftVis.Services.Plugins;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
 {

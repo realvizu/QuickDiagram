@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Service.Plugins
+namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
     /// Abstract base class for diagram store plugins.

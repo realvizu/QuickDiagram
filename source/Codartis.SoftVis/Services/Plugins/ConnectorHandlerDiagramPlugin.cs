@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Service.Plugins
+namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
     /// Automatically shows relationships when both ends are visible

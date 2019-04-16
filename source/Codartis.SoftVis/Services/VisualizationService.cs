@@ -5,7 +5,7 @@ using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.UI;
 
-namespace Codartis.SoftVis.Service
+namespace Codartis.SoftVis.Services
 {
     /// <summary>
     /// Creates, aggregates and orchestrates model, diagram and UI services.

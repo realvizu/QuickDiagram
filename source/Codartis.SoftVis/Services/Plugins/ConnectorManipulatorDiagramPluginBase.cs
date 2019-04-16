@@ -1,7 +1,7 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Service.Plugins
+namespace Codartis.SoftVis.Services.Plugins
 {
     public class ConnectorManipulatorDiagramPluginBase : DiagramPluginBase
     {
