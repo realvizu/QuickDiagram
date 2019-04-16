@@ -1,8 +1,9 @@
-﻿using Codartis.SoftVis.Diagramming.Implementation;
+﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
     internal sealed class TestDiagramNode : DiagramNodeBase
     {

@@ -4,7 +4,7 @@ using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using MoreLinq;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal class LayoutVertexLayersBuilder : BuilderBase
     {

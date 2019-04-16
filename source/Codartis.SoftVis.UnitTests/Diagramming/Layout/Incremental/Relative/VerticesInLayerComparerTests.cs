@@ -1,11 +1,11 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
-using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
+using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders;
 using FluentAssertions;
 using Xunit;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Relative
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Relative
 {
     public class VerticesInLayerComparerTests
     {

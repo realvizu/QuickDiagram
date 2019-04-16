@@ -1,6 +1,6 @@
 ﻿using QuickGraph;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal abstract class GraphBuilderBase<TVertex, TEdge, TGraph> : GraphRelatedBuilderBase<TVertex, TEdge, TGraph>
         where TVertex : class

@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Geometry
+namespace Codartis.SoftVis.UnitTests.Geometry
 {
     public class RouteTests
     {

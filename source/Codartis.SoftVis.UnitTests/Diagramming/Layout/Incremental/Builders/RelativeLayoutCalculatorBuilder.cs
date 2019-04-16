@@ -1,7 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal class RelativeLayoutCalculatorBuilder : GraphRelatedBuilderBase<DiagramNodeLayoutVertex, LayoutPath, LayeredLayoutGraph>
     {

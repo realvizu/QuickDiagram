@@ -3,7 +3,7 @@ using FluentAssertions;
 using QuickGraph;
 using Xunit;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Graphs
+namespace Codartis.SoftVis.UnitTests.Graphs
 {
     public class GraphExtensionsTests
     {

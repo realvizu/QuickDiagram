@@ -1,8 +1,8 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
-using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
-using Codartis.SoftVis.Diagramming.UnitTests.TestSubjects;
+using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers;
+using Codartis.SoftVis.UnitTests.TestSubjects;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal abstract class BuilderBase
     {

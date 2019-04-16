@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
     internal class TestDummyLayoutVertex : DummyLayoutVertex
     {

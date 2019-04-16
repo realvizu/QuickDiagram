@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers
 {
     internal abstract class VertexList : IEnumerable<string>
     {

@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Geometry;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
     internal class TestLayoutVertex : DiagramNodeLayoutVertex
     {

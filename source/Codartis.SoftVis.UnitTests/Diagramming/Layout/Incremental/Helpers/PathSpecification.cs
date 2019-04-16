@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers
 {
     internal class PathSpecification : VertexList
     {

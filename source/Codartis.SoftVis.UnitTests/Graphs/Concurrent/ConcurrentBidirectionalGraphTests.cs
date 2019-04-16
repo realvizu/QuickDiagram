@@ -5,7 +5,7 @@ using Codartis.SoftVis.Graphs.Concurrent;
 using QuickGraph;
 using Xunit;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Graphs.Concurrent
+namespace Codartis.SoftVis.UnitTests.Graphs.Concurrent
 {
     public class ConcurrentBidirectionalGraphTests
     {

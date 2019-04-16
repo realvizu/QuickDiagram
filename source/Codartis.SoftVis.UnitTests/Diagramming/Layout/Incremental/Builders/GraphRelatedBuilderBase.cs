@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Helpers;
+using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers;
 using QuickGraph;
 
-namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal abstract class GraphRelatedBuilderBase<TVertex, TEdge, TGraph> : BuilderBase
         where TVertex : class
