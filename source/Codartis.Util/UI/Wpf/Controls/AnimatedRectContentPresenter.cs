@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 
 namespace Codartis.Util.UI.Wpf.Controls
 {
@@ -35,6 +36,7 @@ namespace Codartis.Util.UI.Wpf.Controls
             set { SetValue(CenterProperty, value); }
         }
 
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         private void OnRectChanged(Rect oldValue, Rect newValue)
         {
             Center = newValue.GetCenter();

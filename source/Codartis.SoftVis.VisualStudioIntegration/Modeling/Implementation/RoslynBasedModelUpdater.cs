@@ -10,12 +10,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
     /// Not used. 
-    /// It was an experiment to keep the model continously updated by workspace changes.
+    /// It was an experiment to keep the model continuously updated by workspace changes.
     /// Should revisit later.
     /// </summary>
     internal class RoslynBasedModelUpdater
     {
         private readonly RoslynModel _model;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Workspace _workspace;
 
         public RoslynBasedModelUpdater(RoslynModel model, Workspace workspace)
@@ -26,12 +28,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             _workspace.WorkspaceChanged += UpdateModel;
         }
 
-        private void UpdateModel(object sender, WorkspaceChangeEventArgs workspaceChangeEventArgs)
+        private async void UpdateModel(object sender, WorkspaceChangeEventArgs workspaceChangeEventArgs)
         {
-            var task = UpdateModelAsync(sender, workspaceChangeEventArgs);
+            await UpdateModelAsync(workspaceChangeEventArgs);
         }
 
-        private async Task UpdateModelAsync(object sender, WorkspaceChangeEventArgs workspaceChangeEventArgs)
+        private async Task UpdateModelAsync(WorkspaceChangeEventArgs workspaceChangeEventArgs)
         {
             Debug.WriteLine(workspaceChangeEventArgs.Kind);
 
@@ -63,11 +65,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 }
 
                 // Match by location
-                var mathingEntityByLocation = _model.GetNodeByLocation(declaredTypeSymbol.Locations.FirstOrDefault());
-                if (mathingEntityByLocation != null)
+                var matchingEntityByLocation = _model.GetNodeByLocation(declaredTypeSymbol.Locations.FirstOrDefault());
+                if (matchingEntityByLocation != null)
                 {
                     Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by location.");
-                    //_model.UpdateEntity(mathingEntityByLocation, declaredTypeSymbol);
+                    //_model.UpdateEntity(matchingEntityByLocation, declaredTypeSymbol);
+                    // ReSharper disable once RedundantJumpStatement
                     continue;
                 }
             }

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.Util;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf;
 using Codartis.Util.UI.Wpf.Commands;
@@ -191,7 +192,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void ZoomWithCenterTo(double newZoom, Point zoomCenterInScreenSpace, TransitionSpeed transitionSpeed)
         {
-            if (ViewportZoom != newZoom)
+            if (ViewportZoom.IsEqualWithTolerance(newZoom))
                 ViewportZoomCommand?.Execute(newZoom, zoomCenterInScreenSpace, transitionSpeed);
         }
 

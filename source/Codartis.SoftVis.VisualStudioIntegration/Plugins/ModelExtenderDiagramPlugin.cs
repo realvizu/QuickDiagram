@@ -3,6 +3,8 @@ using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
+using Task = System.Threading.Tasks.Task;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
 {
@@ -11,6 +13,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
     /// </summary>
     internal class ModelExtenderDiagramPlugin : DiagramPluginBase
     {
+        private readonly IHostUiServices _hostUiServices;
+
+        public ModelExtenderDiagramPlugin(IHostUiServices hostUiServices)
+        {
+            _hostUiServices = hostUiServices;
+        }
+
         public override void Initialize(IModelService modelService, IDiagramService diagramService)
         {
             base.Initialize(modelService, diagramService);
@@ -27,11 +36,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
+            _hostUiServices.Run(async () => await OnDiagramChangedAsync(diagramEvent));
+        }
+
+        private async Task OnDiagramChangedAsync(DiagramEventBase diagramEvent)
+        {
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
                     // It's a fire-and-forget async call, no need to await.
-                    var task = RoslynModelService.ExtendModelWithRelatedNodesAsync(diagramNodeAddedEvent.DiagramNode.ModelNode, recursive: false);
+                    // ReSharper disable once UnusedVariable
+                    await RoslynModelService.ExtendModelWithRelatedNodesAsync(diagramNodeAddedEvent.DiagramNode.ModelNode, recursive: false);
                     break;
             }
         }

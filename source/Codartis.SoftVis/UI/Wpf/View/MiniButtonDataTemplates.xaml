@@ -15,11 +15,11 @@
         <view:PathControl Stretch="Uniform" 
                           Foreground="Red"
                           StrokeThickness="1.5"
-                          Data="M -1 -1 L 1 1 M -1 1 L 1 -1"
-                          Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width,
+                          Data="M -1 -1 L 1 1 M -1 1 L 1 -1" />
+                          <!--Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width,
                               Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
                           Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Height, 
-                              Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}" />
+                              Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}" />-->
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModel:RelatedNodeMiniButtonViewModel}">

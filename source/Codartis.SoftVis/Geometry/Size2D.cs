@@ -19,9 +19,11 @@
 
         public bool IsDefined => !IsUndefined;
 
-        public bool IsUndefined => 
-            double.IsNaN(Width) || double.IsNaN(Height) || 
-            double.IsInfinity(Width) || double.IsInfinity(Height);
+        public bool IsUndefined
+            => double.IsNaN(Width) ||
+               double.IsNaN(Height) ||
+               double.IsInfinity(Width) ||
+               double.IsInfinity(Height);
 
         public static bool Equals(Size2D size1, Size2D size2)
         {
@@ -36,7 +38,8 @@
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Size2D)) return false;
+            if (!(obj is Size2D))
+                return false;
 
             var value = (Size2D)obj;
             return Equals(this, value);
@@ -44,10 +47,7 @@
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return Width.GetHashCode() ^ Height.GetHashCode();
-            }
+            return Width.GetHashCode() ^ Height.GetHashCode();
         }
 
         public static bool operator ==(Size2D left, Size2D right)

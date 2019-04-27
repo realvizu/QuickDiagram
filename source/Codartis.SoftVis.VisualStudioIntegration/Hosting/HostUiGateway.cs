@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio.Shell;
@@ -15,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     public sealed class HostUiGateway : IHostUiServices
     {
         private readonly IPackageServices _packageServices;
-        private DiagramHostToolWindow _diagramHostWindow;
+        //private DiagramHostToolWindow _diagramHostWindow;
 
         public HostUiGateway(IPackageServices packageServices)
         {
@@ -23,14 +22,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         }
 
         // TODO: delete?
-        public void HostDiagram(ContentControl diagramControl)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                _diagramHostWindow = await _packageServices.CreateToolWindowAsync<DiagramHostToolWindow>();
-            });
-        }
+        //public void HostDiagram(ContentControl diagramControl)
+        //{
+        //    ThreadHelper.JoinableTaskFactory.Run(async delegate
+        //    {
+        //        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        //        _diagramHostWindow = await _packageServices.CreateToolWindowAsync<DiagramHostToolWindow>();
+        //    });
+        //}
 
         public Task ShowDiagramWindowAsync()
         {
@@ -44,7 +43,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var parentWindowHandle = new IntPtr(hostService.MainWindow.HWnd);
             var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
-            return (Window) hwndSource?.RootVisual;
+            return (Window)hwndSource?.RootVisual;
         }
+
+        public void Run(Func<Task> asyncMethod) => ThreadHelper.JoinableTaskFactory.RunAsync(asyncMethod);
     }
 }

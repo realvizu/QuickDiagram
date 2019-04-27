@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders;
@@ -54,6 +55,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental
         }
 
         [Fact]
+        [SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
         public void CheckInvariant_ViolatesBaseInvariant_EdgesDoNotFormAPath()
         {
             var edge1 = _layoutPathBuilder.CreateLayoutEdge("A->*1");

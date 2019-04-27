@@ -1,4 +1,3 @@
-using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Layered;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative

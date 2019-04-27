@@ -34,7 +34,8 @@ namespace Codartis.SoftVis.Geometry
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Point2D)) return false;
+            if (!(obj is Point2D))
+                return false;
 
             var value = (Point2D)obj;
             return Equals(this, value);
@@ -42,10 +43,7 @@ namespace Codartis.SoftVis.Geometry
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return X.GetHashCode() ^ Y.GetHashCode();
-            }
+            return X.GetHashCode() ^ Y.GetHashCode();
         }
 
         public override string ToString()

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services;
@@ -21,6 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </remarks>
     internal sealed class DiagramToolApplication : IAppServices
     {
+        private readonly IHostUiServices _hostUiServices;
         private readonly IVisualizationService _visualizationService;
         private readonly DiagramId _diagramId;
 
@@ -33,6 +36,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         /// </summary>
         public DiagramToolApplication(IRoslynModelProvider roslynModelProvider, IHostUiServices hostUiServices)
         {
+            _hostUiServices = hostUiServices;
             _visualizationService = CreateVisualizationService(roslynModelProvider, hostUiServices);
             _diagramId = _visualizationService.CreateDiagram(AppDefaults.MinZoom, AppDefaults.MaxZoom, AppDefaults.InitialZoom);
 
@@ -43,13 +47,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             ApplicationUiService.ShowModelItemsRequested += OnShowItemsRequested;
         }
 
+        public void Run(Func<Task> asyncMethod) => _hostUiServices.Run(asyncMethod);
+
         private static IVisualizationService CreateVisualizationService(IRoslynModelProvider roslynModelProvider, IHostUiServices hostUiServices)
         {
             return new VisualizationService(
                 new RoslynModelServiceFactory(roslynModelProvider),
                 new RoslynDiagramServiceFactory(),
                 new ApplicationUiServiceFactory(hostUiServices, AppDefaults.NodeDescriptionsVisibleByDefault),
-                new ApplicationDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory()),
+                new ApplicationDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory(), hostUiServices),
                 new[]
                 {
                     DiagramPluginId.AutoLayoutDiagramPlugin,
@@ -59,9 +65,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
                 });
         }
 
-#pragma warning disable VSTHRD100 // Avoid async void methods
-        private async void OnShowSourceRequested(IDiagramShape diagramShape)
-#pragma warning restore VSTHRD100 // Avoid async void methods
+        private void OnShowSourceRequested(IDiagramShape diagramShape)
+        {
+            _hostUiServices.Run(async () => await OnShowSourceRequestAsync(diagramShape));
+        }
+
+        private async Task OnShowSourceRequestAsync(IDiagramShape diagramShape)
         {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
@@ -70,9 +79,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
         }
 
-#pragma warning disable VSTHRD100 // Avoid async void methods
-        private async void OnShowItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
-#pragma warning restore VSTHRD100 // Avoid async void methods
+        private void OnShowItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
+        {
+            _hostUiServices.Run(async () => await OnShowItemsRequestAsync(modelNodes, followWithViewport));
+        }
+
+        private async Task OnShowItemsRequestAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
             var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
             if (roslynModelNodes.Any())

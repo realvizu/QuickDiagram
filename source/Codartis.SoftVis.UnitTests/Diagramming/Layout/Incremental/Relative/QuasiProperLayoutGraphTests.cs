@@ -63,11 +63,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Relative
                 );
 
             TestGraph.GetPrimaryChildren(GetVertex("P1")).Select(i => i.Name)
-                .Should().BeEquivalentTo(new[]
-                {
+                .Should().BeEquivalentTo(
                     GetVertex("C1").Name,
-                    GetVertex("C2").Name
-                });
+                    GetVertex("C2").Name);
         }
 
         [Fact]
@@ -82,10 +80,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Relative
                 );
 
             TestGraph.GetPrimarySiblings(GetVertex("C2")).Select(i => i.Name)
-                .Should().BeEquivalentTo(new[]
-                {
-                    GetVertex("C1").Name
-                });
+                .Should().BeEquivalentTo(GetVertex("C1").Name);
         }
 
         [Fact]

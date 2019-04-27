@@ -165,6 +165,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramContentRect = diagramEvent.NewDiagram.ContentRect.ToWpf();
         }
 
+        // ReSharper disable once UnusedMember.Local
         private Point ProjectFromDiagramSpaceToScreenSpace(Point pointInDiagramSpace)
         {
             return _diagramSpaceToScreenSpaceTransform.Transform(pointInDiagramSpace);

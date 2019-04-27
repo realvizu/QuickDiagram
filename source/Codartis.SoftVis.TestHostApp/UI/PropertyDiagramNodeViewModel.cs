@@ -11,14 +11,16 @@ namespace Codartis.SoftVis.TestHostApp.UI
 {
     internal class PropertyDiagramNodeViewModel : DiagramNodeViewModelBase
     {
-        public PropertyDiagramNodeViewModel(IModelService modelService, IDiagramService diagramService, IFocusTracker<IDiagramShapeUi> focusTracker,
+        public PropertyDiagramNodeViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            IFocusTracker<IDiagramShapeUi> focusTracker,
             PropertyDiagramNode diagramNode)
             : base(modelService, diagramService, focusTracker, diagramNode)
         {
         }
 
-        public override object Clone() 
-            => new PropertyDiagramNodeViewModel(ModelService, DiagramService, FocusTracker, PropertyDiagramNode) { Size = Size };
+        public override object Clone() => new PropertyDiagramNodeViewModel(ModelService, DiagramService, FocusTracker, PropertyDiagramNode) { Size = Size };
 
         public PropertyDiagramNode PropertyDiagramNode => (PropertyDiagramNode)DiagramNode;
 

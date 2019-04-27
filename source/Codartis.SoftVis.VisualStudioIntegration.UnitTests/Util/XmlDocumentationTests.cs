@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using FluentAssertions;
@@ -9,6 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Util
     public class XmlDocumentationTests
     {
         [Fact]
+        [SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
         public void Create_NonXmlInput_Exception()
         {
             Action a = () => new XmlDocumentation("kutya");

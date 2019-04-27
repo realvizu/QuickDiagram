@@ -51,6 +51,7 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Plugins" To="Codartis.SoftVis.Services" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Plugins" To="Codartis.SoftVis.Services.Plugins" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Plugins" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Plugins" To="Codartis.SoftVis.VisualStudioIntegration.UI" />
     <!--Temp-->
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Plugins" To="Codartis.SoftVis.Diagramming.Layout" />
 

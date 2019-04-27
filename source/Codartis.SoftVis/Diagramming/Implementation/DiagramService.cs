@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -78,7 +77,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void HideModelNode(ModelNodeId modelNodeId)
         {
             var diagram = DiagramStore.Diagram;
-            if (diagram.TryGetNode(modelNodeId, out IDiagramNode diagramNode))
+            if (diagram.TryGetNode(modelNodeId, out var diagramNode))
             {
                 var diagramConnectors = diagram.GetConnectorsByNode(modelNodeId);
                 foreach (var diagramConnector in diagramConnectors)
@@ -104,7 +103,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void HideModelRelationship(ModelRelationshipId modelRelationshipId)
         {
             var diagram = DiagramStore.Diagram;
-            if (diagram.TryGetConnector(modelRelationshipId, out IDiagramConnector diagramConnector))
+            if (diagram.TryGetConnector(modelRelationshipId, out var diagramConnector))
                 DiagramStore.RemoveConnector(diagramConnector.Id);
         }
 

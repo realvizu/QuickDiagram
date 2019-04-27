@@ -69,7 +69,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public HandleOrientation GetHandleOrientation()
         {
             var rectRelativePlacement = DecoratorPanel.GetPlacement(this);
-            if (rectRelativePlacement == RectRelativePlacement.Undefined)
+            if (rectRelativePlacement == null)
                 return HandleOrientation.None;
 
             return rectRelativePlacement.Vertical == VerticalAlignment.Bottom

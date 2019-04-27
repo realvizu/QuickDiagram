@@ -21,7 +21,7 @@ namespace Codartis.Util.UI.Wpf.Controls
         /// </summary>
         public static readonly DependencyProperty PlacementProperty =
             DependencyProperty.RegisterAttached("Placement", typeof(RectRelativePlacement), typeof(DecoratorPanel),
-                new FrameworkPropertyMetadata(RectRelativePlacement.Undefined,
+                new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.Inherits |
                     FrameworkPropertyMetadataOptions.AffectsArrange));
 
@@ -93,16 +93,16 @@ namespace Codartis.Util.UI.Wpf.Controls
                     continue;
 
                 var childSize = internalChild.DesiredSize;
-                var childPosition = CalculateChildPosition(decoratedRect, childPlacement.Value, childSize);
+                var childPosition = CalculateChildPosition(decoratedRect, childPlacement, childSize);
 
                 internalChild.Arrange(new Rect(childPosition, internalChild.DesiredSize));
             }
         }
 
-        private RectRelativePlacement? GetChildPlacement(UIElement uiElement)
+        private RectRelativePlacement GetChildPlacement(UIElement uiElement)
         {
             var explicitPlacement = GetPlacement(uiElement);
-            if (explicitPlacement != RectRelativePlacement.Undefined)
+            if (explicitPlacement != null)
                 return explicitPlacement;
 
             var placementKey = GetPlacementKey(uiElement);

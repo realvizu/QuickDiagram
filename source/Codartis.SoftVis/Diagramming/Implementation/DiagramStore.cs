@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out IDiagramNode oldNode))
+                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
                     return;
 
                 var newNode = oldNode.WithModelNode(newModelNode);
@@ -68,7 +68,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out IDiagramNode oldNode))
+                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
                     return;
 
                 var newNode = oldNode.WithSize(newSize);
@@ -81,7 +81,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out IDiagramNode oldNode))
+                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
                     return;
 
                 var newNode = oldNode.WithCenter(newCenter);
@@ -119,7 +119,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetConnector(diagramConnector.Id, out IDiagramConnector oldConnector))
+                if (!Diagram.TryGetConnector(diagramConnector.Id, out var oldConnector))
                     return;
 
                 var newConnector = oldConnector.WithRoute(newRoute);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace Codartis.Util
         /// <param name="action">The action to be executed by the task.</param>
         /// <param name="cancellationToken">Optional cancellation toke.n</param>
         /// <returns>The task representing the async work.</returns>
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public static Task StartSTA(this TaskFactory taskFactory, Action action,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -32,6 +34,7 @@ namespace Codartis.Util
         /// <param name="func">The func to be executed by the task.</param>
         /// <param name="cancellationToken">Optional cancellation toke.n</param>
         /// <returns>The task representing the async work and providing the result.</returns>
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -39,6 +42,7 @@ namespace Codartis.Util
             return ExecuteOnNewSTAThread(taskCompletionSource, i => i.SetResult(func()), cancellationToken);
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private static Task<T> ExecuteOnNewSTAThread<T>(TaskCompletionSource<T> taskCompletionSource,
             Action<TaskCompletionSource<T>> action, CancellationToken cancellationToken)
         {

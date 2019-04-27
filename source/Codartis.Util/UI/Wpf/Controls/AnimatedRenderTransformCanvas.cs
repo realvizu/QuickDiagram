@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -92,6 +93,7 @@ namespace Codartis.Util.UI.Wpf.Controls
             set { SetValue(SlowAnimationEasingFunctionProperty, value); }
         }
 
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         private void TransitionTransform(TransitionedTransform oldTransitionedTransform, TransitionedTransform newTransitionedTransform)
         {
             if (newTransitionedTransform.TransitionSpeed == TransitionSpeed.Instant)

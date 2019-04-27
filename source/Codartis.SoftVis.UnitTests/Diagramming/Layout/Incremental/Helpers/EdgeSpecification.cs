@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers
 {
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     internal class EdgeSpecification : VertexList
     {
         public EdgeSpecification(IEnumerable<string> vertexNames)

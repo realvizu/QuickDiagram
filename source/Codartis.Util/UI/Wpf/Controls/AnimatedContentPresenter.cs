@@ -178,16 +178,14 @@ namespace Codartis.Util.UI.Wpf.Controls
         private void AnimateDisappear(Action<ViewModelBase> readyToBeRemovedCallback)
         {
             var animation = new DoubleAnimation(1, 0, AnimationDuration);
-
-            EventHandler onAnimationCompleted = null;
-            onAnimationCompleted = (sender, e) =>
-            {
-                animation.Completed -= onAnimationCompleted;
-                readyToBeRemovedCallback((ViewModelBase)DataContext);
-            };
-
-            animation.Completed += onAnimationCompleted;
+            animation.Completed += OnAnimationCompleted;
             BeginAnimation(ScalingProperty, animation);
+
+            void OnAnimationCompleted(object sender, EventArgs e)
+            {
+                animation.Completed -= OnAnimationCompleted;
+                readyToBeRemovedCallback((ViewModelBase)DataContext);
+            }
         }
 
         private void StopAnimation(DependencyProperty property)

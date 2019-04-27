@@ -18,12 +18,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public override bool IsDummy => true;
         public override string Name => $"Dummy#{Id}";
-
-        public override int Priority
-        {
-            get { throw new InvalidOperationException("Dummy vertex has no priority."); }
-        }
-
+        public override int Priority => throw new InvalidOperationException("Dummy vertex has no priority.");
         public override Size2D Size => Size2D.Zero;
 
         public override bool Equals(object obj)

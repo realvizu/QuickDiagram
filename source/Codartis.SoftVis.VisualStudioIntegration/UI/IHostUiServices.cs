@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -18,5 +19,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         /// </summary>
         /// <returns>The main window of the host process.</returns>
         Task<Window> GetMainWindowAsync();
+
+        /// <summary>
+        /// Runs an async method from a sync method.
+        /// </summary>
+        void Run(Func<Task> asyncMethod);
     }
 }

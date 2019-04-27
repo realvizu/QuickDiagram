@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using Codartis.Util.UI.Wpf;
 using Codartis.Util.UI.Wpf.Controls;

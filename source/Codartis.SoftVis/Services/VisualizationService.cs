@@ -28,6 +28,9 @@ namespace Codartis.SoftVis.Services
 
         private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
         private readonly Dictionary<DiagramId, IUiService> _diagramUis;
+
+        // This dictionary is just to root the plugins.
+        // ReSharper disable once CollectionNeverQueried.Local
         private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
 
         public VisualizationService(

@@ -4,7 +4,7 @@
     {
         public IDiagramNode OldNode { get; }
 
-        public DiagramNodeChangedEventBase(IDiagram newDiagram, IDiagramNode oldNode, IDiagramNode newNode) 
+        protected DiagramNodeChangedEventBase(IDiagram newDiagram, IDiagramNode oldNode, IDiagramNode newNode) 
             : base(newDiagram, newNode)
         {
             OldNode = oldNode;

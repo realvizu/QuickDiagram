@@ -1,4 +1,6 @@
-﻿using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
+﻿using System;
+using System.Threading.Tasks;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 
@@ -12,5 +14,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         IRoslynModelService RoslynModelService { get; }
         IRoslynDiagramService RoslynDiagramService { get; }
         IApplicationUiService ApplicationUiService { get; }
+
+        /// <summary>
+        /// Runs an async method from a sync method.
+        /// </summary>
+        void Run(Func<Task> asyncMethod);
     }
 }

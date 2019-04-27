@@ -32,8 +32,8 @@ namespace Codartis.SoftVis.Services.Plugins
 
         protected static bool DiagramConnectorWouldBeRedundant(IModelRelationship modelRelationship, IDiagram diagram)
         {
-            if (diagram.TryGetNode(modelRelationship.Source.Id, out IDiagramNode sourceNode) &&
-                diagram.TryGetNode(modelRelationship.Target.Id, out IDiagramNode targetNode))
+            if (diagram.TryGetNode(modelRelationship.Source.Id, out var sourceNode) &&
+                diagram.TryGetNode(modelRelationship.Target.Id, out var targetNode))
                 return diagram.PathExists(sourceNode.Id, targetNode.Id);
 
             return false;
