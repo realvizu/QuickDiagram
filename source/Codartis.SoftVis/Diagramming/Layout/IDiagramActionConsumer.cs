@@ -12,5 +12,6 @@ namespace Codartis.SoftVis.Diagramming.Layout
         void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize);
         void AddDiagramConnector(IDiagramConnector diagramConnector);
         void RemoveDiagramConnector(IDiagramConnector diagramConnector);
+        void ClearDiagram();
     }
 }

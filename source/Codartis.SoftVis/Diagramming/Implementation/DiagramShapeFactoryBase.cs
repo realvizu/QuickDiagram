@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public abstract class DiagramShapeFactoryBase : IDiagramShapeFactory
     {
-        public abstract IDiagramNode CreateDiagramNode(IDiagramShapeResolver diagramShapeResolver, IModelNode modelNode);
+        public abstract IDiagramNode CreateDiagramNode(IDiagramShapeResolver diagramShapeResolver, IModelNode modelNode, IModelNode parentModelNode);
 
         public virtual IDiagramConnector CreateDiagramConnector(IDiagramShapeResolver diagramShapeResolver, IModelRelationship modelRelationship)
         {

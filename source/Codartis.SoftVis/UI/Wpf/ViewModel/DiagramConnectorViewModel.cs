@@ -53,7 +53,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public Point[] RoutePoints
         {
             get { return _routePoints; }
-            set
+            private set
             {
                 var nonNullValue = value ?? new Point[0];
                 if (!_routePoints.SequenceEqual(nonNullValue))

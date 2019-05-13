@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.Diagramming
         Size2D Size { get; }
         Point2D Center { get; }
         Point2D TopLeft { get; }
+        IContainerDiagramNode ParentDiagramNode { get; }
 
         IDiagramNode WithModelNode(IModelNode modelNode);
         IDiagramNode WithSize(Size2D newSize);

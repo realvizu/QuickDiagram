@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         protected ContainerDiagramNodeBase(IModelNode modelNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
-            :base(modelNode, size, center)
+            :base(modelNode, size, center, parentDiagramNode :null)
         {
             _childNodes = childNodes;
         }

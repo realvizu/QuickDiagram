@@ -8,6 +8,8 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagramShape
     {
+        // TODO: refactor Rect and IsRectDefined to Maybe<Rect> ?
+
         bool IsRectDefined { get; }
         Rect2D Rect { get; }
     }

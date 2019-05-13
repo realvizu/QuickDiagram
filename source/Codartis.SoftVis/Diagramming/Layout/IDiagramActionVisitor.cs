@@ -10,5 +10,6 @@
         void Visit(ResizeDiagramNodeAction action);
         void Visit(AddDiagramConnectorAction action);
         void Visit(RemoveDiagramConnectorAction action);
+        void Visit(ClearDiagramAction action);
     }
 }

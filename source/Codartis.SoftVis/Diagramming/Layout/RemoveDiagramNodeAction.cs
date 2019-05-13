@@ -1,7 +1,7 @@
 ﻿namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
-    /// A diagram action that desribes the removal of a diagram node.
+    /// A diagram action that describes the removal of a diagram node.
     /// </summary>
     internal sealed class RemoveDiagramNodeAction : DiagramNodeAction
     {

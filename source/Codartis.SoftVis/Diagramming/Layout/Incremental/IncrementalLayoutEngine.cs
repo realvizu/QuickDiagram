@@ -1,211 +1,123 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
-using Codartis.SoftVis.Geometry;
-using Codartis.Util;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
-    /// A stateful layout calculator that gets diagram shape actions and calculates layout actions.
-    /// Not thread-safe!
+    /// Wraps an incremental layout calculator and provides a queue interface.
     /// </summary>
-    /// <remarks>
-    /// Layout rules:
-    /// <para>Adding a new node adds it to the first layer in node name order.</para>
-    /// <para>Adding a new inheritance connection moves the source node under the target node.
-    /// The source node brings all its children with it.</para>
-    /// <para>If the source node has siblings then it is placed among them based on node name order.</para>
-    /// <para>If the source node has no siblings then it is placed between the children of the parent's preceding and following nodes.
-    /// It ensures that there won't be any inheritance edge crossings.</para>
-    /// </remarks>
-    internal sealed class IncrementalLayoutEngine : IIncrementalLayoutEngine, IDiagramActionConsumer
+    internal class IncrementalLayoutEngine : IIncrementalLayoutEngine
     {
-        private readonly ILayoutPriorityProvider _layoutPriorityProvider;
-        private readonly Map<IDiagramNode, DiagramNodeLayoutVertex> _diagramNodeToLayoutVertexMap;
-        private readonly Map<IDiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
-        private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
-        private LayoutVertexToPointMap _previousVertexCenters;
-        private readonly RelativeLayoutCalculator _relativeLayoutCalculator;
-        private readonly DiagramActionDispatcherVisitor _diagramActionDispatcherVisitor;
+        private readonly IIncrementalLayoutCalculator _incrementalLayoutCalculator;
+        private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
+        private readonly CancellationTokenSource _layoutEngineCancellation;
+        private readonly Queue<DiagramAction> _diagramActionQueue;
+        private readonly AutoResetEvent _diagramActionArrivedEvent;
 
-        private const double HorizontalGap = DiagramDefaults.HorizontalGap;
-        private const double VerticalGap = DiagramDefaults.VerticalGap;
-
-        public IncrementalLayoutEngine(ILayoutPriorityProvider layoutPriorityProvider)
+        public IncrementalLayoutEngine(ILayoutPriorityProvider layoutPriorityProvider, IDiagramService diagramService)
         {
-            _layoutPriorityProvider = layoutPriorityProvider ?? throw new ArgumentNullException(nameof(layoutPriorityProvider));
-            _diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>(new DiagramNodeIdEqualityComparer());
-            _diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>(new DiagramConnectorIdEqualityComparer());
-            _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
-            _previousVertexCenters = new LayoutVertexToPointMap();
-            _relativeLayoutCalculator = new RelativeLayoutCalculator();
-            _diagramActionDispatcherVisitor = new DiagramActionDispatcherVisitor(this);
+            _incrementalLayoutCalculator = new IncrementalLayoutCalculator(layoutPriorityProvider);
+
+            _layoutActionExecutor = new LayoutActionExecutorVisitor(diagramService);
+            _layoutEngineCancellation = new CancellationTokenSource();
+            _diagramActionQueue = new Queue<DiagramAction>();
+            _diagramActionArrivedEvent = new AutoResetEvent(false);
+
+            // BUGBUG: is it OK to use a thread pool thread for an event pump that runs indefinitely?
+            Task.Run(() => ProcessDiagramShapeActionsAsync(_layoutEngineCancellation.Token));
         }
 
-        private IReadOnlyRelativeLayout RelativeLayout => _relativeLayoutCalculator.RelativeLayout;
+        public void Dispose()
+        {
+            _layoutEngineCancellation.Cancel();
+            _layoutEngineCancellation.Dispose();
+        }
+
+        public void EnqueueDiagramAction(DiagramAction diagramAction)
+        {
+            lock (_diagramActionQueue)
+            {
+                _diagramActionQueue.Enqueue(diagramAction);
+            }
+
+            _diagramActionArrivedEvent.Set();
+        }
 
         public void Clear()
         {
-            _relativeLayoutCalculator.OnDiagramCleared();
-
-            _layoutPathToPreviousRouteMap.Clear();
-            _diagramConnectorToLayoutPathMap.Clear();
-            _diagramNodeToLayoutVertexMap.Clear();
-            _previousVertexCenters.Clear();
+            _incrementalLayoutCalculator?.Clear();
         }
 
-        public IEnumerable<ILayoutAction> CalculateLayoutActions(IEnumerable<DiagramAction> diagramActions)
+        private async void ProcessDiagramShapeActionsAsync(CancellationToken cancellationToken)
         {
-            foreach (var diagramAction in diagramActions)
-                diagramAction.Accept(_diagramActionDispatcherVisitor);
-
-            return CalculateAbsoluteLayout();
-        }
-
-        public void AddDiagramNode(IDiagramNode diagramNode)
-        {
-            if (_diagramNodeToLayoutVertexMap.Contains(diagramNode))
-                throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
-
-            var diagramNodeLayoutPriority = _layoutPriorityProvider.GetPriority(diagramNode);
-            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNodeLayoutPriority);
-            _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
-
-            _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);
-        }
-
-        public void RemoveDiagramNode(IDiagramNode diagramNode)
-        {
-            if (!_diagramNodeToLayoutVertexMap.Contains(diagramNode))
-                throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
-
-            var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
-            _diagramNodeToLayoutVertexMap.Remove(diagramNode);
-
-            _relativeLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex);
-        }
-
-        public void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize)
-        {
-            if (!_diagramNodeToLayoutVertexMap.Contains(diagramNode))
-                throw new InvalidOperationException($"Diagram node {diagramNode} not found.");
-
-            var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
-            diagramNodeLayoutVertex.Resize(newSize);
-        }
-
-        public void AddDiagramConnector(IDiagramConnector diagramConnector)
-        {
-            if (_diagramConnectorToLayoutPathMap.Contains(diagramConnector))
-                throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
-
-            var layoutPath = CreateLayoutPath(diagramConnector);
-            _diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
-
-            _relativeLayoutCalculator.OnDiagramConnectorAdded(layoutPath);
-        }
-
-        public void RemoveDiagramConnector(IDiagramConnector diagramConnector)
-        {
-            if (!_diagramConnectorToLayoutPathMap.Contains(diagramConnector))
-                throw new InvalidOperationException($"Diagram connector {diagramConnector} not found.");
-
-            var layoutPath = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
-            _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
-
-            _relativeLayoutCalculator.OnDiagramConnectorRemoved(layoutPath);
-        }
-
-        private LayoutPath CreateLayoutPath(IDiagramConnector diagramConnector)
-        {
-            var sourceVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
-            var targetVertex = _diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
-            return new LayoutPath(sourceVertex, targetVertex, diagramConnector);
-        }
-
-        private IEnumerable<ILayoutAction> CalculateAbsoluteLayout()
-        {
-            var newVertexCenters = AbsolutePositionCalculator.GetVertexCenters(
-                _relativeLayoutCalculator.RelativeLayout, HorizontalGap, VerticalGap);
-
-            var layoutActions = CreateLayoutActions(newVertexCenters);
-
-            SaveCurrentPositions(newVertexCenters);
-            return layoutActions;
-        }
-
-        private void SaveCurrentPositions(LayoutVertexToPointMap newVertexCenters)
-        {
-            _previousVertexCenters = newVertexCenters;
-            SaveCurrentLayoutPaths(newVertexCenters);
-        }
-
-        private void SaveCurrentLayoutPaths(LayoutVertexToPointMap newVertexCenters)
-        {
-            _layoutPathToPreviousRouteMap.Clear();
-
-            foreach (var layoutPath in RelativeLayout.LayeredLayoutGraph.Edges)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                var currentRoute = GetRoutePoints(layoutPath, newVertexCenters);
-                _layoutPathToPreviousRouteMap.Set(layoutPath, currentRoute);
+                if (_diagramActionArrivedEvent.WaitOne(TimeSpan.FromSeconds(1)))
+                {
+                    while (await AreEventsArrivingInRapidSuccessionAsync())
+                    {
+                    }
+
+                    var diagramActions = GetBatchFromQueue(_diagramActionQueue);
+                    if (diagramActions.Any())
+                        ApplyDiagramActions(diagramActions);
+                }
             }
         }
 
-        private List<ILayoutAction> CreateLayoutActions(LayoutVertexToPointMap newVertexCenters)
+        private async Task<bool> AreEventsArrivingInRapidSuccessionAsync()
         {
-            var layoutActions = new List<ILayoutAction>();
-            layoutActions.AddRange(CreateLayoutActionsForMovedDiagramNodes(newVertexCenters));
-            layoutActions.AddRange(CreateLayoutActionsForRerouteAllPaths(newVertexCenters));
-            return layoutActions;
+            var queueLengthBeforeWait = GetDiagramActionQueueLength();
+            await Task.Delay(TimeSpan.FromMilliseconds(5));
+            var queueLengthAfterWait = GetDiagramActionQueueLength();
+
+            return queueLengthAfterWait > queueLengthBeforeWait;
         }
 
-        private IEnumerable<ILayoutAction> CreateLayoutActionsForMovedDiagramNodes(LayoutVertexToPointMap newVertexCenters)
+        private int GetDiagramActionQueueLength()
         {
-            foreach (var diagramNodeLayoutVertex in RelativeLayout.LayeredLayoutGraph.Vertices)
-            {
-                var oldCenter = GetVertexCenterOrUndefined(_previousVertexCenters, diagramNodeLayoutVertex);
-                var newCenter = GetVertexCenterOrUndefined(newVertexCenters, diagramNodeLayoutVertex);
+            lock (_diagramActionQueue)
+                return _diagramActionQueue.Count;
+        }
 
-                if (newCenter.IsDefined && newCenter != oldCenter)
-                    yield return new MoveDiagramNodeLayoutAction(diagramNodeLayoutVertex, oldCenter, newCenter);
+        private static List<DiagramAction> GetBatchFromQueue(Queue<DiagramAction> diagramActionQueue)
+        {
+            lock (diagramActionQueue)
+            {
+                var result = diagramActionQueue.ToList();
+                diagramActionQueue.Clear();
+                return result;
             }
         }
 
-        private IEnumerable<ILayoutAction> CreateLayoutActionsForRerouteAllPaths(LayoutVertexToPointMap newVertexCenters)
+        private void ApplyDiagramActions(List<DiagramAction> diagramActions)
         {
-            foreach (var layoutPath in RelativeLayout.LayeredLayoutGraph.Edges)
-            {
-                _layoutPathToPreviousRouteMap.TryGet(layoutPath, out var oldRoute, valueForMissingKey: Route.Empty);
-                var newRoute = GetRoutePoints(layoutPath, newVertexCenters);
+            //Debug.WriteLine($"{DateTime.Now:O} | ApplyDiagramActions");
+            //foreach (var diagramAction in diagramActions)
+            //    Debug.WriteLine($"  {diagramAction}");
 
-                if (newRoute.IsDefined && newRoute != oldRoute)
-                    yield return new ReroutePathLayoutAction(layoutPath, oldRoute, newRoute);
-            }
+            var layoutActions = _incrementalLayoutCalculator.CalculateLayoutActions(diagramActions).ToList();
+
+            //Debug.WriteLine($"{DateTime.Now:O} | ApplyLayoutActions");
+            //foreach (var layoutAction in layoutActions)
+            //    Debug.WriteLine($"  {layoutAction}");
+
+            ApplyLayoutActionsToDiagram(layoutActions);
         }
 
-        private static Route GetRoutePoints(LayoutPath layoutPath, LayoutVertexToPointMap vertexCenters)
+        private void ApplyLayoutActionsToDiagram(IEnumerable<ILayoutAction> layoutActions)
         {
-            var sourceRect = vertexCenters.GetRect(layoutPath.PathSource);
-            var targetRect = vertexCenters.GetRect(layoutPath.PathTarget);
-
-            var routePoints = new Route.Builder
-            { 
-                sourceRect.Center,
-                layoutPath.InterimVertices.Select(vertexCenters.Get),
-                targetRect.Center
-            }.ToRoute();
-
-            return routePoints.AttachToSourceRectAndTargetRect(sourceRect, targetRect);
+            var netLayoutActions = CombineLayoutAction(layoutActions);
+            foreach (var layoutAction in netLayoutActions)
+                layoutAction.AcceptVisitor(_layoutActionExecutor);
         }
 
-        private static Point2D GetVertexCenterOrUndefined(LayoutVertexToPointMap vertexCenters, LayoutVertexBase vertex)
+        private static IEnumerable<ILayoutAction> CombineLayoutAction(IEnumerable<ILayoutAction> layoutActions)
         {
-            vertexCenters.TryGet(vertex, out var center, valueForMissingKey: Point2D.Undefined);
-            return center;
+            return layoutActions.GroupBy(i => i.DiagramShape).Select(j => j.Last());
         }
     }
 }

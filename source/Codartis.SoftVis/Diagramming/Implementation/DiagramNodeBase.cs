@@ -12,17 +12,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IModelNode ModelNode { get; }
         public Size2D Size { get; }
         public Point2D Center { get; }
+        public IContainerDiagramNode ParentDiagramNode { get; }
 
-        protected DiagramNodeBase(IModelNode modelNode)
-            : this(modelNode, Size2D.Zero, Point2D.Undefined)
+        protected DiagramNodeBase(IModelNode modelNode, IContainerDiagramNode parentDiagramNode)
+            : this(modelNode, Size2D.Zero, Point2D.Undefined, parentDiagramNode)
         {
         }
 
-        protected DiagramNodeBase(IModelNode modelNode, Size2D size, Point2D center)
+        protected DiagramNodeBase(IModelNode modelNode, Size2D size, Point2D center, IContainerDiagramNode parentDiagramNode)
         {
             ModelNode = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
             Size = size;
             Center = center;
+            ParentDiagramNode = parentDiagramNode;
         }
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
@@ -37,7 +39,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public double Width => Size.Width;
         public double Height => Size.Height;
 
-        public int CompareTo(IDiagramNode otherNode) 
+        public int CompareTo(IDiagramNode otherNode)
             => string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
 
         public override string ToString() => Name;

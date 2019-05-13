@@ -8,14 +8,14 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
     internal sealed class PropertyDiagramNode : DiagramNodeBase
     {
-        public PropertyDiagramNode(PropertyNode propertyNode) 
-            : base(propertyNode)
+        public PropertyDiagramNode(PropertyNode propertyNode, TypeDiagramNode parentDiagramNode ) 
+            : base(propertyNode, parentDiagramNode)
         {
         }
 
         public PropertyNode PropertyNode => (PropertyNode)ModelNode;
 
         protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center) 
-            => new PropertyDiagramNode((PropertyNode)modelNode);
+            => new PropertyDiagramNode((PropertyNode)modelNode, (TypeDiagramNode)ParentDiagramNode);
     }
 }

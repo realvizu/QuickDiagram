@@ -46,8 +46,6 @@
                     <view:DiagramConnectorControl.DisplayedRoutePoints>
                         <MultiBinding Converter="{StaticResource DiagramConnectorRouteCalculatorConverter}">
                             <Binding Path="AnimatedRoutePoints" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-                            <Binding Path="SourceNodeViewModel.AnimatedRect" Mode="OneWay"/>
-                            <Binding Path="TargetNodeViewModel.AnimatedRect" Mode="OneWay"/>
                             <Binding Path="Center" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:AnimatedRectContentPresenter}}"/>
                         </MultiBinding>
                     </view:DiagramConnectorControl.DisplayedRoutePoints>

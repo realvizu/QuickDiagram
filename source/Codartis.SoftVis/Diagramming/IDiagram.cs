@@ -7,11 +7,12 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// A diagram is a partial, graphical representation of a model.
     /// Immutable.
-    /// A diagram consists of shapes that represent model items: Diagram nodes for model nodes and diagram connectors for model relatioships.
-    /// The diagram nodes and connectors form a directed graph.
     /// </summary>
     /// <remarks>
     /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
+    /// A diagram consists of shapes that represent model items: diagram nodes for model nodes and diagram connectors for model relationships.
+    /// Diagram nodes can form a hierarchy meaning model node containment.
+    /// Diagram nodes + connectors form a directed graph.
     /// </remarks>
     public interface IDiagram
     {

@@ -51,7 +51,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (diagram.TryGetNode(modelNode.Id, out var existingDiagramNode))
                 return existingDiagramNode;
 
-            var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode);
+            ModelService.TryGetParentNode(modelNode.Id, out var parentModelNode);
+
+            var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode, parentModelNode);
             DiagramStore.AddNode(diagramNode);
             return diagramNode;
         }
