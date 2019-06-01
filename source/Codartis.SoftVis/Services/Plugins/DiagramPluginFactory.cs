@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
         public virtual IDiagramPlugin Create(DiagramPluginId diagramPluginId)
         {
-            if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin) return new AutoLayoutDiagramPlugin(_layoutPriorityProvider);
+            if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin) return new HierarchicalAutoLayoutPlugin(_layoutPriorityProvider);
             if (diagramPluginId == DiagramPluginId.ConnectorHandlerDiagramPlugin) return new ConnectorHandlerDiagramPlugin(_diagramShapeFactory);
             if (diagramPluginId == DiagramPluginId.ModelTrackingDiagramPlugin) return new ModelTrackingDiagramPlugin(_diagramShapeFactory);
 

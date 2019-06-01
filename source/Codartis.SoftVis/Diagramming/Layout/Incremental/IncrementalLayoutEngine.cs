@@ -11,16 +11,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// </summary>
     internal class IncrementalLayoutEngine : IIncrementalLayoutEngine
     {
-        private readonly IIncrementalLayoutCalculator _incrementalLayoutCalculator;
+        private readonly IIncrementalLayoutCalculator _layoutCalculator;
         private readonly LayoutActionExecutorVisitor _layoutActionExecutor;
         private readonly CancellationTokenSource _layoutEngineCancellation;
         private readonly Queue<DiagramAction> _diagramActionQueue;
         private readonly AutoResetEvent _diagramActionArrivedEvent;
 
-        public IncrementalLayoutEngine(ILayoutPriorityProvider layoutPriorityProvider, IDiagramService diagramService)
+        public IncrementalLayoutEngine(IIncrementalLayoutCalculator layoutCalculator, IDiagramService diagramService)
         {
-            _incrementalLayoutCalculator = new IncrementalLayoutCalculator(layoutPriorityProvider);
-
+            _layoutCalculator = layoutCalculator;
             _layoutActionExecutor = new LayoutActionExecutorVisitor(diagramService);
             _layoutEngineCancellation = new CancellationTokenSource();
             _diagramActionQueue = new Queue<DiagramAction>();
@@ -48,7 +47,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 
         public void Clear()
         {
-            _incrementalLayoutCalculator?.Clear();
+            _layoutCalculator?.Clear();
         }
 
         private async void ProcessDiagramShapeActionsAsync(CancellationToken cancellationToken)
@@ -99,7 +98,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             //foreach (var diagramAction in diagramActions)
             //    Debug.WriteLine($"  {diagramAction}");
 
-            var layoutActions = _incrementalLayoutCalculator.CalculateLayoutActions(diagramActions).ToList();
+            var layoutActions = _layoutCalculator.CalculateLayoutActions(diagramActions).ToList();
 
             //Debug.WriteLine($"{DateTime.Now:O} | ApplyLayoutActions");
             //foreach (var layoutAction in layoutActions)

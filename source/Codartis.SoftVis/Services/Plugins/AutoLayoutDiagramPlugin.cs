@@ -24,7 +24,8 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            _incrementalLayoutEngine = new IncrementalLayoutEngine(_layoutPriorityProvider, diagramService);
+            var layoutCalculator = new IncrementalLayoutCalculator(_layoutPriorityProvider);
+            _incrementalLayoutEngine = new IncrementalLayoutEngine(layoutCalculator, diagramService);
 
             DiagramService.DiagramChanged += OnDiagramChanged;
         }

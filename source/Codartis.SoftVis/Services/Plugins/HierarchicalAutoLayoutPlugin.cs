@@ -1,87 +1,151 @@
-﻿//using System;
-//using System.Collections.Concurrent;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using Codartis.SoftVis.Diagramming;
-//using Codartis.SoftVis.Diagramming.Events;
-//using Codartis.SoftVis.Diagramming.Layout;
-//using Codartis.SoftVis.Diagramming.Layout.Incremental;
-//using Codartis.SoftVis.Modeling;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Diagramming.Layout;
+using Codartis.SoftVis.Diagramming.Layout.Incremental;
+using Codartis.SoftVis.Modeling;
 
-//namespace Codartis.SoftVis.Services.Plugins
-//{
-//    /// <summary>
-//    /// Performs automatic layout for the root nodes and for all container nodes.
-//    /// </summary>
-//    /// <remarks>
-//    /// Responsibilities:
-//    /// Create and destroy layout engines for all container nodes.
-//    /// Route diagram events to the proper layout engine.
-//    /// </remarks>
-//    internal sealed class HierarchicalAutoLayoutPlugin : DiagramPluginBase
-//    {
-//        /// <summary>
-//        /// The root layout engine is for the root nodes.
-//        /// </summary>
-//        private readonly IIncrementalLayoutCalculator _rootLayoutCalculator;
+namespace Codartis.SoftVis.Services.Plugins
+{
+    /// <summary>
+    /// Performs automatic layout for the root nodes and for all container nodes.
+    /// </summary>
+    /// <remarks>
+    /// Responsibilities:
+    /// Create and destroy layout engines for all container nodes.
+    /// Route diagram events to the proper layout engine.
+    /// </remarks>
+    internal sealed class HierarchicalAutoLayoutPlugin : DiagramPluginBase
+    {
+        private readonly ILayoutPriorityProvider _layoutPriorityProvider;
 
-//        /// <summary>
-//        /// Holds a layout engine for each diagram node that can contain other nodes.
-//        /// </summary>
-//        private readonly IDictionary<IContainerDiagramNode, IIncrementalLayoutCalculator> _layoutEnginesPerNodes;
-        
-//        public HierarchicalAutoLayoutPlugin(ILayoutPriorityProvider layoutPriorityProvider)
-//        {
-//            _rootLayoutCalculator = new IncrementalLayoutCalculator(layoutPriorityProvider);
-//            _layoutEnginesPerNodes = new ConcurrentDictionary<IContainerDiagramNode, IIncrementalLayoutCalculator>();
-//        }
+        /// <summary>
+        /// The root layout engine is for the root nodes.
+        /// </summary>
+        private IIncrementalLayoutEngine _rootLayoutEngine;
 
-//        public override void Initialize(IModelService modelService, IDiagramService diagramService)
-//        {
-//            base.Initialize(modelService, diagramService);
+        /// <summary>
+        /// The connector router that routes those connectors that connect nodes in different layout group.
+        /// </summary>
+        //private IIncrementalLayoutEngine _crossLayoutGroupConnectorRouter;
 
-//            DiagramService.DiagramChanged += OnDiagramChanged;
-//        }
+        /// <summary>
+        /// Holds a layout engine for each diagram node that can contain other nodes.
+        /// </summary>
+        private readonly IDictionary<ModelNodeId, IIncrementalLayoutEngine> _layoutEnginesPerNodes;
 
-//        public override void Dispose()
-//        {
-//            DiagramService.DiagramChanged -= OnDiagramChanged;
-//        }
+        /// <summary>
+        /// Maps model nodes to their containing layout engine.
+        /// </summary>
+        private readonly IDictionary<ModelNodeId, IIncrementalLayoutEngine> _modelNodeToContainingLayoutEngine;
 
-//        private void OnDiagramChanged(DiagramEventBase diagramEvent)
-//        {
-//            switch (diagramEvent)
-//            {
-//                case DiagramNodeAddedEvent diagramNodeAddedEvent:
-//                    // Layout only top level nodes (with no parent diagram node)
-//                    if (diagramNodeAddedEvent.DiagramNode.ParentDiagramNode == null)
-//                        EnqueueDiagramAction(new AddDiagramNodeAction(diagramNodeAddedEvent.DiagramNode));
-//                    break;
+        /// <summary>
+        /// Maps model relationships to their containing layout engine.
+        /// </summary>
+        private readonly IDictionary<ModelRelationshipId, IIncrementalLayoutEngine> _modelRelationshipToContainingLayoutEngine;
 
-//                case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
-//                    EnqueueDiagramAction(new AddDiagramConnectorAction(diagramConnectorAddedEvent.DiagramConnector));
-//                    break;
+        public HierarchicalAutoLayoutPlugin(ILayoutPriorityProvider layoutPriorityProvider)
+        {
+            _layoutPriorityProvider = layoutPriorityProvider;
+            _layoutEnginesPerNodes = new ConcurrentDictionary<ModelNodeId, IIncrementalLayoutEngine>();
+            _modelNodeToContainingLayoutEngine = new ConcurrentDictionary<ModelNodeId, IIncrementalLayoutEngine>();
+            _modelRelationshipToContainingLayoutEngine = new ConcurrentDictionary<ModelRelationshipId, IIncrementalLayoutEngine>();
+        }
 
-//                case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
-//                    var diagramNode = diagramNodeSizeChangedEvent.DiagramNode;
-//                    EnqueueDiagramAction(new ResizeDiagramNodeAction(diagramNode, diagramNode.Size));
-//                    break;
+        public override void Initialize(IModelService modelService, IDiagramService diagramService)
+        {
+            base.Initialize(modelService, diagramService);
 
-//                case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
-//                    EnqueueDiagramAction(new RemoveDiagramNodeAction(diagramNodeRemovedEvent.DiagramNode));
-//                    break;
+            //_crossLayoutGroupConnectorRouter = CrossLayoutGroupConnectorRouter(diagramService);
+            _rootLayoutEngine = CreateLayoutEngine(diagramService);
 
-//                case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
-//                    EnqueueDiagramAction(new RemoveDiagramConnectorAction(diagramConnectorRemovedEvent.DiagramConnector));
-//                    break;
+            DiagramService.DiagramChanged += OnDiagramChanged;
+        }
 
-//                case DiagramClearedEvent _:
-//                    EnqueueDiagramAction(new ClearDiagramAction());
-//                    break;
-//            }
-//        }
-//    }
-//}
+        public override void Dispose()
+        {
+            DiagramService.DiagramChanged -= OnDiagramChanged;
+        }
+
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        {
+            switch (diagramEvent)
+            {
+                case DiagramNodeAddedEvent diagramNodeAddedEvent:
+                    var addedDiagramNode = diagramNodeAddedEvent.DiagramNode;
+                    var addDiagramNodeAction = new AddDiagramNodeAction(addedDiagramNode);
+
+                    if (addedDiagramNode is IContainerDiagramNode containerDiagramNode)
+                    {
+                        var incrementalLayoutEngine = CreateLayoutEngine(DiagramService);
+                        _layoutEnginesPerNodes.Add(containerDiagramNode.Id, incrementalLayoutEngine);
+                    }
+
+                    var layoutEngineForAddedDiagramNode = GetLayoutEngine(addedDiagramNode);
+                    layoutEngineForAddedDiagramNode.EnqueueDiagramAction(addDiagramNodeAction);
+                    _modelNodeToContainingLayoutEngine.Add(addedDiagramNode.Id, layoutEngineForAddedDiagramNode);
+                    break;
+
+                case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
+                    var addedDiagramConnector = diagramConnectorAddedEvent.DiagramConnector;
+                    var addDiagramConnectorAction = new AddDiagramConnectorAction(addedDiagramConnector);
+
+                    var layoutEngineForAddedDiagramConnector = GetLayoutEngine(addedDiagramConnector);
+                    if (layoutEngineForAddedDiagramConnector != null)
+                    {
+                        layoutEngineForAddedDiagramConnector.EnqueueDiagramAction(addDiagramConnectorAction);
+                        _modelRelationshipToContainingLayoutEngine.Add(addedDiagramConnector.Id, layoutEngineForAddedDiagramConnector);
+                    }
+                    break;
+
+                case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
+                    var resizedDiagramNode = diagramNodeSizeChangedEvent.DiagramNode;
+                    var resizeDiagramNodeAction = new ResizeDiagramNodeAction(resizedDiagramNode, resizedDiagramNode.Size);
+                    _modelNodeToContainingLayoutEngine[resizedDiagramNode.Id].EnqueueDiagramAction(resizeDiagramNodeAction);
+                    break;
+
+                case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
+                    var removedDiagramNode = diagramNodeRemovedEvent.DiagramNode;
+                    var removeDiagramNodeAction = new RemoveDiagramNodeAction(removedDiagramNode);
+                    _modelNodeToContainingLayoutEngine[removedDiagramNode.Id].EnqueueDiagramAction(removeDiagramNodeAction);
+                    break;
+
+                case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
+                    var removedDiagramConnector = diagramConnectorRemovedEvent.DiagramConnector;
+                    var removeDiagramConnectorAction = new RemoveDiagramConnectorAction(removedDiagramConnector);
+                    _modelRelationshipToContainingLayoutEngine[removedDiagramConnector.Id].EnqueueDiagramAction(removeDiagramConnectorAction);
+                    break;
+
+                case DiagramClearedEvent _:
+                    foreach (var incrementalLayoutEngine in _layoutEnginesPerNodes.Values)
+                        incrementalLayoutEngine.Dispose();
+
+                    _layoutEnginesPerNodes.Clear();
+                    _rootLayoutEngine.EnqueueDiagramAction(new ClearDiagramAction());
+                    break;
+            }
+        }
+
+        private IncrementalLayoutEngine CreateLayoutEngine(IDiagramService diagramService)
+        {
+            var layoutCalculator = new IncrementalLayoutCalculator(_layoutPriorityProvider);
+            return new IncrementalLayoutEngine(layoutCalculator, diagramService);
+        }
+
+        private IIncrementalLayoutEngine GetLayoutEngine(IDiagramConnector diagramConnector)
+        {
+            return diagramConnector.Source.ParentDiagramNode  != null &&
+                   diagramConnector.Source.ParentDiagramNode == diagramConnector.Target.ParentDiagramNode
+                ? _layoutEnginesPerNodes[diagramConnector.Source.ParentDiagramNode.Id]
+                : null; // TODO: _crossLayoutGroupConnectorRouter
+        }
+
+        private IIncrementalLayoutEngine GetLayoutEngine(IDiagramNode diagramNode)
+        {
+            return diagramNode.HasParent
+                ? _layoutEnginesPerNodes[diagramNode.ParentDiagramNode.Id]
+                : _rootLayoutEngine;
+        }
+    }
+}

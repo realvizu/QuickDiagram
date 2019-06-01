@@ -9,6 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Layout
     internal interface IIncrementalLayoutCalculator
     {
         void Clear();
+
         IEnumerable<ILayoutAction> CalculateLayoutActions(IEnumerable<DiagramAction> diagramActions);
     }
 }

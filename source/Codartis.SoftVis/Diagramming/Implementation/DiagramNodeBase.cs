@@ -29,6 +29,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public override bool IsRectDefined => Size.IsDefined && Center.IsDefined;
         public override Rect2D Rect => Rect2D.CreateFromCenterAndSize(Center, Size);
+        public bool HasParent => ParentDiagramNode != null;
 
         public ModelNodeId Id => ModelNode.Id;
         public string Name => ModelNode.Name;

@@ -93,5 +93,9 @@
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Diagramming\Layout\ConnectorRouting\" />
+  </ItemGroup>
   
 </Project>
