@@ -36,6 +36,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode) => DiagramStore.UpdateDiagramNodeModelNode(diagramNode, newModelNode);
         public void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize) => DiagramStore.UpdateDiagramNodeSize(diagramNode, newSize);
         public void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter) => DiagramStore.UpdateDiagramNodeCenter(diagramNode, newCenter);
+        public void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft) => DiagramStore.UpdateDiagramNodeTopLeft(diagramNode, newTopLeft);
         public void AddConnector(IDiagramConnector connector) => DiagramStore.AddConnector(connector);
         public void RemoveConnector(ModelRelationshipId connectorId) => DiagramStore.RemoveConnector(connectorId);
         public void UpdateDiagramConnectorRoute(IDiagramConnector connector, Route newRoute) => DiagramStore.UpdateDiagramConnectorRoute(connector, newRoute);
@@ -114,7 +115,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             containerNode = null;
 
             return ModelService.TryGetParentNode(diagramNode.Id, out var parentModelNode)
-                && Diagram.TryGetNode(parentModelNode.Id, out containerNode);
+                   && Diagram.TryGetNode(parentModelNode.Id, out containerNode);
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)

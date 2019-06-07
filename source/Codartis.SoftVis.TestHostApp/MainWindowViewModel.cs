@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Layout.Nodes;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
@@ -52,10 +53,10 @@ namespace Codartis.SoftVis.TestHostApp
                 new TestModelServiceFactory(),
                 new TestDiagramServiceFactory(),
                 new TestUiServiceFactory(),
-                new DiagramPluginFactory(new TestLayoutPriorityProvider(), new TestDiagramShapeFactory()),
+                new DiagramPluginFactory(new TestLayoutPriorityProvider(), new TestDiagramShapeFactory(), new VerticalNodeLayoutAlgorithm()),
                 new[]
                 {
-                    DiagramPluginId.AutoLayoutDiagramPlugin,
+                    DiagramPluginId.AutoLayoutDiagramPlugin2,
                     DiagramPluginId.ConnectorHandlerDiagramPlugin,
                     DiagramPluginId.ModelTrackingDiagramPlugin
                 }

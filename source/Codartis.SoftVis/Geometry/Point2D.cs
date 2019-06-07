@@ -21,10 +21,12 @@ namespace Codartis.SoftVis.Geometry
         public bool IsDefined => !IsUndefined;
         public bool IsUndefined => double.IsNaN(X) || double.IsNaN(Y);
 
+        public static Point2D operator +(Point2D point, Size2D size) => new Point2D(point.X + size.Width, point.Y + size.Height);
+
         public static bool Equals(Point2D point1, Point2D point2)
         {
-            return point1.X.Equals(point2.X) &&
-                   point1.Y.Equals(point2.Y);
+            return point1.X.IsEqualWithTolerance(point2.X) &&
+                   point1.Y.IsEqualWithTolerance(point2.Y);
         }
 
         public bool Equals(Point2D other)
@@ -37,7 +39,7 @@ namespace Codartis.SoftVis.Geometry
             if (!(obj is Point2D))
                 return false;
 
-            var value = (Point2D)obj;
+            var value = (Point2D) obj;
             return Equals(this, value);
         }
 
@@ -53,12 +55,12 @@ namespace Codartis.SoftVis.Geometry
 
         public static bool operator ==(Point2D left, Point2D right)
         {
-            return left.Equals(right);
+            return left.IsEqualWithTolerance(right);
         }
 
         public static bool operator !=(Point2D left, Point2D right)
         {
-            return !left.Equals(right);
+            return !left.IsEqualWithTolerance(right);
         }
 
         public static Point2D operator +(Point2D left, Point2D right)

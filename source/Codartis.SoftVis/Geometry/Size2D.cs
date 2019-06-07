@@ -1,4 +1,7 @@
-﻿namespace Codartis.SoftVis.Geometry
+﻿using System;
+using Codartis.Util;
+
+namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// Represents a width + height pair.
@@ -13,6 +16,11 @@
 
         public Size2D(double width, double height)
         {
+            if (width.IsDefined() && width < 0)
+                throw new ArgumentOutOfRangeException(nameof(width), width, "Should be >= 0.");
+            if (height.IsDefined() && height < 0)
+                throw new ArgumentOutOfRangeException(nameof(height), height, "Should be >= 0.");
+
             Width = width;
             Height = height;
         }
@@ -25,10 +33,14 @@
                double.IsInfinity(Width) ||
                double.IsInfinity(Height);
 
+        public static Size2D operator +(Size2D size, Size2D otherSize) => new Size2D(size.Width + otherSize.Width, size.Height + otherSize.Height);
+        public static Size2D operator *(Size2D size, double factor) => new Size2D(size.Width * factor, size.Height * factor);
+        public static Size2D operator /(Size2D size, double factor) => new Size2D(size.Width / factor, size.Height / factor);
+
         public static bool Equals(Size2D size1, Size2D size2)
         {
-            return size1.Width.Equals(size2.Width) &&
-                   size1.Height.Equals(size2.Height);
+            return size1.Width.IsEqualWithTolerance(size2.Width) &&
+                   size1.Height.IsEqualWithTolerance(size2.Height);
         }
 
         public bool Equals(Size2D other)
@@ -41,7 +53,7 @@
             if (!(obj is Size2D))
                 return false;
 
-            var value = (Size2D)obj;
+            var value = (Size2D) obj;
             return Equals(this, value);
         }
 
@@ -52,12 +64,17 @@
 
         public static bool operator ==(Size2D left, Size2D right)
         {
-            return left.Equals(right);
+            return left.IsEqualWithTolerance(right);
         }
 
         public static bool operator !=(Size2D left, Size2D right)
         {
-            return !left.Equals(right);
+            return !left.IsEqualWithTolerance(right);
+        }
+
+        public bool IsEqualWithTolerance(Size2D otherSize)
+        {
+            return Width.IsEqualWithTolerance(otherSize.Width) && Height.IsEqualWithTolerance(otherSize.Height);
         }
 
         public override string ToString()

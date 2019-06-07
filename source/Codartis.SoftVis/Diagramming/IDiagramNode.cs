@@ -27,5 +27,6 @@ namespace Codartis.SoftVis.Diagramming
         IDiagramNode WithModelNode(IModelNode modelNode);
         IDiagramNode WithSize(Size2D newSize);
         IDiagramNode WithCenter(Point2D newCenter);
+        IDiagramNode WithTopLeft(Point2D newTopLeft);
     }
 }

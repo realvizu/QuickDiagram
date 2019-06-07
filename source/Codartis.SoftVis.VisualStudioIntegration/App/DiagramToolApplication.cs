@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Layout.Nodes;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
@@ -55,7 +56,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
                 new RoslynModelServiceFactory(roslynModelProvider),
                 new RoslynDiagramServiceFactory(),
                 new ApplicationUiServiceFactory(hostUiServices, AppDefaults.NodeDescriptionsVisibleByDefault),
-                new ApplicationDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory(), hostUiServices),
+                new ApplicationDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory(), new VerticalNodeLayoutAlgorithm(),  hostUiServices),
                 new[]
                 {
                     DiagramPluginId.AutoLayoutDiagramPlugin,

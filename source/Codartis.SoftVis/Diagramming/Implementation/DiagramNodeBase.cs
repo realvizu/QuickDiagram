@@ -48,6 +48,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagramNode WithModelNode(IModelNode modelNode) => CreateInstance(modelNode, Size, Center);
         public IDiagramNode WithSize(Size2D newSize) => CreateInstance(ModelNode, newSize, Center);
         public IDiagramNode WithCenter(Point2D newCenter) => CreateInstance(ModelNode, Size, newCenter);
+        public IDiagramNode WithTopLeft(Point2D newTopLeft) => CreateInstance(ModelNode, Size, newTopLeft + Size/2);
 
         protected abstract IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center);
     }

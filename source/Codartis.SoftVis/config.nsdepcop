@@ -56,7 +56,7 @@
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Modeling.Events" />
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Events" />
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout" />
+    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout.*" />
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Graphs.*" />
 

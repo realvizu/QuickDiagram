@@ -90,6 +90,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
+        public void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft)
+        {
+            lock (_diagramUpdateLockObject)
+            {
+                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
+                    return;
+
+                var newNode = oldNode.WithTopLeft(newTopLeft);
+                Diagram = Diagram.UpdateNode(newNode);
+                DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(Diagram, oldNode, newNode));
+            }
+        }
+
         public void AddConnector(IDiagramConnector connector)
         {
             lock (_diagramUpdateLockObject)

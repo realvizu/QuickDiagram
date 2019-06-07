@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout;
+using Codartis.SoftVis.Diagramming.Layout.Nodes;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -16,8 +17,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
         public ApplicationDiagramPluginFactory(
             ILayoutPriorityProvider layoutPriorityProvider, 
             IDiagramShapeFactory diagramShapeFactory, 
+            INodeLayoutAlgorithm nodeLayoutAlgorithm,
             IHostUiServices hostUiServices)
-            : base(layoutPriorityProvider, diagramShapeFactory)
+            : base(layoutPriorityProvider, diagramShapeFactory, nodeLayoutAlgorithm)
         {
             _hostUiServices = hostUiServices; 
         }
