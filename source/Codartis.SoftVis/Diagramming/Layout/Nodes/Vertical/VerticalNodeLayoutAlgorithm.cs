@@ -3,7 +3,7 @@ using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
-namespace Codartis.SoftVis.Diagramming.Layout.Nodes
+namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical
 {
     /// <summary>
     /// A node layout algorithm that puts the nodes in a vertical column, ordered by their name.

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout.Nodes;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
