@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Absolute;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative.Logic;
 using Codartis.SoftVis.Geometry;
 using Codartis.Util;
 
@@ -29,11 +30,11 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private readonly Map<IDiagramConnector, LayoutPath> _diagramConnectorToLayoutPathMap;
         private readonly Map<LayoutPath, Route> _layoutPathToPreviousRouteMap;
         private LayoutVertexToPointMap _previousVertexCenters;
-        private readonly RelativeLayoutCalculator _relativeLayoutCalculator;
+        private readonly StatefulRelativeLayoutCalculator _statefulRelativeLayoutCalculator;
         private readonly DiagramActionDispatcherVisitor _diagramActionDispatcherVisitor;
 
-        private const double HorizontalGap = DiagramDefaults.HorizontalGap;
-        private const double VerticalGap = DiagramDefaults.VerticalGap;
+        private const double HorizontalGap = DiagramLayoutDefaults.HorizontalGap;
+        private const double VerticalGap = DiagramLayoutDefaults.VerticalGap;
 
         public IncrementalLayoutCalculator(ILayoutPriorityProvider layoutPriorityProvider)
         {
@@ -42,15 +43,15 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             _diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>(new DiagramConnectorIdEqualityComparer());
             _layoutPathToPreviousRouteMap = new Map<LayoutPath, Route>();
             _previousVertexCenters = new LayoutVertexToPointMap();
-            _relativeLayoutCalculator = new RelativeLayoutCalculator();
+            _statefulRelativeLayoutCalculator = new StatefulRelativeLayoutCalculator();
             _diagramActionDispatcherVisitor = new DiagramActionDispatcherVisitor(this);
         }
 
-        private IReadOnlyRelativeLayout RelativeLayout => _relativeLayoutCalculator.RelativeLayout;
+        private IReadOnlyRelativeLayout RelativeLayout => _statefulRelativeLayoutCalculator.RelativeLayout;
 
         public void Clear()
         {
-            _relativeLayoutCalculator.OnDiagramCleared();
+            _statefulRelativeLayoutCalculator.OnDiagramCleared();
 
             _layoutPathToPreviousRouteMap.Clear();
             _diagramConnectorToLayoutPathMap.Clear();
@@ -75,7 +76,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNodeLayoutPriority);
             _diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
 
-            _relativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);
+            _statefulRelativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);
         }
 
         public void RemoveDiagramNode(IDiagramNode diagramNode)
@@ -86,7 +87,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var diagramNodeLayoutVertex = _diagramNodeToLayoutVertexMap.Get(diagramNode);
             _diagramNodeToLayoutVertexMap.Remove(diagramNode);
 
-            _relativeLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex);
+            _statefulRelativeLayoutCalculator.OnDiagramNodeRemoved(diagramNodeLayoutVertex);
         }
 
         public void ResizeDiagramNode(IDiagramNode diagramNode, Size2D newSize)
@@ -106,7 +107,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var layoutPath = CreateLayoutPath(diagramConnector);
             _diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
 
-            _relativeLayoutCalculator.OnDiagramConnectorAdded(layoutPath);
+            _statefulRelativeLayoutCalculator.OnDiagramConnectorAdded(layoutPath);
         }
 
         public void RemoveDiagramConnector(IDiagramConnector diagramConnector)
@@ -117,7 +118,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
             var layoutPath = _diagramConnectorToLayoutPathMap.Get(diagramConnector);
             _diagramConnectorToLayoutPathMap.Remove(diagramConnector);
 
-            _relativeLayoutCalculator.OnDiagramConnectorRemoved(layoutPath);
+            _statefulRelativeLayoutCalculator.OnDiagramConnectorRemoved(layoutPath);
         }
 
         public void ClearDiagram() => Clear();
@@ -132,7 +133,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
         private IEnumerable<ILayoutAction> CalculateAbsoluteLayout()
         {
             var newVertexCenters = AbsolutePositionCalculator.GetVertexCenters(
-                _relativeLayoutCalculator.RelativeLayout, HorizontalGap, VerticalGap);
+                _statefulRelativeLayoutCalculator.RelativeLayout, HorizontalGap, VerticalGap);
 
             var layoutActions = CreateLayoutActions(newVertexCenters);
 

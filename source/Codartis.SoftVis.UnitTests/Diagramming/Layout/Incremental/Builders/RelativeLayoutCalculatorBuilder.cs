@@ -1,16 +1,17 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative.Logic;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal class RelativeLayoutCalculatorBuilder : GraphRelatedBuilderBase<DiagramNodeLayoutVertex, LayoutPath, LayeredLayoutGraph>
     {
-        public RelativeLayoutCalculator RelativeLayoutCalculator { get; }
-        public override LayeredLayoutGraph Graph => (LayeredLayoutGraph)RelativeLayoutCalculator.RelativeLayout.LayeredLayoutGraph;
+        public StatefulRelativeLayoutCalculator StatefulRelativeLayoutCalculator { get; }
+        public override LayeredLayoutGraph Graph => (LayeredLayoutGraph)StatefulRelativeLayoutCalculator.RelativeLayout.LayeredLayoutGraph;
 
         public RelativeLayoutCalculatorBuilder()
         {
-            RelativeLayoutCalculator = new RelativeLayoutCalculator();
+            StatefulRelativeLayoutCalculator = new StatefulRelativeLayoutCalculator();
         }
 
         protected override DiagramNodeLayoutVertex CreateVertex(string name, int priority = 1)
@@ -29,7 +30,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
             if (vertex == null)
             {
                 vertex = CreateVertex(name, priority);
-                RelativeLayoutCalculator.OnDiagramNodeAdded(vertex);
+                StatefulRelativeLayoutCalculator.OnDiagramNodeAdded(vertex);
             }
             return vertex;
         }
@@ -38,7 +39,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
         {
             var edge = GetOrCreateEdge(sourceName, targetName);
             if (edge != null)
-                RelativeLayoutCalculator.OnDiagramConnectorAdded(edge);
+                StatefulRelativeLayoutCalculator.OnDiagramConnectorAdded(edge);
             return edge;
         }
 
@@ -46,7 +47,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
         {
             var vertex = GetVertex(name);
             if (vertex != null)
-                RelativeLayoutCalculator.OnDiagramNodeRemoved(vertex);
+                StatefulRelativeLayoutCalculator.OnDiagramNodeRemoved(vertex);
             return vertex;
         }
 
@@ -54,7 +55,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
         {
             var edge = GetEdge(sourceName, targetName);
             if (edge != null)
-                RelativeLayoutCalculator.OnDiagramConnectorRemoved(edge);
+                StatefulRelativeLayoutCalculator.OnDiagramConnectorRemoved(edge);
             return edge;
         }
     }

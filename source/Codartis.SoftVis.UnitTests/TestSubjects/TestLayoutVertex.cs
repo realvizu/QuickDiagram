@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.SoftVis.Diagramming.Layout.Incremental;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.UnitTests.TestSubjects

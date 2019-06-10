@@ -96,9 +96,11 @@ namespace Codartis.SoftVis.Services.Plugins
         private void DoLayout()
         {
             var diagram = DiagramService.Diagram;
-            var nodes = diagram.Nodes.Where(i=>!i.HasParent).ToArray();
-            var oldPositions = GetTopLeftPositions(nodes);
-            var newPositions = _layoutAlgorithm.Calculate(nodes);
+            var nodes = diagram.Nodes.Where(i => !i.HasParent).ToArray();
+            var connectors = diagram.Connectors.Where(i => nodes.Contains(i.Source) && nodes.Contains(i.Target));
+
+            var oldPositions = GetCenterPositions(nodes);
+            var newPositions = _layoutAlgorithm.Calculate(nodes, connectors);
 
             var changedPositions = GetPositionChanges(oldPositions, newPositions);
             Debug.WriteLine($"ChangedPositions.Count={changedPositions.Count}");
@@ -109,6 +111,11 @@ namespace Codartis.SoftVis.Services.Plugins
         private static IDictionary<ModelNodeId, Point2D> GetTopLeftPositions(IDiagramNode[] nodes)
         {
             return nodes.ToDictionary(i => i.Id, i => i.TopLeft);
+        }
+
+        private static IDictionary<ModelNodeId, Point2D> GetCenterPositions(IDiagramNode[] nodes)
+        {
+            return nodes.ToDictionary(i => i.Id, i => i.Center);
         }
 
         private static IDictionary<ModelNodeId, Point2D> GetPositionChanges(IDictionary<ModelNodeId, Point2D> oldPositions, IDictionary<ModelNodeId, Point2D> newPositions)
@@ -127,7 +134,7 @@ namespace Codartis.SoftVis.Services.Plugins
             foreach (var changedPosition in changedPositions)
             {
                 var diagramNode = diagram.GetNode(changedPosition.Key);
-                DiagramService.UpdateDiagramNodeTopLeft(diagramNode, changedPosition.Value);
+                DiagramService.UpdateDiagramNodeCenter(diagramNode, changedPosition.Value);
             }
         }
     }

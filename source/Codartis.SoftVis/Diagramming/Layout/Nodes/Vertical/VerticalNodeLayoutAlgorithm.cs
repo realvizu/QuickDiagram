@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical
     {
         private const double Margin = 2;
 
-        public IDictionary<ModelNodeId, Point2D> Calculate(IEnumerable<IDiagramNode> nodes)
+        public IDictionary<ModelNodeId, Point2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors)
         {
             var result = new Dictionary<ModelNodeId, Point2D>();
 

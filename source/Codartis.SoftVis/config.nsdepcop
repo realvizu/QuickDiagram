@@ -16,9 +16,10 @@
 
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Incremental.Relative" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Incremental.*" To="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama" To="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Absolute" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama" To="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative.*" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative" />
 
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.Events" />

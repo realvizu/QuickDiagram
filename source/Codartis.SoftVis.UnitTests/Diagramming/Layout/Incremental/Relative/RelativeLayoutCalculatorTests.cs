@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative;
-using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers;
 using Codartis.SoftVis.UnitTests.TestSubjects;
@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Relative
     public class RelativeLayoutCalculatorTests
     {
         private readonly RelativeLayoutCalculatorBuilder _calculatorBuilder;
-        private RelativeLayoutCalculator Calculator => _calculatorBuilder.RelativeLayoutCalculator;
+        private StatefulRelativeLayoutCalculator Calculator => _calculatorBuilder.StatefulRelativeLayoutCalculator;
         private IReadOnlyLayoutVertexLayers Layers => Calculator.RelativeLayout.LayoutVertexLayers;
 
         public RelativeLayoutCalculatorTests()

@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.Incremental;
+﻿using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 
 namespace Codartis.SoftVis.UnitTests.TestSubjects
 {

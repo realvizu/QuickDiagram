@@ -7,8 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Layout.Nodes;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
@@ -50,11 +49,15 @@ namespace Codartis.SoftVis.TestHostApp
         {
             SelectedDpi = 300;
 
+            var layoutPriorityProvider = new TestLayoutPriorityProvider();
             var visualizationService = new VisualizationService(
                 new TestModelServiceFactory(),
                 new TestDiagramServiceFactory(),
                 new TestUiServiceFactory(),
-                new DiagramPluginFactory(new TestLayoutPriorityProvider(), new TestDiagramShapeFactory(), new VerticalNodeLayoutAlgorithm()),
+                new DiagramPluginFactory(
+                    layoutPriorityProvider, 
+                    new TestDiagramShapeFactory(), 
+                    new SugiyamaLayoutAlgorithm(layoutPriorityProvider)),
                 new[]
                 {
                     DiagramPluginId.AutoLayoutDiagramPlugin2,
@@ -63,10 +66,10 @@ namespace Codartis.SoftVis.TestHostApp
                 }
             );
 
-            _testModelService = (ITestModelService)visualizationService.GetModelService();
+            _testModelService = (ITestModelService) visualizationService.GetModelService();
             var diagramId = visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);
             _diagramService = visualizationService.GetDiagramService(diagramId);
-            _uiService = (IWpfUiService)visualizationService.GetUiService(diagramId);
+            _uiService = (IWpfUiService) visualizationService.GetUiService(diagramId);
 
             _uiService.DiagramNodeInvoked += i => Debug.WriteLine($"DiagramNodeInvoked: {i}");
             _uiService.ShowModelItemsRequested += OnShowModelItemsRequested;
@@ -144,7 +147,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void ZoomToContent()
         {
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
             timer.Tick += (s, o) =>
             {
                 timer.Stop();

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Codartis.SoftVis.Diagramming.Layout.Incremental;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders;
 using FluentAssertions;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Codartis.Util
 {
@@ -9,7 +10,7 @@ namespace Codartis.Util
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    public class Map<TKey, TValue>
+    public class Map<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         private readonly IDictionary<TKey, TValue> _dictionary;
         private readonly object _lockObject = new object();
@@ -77,6 +78,17 @@ namespace Codartis.Util
         {
             lock (_lockObject)
                 _dictionary.Clear();
+        }
+
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            lock (_lockObject)
+                return _dictionary.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
