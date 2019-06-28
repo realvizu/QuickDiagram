@@ -39,8 +39,7 @@ namespace Codartis.SoftVis.Geometry
 
         public static bool Equals(Size2D size1, Size2D size2)
         {
-            return size1.Width.IsEqualWithTolerance(size2.Width) &&
-                   size1.Height.IsEqualWithTolerance(size2.Height);
+            return size1.IsEqualWithTolerance(size2);
         }
 
         public bool Equals(Size2D other)
@@ -64,12 +63,12 @@ namespace Codartis.SoftVis.Geometry
 
         public static bool operator ==(Size2D left, Size2D right)
         {
-            return left.IsEqualWithTolerance(right);
+            return left.Equals(right);
         }
 
         public static bool operator !=(Size2D left, Size2D right)
         {
-            return !left.IsEqualWithTolerance(right);
+            return !left.Equals(right);
         }
 
         public bool IsEqualWithTolerance(Size2D otherSize)

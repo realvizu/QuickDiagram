@@ -71,11 +71,28 @@ namespace Codartis.SoftVis.Services.Plugins
                     {
                     }
 
+                    var lastEvent = GetLastEventFromQueue();
+                    if (lastEvent == null)
+                        return;
+
                     Debug.WriteLine($"Calling layout.");
-                    DoLayout();
+                    DoLayout(lastEvent.NewDiagram);
                     Debug.WriteLine($"Calling layout done.");
                 }
             }
+        }
+
+        private DiagramEventBase GetLastEventFromQueue()
+        {
+            DiagramEventBase lastEvent = null;
+
+            lock (_diagramEventQueue)
+            {
+                while (_diagramEventQueue.Any())
+                    lastEvent = _diagramEventQueue.Dequeue();
+            }
+
+            return lastEvent;
         }
 
         private async Task<bool> AreEventsArrivingInRapidSuccessionAsync()
@@ -93,48 +110,42 @@ namespace Codartis.SoftVis.Services.Plugins
                 return _diagramEventQueue.Count;
         }
 
-        private void DoLayout()
+        private void DoLayout(IDiagram diagram)
         {
-            var diagram = DiagramService.Diagram;
             var nodes = diagram.Nodes.Where(i => !i.HasParent).ToArray();
             var connectors = diagram.Connectors.Where(i => nodes.Contains(i.Source) && nodes.Contains(i.Target));
 
-            var oldPositions = GetCenterPositions(nodes);
-            var newPositions = _layoutAlgorithm.Calculate(nodes, connectors);
+            var oldRects = GetRects(nodes);
+            var newRects = _layoutAlgorithm.Calculate(nodes, connectors);
+            var changedRects = GetChanges(oldRects, newRects);
 
-            var changedPositions = GetPositionChanges(oldPositions, newPositions);
-            Debug.WriteLine($"ChangedPositions.Count={changedPositions.Count}");
+            Debug.WriteLine($"ChangedRects.Count={changedRects.Count}");
 
-            ApplyChanges(changedPositions, diagram);
+            ApplyChanges(changedRects, diagram);
         }
 
-        private static IDictionary<ModelNodeId, Point2D> GetTopLeftPositions(IDiagramNode[] nodes)
+        private static IDictionary<ModelNodeId, Rect2D> GetRects(IDiagramNode[] nodes)
         {
-            return nodes.ToDictionary(i => i.Id, i => i.TopLeft);
+            return nodes.ToDictionary(i => i.Id, i => i.Rect);
         }
 
-        private static IDictionary<ModelNodeId, Point2D> GetCenterPositions(IDiagramNode[] nodes)
-        {
-            return nodes.ToDictionary(i => i.Id, i => i.Center);
-        }
-
-        private static IDictionary<ModelNodeId, Point2D> GetPositionChanges(IDictionary<ModelNodeId, Point2D> oldPositions, IDictionary<ModelNodeId, Point2D> newPositions)
+        private static IDictionary<ModelNodeId, Rect2D> GetChanges(IDictionary<ModelNodeId, Rect2D> oldRects, IDictionary<ModelNodeId, Rect2D> newRects)
         {
             var query =
-                from oldPosition in oldPositions
-                join newPosition in newPositions on oldPosition.Key equals newPosition.Key
-                where oldPosition.Value != newPosition.Value && newPosition.Value != Point2D.Undefined
-                select newPosition;
+                from oldRect in oldRects
+                join newRect in newRects on oldRect.Key equals newRect.Key
+                where oldRect.Value != newRect.Value && newRect.Value.IsDefined()
+                select newRect;
 
             return query.ToDictionary(i => i.Key, i => i.Value);
         }
 
-        private void ApplyChanges(IDictionary<ModelNodeId, Point2D> changedPositions, IDiagram diagram)
+        private void ApplyChanges(IDictionary<ModelNodeId, Rect2D> changedRects, IDiagram diagram)
         {
-            foreach (var changedPosition in changedPositions)
+            foreach (var rect in changedRects)
             {
-                var diagramNode = diagram.GetNode(changedPosition.Key);
-                DiagramService.UpdateDiagramNodeCenter(diagramNode, changedPosition.Value);
+                var diagramNode = diagram.GetNode(rect.Key);
+                DiagramService.UpdateDiagramNodeCenter(diagramNode, rect.Value.Center);
             }
         }
     }

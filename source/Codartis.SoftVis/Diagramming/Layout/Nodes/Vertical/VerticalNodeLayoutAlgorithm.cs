@@ -12,9 +12,9 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical
     {
         private const double Margin = 2;
 
-        public IDictionary<ModelNodeId, Point2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors)
+        public IDictionary<ModelNodeId, Rect2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors)
         {
-            var result = new Dictionary<ModelNodeId, Point2D>();
+            var result = new Dictionary<ModelNodeId, Rect2D>();
 
             var orderedNodes = nodes.OrderBy(i => i.Name);
 
@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical
             foreach (var node in orderedNodes)
             {
                 var position = new Point2D(0, yPos);
-                result.Add(node.Id, position);
+                result.Add(node.Id, new Rect2D(position, node.Size));
 
                 yPos += node.Size.Height + Margin;
             }

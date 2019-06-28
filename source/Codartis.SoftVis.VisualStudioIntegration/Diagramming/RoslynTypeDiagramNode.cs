@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
@@ -12,20 +13,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
     /// </summary>
     internal sealed class RoslynTypeDiagramNode : ContainerDiagramNodeBase
     {
-        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode) 
+        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode)
             : base(roslynTypeNode)
         {
         }
 
-        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
-            : base(roslynTypeNode, size, center, childNodes)
+        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
+            : base(roslynTypeNode, size, center, addedAt, childNodes)
         {
         }
 
-        public IRoslynTypeNode RoslynTypeNode => (IRoslynTypeNode)ModelNode;
+        public IRoslynTypeNode RoslynTypeNode => (IRoslynTypeNode) ModelNode;
         public bool IsAbstract => RoslynTypeNode.IsAbstract;
 
-        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
-            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, childNodes);
+        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
+            => new RoslynTypeDiagramNode((IRoslynTypeNode) modelNode, size, center, addedAt, childNodes);
     }
 }

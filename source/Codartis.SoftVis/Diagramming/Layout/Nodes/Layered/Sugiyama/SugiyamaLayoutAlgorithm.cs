@@ -21,18 +21,18 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
             _layoutPriorityProvider = layoutPriorityProvider;
         }
 
-        public IDictionary<ModelNodeId, Point2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors)
+        public IDictionary<ModelNodeId, Rect2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors)
         {
             var diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>(new DiagramNodeIdEqualityComparer());
             var diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>(new DiagramConnectorIdEqualityComparer());
 
-            var layoutVertices = nodes.Select(i => CreateLayoutVertex(i, diagramNodeToLayoutVertexMap)).ToList();
+            var layoutVertices = nodes.Select(i => CreateLayoutVertex(i, diagramNodeToLayoutVertexMap)).OrderBy(i => i.DiagramNode.AddedAt).ThenBy(i => i.Name).ToList();
             var layoutPaths = connectors.Select(i => CreateLayoutPath(i, diagramNodeToLayoutVertexMap, diagramConnectorToLayoutPathMap)).ToList();
 
             var relativeLayout = RelativeLayoutCalculator.Calculate(layoutVertices, layoutPaths);
             var layoutVertexToPointMap = AbsolutePositionCalculator.GetVertexCenters(relativeLayout, HorizontalGap, VerticalGap);
 
-            return diagramNodeToLayoutVertexMap.ToDictionary(i => i.Key.Id, i => layoutVertexToPointMap.Get(i.Value));
+            return diagramNodeToLayoutVertexMap.ToDictionary(i => i.Key.Id, i => Rect2D.CreateFromCenterAndSize(layoutVertexToPointMap.Get(i.Value), i.Value.Size));
         }
 
         private DiagramNodeLayoutVertex CreateLayoutVertex(IDiagramNode diagramNode, Map<IDiagramNode, DiagramNodeLayoutVertex> diagramNodeToLayoutVertexMap)

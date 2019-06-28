@@ -6,5 +6,7 @@
             : base(newDiagram, newNode)
         {
         }
+
+        public override string ToString() => $"{nameof(DiagramNodeAddedEvent)}: {DiagramNode}";
     }
 }

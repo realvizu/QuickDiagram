@@ -25,8 +25,7 @@ namespace Codartis.SoftVis.Geometry
 
         public static bool Equals(Point2D point1, Point2D point2)
         {
-            return point1.X.IsEqualWithTolerance(point2.X) &&
-                   point1.Y.IsEqualWithTolerance(point2.Y);
+            return point1.IsEqualWithTolerance(point2);
         }
 
         public bool Equals(Point2D other)

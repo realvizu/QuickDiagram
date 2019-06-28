@@ -55,8 +55,8 @@ namespace Codartis.SoftVis.TestHostApp
                 new TestDiagramServiceFactory(),
                 new TestUiServiceFactory(),
                 new DiagramPluginFactory(
-                    layoutPriorityProvider, 
-                    new TestDiagramShapeFactory(), 
+                    layoutPriorityProvider,
+                    new TestDiagramShapeFactory(),
                     new SugiyamaLayoutAlgorithm(layoutPriorityProvider)),
                 new[]
                 {

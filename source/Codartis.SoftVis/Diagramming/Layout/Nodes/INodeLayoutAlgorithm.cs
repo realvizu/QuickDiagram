@@ -15,6 +15,6 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes
         /// </summary>
         /// <returns>A dictionary where key = node ID, value = top left corner coordinates.</returns>
         [Pure]
-        IDictionary<ModelNodeId, Point2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors);
+        IDictionary<ModelNodeId, Rect2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors);
     }
 }

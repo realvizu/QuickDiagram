@@ -12,18 +12,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IModelNode ModelNode { get; }
         public Size2D Size { get; }
         public Point2D Center { get; }
+        public DateTime AddedAt { get; }
         public IContainerDiagramNode ParentDiagramNode { get; }
 
         protected DiagramNodeBase(IModelNode modelNode, IContainerDiagramNode parentDiagramNode)
-            : this(modelNode, Size2D.Zero, Point2D.Undefined, parentDiagramNode)
+            : this(modelNode, Size2D.Zero, Point2D.Undefined, DateTime.Now, parentDiagramNode)
         {
         }
 
-        protected DiagramNodeBase(IModelNode modelNode, Size2D size, Point2D center, IContainerDiagramNode parentDiagramNode)
+        protected DiagramNodeBase(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, IContainerDiagramNode parentDiagramNode)
         {
             ModelNode = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
             Size = size;
             Center = center;
+            AddedAt = addedAt;
             ParentDiagramNode = parentDiagramNode;
         }
 
@@ -45,11 +47,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public override string ToString() => Name;
 
-        public IDiagramNode WithModelNode(IModelNode modelNode) => CreateInstance(modelNode, Size, Center);
-        public IDiagramNode WithSize(Size2D newSize) => CreateInstance(ModelNode, newSize, Center);
-        public IDiagramNode WithCenter(Point2D newCenter) => CreateInstance(ModelNode, Size, newCenter);
-        public IDiagramNode WithTopLeft(Point2D newTopLeft) => CreateInstance(ModelNode, Size, newTopLeft + Size/2);
+        public IDiagramNode WithModelNode(IModelNode modelNode) => CreateInstance(modelNode, Size, Center, AddedAt, ParentDiagramNode);
+        public IDiagramNode WithSize(Size2D newSize) => CreateInstance(ModelNode, newSize, Center, AddedAt, ParentDiagramNode);
+        public IDiagramNode WithCenter(Point2D newCenter) => CreateInstance(ModelNode, Size, newCenter, AddedAt, ParentDiagramNode);
+        public IDiagramNode WithTopLeft(Point2D newTopLeft) => CreateInstance(ModelNode, Size, newTopLeft + Size / 2, AddedAt, ParentDiagramNode);
 
-        protected abstract IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center);
+        protected abstract IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, IContainerDiagramNode parentDiagramNode);
     }
 }

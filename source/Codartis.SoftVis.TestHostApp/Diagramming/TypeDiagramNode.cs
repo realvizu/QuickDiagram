@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
@@ -14,14 +15,14 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
         {
         }
 
-        public TypeDiagramNode(TypeNode typeNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
-            : base(typeNode, size, center, childNodes)
+        public TypeDiagramNode(TypeNode typeNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
+            : base(typeNode, size, center, addedAt, childNodes)
         {
         }
 
-        public TypeNode TypeNode => (TypeNode)ModelNode;
+        public TypeNode TypeNode => (TypeNode) ModelNode;
 
-        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, ImmutableList<IDiagramNode> childNodes)
-            => new TypeDiagramNode((TypeNode)modelNode, size, center, childNodes);
+        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
+            => new TypeDiagramNode((TypeNode) modelNode, size, center, addedAt, childNodes);
     }
 }

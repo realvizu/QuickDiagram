@@ -88,10 +88,10 @@ namespace Codartis.SoftVis.Geometry
             var center = Center;
             var sides = new[]
             {
-                (Left - targetPoint.X)/(center.X - targetPoint.X),
-                (Top - targetPoint.Y)/(center.Y - targetPoint.Y),
-                (Right - targetPoint.X)/(center.X - targetPoint.X),
-                (Bottom - targetPoint.Y)/(center.Y - targetPoint.Y)
+                (Left - targetPoint.X) / (center.X - targetPoint.X),
+                (Top - targetPoint.Y) / (center.Y - targetPoint.Y),
+                (Right - targetPoint.X) / (center.X - targetPoint.X),
+                (Bottom - targetPoint.Y) / (center.Y - targetPoint.Y)
             };
 
             var fi = Math.Max(0, sides.Where(i => i <= 1).Max());
@@ -101,13 +101,13 @@ namespace Codartis.SoftVis.Geometry
 
         public bool Equals(Rect2D other)
         {
-            return TopLeft.Equals(other.TopLeft) && Size.Equals(other.Size);
+            return Size.Equals(other.Size) && Center.Equals(other.Center);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is Rect2D && Equals((Rect2D)obj);
+            return obj is Rect2D && Equals((Rect2D) obj);
         }
 
         public override int GetHashCode()
