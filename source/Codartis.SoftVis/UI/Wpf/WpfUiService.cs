@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf
         }
 
         public async Task<BitmapSource> CreateDiagramImageAsync(double dpi, double margin,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             try

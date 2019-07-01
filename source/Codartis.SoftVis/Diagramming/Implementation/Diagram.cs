@@ -73,7 +73,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             var updatedGraph = parentNode == null 
                 ? _graph.AddVertex(node) 
-                : _graph.UpdateVertex(parentNode.AddChildNode(node));
+                : _graph.UpdateVertex(parentNode.WithChildNode(node));
 
             return CreateInstance(updatedGraph);
         }

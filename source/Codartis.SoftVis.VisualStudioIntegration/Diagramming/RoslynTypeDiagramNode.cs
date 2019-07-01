@@ -18,15 +18,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         {
         }
 
-        public RoslynTypeDiagramNode(IRoslynTypeNode roslynTypeNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
-            : base(roslynTypeNode, size, center, addedAt, childNodes)
+        public RoslynTypeDiagramNode(
+            IRoslynTypeNode roslynTypeNode,
+            Size2D size,
+            Point2D center,
+            DateTime addedAt,
+            IContainerDiagramNode parentDiagramNode,
+            ImmutableList<IDiagramNode> childNodes,
+            Size2D embeddedDiagramSize)
+            : base(roslynTypeNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize)
         {
         }
 
-        public IRoslynTypeNode RoslynTypeNode => (IRoslynTypeNode) ModelNode;
+        public IRoslynTypeNode RoslynTypeNode => (IRoslynTypeNode)ModelNode;
         public bool IsAbstract => RoslynTypeNode.IsAbstract;
 
-        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
-            => new RoslynTypeDiagramNode((IRoslynTypeNode) modelNode, size, center, addedAt, childNodes);
+        protected override IDiagramNode CreateInstance(
+            IModelNode modelNode,
+            Size2D size,
+            Point2D center,
+            DateTime addedAt,
+            IContainerDiagramNode parentDiagramNode,
+            ImmutableList<IDiagramNode> childNodes,
+            Size2D embeddedDiagramSize)
+            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize);
     }
 }

@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
                 return true;
             }
 
-            vertex = default(TVertex);
+            vertex = default;
             return false;
         }
 
@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
                 return true;
             }
 
-            edge = default(TEdge);
+            edge = default;
             return false;
         }
 

@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.UI.Wpf
         void Initialize(ResourceDictionary resourceDictionary, IDiagramStyleProvider diagramStyleProvider);
 
         Task<BitmapSource> CreateDiagramImageAsync(double dpi, double margin,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null);
     }
 }

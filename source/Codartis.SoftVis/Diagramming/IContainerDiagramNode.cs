@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -8,8 +9,9 @@ namespace Codartis.SoftVis.Diagramming
     public interface IContainerDiagramNode : IDiagramNode
     {
         IEnumerable<IDiagramNode> ChildNodes { get; }
+        Size2D EmbeddedDiagramSize { get; }
 
-        IDiagramNode AddChildNode(IDiagramNode childNode);
-        IDiagramNode RemoveChildNode(IDiagramNode childNode);
+        IDiagramNode WithChildNode(IDiagramNode childNode);
+        IDiagramNode WithoutChildNode(IDiagramNode childNode);
     }
 }

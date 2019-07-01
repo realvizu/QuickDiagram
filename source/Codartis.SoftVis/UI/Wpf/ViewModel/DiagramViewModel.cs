@@ -113,7 +113,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void EnsureRectIsVisible(Rect rect) => DiagramViewportViewModel.EnsureRectIsVisible(rect);
         public bool IsDiagramContentVisible() => DiagramViewportViewModel.IsDiagramContentVisible();
 
-        public void ShowPopupMessage(string text, TimeSpan hideAfter = default(TimeSpan))
+        public void ShowPopupMessage(string text, TimeSpan hideAfter = default)
         {
             PopupTextViewModel.Text = text;
             PopupTextViewModel.AutoHideAfter = hideAfter;

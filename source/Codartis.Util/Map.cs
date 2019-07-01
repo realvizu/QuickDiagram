@@ -47,7 +47,7 @@ namespace Codartis.Util
             }
         }
 
-        public bool TryGet(TKey key, out TValue value, TValue valueForMissingKey = default(TValue))
+        public bool TryGet(TKey key, out TValue value, TValue valueForMissingKey = default)
         {
             lock (_lockObject)
             {

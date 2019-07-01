@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related node. Default is false.</param>
         Task ExtendModelWithRelatedNodesAsync(IModelNode modelNode, DirectedModelRelationshipType? directedModelRelationshipType = null, 
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
+            CancellationToken cancellationToken = default, IIncrementalProgress progress = null, bool recursive = false);
 
         /// <summary>
         /// Returns a value indicating whether a model node has source code.
@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="progress">Optional progress reporting object.</param>
         Task UpdateFromSourceAsync(
             IEnumerable<ModelNodeId> visibleModelNodeIds,
-            CancellationToken cancellationToken = default(CancellationToken), 
+            CancellationToken cancellationToken = default, 
             IIncrementalProgress progress = null);
     }
 }

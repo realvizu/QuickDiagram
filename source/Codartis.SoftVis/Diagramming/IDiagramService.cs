@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming
         void HideModelNode(ModelNodeId modelNodeId);
 
         IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null);
 
         void ShowModelRelationship(IModelRelationship modelRelationship);

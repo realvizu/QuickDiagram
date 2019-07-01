@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public async Task ExtendModelWithRelatedNodesAsync(
             IModelNode modelNode, 
             DirectedModelRelationshipType? directedModelRelationshipType = null,
-            CancellationToken cancellationToken = default(CancellationToken), 
+            CancellationToken cancellationToken = default, 
             IIncrementalProgress progress = null, 
             bool recursive = false)
         {
@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public Task ShowSourceAsync(IRoslynModelNode modelNode) => _roslynModelProvider.ShowSourceAsync(modelNode.RoslynSymbol);
 
         public async Task UpdateFromSourceAsync(IEnumerable<ModelNodeId> visibleModelNodeIds,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
+            CancellationToken cancellationToken = default, IIncrementalProgress progress = null)
         {
             await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
             await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);

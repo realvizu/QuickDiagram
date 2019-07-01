@@ -15,14 +15,28 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
         {
         }
 
-        public TypeDiagramNode(TypeNode typeNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
-            : base(typeNode, size, center, addedAt, childNodes)
+        public TypeDiagramNode(
+            TypeNode typeNode,
+            Size2D size,
+            Point2D center,
+            DateTime addedAt,
+            IContainerDiagramNode parentDiagramNode,
+            ImmutableList<IDiagramNode> childNodes,
+            Size2D embeddedDiagramSize)
+            : base(typeNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize)
         {
         }
 
-        public TypeNode TypeNode => (TypeNode) ModelNode;
+        public TypeNode TypeNode => (TypeNode)ModelNode;
 
-        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, ImmutableList<IDiagramNode> childNodes)
-            => new TypeDiagramNode((TypeNode) modelNode, size, center, addedAt, childNodes);
+        protected override IDiagramNode CreateInstance(
+            IModelNode modelNode,
+            Size2D size,
+            Point2D center,
+            DateTime addedAt,
+            IContainerDiagramNode parentDiagramNode,
+            ImmutableList<IDiagramNode> childNodes,
+            Size2D embeddedDiagramSize)
+            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize);
     }
 }
