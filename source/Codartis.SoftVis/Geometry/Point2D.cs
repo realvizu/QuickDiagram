@@ -1,10 +1,12 @@
-﻿using Codartis.Util;
+﻿using System;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// Represents a point in 2D space.
     /// </summary>
+    [Immutable]
     public struct Point2D
     {
         public double X { get; }

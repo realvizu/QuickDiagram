@@ -13,7 +13,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// <remarks>
     /// WARNING: Descendants must override the method that creates a new object of the descendant type.
     /// </remarks>
-    public class ImmutableBidirectionalGraph<TVertex, TEdge> :
+    [Immutable]
+    public sealed class ImmutableBidirectionalGraph<TVertex, TEdge> :
         IBidirectionalGraph<TVertex, TEdge>,
         IImmutableBidirectionalGraph<TVertex, TEdge, ImmutableBidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
@@ -25,7 +26,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
         {
         }
 
-        protected ImmutableBidirectionalGraph(BidirectionalGraph<TVertex, TEdge> graph)
+        private ImmutableBidirectionalGraph(BidirectionalGraph<TVertex, TEdge> graph)
         {
             _graph = graph;
         }
@@ -76,14 +77,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public ImmutableBidirectionalGraph<TVertex, TEdge> Clear()
             => CloneAndMutate(i => i.Clear());
 
-        protected virtual ImmutableBidirectionalGraph<TVertex, TEdge> CreateInstance(BidirectionalGraph<TVertex, TEdge> graph)
-            => new ImmutableBidirectionalGraph<TVertex, TEdge>(graph);
-
         private ImmutableBidirectionalGraph<TVertex, TEdge> CloneAndMutate(Action<BidirectionalGraph<TVertex, TEdge>> mutatorAction)
         {
             var graph = _graph.Clone();
             mutatorAction.Invoke(graph);
-            return CreateInstance(graph);
+            return new ImmutableBidirectionalGraph<TVertex, TEdge>(graph);
         }
     }
 }

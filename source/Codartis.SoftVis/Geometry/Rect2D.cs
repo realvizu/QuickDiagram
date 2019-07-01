@@ -6,6 +6,7 @@ namespace Codartis.SoftVis.Geometry
     /// <summary>
     /// Represents a rectangle with a given position and size in 2D space.
     /// </summary>
+    [Immutable]
     public struct Rect2D
     {
         public static readonly Rect2D Empty = new Rect2D(double.NaN, double.NaN, double.NaN, double.NaN);

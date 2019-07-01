@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
@@ -9,6 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// Abstract base for diagram nodes that can contain other diagram nodes. Immutable.
     /// </summary>
+    [Immutable]
     public abstract class ContainerDiagramNodeBase : DiagramNodeBase, IContainerDiagramNode
     {
         private readonly ImmutableList<IDiagramNode> _childNodes;
@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _childNodes = childNodes;
         }
 
-        public IEnumerable<IDiagramNode> ChildNodes => _childNodes;
+        public IImmutableList<IDiagramNode> ChildNodes => _childNodes;
 
         public IDiagramNode AddChildNode(IDiagramNode childNode)
             => CreateInstance(ModelNode, Size, Center, AddedAt, _childNodes.Add(childNode));

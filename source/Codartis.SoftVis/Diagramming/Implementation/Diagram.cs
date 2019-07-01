@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
@@ -9,6 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// An immutable implementation of a diagram.
     /// </summary>
+    [Immutable]
     public class Diagram : IDiagram
     {
         private readonly DiagramGraph _graph;
@@ -25,9 +28,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Rect2D ContentRect => Shapes.Where(i => i.IsRectDefined).Select(i => i.Rect).Union();
 
-        public IEnumerable<IDiagramShape> Shapes => Nodes.OfType<IDiagramShape>().Concat(Connectors);
-        public IEnumerable<IDiagramNode> Nodes => _graph.Vertices;
-        public IEnumerable<IDiagramConnector> Connectors => _graph.Edges;
+        public IImmutableList<IDiagramShape> Shapes => Nodes.OfType<IDiagramShape>().Concat(Connectors).ToImmutableList();
+        public IImmutableList<IDiagramNode> Nodes => _graph.Vertices.ToImmutableList();
+        public IImmutableList<IDiagramConnector> Connectors => _graph.Edges.ToImmutableList();
 
         public bool NodeExists(ModelNodeId modelNodeId) => _graph.ContainsVertex(modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => _graph.ContainsEdge(modelRelationshipId);

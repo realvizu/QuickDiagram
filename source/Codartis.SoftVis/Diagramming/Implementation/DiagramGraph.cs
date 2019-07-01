@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
 
@@ -7,6 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// An immutable graph of diagram nodes and connectors. Mutators return a new graph.
     /// </summary>
+    [Immutable]
     public class DiagramGraph
         : UpdatableImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId, DiagramGraph>
 

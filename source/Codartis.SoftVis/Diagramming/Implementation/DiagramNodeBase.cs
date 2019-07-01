@@ -5,8 +5,9 @@ using Codartis.SoftVis.Modeling;
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
-    /// Abstract base for diagram nodes. Immutable.
+    /// Abstract base for diagram nodes.
     /// </summary>
+    [Immutable]
     public abstract class DiagramNodeBase : DiagramShapeBase, IDiagramNode
     {
         public IModelNode ModelNode { get; }

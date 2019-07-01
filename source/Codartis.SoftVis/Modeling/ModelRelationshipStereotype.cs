@@ -1,8 +1,11 @@
-﻿namespace Codartis.SoftVis.Modeling
+﻿using System;
+
+namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// Extensible list of model relationship types.
     /// </summary>
+    [Immutable]
     public sealed class ModelRelationshipStereotype
     {
         public static readonly ModelRelationshipStereotype Containment = new ModelRelationshipStereotype(nameof(Containment));

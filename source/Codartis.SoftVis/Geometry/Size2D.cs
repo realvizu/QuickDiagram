@@ -6,6 +6,7 @@ namespace Codartis.SoftVis.Geometry
     /// <summary>
     /// Represents a width + height pair.
     /// </summary>
+    [Immutable]
     public struct Size2D
     {
         public static readonly Size2D Undefined = new Size2D(double.NaN, double.NaN);

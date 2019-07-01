@@ -4,7 +4,6 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Absolute;
 using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative.Logic;
 using Codartis.SoftVis.Geometry;
 using Codartis.Util;
 

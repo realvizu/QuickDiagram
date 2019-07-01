@@ -1,8 +1,11 @@
-﻿namespace Codartis.SoftVis.Diagramming
+﻿using System;
+
+namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// Describes the types of components that a diagram connector is made of.
     /// </summary>
+    [Immutable]
     public class ConnectorType
     {
         public ArrowHeadType ArrowHeadType { get; }

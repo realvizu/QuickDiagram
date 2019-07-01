@@ -89,7 +89,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes)
         {
-            var autoMoveMode = _lastDiagram.Nodes.Count() > diagramNodes.Count
+            var autoMoveMode = _lastDiagram.Nodes.Count > diagramNodes.Count
                 ? ViewportAutoMoveMode.Contain
                 : ViewportAutoMoveMode.Center;
 

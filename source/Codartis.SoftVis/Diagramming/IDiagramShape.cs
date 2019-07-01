@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Geometry;
+﻿using System;
+using Codartis.SoftVis.Geometry;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -6,6 +7,7 @@ namespace Codartis.SoftVis.Diagramming
     /// A diagram shape is a representation of a model item on a diagram.
     /// Nodes and connectors are all shapes.
     /// </summary>
+    [Immutable]
     public interface IDiagramShape
     {
         // TODO: refactor Rect and IsRectDefined to Maybe<Rect> ?

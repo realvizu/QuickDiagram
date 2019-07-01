@@ -1,3 +1,4 @@
+using System;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
@@ -12,6 +13,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// <remarks>
     /// WARNING: use only immutable types as TVertex and TEdge!
     /// </remarks>
+    [Immutable]
     public interface IImmutableBidirectionalGraph<TVertex, TEdge, out TGraph> 
         where TEdge : IEdge<TVertex>
         where TGraph : IImmutableBidirectionalGraph<TVertex, TEdge, TGraph>

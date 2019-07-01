@@ -25,9 +25,9 @@ namespace Codartis.SoftVis.Services.Plugins
         /// </summary>
         private IIncrementalLayoutEngine _rootLayoutEngine;
 
-        /// <summary>
-        /// The connector router that routes those connectors that connect nodes in different layout group.
-        /// </summary>
+        ///// <summary>
+        ///// The connector router that routes those connectors that connect nodes in different layout group.
+        ///// </summary>
         //private IIncrementalLayoutEngine _crossLayoutGroupConnectorRouter;
 
         /// <summary>

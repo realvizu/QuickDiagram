@@ -10,12 +10,12 @@ namespace Codartis.SoftVis.Geometry
 {
     /// <summary>
     /// A route is a series of points in 2D space.
-    /// Immutable.
     /// </summary>
     /// <remarks>
     /// The route makes sure that all consecutive points are different.
     /// If the same point is added consecutively multiple times then it gets added only once.
     /// </remarks>
+    [Immutable]
     public struct Route : IEnumerable<Point2D>, IEquatable<Route>
     {
         public static readonly Route Empty = new Route();

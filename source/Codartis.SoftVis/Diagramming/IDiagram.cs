@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
@@ -6,7 +8,6 @@ namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// A diagram is a partial, graphical representation of a model.
-    /// Immutable.
     /// </summary>
     /// <remarks>
     /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
@@ -14,13 +15,14 @@ namespace Codartis.SoftVis.Diagramming
     /// Diagram nodes can form a hierarchy meaning model node containment.
     /// Diagram nodes + connectors form a directed graph.
     /// </remarks>
+    [Immutable]
     public interface IDiagram
     {
         Rect2D ContentRect { get; }
 
-        IEnumerable<IDiagramShape> Shapes { get; }
-        IEnumerable<IDiagramNode> Nodes { get; }
-        IEnumerable<IDiagramConnector> Connectors { get; }
+        IImmutableList<IDiagramShape> Shapes { get; }
+        IImmutableList<IDiagramNode> Nodes { get; }
+        IImmutableList<IDiagramConnector> Connectors { get; }
 
         bool NodeExists(ModelNodeId modelNodeId);
         bool ConnectorExists(ModelRelationshipId modelRelationshipId);
