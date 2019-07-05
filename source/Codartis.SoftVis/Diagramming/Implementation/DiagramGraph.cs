@@ -8,7 +8,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// An immutable graph of diagram nodes and connectors. Mutators return a new graph.
     /// </summary>
-    [Immutable]
+    // TODO: should be able to remove onFaith: true
+    [Immutable(onFaith: true)]
     public class DiagramGraph
         : UpdatableImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId, DiagramGraph>
 

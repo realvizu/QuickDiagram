@@ -5,6 +5,7 @@ namespace Codartis.SoftVis.Modeling
     /// <summary>
     /// Identifies a model node through its lifetime.
     /// </summary>
+    [Immutable]
     public struct ModelNodeId : IEquatable<ModelNodeId>, IComparable<ModelNodeId>
     {
         private readonly Guid _id;

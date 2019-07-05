@@ -1,10 +1,12 @@
-﻿using QuickGraph;
+﻿using System;
+using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
 {
     /// <summary>
     /// An edge with an Id that connects two VertexIds.
     /// </summary>
+    [Immutable]
     public struct VertexIdEdge<TVertexId, TEdgeId> : IEdge<TVertexId>
     {
         public TEdgeId  Id { get; }

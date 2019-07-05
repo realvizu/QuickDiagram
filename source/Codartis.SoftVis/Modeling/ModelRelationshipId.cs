@@ -5,6 +5,7 @@ namespace Codartis.SoftVis.Modeling
     /// <summary>
     /// Identifies a model relationship through its lifetime.
     /// </summary>
+    [Immutable]
     public struct ModelRelationshipId : IEquatable<ModelRelationshipId>, IComparable<ModelRelationshipId>
     {
         private readonly Guid _id;

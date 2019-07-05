@@ -11,6 +11,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// <remarks>
     /// The Id field is used to track identity through mutated instances so its value must be kept unchanged by all mutators.
     /// </remarks>
+    [Immutable]
     public class ModelRelationship : IModelRelationship
     {
         public ModelRelationshipId Id { get; }

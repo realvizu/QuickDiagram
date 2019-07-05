@@ -7,6 +7,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// An immutable implementation of a diagram connector.
     /// </summary>
+    [Immutable]
     public sealed class DiagramConnector : DiagramShapeBase, IDiagramConnector
     {
         public IModelRelationship ModelRelationship { get; }

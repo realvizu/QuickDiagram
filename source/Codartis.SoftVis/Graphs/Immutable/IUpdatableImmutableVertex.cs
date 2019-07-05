@@ -5,6 +5,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// <summary>
     /// An immutable vertex with a unique identifier that can be used to correlate updated versions of the same vertex.
     /// </summary>
+    [Immutable]
     public interface IUpdatableImmutableVertex<out TVertexId>
         where TVertexId : IEquatable<TVertexId>
     {

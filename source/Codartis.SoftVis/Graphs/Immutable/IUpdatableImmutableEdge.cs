@@ -10,6 +10,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// <typeparam name="TVertexId">The type of the vertex id. Must be equatable.</typeparam>
     /// <typeparam name="TEdgeId">The type of the edge id. Must be equatable.</typeparam>
     /// <typeparam name="TEdge">The implementing type. It will be returned by mutators.</typeparam>
+    [Immutable]
     public interface IUpdatableImmutableEdge<TVertex, TVertexId, out TEdge, out TEdgeId> : IEdge<TVertex>
         where TVertex : IUpdatableImmutableVertex<TVertexId>
         where TVertexId : IEquatable<TVertexId>

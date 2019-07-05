@@ -9,7 +9,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// <summary>
     /// Immutable graph with vertex and edge replace operations.
     /// </summary>
-    [Immutable]
+    // TODO: should be able to remove onFaith: true
+    [Immutable(onFaith: true)]
     public class UpdatableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>
         : IBidirectionalGraph<TVertex, TEdge>,
         IUpdatableImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId, TGraph>

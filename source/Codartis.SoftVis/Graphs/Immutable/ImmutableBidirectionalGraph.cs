@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// <remarks>
     /// WARNING: Descendants must override the method that creates a new object of the descendant type.
     /// </remarks>
-    [Immutable]
+    [Immutable(onFaith: true)]
     public sealed class ImmutableBidirectionalGraph<TVertex, TEdge> :
         IBidirectionalGraph<TVertex, TEdge>,
         IImmutableBidirectionalGraph<TVertex, TEdge, ImmutableBidirectionalGraph<TVertex, TEdge>>
@@ -56,26 +56,19 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges) => _graph.TryGetEdges(source, target, out edges);
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge) => _graph.TryGetEdge(source, target, out edge);
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> AddVertex(TVertex v)
-            => CloneAndMutate(i => i.AddVertex(v));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> AddVertex(TVertex v) => CloneAndMutate(i => i.AddVertex(v));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> AddEdge(TEdge edge)
-            => CloneAndMutate(i => i.AddEdge(edge));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> AddEdge(TEdge edge) => CloneAndMutate(i => i.AddEdge(edge));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertex(TVertex v)
-            => CloneAndMutate(i => i.RemoveVertex(v));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertex(TVertex v) => CloneAndMutate(i => i.RemoveVertex(v));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertexIf(VertexPredicate<TVertex> p)
-            => CloneAndMutate(i => i.RemoveVertexIf(p));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveVertexIf(VertexPredicate<TVertex> p) => CloneAndMutate(i => i.RemoveVertexIf(p));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdge(TEdge edge)
-            => CloneAndMutate(i => i.RemoveEdge(edge));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdge(TEdge edge) => CloneAndMutate(i => i.RemoveEdge(edge));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdgeIf(EdgePredicate<TVertex, TEdge> p)
-            => CloneAndMutate(i => i.RemoveEdgeIf(p));
+        public ImmutableBidirectionalGraph<TVertex, TEdge> RemoveEdgeIf(EdgePredicate<TVertex, TEdge> p) => CloneAndMutate(i => i.RemoveEdgeIf(p));
 
-        public ImmutableBidirectionalGraph<TVertex, TEdge> Clear()
-            => CloneAndMutate(i => i.Clear());
+        public ImmutableBidirectionalGraph<TVertex, TEdge> Clear() => CloneAndMutate(i => i.Clear());
 
         private ImmutableBidirectionalGraph<TVertex, TEdge> CloneAndMutate(Action<BidirectionalGraph<TVertex, TEdge>> mutatorAction)
         {
