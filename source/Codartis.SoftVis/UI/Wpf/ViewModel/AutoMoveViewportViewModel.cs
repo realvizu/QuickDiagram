@@ -81,10 +81,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             switch (diagramEvent)
             {
                 case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
-                    FollowDiagramNode(diagramNodeSizeChangedEvent.DiagramNode);
+                    FollowDiagramNode(diagramNodeSizeChangedEvent.NewNode);
                     break;
                 case DiagramNodePositionChangedEvent diagramNodePositionChangedEvent:
-                    FollowDiagramNode(diagramNodePositionChangedEvent.DiagramNode);
+                    FollowDiagramNode(diagramNodePositionChangedEvent.NewNode);
                     break;
             }
         }

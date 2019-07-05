@@ -1,10 +1,14 @@
-﻿namespace Codartis.SoftVis.Diagramming.Events
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming.Events
 {
-    public class DiagramNodePositionChangedEvent : DiagramNodeChangedEventBase
+    public sealed class DiagramNodePositionChangedEvent : DiagramNodeChangedEventBase
     {
-        public DiagramNodePositionChangedEvent(IDiagram newDiagram, IDiagramNode oldNode, IDiagramNode newNode) 
+        public DiagramNodePositionChangedEvent([NotNull] IDiagram newDiagram, [NotNull] IDiagramNode oldNode, [NotNull] IDiagramNode newNode)
             : base(newDiagram, oldNode, newNode)
         {
         }
+
+        public override string ToString() => $"{GetType().Name}: {OldNode}, {OldNode.TopLeft}->{NewNode.TopLeft}";
     }
 }

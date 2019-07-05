@@ -42,24 +42,24 @@ namespace Codartis.SoftVis.Services.Plugins
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    _incrementalLayoutEngine.EnqueueDiagramAction(new AddDiagramNodeAction(diagramNodeAddedEvent.DiagramNode));
+                    _incrementalLayoutEngine.EnqueueDiagramAction(new AddDiagramNodeAction(diagramNodeAddedEvent.NewNode));
                     break;
 
                 case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
-                    _incrementalLayoutEngine.EnqueueDiagramAction(new AddDiagramConnectorAction(diagramConnectorAddedEvent.DiagramConnector));
+                    _incrementalLayoutEngine.EnqueueDiagramAction(new AddDiagramConnectorAction(diagramConnectorAddedEvent.NewConnector));
                     break;
 
                 case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
-                    var diagramNode = diagramNodeSizeChangedEvent.DiagramNode;
+                    var diagramNode = diagramNodeSizeChangedEvent.NewNode;
                     _incrementalLayoutEngine.EnqueueDiagramAction(new ResizeDiagramNodeAction(diagramNode, diagramNode.Size));
                     break;
 
                 case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
-                    _incrementalLayoutEngine.EnqueueDiagramAction(new RemoveDiagramNodeAction(diagramNodeRemovedEvent.DiagramNode));
+                    _incrementalLayoutEngine.EnqueueDiagramAction(new RemoveDiagramNodeAction(diagramNodeRemovedEvent.OldNode));
                     break;
 
                 case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
-                    _incrementalLayoutEngine.EnqueueDiagramAction(new RemoveDiagramConnectorAction(diagramConnectorRemovedEvent.DiagramConnector));
+                    _incrementalLayoutEngine.EnqueueDiagramAction(new RemoveDiagramConnectorAction(diagramConnectorRemovedEvent.OldConnector));
                     break;
 
                 case DiagramClearedEvent _:

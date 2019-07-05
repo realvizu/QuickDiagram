@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Services.Plugins
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    var modelNode = diagramNodeAddedEvent.DiagramNode.ModelNode;
+                    var modelNode = diagramNodeAddedEvent.NewNode.ModelNode;
                     ShowModelRelationshipsIfBothEndsAreVisible(modelNode, model, diagram);
                     break;
 

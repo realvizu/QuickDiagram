@@ -1,8 +1,10 @@
-﻿namespace Codartis.SoftVis.Diagramming.Events
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming.Events
 {
-    public class DiagramClearedEvent : DiagramEventBase
+    public sealed class DiagramClearedEvent : DiagramEventBase
     {
-        public DiagramClearedEvent(IDiagram newDiagram) 
+        public DiagramClearedEvent([NotNull] IDiagram newDiagram)
             : base(newDiagram)
         {
         }

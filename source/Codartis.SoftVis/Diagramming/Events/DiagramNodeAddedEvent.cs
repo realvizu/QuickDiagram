@@ -1,12 +1,17 @@
-﻿namespace Codartis.SoftVis.Diagramming.Events
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming.Events
 {
-    public class DiagramNodeAddedEvent: DiagramNodeEventBase
+    public sealed class DiagramNodeAddedEvent : DiagramNodeEventBase
     {
-        public DiagramNodeAddedEvent(IDiagram newDiagram, IDiagramNode newNode) 
-            : base(newDiagram, newNode)
+        [NotNull] public IDiagramNode NewNode { get; }
+
+        public DiagramNodeAddedEvent([NotNull] IDiagram newDiagram, [NotNull] IDiagramNode newNode)
+            : base(newDiagram)
         {
+            NewNode = newNode;
         }
 
-        public override string ToString() => $"{nameof(DiagramNodeAddedEvent)}: {DiagramNode}";
+        public override string ToString() => $"{GetType().Name}: {NewNode}";
     }
 }

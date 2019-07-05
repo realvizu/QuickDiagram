@@ -73,7 +73,7 @@ namespace Codartis.SoftVis.Services.Plugins
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    var addedDiagramNode = diagramNodeAddedEvent.DiagramNode;
+                    var addedDiagramNode = diagramNodeAddedEvent.NewNode;
                     var addDiagramNodeAction = new AddDiagramNodeAction(addedDiagramNode);
 
                     if (addedDiagramNode is IContainerDiagramNode containerDiagramNode)
@@ -88,7 +88,7 @@ namespace Codartis.SoftVis.Services.Plugins
                     break;
 
                 case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
-                    var addedDiagramConnector = diagramConnectorAddedEvent.DiagramConnector;
+                    var addedDiagramConnector = diagramConnectorAddedEvent.NewConnector;
                     var addDiagramConnectorAction = new AddDiagramConnectorAction(addedDiagramConnector);
 
                     var layoutEngineForAddedDiagramConnector = GetLayoutEngine(addedDiagramConnector);
@@ -100,19 +100,19 @@ namespace Codartis.SoftVis.Services.Plugins
                     break;
 
                 case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
-                    var resizedDiagramNode = diagramNodeSizeChangedEvent.DiagramNode;
+                    var resizedDiagramNode = diagramNodeSizeChangedEvent.NewNode;
                     var resizeDiagramNodeAction = new ResizeDiagramNodeAction(resizedDiagramNode, resizedDiagramNode.Size);
                     _modelNodeToContainingLayoutEngine[resizedDiagramNode.Id].EnqueueDiagramAction(resizeDiagramNodeAction);
                     break;
 
                 case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
-                    var removedDiagramNode = diagramNodeRemovedEvent.DiagramNode;
+                    var removedDiagramNode = diagramNodeRemovedEvent.OldNode;
                     var removeDiagramNodeAction = new RemoveDiagramNodeAction(removedDiagramNode);
                     _modelNodeToContainingLayoutEngine[removedDiagramNode.Id].EnqueueDiagramAction(removeDiagramNodeAction);
                     break;
 
                 case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
-                    var removedDiagramConnector = diagramConnectorRemovedEvent.DiagramConnector;
+                    var removedDiagramConnector = diagramConnectorRemovedEvent.OldConnector;
                     var removeDiagramConnectorAction = new RemoveDiagramConnectorAction(removedDiagramConnector);
                     _modelRelationshipToContainingLayoutEngine[removedDiagramConnector.Id].EnqueueDiagramAction(removeDiagramConnectorAction);
                     break;

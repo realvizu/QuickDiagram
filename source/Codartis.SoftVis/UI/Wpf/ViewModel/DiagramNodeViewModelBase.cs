@@ -147,10 +147,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         protected virtual void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
             if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent
-                && DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.DiagramNode, DiagramNode))
+                && DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
             {
-                DiagramShape = diagramNodeChangedEvent.DiagramNode;
-                PopulateFromDiagramNode(diagramNodeChangedEvent.DiagramNode);
+                DiagramShape = diagramNodeChangedEvent.NewNode;
+                PopulateFromDiagramNode(diagramNodeChangedEvent.NewNode);
             }
         }
 

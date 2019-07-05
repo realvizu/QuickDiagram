@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
                     // It's a fire-and-forget async call, no need to await.
                     // ReSharper disable once UnusedVariable
-                    await RoslynModelService.ExtendModelWithRelatedNodesAsync(diagramNodeAddedEvent.DiagramNode.ModelNode, recursive: false);
+                    await RoslynModelService.ExtendModelWithRelatedNodesAsync(diagramNodeAddedEvent.NewNode.ModelNode, recursive: false);
                     break;
             }
         }

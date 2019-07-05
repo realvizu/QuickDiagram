@@ -1,10 +1,12 @@
-﻿namespace Codartis.SoftVis.Diagramming
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming
 {
     public abstract class DiagramEventBase
     {
-        public IDiagram NewDiagram { get; }
+        [NotNull] public IDiagram NewDiagram { get; }
 
-        protected DiagramEventBase(IDiagram newDiagram)
+        protected DiagramEventBase([NotNull] IDiagram newDiagram)
         {
             NewDiagram = newDiagram;
         }

@@ -1,13 +1,12 @@
-﻿namespace Codartis.SoftVis.Diagramming.Events
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming.Events
 {
     public abstract class DiagramConnectorEventBase : DiagramEventBase
     {
-        public IDiagramConnector DiagramConnector { get; }
-
-        protected DiagramConnectorEventBase(IDiagram newDiagram, IDiagramConnector diagramConnector) 
+        protected DiagramConnectorEventBase([NotNull] IDiagram newDiagram)
             : base(newDiagram)
         {
-            DiagramConnector = diagramConnector;
         }
     }
 }

@@ -123,16 +123,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    AddNode(diagramNodeAddedEvent.DiagramNode);
+                    AddNode(diagramNodeAddedEvent.NewNode);
                     break;
                 case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
-                    RemoveNode(diagramNodeRemovedEvent.DiagramNode);
+                    RemoveNode(diagramNodeRemovedEvent.OldNode);
                     break;
                 case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
-                    AddConnector(diagramConnectorAddedEvent.DiagramConnector);
+                    AddConnector(diagramConnectorAddedEvent.NewConnector);
                     break;
                 case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
-                    RemoveConnector(diagramConnectorRemovedEvent.DiagramConnector);
+                    RemoveConnector(diagramConnectorRemovedEvent.OldConnector);
                     break;
                 case DiagramClearedEvent _:
                     ClearViewport();
