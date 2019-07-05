@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming
     public interface IContainerDiagramNode : IDiagramNode
     {
         IEnumerable<IDiagramNode> ChildNodes { get; }
-        Size2D EmbeddedDiagramSize { get; }
+        Rect2D EmbeddedDiagramRect { get; }
 
         IDiagramNode WithChildNode(IDiagramNode childNode);
         IDiagramNode WithoutChildNode(IDiagramNode childNode);

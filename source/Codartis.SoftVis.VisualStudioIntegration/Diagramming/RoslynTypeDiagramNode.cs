@@ -24,9 +24,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes,
-            Size2D embeddedDiagramSize)
-            : base(roslynTypeNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize)
+            ImmutableList<IDiagramNode> childNodes)
+            : base(roslynTypeNode, size, center, addedAt, parentDiagramNode, childNodes)
         {
         }
 
@@ -39,8 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes,
-            Size2D embeddedDiagramSize)
-            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize);
+            ImmutableList<IDiagramNode> childNodes)
+            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes);
     }
 }

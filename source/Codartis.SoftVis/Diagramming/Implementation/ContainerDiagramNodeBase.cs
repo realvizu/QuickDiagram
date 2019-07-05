@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 
@@ -12,7 +13,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     public abstract class ContainerDiagramNodeBase : DiagramNodeBase, IContainerDiagramNode
     {
         private readonly ImmutableList<IDiagramNode> _childNodes;
-        public Size2D EmbeddedDiagramSize { get; }
 
         protected ContainerDiagramNodeBase(IModelNode modelNode)
             : this(
@@ -21,8 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 center: Point2D.Undefined,
                 addedAt: DateTime.Now,
                 parentDiagramNode: null,
-                childNodes: ImmutableList<IDiagramNode>.Empty,
-                embeddedDiagramSize: Size2D.Zero)
+                childNodes: ImmutableList<IDiagramNode>.Empty)
         {
         }
 
@@ -32,21 +31,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes,
-            Size2D embeddedDiagramSize)
+            ImmutableList<IDiagramNode> childNodes)
             : base(modelNode, size, center, addedAt, parentDiagramNode)
         {
             _childNodes = childNodes;
-            EmbeddedDiagramSize = embeddedDiagramSize;
         }
 
         public IEnumerable<IDiagramNode> ChildNodes => _childNodes;
 
+        public Rect2D EmbeddedDiagramRect => _childNodes.Select(i => i.Rect).Union();
+
         public IDiagramNode WithChildNode(IDiagramNode childNode)
-            => CreateInstance(ModelNode, Size, Center, AddedAt, ParentDiagramNode, _childNodes.Add(childNode), EmbeddedDiagramSize);
+            => CreateInstance(ModelNode, Size, Center, AddedAt, ParentDiagramNode, _childNodes.Add(childNode));
 
         public IDiagramNode WithoutChildNode(IDiagramNode childNode)
-            => CreateInstance(ModelNode, Size, Center, AddedAt, ParentDiagramNode, _childNodes.Remove(childNode), EmbeddedDiagramSize);
+            => CreateInstance(ModelNode, Size, Center, AddedAt, ParentDiagramNode, _childNodes.Remove(childNode));
 
         protected sealed override IDiagramNode CreateInstance(
             IModelNode modelNode,
@@ -55,7 +54,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode)
         {
-            return CreateInstance(modelNode, size, center, addedAt, parentDiagramNode, _childNodes, EmbeddedDiagramSize);
+            return CreateInstance(modelNode, size, center, addedAt, parentDiagramNode, _childNodes);
         }
 
         protected abstract IDiagramNode CreateInstance(
@@ -64,7 +63,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes,
-            Size2D embeddedDiagramSize);
+            ImmutableList<IDiagramNode> childNodes);
     }
 }

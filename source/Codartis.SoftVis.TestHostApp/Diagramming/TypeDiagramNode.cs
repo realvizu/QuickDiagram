@@ -21,9 +21,8 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes,
-            Size2D embeddedDiagramSize)
-            : base(typeNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize)
+            ImmutableList<IDiagramNode> childNodes)
+            : base(typeNode, size, center, addedAt, parentDiagramNode, childNodes)
         {
         }
 
@@ -35,8 +34,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes,
-            Size2D embeddedDiagramSize)
-            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes, embeddedDiagramSize);
+            ImmutableList<IDiagramNode> childNodes)
+            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes);
     }
 }
