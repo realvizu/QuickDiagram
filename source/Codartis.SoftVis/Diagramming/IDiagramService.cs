@@ -3,6 +3,7 @@ using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.Util;
+using Optional;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming
         void ShowModelRelationship(IModelRelationship modelRelationship);
         void HideModelRelationship(ModelRelationshipId modelRelationshipId);
 
-        bool TryGetContainerNode(IDiagramNode diagramNode, out IDiagramNode containerNode);
+        Option<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode);
 
         Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds);
     }

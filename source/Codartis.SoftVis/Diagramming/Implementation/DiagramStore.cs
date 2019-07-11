@@ -55,12 +55,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
-                    throw new InvalidOperationException($"Node {diagramNode} does not exist.");
-
-                var newNode = oldNode.WithModelNode(newModelNode);
-                Diagram = Diagram.WithNode(newNode);
-                DiagramChanged?.Invoke(new DiagramNodeModelNodeChangedEvent(Diagram, oldNode, newNode));
+                Diagram
+                    .TryGetNode(diagramNode.Id)
+                    .Match(
+                        oldNode =>
+                        {
+                            var newNode = oldNode.WithModelNode(newModelNode);
+                            Diagram = Diagram.WithNode(newNode);
+                            DiagramChanged?.Invoke(new DiagramNodeModelNodeChangedEvent(Diagram, oldNode, newNode));
+                        },
+                        () => throw new InvalidOperationException($"Node {diagramNode} does not exist."));
             }
         }
 
@@ -68,12 +72,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
-                    throw new InvalidOperationException($"Node {diagramNode} does not exist.");
-
-                var newNode = oldNode.WithSize(newSize);
-                Diagram = Diagram.WithNode(newNode);
-                DiagramChanged?.Invoke(new DiagramNodeSizeChangedEvent(Diagram, oldNode, newNode));
+                Diagram
+                    .TryGetNode(diagramNode.Id)
+                    .Match(
+                        oldNode =>
+                        {
+                            var newNode = oldNode.WithSize(newSize);
+                            Diagram = Diagram.WithNode(newNode);
+                            DiagramChanged?.Invoke(new DiagramNodeSizeChangedEvent(Diagram, oldNode, newNode));
+                        },
+                        () => throw new InvalidOperationException($"Node {diagramNode} does not exist."));
             }
         }
 
@@ -81,12 +89,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
-                    throw new InvalidOperationException($"Node {diagramNode} does not exist.");
-
-                var newNode = oldNode.WithCenter(newCenter);
-                Diagram = Diagram.WithNode(newNode);
-                DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(Diagram, oldNode, newNode));
+                Diagram
+                    .TryGetNode(diagramNode.Id)
+                    .Match(
+                        oldNode =>
+                        {
+                            var newNode = oldNode.WithCenter(newCenter);
+                            Diagram = Diagram.WithNode(newNode);
+                            DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(Diagram, oldNode, newNode));
+                        },
+                        () => throw new InvalidOperationException($"Node {diagramNode} does not exist."))
+                    ;
             }
         }
 
@@ -94,12 +107,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetNode(diagramNode.Id, out var oldNode))
-                    throw new InvalidOperationException($"Node {diagramNode} does not exist.");
-
-                var newNode = oldNode.WithTopLeft(newTopLeft);
-                Diagram = Diagram.WithNode(newNode);
-                DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(Diagram, oldNode, newNode));
+                Diagram
+                    .TryGetNode(diagramNode.Id)
+                    .Match(
+                        oldNode =>
+                        {
+                            var newNode = oldNode.WithTopLeft(newTopLeft);
+                            Diagram = Diagram.WithNode(newNode);
+                            DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(Diagram, oldNode, newNode));
+                        },
+                        () => throw new InvalidOperationException($"Node {diagramNode} does not exist."));
             }
         }
 
@@ -132,12 +149,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!Diagram.TryGetConnector(diagramConnector.Id, out var oldConnector))
-                    throw new InvalidOperationException($"Connector {diagramConnector} does not exist.");
-
-                var newConnector = oldConnector.WithRoute(newRoute);
-                Diagram = Diagram.WithConnector(newConnector);
-                DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(Diagram, oldConnector, newConnector));
+                Diagram
+                    .TryGetConnector(diagramConnector.Id)
+                    .Match(
+                        oldConnector =>
+                        {
+                            var newConnector = oldConnector.WithRoute(newRoute);
+                            Diagram = Diagram.WithConnector(newConnector);
+                            DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(Diagram, oldConnector, newConnector));
+                        },
+                        () => throw new InvalidOperationException($"Connector {diagramConnector} does not exist."));
             }
         }
 

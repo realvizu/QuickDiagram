@@ -1,5 +1,6 @@
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Optional.Linq;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
@@ -32,11 +33,9 @@ namespace Codartis.SoftVis.Services.Plugins
 
         protected static bool DiagramConnectorWouldBeRedundant(IModelRelationship modelRelationship, IDiagram diagram)
         {
-            if (diagram.TryGetNode(modelRelationship.Source.Id, out var sourceNode) &&
-                diagram.TryGetNode(modelRelationship.Target.Id, out var targetNode))
-                return diagram.PathExists(sourceNode.Id, targetNode.Id);
-
-            return false;
+            return diagram.PathExists(
+                diagram.TryGetNode(modelRelationship.Source.Id).Select(i => i.Id),
+                diagram.TryGetNode(modelRelationship.Target.Id).Select(i => i.Id));
         }
 
         protected void AddDiagramConnectorIfNotExists(IModelRelationship modelRelationship, IDiagram diagram)

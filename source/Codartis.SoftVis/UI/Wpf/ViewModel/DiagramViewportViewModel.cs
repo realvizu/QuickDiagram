@@ -41,8 +41,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
-        public DiagramViewportViewModel(IModelService modelService, IDiagramService diagramService,
-            IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewportViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            IDiagramShapeUiFactory diagramShapeUiFactory,
+            double minZoom,
+            double maxZoom,
+            double initialZoom)
             : base(modelService, diagramService)
         {
             MinZoom = minZoom;
@@ -92,7 +97,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void ZoomToContent(TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToContent(transitionSpeed);
         public void ZoomToRect(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ZoomToRect(rect, transitionSpeed);
-        public void EnsureRectIsVisible(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium) => ViewportCalculator.ContainRect(rect, transitionSpeed);
+
+        public void EnsureRectIsVisible(Rect rect, TransitionSpeed transitionSpeed = TransitionSpeed.Medium)
+            => ViewportCalculator.ContainRect(rect, transitionSpeed);
+
         public bool IsDiagramContentVisible() => ViewportCalculator.IsDiagramRectVisible();
 
         public void PinDecoration() => MiniButtonPanelViewModel.PinDecoration();
@@ -160,15 +168,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _diagramNodeToViewModelMap.Set(diagramNode, diagramNodeUi);
 
-            if (DiagramService.TryGetContainerNode(diagramNode, out var containerNode)
-                && IsNodeVisibleOnDiagram(containerNode, out var containerNodeUi))
-            {
-                ((IContainerDiagramNodeUi)containerNodeUi).AddChildNode(diagramNodeUi);
-            }
-            else
-            {
-                DiagramNodeViewModels.Add(diagramNodeUi);
-            }
+            DiagramService.TryGetContainerNode(diagramNode)
+                .Match(
+                    containerNode =>
+                    {
+                        if (IsNodeVisibleOnDiagram(containerNode, out var containerNodeUi))
+                            ((IContainerDiagramNodeUi)containerNodeUi).AddChildNode(diagramNodeUi);
+                    },
+                    () => DiagramNodeViewModels.Add(diagramNodeUi));
         }
 
         private bool IsNodeVisibleOnDiagram(IDiagramNode diagramNode, out IDiagramNodeUi diagramNodeUi)
@@ -237,8 +244,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramNodeToViewModelMap.Clear();
         }
 
-        private void OnViewportTransformChanged(TransitionedTransform newTransform)
-            => ViewportManipulation?.Invoke();
+        private void OnViewportTransformChanged(TransitionedTransform newTransform) => ViewportManipulation?.Invoke();
 
         private void OnShowRelatedNodesRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => ShowRelatedNodesRequested?.Invoke(ownerButton, modelNodes);
@@ -246,7 +252,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnEntitySelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize)
-            => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
+        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize) => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
     }
 }
