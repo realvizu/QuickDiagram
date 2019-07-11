@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _diagramContentRect = diagramService.Diagram.ContentRect.ToWpf();
+            _diagramContentRect = diagramService.Diagram.RootLayoutGroup.Rect.ToWpf();
 
             ResizeCommand = new ResizeDelegateCommand(Resize);
             PanCommand = new PanDelegateCommand(Pan);
@@ -162,7 +162,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            _diagramContentRect = diagramEvent.NewDiagram.ContentRect.ToWpf();
+            _diagramContentRect = diagramEvent.NewDiagram.RootLayoutGroup.Rect.ToWpf();
         }
 
         // ReSharper disable once UnusedMember.Local

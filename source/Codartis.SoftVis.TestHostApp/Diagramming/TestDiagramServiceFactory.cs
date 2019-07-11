@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
@@ -8,7 +9,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
         public IDiagramService Create(IModelService modelService)
         {
             return new TestDiagramService(
-                new TestDiagram(), 
+                Diagram.Empty, 
                 modelService,
                 new TestDiagramShapeFactory());
         }

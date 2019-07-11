@@ -1,55 +1,59 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
     /// <summary>
     /// An immutable implementation of a diagram.
     /// </summary>
-    public class Diagram : IDiagram
+    public sealed class Diagram : IDiagram
     {
-        private readonly DiagramGraph _graph;
+        [NotNull] public static readonly IDiagram Empty = new Diagram(new DiagramGraph(), LayoutGroup.Empty(), ImmutableHashSet<IDiagramConnector>.Empty);
 
-        public Diagram()
-            : this(new DiagramGraph())
+        /// <summary>
+        /// Contains all nodes and connectors in the diagram regardless of node hierarchy and layout groups.
+        /// </summary>
+        [NotNull]
+        private readonly DiagramGraph _allShapesGraph;
+
+        [NotNull] public ILayoutGroup RootLayoutGroup { get; }
+        [NotNull] public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
+
+        private Diagram(
+            [NotNull] DiagramGraph allShapesGraph,
+            [NotNull] ILayoutGroup rootLayoutGroup,
+            [NotNull] IImmutableSet<IDiagramConnector> crossLayoutGroupConnectors)
         {
+            _allShapesGraph = allShapesGraph;
+            RootLayoutGroup = rootLayoutGroup;
+            CrossLayoutGroupConnectors = crossLayoutGroupConnectors;
         }
 
-        protected Diagram(DiagramGraph graph)
-        {
-            _graph = graph;
-        }
+        public IImmutableSet<IDiagramNode> Nodes => _allShapesGraph.Vertices.ToImmutableHashSet();
+        public IImmutableSet<IDiagramConnector> Connectors => _allShapesGraph.Edges.ToImmutableHashSet();
 
-        public Rect2D ContentRect => Shapes.Where(i => i.IsRectDefined).Select(i => i.Rect).Union();
+        public bool NodeExists(ModelNodeId modelNodeId) => _allShapesGraph.ContainsVertex(modelNodeId);
+        public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => _allShapesGraph.ContainsEdge(modelRelationshipId);
 
-        public IEnumerable<IDiagramShape> Shapes => Nodes.OfType<IDiagramShape>().Concat(Connectors);
-        public IEnumerable<IDiagramNode> Nodes => _graph.Vertices;
-        public IEnumerable<IDiagramConnector> Connectors => _graph.Edges;
-
-        public bool NodeExists(ModelNodeId modelNodeId) => _graph.ContainsVertex(modelNodeId);
-        public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => _graph.ContainsEdge(modelRelationshipId);
         public bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId)
-            => NodeExists(sourceModelNodeId)
-            && NodeExists(targetModelNodeId)
-            && _graph.PathExists(sourceModelNodeId, targetModelNodeId);
+            => NodeExists(sourceModelNodeId) && NodeExists(targetModelNodeId) && _allShapesGraph.PathExists(sourceModelNodeId, targetModelNodeId);
 
         public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId)
-            => TryGetConnector(modelRelationshipId, out var connector)
-            && _graph.IsEdgeRedundant(connector);
+            => TryGetConnector(modelRelationshipId, out var connector) && _allShapesGraph.IsEdgeRedundant(connector);
 
-        public IDiagramNode GetNode(ModelNodeId modelNodeId) => _graph.GetVertex(modelNodeId);
-        public bool TryGetNode(ModelNodeId modelNodeId, out IDiagramNode node)
-            => _graph.TryGetVertex(modelNodeId, out node);
+        public IDiagramNode GetNode(ModelNodeId modelNodeId) => _allShapesGraph.GetVertex(modelNodeId);
+        public bool TryGetNode(ModelNodeId modelNodeId, out IDiagramNode node) => _allShapesGraph.TryGetVertex(modelNodeId, out node);
 
-        public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => _graph.GetEdge(modelRelationshipId);
+        public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => _allShapesGraph.GetEdge(modelRelationshipId);
+
         public bool TryGetConnector(ModelRelationshipId modelRelationshipId, out IDiagramConnector connector)
-            => _graph.TryGetEdge(modelRelationshipId, out connector);
+            => _allShapesGraph.TryGetEdge(modelRelationshipId, out connector);
 
-        public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id)
-            => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
+        public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id) => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
 
         public IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
@@ -57,39 +61,52 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             if (directedModelRelationshipType != null)
             {
-                result = _graph.GetAdjacentVertices(id, directedModelRelationshipType.Value.Direction,
+                result = _allShapesGraph.GetAdjacentVertices(
+                    id,
+                    directedModelRelationshipType.Value.Direction,
                     e => e.ModelRelationship.Stereotype == directedModelRelationshipType.Value.Stereotype);
             }
             else
             {
-                result = _graph.GetAdjacentVertices(id, EdgeDirection.In)
-                    .Union(_graph.GetAdjacentVertices(id, EdgeDirection.Out));
+                result = _allShapesGraph.GetAdjacentVertices(id, EdgeDirection.In)
+                    .Union(_allShapesGraph.GetAdjacentVertices(id, EdgeDirection.Out));
             }
 
             return result;
         }
 
-        public IDiagram AddNode(IDiagramNode node, IContainerDiagramNode parentNode = null)
+        public IDiagram WithNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
         {
-            var updatedGraph = parentNode == null 
-                ? _graph.AddVertex(node) 
-                : _graph.UpdateVertex(parentNode.WithChildNode(node));
+            var updatedGraph = _allShapesGraph.AddVertex(node);
+            var updatedLayoutGroup = RootLayoutGroup.WithNode(node, parentNodeId);
 
-            return CreateInstance(updatedGraph);
+            return CreateInstance(updatedGraph, updatedLayoutGroup, CrossLayoutGroupConnectors);
         }
 
-        public IDiagram RemoveNode(ModelNodeId nodeId)
+        public IDiagram WithoutNode(ModelNodeId nodeId)
         {
-            // TODO: if it's a child node then remove from parent instead of removing from graph
-            return CreateInstance(_graph.RemoveVertex(nodeId));
+            throw new System.NotImplementedException();
         }
 
-        public IDiagram UpdateNode(IDiagramNode newNode) => CreateInstance(_graph.UpdateVertex(newNode));
-        public IDiagram AddConnector(IDiagramConnector connector) => CreateInstance(_graph.AddEdge(connector));
-        public IDiagram RemoveConnector(ModelRelationshipId connectorId) => CreateInstance(_graph.RemoveEdge(connectorId));
-        public IDiagram UpdateConnector(IDiagramConnector newConnector) => CreateInstance(_graph.UpdateEdge(newConnector));
-        public IDiagram Clear() => CreateInstance(new DiagramGraph());
+        public IDiagram WithConnector(IDiagramConnector connector)
+        {
+            throw new System.NotImplementedException();
+        }
 
-        protected virtual IDiagram CreateInstance(DiagramGraph graph) => new Diagram(graph);
+        public IDiagram WithoutConnector(ModelRelationshipId connectorId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IDiagram Clear() => CreateInstance(_allShapesGraph.Clear(), RootLayoutGroup.Clear(), CrossLayoutGroupConnectors.Clear());
+
+        [NotNull]
+        private static IDiagram CreateInstance(
+            [NotNull] DiagramGraph allShapesGraph,
+            [NotNull] ILayoutGroup rootLayoutGroup,
+            [NotNull] IImmutableSet<IDiagramConnector> crossLayoutGroupConnectors)
+        {
+            return new Diagram(allShapesGraph, rootLayoutGroup, crossLayoutGroupConnectors);
+        }
     }
 }

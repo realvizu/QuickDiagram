@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
-using Codartis.SoftVis.Geometry;
-
-namespace Codartis.SoftVis.Diagramming
+﻿namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
-    /// A container node is a diagram node that can have child nodes.
+    /// A container node is a diagram node that can have child nodes that form a layout group.
     /// </summary>
     public interface IContainerDiagramNode : IDiagramNode
     {
-        IEnumerable<IDiagramNode> ChildNodes { get; }
-        Rect2D EmbeddedDiagramRect { get; }
+        ILayoutGroup LayoutGroup { get; }
 
-        IDiagramNode WithChildNode(IDiagramNode childNode);
-        IDiagramNode WithoutChildNode(IDiagramNode childNode);
+        IContainerDiagramNode WithLayoutGroup(ILayoutGroup layoutGroup);
     }
 }

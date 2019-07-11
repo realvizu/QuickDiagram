@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Immutable;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
@@ -24,8 +23,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes)
-            : base(roslynTypeNode, size, center, addedAt, parentDiagramNode, childNodes)
+            ILayoutGroup layoutGroup)
+            : base(roslynTypeNode, size, center, addedAt, parentDiagramNode, layoutGroup)
         {
         }
 
@@ -38,7 +37,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes)
-            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes);
+            ILayoutGroup layoutGroup)
+            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentDiagramNode, layoutGroup);
     }
 }

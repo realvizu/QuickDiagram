@@ -6,14 +6,33 @@ using Codartis.SoftVis.Modeling;
 
 namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
-    internal sealed class TestDiagramNode : DiagramNodeBase
+    internal sealed class TestDiagramNode : ContainerDiagramNodeBase
     {
         public TestDiagramNode(string name = "dummy")
-            : base(new TestModelNode(name), parentDiagramNode: null)
+            : base(new TestModelNode(name))
         {
         }
 
-        protected override IDiagramNode CreateInstance(IModelNode modelNode, Size2D size, Point2D center, DateTime addedAt, IContainerDiagramNode parentDiagramNode)
-            => new TestDiagramNode(Name);
+        private TestDiagramNode(
+            IModelNode modelNode,
+            Size2D size,
+            Point2D center,
+            DateTime addedAt,
+            IContainerDiagramNode parentDiagramNode,
+            ILayoutGroup layoutGroup)
+            : base(modelNode, size, center, addedAt, parentDiagramNode, layoutGroup)
+        {
+        }
+
+        protected override IDiagramNode CreateInstance(
+            IModelNode modelNode,
+            Size2D size,
+            Point2D center,
+            DateTime addedAt,
+            IContainerDiagramNode parentDiagramNode,
+            ILayoutGroup layoutGroup)
+        {
+            return new TestDiagramNode(modelNode, size, center, addedAt, parentDiagramNode, layoutGroup);
+        }
     }
 }

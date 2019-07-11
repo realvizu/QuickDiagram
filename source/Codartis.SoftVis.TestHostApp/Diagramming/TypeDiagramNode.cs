@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Immutable;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
@@ -21,8 +20,8 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes)
-            : base(typeNode, size, center, addedAt, parentDiagramNode, childNodes)
+            ILayoutGroup layoutGroup)
+            : base(typeNode, size, center, addedAt, parentDiagramNode, layoutGroup)
         {
         }
 
@@ -34,7 +33,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             Point2D center,
             DateTime addedAt,
             IContainerDiagramNode parentDiagramNode,
-            ImmutableList<IDiagramNode> childNodes)
-            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentDiagramNode, childNodes);
+            ILayoutGroup layoutGroup)
+            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentDiagramNode, layoutGroup);
     }
 }

@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         public IDiagramService Create(IModelService modelService)
         {
             return new RoslynDiagramService(
-                new Diagram(),
+                Diagram.Empty,
                 modelService, 
                 new RoslynDiagramShapeFactory());
         }

@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             remove => DiagramStore.DiagramChanged -= value;
         }
 
-        public void AddNode(IDiagramNode node, IContainerDiagramNode parentNode = null) => DiagramStore.AddNode(node, parentNode);
+        public void AddNode(IDiagramNode node) => DiagramStore.AddNode(node);
         public void RemoveNode(ModelNodeId nodeId) => DiagramStore.RemoveNode(nodeId);
         public void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode) => DiagramStore.UpdateDiagramNodeModelNode(diagramNode, newModelNode);
         public void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize) => DiagramStore.UpdateDiagramNodeSize(diagramNode, newSize);

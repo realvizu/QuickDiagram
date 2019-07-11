@@ -89,7 +89,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes)
         {
-            var autoMoveMode = _lastDiagram.Nodes.Count() > diagramNodes.Count
+            var autoMoveMode = _lastDiagram.Nodes.Count > diagramNodes.Count
                 ? ViewportAutoMoveMode.Contain
                 : ViewportAutoMoveMode.Center;
 
@@ -233,7 +233,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateDiagramContentRect(IDiagram diagram)
         {
-            DiagramContentRect = diagram.ContentRect.ToWpf();
+            DiagramContentRect = diagram.RootLayoutGroup.Rect.ToWpf();
         }
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)

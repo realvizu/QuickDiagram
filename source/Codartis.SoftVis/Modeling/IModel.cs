@@ -4,9 +4,12 @@ namespace Codartis.SoftVis.Modeling
 {
     /// <summary>
     /// A model consists of nodes and relationships between nodes.
-    /// The nodes form one or more tree hierarchies (e.g. packages contain other packages and types).
     /// Immutable.
     /// </summary>
+    /// <remarks>
+    /// Nodes can contain other nodes, but that's represented as a <see cref="ModelRelationshipStereotype.Containment"/> relationship
+    /// (not as a tree of node objects).
+    /// </remarks>
     public interface IModel
     {
         IEnumerable<IModelNode> Nodes { get; }
@@ -20,8 +23,11 @@ namespace Codartis.SoftVis.Modeling
         bool TryGetRelationship(ModelRelationshipId relationshipId, out IModelRelationship relationship);
 
         IEnumerable<IModelNode> GetChildNodes(ModelNodeId nodeId);
-        IEnumerable<IModelNode> GetRelatedNodes(ModelNodeId nodeId, 
-            DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false);
+
+        IEnumerable<IModelNode> GetRelatedNodes(
+            ModelNodeId nodeId,
+            DirectedModelRelationshipType directedModelRelationshipType,
+            bool recursive = false);
 
         IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId);
 
