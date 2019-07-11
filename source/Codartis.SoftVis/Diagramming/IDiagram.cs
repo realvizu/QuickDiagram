@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Codartis.SoftVis.Modeling;
+using Codartis.Util;
 using JetBrains.Annotations;
-using Optional;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -43,13 +43,13 @@ namespace Codartis.SoftVis.Diagramming
         bool NodeExists(ModelNodeId modelNodeId);
         bool ConnectorExists(ModelRelationshipId modelRelationshipId);
         bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
-        bool PathExists(Option<ModelNodeId> maybeSourceModelNodeId, Option<ModelNodeId> maybeTargetModelNodeId);
+        bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId);
         bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId);
 
         IDiagramNode GetNode(ModelNodeId modelNodeId);
-        Option<IDiagramNode> TryGetNode(ModelNodeId modelNodeId);
+        Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId);
         IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId);
-        Option<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId);
+        Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId);
         IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
         //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
 

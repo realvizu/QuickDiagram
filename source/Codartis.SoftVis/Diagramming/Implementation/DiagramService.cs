@@ -5,7 +5,6 @@ using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.Util;
-using Optional;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -124,11 +123,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 DiagramStore.RemoveConnector(modelRelationshipId);
         }
 
-        public Option<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
+        public Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
         {
             return ModelService.TryGetParentNode(diagramNode.Id, out var parentModelNode)
-                ? Diagram.TryGetNode(parentModelNode.Id).Map(i => i as IContainerDiagramNode)
-                : Option.None<IContainerDiagramNode>();
+                ? Diagram.TryGetNode(parentModelNode.Id).Cast<IDiagramNode, IContainerDiagramNode>()
+                : Maybe<IContainerDiagramNode>.Nothing;
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)

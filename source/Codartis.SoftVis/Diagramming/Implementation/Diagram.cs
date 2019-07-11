@@ -3,9 +3,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling;
+using Codartis.Util;
 using JetBrains.Annotations;
-using Optional;
-using Optional.Collections;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -39,7 +38,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId)
             => NodeExists(sourceModelNodeId) && NodeExists(targetModelNodeId) && _allShapesGraph.PathExists(sourceModelNodeId, targetModelNodeId);
 
-        public bool PathExists(Option<ModelNodeId> maybeSourceModelNodeId, Option<ModelNodeId> maybeTargetModelNodeId)
+        public bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId)
         {
             return maybeSourceModelNodeId.Match(
                 sourceNodeId => maybeTargetModelNodeId.Match(
@@ -57,11 +56,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagramNode GetNode(ModelNodeId modelNodeId) => Nodes.Single(i => i.Id == modelNodeId);
 
-        public Option<IDiagramNode> TryGetNode(ModelNodeId modelNodeId) => Nodes.SingleOrNone(i => i.Id == modelNodeId);
+        public Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId) => Nodes.SingleOrDefault(i => i.Id == modelNodeId).ToMaybe();
 
         public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => Connectors.Single(i => i.Id == modelRelationshipId);
 
-        public Option<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId) => Connectors.SingleOrNone(i => i.Id == modelRelationshipId);
+        public Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId)
+            => Connectors.SingleOrDefault(i => i.Id == modelRelationshipId).ToMaybe();
 
         public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id) => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
 

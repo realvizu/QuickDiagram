@@ -1,6 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Modeling.Events;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
@@ -36,14 +37,14 @@ namespace Codartis.SoftVis.Services.Plugins
                     var newModelNode = modelNodeUpdatedEvent.NewNode;
                     diagram
                         .TryGetNode(newModelNode.Id)
-                        .MatchSome(node => DiagramService.UpdateDiagramNodeModelNode(node, newModelNode));
+                        .Match(node => DiagramService.UpdateDiagramNodeModelNode(node, newModelNode));
                     break;
 
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
                     var removedModelNode = modelNodeRemovedEvent.RemovedNode;
                     diagram
                         .TryGetNode(removedModelNode.Id)
-                        .MatchSome(node => DiagramService.RemoveNode(node.Id));
+                        .Match(node => DiagramService.RemoveNode(node.Id));
                     break;
 
                 case ModelRelationshipAddedEvent modelRelationshipAddedEvent:
@@ -55,7 +56,7 @@ namespace Codartis.SoftVis.Services.Plugins
                     var modelRelationship = modelRelationshipRemovedEvent.RemovedRelationship;
                     diagram
                         .TryGetConnector(modelRelationship.Id)
-                        .MatchSome(connector => DiagramService.RemoveConnector(connector.Id));
+                        .Match(connector => DiagramService.RemoveConnector(connector.Id));
                     break;
 
                 case ModelClearedEvent _:

@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {

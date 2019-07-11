@@ -27,7 +27,6 @@
     <Allowed From="*" To="System.IO" />
     
     <Allowed From="*" To="MoreLinq.*" />
-    <Allowed From="*" To="Optional.*" />
     <Allowed From="*" To="JetBrains.Annotations" />
     <Allowed From="*" To="Codartis.Util.*" />
 
