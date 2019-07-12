@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.Util;

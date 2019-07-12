@@ -194,13 +194,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return vertexIds.Select(FromVertexId);
         }
 
-        private TVertexId ToVertexId(TVertex vertex) => vertex.Id;
         private TVertex FromVertexId(TVertexId vertexId) => _vertices[vertexId];
         private TEdge FromEdgeId(TEdgeId edgeId) => _edges[edgeId];
 
         private VertexIdEdge<TVertexId, TEdgeId> ToVertexIdEdge(TEdge edge) => new VertexIdEdge<TVertexId, TEdgeId>(edge.Id, edge.Source.Id, edge.Target.Id);
         private TEdge FromVertexIdEdge(VertexIdEdge<TVertexId, TEdgeId> vertexIdEdge) => FromEdgeId(vertexIdEdge.Id);
-        private IEnumerable<TEdge> FromVertexIdEdge(IEnumerable<VertexIdEdge<TVertexId, TEdgeId>> vertexIdEdges) => vertexIdEdges.Select(FromVertexIdEdge);
 
         private void EnsureVertexId(TVertexId id)
         {

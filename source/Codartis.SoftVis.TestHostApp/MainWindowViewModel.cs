@@ -111,12 +111,10 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void AddShapes()
         {
-            var model = _testModelService.TestModel;
-
-            if (_modelItemGroupIndex == model.ItemGroups.Count)
+            if (_modelItemGroupIndex == _testModelService.ItemGroups.Count)
                 return;
 
-            var modelNodes = model.ItemGroups[_modelItemGroupIndex];
+            var modelNodes = _testModelService.ItemGroups[_modelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
                 _diagramService.ShowModelNode(modelNode);
@@ -130,12 +128,10 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void RemoveShapes()
         {
-            var model = _testModelService.TestModel;
-
-            if (_nextToRemoveModelItemGroupIndex == model.ItemGroups.Count)
+            if (_nextToRemoveModelItemGroupIndex == _testModelService.ItemGroups.Count)
                 return;
 
-            var modelNodes = model.ItemGroups[_nextToRemoveModelItemGroupIndex];
+            var modelNodes = _testModelService.ItemGroups[_nextToRemoveModelItemGroupIndex];
 
             foreach (var modelNode in modelNodes)
                 _diagramService.HideModelNode(modelNode.Id);
