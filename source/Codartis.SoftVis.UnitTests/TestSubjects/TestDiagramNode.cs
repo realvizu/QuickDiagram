@@ -8,8 +8,8 @@ namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
     internal sealed class TestDiagramNode : ContainerDiagramNodeBase
     {
-        public TestDiagramNode(string name = "dummy")
-            : base(new TestModelNode(name))
+        public TestDiagramNode(string name = "dummy", IContainerDiagramNode parentDiagramNode = null)
+            : base(new TestModelNode(name), parentDiagramNode)
         {
         }
 

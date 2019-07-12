@@ -15,14 +15,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ConnectorType ConnectorType { get; }
         public Route Route { get; }
 
-        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target,
+        public DiagramConnector(
+            IModelRelationship relationship,
+            IDiagramNode source,
+            IDiagramNode target,
             ConnectorType connectorType)
             : this(relationship, source, target, connectorType, Route.Empty)
         {
         }
 
-        public DiagramConnector(IModelRelationship relationship, IDiagramNode source, IDiagramNode target,
-            ConnectorType connectorType, Route route)
+        public DiagramConnector(
+            IModelRelationship relationship,
+            IDiagramNode source,
+            IDiagramNode target,
+            ConnectorType connectorType,
+            Route route)
         {
             ModelRelationship = relationship ?? throw new ArgumentNullException(nameof(relationship));
             Source = source ?? throw new ArgumentNullException(nameof(source));
@@ -36,6 +43,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public ModelRelationshipId Id => ModelRelationship.Id;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
+
+        public bool IsCrossingLayoutGroups => Source.ParentDiagramNode?.Id != Target.ParentDiagramNode?.Id;
 
         public IDiagramConnector WithSource(IDiagramNode newSourceNode)
         {

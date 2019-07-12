@@ -11,13 +11,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         public ILayoutGroup LayoutGroup { get; }
 
-        protected ContainerDiagramNodeBase(IModelNode modelNode)
+        protected ContainerDiagramNodeBase(IModelNode modelNode, IContainerDiagramNode parentDiagramNode = null)
             : this(
                 modelNode,
                 size: Size2D.Zero,
                 center: Point2D.Undefined,
                 addedAt: DateTime.Now,
-                parentDiagramNode: null,
+                parentDiagramNode: parentDiagramNode,
                 Implementation.LayoutGroup.Empty(modelNode.Id))
         {
         }

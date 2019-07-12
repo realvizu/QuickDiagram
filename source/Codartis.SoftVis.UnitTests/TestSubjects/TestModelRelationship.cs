@@ -6,11 +6,6 @@ namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
     internal sealed class TestModelRelationship : ModelRelationship
     {
-        public TestModelRelationship()
-            : this(null, null)
-        {
-        }
-
         public TestModelRelationship(IModelNode source, IModelNode target)
             : base(ModelRelationshipId.Create(), source, target, ModelRelationshipStereotype.Containment)
         {

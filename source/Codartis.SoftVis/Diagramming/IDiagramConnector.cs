@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.Diagramming
 
         ConnectorType ConnectorType { get; }
         Route Route { get; }
+        bool IsCrossingLayoutGroups { get; }
 
         IDiagramConnector WithRoute(Route newRoute);
     }

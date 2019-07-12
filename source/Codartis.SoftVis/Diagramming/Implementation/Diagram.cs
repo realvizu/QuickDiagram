@@ -91,24 +91,26 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         //    return result;
         //}
 
-        public IDiagram WithNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
+        public IDiagram AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
         {
-            var updatedLayoutGroup = RootLayoutGroup.WithNode(node, parentNodeId);
+            var updatedLayoutGroup = RootLayoutGroup.AddNode(node, parentNodeId);
 
             return CreateInstance(updatedLayoutGroup, CrossLayoutGroupConnectors);
         }
 
-        public IDiagram WithoutNode(ModelNodeId nodeId)
+        public IDiagram RemoveNode(ModelNodeId nodeId)
         {
             throw new System.NotImplementedException();
         }
 
-        public IDiagram WithConnector(IDiagramConnector connector)
+        public IDiagram AddConnector(IDiagramConnector connector)
         {
-            throw new System.NotImplementedException();
+            return connector.IsCrossingLayoutGroups
+                ? CreateInstance(RootLayoutGroup, CrossLayoutGroupConnectors.Add(connector))
+                : CreateInstance(RootLayoutGroup.AddConnector(connector), CrossLayoutGroupConnectors);
         }
 
-        public IDiagram WithoutConnector(ModelRelationshipId connectorId)
+        public IDiagram RemoveConnector(ModelRelationshipId connectorId)
         {
             throw new System.NotImplementedException();
         }

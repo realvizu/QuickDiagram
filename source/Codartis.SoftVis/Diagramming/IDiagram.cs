@@ -54,16 +54,16 @@ namespace Codartis.SoftVis.Diagramming
         //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
 
         [NotNull]
-        IDiagram WithNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId = null);
+        IDiagram AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId = null);
 
         [NotNull]
-        IDiagram WithoutNode(ModelNodeId nodeId);
+        IDiagram RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
-        IDiagram WithConnector([NotNull] IDiagramConnector connector);
+        IDiagram AddConnector([NotNull] IDiagramConnector connector);
 
         [NotNull]
-        IDiagram WithoutConnector(ModelRelationshipId connectorId);
+        IDiagram RemoveConnector(ModelRelationshipId connectorId);
 
         [NotNull]
         IDiagram Clear();
