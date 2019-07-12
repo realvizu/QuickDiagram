@@ -197,7 +197,9 @@ namespace Codartis.SoftVis.Graphs.Immutable
         private TVertex FromVertexId(TVertexId vertexId) => _vertices[vertexId];
         private TEdge FromEdgeId(TEdgeId edgeId) => _edges[edgeId];
 
-        private VertexIdEdge<TVertexId, TEdgeId> ToVertexIdEdge(TEdge edge) => new VertexIdEdge<TVertexId, TEdgeId>(edge.Id, edge.Source.Id, edge.Target.Id);
+        private static VertexIdEdge<TVertexId, TEdgeId> ToVertexIdEdge(TEdge edge)
+            => new VertexIdEdge<TVertexId, TEdgeId>(edge.Id, edge.Source.Id, edge.Target.Id);
+
         private TEdge FromVertexIdEdge(VertexIdEdge<TVertexId, TEdgeId> vertexIdEdge) => FromEdgeId(vertexIdEdge.Id);
 
         private void EnsureVertexId(TVertexId id)
@@ -256,6 +258,21 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return allowParallelEdges
                 ? EmptyWithAllowParallelEdges
                 : EmptyWithDisallowParallelEdges;
+        }
+
+        public static IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> Create(
+            IImmutableSet<TVertex> vertices,
+            IImmutableSet<TEdge> edges,
+            bool allowParallelEdges = false)
+        {
+            var vertexDictionary = vertices.ToImmutableDictionary(i => i.Id);
+            var edgeDictionary = edges.ToImmutableDictionary(i => i.Id);
+
+            var graph = new BidirectionalGraph<TVertexId, VertexIdEdge<TVertexId, TEdgeId>>(allowParallelEdges);
+            graph.AddVertexRange(vertexDictionary.Keys);
+            graph.AddEdgeRange(edges.Select(ToVertexIdEdge));
+
+            return CreateInstance(vertexDictionary, edgeDictionary, graph);
         }
 
         [NotNull]

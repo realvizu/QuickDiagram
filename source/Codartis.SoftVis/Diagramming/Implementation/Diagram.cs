@@ -21,6 +21,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         [NotNull] public ILayoutGroup RootLayoutGroup { get; }
         [NotNull] public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
+        [NotNull] public IImmutableSet<IDiagramNode> Nodes { get; }
+        [NotNull] public IImmutableSet<IDiagramConnector> Connectors { get; }
+
         [NotNull] private readonly IDiagramGraph _allShapesGraph;
 
         private Diagram(
@@ -30,11 +33,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             RootLayoutGroup = rootLayoutGroup;
             CrossLayoutGroupConnectors = crossLayoutGroupConnectors;
 
-            _allShapesGraph = DiagramGraph.Empty();
+            Nodes = RootLayoutGroup.NodesRecursive;
+            Connectors = RootLayoutGroup.ConnectorsRecursive.Union(CrossLayoutGroupConnectors);
+            _allShapesGraph = DiagramGraph.Create(Nodes, Connectors);
         }
-
-        public IImmutableSet<IDiagramNode> Nodes => RootLayoutGroup.NodesRecursive;
-        public IImmutableSet<IDiagramConnector> Connectors => RootLayoutGroup.ConnectorsRecursive.Union(CrossLayoutGroupConnectors);
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => Connectors.Any(i => i.Id == modelRelationshipId);
