@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Codartis.Util;
 using JetBrains.Annotations;
 using QuickGraph;
 
@@ -161,6 +162,14 @@ namespace Codartis.SoftVis.Graphs.Immutable
         }
 
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> Clear() => Empty(_allowParallelEdges);
+
+        public TVertex GetVertex(TVertexId vertexId) => _vertices[vertexId];
+
+        public Maybe<TVertex> TryGetVertex(TVertexId vertexId) => _vertices.ContainsKey(vertexId) ? Maybe.Create(_vertices[vertexId]) : Maybe<TVertex>.Nothing;
+
+        public TEdge GetEdge(TEdgeId edgeId) => _edges[edgeId];
+
+        public Maybe<TEdge> TryGetEdge(TEdgeId edgeId) => _edges.ContainsKey(edgeId) ? Maybe.Create(_edges[edgeId]) : Maybe<TEdge>.Nothing;
 
         public bool PathExists(TVertexId sourceVertexId, TVertexId targetVertexId)
         {

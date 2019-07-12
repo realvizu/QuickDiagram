@@ -20,7 +20,12 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public event Action<ModelEventBase> ModelChanged;
 
-        public ModelStore(IModel model)
+        public ModelStore()
+            : this(Implementation.Model.Empty)
+        {
+        }
+
+        protected ModelStore(IModel model)
         {
             Model = model ?? throw new ArgumentNullException(nameof(model));
         }

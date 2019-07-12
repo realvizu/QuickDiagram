@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,12 +16,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class RoslynBasedModelUpdater
     {
-        private readonly RoslynModel _model;
+        private readonly IModel _model;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Workspace _workspace;
 
-        public RoslynBasedModelUpdater(RoslynModel model, Workspace workspace)
+        public RoslynBasedModelUpdater(IModel model, Workspace workspace)
         {
             _model = model;
             _workspace = workspace;
@@ -50,13 +51,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private async Task ProcessDocumentChangedEventAsync(WorkspaceChangeEventArgs workspaceChangeEventArgs)
         {
-            var declaredTypeSymbols = await GetDeclaredTypeSymbolsAsync(workspaceChangeEventArgs.NewSolution,
-                workspaceChangeEventArgs.ProjectId, workspaceChangeEventArgs.DocumentId);
+            var declaredTypeSymbols = await GetDeclaredTypeSymbolsAsync(
+                workspaceChangeEventArgs.NewSolution,
+                workspaceChangeEventArgs.ProjectId,
+                workspaceChangeEventArgs.DocumentId);
 
             foreach (var declaredTypeSymbol in declaredTypeSymbols)
             {
                 // Match by name
-                var matchingEntityByName = _model.RoslynNodes.FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
+                var matchingEntityByName = _model.GetRoslynNodes().FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
                 if (matchingEntityByName != null)
                 {
                     Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by name.");

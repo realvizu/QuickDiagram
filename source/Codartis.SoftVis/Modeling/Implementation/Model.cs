@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Immutable;
+using Codartis.Util;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {
@@ -10,50 +13,47 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// <summary>
     /// Implements an immutable model.
     /// </summary>
-    public class Model : IModel
+    public sealed class Model : IModel
     {
-        protected readonly IModelGraph Graph;
+        [NotNull] public static readonly IModel Empty = new Model(ModelGraph.Empty(allowParallelEdges: false));
 
-        public Model()
-            : this(ModelGraph.Empty(allowParallelEdges: false))
+        private readonly IModelGraph _graph;
+
+        private Model(IModelGraph graph)
         {
+            _graph = graph;
         }
 
-        protected Model(IModelGraph graph)
+        public IEnumerable<IModelNode> Nodes => _graph.Vertices;
+        public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
+
+        public IModelNode GetNode(ModelNodeId nodeId) => _graph.GetVertex(nodeId);
+        public Maybe<IModelNode> TryGetNode(ModelNodeId nodeId) => _graph.TryGetVertex(nodeId);
+
+        public IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => _graph.GetEdge(relationshipId);
+        public Maybe<IModelRelationship> TryGetRelationship(ModelRelationshipId relationshipId) => _graph.TryGetEdge(relationshipId);
+
+        public IEnumerable<IModelNode> GetRelatedNodes(
+            ModelNodeId nodeId,
+            DirectedModelRelationshipType directedModelRelationshipType,
+            bool recursive = false)
         {
-            Graph = graph;
-        }
-
-        public IEnumerable<IModelNode> Nodes => Graph.Vertices;
-        public IEnumerable<IModelRelationship> Relationships => Graph.Edges;
-
-        public IModelNode GetNode(ModelNodeId nodeId) => Graph.GetVertex(nodeId);
-        public bool TryGetNode(ModelNodeId nodeId, out IModelNode node) => Graph.TryGetVertex(nodeId, out node);
-
-        public IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => Graph.GetEdge(relationshipId);
-        public bool TryGetRelationship(ModelRelationshipId relationshipId, out IModelRelationship relationship) 
-            => Graph.TryGetEdge(relationshipId, out relationship);
-
-        // TODO: implement node hierarchy
-        public IEnumerable<IModelNode> GetChildNodes(ModelNodeId nodeId) => throw new NotImplementedException();
-
-        public IEnumerable<IModelNode> GetRelatedNodes(ModelNodeId nodeId,
-            DirectedModelRelationshipType directedModelRelationshipType, bool recursive = false)
-        {
-            return Graph.GetAdjacentVertices(nodeId, directedModelRelationshipType.Direction,
+            return _graph.GetAdjacentVertices(
+                nodeId,
+                directedModelRelationshipType.Direction,
                 i => i.Stereotype == directedModelRelationshipType.Stereotype,
                 recursive);
         }
 
-        public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => Graph.GetAllEdges(nodeId);
+        public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => _graph.GetAllEdges(GetNode(nodeId));
 
-        public IModel AddNode(IModelNode node) => CreateInstance(Graph.AddVertex(node));
-        public IModel RemoveNode(ModelNodeId nodeId) => CreateInstance(Graph.RemoveVertex(nodeId));
-        public IModel ReplaceNode(IModelNode newNode) => CreateInstance(Graph.UpdateVertex(newNode));
-        public IModel AddRelationship(IModelRelationship relationship) => CreateInstance(Graph.AddEdge(relationship));
-        public IModel RemoveRelationship(ModelRelationshipId relationshipId) => CreateInstance(Graph.RemoveEdge(relationshipId));
-        public IModel Clear() => CreateInstance(ModelGraph.Empty(allowParallelEdges: false));
+        public IModel AddNode(IModelNode node) => CreateInstance(_graph.AddVertex(node));
+        public IModel RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));
+        public IModel ReplaceNode(IModelNode newNode) => CreateInstance(_graph.UpdateVertex(newNode));
+        public IModel AddRelationship(IModelRelationship relationship) => CreateInstance(_graph.AddEdge(relationship));
+        public IModel RemoveRelationship(ModelRelationshipId relationshipId) => CreateInstance(_graph.RemoveEdge(relationshipId));
+        public IModel Clear() => Empty;
 
-        protected virtual IModel CreateInstance(IModelGraph graph) => new Model(graph);
+        private static IModel CreateInstance(IModelGraph graph) => new Model(graph);
     }
 }

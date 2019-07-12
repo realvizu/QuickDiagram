@@ -8,7 +8,7 @@ namespace Codartis.Util
         public static readonly Maybe<T> Nothing = default;
 
         private readonly T _value;
-        
+
         internal Maybe(T value)
         {
             _value = value;
@@ -53,5 +53,10 @@ namespace Codartis.Util
         public static bool operator ==(Maybe<T> left, Maybe<T> right) => left.Equals(right);
 
         public static bool operator !=(Maybe<T> left, Maybe<T> right) => !left.Equals(right);
+    }
+
+    public static class Maybe
+    {
+        public static Maybe<T> Create<T>(T some) => new Maybe<T>(some);
     }
 }

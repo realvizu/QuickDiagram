@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Codartis.Util
 {
@@ -44,6 +45,14 @@ namespace Codartis.Util
                 some(maybe.Value);
             else
                 none?.Invoke();
+        }
+
+        public static async Task MatchAsync<T>(this Maybe<T> maybe, Func<T, Task> asyncSome, Func<Task> asyncNone = null)
+        {
+            if (maybe.HasValue)
+                await asyncSome(maybe.Value);
+            else
+                await asyncNone?.Invoke();
         }
     }
 }

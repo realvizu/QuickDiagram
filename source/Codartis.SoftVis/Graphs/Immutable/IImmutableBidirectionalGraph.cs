@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Codartis.Util;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
@@ -33,6 +34,11 @@ namespace Codartis.SoftVis.Graphs.Immutable
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> RemoveEdge(TEdgeId edgeId);
 
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> Clear();
+
+        TVertex GetVertex(TVertexId vertexId);
+        Maybe<TVertex> TryGetVertex(TVertexId vertexId);
+        TEdge GetEdge(TEdgeId edgeId);
+        Maybe<TEdge> TryGetEdge(TEdgeId edgeId);
 
         // TODO: to extension method?
         bool PathExists(TVertexId sourceVertexId, TVertexId targetVertexId);

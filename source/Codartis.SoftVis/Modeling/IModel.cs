@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.Modeling
 {
@@ -14,15 +15,12 @@ namespace Codartis.SoftVis.Modeling
     {
         IEnumerable<IModelNode> Nodes { get; }
         IEnumerable<IModelRelationship> Relationships { get; }
-        IEnumerable<IModelNode> RootNodes { get; }
 
         IModelNode GetNode(ModelNodeId nodeId);
-        bool TryGetNode(ModelNodeId nodeId, out IModelNode node);
+        Maybe<IModelNode> TryGetNode(ModelNodeId nodeId);
 
         IModelRelationship GetRelationship(ModelRelationshipId relationshipId);
-        bool TryGetRelationship(ModelRelationshipId relationshipId, out IModelRelationship relationship);
-
-        IEnumerable<IModelNode> GetChildNodes(ModelNodeId nodeId);
+        Maybe<IModelRelationship> TryGetRelationship(ModelRelationshipId relationshipId);
 
         IEnumerable<IModelNode> GetRelatedNodes(
             ModelNodeId nodeId,
