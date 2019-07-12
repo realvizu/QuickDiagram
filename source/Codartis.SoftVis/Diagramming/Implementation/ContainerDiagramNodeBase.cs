@@ -11,13 +11,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         public ILayoutGroup LayoutGroup { get; }
 
-        protected ContainerDiagramNodeBase(IModelNode modelNode, IContainerDiagramNode parentDiagramNode = null)
+        protected ContainerDiagramNodeBase(IModelNode modelNode, ModelNodeId? parentNodeId = null)
             : this(
                 modelNode,
                 size: Size2D.Zero,
                 center: Point2D.Undefined,
                 addedAt: DateTime.Now,
-                parentDiagramNode: parentDiagramNode,
+                parentNodeId,
                 Implementation.LayoutGroup.Empty(modelNode.Id))
         {
         }
@@ -27,16 +27,31 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            : base(modelNode, size, center, addedAt, parentDiagramNode)
+            : base(modelNode, size, center, addedAt, parentNodeId)
         {
             LayoutGroup = layoutGroup;
         }
 
-        public IContainerDiagramNode WithLayoutGroup(ILayoutGroup layoutGroup)
+        public IContainerDiagramNode AddNode(IDiagramNode node, ModelNodeId parentNodeId)
         {
-            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentDiagramNode, layoutGroup);
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.AddNode(node, parentNodeId));
+        }
+
+        public IContainerDiagramNode RemoveNode(IDiagramNode node)
+        {
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveNode(node));
+        }
+
+        public IContainerDiagramNode AddConnector(IDiagramConnector connector)
+        {
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.AddConnector(connector));
+        }
+
+        public IContainerDiagramNode RemoveConnector(IDiagramConnector connector)
+        {
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveConnector(connector));
         }
 
         protected sealed override IDiagramNode CreateInstance(
@@ -44,9 +59,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode)
+            ModelNodeId? parentNodeId)
         {
-            return CreateInstance(modelNode, size, center, addedAt, parentDiagramNode, LayoutGroup);
+            return CreateInstance(modelNode, size, center, addedAt, parentNodeId, LayoutGroup);
         }
 
         protected abstract IDiagramNode CreateInstance(
@@ -54,7 +69,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup);
     }
 }

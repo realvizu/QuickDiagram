@@ -19,9 +19,9 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            : base(typeNode, size, center, addedAt, parentDiagramNode, layoutGroup)
+            : base(typeNode, size, center, addedAt, parentNodeId, layoutGroup)
         {
         }
 
@@ -32,8 +32,8 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentDiagramNode, layoutGroup);
+            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentNodeId, layoutGroup);
     }
 }

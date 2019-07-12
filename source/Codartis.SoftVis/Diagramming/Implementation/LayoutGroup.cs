@@ -19,13 +19,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return new LayoutGroup(parentNodeId, DiagramGraph.Empty(allowParallelEdges: false));
         }
 
-        private readonly ModelNodeId? _parentNodeId;
+        private readonly ModelNodeId? _layoutGroupNodeId;
         [NotNull] private readonly IDiagramGraph _graph;
 
-        public LayoutGroup(ModelNodeId? parentNodeId, [NotNull] IDiagramGraph graph)
+        public LayoutGroup(ModelNodeId? layoutGroupNodeId, [NotNull] IDiagramGraph graph)
         {
             _graph = graph;
-            _parentNodeId = parentNodeId;
+            _layoutGroupNodeId = layoutGroupNodeId;
         }
 
         public IImmutableSet<IDiagramNode> Nodes => _graph.Vertices.ToImmutableHashSet();
@@ -55,11 +55,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public ILayoutGroup AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
         {
-            if (parentNodeId == _parentNodeId)
-                return CreateInstance(_graph.AddVertex(node));
+            if (parentNodeId == _layoutGroupNodeId)
+                return CreateInstance(_graph.AddVertex(node.WithParentNodeId(parentNodeId)));
+
+            if (parentNodeId == null)
+                throw new Exception($"ParentNodeId should not be null.");
 
             // TODO: make it DRY: _graph.UpdateVertices?
-            var updatedNodes = Nodes.OfType<IContainerDiagramNode>().Select(i => i.WithLayoutGroup(i.LayoutGroup.AddNode(node, parentNodeId)));
+            var updatedNodes = Nodes.OfType<IContainerDiagramNode>().Select(i => i.AddNode(node, parentNodeId.Value));
 
             var updatedGraph = _graph;
             foreach (var updatedNode in updatedNodes)
@@ -78,13 +81,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ILayoutGroup AddConnector(IDiagramConnector connector)
         {
             if (connector.IsCrossingLayoutGroups)
-                throw new InvalidOperationException($"Cannot add connector {connector} to layout group {_parentNodeId} because is crosses layout groups.");
+                throw new InvalidOperationException($"Cannot add connector {connector} to layout group {_layoutGroupNodeId} because is crosses layout groups.");
 
-            if (connector.Source.ParentDiagramNode?.Id == _parentNodeId)
+            if (_graph.ContainsVertex(connector.Source))
                 return CreateInstance(_graph.AddEdge(connector));
 
             // TODO: make it DRY: _graph.UpdateVertices?
-            var updatedNodes = Nodes.OfType<IContainerDiagramNode>().Select(i => i.WithLayoutGroup(i.LayoutGroup.AddConnector(connector)));
+            var updatedNodes = Nodes.OfType<IContainerDiagramNode>().Select(i => i.AddConnector(connector));
 
             var updatedGraph = _graph;
             foreach (var updatedNode in updatedNodes)
@@ -103,6 +106,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ILayoutGroup Clear() => CreateInstance(_graph.Clear());
 
         [NotNull]
-        private ILayoutGroup CreateInstance([NotNull] IDiagramGraph graph) => new LayoutGroup(_parentNodeId, graph);
+        private ILayoutGroup CreateInstance([NotNull] IDiagramGraph graph) => new LayoutGroup(_layoutGroupNodeId, graph);
     }
 }

@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Geometry
 
         public static bool Equals(Point2D point1, Point2D point2)
         {
-            return point1.IsEqualWithTolerance(point2);
+            return point1.IsUndefined && point2.IsUndefined || point1.IsEqualWithTolerance(point2);
         }
 
         public bool Equals(Point2D other)
@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.Geometry
             if (!(obj is Point2D))
                 return false;
 
-            var value = (Point2D) obj;
+            var value = (Point2D)obj;
             return Equals(this, value);
         }
 

@@ -8,8 +8,8 @@ namespace Codartis.SoftVis.UnitTests.TestSubjects
 {
     internal sealed class TestDiagramNode : ContainerDiagramNodeBase
     {
-        public TestDiagramNode(string name = "dummy", IContainerDiagramNode parentDiagramNode = null)
-            : base(new TestModelNode(name), parentDiagramNode)
+        public TestDiagramNode(string name = "dummy")
+            : base(new TestModelNode(name))
         {
         }
 
@@ -18,9 +18,9 @@ namespace Codartis.SoftVis.UnitTests.TestSubjects
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            : base(modelNode, size, center, addedAt, parentDiagramNode, layoutGroup)
+            : base(modelNode, size, center, addedAt, parentNodeId, layoutGroup)
         {
         }
 
@@ -29,10 +29,10 @@ namespace Codartis.SoftVis.UnitTests.TestSubjects
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
         {
-            return new TestDiagramNode(modelNode, size, center, addedAt, parentDiagramNode, layoutGroup);
+            return new TestDiagramNode(modelNode, size, center, addedAt, parentNodeId, layoutGroup);
         }
     }
 }

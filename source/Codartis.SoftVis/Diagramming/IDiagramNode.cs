@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming
         Size2D Size { get; }
         Point2D Center { get; }
         Point2D TopLeft { get; }
-        IContainerDiagramNode ParentDiagramNode { get; }
+        ModelNodeId? ParentNodeId { get; }
         bool HasParent { get; }
         DateTime AddedAt { get; }
 
@@ -29,5 +29,6 @@ namespace Codartis.SoftVis.Diagramming
         IDiagramNode WithSize(Size2D newSize);
         IDiagramNode WithCenter(Point2D newCenter);
         IDiagramNode WithTopLeft(Point2D newTopLeft);
+        IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId);
     }
 }

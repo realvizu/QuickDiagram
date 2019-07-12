@@ -22,9 +22,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            : base(roslynTypeNode, size, center, addedAt, parentDiagramNode, layoutGroup)
+            : base(roslynTypeNode, size, center, addedAt, parentNodeId, layoutGroup)
         {
         }
 
@@ -36,8 +36,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
             Size2D size,
             Point2D center,
             DateTime addedAt,
-            IContainerDiagramNode parentDiagramNode,
+            ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentDiagramNode, layoutGroup);
+            => new RoslynTypeDiagramNode((IRoslynTypeNode)modelNode, size, center, addedAt, parentNodeId, layoutGroup);
     }
 }

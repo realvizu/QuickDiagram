@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.Diagramming
         Rect2D Rect { get; }
 
         [NotNull]
-        ILayoutGroup AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId = null);
+        ILayoutGroup AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId);
 
         [NotNull]
         ILayoutGroup RemoveNode([NotNull] IDiagramNode node);

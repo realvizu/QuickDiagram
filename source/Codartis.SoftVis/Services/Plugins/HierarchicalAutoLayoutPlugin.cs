@@ -135,16 +135,16 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private IIncrementalLayoutEngine GetLayoutEngine(IDiagramConnector diagramConnector)
         {
-            return diagramConnector.Source.ParentDiagramNode  != null &&
-                   diagramConnector.Source.ParentDiagramNode == diagramConnector.Target.ParentDiagramNode
-                ? _layoutEnginesPerNodes[diagramConnector.Source.ParentDiagramNode.Id]
+            return diagramConnector.Source.ParentNodeId  != null &&
+                   diagramConnector.Source.ParentNodeId == diagramConnector.Target.ParentNodeId
+                ? _layoutEnginesPerNodes[diagramConnector.Source.ParentNodeId.Value]
                 : null; // TODO: _crossLayoutGroupConnectorRouter
         }
 
         private IIncrementalLayoutEngine GetLayoutEngine(IDiagramNode diagramNode)
         {
-            return diagramNode.HasParent
-                ? _layoutEnginesPerNodes[diagramNode.ParentDiagramNode.Id]
+            return diagramNode.ParentNodeId != null
+                ? _layoutEnginesPerNodes[diagramNode.ParentNodeId.Value]
                 : _rootLayoutEngine;
         }
     }

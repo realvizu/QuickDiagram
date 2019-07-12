@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ModelRelationshipId Id => ModelRelationship.Id;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
 
-        public bool IsCrossingLayoutGroups => Source.ParentDiagramNode?.Id != Target.ParentDiagramNode?.Id;
+        public bool IsCrossingLayoutGroups => Source.ParentNodeId != Target.ParentNodeId;
 
         public IDiagramConnector WithSource(IDiagramNode newSourceNode)
         {
