@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming
     /// <remarks>
     /// The name plays role in layout as a basis for ordering.
     /// </remarks>
-    public interface IDiagramNode : IUpdatableImmutableVertex<ModelNodeId>, IDiagramShape, IComparable<IDiagramNode>
+    public interface IDiagramNode : IImmutableVertex<ModelNodeId>, IDiagramShape, IComparable<IDiagramNode>
     {
         IModelNode ModelNode { get; }
 

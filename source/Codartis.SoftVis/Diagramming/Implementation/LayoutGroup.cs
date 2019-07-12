@@ -1,23 +1,27 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
+    using IDiagramGraph = IImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>;
+    using DiagramGraph = ImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>;
+
     public sealed class LayoutGroup : ILayoutGroup
     {
         [NotNull]
         public static ILayoutGroup Empty(ModelNodeId? parentNodeId = null)
         {
-            return new LayoutGroup(parentNodeId, DiagramGraph.Empty);
+            return new LayoutGroup(parentNodeId, DiagramGraph.Empty(allowParallelEdges: false));
         }
 
         private readonly ModelNodeId? _parentNodeId;
-        [NotNull] private readonly DiagramGraph _graph;
+        [NotNull] private readonly IDiagramGraph _graph;
 
-        public LayoutGroup(ModelNodeId? parentNodeId, [NotNull] DiagramGraph graph)
+        public LayoutGroup(ModelNodeId? parentNodeId, [NotNull] IDiagramGraph graph)
         {
             _graph = graph;
             _parentNodeId = parentNodeId;
@@ -48,6 +52,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ILayoutGroup Clear() => CreateInstance(_graph.Clear());
 
         [NotNull]
-        private ILayoutGroup CreateInstance([NotNull] DiagramGraph graph) => new LayoutGroup(_parentNodeId, graph);
+        private ILayoutGroup CreateInstance([NotNull] IDiagramGraph graph) => new LayoutGroup(_parentNodeId, graph);
     }
 }

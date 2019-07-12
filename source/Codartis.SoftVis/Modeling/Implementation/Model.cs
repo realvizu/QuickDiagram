@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using Codartis.SoftVis.Graphs.Immutable;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {
+    using IModelGraph = IImmutableBidirectionalGraph<IModelNode, ModelNodeId, IModelRelationship, ModelRelationshipId>;
+    using ModelGraph = ImmutableBidirectionalGraph<IModelNode, ModelNodeId, IModelRelationship, ModelRelationshipId>;
+
     /// <summary>
     /// Implements an immutable model.
     /// </summary>
     public class Model : IModel
     {
-        protected readonly ModelGraph Graph;
+        protected readonly IModelGraph Graph;
 
         public Model()
-            : this(new ModelGraph())
+            : this(ModelGraph.Empty(allowParallelEdges: false))
         {
         }
 
-        protected Model(ModelGraph graph)
+        protected Model(IModelGraph graph)
         {
             Graph = graph;
         }
 
         public IEnumerable<IModelNode> Nodes => Graph.Vertices;
         public IEnumerable<IModelRelationship> Relationships => Graph.Edges;
-
-        // TODO: implement node hierarchy
-        public IEnumerable<IModelNode> RootNodes => Nodes;
 
         public IModelNode GetNode(ModelNodeId nodeId) => Graph.GetVertex(nodeId);
         public bool TryGetNode(ModelNodeId nodeId, out IModelNode node) => Graph.TryGetVertex(nodeId, out node);
@@ -51,8 +52,8 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IModel ReplaceNode(IModelNode newNode) => CreateInstance(Graph.UpdateVertex(newNode));
         public IModel AddRelationship(IModelRelationship relationship) => CreateInstance(Graph.AddEdge(relationship));
         public IModel RemoveRelationship(ModelRelationshipId relationshipId) => CreateInstance(Graph.RemoveEdge(relationshipId));
-        public IModel Clear() => CreateInstance(new ModelGraph());
+        public IModel Clear() => CreateInstance(ModelGraph.Empty(allowParallelEdges: false));
 
-        protected virtual IModel CreateInstance(ModelGraph graph) => new Model(graph);
+        protected virtual IModel CreateInstance(IModelGraph graph) => new Model(graph);
     }
 }

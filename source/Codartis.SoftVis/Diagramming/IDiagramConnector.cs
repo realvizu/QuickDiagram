@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Diagramming
     /// Immutable.
     /// </summary>
     public interface IDiagramConnector : IDiagramShape, 
-        IUpdatableImmutableEdge<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>
+        IImmutableEdge<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>
     {
         IModelRelationship ModelRelationship { get; }
 

@@ -2,12 +2,16 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
+using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
 using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
+    using IDiagramGraph = IImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>;
+    using DiagramGraph = ImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>;
+
     /// <summary>
     /// An immutable implementation of a diagram.
     /// </summary>
@@ -17,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         [NotNull] public ILayoutGroup RootLayoutGroup { get; }
         [NotNull] public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
-        [NotNull] private readonly DiagramGraph _allShapesGraph;
+        [NotNull] private readonly IDiagramGraph _allShapesGraph;
 
         private Diagram(
             [NotNull] ILayoutGroup rootLayoutGroup,
@@ -26,7 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             RootLayoutGroup = rootLayoutGroup;
             CrossLayoutGroupConnectors = crossLayoutGroupConnectors;
 
-            _allShapesGraph = new DiagramGraph();
+            _allShapesGraph = DiagramGraph.Empty();
         }
 
         public IImmutableSet<IDiagramNode> Nodes => RootLayoutGroup.Nodes;

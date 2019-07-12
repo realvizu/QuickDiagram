@@ -8,11 +8,13 @@
 
     <Allowed From="Codartis.SoftVis.Modeling.*" To="Codartis.SoftVis.Graphs.*" />
     <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="Codartis.SoftVis.Modeling.Events" />
+    <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="QuickGraph" />
 
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling.Events" />
     <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Events" />
+    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="QuickGraph" />
 
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Graphs.*" />
