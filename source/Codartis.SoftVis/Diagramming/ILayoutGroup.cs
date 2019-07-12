@@ -24,6 +24,18 @@ namespace Codartis.SoftVis.Diagramming
         IImmutableSet<IDiagramConnector> Connectors { get; }
 
         /// <summary>
+        /// Returns all nodes in the layout group, including embedded layout groups.
+        /// </summary>
+        [NotNull]
+        IImmutableSet<IDiagramNode> NodesRecursive { get; }
+
+        /// <summary>
+        /// Returns all connectors in the layout group, including embedded layout groups.
+        /// </summary>
+        [NotNull]
+        IImmutableSet<IDiagramConnector> ConnectorsRecursive { get; }
+
+        /// <summary>
         /// The position and size of the layout group relative to its parent (if any).
         /// </summary>
         Rect2D Rect { get; }

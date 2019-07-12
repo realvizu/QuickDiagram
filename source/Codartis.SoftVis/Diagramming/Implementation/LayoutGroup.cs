@@ -30,6 +30,26 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IImmutableSet<IDiagramNode> Nodes => _graph.Vertices.ToImmutableHashSet();
         public IImmutableSet<IDiagramConnector> Connectors => _graph.Edges.ToImmutableHashSet();
 
+        public IImmutableSet<IDiagramNode> NodesRecursive
+        {
+            get
+            {
+                return _graph.Vertices
+                    .Union(Nodes.OfType<IContainerDiagramNode>().SelectMany(i => i.LayoutGroup.NodesRecursive))
+                    .ToImmutableHashSet();
+            }
+        }
+
+        public IImmutableSet<IDiagramConnector> ConnectorsRecursive
+        {
+            get
+            {
+                return _graph.Edges
+                    .Union(Nodes.OfType<IContainerDiagramNode>().SelectMany(i => i.LayoutGroup.ConnectorsRecursive))
+                    .ToImmutableHashSet();
+            }
+        }
+
         public Rect2D Rect => Nodes.OfType<IDiagramShape>().Union(Connectors).Where(i => i.IsRectDefined).Select(i => i.Rect).Union();
 
         public ILayoutGroup WithNode(IDiagramNode node, ModelNodeId? parentNodeId = null)

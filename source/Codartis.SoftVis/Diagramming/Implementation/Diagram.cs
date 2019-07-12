@@ -33,8 +33,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _allShapesGraph = DiagramGraph.Empty();
         }
 
-        public IImmutableSet<IDiagramNode> Nodes => RootLayoutGroup.Nodes;
-        public IImmutableSet<IDiagramConnector> Connectors => RootLayoutGroup.Connectors.Union(CrossLayoutGroupConnectors);
+        public IImmutableSet<IDiagramNode> Nodes => RootLayoutGroup.NodesRecursive;
+        public IImmutableSet<IDiagramConnector> Connectors => RootLayoutGroup.ConnectorsRecursive.Union(CrossLayoutGroupConnectors);
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => Connectors.Any(i => i.Id == modelRelationshipId);
