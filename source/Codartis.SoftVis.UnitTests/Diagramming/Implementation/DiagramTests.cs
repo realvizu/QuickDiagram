@@ -35,6 +35,58 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
+        public void PathExists_WorksInRootLayoutGroup()
+        {
+            var node1 = new TestDiagramNode("node1");
+            var node2 = new TestDiagramNode("node2");
+            var connectorNode1Node2 = new DiagramConnector(
+                new TestModelRelationship(node1.ModelNode, node2.ModelNode),
+                node1,
+                node2,
+                ConnectorTypes.Dependency);
+
+            var diagram = Diagram.Empty
+                .AddNode(node1)
+                .AddNode(node2)
+                .AddConnector(connectorNode1Node2);
+
+            diagram.Nodes.Select(i => i.Id).Should().BeEquivalentTo(node1.Id, node2.Id);
+            diagram.RootLayoutGroup.Nodes.Select(i => i.Id).Should().BeEquivalentTo(node1.Id, node2.Id);
+            diagram.CrossLayoutGroupConnectors.Should().BeEmpty();
+
+            diagram.PathExists(node1.Id, node2.Id).Should().BeTrue();
+            diagram.PathExists(node2.Id, node1.Id).Should().BeFalse();
+        }
+
+        [Fact]
+        public void PathExists_WorksInSubLayoutGroup()
+        {
+            var parentNode = new TestDiagramNode("parent");
+            var childNode1 = new TestDiagramNode("child1", parentNode);
+            var childNode2 = new TestDiagramNode("child2", parentNode);
+            var connectorNode1Node2 = new DiagramConnector(
+                new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode),
+                childNode1,
+                childNode2,
+                ConnectorTypes.Dependency);
+
+            var diagram = Diagram.Empty
+                .AddNode(parentNode)
+                .AddNode(childNode1, parentNode.Id)
+                .AddNode(childNode2, parentNode.Id)
+                .AddConnector(connectorNode1Node2);
+
+            diagram.Nodes.Select(i => i.Id).Should().BeEquivalentTo(parentNode.Id, childNode1.Id, childNode2.Id);
+            diagram.RootLayoutGroup.Nodes.Select(i => i.Id).Should().BeEquivalentTo(parentNode.Id);
+            diagram.CrossLayoutGroupConnectors.Should().BeEmpty();
+            diagram.GetNode(parentNode.Id).As<IContainerDiagramNode>().LayoutGroup.Nodes.Select(i => i.Id).Should()
+                .BeEquivalentTo(childNode1.Id, childNode2.Id);
+
+            diagram.PathExists(childNode1.Id, childNode2.Id).Should().BeTrue();
+            diagram.PathExists(childNode2.Id, childNode1.Id).Should().BeFalse();
+        }
+
+        [Fact]
         public void PathExists_WorksBetweenLayoutGroups()
         {
             var parentNode1 = new TestDiagramNode("parent1");
