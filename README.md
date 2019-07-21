@@ -44,7 +44,7 @@ The current version (v0.5) is an **experimental release** to showcase the approa
 ## Donation
 If you find this tool useful please consider donating. Your support is much appreciated!
 
-[![PayPal Donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=D8HJMA86C2KJA&item_name=Donation+for+Quick+Diagram+Tool+for+C%23&currency_code=USD&source=url)
+[![PayPal Donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DVWTC38V826TY&source=url)
 
 ## Thanks to 
 * [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
