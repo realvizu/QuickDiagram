@@ -93,9 +93,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public ILayoutGroup RemoveConnector(ModelRelationshipId connectorId)
         {
-            throw new NotImplementedException();
-
-            //return CreateInstance(_graph.RemoveEdge(connector.Id));
+            return _graph.TryGetEdge(connectorId).Match(
+                i => CreateInstance(_graph.RemoveEdge(connectorId)),
+                () => CreateInstance(
+                    _graph.UpdateVertices(j => j is IContainerDiagramNode, j => (j as IContainerDiagramNode).RemoveConnector(connectorId)))
+            );
         }
 
         public ILayoutGroup Clear() => CreateInstance(_graph.Clear());

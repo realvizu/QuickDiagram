@@ -17,10 +17,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class Diagram : IDiagram
     {
-        [NotNull] public static readonly IDiagram Empty = new Diagram(LayoutGroup.Empty(), ImmutableHashSet<IDiagramConnector>.Empty);
+        [NotNull] public static readonly IDiagram Empty = new Diagram(LayoutGroup.Empty(), ImmutableDictionary<ModelRelationshipId, IDiagramConnector>.Empty);
+
+        [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _crossLayoutGroupConnectors;
 
         [NotNull] public ILayoutGroup RootLayoutGroup { get; }
-        [NotNull] public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
         [NotNull] public IImmutableSet<IDiagramNode> Nodes { get; }
         [NotNull] public IImmutableSet<IDiagramConnector> Connectors { get; }
 
@@ -28,15 +29,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private Diagram(
             [NotNull] ILayoutGroup rootLayoutGroup,
-            [NotNull] IImmutableSet<IDiagramConnector> crossLayoutGroupConnectors)
+            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> crossLayoutGroupConnectors)
         {
             RootLayoutGroup = rootLayoutGroup;
-            CrossLayoutGroupConnectors = crossLayoutGroupConnectors;
+            _crossLayoutGroupConnectors = crossLayoutGroupConnectors;
 
             Nodes = RootLayoutGroup.NodesRecursive;
             Connectors = RootLayoutGroup.ConnectorsRecursive.Union(CrossLayoutGroupConnectors);
             _allShapesGraph = DiagramGraph.Create(Nodes, Connectors);
         }
+
+        [NotNull] public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values.ToImmutableHashSet();
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => Connectors.Any(i => i.Id == modelRelationshipId);
@@ -93,17 +96,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
         {
-            return CreateInstance(RootLayoutGroup.AddNode(node, parentNodeId), CrossLayoutGroupConnectors);
+            return CreateInstance(RootLayoutGroup.AddNode(node, parentNodeId), _crossLayoutGroupConnectors);
         }
 
         public IDiagram UpdateNode(IDiagramNode updatedNode)
         {
-            return CreateInstance(RootLayoutGroup.UpdateNode(updatedNode), CrossLayoutGroupConnectors);
+            return CreateInstance(RootLayoutGroup.UpdateNode(updatedNode), _crossLayoutGroupConnectors);
         }
 
         public IDiagram RemoveNode(ModelNodeId nodeId)
         {
-            return CreateInstance(RootLayoutGroup.RemoveNode(nodeId), CrossLayoutGroupConnectors);
+            return CreateInstance(RootLayoutGroup.RemoveNode(nodeId), _crossLayoutGroupConnectors);
         }
 
         public IDiagram AddConnector(DiagramConnectorSpecification connectorSpec)
@@ -116,8 +119,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 connectorSpec.Route);
 
             return connector.IsCrossingLayoutGroups
-                ? CreateInstance(RootLayoutGroup, CrossLayoutGroupConnectors.Add(connector))
-                : CreateInstance(RootLayoutGroup.AddConnector(connector), CrossLayoutGroupConnectors);
+                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.Add(connector.Id,connector))
+                : CreateInstance(RootLayoutGroup.AddConnector(connector), _crossLayoutGroupConnectors);
         }
 
         public IDiagram UpdateConnector(IDiagramConnector updatedConnector)
@@ -127,15 +130,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram RemoveConnector(ModelRelationshipId connectorId)
         {
-            throw new System.NotImplementedException();
+            return CrossLayoutGroupConnectors.Any(i => i.Id == connectorId)
+                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.Remove(connectorId))
+                : CreateInstance(RootLayoutGroup.RemoveConnector(connectorId), _crossLayoutGroupConnectors);
         }
 
-        public IDiagram Clear() => CreateInstance(RootLayoutGroup.Clear(), CrossLayoutGroupConnectors.Clear());
+        public IDiagram Clear() => CreateInstance(RootLayoutGroup.Clear(), _crossLayoutGroupConnectors.Clear());
 
         [NotNull]
         private static IDiagram CreateInstance(
             [NotNull] ILayoutGroup rootLayoutGroup,
-            [NotNull] IImmutableSet<IDiagramConnector> crossLayoutGroupConnectors)
+            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> crossLayoutGroupConnectors)
         {
             return new Diagram(rootLayoutGroup, crossLayoutGroupConnectors);
         }
