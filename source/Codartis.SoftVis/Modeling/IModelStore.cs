@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Modeling
     /// <summary>
     /// Keeps track of the latest model instance through mutated instances and publishes change events.
     /// </summary>
-    public interface IModelMutator
+    public interface IModelStore
     {
         IModel Model { get; }
 

@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// Mutators must not run concurrently. A lock ensures it.
     /// Descendants must implement their mutators using the same lock object.
     /// </remarks>
-    public class ModelStore : IModelMutator
+    public class ModelStore : IModelStore
     {
         public IModel Model { get; protected set; }
 

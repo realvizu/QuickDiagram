@@ -121,14 +121,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void AddConnector(IDiagramConnector connector)
+        public void AddConnector(DiagramConnectorSpecification connectorSpec)
         {
             lock (_diagramUpdateLockObject)
             {
-                if (Diagram.ConnectorExists(connector.Id))
+                var connectorId = connectorSpec.ModelRelationship.Id;
+
+                if (Diagram.ConnectorExists(connectorId))
                     return;
 
-                Diagram = Diagram.AddConnector(connector);
+                Diagram = Diagram.AddConnector(connectorSpec);
+
+                var connector = Diagram.GetConnector(connectorId);
                 DiagramChanged?.Invoke(new DiagramConnectorAddedEvent(Diagram, connector));
             }
         }
@@ -156,7 +160,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                         oldConnector =>
                         {
                             var newConnector = oldConnector.WithRoute(newRoute);
-                            Diagram = Diagram.AddConnector(newConnector);
+                            Diagram = Diagram.UpdateConnector(newConnector);
                             DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(Diagram, oldConnector, newConnector));
                         },
                         () => throw new InvalidOperationException($"Connector {diagramConnector} does not exist."));

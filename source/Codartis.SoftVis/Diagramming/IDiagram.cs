@@ -50,6 +50,7 @@ namespace Codartis.SoftVis.Diagramming
         Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId);
         IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId);
         Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId);
+
         IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
         //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
 
@@ -60,7 +61,10 @@ namespace Codartis.SoftVis.Diagramming
         IDiagram RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
-        IDiagram AddConnector([NotNull] IDiagramConnector connector);
+        IDiagram AddConnector(DiagramConnectorSpecification connectorSpec);
+
+        [NotNull]
+        IDiagram UpdateConnector([NotNull] IDiagramConnector connector);
 
         [NotNull]
         IDiagram RemoveConnector(ModelRelationshipId connectorId);

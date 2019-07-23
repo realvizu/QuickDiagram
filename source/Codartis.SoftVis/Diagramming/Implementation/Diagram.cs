@@ -103,11 +103,23 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             throw new System.NotImplementedException();
         }
 
-        public IDiagram AddConnector(IDiagramConnector connector)
+        public IDiagram AddConnector(DiagramConnectorSpecification connectorSpec)
         {
+            var connector = new DiagramConnector(
+                connectorSpec.ModelRelationship,
+                GetNode(connectorSpec.ModelRelationship.Source.Id),
+                GetNode(connectorSpec.ModelRelationship.Target.Id),
+                connectorSpec.ConnectorType,
+                connectorSpec.Route);
+
             return connector.IsCrossingLayoutGroups
                 ? CreateInstance(RootLayoutGroup, CrossLayoutGroupConnectors.Add(connector))
                 : CreateInstance(RootLayoutGroup.AddConnector(connector), CrossLayoutGroupConnectors);
+        }
+
+        public IDiagram UpdateConnector(IDiagramConnector connector)
+        {
+            throw new System.NotImplementedException();
         }
 
         public IDiagram RemoveConnector(ModelRelationshipId connectorId)
