@@ -39,8 +39,12 @@ The current version (v0.5) is an **experimental release** to showcase the approa
 ## Feedback
 * Please use the [**Issue Tracker**](https://github.com/realvizu/QuickDiagram/issues) to record bugs and feature requests.
 * Write a [**review**](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC#review-details).
-* Or tweet me [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
+* Contact me on Twitter [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
 
+## Donation
+If you find this tool useful please consider donating. Your support is much appreciated!
+
+[![PayPal Donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DVWTC38V826TY&source=url)
 
 ## Thanks to 
 * [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
