@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.UnitTests.TestSubjects;
 using FluentAssertions;

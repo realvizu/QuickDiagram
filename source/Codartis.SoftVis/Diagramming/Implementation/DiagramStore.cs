@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <remarks>
     /// Mutators must not run concurrently. A lock ensures it.
     /// </remarks>
-    public sealed class DiagramStore : IDiagramMutator
+    public sealed class DiagramStore : IDiagramStore
     {
         public IDiagram Diagram { get; private set; }
 

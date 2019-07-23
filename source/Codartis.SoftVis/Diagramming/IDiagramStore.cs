@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// Keeps track of the latest diagram instance through mutated instances and publishes change events.
     /// </summary>
-    public interface IDiagramMutator
+    public interface IDiagramStore
     {
         IDiagram Diagram { get; }
 
