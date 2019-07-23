@@ -4,6 +4,7 @@ using System.Linq;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -61,30 +62,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (parentNodeId == null)
                 throw new Exception($"ParentNodeId should not be null.");
 
-            return CreateInstance(
-                _graph.UpdateVertices(
-                    i => i is IContainerDiagramNode containerDiagramNode
-                        ? containerDiagramNode.AddNode(node, parentNodeId.Value)
-                        : i));
+            return CreateInstance(_graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).AddNode(node, parentNodeId.Value)));
         }
 
         public ILayoutGroup UpdateNode(IDiagramNode updatedNode)
         {
-            if (_graph.ContainsVertex(updatedNode))
-                return CreateInstance(_graph.UpdateVertex(updatedNode));
-
             return CreateInstance(
-                _graph.UpdateVertices(
-                    i => i is IContainerDiagramNode containerDiagramNode
-                        ? containerDiagramNode.UpdateNode(updatedNode)
-                        : i));
+                _graph.ContainsVertex(updatedNode)
+                    ? _graph.UpdateVertex(updatedNode)
+                    : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).UpdateNode(updatedNode)));
         }
 
-        public ILayoutGroup RemoveNode(IDiagramNode node)
+        public ILayoutGroup RemoveNode(ModelNodeId nodeId)
         {
-            throw new NotImplementedException();
-
-            //return CreateInstance(_graph.RemoveVertex(node.Id));
+            return _graph.TryGetVertex(nodeId).Match(
+                i => CreateInstance(_graph.RemoveVertex(nodeId)),
+                () => CreateInstance(_graph.UpdateVertices(j => j is IContainerDiagramNode, j => (j as IContainerDiagramNode).RemoveNode(nodeId))));
         }
 
         public ILayoutGroup AddConnector(IDiagramConnector connector)
@@ -92,17 +85,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (connector.IsCrossingLayoutGroups)
                 throw new InvalidOperationException($"Cannot add connector {connector} to layout group {_layoutGroupNodeId} because is crosses layout groups.");
 
-            if (_graph.ContainsVertex(connector.Source))
-                return CreateInstance(_graph.AddEdge(connector));
-
             return CreateInstance(
-                _graph.UpdateVertices(
-                    i => i is IContainerDiagramNode containerDiagramNode
-                        ? containerDiagramNode.AddConnector(connector)
-                        : i));
+                _graph.ContainsVertex(connector.Source)
+                    ? _graph.AddEdge(connector)
+                    : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).AddConnector(connector)));
         }
 
-        public ILayoutGroup RemoveConnector(IDiagramConnector connector)
+        public ILayoutGroup RemoveConnector(ModelRelationshipId connectorId)
         {
             throw new NotImplementedException();
 

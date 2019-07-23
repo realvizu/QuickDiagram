@@ -38,6 +38,10 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices([NotNull] Func<TVertex, TVertex> vertexMutatorFunc);
 
+        IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices(
+            [NotNull] Func<TVertex, bool> shouldUpdatePredicate,
+            [NotNull] Func<TVertex, TVertex> vertexMutatorFunc);
+
         TVertex GetVertex(TVertexId vertexId);
         Maybe<TVertex> TryGetVertex(TVertexId vertexId);
         TEdge GetEdge(TEdgeId edgeId);

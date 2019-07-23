@@ -44,9 +44,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.UpdateNode(updatedNode));
         }
 
-        public IContainerDiagramNode RemoveNode(IDiagramNode node)
+        public IContainerDiagramNode RemoveNode(ModelNodeId nodeId)
         {
-            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveNode(node));
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveNode(nodeId));
         }
 
         public IContainerDiagramNode AddConnector(IDiagramConnector connector)
@@ -54,9 +54,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.AddConnector(connector));
         }
 
-        public IContainerDiagramNode RemoveConnector(IDiagramConnector connector)
+        public IContainerDiagramNode RemoveConnector(ModelRelationshipId connectorId)
         {
-            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveConnector(connector));
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveConnector(connectorId));
         }
 
         protected sealed override IDiagramNode CreateInstance(

@@ -50,6 +50,33 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
+        public void RemoveNode_RootLevel_Works()
+        {
+            var node = new TestDiagramNode();
+
+            var diagram = Diagram.Empty
+                .AddNode(node)
+                .RemoveNode(node.Id);
+
+            diagram.Nodes.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void RemoveNode_Nested_Works()
+        {
+            var parentNode = new TestDiagramNode("parent");
+            var childNode = new TestDiagramNode("child");
+
+            var diagram = Diagram.Empty
+                .AddNode(parentNode)
+                .AddNode(childNode, parentNode.Id)
+                .RemoveNode(childNode.Id);
+
+            diagram.Nodes.ShouldBeEquivalentById(parentNode);
+            diagram.GetNode(parentNode.Id).As<IContainerDiagramNode>().LayoutGroup.Nodes.Should().BeEmpty();
+        }
+
+        [Fact]
         public void PathExists_WorksInRootLayoutGroup()
         {
             var node1 = new TestDiagramNode("node1");

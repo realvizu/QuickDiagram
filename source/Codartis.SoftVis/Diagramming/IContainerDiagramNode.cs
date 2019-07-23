@@ -17,12 +17,12 @@ namespace Codartis.SoftVis.Diagramming
         IContainerDiagramNode UpdateNode([NotNull] IDiagramNode updatedNode);
 
         [NotNull]
-        IContainerDiagramNode RemoveNode([NotNull] IDiagramNode node);
+        IContainerDiagramNode RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
         IContainerDiagramNode AddConnector([NotNull] IDiagramConnector connector);
 
         [NotNull]
-        IContainerDiagramNode RemoveConnector([NotNull] IDiagramConnector connector);
+        IContainerDiagramNode RemoveConnector(ModelRelationshipId connectorId);
     }
 }

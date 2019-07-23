@@ -103,7 +103,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram RemoveNode(ModelNodeId nodeId)
         {
-            throw new System.NotImplementedException();
+            return CreateInstance(RootLayoutGroup.RemoveNode(nodeId), CrossLayoutGroupConnectors);
         }
 
         public IDiagram AddConnector(DiagramConnectorSpecification connectorSpec)

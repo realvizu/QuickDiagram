@@ -47,13 +47,13 @@ namespace Codartis.SoftVis.Diagramming
         ILayoutGroup UpdateNode([NotNull] IDiagramNode updatedNode);
 
         [NotNull]
-        ILayoutGroup RemoveNode([NotNull] IDiagramNode node);
+        ILayoutGroup RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
         ILayoutGroup AddConnector([NotNull] IDiagramConnector connector);
 
         [NotNull]
-        ILayoutGroup RemoveConnector([NotNull] IDiagramConnector connector);
+        ILayoutGroup RemoveConnector(ModelRelationshipId connectorId);
 
         [NotNull]
         ILayoutGroup Clear();

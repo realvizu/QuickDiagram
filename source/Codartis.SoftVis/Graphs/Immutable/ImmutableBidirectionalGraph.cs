@@ -178,6 +178,13 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return CreateInstance(updatedVertices, updatedEdges, _graph);
         }
 
+        public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices(
+            Func<TVertex, bool> shouldUpdatePredicate,
+            Func<TVertex, TVertex> vertexMutatorFunc)
+        {
+            return UpdateVertices(i => shouldUpdatePredicate(i) ? vertexMutatorFunc(i) : i);
+        }
+
         public TVertex GetVertex(TVertexId vertexId) => _vertices[vertexId];
 
         public Maybe<TVertex> TryGetVertex(TVertexId vertexId) => _vertices.ContainsKey(vertexId) ? Maybe.Create(_vertices[vertexId]) : Maybe<TVertex>.Nothing;
