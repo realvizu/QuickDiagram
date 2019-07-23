@@ -39,6 +39,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.AddNode(node, parentNodeId));
         }
 
+        public IContainerDiagramNode UpdateNode(IDiagramNode updatedNode)
+        {
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.UpdateNode(updatedNode));
+        }
+
         public IContainerDiagramNode RemoveNode(IDiagramNode node)
         {
             return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveNode(node));

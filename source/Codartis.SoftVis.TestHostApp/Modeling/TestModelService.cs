@@ -13,6 +13,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             : base(new ModelStore(), new TestModelRelationshipFactory())
         {
             ItemGroups = ImmutableList<IImmutableList<IModelNode>>.Empty;
+            StartNewGroup();
         }
 
         public void AddItemToCurrentGroup(IModelNode modelItem)

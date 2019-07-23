@@ -58,13 +58,16 @@ namespace Codartis.SoftVis.Diagramming
         IDiagram AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId = null);
 
         [NotNull]
+        IDiagram UpdateNode([NotNull] IDiagramNode updatedNode);
+
+        [NotNull]
         IDiagram RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
         IDiagram AddConnector(DiagramConnectorSpecification connectorSpec);
 
         [NotNull]
-        IDiagram UpdateConnector([NotNull] IDiagramConnector connector);
+        IDiagram UpdateConnector([NotNull] IDiagramConnector updatedConnector);
 
         [NotNull]
         IDiagram RemoveConnector(ModelRelationshipId connectorId);

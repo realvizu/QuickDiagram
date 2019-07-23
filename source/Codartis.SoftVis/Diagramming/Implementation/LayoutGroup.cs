@@ -61,14 +61,23 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (parentNodeId == null)
                 throw new Exception($"ParentNodeId should not be null.");
 
-            // TODO: make it DRY: _graph.UpdateVertices?
-            var updatedNodes = Nodes.OfType<IContainerDiagramNode>().Select(i => i.AddNode(node, parentNodeId.Value));
+            return CreateInstance(
+                _graph.UpdateVertices(
+                    i => i is IContainerDiagramNode containerDiagramNode
+                        ? containerDiagramNode.AddNode(node, parentNodeId.Value)
+                        : i));
+        }
 
-            var updatedGraph = _graph;
-            foreach (var updatedNode in updatedNodes)
-                updatedGraph = updatedGraph.UpdateVertex(updatedNode);
+        public ILayoutGroup UpdateNode(IDiagramNode updatedNode)
+        {
+            if (_graph.ContainsVertex(updatedNode))
+                return CreateInstance(_graph.UpdateVertex(updatedNode));
 
-            return CreateInstance(updatedGraph);
+            return CreateInstance(
+                _graph.UpdateVertices(
+                    i => i is IContainerDiagramNode containerDiagramNode
+                        ? containerDiagramNode.UpdateNode(updatedNode)
+                        : i));
         }
 
         public ILayoutGroup RemoveNode(IDiagramNode node)
@@ -86,14 +95,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (_graph.ContainsVertex(connector.Source))
                 return CreateInstance(_graph.AddEdge(connector));
 
-            // TODO: make it DRY: _graph.UpdateVertices?
-            var updatedNodes = Nodes.OfType<IContainerDiagramNode>().Select(i => i.AddConnector(connector));
-
-            var updatedGraph = _graph;
-            foreach (var updatedNode in updatedNodes)
-                updatedGraph = updatedGraph.UpdateVertex(updatedNode);
-
-            return CreateInstance(updatedGraph);
+            return CreateInstance(
+                _graph.UpdateVertices(
+                    i => i is IContainerDiagramNode containerDiagramNode
+                        ? containerDiagramNode.AddConnector(connector)
+                        : i));
         }
 
         public ILayoutGroup RemoveConnector(IDiagramConnector connector)

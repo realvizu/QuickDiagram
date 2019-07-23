@@ -93,9 +93,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
         {
-            var updatedLayoutGroup = RootLayoutGroup.AddNode(node, parentNodeId);
+            return CreateInstance(RootLayoutGroup.AddNode(node, parentNodeId), CrossLayoutGroupConnectors);
+        }
 
-            return CreateInstance(updatedLayoutGroup, CrossLayoutGroupConnectors);
+        public IDiagram UpdateNode(IDiagramNode updatedNode)
+        {
+            return CreateInstance(RootLayoutGroup.UpdateNode(updatedNode), CrossLayoutGroupConnectors);
         }
 
         public IDiagram RemoveNode(ModelNodeId nodeId)
@@ -117,7 +120,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 : CreateInstance(RootLayoutGroup.AddConnector(connector), CrossLayoutGroupConnectors);
         }
 
-        public IDiagram UpdateConnector(IDiagramConnector connector)
+        public IDiagram UpdateConnector(IDiagramConnector updatedConnector)
         {
             throw new System.NotImplementedException();
         }

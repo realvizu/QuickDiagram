@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Codartis.Util;
+using JetBrains.Annotations;
 using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
@@ -34,6 +35,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> RemoveEdge(TEdgeId edgeId);
 
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> Clear();
+
+        IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices([NotNull] Func<TVertex, TVertex> vertexMutatorFunc);
 
         TVertex GetVertex(TVertexId vertexId);
         Maybe<TVertex> TryGetVertex(TVertexId vertexId);

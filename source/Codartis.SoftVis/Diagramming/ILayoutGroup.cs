@@ -44,6 +44,9 @@ namespace Codartis.SoftVis.Diagramming
         ILayoutGroup AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId);
 
         [NotNull]
+        ILayoutGroup UpdateNode([NotNull] IDiagramNode updatedNode);
+
+        [NotNull]
         ILayoutGroup RemoveNode([NotNull] IDiagramNode node);
 
         [NotNull]

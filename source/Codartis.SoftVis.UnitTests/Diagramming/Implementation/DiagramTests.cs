@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.UnitTests.TestSubjects;
 using FluentAssertions;
 using Xunit;
@@ -19,7 +20,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
-        public void WithNode_Nested_Works()
+        public void AddNode_Nested_Works()
         {
             var parentNode = new TestDiagramNode("parent");
             var childNode = new TestDiagramNode("child");
@@ -31,6 +32,21 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             diagram.Nodes.ShouldBeEquivalentById(childNode, parentNode);
             diagram.RootLayoutGroup.Nodes.ShouldBeEquivalentById(parentNode);
             diagram.GetNode(parentNode.Id).As<IContainerDiagramNode>().LayoutGroup.Nodes.ShouldBeEquivalentById(childNode);
+        }
+
+        [Fact]
+        public void UpdateNode_Nested_Works()
+        {
+            var parentNode = new TestDiagramNode("parent");
+            var childNode = new TestDiagramNode("child");
+
+            var diagram = Diagram.Empty
+                .AddNode(parentNode)
+                .AddNode(childNode, parentNode.Id)
+                .UpdateNode(childNode.WithSize(new Size2D(1, 1)));
+
+            diagram.Nodes.ShouldBeEquivalentById(childNode, parentNode);
+            diagram.GetNode(childNode.Id).Size.Should().Be(new Size2D(1, 1));
         }
 
         [Fact]

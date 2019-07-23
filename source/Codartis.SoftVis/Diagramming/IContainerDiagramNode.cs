@@ -14,6 +14,9 @@ namespace Codartis.SoftVis.Diagramming
         IContainerDiagramNode AddNode([NotNull] IDiagramNode node, ModelNodeId parentNodeId);
 
         [NotNull]
+        IContainerDiagramNode UpdateNode([NotNull] IDiagramNode updatedNode);
+
+        [NotNull]
         IContainerDiagramNode RemoveNode([NotNull] IDiagramNode node);
 
         [NotNull]

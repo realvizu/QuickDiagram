@@ -163,6 +163,21 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> Clear() => Empty(_allowParallelEdges);
 
+        public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices(Func<TVertex, TVertex> vertexMutatorFunc)
+        {
+            var updatedVertices = _vertices;
+            var updatedEdges = _edges;
+
+            foreach (var vertex in Vertices)
+            {
+                var updatedVertex = vertexMutatorFunc(vertex);
+                updatedVertices = updatedVertices.SetItem(vertex.Id, updatedVertex);
+                updatedEdges = ReplaceSourceAndTargetVertexInEdges(updatedVertex);
+            }
+
+            return CreateInstance(updatedVertices, updatedEdges, _graph);
+        }
+
         public TVertex GetVertex(TVertexId vertexId) => _vertices[vertexId];
 
         public Maybe<TVertex> TryGetVertex(TVertexId vertexId) => _vertices.ContainsKey(vertexId) ? Maybe.Create(_vertices[vertexId]) : Maybe<TVertex>.Nothing;
