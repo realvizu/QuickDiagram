@@ -22,12 +22,17 @@ namespace Codartis.SoftVis.Geometry
 
         private readonly ImmutableList<Point2D> _routePoints;
 
+        public Route(params Point2D[] routePoints)
+            : this(routePoints as IEnumerable<Point2D>)
+        {
+        }
+
         public Route(IEnumerable<Point2D> routePoints = null)
         {
             var normalizedRoutePoints = Normalize(routePoints).ToImmutableList();
 
-            _routePoints = normalizedRoutePoints.Any() 
-                ? normalizedRoutePoints 
+            _routePoints = normalizedRoutePoints.Any()
+                ? normalizedRoutePoints
                 : null;
         }
 
@@ -40,8 +45,8 @@ namespace Codartis.SoftVis.Geometry
 
         public Route AddPoints(IEnumerable<Point2D> points)
         {
-            return points == null 
-                ? this 
+            return points == null
+                ? this
                 : new Route(_routePoints?.Concat(points) ?? points);
         }
 
@@ -61,13 +66,15 @@ namespace Codartis.SoftVis.Geometry
 
         public bool Equals(Route other)
         {
-            return (_routePoints == null && other._routePoints == null) 
-                || (_routePoints != null && other._routePoints != null && _routePoints.SequenceEqual(other._routePoints));
+            return (_routePoints == null && other._routePoints == null) ||
+                   (_routePoints != null && other._routePoints != null && _routePoints.SequenceEqual(other._routePoints));
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+
             return obj is Route && Equals((Route)obj);
         }
 
@@ -108,6 +115,7 @@ namespace Codartis.SoftVis.Geometry
                     continue;
 
                 yield return routePoint;
+
                 previousPoint = routePoint;
             }
         }
@@ -125,6 +133,7 @@ namespace Codartis.SoftVis.Geometry
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             public void Add(Point2D point) => _builderPoints.Add(point);
+
             public void Add(IEnumerable<Point2D> points)
             {
                 foreach (var point in points)

@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using System.Linq;
+using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.UnitTests.TestSubjects;
@@ -9,6 +10,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 {
     public class DiagramTests
     {
+        private static readonly Route TestRoute = new Route(new Point2D(1,1),new Point2D(2,2));
+
         [Fact]
         public void WithNode_RootLevel_Works()
         {
@@ -82,7 +85,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var node1 = new TestDiagramNode("node1");
             var node2 = new TestDiagramNode("node2");
             var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(node1)
@@ -100,8 +103,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var parentNode = new TestDiagramNode("parent");
             var childNode1 = new TestDiagramNode("child1");
             var childNode2 = new TestDiagramNode("child2");
-            var testModelRelationship = new TestModelRelationship(childNode2.ModelNode, childNode2.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(parentNode)
@@ -121,26 +124,88 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var parentNode = new TestDiagramNode("parent");
             var childNode = new TestDiagramNode("child");
             var testModelRelationship = new TestModelRelationship(parentNode.ModelNode, childNode.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorParentChild = new DiagramConnector(testModelRelationship, parentNode, childNode, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(parentNode)
                 .AddNode(childNode, parentNode.Id)
-                .AddConnector(connectorNode1Node2);
+                .AddConnector(connectorParentChild);
 
-            diagram.Connectors.ShouldBeEquivalentById(connectorNode1Node2);
+            diagram.Connectors.ShouldBeEquivalentById(connectorParentChild);
             diagram.RootLayoutGroup.Connectors.Should().BeEmpty();
-            diagram.CrossLayoutGroupConnectors.ShouldBeEquivalentById(connectorNode1Node2);
+            diagram.CrossLayoutGroupConnectors.ShouldBeEquivalentById(connectorParentChild);
             diagram.GetNode(parentNode.Id).As<IContainerDiagramNode>().LayoutGroup.Connectors.Should().BeEmpty();
         }
 
-                [Fact]
+        [Fact]
+        public void UpdateConnector_InRootLayoutGroup_Works()
+        {
+            var node1 = new TestDiagramNode("node1");
+            var node2 = new TestDiagramNode("node2");
+            var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
+
+            var diagram = Diagram.Empty
+                .AddNode(node1)
+                .AddNode(node2)
+                .AddConnector(connectorNode1Node2);
+
+            diagram = diagram.UpdateConnector(connectorNode1Node2.WithRoute(TestRoute));
+
+            var resultingConnectors = diagram.RootLayoutGroup.Connectors;
+            resultingConnectors.Should().HaveCount(1);
+            resultingConnectors.First().Route.Should().BeEquivalentTo(TestRoute);
+        }
+
+        [Fact]
+        public void UpdateConnector_InNestedLayoutGroup_Works()
+        {
+            var parentNode = new TestDiagramNode("parent");
+            var childNode1 = new TestDiagramNode("child1");
+            var childNode2 = new TestDiagramNode("child2");
+            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
+
+            var diagram = Diagram.Empty
+                .AddNode(parentNode)
+                .AddNode(childNode1, parentNode.Id)
+                .AddNode(childNode2, parentNode.Id)
+                .AddConnector(connectorNode1Node2);
+
+            diagram = diagram.UpdateConnector(connectorNode1Node2.WithRoute(TestRoute));
+
+            var resultingConnectors = diagram.GetNode(parentNode.Id).As<IContainerDiagramNode>().LayoutGroup.Connectors;
+            resultingConnectors.Should().HaveCount(1);
+            resultingConnectors.First().Route.Should().BeEquivalentTo(TestRoute);
+        }
+
+        [Fact]
+        public void UpdateConnector_InCrossLayoutGroup_Works()
+        {
+            var parentNode = new TestDiagramNode("parent");
+            var childNode = new TestDiagramNode("child");
+            var testModelRelationship = new TestModelRelationship(parentNode.ModelNode, childNode.ModelNode);
+            var connectorParentChild = new DiagramConnector(testModelRelationship, parentNode, childNode, ConnectorTypes.Dependency);
+
+            var diagram = Diagram.Empty
+                .AddNode(parentNode)
+                .AddNode(childNode, parentNode.Id)
+                .AddConnector(connectorParentChild);
+
+            diagram = diagram.UpdateConnector(connectorParentChild.WithRoute(TestRoute));
+
+            var resultingConnectors = diagram.CrossLayoutGroupConnectors;
+            resultingConnectors.Should().HaveCount(1);
+            resultingConnectors.First().Route.Should().BeEquivalentTo(TestRoute);
+        }
+
+        [Fact]
         public void RemoveConnector_FromRootLayoutGroup_Works()
         {
             var node1 = new TestDiagramNode("node1");
             var node2 = new TestDiagramNode("node2");
             var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(node1)
@@ -159,8 +224,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var parentNode = new TestDiagramNode("parent");
             var childNode1 = new TestDiagramNode("child1");
             var childNode2 = new TestDiagramNode("child2");
-            var testModelRelationship = new TestModelRelationship(childNode2.ModelNode, childNode2.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(parentNode)
@@ -181,12 +246,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var parentNode = new TestDiagramNode("parent");
             var childNode = new TestDiagramNode("child");
             var testModelRelationship = new TestModelRelationship(parentNode.ModelNode, childNode.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorParentChild = new DiagramConnector(testModelRelationship, parentNode, childNode, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(parentNode)
                 .AddNode(childNode, parentNode.Id)
-                .AddConnector(connectorNode1Node2)
+                .AddConnector(connectorParentChild)
                 .RemoveConnector(testModelRelationship.Id);
 
             diagram.Connectors.Should().BeEmpty();
@@ -201,7 +266,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var node1 = new TestDiagramNode("node1");
             var node2 = new TestDiagramNode("node2");
             var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(node1)
@@ -219,7 +284,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var childNode1 = new TestDiagramNode("child1");
             var childNode2 = new TestDiagramNode("child2");
             var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
-            var connectorNode1Node2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(parentNode)
@@ -239,7 +304,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var parentNode2 = new TestDiagramNode("parent2");
             var childNode2 = new TestDiagramNode("child2");
             var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
-            var connectorChild1Child2 = new DiagramConnectorSpecification(testModelRelationship, ConnectorTypes.Dependency);
+            var connectorChild1Child2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
             var diagram = Diagram.Empty
                 .AddNode(parentNode1)

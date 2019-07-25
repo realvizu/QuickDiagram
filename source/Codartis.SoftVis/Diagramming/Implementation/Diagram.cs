@@ -109,23 +109,35 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return CreateInstance(RootLayoutGroup.RemoveNode(nodeId), _crossLayoutGroupConnectors);
         }
 
-        public IDiagram AddConnector(DiagramConnectorSpecification connectorSpec)
+        public IDiagram AddConnector(IDiagramConnector connector)
         {
-            var connector = new DiagramConnector(
-                connectorSpec.ModelRelationship,
-                GetNode(connectorSpec.ModelRelationship.Source.Id),
-                GetNode(connectorSpec.ModelRelationship.Target.Id),
-                connectorSpec.ConnectorType,
-                connectorSpec.Route);
+            // TODO: hack, should find a better way. We construct a new connector with up-to-date node info.
+            var freshConnector = new DiagramConnector(
+                connector.ModelRelationship,
+                GetNode(connector.Source.Id),
+                GetNode(connector.Target.Id),
+                connector.ConnectorType,
+                connector.Route);
 
-            return connector.IsCrossingLayoutGroups
-                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.Add(connector.Id,connector))
-                : CreateInstance(RootLayoutGroup.AddConnector(connector), _crossLayoutGroupConnectors);
+            return freshConnector.IsCrossingLayoutGroups
+                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.Add(freshConnector.Id, freshConnector))
+                : CreateInstance(RootLayoutGroup.AddConnector(freshConnector), _crossLayoutGroupConnectors);
         }
 
         public IDiagram UpdateConnector(IDiagramConnector updatedConnector)
         {
-            throw new System.NotImplementedException();
+            // TODO: changing source/target is not supported.
+            // TODO: hack, should find a better way. We construct a new connector with up-to-date node info.
+            var freshConnector = new DiagramConnector(
+                updatedConnector.ModelRelationship,
+                GetNode(updatedConnector.Source.Id),
+                GetNode(updatedConnector.Target.Id),
+                updatedConnector.ConnectorType,
+                updatedConnector.Route);
+
+            return freshConnector.IsCrossingLayoutGroups
+                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.SetItem(freshConnector.Id, freshConnector))
+                : CreateInstance(RootLayoutGroup.UpdateConnector(freshConnector), _crossLayoutGroupConnectors);
         }
 
         public IDiagram RemoveConnector(ModelRelationshipId connectorId)

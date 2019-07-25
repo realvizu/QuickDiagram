@@ -3,6 +3,7 @@ using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
 using Codartis.Util;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
@@ -121,18 +122,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void AddConnector(DiagramConnectorSpecification connectorSpec)
+        public void AddConnector([NotNull] IDiagramConnector connector)
         {
             lock (_diagramUpdateLockObject)
             {
-                var connectorId = connectorSpec.ModelRelationship.Id;
-
-                if (Diagram.ConnectorExists(connectorId))
+                if (Diagram.ConnectorExists(connector.Id))
                     return;
 
-                Diagram = Diagram.AddConnector(connectorSpec);
-
-                var connector = Diagram.GetConnector(connectorId);
+                Diagram = Diagram.AddConnector(connector);
                 DiagramChanged?.Invoke(new DiagramConnectorAddedEvent(Diagram, connector));
             }
         }

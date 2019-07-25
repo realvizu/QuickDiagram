@@ -91,6 +91,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                     : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).AddConnector(connector)));
         }
 
+        public ILayoutGroup UpdateConnector(IDiagramConnector updatedConnector)
+        {
+            if (updatedConnector.IsCrossingLayoutGroups)
+                throw new InvalidOperationException($"Cannot update connector {updatedConnector} in layout group {_layoutGroupNodeId} because is crosses layout groups.");
+
+            return CreateInstance(
+                _graph.ContainsVertex(updatedConnector.Source)
+                    ? _graph.UpdateEdge(updatedConnector)
+                    : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).UpdateConnector(updatedConnector)));
+        }
+
         public ILayoutGroup RemoveConnector(ModelRelationshipId connectorId)
         {
             return _graph.TryGetEdge(connectorId).Match(

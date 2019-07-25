@@ -8,6 +8,6 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagramShapeFactory
     {
         IDiagramNode CreateDiagramNode(IDiagramShapeResolver diagramShapeResolver, IModelNode modelNode, IModelNode parentModelNode);
-        DiagramConnectorSpecification CreateDiagramConnectorSpec(IDiagramShapeResolver diagramShapeResolver, IModelRelationship modelRelationship);
+        IDiagramConnector CreateDiagramConnector(IDiagramShapeResolver diagramShapeResolver, IModelRelationship modelRelationship);
     }
 }

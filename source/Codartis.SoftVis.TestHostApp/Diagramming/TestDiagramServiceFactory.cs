@@ -10,8 +10,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
         {
             return new TestDiagramService(
                 Diagram.Empty, 
-                modelService,
-                new TestDiagramShapeFactory());
+                modelService);
         }
     }
 }

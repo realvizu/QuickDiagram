@@ -23,6 +23,9 @@ namespace Codartis.SoftVis.Diagramming
         IContainerDiagramNode AddConnector([NotNull] IDiagramConnector connector);
 
         [NotNull]
+        IContainerDiagramNode UpdateConnector([NotNull] IDiagramConnector updatedConnector);
+
+        [NotNull]
         IContainerDiagramNode RemoveConnector(ModelRelationshipId connectorId);
     }
 }

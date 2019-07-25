@@ -12,9 +12,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             nodes.Select(i => i.Id).Should().BeEquivalentTo(expectedNodes.Select(i => i.Id).ToArray());
         }
 
-        public static void ShouldBeEquivalentById(this IEnumerable<IDiagramConnector> connectors, params DiagramConnectorSpecification[] expectedConnectors)
+        public static void ShouldBeEquivalentById(this IEnumerable<IDiagramConnector> connectors, params IDiagramConnector[] expectedConnectors)
         {
-            connectors.Select(i => i.Id).Should().BeEquivalentTo(expectedConnectors.Select(i => i.ModelRelationship.Id).ToArray());
+            connectors.Select(i => i.Id).Should().BeEquivalentTo(expectedConnectors.Select(i => i.Id).ToArray());
         }
     }
 }

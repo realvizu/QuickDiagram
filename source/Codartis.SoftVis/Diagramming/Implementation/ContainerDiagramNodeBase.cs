@@ -54,6 +54,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.AddConnector(connector));
         }
 
+        public IContainerDiagramNode UpdateConnector(IDiagramConnector updatedConnector)
+        {
+            return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.UpdateConnector(updatedConnector));
+        }
+
         public IContainerDiagramNode RemoveConnector(ModelRelationshipId connectorId)
         {
             return (IContainerDiagramNode)CreateInstance(ModelNode, Size, Center, AddedAt, ParentNodeId, LayoutGroup.RemoveConnector(connectorId));

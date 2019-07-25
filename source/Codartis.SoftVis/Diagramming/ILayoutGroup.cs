@@ -53,6 +53,9 @@ namespace Codartis.SoftVis.Diagramming
         ILayoutGroup AddConnector([NotNull] IDiagramConnector connector);
 
         [NotNull]
+        ILayoutGroup UpdateConnector([NotNull] IDiagramConnector updatedConnector);
+
+        [NotNull]
         ILayoutGroup RemoveConnector(ModelRelationshipId connectorId);
 
         [NotNull]
