@@ -7,14 +7,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Services;
-using Codartis.SoftVis.Services.Plugins;
-using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
-using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -23,6 +19,7 @@ using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.Dialogs;
 using Codartis.Util.UI.Wpf.Resources;
 using Codartis.Util.UI.Wpf.ViewModels;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -45,26 +42,9 @@ namespace Codartis.SoftVis.TestHostApp
         public ICommand ZoomToContentCommand { get; }
         public ICommand CopyToClipboardCommand { get; }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel([NotNull] IVisualizationService visualizationService)
         {
             SelectedDpi = 300;
-
-            var layoutPriorityProvider = new TestLayoutPriorityProvider();
-            var visualizationService = new VisualizationService(
-                new TestModelServiceFactory(),
-                new TestDiagramServiceFactory(),
-                new TestUiServiceFactory(),
-                new DiagramPluginFactory(
-                    layoutPriorityProvider,
-                    new TestDiagramShapeFactory(),
-                    new SugiyamaLayoutAlgorithm(layoutPriorityProvider)),
-                new[]
-                {
-                    DiagramPluginId.AutoLayoutDiagramPlugin2,
-                    DiagramPluginId.ConnectorHandlerDiagramPlugin,
-                    DiagramPluginId.ModelTrackingDiagramPlugin
-                }
-            );
 
             _testModelService = (ITestModelService) visualizationService.GetModelService();
             var diagramId = visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);

@@ -3,4 +3,5 @@
     <Allowed From="*" To="System.*" />
     <Allowed From="Codartis.SoftVis.TestHostApp.*" To="QuickGraph.*" />
     <Allowed From="Codartis.SoftVis.TestHostApp.*" To="Codartis.SoftVis.*" />
+    <Allowed From="Codartis.SoftVis.TestHostApp.*" To="Autofac.*" />
 </NsDepCopConfig>

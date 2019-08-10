@@ -14,7 +14,10 @@ namespace Codartis.SoftVis.Services.Plugins
         private readonly IDiagramShapeFactory _diagramShapeFactory;
         private readonly INodeLayoutAlgorithm _nodeLayoutAlgorithm;
 
-        public DiagramPluginFactory(ILayoutPriorityProvider layoutPriorityProvider, IDiagramShapeFactory diagramShapeFactory, INodeLayoutAlgorithm nodeLayoutAlgorithm)
+        public DiagramPluginFactory(
+            ILayoutPriorityProvider layoutPriorityProvider,
+            IDiagramShapeFactory diagramShapeFactory,
+            INodeLayoutAlgorithm nodeLayoutAlgorithm)
         {
             _layoutPriorityProvider = layoutPriorityProvider;
             _diagramShapeFactory = diagramShapeFactory;
@@ -23,10 +26,14 @@ namespace Codartis.SoftVis.Services.Plugins
 
         public virtual IDiagramPlugin Create(DiagramPluginId diagramPluginId)
         {
-            if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin) return new HierarchicalAutoLayoutPlugin(_layoutPriorityProvider);
-            if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin2) return new BufferingAutoLayoutDiagramPlugin(_nodeLayoutAlgorithm);
-            if (diagramPluginId == DiagramPluginId.ConnectorHandlerDiagramPlugin) return new ConnectorHandlerDiagramPlugin(_diagramShapeFactory);
-            if (diagramPluginId == DiagramPluginId.ModelTrackingDiagramPlugin) return new ModelTrackingDiagramPlugin(_diagramShapeFactory);
+            if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin)
+                return new HierarchicalAutoLayoutPlugin(_layoutPriorityProvider);
+            if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin2)
+                return new BufferingAutoLayoutDiagramPlugin(_nodeLayoutAlgorithm);
+            if (diagramPluginId == DiagramPluginId.ConnectorHandlerDiagramPlugin)
+                return new ConnectorHandlerDiagramPlugin(_diagramShapeFactory);
+            if (diagramPluginId == DiagramPluginId.ModelTrackingDiagramPlugin)
+                return new ModelTrackingDiagramPlugin(_diagramShapeFactory);
 
             throw new InvalidOperationException($"Unexpected DiagramPluginId: {diagramPluginId.Name}");
         }

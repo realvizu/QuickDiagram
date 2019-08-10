@@ -1,4 +1,18 @@
-﻿namespace Codartis.SoftVis.TestHostApp
+﻿using System.Collections.Generic;
+using Autofac;
+using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Layout;
+using Codartis.SoftVis.Diagramming.Layout.Nodes;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Services;
+using Codartis.SoftVis.Services.Plugins;
+using Codartis.SoftVis.TestHostApp.Diagramming;
+using Codartis.SoftVis.TestHostApp.Modeling;
+using Codartis.SoftVis.TestHostApp.UI;
+using Codartis.SoftVis.UI;
+
+namespace Codartis.SoftVis.TestHostApp
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -7,13 +21,44 @@
     {
         public MainWindow()
         {
-            var viewModel = new MainWindowViewModel();
+            var container = CreateDependencyContainer();
+
+            var viewModel = container.Resolve<MainWindowViewModel>();
             DataContext = viewModel;
 
             InitializeComponent();
 
             viewModel.OnUiInitialized(mainWindow: this, diagramStyleProvider: DiagramControl);
         }
+
+        private static IContainer CreateDependencyContainer()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<MainWindowViewModel>();
+
+            builder.RegisterType<VisualizationService>()
+                .WithParameter(
+                    new TypedParameter(
+                        typeof(IEnumerable<DiagramPluginId>),
+                        new[]
+                        {
+                            DiagramPluginId.AutoLayoutDiagramPlugin2,
+                            DiagramPluginId.ConnectorHandlerDiagramPlugin,
+                            DiagramPluginId.ModelTrackingDiagramPlugin
+                        }))
+                .As<IVisualizationService>();
+
+            builder.RegisterType<TestModelServiceFactory>().As<IModelServiceFactory>();
+            builder.RegisterType<TestDiagramShapeFactory>().As<IDiagramShapeFactory>();
+            builder.RegisterType<TestDiagramServiceFactory>().As<IDiagramServiceFactory>();
+            builder.RegisterType<TestUiServiceFactory>().As<IUiServiceFactory>();
+            builder.RegisterType<DiagramPluginFactory>().As<IDiagramPluginFactory>();
+            
+            builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
+            builder.RegisterType<SugiyamaLayoutAlgorithm>().As<INodeLayoutAlgorithm>();
+
+            return builder.Build();
+        }
     }
 }
-
