@@ -6,7 +6,7 @@ using Codartis.Util;
 namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
-    /// Listens to model events and corrects the model accordingly.
+    /// Listens to model events and corrects the diagram accordingly.
     /// </summary>
     public class ModelTrackingDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
