@@ -28,16 +28,11 @@
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.Events" />
 
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.Util.UI.*" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
-
     <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.View" />
     <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.Util.UI.Wpf.Controls" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.Util.UI.Wpf.ViewModels" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
 
     <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Diagramming" />
@@ -60,7 +55,5 @@
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming" />
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Events" />
     <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout.*" />
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout.Incremental" />
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Graphs.*" />
 
 </NsDepCopConfig>
