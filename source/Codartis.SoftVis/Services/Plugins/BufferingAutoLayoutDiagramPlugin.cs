@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout.Nodes;
 using Codartis.SoftVis.Geometry;
@@ -18,6 +17,7 @@ namespace Codartis.SoftVis.Services.Plugins
     public sealed class BufferingAutoLayoutDiagramPlugin : DiagramPluginBase
     {
         private static readonly TimeSpan BufferingTimeSpan = TimeSpan.FromSeconds(1);
+        private static readonly TimeSpan WaitTimeForBatchingEvents = TimeSpan.FromMilliseconds(100);
 
         private readonly INodeLayoutAlgorithm _layoutAlgorithm;
         private readonly CancellationTokenSource _cancellationToken;
@@ -31,8 +31,7 @@ namespace Codartis.SoftVis.Services.Plugins
             _diagramEventQueue = new Queue<DiagramEventBase>();
             _diagramEventArrivedEvent = new AutoResetEvent(false);
 
-            // BUGBUG: is it OK to use a thread pool thread for an event pump that runs indefinitely?
-            Task.Run(() => ProcessDiagramShapeActionsAsync(_cancellationToken.Token));
+            new Thread(() => ProcessDiagramShapeActions(_cancellationToken.Token)).Start();
         }
 
         public override void Initialize(IModelService modelService, IDiagramService diagramService)
@@ -44,6 +43,8 @@ namespace Codartis.SoftVis.Services.Plugins
 
         public override void Dispose()
         {
+            Debug.WriteLine("Disposing BufferingAutoLayoutDiagramPlugin");
+
             DiagramService.DiagramChanged -= OnDiagramChanged;
 
             _cancellationToken.Cancel();
@@ -61,24 +62,33 @@ namespace Codartis.SoftVis.Services.Plugins
             _diagramEventArrivedEvent.Set();
         }
 
-        private async void ProcessDiagramShapeActionsAsync(CancellationToken cancellationToken)
+        private void ProcessDiagramShapeActions(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                if (_diagramEventArrivedEvent.WaitOne(BufferingTimeSpan))
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    while (await AreEventsArrivingInRapidSuccessionAsync())
+                    if (_diagramEventArrivedEvent.WaitOne(BufferingTimeSpan))
                     {
+                        while (AreEventsArrivingInRapidSuccession())
+                        {
+                        }
+
+                        var lastEvent = GetLastEventFromQueue();
+                        if (lastEvent == null)
+                            return;
+
+                        Debug.WriteLine($"Calling layout.");
+                        DoLayout(lastEvent.NewDiagram);
+                        Debug.WriteLine($"Calling layout done.");
                     }
-
-                    var lastEvent = GetLastEventFromQueue();
-                    if (lastEvent == null)
-                        return;
-
-                    Debug.WriteLine($"Calling layout.");
-                    DoLayout(lastEvent.NewDiagram);
-                    Debug.WriteLine($"Calling layout done.");
                 }
+
+                Debug.WriteLine("ProcessDiagramShapeActions was cancelled.");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
             }
         }
 
@@ -95,10 +105,10 @@ namespace Codartis.SoftVis.Services.Plugins
             return lastEvent;
         }
 
-        private async Task<bool> AreEventsArrivingInRapidSuccessionAsync()
+        private bool AreEventsArrivingInRapidSuccession()
         {
             var queueLengthBeforeWait = GetDiagramActionQueueLength();
-            await Task.Delay(TimeSpan.FromMilliseconds(5));
+            Thread.Sleep(WaitTimeForBatchingEvents);
             var queueLengthAfterWait = GetDiagramActionQueueLength();
 
             return queueLengthAfterWait > queueLengthBeforeWait;
