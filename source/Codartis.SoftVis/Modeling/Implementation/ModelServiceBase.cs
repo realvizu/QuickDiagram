@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {

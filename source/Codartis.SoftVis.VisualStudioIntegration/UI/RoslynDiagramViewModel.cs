@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI

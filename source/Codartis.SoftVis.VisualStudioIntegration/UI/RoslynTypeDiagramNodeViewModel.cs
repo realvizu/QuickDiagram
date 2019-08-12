@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;

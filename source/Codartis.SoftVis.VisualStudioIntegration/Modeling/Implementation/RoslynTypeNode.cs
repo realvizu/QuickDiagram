@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;

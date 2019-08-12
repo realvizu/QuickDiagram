@@ -6,7 +6,7 @@
                     xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling.Definition;assembly=Codartis.SoftVis"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util">
 
     <ResourceDictionary.MergedDictionaries>

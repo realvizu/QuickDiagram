@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI;

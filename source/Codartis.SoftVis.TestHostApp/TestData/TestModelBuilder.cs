@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData

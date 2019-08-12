@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {

@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 
@@ -100,8 +101,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                             Diagram = Diagram.UpdateNode(updatedNode);
                             DiagramChanged?.Invoke(new DiagramNodePositionChangedEvent(Diagram, oldNode, updatedNode));
                         },
-                        () => throw new InvalidOperationException($"Node {diagramNode} does not exist."))
-                    ;
+                        () => Debug.WriteLine($"Trying to move node {diagramNode} but it does not exist."));
             }
         }
 
@@ -147,12 +147,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void UpdateDiagramConnectorRoute(IDiagramConnector diagramConnector, Route newRoute)
+        public void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute)
         {
             lock (_diagramUpdateLockObject)
             {
                 Diagram
-                    .TryGetConnector(diagramConnector.Id)
+                    .TryGetConnector(connectorId)
                     .Match(
                         oldConnector =>
                         {
@@ -160,7 +160,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                             Diagram = Diagram.UpdateConnector(newConnector);
                             DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(Diagram, oldConnector, newConnector));
                         },
-                        () => throw new InvalidOperationException($"Connector {diagramConnector} does not exist."));
+                        () => throw new InvalidOperationException($"Connector {connectorId} does not exist."));
             }
         }
 

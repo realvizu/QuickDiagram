@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft) => DiagramStore.UpdateDiagramNodeTopLeft(diagramNode, newTopLeft);
         public void AddConnector(IDiagramConnector connector) => DiagramStore.AddConnector(connector);
         public void RemoveConnector(ModelRelationshipId connectorId) => DiagramStore.RemoveConnector(connectorId);
-        public void UpdateDiagramConnectorRoute(IDiagramConnector connector, Route newRoute) => DiagramStore.UpdateDiagramConnectorRoute(connector, newRoute);
+        public void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute) => DiagramStore.UpdateConnectorRoute(connectorId, newRoute);
         public void ClearDiagram() => DiagramStore.ClearDiagram();
 
         public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);

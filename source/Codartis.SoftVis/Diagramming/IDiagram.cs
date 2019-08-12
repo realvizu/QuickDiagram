@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 

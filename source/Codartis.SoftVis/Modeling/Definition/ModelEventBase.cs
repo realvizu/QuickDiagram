@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling
+﻿namespace Codartis.SoftVis.Modeling.Definition
 {
     public abstract class ModelEventBase
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.Services.Plugins
 {

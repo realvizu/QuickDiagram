@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// Keeps track of the latest model instance through mutated instances and publishes change events.

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Immutable;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 

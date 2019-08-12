@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Codartis.Util;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// A model consists of nodes and relationships between nodes.

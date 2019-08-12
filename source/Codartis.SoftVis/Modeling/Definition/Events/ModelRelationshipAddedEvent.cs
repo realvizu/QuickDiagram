@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling.Events
+﻿namespace Codartis.SoftVis.Modeling.Definition.Events
 {
     public class ModelRelationshipAddedEvent : ModelEventBase
     {

@@ -6,7 +6,7 @@ using System.Windows;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.ViewModels;
 

@@ -1,6 +1,6 @@
 using System;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming
         void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft);
         void AddConnector(IDiagramConnector connector);
         void RemoveConnector(ModelRelationshipId connectorId);
-        void UpdateDiagramConnectorRoute(IDiagramConnector connector, Route newRoute);
+        void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute);
         void ClearDiagram();
     }
 }

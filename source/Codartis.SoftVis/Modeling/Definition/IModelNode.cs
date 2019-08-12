@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Graphs.Immutable;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// Represents a named item in the model, e.g. a package, a type, a member.

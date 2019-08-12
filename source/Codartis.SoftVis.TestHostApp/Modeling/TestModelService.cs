@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling

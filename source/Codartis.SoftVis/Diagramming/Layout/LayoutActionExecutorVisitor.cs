@@ -19,7 +19,7 @@
 
         public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)
         {
-            _diagramService.UpdateDiagramConnectorRoute(layoutAction.DiagramConnector, layoutAction.NewRoute);
+            _diagramService.UpdateConnectorRoute(layoutAction.DiagramConnector.Id, layoutAction.NewRoute);
         }
     }
 }

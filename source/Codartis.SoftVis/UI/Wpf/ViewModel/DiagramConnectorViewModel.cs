@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Events;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Graphs;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// A relationship type with a direction.

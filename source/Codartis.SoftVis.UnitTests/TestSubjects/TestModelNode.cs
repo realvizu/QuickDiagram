@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Modeling;
+﻿using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.UnitTests.TestSubjects

@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Graphs;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// Defines directed relationship types.

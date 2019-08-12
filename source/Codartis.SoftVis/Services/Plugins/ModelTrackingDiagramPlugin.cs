@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.Modeling.Events;
+using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.Util;
 
 namespace Codartis.SoftVis.Services.Plugins

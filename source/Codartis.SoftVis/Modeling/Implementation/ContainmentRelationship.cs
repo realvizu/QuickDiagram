@@ -1,4 +1,6 @@
-﻿namespace Codartis.SoftVis.Modeling.Implementation
+﻿using Codartis.SoftVis.Modeling.Definition;
+
+namespace Codartis.SoftVis.Modeling.Implementation
 {
     /// <summary>
     /// Abstract base class for relationships where a model node contains another one.

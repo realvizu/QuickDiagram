@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming

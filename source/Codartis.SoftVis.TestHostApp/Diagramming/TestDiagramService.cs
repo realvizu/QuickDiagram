@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming

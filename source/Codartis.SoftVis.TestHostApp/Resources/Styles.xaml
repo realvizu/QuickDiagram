@@ -5,7 +5,7 @@
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.TestHostApp.UI"
                     xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling;assembly=Codartis.SoftVis"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling.Definition;assembly=Codartis.SoftVis"
                     xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
                     mc:Ignorable="d" >

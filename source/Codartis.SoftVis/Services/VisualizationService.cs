@@ -2,7 +2,7 @@
 using System.Linq;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 
 namespace Codartis.SoftVis.Services

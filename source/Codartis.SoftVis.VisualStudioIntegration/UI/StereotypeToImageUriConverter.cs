@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf.Resources;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI

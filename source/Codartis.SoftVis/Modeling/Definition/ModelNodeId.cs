@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// Identifies a model node through its lifetime.

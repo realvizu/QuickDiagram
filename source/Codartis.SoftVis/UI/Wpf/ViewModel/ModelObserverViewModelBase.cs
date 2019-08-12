@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel

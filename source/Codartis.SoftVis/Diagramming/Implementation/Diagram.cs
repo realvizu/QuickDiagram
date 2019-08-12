@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Immutable;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 

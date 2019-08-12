@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf;
 using Codartis.Util.UI.Wpf.Commands;

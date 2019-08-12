@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util;
 

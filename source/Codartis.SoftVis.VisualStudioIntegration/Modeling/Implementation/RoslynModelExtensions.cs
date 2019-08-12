@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;

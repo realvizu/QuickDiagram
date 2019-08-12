@@ -4,7 +4,7 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Diagramming.Layout.Nodes;
 using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
-using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;

@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Graphs.Immutable;
 
-namespace Codartis.SoftVis.Modeling
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// A relationship is a directed link between two model nodes: a source and a target.

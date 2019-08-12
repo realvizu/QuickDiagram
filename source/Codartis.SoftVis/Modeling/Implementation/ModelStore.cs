@@ -1,5 +1,6 @@
 ﻿using System;
-using Codartis.SoftVis.Modeling.Events;
+using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.Modeling.Definition.Events;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {

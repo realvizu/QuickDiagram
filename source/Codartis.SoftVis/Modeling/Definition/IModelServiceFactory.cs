@@ -1,4 +1,4 @@
-﻿namespace Codartis.SoftVis.Modeling
+﻿namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// Creates model service instances.
