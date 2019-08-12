@@ -9,8 +9,8 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     {
         public IImmutableList<IImmutableList<IModelNode>> ItemGroups { get; private set; }
 
-        public TestModelService(ModelStore modelStore, IModelRelationshipFactory modelRelationshipFactory)
-            : base(modelStore, modelRelationshipFactory)
+        public TestModelService(IModelRelationshipFactory modelRelationshipFactory)
+            : base(modelRelationshipFactory)
         {
             ItemGroups = ImmutableList<IImmutableList<IModelNode>>.Empty;
             StartNewGroup();

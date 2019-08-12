@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public bool HideTrivialBaseNodes { get; set; }
 
         internal RoslynModelService(IRoslynModelProvider roslynModelProvider)
-            : base(new ModelStore(), modelRelationshipFactory: null)
+            : base(modelRelationshipFactory: null)
         {
             _roslynModelProvider = roslynModelProvider;
         }

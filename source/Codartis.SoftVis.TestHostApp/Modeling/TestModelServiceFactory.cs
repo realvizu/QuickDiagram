@@ -1,5 +1,4 @@
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
@@ -7,7 +6,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     {
         public IModelService Create()
         {
-            return new TestModelService(new ModelStore(), new TestModelRelationshipFactory());
+            return new TestModelService(new TestModelRelationshipFactory());
         }
     }
 }
