@@ -18,8 +18,5 @@ namespace Codartis.SoftVis.Modeling.Definition
         // Note that relationships cannot be updated just removed+added.
         void RemoveRelationship(ModelRelationshipId relationshipId);
         void ClearModel();
-
-        // TODO: move this to IModel
-        bool TryGetParentNode(ModelNodeId modelNodeId, out IModelNode parentNode);
     }
 }

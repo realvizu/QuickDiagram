@@ -128,17 +128,5 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 yield return new ModelClearedEvent(Model);
             }
         }
-
-        // TODO: Move this to IModel
-        public bool TryGetParentNode(ModelNodeId modelNodeId, out IModelNode parentNode)
-        {
-            var parentNodes = Model.GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Container).ToArray();
-
-            if (parentNodes.Length > 1)
-                throw new Exception($"There are {parentNodes.Length} parent nodes for node {modelNodeId}.");
-
-            parentNode = parentNodes.SingleOrDefault();
-            return parentNode != null;
-        }
     }
 }

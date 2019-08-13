@@ -57,6 +57,6 @@ namespace Codartis.Util
 
     public static class Maybe
     {
-        public static Maybe<T> Create<T>(T some) => new Maybe<T>(some);
+        public static Maybe<T> Create<T>(T some) => some == null ? Maybe<T>.Nothing : new Maybe<T>(some);
     }
 }

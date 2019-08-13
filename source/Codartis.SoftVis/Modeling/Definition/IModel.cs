@@ -18,6 +18,7 @@ namespace Codartis.SoftVis.Modeling.Definition
 
         IModelNode GetNode(ModelNodeId nodeId);
         Maybe<IModelNode> TryGetNode(ModelNodeId nodeId);
+        Maybe<IModelNode> TryGetParentNode(ModelNodeId modelNodeId);
 
         IModelRelationship GetRelationship(ModelRelationshipId relationshipId);
         Maybe<IModelRelationship> TryGetRelationship(ModelRelationshipId relationshipId);

@@ -60,9 +60,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private IDiagramNode AddNode(IModelNode modelNode)
         {
-            ModelService.TryGetParentNode(modelNode.Id, out var parentModelNode);
+           var maybeParentModelNode =  ModelService.Model.TryGetParentNode(modelNode.Id);
 
-            var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode, parentModelNode);
+            var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode, maybeParentModelNode.FromMaybe());
             DiagramStore.AddNode(diagramNode);
             return diagramNode;
         }
@@ -125,9 +125,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
         {
-            return ModelService.TryGetParentNode(diagramNode.Id, out var parentModelNode)
-                ? Diagram.TryGetNode(parentModelNode.Id).Cast<IDiagramNode, IContainerDiagramNode>()
-                : Maybe<IContainerDiagramNode>.Nothing;
+            return ModelService.Model.TryGetParentNode(diagramNode.Id)
+                .Select(i => Diagram.TryGetNode(i.Id).Cast<IDiagramNode, IContainerDiagramNode>());
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)

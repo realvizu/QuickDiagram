@@ -22,6 +22,8 @@ namespace Codartis.Util
         {
             return maybe.HasValue ? maybe.Value : (T?)null;
         }
+        
+        public static T FromMaybe<T>(this Maybe<T> maybe) => maybe.HasValue ? maybe.Value : default;
 
         public static Maybe<T> ToMaybe<T>(this T o)
         {
