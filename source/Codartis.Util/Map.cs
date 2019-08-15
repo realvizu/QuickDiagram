@@ -27,7 +27,7 @@ namespace Codartis.Util
 
         public void Set(TKey key, TValue value)
         {
-            lock (_dictionary)
+            lock (_lockObject)
             {
                 if (_dictionary.ContainsKey(key))
                     _dictionary[key] = value;
