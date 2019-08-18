@@ -5,7 +5,7 @@ using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal sealed class TestModelService : ModelServiceBase, ITestModelService
+    internal sealed class TestModelService : ModelService, ITestModelService
     {
         public IImmutableList<IImmutableList<IModelNode>> ItemGroups { get; private set; }
 

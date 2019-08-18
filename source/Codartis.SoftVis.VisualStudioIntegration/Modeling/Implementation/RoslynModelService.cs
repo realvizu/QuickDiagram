@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// Implements Roslyn model related operations.
     /// </summary>
-    internal class RoslynModelService : ModelServiceBase, IRoslynModelService
+    internal class RoslynModelService : ModelService, IRoslynModelService
     {
         private readonly IRoslynModelProvider _roslynModelProvider;
 

@@ -42,7 +42,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return Maybe.Create(parentNodes.SingleOrDefault());
         }
 
-
         public IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => _graph.GetEdge(relationshipId);
         public Maybe<IModelRelationship> TryGetRelationship(ModelRelationshipId relationshipId) => _graph.TryGetEdge(relationshipId);
 

@@ -9,23 +9,21 @@ namespace Codartis.SoftVis.Modeling.Implementation
 {
     /// <summary>
     /// Implements model-related operations.
-    /// The underlying model is immutable so each modification creates a new snapshot of the model.
-    /// Keeps the latest model version, implements mutator operations and publishes change events.
     /// </summary>
     /// <remarks>
     /// Mutators must not run concurrently. A lock ensures it.
     /// Descendants must implement their mutators using the same lock object.
     /// </remarks>
-    public abstract class ModelServiceBase : IModelService
+    public class ModelService : IModelService
     {
-        [NotNull] public IModel Model { get; protected set; }
+        public IModel Model { get; protected set; }
 
         [NotNull] protected readonly object ModelUpdateLockObject;
         [NotNull] protected readonly IModelRelationshipFactory ModelRelationshipFactory;
 
         public event Action<ModelEventBase> ModelChanged;
 
-        protected ModelServiceBase([NotNull] IModelRelationshipFactory modelRelationshipFactory)
+        public ModelService([NotNull] IModelRelationshipFactory modelRelationshipFactory)
         {
             Model = Implementation.Model.Empty;
             ModelUpdateLockObject = new object();
@@ -39,7 +37,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public void RemoveRelationship(ModelRelationshipId relationshipId) => RaiseEvents(RemoveRelationshipCore(relationshipId));
         public void ClearModel() => RaiseEvents(ClearModelCore());
 
-        private void RaiseEvents([NotNull] [ItemNotNull] IEnumerable<ModelEventBase> events)
+        protected void RaiseEvents([NotNull] [ItemNotNull] IEnumerable<ModelEventBase> events)
         {
             // It is important to materialize the collection with ToList() to allow releasing ModelUpdateLockObject as soon as possible.
             foreach (var @event in events.ToList())
