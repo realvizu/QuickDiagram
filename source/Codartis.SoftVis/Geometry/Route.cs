@@ -39,7 +39,7 @@ namespace Codartis.SoftVis.Geometry
         public IEnumerator<Point2D> GetEnumerator() => _routePoints?.GetEnumerator() ?? Enumerable.Empty<Point2D>().GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public bool IsDefined => _routePoints != null && _routePoints.Any();
+        public bool IsDefined => _routePoints?.Any() == true;
 
         public Route AddPoint(Point2D point) => AddPoints(point.ToEnumerable());
 

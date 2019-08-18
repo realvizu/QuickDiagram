@@ -123,7 +123,7 @@ namespace Codartis.SoftVis.Services.Plugins
         private void DoLayout(IDiagram diagram)
         {
             var nodes = diagram.Nodes.Where(i => !i.HasParent).ToArray();
-            var connectors = diagram.Connectors.Where(i => nodes.Contains(i.Source) && nodes.Contains(i.Target));
+            var connectors = nodes.SelectMany(i => diagram.GetConnectorsByNode(i.Id)).Distinct();
 
             var oldRects = GetRects(nodes);
             var newRects = _layoutAlgorithm.Calculate(nodes, connectors);

@@ -18,6 +18,17 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         }
 
         [Fact]
+        public void AddNode_ReplacesTheModel()
+        {
+            var modelService = CreateModelService();
+            var modelBeforeMutation = modelService.Model;
+
+            modelService.AddNode(new TestModelNode("Node1"));
+            
+            modelService.Model.Should().NotBeSameAs(modelBeforeMutation);
+        }
+
+        [Fact]
         public void AddNode_Works()
         {
             var modelService = CreateModelService();
@@ -26,17 +37,6 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             modelService.AddNode(node1);
 
             modelService.Model.Nodes.Should().BeEquivalentTo(node1);
-        }
-
-        [Fact]
-        public void AddNode_ChangesTheModel()
-        {
-            var modelService = CreateModelService();
-            var modelBeforeMutation = modelService.Model;
-
-            modelService.AddNode(new TestModelNode("Node1"));
-
-            modelService.Model.Should().NotBeSameAs(modelBeforeMutation);
         }
 
         [Fact]
@@ -54,10 +54,22 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             }
         }
 
-        [NotNull]
-        private static IModelService CreateModelService()
+        [Fact]
+        public void AddNodeWithParent_Works()
         {
-            return new ModelService(new ModelRelationshipFactory());
+            var modelService = CreateModelService();
+
+            var parent = new TestModelNode("Parent");
+            modelService.AddNode(parent);
+            var child = new TestModelNode("Child");
+            modelService.AddNode(child, parent.Id);
+
+            modelService.Model.Nodes.Should().BeEquivalentTo(parent, child);
+            modelService.Model.GetRelatedNodes(child.Id, CommonDirectedModelRelationshipTypes.Container).Should().BeEquivalentTo(parent);
+            modelService.Model.GetRelatedNodes(parent.Id, CommonDirectedModelRelationshipTypes.Contained).Should().BeEquivalentTo(child);
         }
+
+        [NotNull]
+        private static IModelService CreateModelService() => new ModelService();
     }
 }

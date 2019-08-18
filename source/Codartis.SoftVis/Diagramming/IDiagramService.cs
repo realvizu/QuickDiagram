@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -9,20 +8,22 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// Defines diagram-related operations.
     /// </summary>
-    public interface IDiagramService : IDiagramStore, IDiagramShapeResolver
+    public interface IDiagramService : IDiagramStore
     {
-        IDiagramNode ShowModelNode(IModelNode modelNode);
-        void HideModelNode(ModelNodeId modelNodeId);
+        //IDiagramNode ShowModelNode(IModelNode modelNode);
+        //void HideModelNode(ModelNodeId modelNodeId);
 
-        IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
-            CancellationToken cancellationToken = default,
-            IIncrementalProgress progress = null);
+        //IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
+        //    CancellationToken cancellationToken = default,
+        //    IIncrementalProgress progress = null);
 
-        void ShowModelRelationship(IModelRelationship modelRelationship);
-        void HideModelRelationship(ModelRelationshipId modelRelationshipId);
+        //void ShowModelRelationship(IModelRelationship modelRelationship);
+        //void HideModelRelationship(ModelRelationshipId modelRelationshipId);
 
         Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode);
 
         Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds);
+
+        ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }
 }

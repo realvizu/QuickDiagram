@@ -23,8 +23,8 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             var shouldShowModelRelationship =
                 modelRelationship.Stereotype != ModelRelationshipStereotype.Containment &&
-                diagram.NodeExists(modelRelationship.Source.Id) &&
-                diagram.NodeExists(modelRelationship.Target.Id) &&
+                diagram.NodeExists(modelRelationship.Source) &&
+                diagram.NodeExists(modelRelationship.Target) &&
                 !DiagramConnectorWouldBeRedundant(modelRelationship, diagram);
 
             if (shouldShowModelRelationship)
@@ -34,16 +34,17 @@ namespace Codartis.SoftVis.Services.Plugins
         protected static bool DiagramConnectorWouldBeRedundant(IModelRelationship modelRelationship, IDiagram diagram)
         {
             return diagram.PathExists(
-                diagram.TryGetNode(modelRelationship.Source.Id).Select(i => i.Id),
-                diagram.TryGetNode(modelRelationship.Target.Id).Select(i => i.Id));
+                diagram.TryGetNode(modelRelationship.Source).Select(i => i.Id),
+                diagram.TryGetNode(modelRelationship.Target).Select(i => i.Id));
         }
 
         protected void AddDiagramConnectorIfNotExists(IModelRelationship modelRelationship, IDiagram diagram)
         {
             if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
-
-            DiagramService.ShowModelRelationship(modelRelationship);
+            
+            // TODO
+            //DiagramService.ShowModelRelationship(modelRelationship);
         }
     }
 }

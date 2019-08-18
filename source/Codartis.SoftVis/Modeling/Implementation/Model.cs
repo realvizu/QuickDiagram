@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -31,7 +30,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public IModelNode GetNode(ModelNodeId nodeId) => _graph.GetVertex(nodeId);
         public Maybe<IModelNode> TryGetNode(ModelNodeId nodeId) => _graph.TryGetVertex(nodeId);
-        
+
         public Maybe<IModelNode> TryGetParentNode(ModelNodeId modelNodeId)
         {
             var parentNodes = GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Container).ToList();
@@ -57,7 +56,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 recursive);
         }
 
-        public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => _graph.GetAllEdges(GetNode(nodeId));
+        public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => _graph.GetAllEdges(nodeId);
 
         public IModel AddNode(IModelNode node) => CreateInstance(_graph.AddVertex(node));
         public IModel RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));

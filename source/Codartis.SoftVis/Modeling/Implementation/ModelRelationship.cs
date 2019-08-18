@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.Modeling.Implementation
@@ -15,54 +14,22 @@ namespace Codartis.SoftVis.Modeling.Implementation
     public class ModelRelationship : IModelRelationship
     {
         public ModelRelationshipId Id { get; }
-        public IModelNode Source { get; }
-        public IModelNode Target { get; }
+        public ModelNodeId Source { get; }
+        public ModelNodeId Target { get; }
         public ModelRelationshipStereotype Stereotype { get; }
 
-        public ModelRelationship(ModelRelationshipId id, IModelNode source, IModelNode target, ModelRelationshipStereotype stereotype)
+        public ModelRelationship(ModelRelationshipId id, ModelNodeId source, ModelNodeId target, ModelRelationshipStereotype stereotype)
         {
             Id = id;
-            Source = source ?? throw new ArgumentNullException(nameof(source));
-            Target = target ?? throw new ArgumentNullException(nameof(target));
+            Source = source;
+            Target = target;
             Stereotype = stereotype ?? throw new ArgumentNullException(nameof(stereotype));
-
-            if (!IsValidSourceAndTargetType(source, target))
-                throw new ArgumentException($"{source.Stereotype} and {target.Stereotype} can not be in {Stereotype} relationship.");
         }
 
-        public override string ToString() => $"{Source.Name}--{Stereotype}-->{Target.Name} [{Id}]";
+        public override string ToString() => $"{Source}--{Stereotype}-->{Target} [{Id}]";
 
-        public IModelRelationship WithSource(IModelNode newSourceNode)
-        {
-            if (Source.Id != newSourceNode.Id)
-                throw new InvalidOperationException($"New source node must have the same id as the old one. OldId={Source.Id}, NewId={newSourceNode.Id}");
-
-            return CreateInstance(Id, newSourceNode, Target, Stereotype);
-        }
-
-        public IModelRelationship WithTarget(IModelNode newTargetNode)
-        {
-            if (Target.Id != newTargetNode.Id)
-                throw new InvalidOperationException($"New target node must have the same id as the old one. OldId={Source.Id}, NewId={newTargetNode.Id}");
-
-            return CreateInstance(Id, Source, newTargetNode, Stereotype);
-        }
-
-        protected virtual ModelRelationship CreateInstance(ModelRelationshipId id, IModelNode source, IModelNode target, ModelRelationshipStereotype stereotype) 
+        protected virtual ModelRelationship CreateInstance(ModelRelationshipId id, ModelNodeId source, ModelNodeId target, ModelRelationshipStereotype stereotype) 
             => new ModelRelationship(id, source, target, stereotype);
-
-        /// <summary>
-        /// Returns all valid source node type - target node type pairs.
-        /// </summary>
-        /// <returns>A collection of valid source and target node type pairs. Null means skip validation.</returns>
-        protected virtual IEnumerable<(ModelNodeStereotype, ModelNodeStereotype)> GetValidSourceAndTargetNodeTypePairs()
-            => null;
-
-        private bool IsValidSourceAndTargetType(IModelNode source, IModelNode target)
-        {
-            return GetValidSourceAndTargetNodeTypePairs() == null 
-                || GetValidSourceAndTargetNodeTypePairs().Contains((source.Stereotype, target.Stereotype));
-        }
 
         public static IEqualityComparer<IModelRelationship> IdComparer { get; } = new IdEqualityComparer();
 

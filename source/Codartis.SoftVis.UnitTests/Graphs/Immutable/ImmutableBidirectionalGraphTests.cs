@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
         {
             var v1 = new TestVertex(1, "v1");
             var v2 = new TestVertex(2, "v2");
-            var e1 = new TestEdge(3, v1, v2, "e1");
+            var e1 = new TestEdge(3, 1, 2, "e1");
 
             var graph = TestGraph.Empty()
                 .AddVertex(v1)
@@ -62,7 +62,7 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
         {
             var v1 = new TestVertex(1, "v1");
             var v2 = new TestVertex(2, "v2");
-            var e1 = new TestEdge(1, v1, v2, "e1");
+            var e1 = new TestEdge(1, 1, 2, "e1");
 
             var graph = TestGraph.Empty()
                 .AddVertex(v1)
@@ -71,45 +71,7 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
                 .UpdateEdge(e1.WithName("e2"));
 
             graph.Vertices.Should().BeEquivalentTo(v1, v2);
-            graph.Edges.Should().BeEquivalentTo(new TestEdge(1, v1, v2, "e2"));
-        }
-
-        [Fact]
-        public void UpdateEdge_Source_Works()
-        {
-            var v1 = new TestVertex(1, "v1");
-            var v2 = new TestVertex(2, "v2");
-            var v3 = new TestVertex(3, "v3");
-            var e1 = new TestEdge(1, v1, v2, "e1");
-
-            var graph = TestGraph.Empty()
-                .AddVertex(v1)
-                .AddVertex(v2)
-                .AddVertex(v3)
-                .AddEdge(e1)
-                .UpdateEdge(e1.WithSource(v3));
-
-            graph.Vertices.Should().BeEquivalentTo(v1, v2, v3);
-            graph.Edges.Should().BeEquivalentTo(new TestEdge(1, v3, v2, "e1"));
-        }
-
-        [Fact]
-        public void UpdateEdge_Target_Works()
-        {
-            var v1 = new TestVertex(1, "v1");
-            var v2 = new TestVertex(2, "v2");
-            var v3 = new TestVertex(3, "v3");
-            var e1 = new TestEdge(1, v1, v2, "e1");
-
-            var graph = TestGraph.Empty()
-                .AddVertex(v1)
-                .AddVertex(v2)
-                .AddVertex(v3)
-                .AddEdge(e1)
-                .UpdateEdge(e1.WithTarget(v3));
-
-            graph.Vertices.Should().BeEquivalentTo(v1, v2, v3);
-            graph.Edges.Should().BeEquivalentTo(new TestEdge(1, v1, v3, "e1"));
+            graph.Edges.Should().BeEquivalentTo(new TestEdge(1, 1, 2, "e2"));
         }
 
         [Fact]
@@ -117,7 +79,7 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
         {
             var v1 = new TestVertex(1, "v1");
             var v2 = new TestVertex(2, "v2");
-            var e1 = new TestEdge(1, v1, v2, "e1");
+            var e1 = new TestEdge(1, 1, 2, "e1");
 
             var graph = TestGraph.Empty()
                 .AddVertex(v1)
@@ -162,8 +124,8 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
             var v1 = new TestVertex(1, "v1");
             var v2 = new TestVertex(2, "v2");
             var v3 = new TestVertex(3, "v3");
-            var e1 = new TestEdge(1, v1, v2, "e1");
-            var e2 = new TestEdge(2, v2, v3, "e2");
+            var e1 = new TestEdge(1, 1, 2, "e1");
+            var e2 = new TestEdge(2, 2, 3, "e2");
 
             var graph = TestGraph.Empty()
                 .AddVertex(v1)
@@ -184,8 +146,8 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
             var v1 = new TestVertex(1, "v1");
             var v2 = new TestVertex(2, "v2");
             var v3 = new TestVertex(3, "v3");
-            var e1 = new TestEdge(1, v1, v2, "e1");
-            var e2 = new TestEdge(2, v2, v3, "e2");
+            var e1 = new TestEdge(1, 1, 2, "e1");
+            var e2 = new TestEdge(2, 2, 3, "e2");
 
             var graph = TestGraph.Empty()
                 .AddVertex(v1)
@@ -217,14 +179,14 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
         public TestVertex WithName(string newName) => new TestVertex(Id, newName);
     }
 
-    public class TestEdge : IImmutableEdge<TestVertex, int, TestEdge, int>
+    public class TestEdge : IImmutableEdge<int, TestEdge, int>
     {
         public int Id { get; }
-        public TestVertex Source { get; }
-        public TestVertex Target { get; }
+        public int Source { get; }
+        public int Target { get; }
         public string Name { get; }
 
-        public TestEdge(int id, TestVertex source, TestVertex target, string name)
+        public TestEdge(int id, int source, int target, string name)
         {
             Id = id;
             Source = source;
@@ -232,8 +194,6 @@ namespace Codartis.SoftVis.UnitTests.Graphs.Immutable
             Name = name;
         }
 
-        public TestEdge WithSource(TestVertex newSource) => new TestEdge(Id, newSource, Target, Name);
-        public TestEdge WithTarget(TestVertex newTarget) => new TestEdge(Id, Source, newTarget, Name);
         public TestEdge WithName(string newName) => new TestEdge(Id, Source, Target, newName);
     }
 }

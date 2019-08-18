@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId>
         where TVertex : IImmutableVertex<TVertexId>
         where TVertexId : IEquatable<TVertexId>
-        where TEdge : IImmutableEdge<TVertex, TVertexId, TEdge, TEdgeId>
+        where TEdge : IImmutableEdge<TVertexId, TEdge, TEdgeId>
         where TEdgeId : IEquatable<TEdgeId>
     {
         [NotNull] private static readonly IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> EmptyWithAllowParallelEdges = CreateEmpty(true);
@@ -45,59 +45,65 @@ namespace Codartis.SoftVis.Graphs.Immutable
             _allowParallelEdges = graph.AllowParallelEdges;
         }
 
-        public bool IsDirected => _graph.IsDirected;
-        public bool AllowParallelEdges => _graph.AllowParallelEdges;
-        public bool ContainsVertex(TVertex v) => _graph.ContainsVertex(v.Id);
-        public bool IsOutEdgesEmpty(TVertex v) => _graph.IsOutEdgesEmpty(v.Id);
-        public int OutDegree(TVertex v) => _graph.OutDegree(v.Id);
-        public IEnumerable<TEdge> OutEdges(TVertex v) => _graph.OutEdges(v.Id).Select(FromVertexIdEdge);
-        public TEdge OutEdge(TVertex v, int index) => FromVertexIdEdge(_graph.OutEdge(v.Id, index));
-        public bool ContainsEdge(TVertex source, TVertex target) => _graph.ContainsEdge(source.Id, target.Id);
-        public bool IsVerticesEmpty => _graph.IsVerticesEmpty;
-        public int VertexCount => _graph.VertexCount;
         public IEnumerable<TVertex> Vertices => _vertices.Values;
-        public bool ContainsEdge(TEdge edge) => _edges.ContainsKey(edge.Id);
-        public bool IsEdgesEmpty => _graph.IsEdgesEmpty;
-        public int EdgeCount => _graph.EdgeCount;
         public IEnumerable<TEdge> Edges => _edges.Values;
-        public bool IsInEdgesEmpty(TVertex v) => _graph.IsInEdgesEmpty(v.Id);
-        public int InDegree(TVertex v) => _graph.InDegree(v.Id);
-        public IEnumerable<TEdge> InEdges(TVertex v) => _graph.InEdges(v.Id).Select(FromVertexIdEdge);
-        public TEdge InEdge(TVertex v, int index) => FromVertexIdEdge(_graph.InEdge(v.Id, index));
-        public int Degree(TVertex v) => _graph.Degree(v.Id);
 
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
-        {
-            var result = _graph.TryGetOutEdges(v.Id, out var vertexIdEdges);
-            edges = vertexIdEdges.Select(FromVertexIdEdge);
-            return result;
-        }
+        public bool ContainsVertex(TVertexId vertexId) => _graph.ContainsVertex(vertexId);
+        public bool ContainsEdge(TEdgeId edgeId) => _edges.ContainsKey(edgeId);
 
-        public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
-        {
-            var result = _graph.TryGetInEdges(v.Id, out var vertexIdEdges);
-            edges = vertexIdEdges.Select(FromVertexIdEdge);
-            return result;
-        }
+        public IEnumerable<TEdge> GetInEdges(TVertexId vertexId) => _graph.InEdges(vertexId).Select(FromVertexIdEdge);
+        public IEnumerable<TEdge> GetOutEdges(TVertexId vertexId) => _graph.OutEdges(vertexId).Select(FromVertexIdEdge);
+        public IEnumerable<TEdge> GetAllEdges(TVertexId vertexId) => GetInEdges(vertexId).Union(GetOutEdges(vertexId));
 
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
-        {
-            var result = _graph.TryGetEdges(source.Id, target.Id, out var vertexIdEdges);
-            edges = vertexIdEdges.Select(FromVertexIdEdge);
-            return result;
-        }
+        //public bool IsDirected => _graph.IsDirected;
+        //public bool AllowParallelEdges => _graph.AllowParallelEdges;
+        //public bool IsOutEdgesEmpty(TVertex v) => _graph.IsOutEdgesEmpty(v.Id);
+        //public int OutDegree(TVertex v) => _graph.OutDegree(v.Id);
+        //public TEdge OutEdge(TVertex v, int index) => FromVertexIdEdge(_graph.OutEdge(v.Id, index));
+        //public bool ContainsEdge(TVertex source, TVertex target) => _graph.ContainsEdge(source.Id, target.Id);
+        //public bool IsVerticesEmpty => _graph.IsVerticesEmpty;
+        //public int VertexCount => _graph.VertexCount;
+        //public IEnumerable<TVertex> Vertices => _vertices.Values;
+        //public bool IsEdgesEmpty => _graph.IsEdgesEmpty;
+        //public int EdgeCount => _graph.EdgeCount;
+        //public IEnumerable<TEdge> Edges => _edges.Values;
+        //public bool IsInEdgesEmpty(TVertex v) => _graph.IsInEdgesEmpty(v.Id);
+        //public int InDegree(TVertex v) => _graph.InDegree(v.Id);
+        //public TEdge InEdge(TVertex v, int index) => FromVertexIdEdge(_graph.InEdge(v.Id, index));
+        //public int Degree(TVertex v) => _graph.Degree(v.Id);
 
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
-        {
-            if (_graph.TryGetEdge(source.Id, target.Id, out var vertexIdEdge))
-            {
-                edge = FromVertexIdEdge(vertexIdEdge);
-                return true;
-            }
+        //public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
+        //{
+        //    var result = _graph.TryGetOutEdges(v.Id, out var vertexIdEdges);
+        //    edges = vertexIdEdges.Select(FromVertexIdEdge);
+        //    return result;
+        //}
 
-            edge = default;
-            return false;
-        }
+        //public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
+        //{
+        //    var result = _graph.TryGetInEdges(v.Id, out var vertexIdEdges);
+        //    edges = vertexIdEdges.Select(FromVertexIdEdge);
+        //    return result;
+        //}
+
+        //public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        //{
+        //    var result = _graph.TryGetEdges(source.Id, target.Id, out var vertexIdEdges);
+        //    edges = vertexIdEdges.Select(FromVertexIdEdge);
+        //    return result;
+        //}
+
+        //public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        //{
+        //    if (_graph.TryGetEdge(source.Id, target.Id, out var vertexIdEdge))
+        //    {
+        //        edge = FromVertexIdEdge(vertexIdEdge);
+        //        return true;
+        //    }
+
+        //    edge = default;
+        //    return false;
+        //}
 
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> AddVertex(TVertex v)
         {
@@ -113,8 +119,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
             EnsureVertexId(newVertex.Id);
 
             var updatedVertices = _vertices.SetItem(newVertex.Id, newVertex);
-            var updatedEdges = ReplaceSourceAndTargetVertexInEdges(newVertex);
-            return CreateInstance(updatedVertices, updatedEdges, _graph);
+            return CreateInstance(updatedVertices, _edges, _graph);
         }
 
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> RemoveVertex(TVertexId vertexId)
@@ -122,10 +127,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
             EnsureVertexId(vertexId);
 
             var updatedVertices = _vertices.Remove(vertexId);
-
-            var updatedEdges = _edges;
-            foreach (var edge in _edges.Values.Where(i => i.Source.Id.Equals(vertexId) || i.Target.Id.Equals(vertexId)))
-                updatedEdges = updatedEdges.Remove(edge.Id);
+            var updatedEdges = _edges.RemoveRange(_graph.GetAllEdges(vertexId).Select(i => i.Id));
 
             var updatedGraph = CloneAndMutateGraph(i => i.RemoveVertex(vertexId));
             return CreateInstance(updatedVertices, updatedEdges, updatedGraph);
@@ -134,8 +136,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> AddEdge(TEdge edge)
         {
             EnsureNoEdgeId(edge.Id);
-            EnsureVertexId(edge.Source.Id);
-            EnsureVertexId(edge.Target.Id);
+            EnsureVertexId(edge.Source);
+            EnsureVertexId(edge.Target);
 
             var updatedEdges = _edges.Add(edge.Id, edge);
             var updatedGraph = CloneAndMutateGraph(i => i.AddEdge(ToVertexIdEdge(edge)));
@@ -145,8 +147,8 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateEdge(TEdge newEdge)
         {
             EnsureEdgeId(newEdge.Id);
-            EnsureVertexId(newEdge.Source.Id);
-            EnsureVertexId(newEdge.Target.Id);
+            EnsureVertexId(newEdge.Source);
+            EnsureVertexId(newEdge.Target);
 
             var updatedEdges = _edges.SetItem(newEdge.Id, newEdge);
             return CreateInstance(_vertices, updatedEdges, _graph);
@@ -166,16 +168,14 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices(Func<TVertex, TVertex> vertexMutatorFunc)
         {
             var updatedVertices = _vertices;
-            var updatedEdges = _edges;
 
-            foreach (var vertex in Vertices)
+            foreach (var vertex in _vertices.Values)
             {
                 var updatedVertex = vertexMutatorFunc(vertex);
                 updatedVertices = updatedVertices.SetItem(vertex.Id, updatedVertex);
-                updatedEdges = ReplaceSourceAndTargetVertexInEdges(updatedVertex);
             }
 
-            return CreateInstance(updatedVertices, updatedEdges, _graph);
+            return CreateInstance(updatedVertices, _edges, _graph);
         }
 
         public IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertices(
@@ -201,7 +201,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
         public IEnumerable<TVertex> GetAdjacentVertices(
             TVertexId vertexId,
             EdgeDirection direction,
-            EdgePredicate<TVertex, TEdge> edgePredicate = null,
+            Predicate<TEdge> edgePredicate = null,
             bool recursive = false)
         {
             if (!_vertices.ContainsKey(vertexId))
@@ -216,11 +216,17 @@ namespace Codartis.SoftVis.Graphs.Immutable
             return vertexIds.Select(FromVertexId);
         }
 
+        public bool IsEdgeRedundant(TEdgeId edgeId)
+        {
+            var edge = GetEdge(edgeId);
+            var paths = _graph.GetShortestPaths(edge.Source, edge.Target, 2);
+            return paths.Count() > 1;
+        }
+
         private TVertex FromVertexId(TVertexId vertexId) => _vertices[vertexId];
         private TEdge FromEdgeId(TEdgeId edgeId) => _edges[edgeId];
 
-        private static VertexIdEdge<TVertexId, TEdgeId> ToVertexIdEdge(TEdge edge)
-            => new VertexIdEdge<TVertexId, TEdgeId>(edge.Id, edge.Source.Id, edge.Target.Id);
+        private static VertexIdEdge<TVertexId, TEdgeId> ToVertexIdEdge(TEdge edge) => new VertexIdEdge<TVertexId, TEdgeId>(edge.Id, edge.Source, edge.Target);
 
         private TEdge FromVertexIdEdge(VertexIdEdge<TVertexId, TEdgeId> vertexIdEdge) => FromEdgeId(vertexIdEdge.Id);
 
@@ -246,24 +252,6 @@ namespace Codartis.SoftVis.Graphs.Immutable
         {
             if (_edges.ContainsKey(id))
                 throw new InvalidOperationException($"Model already contains a edge with id {id}");
-        }
-
-        private ImmutableDictionary<TEdgeId, TEdge> ReplaceSourceAndTargetVertexInEdges(TVertex newVertex)
-        {
-            var updatedEdges = _edges;
-            foreach (var edge in _edges.Values)
-            {
-                var updatedEdge = edge;
-                if (edge.Source.Id.Equals(newVertex.Id))
-                    updatedEdge = edge.WithSource(newVertex);
-                if (edge.Target.Id.Equals(newVertex.Id))
-                    updatedEdge = edge.WithTarget(newVertex);
-
-                if (!ReferenceEquals(edge, updatedEdge))
-                    updatedEdges = updatedEdges.SetItem(edge.Id, updatedEdge);
-            }
-
-            return updatedEdges;
         }
 
         private BidirectionalGraph<TVertexId, VertexIdEdge<TVertexId, TEdgeId>> CloneAndMutateGraph(

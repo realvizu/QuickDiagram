@@ -68,7 +68,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ILayoutGroup UpdateNode(IDiagramNode updatedNode)
         {
             return CreateInstance(
-                _graph.ContainsVertex(updatedNode)
+                _graph.ContainsVertex(updatedNode.Id)
                     ? _graph.UpdateVertex(updatedNode)
                     : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).UpdateNode(updatedNode)));
         }
@@ -82,9 +82,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public ILayoutGroup AddConnector(IDiagramConnector connector)
         {
-            if (connector.IsCrossingLayoutGroups)
-                throw new InvalidOperationException($"Cannot add connector {connector} to layout group {_layoutGroupNodeId} because is crosses layout groups.");
-
             return CreateInstance(
                 _graph.ContainsVertex(connector.Source)
                     ? _graph.AddEdge(connector)
@@ -93,9 +90,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public ILayoutGroup UpdateConnector(IDiagramConnector updatedConnector)
         {
-            if (updatedConnector.IsCrossingLayoutGroups)
-                throw new InvalidOperationException($"Cannot update connector {updatedConnector} in layout group {_layoutGroupNodeId} because is crosses layout groups.");
-
             return CreateInstance(
                 _graph.ContainsVertex(updatedConnector.Source)
                     ? _graph.UpdateEdge(updatedConnector)

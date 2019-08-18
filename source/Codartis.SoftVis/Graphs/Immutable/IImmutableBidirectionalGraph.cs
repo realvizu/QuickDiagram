@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Codartis.Util;
 using JetBrains.Annotations;
-using QuickGraph;
 
 namespace Codartis.SoftVis.Graphs.Immutable
 {
@@ -19,13 +18,22 @@ namespace Codartis.SoftVis.Graphs.Immutable
     /// WARNING: use only immutable types as TVertex and TEdge!
     /// TVertex and TEdge must have a unique, stable ID that identifies instances across versions.
     /// </remarks>
-    public interface IImmutableBidirectionalGraph<TVertex, in TVertexId, TEdge, in TEdgeId> :
-        IBidirectionalGraph<TVertex, TEdge>
+    public interface IImmutableBidirectionalGraph<TVertex, in TVertexId, TEdge, in TEdgeId>
         where TVertex : IImmutableVertex<TVertexId>
         where TVertexId : IEquatable<TVertexId>
-        where TEdge : IImmutableEdge<TVertex, TVertexId, TEdge, TEdgeId>
+        where TEdge : IImmutableEdge<TVertexId, TEdge, TEdgeId>
         where TEdgeId : IEquatable<TEdgeId>
     {
+        IEnumerable<TVertex> Vertices { get; }
+        IEnumerable<TEdge> Edges { get; }
+
+        bool ContainsVertex(TVertexId vertexId);
+        bool ContainsEdge(TEdgeId edgeId);
+
+        IEnumerable<TEdge> GetInEdges(TVertexId vertexId);
+        IEnumerable<TEdge> GetOutEdges(TVertexId vertexId);
+        IEnumerable<TEdge> GetAllEdges(TVertexId vertexId);
+
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> AddVertex(TVertex vertex);
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> UpdateVertex(TVertex newVertex);
         IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> RemoveVertex(TVertexId vertexId);
@@ -47,14 +55,14 @@ namespace Codartis.SoftVis.Graphs.Immutable
         TEdge GetEdge(TEdgeId edgeId);
         Maybe<TEdge> TryGetEdge(TEdgeId edgeId);
 
-        // TODO: to extension method?
         bool PathExists(TVertexId sourceVertexId, TVertexId targetVertexId);
 
-        // TODO: to extension method?
         IEnumerable<TVertex> GetAdjacentVertices(
             TVertexId vertexId,
             EdgeDirection direction,
-            EdgePredicate<TVertex, TEdge> edgePredicate = null,
+            Predicate<TEdge> edgePredicate = null,
             bool recursive = false);
+
+        bool IsEdgeRedundant(TEdgeId edgeId);
     }
 }

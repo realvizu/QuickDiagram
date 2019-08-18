@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.UI
 {
@@ -7,6 +7,6 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUiRepository
     {
-        bool TryGetDiagramNodeUi(IDiagramNode diagramNode, out IDiagramNodeUi viewModel);
+        bool TryGetDiagramNodeUi(ModelNodeId modelNodeId, out IDiagramNodeUi viewModel);
     }
 }

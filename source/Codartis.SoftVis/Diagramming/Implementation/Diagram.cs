@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -21,9 +20,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _crossLayoutGroupConnectors;
 
-        [NotNull] public ILayoutGroup RootLayoutGroup { get; }
-        [NotNull] public IImmutableSet<IDiagramNode> Nodes { get; }
-        [NotNull] public IImmutableSet<IDiagramConnector> Connectors { get; }
+        public ILayoutGroup RootLayoutGroup { get; }
+        public IImmutableSet<IDiagramNode> Nodes { get; }
+        public IImmutableSet<IDiagramConnector> Connectors { get; }
 
         [NotNull] private readonly IDiagramGraph _allShapesGraph;
 
@@ -39,7 +38,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _allShapesGraph = DiagramGraph.Create(Nodes, Connectors);
         }
 
-        [NotNull] public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values.ToImmutableHashSet();
+        public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values.ToImmutableHashSet();
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => Connectors.Any(i => i.Id == modelRelationshipId);
@@ -56,12 +55,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 () => false);
         }
 
-        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId)
-        {
-            return TryGetConnector(modelRelationshipId).Match(
-                connector => _allShapesGraph.IsEdgeRedundant(connector),
-                () => false);
-        }
+        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId) => _allShapesGraph.IsEdgeRedundant(modelRelationshipId);
 
         public IDiagramNode GetNode(ModelNodeId modelNodeId) => Nodes.Single(i => i.Id == modelNodeId);
 
@@ -72,7 +66,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId)
             => Connectors.SingleOrDefault(i => i.Id == modelRelationshipId).ToMaybe();
 
-        public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id) => Connectors.Where(i => i.Source.Id == id || i.Target.Id == id);
+        public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id) => Connectors.Where(i => i.Source == id || i.Target == id);
 
         //public IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
         //{
@@ -111,33 +105,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram AddConnector(IDiagramConnector connector)
         {
-            // TODO: hack, should find a better way. We construct a new connector with up-to-date node info.
-            var freshConnector = new DiagramConnector(
-                connector.ModelRelationship,
-                GetNode(connector.Source.Id),
-                GetNode(connector.Target.Id),
-                connector.ConnectorType,
-                connector.Route);
-
-            return freshConnector.IsCrossingLayoutGroups
-                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.Add(freshConnector.Id, freshConnector))
-                : CreateInstance(RootLayoutGroup.AddConnector(freshConnector), _crossLayoutGroupConnectors);
+            return IsCrossingLayoutGroups(connector.Id)
+                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.Add(connector.Id, connector))
+                : CreateInstance(RootLayoutGroup.AddConnector(connector), _crossLayoutGroupConnectors);
         }
 
         public IDiagram UpdateConnector(IDiagramConnector updatedConnector)
         {
-            // TODO: changing source/target is not supported.
-            // TODO: hack, should find a better way. We construct a new connector with up-to-date node info.
-            var freshConnector = new DiagramConnector(
-                updatedConnector.ModelRelationship,
-                GetNode(updatedConnector.Source.Id),
-                GetNode(updatedConnector.Target.Id),
-                updatedConnector.ConnectorType,
-                updatedConnector.Route);
-
-            return freshConnector.IsCrossingLayoutGroups
-                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.SetItem(freshConnector.Id, freshConnector))
-                : CreateInstance(RootLayoutGroup.UpdateConnector(freshConnector), _crossLayoutGroupConnectors);
+            return IsCrossingLayoutGroups(updatedConnector.Id)
+                ? CreateInstance(RootLayoutGroup, _crossLayoutGroupConnectors.SetItem(updatedConnector.Id, updatedConnector))
+                : CreateInstance(RootLayoutGroup.UpdateConnector(updatedConnector), _crossLayoutGroupConnectors);
         }
 
         public IDiagram RemoveConnector(ModelRelationshipId connectorId)
@@ -148,6 +125,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public IDiagram Clear() => CreateInstance(RootLayoutGroup.Clear(), _crossLayoutGroupConnectors.Clear());
+
+        public bool IsCrossingLayoutGroups(ModelRelationshipId modelRelationshipId)
+        {
+            var connector = GetConnector(modelRelationshipId);
+            return GetNode(connector.Source).ParentNodeId != GetNode(connector.Target).ParentNodeId;
+        }
 
         [NotNull]
         private static IDiagram CreateInstance(

@@ -19,18 +19,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IModel Model { get; protected set; }
 
         [NotNull] protected readonly object ModelUpdateLockObject;
-        [NotNull] protected readonly IModelRelationshipFactory ModelRelationshipFactory;
 
         public event Action<ModelEventBase> ModelChanged;
 
-        public ModelService([NotNull] IModelRelationshipFactory modelRelationshipFactory)
+        public ModelService()
         {
             Model = Implementation.Model.Empty;
             ModelUpdateLockObject = new object();
-            ModelRelationshipFactory = modelRelationshipFactory;
         }
 
-        public void AddNode(IModelNode node, IModelNode parentNode = null) => RaiseEvents(AddNodeCore(node, parentNode));
+        public void AddNode(IModelNode node, ModelNodeId? parentNodeId = null) => RaiseEvents(AddNodeCore(node, parentNodeId));
         public void UpdateNode(IModelNode newNode) => RaiseEvents(UpdateNodeCore(newNode));
         public void RemoveNode(ModelNodeId nodeId) => RaiseEvents(RemoveNodeCore(nodeId));
         public void AddRelationship(IModelRelationship relationship) => RaiseEvents(AddRelationshipCore(relationship));
@@ -46,24 +44,27 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<ModelEventBase> AddNodeCore(IModelNode node, IModelNode parentNode = null)
+        private IEnumerable<ModelEventBase> AddNodeCore(IModelNode node, ModelNodeId? parentNodeId = null)
         {
             lock (ModelUpdateLockObject)
             {
                 Model = Model.AddNode(node);
                 yield return new ModelNodeAddedEvent(Model, node);
 
-                if (parentNode == null)
+                if (!parentNodeId.HasValue)
                     yield break;
 
-                if (!Model.Nodes.Contains(parentNode))
-                    throw new ArgumentException($"{parentNode} is not found in the model.");
-
-                var containsRelationship = ModelRelationshipFactory.CreateRelationship(parentNode, node, ModelRelationshipStereotype.Containment);
+                var containsRelationship = CreateContainsRelationship(parentNodeId.Value, node.Id);
 
                 foreach (var @event in AddRelationshipCore(containsRelationship))
                     yield return @event;
             }
+        }
+
+        [NotNull]
+        private static ModelRelationship CreateContainsRelationship(ModelNodeId source, ModelNodeId target)
+        {
+            return new ModelRelationship(ModelRelationshipId.Create(), source, target, ModelRelationshipStereotype.Containment);
         }
 
         [NotNull]

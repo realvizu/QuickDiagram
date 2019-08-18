@@ -10,13 +10,12 @@ namespace Codartis.SoftVis.Diagramming
     /// Immutable.
     /// </summary>
     public interface IDiagramConnector : IDiagramShape, 
-        IImmutableEdge<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>
+        IImmutableEdge<ModelNodeId, IDiagramConnector, ModelRelationshipId>
     {
         IModelRelationship ModelRelationship { get; }
 
         ConnectorType ConnectorType { get; }
         Route Route { get; }
-        bool IsCrossingLayoutGroups { get; }
 
         IDiagramConnector WithRoute(Route newRoute);
     }

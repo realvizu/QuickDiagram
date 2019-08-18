@@ -23,40 +23,46 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
 
         public IDictionary<ModelNodeId, Rect2D> Calculate(IEnumerable<IDiagramNode> nodes, IEnumerable<IDiagramConnector> connectors)
         {
-            var diagramNodeToLayoutVertexMap = new Map<IDiagramNode, DiagramNodeLayoutVertex>(new DiagramNodeIdEqualityComparer());
-            var diagramConnectorToLayoutPathMap = new Map<IDiagramConnector, LayoutPath>(new DiagramConnectorIdEqualityComparer());
+            var diagramNodeToLayoutVertexMap = new Map<ModelNodeId, DiagramNodeLayoutVertex>();
+            var diagramConnectorToLayoutPathMap = new Map<ModelRelationshipId, LayoutPath>();
 
-            var layoutVertices = nodes.Select(i => CreateLayoutVertex(i, diagramNodeToLayoutVertexMap)).OrderBy(i => i.DiagramNode.AddedAt).ThenBy(i => i.Name).ToList();
+            var layoutVertices = nodes.Select(i => CreateLayoutVertex(i, diagramNodeToLayoutVertexMap)).OrderBy(i => i.DiagramNode.AddedAt).ThenBy(i => i.Name)
+                .ToList();
             var layoutPaths = connectors.Select(i => CreateLayoutPath(i, diagramNodeToLayoutVertexMap, diagramConnectorToLayoutPathMap)).ToList();
 
             var relativeLayout = RelativeLayoutCalculator.Calculate(layoutVertices, layoutPaths);
             var layoutVertexToPointMap = AbsolutePositionCalculator.GetVertexCenters(relativeLayout, HorizontalGap, VerticalGap);
 
-            return diagramNodeToLayoutVertexMap.ToDictionary(i => i.Key.Id, i => Rect2D.CreateFromCenterAndSize(layoutVertexToPointMap.Get(i.Value), i.Value.Size));
+            return diagramNodeToLayoutVertexMap.ToDictionary(
+                i => i.Key,
+                i => Rect2D.CreateFromCenterAndSize(layoutVertexToPointMap.Get(i.Value), i.Value.Size));
         }
 
-        private DiagramNodeLayoutVertex CreateLayoutVertex(IDiagramNode diagramNode, Map<IDiagramNode, DiagramNodeLayoutVertex> diagramNodeToLayoutVertexMap)
+        private DiagramNodeLayoutVertex CreateLayoutVertex(IDiagramNode diagramNode, Map<ModelNodeId, DiagramNodeLayoutVertex> diagramNodeToLayoutVertexMap)
         {
-            if (diagramNodeToLayoutVertexMap.Contains(diagramNode))
+            if (diagramNodeToLayoutVertexMap.Contains(diagramNode.Id))
                 throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
 
             var diagramNodeLayoutPriority = _layoutPriorityProvider.GetPriority(diagramNode);
             var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNodeLayoutPriority);
-            diagramNodeToLayoutVertexMap.Set(diagramNode, diagramNodeLayoutVertex);
+            diagramNodeToLayoutVertexMap.Set(diagramNode.Id, diagramNodeLayoutVertex);
 
             return diagramNodeLayoutVertex;
         }
 
-        private LayoutPath CreateLayoutPath(IDiagramConnector diagramConnector, Map<IDiagramNode, DiagramNodeLayoutVertex> diagramNodeToLayoutVertexMap, Map<IDiagramConnector, LayoutPath> diagramConnectorToLayoutPathMap)
+        private LayoutPath CreateLayoutPath(
+            IDiagramConnector diagramConnector,
+            Map<ModelNodeId, DiagramNodeLayoutVertex> diagramNodeToLayoutVertexMap,
+            Map<ModelRelationshipId, LayoutPath> diagramConnectorToLayoutPathMap)
         {
-            if (diagramConnectorToLayoutPathMap.Contains(diagramConnector))
+            if (diagramConnectorToLayoutPathMap.Contains(diagramConnector.Id))
                 throw new InvalidOperationException($"Diagram connector {diagramConnector} already added.");
 
             var sourceVertex = diagramNodeToLayoutVertexMap.Get(diagramConnector.Source);
             var targetVertex = diagramNodeToLayoutVertexMap.Get(diagramConnector.Target);
             var layoutPath = new LayoutPath(sourceVertex, targetVertex, diagramConnector);
 
-            diagramConnectorToLayoutPathMap.Set(diagramConnector, layoutPath);
+            diagramConnectorToLayoutPathMap.Set(diagramConnector.Id, layoutPath);
 
             return layoutPath;
         }

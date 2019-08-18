@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -11,17 +10,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// <summary>
     /// Implements diagram-related operations.
     /// </summary>
-    public abstract class DiagramService : IDiagramService
+    public class DiagramService : IDiagramService
     {
         protected DiagramStore DiagramStore { get; }
-        protected IModelService ModelService { get; }
-        protected IDiagramShapeFactory DiagramShapeFactory { get; }
 
-        protected DiagramService(IDiagram diagram, IModelService modelService, IDiagramShapeFactory diagramShapeFactory)
+        public DiagramService(IDiagram diagram)
         {
             DiagramStore = new DiagramStore(diagram);
-            ModelService = modelService;
-            DiagramShapeFactory = diagramShapeFactory;
         }
 
         public IDiagram Diagram => DiagramStore.Diagram;
@@ -46,53 +41,53 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute) => DiagramStore.UpdateConnectorRoute(connectorId, newRoute);
         public void ClearDiagram() => DiagramStore.ClearDiagram();
 
-        public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
+        //public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
 
         public IDiagramNode GetDiagramNode(ModelNodeId id) => Diagram.GetNode(id);
 
-        public IDiagramNode ShowModelNode(IModelNode modelNode)
-        {
-            return DiagramStore.Diagram.TryGetNode(modelNode.Id).Match(
-                node => node,
-                () => AddNode(modelNode)
-            );
-        }
+        //public IDiagramNode ShowModelNode(IModelNode modelNode)
+        //{
+        //    return DiagramStore.Diagram.TryGetNode(modelNode.Id).Match(
+        //        node => node,
+        //        () => AddNode(modelNode)
+        //    );
+        //}
 
-        private IDiagramNode AddNode(IModelNode modelNode)
-        {
-           var maybeParentModelNode =  ModelService.Model.TryGetParentNode(modelNode.Id);
+        //private IDiagramNode AddNode(IModelNode modelNode)
+        //{
+        //   var maybeParentModelNode =  ModelService.Model.TryGetParentNode(modelNode.Id);
 
-            var diagramNode = DiagramShapeFactory.CreateDiagramNode(this, modelNode, maybeParentModelNode.FromMaybe());
-            DiagramStore.AddNode(diagramNode);
-            return diagramNode;
-        }
+        //    var diagramNode = new DiagramNode(modelNode, maybeParentModelNode.FromMaybe());
+        //    DiagramStore.AddNode(diagramNode);
+        //    return diagramNode;
+        //}
 
-        public IReadOnlyList<IDiagramNode> ShowModelNodes(
-            IEnumerable<IModelNode> modelNodes,
-            CancellationToken cancellationToken,
-            IIncrementalProgress progress)
-        {
-            var diagramNodes = new List<IDiagramNode>();
+        //public IReadOnlyList<IDiagramNode> ShowModelNodes(
+        //    IEnumerable<IModelNode> modelNodes,
+        //    CancellationToken cancellationToken,
+        //    IIncrementalProgress progress)
+        //{
+        //    var diagramNodes = new List<IDiagramNode>();
 
-            foreach (var modelNode in modelNodes)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+        //    foreach (var modelNode in modelNodes)
+        //    {
+        //        cancellationToken.ThrowIfCancellationRequested();
 
-                var diagramNode = ShowModelNode(modelNode);
-                diagramNodes.Add(diagramNode);
+        //        var diagramNode = ShowModelNode(modelNode);
+        //        diagramNodes.Add(diagramNode);
 
-                progress?.Report(1);
-            }
+        //        progress?.Report(1);
+        //    }
 
-            return diagramNodes;
-        }
+        //    return diagramNodes;
+        //}
 
-        public void HideModelNode(ModelNodeId modelNodeId)
-        {
-            var diagram = DiagramStore.Diagram;
-            if (diagram.NodeExists(modelNodeId))
-                RemoveNode(modelNodeId, diagram);
-        }
+        //public void HideModelNode(ModelNodeId modelNodeId)
+        //{
+        //    var diagram = DiagramStore.Diagram;
+        //    if (diagram.NodeExists(modelNodeId))
+        //        RemoveNode(modelNodeId, diagram);
+        //}
 
         private void RemoveNode(ModelNodeId modelNodeId, IDiagram diagram)
         {
@@ -103,30 +98,31 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             DiagramStore.RemoveNode(modelNodeId);
         }
 
-        public void ShowModelRelationship(IModelRelationship modelRelationship)
-        {
-            if (modelRelationship.Stereotype == ModelRelationshipStereotype.Containment)
-                return;
+        //public void ShowModelRelationship(IModelRelationship modelRelationship)
+        //{
+        //    if (modelRelationship.Stereotype == ModelRelationshipStereotype.Containment)
+        //        return;
 
-            var diagram = DiagramStore.Diagram;
-            if (diagram.ConnectorExists(modelRelationship.Id))
-                return;
+        //    var diagram = DiagramStore.Diagram;
+        //    if (diagram.ConnectorExists(modelRelationship.Id))
+        //        return;
 
-            var diagramConnectorSpec = DiagramShapeFactory.CreateDiagramConnector(this, modelRelationship);
-            DiagramStore.AddConnector(diagramConnectorSpec);
-        }
+        //    var diagramConnectorSpec = DiagramShapeFactory.CreateDiagramConnector(modelRelationship);
+        //    DiagramStore.AddConnector(diagramConnectorSpec);
+        //}
 
-        public void HideModelRelationship(ModelRelationshipId modelRelationshipId)
-        {
-            var diagram = DiagramStore.Diagram;
-            if (diagram.ConnectorExists(modelRelationshipId))
-                DiagramStore.RemoveConnector(modelRelationshipId);
-        }
+        //public void HideModelRelationship(ModelRelationshipId modelRelationshipId)
+        //{
+        //    var diagram = DiagramStore.Diagram;
+        //    if (diagram.ConnectorExists(modelRelationshipId))
+        //        DiagramStore.RemoveConnector(modelRelationshipId);
+        //}
 
         public Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
         {
-            return ModelService.Model.TryGetParentNode(diagramNode.Id)
-                .Select(i => Diagram.TryGetNode(i.Id).Cast<IDiagramNode, IContainerDiagramNode>());
+            return diagramNode.ParentNodeId == null
+                ? Maybe<IContainerDiagramNode>.Nothing
+                : Maybe.Create((IContainerDiagramNode)GetDiagramNode(diagramNode.ParentNodeId.Value));
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
@@ -135,6 +131,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return modelNodeIds
                 .Select(i => diagram.TryGetNode(i).Match(j => j.Rect, () => Rect2D.Zero))
                 .Union();
+        }
+
+        public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
+        {
+            throw new NotImplementedException();
         }
     }
 }

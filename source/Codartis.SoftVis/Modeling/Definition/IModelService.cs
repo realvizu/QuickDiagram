@@ -16,9 +16,9 @@ namespace Codartis.SoftVis.Modeling.Definition
 
         /// <summary>
         /// Adds a node to the model.
-        /// If a parentNode is specified then also creates a containment relationship.
+        /// If a parentNodeId is specified then also creates a containment relationship.
         /// </summary>
-        void AddNode([NotNull] IModelNode node, IModelNode parentNode = null);
+        void AddNode([NotNull] IModelNode node, ModelNodeId? parentNodeId = null);
 
         void UpdateNode([NotNull] IModelNode newNode);
         void RemoveNode(ModelNodeId nodeId);
