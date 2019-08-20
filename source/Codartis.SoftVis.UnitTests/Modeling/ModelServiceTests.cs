@@ -1,7 +1,6 @@
 ﻿using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.SoftVis.Modeling.Implementation;
-using Codartis.SoftVis.UnitTests.TestSubjects;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;

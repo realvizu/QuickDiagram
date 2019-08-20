@@ -1,6 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers;
-using Codartis.SoftVis.UnitTests.TestSubjects;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {

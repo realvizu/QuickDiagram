@@ -1,7 +1,7 @@
 ﻿using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
 
-namespace Codartis.SoftVis.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.Modeling
 {
     internal class TestModelNode : ModelNode
     {

@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 
-namespace Codartis.SoftVis.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout
 {
     internal class TestDummyLayoutVertex : DummyLayoutVertex
     {

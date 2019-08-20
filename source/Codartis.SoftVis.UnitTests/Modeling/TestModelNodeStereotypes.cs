@@ -1,6 +1,6 @@
 ﻿using Codartis.SoftVis.Modeling.Definition;
 
-namespace Codartis.SoftVis.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.Modeling
 {
     public static class TestModelNodeStereotypes
     {

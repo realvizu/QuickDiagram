@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.Geometry;
 
-namespace Codartis.SoftVis.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.Diagramming.Layout
 {
     internal class TestLayoutVertex : DiagramNodeLayoutVertex
     {

@@ -3,8 +3,9 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.UnitTests.Modeling;
 
-namespace Codartis.SoftVis.UnitTests.TestSubjects
+namespace Codartis.SoftVis.UnitTests.Diagramming
 {
     internal sealed class TestDiagramNode : ContainerDiagramNodeBase
     {
