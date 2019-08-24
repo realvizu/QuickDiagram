@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Implementation
 {
@@ -13,11 +13,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
     public class ModelNode : IModelNode
     {
         public ModelNodeId Id { get; }
-        public string Name { get; }
-        public ModelNodeStereotype Stereotype { get; }
+        [NotNull] public string Name { get; }
+        [NotNull] public ModelNodeStereotype Stereotype { get; }
         public ModelOrigin Origin { get; }
 
-        public ModelNode(ModelNodeId id, string name, ModelNodeStereotype stereotype, ModelOrigin origin)
+        public ModelNode(ModelNodeId id, [NotNull] string name, [NotNull] ModelNodeStereotype stereotype, ModelOrigin origin)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -27,23 +27,12 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public override string ToString() => $"{Stereotype} {Name} [{Id}]";
 
-        public static IEqualityComparer<IModelNode> IdComparer { get; } = new IdEqualityComparer();
+        public IModelNode WithName(string newName) => CreateInstance(Id, newName, Stereotype, Origin);
 
-        private sealed class IdEqualityComparer : IEqualityComparer<IModelNode>
+        [NotNull]
+        protected virtual IModelNode CreateInstance(ModelNodeId id, [NotNull] string name, [NotNull] ModelNodeStereotype stereotype, ModelOrigin origin)
         {
-            public bool Equals(IModelNode x, IModelNode y)
-            {
-                if (ReferenceEquals(x, y)) return true;
-                if (ReferenceEquals(x, null)) return false;
-                if (ReferenceEquals(y, null)) return false;
-                if (x.GetType() != y.GetType()) return false;
-                return x.Id.Equals(y.Id);
-            }
-
-            public int GetHashCode(IModelNode obj)
-            {
-                return obj.Id.GetHashCode();
-            }
+            return new ModelNode(id, name, stereotype, origin);
         }
     }
 }

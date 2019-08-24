@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Graphs.Immutable;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Definition
 {
@@ -9,9 +10,10 @@ namespace Codartis.SoftVis.Modeling.Definition
     public interface IModelNode : IImmutableVertex<ModelNodeId>
     {
         string Name { get; }
-
         ModelNodeStereotype Stereotype { get; }
-
         ModelOrigin Origin { get; }
+
+        [NotNull]
+        IModelNode WithName([NotNull] string newName);
     }
 }

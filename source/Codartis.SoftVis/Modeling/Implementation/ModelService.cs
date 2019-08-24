@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<ModelEventBase> AddNodeCore(IModelNode node, ModelNodeId? parentNodeId = null)
+        private IEnumerable<ModelEventBase> AddNodeCore([NotNull] IModelNode node, ModelNodeId? parentNodeId = null)
         {
             lock (ModelUpdateLockObject)
             {
@@ -62,20 +62,17 @@ namespace Codartis.SoftVis.Modeling.Implementation
         }
 
         [NotNull]
-        private static ModelRelationship CreateContainsRelationship(ModelNodeId source, ModelNodeId target)
-        {
-            return new ModelRelationship(ModelRelationshipId.Create(), source, target, ModelRelationshipStereotype.Containment);
-        }
-
-        [NotNull]
         [ItemNotNull]
         private IEnumerable<ModelEventBase> UpdateNodeCore([NotNull] IModelNode newNode)
         {
             lock (ModelUpdateLockObject)
             {
-                var oldNode = Model.GetNode(newNode.Id);
+                var maybeOldNode = Model.TryGetNode(newNode.Id);
+                if (!maybeOldNode.HasValue)
+                    throw new InvalidOperationException($"Node with id {newNode.Id} was not found in the model.");
+
                 Model = Model.ReplaceNode(newNode);
-                yield return new ModelNodeUpdatedEvent(Model, oldNode, newNode);
+                yield return new ModelNodeUpdatedEvent(Model, maybeOldNode.Value, newNode);
             }
         }
 
@@ -96,7 +93,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<ModelEventBase> AddRelationshipCore(IModelRelationship relationship)
+        private IEnumerable<ModelEventBase> AddRelationshipCore([NotNull] IModelRelationship relationship)
         {
             lock (ModelUpdateLockObject)
             {
@@ -126,6 +123,12 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 Model = Model.Clear();
                 yield return new ModelClearedEvent(Model);
             }
+        }
+
+        [NotNull]
+        private static ModelRelationship CreateContainsRelationship(ModelNodeId source, ModelNodeId target)
+        {
+            return new ModelRelationship(ModelRelationshipId.Create(), source, target, ModelRelationshipStereotype.Containment);
         }
     }
 }

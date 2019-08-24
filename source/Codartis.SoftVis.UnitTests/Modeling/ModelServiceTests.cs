@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
+﻿using System;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.SoftVis.Modeling.Implementation;
 using FluentAssertions;
@@ -66,6 +67,30 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             modelService.Model.Nodes.Should().BeEquivalentTo(parent, child);
             modelService.Model.GetRelatedNodes(child.Id, CommonDirectedModelRelationshipTypes.Container).Should().BeEquivalentTo(parent);
             modelService.Model.GetRelatedNodes(parent.Id, CommonDirectedModelRelationshipTypes.Contained).Should().BeEquivalentTo(child);
+        }
+
+        [Fact]
+        public void UpdateNode_Works()
+        {
+            var modelService = CreateModelService();
+
+            var node1 = new TestModelNode("Node1");
+            modelService.AddNode(node1);
+            var node1A = node1.WithName("Node1A");
+            modelService.UpdateNode(node1A);
+
+            modelService.Model.Nodes.Should().BeEquivalentTo(node1A);
+        }
+
+        [Fact]
+        public void UpdateNode_NonExistingId_Throws()
+        {
+            var modelService = CreateModelService();
+
+            var node1 = new TestModelNode("Node1");
+            Action a = () => modelService.UpdateNode(node1);
+
+            a.Should().Throw<InvalidOperationException>().Where(i => i.Message.Contains("not found"));
         }
 
         [NotNull]
