@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
@@ -10,29 +10,54 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// <remarks>
     /// The Id field is used to track identity through mutated instances so its value must be kept unchanged by all mutators.
     /// </remarks>
-    public class ModelNode : IModelNode
+    public sealed class ModelNode : IModelNode
     {
+        public static IEqualityComparer<IModelNode> IdComparer { get; } = new IdEqualityComparer();
+
         public ModelNodeId Id { get; }
-        [NotNull] public string Name { get; }
-        [NotNull] public ModelNodeStereotype Stereotype { get; }
+        public string Name { get; }
+        public ModelNodeStereotype Stereotype { get; }
         public ModelOrigin Origin { get; }
 
-        public ModelNode(ModelNodeId id, [NotNull] string name, [NotNull] ModelNodeStereotype stereotype, ModelOrigin origin)
+        public ModelNode(ModelNodeId id, [NotNull] string name, ModelNodeStereotype stereotype, ModelOrigin origin)
         {
             Id = id;
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Stereotype = stereotype ?? throw new ArgumentNullException(nameof(stereotype));
+            Name = name;
+            Stereotype = stereotype;
             Origin = origin;
         }
 
-        public override string ToString() => $"{Stereotype} {Name} [{Id}]";
+
+        public override string ToString() => $"<<{Stereotype}>> {Name} [{Id}]";
 
         public IModelNode WithName(string newName) => CreateInstance(Id, newName, Stereotype, Origin);
 
         [NotNull]
-        protected virtual IModelNode CreateInstance(ModelNodeId id, [NotNull] string name, [NotNull] ModelNodeStereotype stereotype, ModelOrigin origin)
+        private static IModelNode CreateInstance(ModelNodeId id, [NotNull] string name, ModelNodeStereotype stereotype, ModelOrigin origin)
         {
             return new ModelNode(id, name, stereotype, origin);
+        }
+
+        private sealed class IdEqualityComparer : IEqualityComparer<IModelNode>
+        {
+            public bool Equals(IModelNode x, IModelNode y)
+            {
+                if (ReferenceEquals(x, y))
+                    return true;
+                if (ReferenceEquals(x, null))
+                    return false;
+                if (ReferenceEquals(y, null))
+                    return false;
+                if (x.GetType() != y.GetType())
+                    return false;
+
+                return x.Id.Equals(y.Id);
+            }
+
+            public int GetHashCode(IModelNode obj)
+            {
+                return obj.Id.GetHashCode();
+            }
         }
     }
 }

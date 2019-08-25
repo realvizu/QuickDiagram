@@ -13,11 +13,11 @@ namespace Codartis.SoftVis.Modeling.Definition
 
         public DirectedModelRelationshipType(ModelRelationshipStereotype stereotype, EdgeDirection direction)
         {
-            Stereotype = stereotype ?? throw new ArgumentNullException(nameof(stereotype));
+            Stereotype = stereotype;
             Direction = direction;
         }
 
-        public override string ToString() => $"{Stereotype}/{Direction}";
+        public override string ToString() => $"<<{Stereotype}>>/{Direction}";
 
         public bool Equals(DirectedModelRelationshipType other)
         {
@@ -26,15 +26,14 @@ namespace Codartis.SoftVis.Modeling.Definition
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is DirectedModelRelationshipType && Equals((DirectedModelRelationshipType) obj);
+            return obj is DirectedModelRelationshipType other && Equals(other);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (Stereotype.GetHashCode() * 397) ^ (int) Direction;
+                return (Stereotype.GetHashCode() * 397) ^ (int)Direction;
             }
         }
 

@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// </summary>
     public interface IModelNode : IImmutableVertex<ModelNodeId>
     {
-        string Name { get; }
+        [NotNull] string Name { get; }
         ModelNodeStereotype Stereotype { get; }
         ModelOrigin Origin { get; }
 

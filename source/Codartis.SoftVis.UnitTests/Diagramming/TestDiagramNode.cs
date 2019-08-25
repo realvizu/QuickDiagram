@@ -3,14 +3,14 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.UnitTests.Modeling;
+using Codartis.SoftVis.Modeling.Implementation;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming
 {
     internal sealed class TestDiagramNode : ContainerDiagramNodeBase
     {
         public TestDiagramNode(string name = "dummy")
-            : base(new TestModelNode(name))
+            : base(new ModelNode(ModelNodeId.Create(), name, default, ModelOrigin.Unknown))
         {
         }
 

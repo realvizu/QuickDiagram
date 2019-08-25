@@ -1,13 +1,17 @@
-﻿namespace Codartis.SoftVis.Modeling.Definition
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
-    /// Extensible list of model node types.
+    /// A model node type.
     /// </summary>
-    public sealed class ModelNodeStereotype
+    public struct ModelNodeStereotype
     {
-        public string Name { get; }
+        public static ModelNodeStereotype Default = default;
 
-        public ModelNodeStereotype(string name)
+        [NotNull] public string Name { get; }
+
+        public ModelNodeStereotype([NotNull] string name)
         {
             Name = name;
         }

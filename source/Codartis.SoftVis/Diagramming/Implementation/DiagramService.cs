@@ -41,7 +41,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute) => DiagramStore.UpdateConnectorRoute(connectorId, newRoute);
         public void ClearDiagram() => DiagramStore.ClearDiagram();
 
-        //public abstract ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype);
+        public ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype)
+        {
+            return ConnectorTypes.Dependency;
+
+        }
 
         public IDiagramNode GetDiagramNode(ModelNodeId id) => Diagram.GetNode(id);
 
@@ -133,7 +137,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 .Union();
         }
 
-        public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
+        public ConnectorType GetConnectorType(string stereotype)
         {
             throw new NotImplementedException();
         }

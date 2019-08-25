@@ -21,7 +21,8 @@ namespace Codartis.Util
             return sourceList.Take(sourceList.Count - count);
         }
 
-        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> collection)
+        [NotNull]
+        public static IEnumerable<T> EmptyIfNull<T>([CanBeNull]this IEnumerable<T> collection)
         {
             return collection ?? Enumerable.Empty<T>();
         }

@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// <remarks>
     /// For bidirectional relationships the model contains two directed relationships.
     /// </remarks>
-    public interface IModelRelationship 
+    public interface IModelRelationship
         : IImmutableEdge<ModelNodeId, IModelRelationship, ModelRelationshipId>
     {
         ModelRelationshipStereotype Stereotype { get; }
