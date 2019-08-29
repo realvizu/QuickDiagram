@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
@@ -72,7 +73,12 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             ModelService.AddItemToCurrentGroup(propertyNode);
 
             var propertyTypeNode = GetNodeByName(propertyTypeName);
-            var association = new AssociationRelationship(ModelRelationshipId.Create(), propertyNode, propertyTypeNode); 
+            var association = new ModelRelationship(
+                ModelRelationshipId.Create(),
+                propertyNode.Id,
+                propertyTypeNode.Id,
+                ModelRelationshipStereotypes.Association);
+
             ModelService.AddRelationship(association);
 
             return this;
@@ -91,13 +97,13 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
         private void AddInheritance(IModelNode node, IModelNode baseNode)
         {
-            var relationship = new InheritanceRelationship(ModelRelationshipId.Create(), node, baseNode);
+            var relationship = new ModelRelationship(ModelRelationshipId.Create(), node.Id, baseNode.Id, ModelRelationshipStereotypes.Inheritance);
             ModelService.AddRelationship(relationship);
         }
 
         private void AddImplements(IModelNode node, IModelNode baseNode)
         {
-            var relationship = new ImplementationRelationship(ModelRelationshipId.Create(), node, baseNode);
+            var relationship = new ModelRelationship(ModelRelationshipId.Create(), node.Id, baseNode.Id, ModelRelationshipStereotypes.Implementation);
             ModelService.AddRelationship(relationship);
         }
     }
