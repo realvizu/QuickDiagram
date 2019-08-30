@@ -19,18 +19,23 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public ModelNodeId Source { get; }
         public ModelNodeId Target { get; }
         public ModelRelationshipStereotype Stereotype { get; }
+        public object Payload { get; }
 
         public ModelRelationship(
             ModelRelationshipId id,
             ModelNodeId source,
             ModelNodeId target,
-            ModelRelationshipStereotype stereotype)
+            ModelRelationshipStereotype stereotype,
+            [CanBeNull] object payload = null)
         {
             Id = id;
             Source = source;
             Target = target;
             Stereotype = stereotype;
+            Payload = payload;
         }
+
+        public IModelRelationship WithPayload(object newPayload) => CreateInstance(Id, Source, Target, Stereotype, newPayload);
 
         public override string ToString() => $"{Source}--{Stereotype}-->{Target} [{Id}]";
 
@@ -39,8 +44,9 @@ namespace Codartis.SoftVis.Modeling.Implementation
             ModelRelationshipId id,
             ModelNodeId source,
             ModelNodeId target,
-            ModelRelationshipStereotype stereotype)
-            => new ModelRelationship(id, source, target, stereotype);
+            ModelRelationshipStereotype stereotype,
+            [CanBeNull] object payload)
+            => new ModelRelationship(id, source, target, stereotype, payload);
 
         private sealed class IdEqualityComparer : IEqualityComparer<IModelRelationship>
         {
