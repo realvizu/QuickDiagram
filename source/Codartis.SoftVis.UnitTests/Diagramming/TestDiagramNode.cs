@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
     internal sealed class TestDiagramNode : ContainerDiagramNodeBase
     {
         public TestDiagramNode(string name = "dummy")
-            : base(new ModelNode(ModelNodeId.Create(), name, default, ModelOrigin.Unknown))
+            : base(new ModelNode(ModelNodeId.Create(), name, default))
         {
         }
 

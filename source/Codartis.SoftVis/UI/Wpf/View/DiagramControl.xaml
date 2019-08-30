@@ -28,11 +28,12 @@
 
         <DataTemplate x:Key="BubbleListBoxItemTemplate" DataType="modeling:IModelNode">
             <TextBlock x:Name="TextBlock" Text="{Binding Name}"/>
-            <DataTemplate.Triggers>
+            <!--Move this trigger to VSIntegration project.-->
+            <!--<DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                     <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
                 </DataTrigger>
-            </DataTemplate.Triggers>
+            </DataTemplate.Triggers>-->
         </DataTemplate>
 
     </UserControl.Resources>

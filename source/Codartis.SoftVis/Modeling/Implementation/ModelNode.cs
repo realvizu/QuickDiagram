@@ -17,25 +17,25 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public ModelNodeId Id { get; }
         public string Name { get; }
         public ModelNodeStereotype Stereotype { get; }
-        public ModelOrigin Origin { get; }
+        public object Payload { get; }
 
-        public ModelNode(ModelNodeId id, [NotNull] string name, ModelNodeStereotype stereotype, ModelOrigin origin)
+        public ModelNode(ModelNodeId id, [NotNull] string name, ModelNodeStereotype stereotype, object payload = null)
         {
             Id = id;
             Name = name;
             Stereotype = stereotype;
-            Origin = origin;
+            Payload = payload;
         }
-
 
         public override string ToString() => $"<<{Stereotype}>> {Name} [{Id}]";
 
-        public IModelNode WithName(string newName) => CreateInstance(Id, newName, Stereotype, Origin);
+        public IModelNode WithName(string newName) => CreateInstance(Id, newName, Stereotype, Payload);
+        public IModelNode WithPayload(object newPayload) => CreateInstance(Id, Name, Stereotype, newPayload);
 
         [NotNull]
-        private static IModelNode CreateInstance(ModelNodeId id, [NotNull] string name, ModelNodeStereotype stereotype, ModelOrigin origin)
+        private static IModelNode CreateInstance(ModelNodeId id, [NotNull] string name, ModelNodeStereotype stereotype, [CanBeNull] object payload)
         {
-            return new ModelNode(id, name, stereotype, origin);
+            return new ModelNode(id, name, stereotype, payload);
         }
 
         private sealed class IdEqualityComparer : IEqualityComparer<IModelNode>

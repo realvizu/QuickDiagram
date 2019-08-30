@@ -11,6 +11,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     public interface IRoslynModelNode : IModelNode
     {
         /// <summary>
+        /// The source of this model item.
+        /// </summary>
+        ModelOrigin Origin { get; }
+
+        /// <summary>
         /// The Roslyn symbol associated with this node.
         /// </summary>
         ISymbol RoslynSymbol { get; }

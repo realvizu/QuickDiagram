@@ -36,7 +36,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public ModelNodeId Id => ModelNode.Id;
         public string Name => ModelNode.Name;
         public ModelNodeStereotype Stereotype => ModelNode.Stereotype;
-        public ModelOrigin Origin => ModelNode.Origin;
 
         public Point2D TopLeft => Rect.TopLeft;
         public double Width => Size.Width;

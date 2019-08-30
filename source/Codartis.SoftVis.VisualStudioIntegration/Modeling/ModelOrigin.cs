@@ -1,8 +1,7 @@
-﻿namespace Codartis.SoftVis.Modeling.Definition
+﻿namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
     /// Enumerates the possible sources of model information.
-    /// TODO: change it to arbitrary tags? To separate the generic model from source code related concepts?
     /// </summary>
     public enum ModelOrigin
     {

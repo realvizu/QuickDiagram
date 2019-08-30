@@ -128,7 +128,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
 
         [NotNull]
         private static IModelNode CreateModelNode([NotNull] string name)
-            => new ModelNode(ModelNodeId.Create(), name, ModelNodeStereotype.Default, ModelOrigin.Unknown);
+            => new ModelNode(ModelNodeId.Create(), name, ModelNodeStereotype.Default);
 
         private sealed class AllInvalidModelRuleProvider : IModelRuleProvider
         {
