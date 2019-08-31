@@ -5,7 +5,6 @@ namespace Codartis.SoftVis.Modeling.Definition
 {
     /// <summary>
     /// A relationship is a directed link between two model nodes: a source and a target.
-    /// It also has a stereotype and a payload, which is an arbitrary extra object.
     /// Immutable.
     /// </summary>
     /// <remarks>
@@ -15,7 +14,13 @@ namespace Codartis.SoftVis.Modeling.Definition
         : IImmutableEdge<ModelNodeId, IModelRelationship, ModelRelationshipId>
     {
         ModelRelationshipStereotype Stereotype { get; }
-        [CanBeNull] object Payload { get; }
+
+        /// <summary>
+        /// An arbitrary extra object associated with this model node.
+        /// Must be immutable.
+        /// </summary>
+        [CanBeNull]
+        object Payload { get; }
 
         [NotNull]
         IModelRelationship WithPayload([CanBeNull] object newPayload);

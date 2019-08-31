@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             if (modelNode == null)
                 throw new ArgumentNullException(nameof(modelNode));
 
-            if (modelNode is TypeNode typeNode)
+            if (modelNode is TypeNodeBase typeNode)
                 return new TypeDiagramNode(typeNode);
 
             if (modelNode is PropertyNode propertyNode)

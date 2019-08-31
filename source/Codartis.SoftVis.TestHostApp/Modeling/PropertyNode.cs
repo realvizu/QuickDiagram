@@ -1,15 +1,14 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
+﻿using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal sealed class PropertyNode :  TypeMemberNode 
+    internal sealed class PropertyNode : MemberNodeBase
     {
         public bool HasGetter { get; }
         public bool HasSetter { get; }
 
-        public PropertyNode(ModelNodeId id, string name, ModelOrigin origin = ModelOrigin.SourceCode,
-            bool hasGetter = true, bool hasSetter = true)
-            : base(id, name, ModelNodeStereotypes.Property, origin)
+        public PropertyNode([NotNull] string name, bool hasGetter = true, bool hasSetter = true)
+            : base(name)
         {
             HasGetter = hasGetter;
             HasSetter = hasSetter;

@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.TestHostApp.Modeling;
+﻿using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
@@ -50,22 +49,22 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("2", "1")
                 .AddClass("5", "1")
                 .AddClass("4", "1")
-                .AddClass("z1azgd uzgwzdu", "1", ModelOrigin.Metadata)
-                .AddClass("z2wedwnebbiw", "1", ModelOrigin.Metadata)
-                .AddClass("z3sahbahs,.sjd.wed", "1", ModelOrigin.Metadata)
+                .AddClass("z1azgd uzgwzdu", "1")
+                .AddClass("z2wedwnebbiw", "1")
+                .AddClass("z3sahbahs,.sjd.wed", "1")
                 .AddClass("z4", "1")
                 .AddClass("z5", "1")
                 .AddClass("z6", "1")
                 .AddClass("z7", "1")
                 .AddClass("z8", "1")
-                .AddClass("z11wedhwbehhwebfqweuvufvwuvftw", "1", ModelOrigin.Metadata)
+                .AddClass("z11wedhwbehhwebfqweuvufvwuvftw", "1")
                 .AddClass("z21", "1")
-                .AddClass("z3134456674566723456475634t4556", "1", ModelOrigin.Metadata)
+                .AddClass("z3134456674566723456475634t4556", "1")
                 .AddClass("z41", "1")
                 .AddClass("z51", "1")
                 .AddClass("z61", "1")
                 .AddClass("z71", "1")
-                .AddClass("z123456", "1", ModelOrigin.Metadata)
+                .AddClass("z123456", "1")
                 .EndGroup()
 
                 // Tree moves under parent

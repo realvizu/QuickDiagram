@@ -63,9 +63,6 @@
             </StackPanel>
         </Border>
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Path=ModelNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
-                <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
-            </DataTrigger>
             <DataTrigger Binding="{Binding Path=TypeDiagramNode.TypeNode.IsAbstract}" Value="true">
                 <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
             </DataTrigger>
@@ -73,7 +70,7 @@
     </DataTemplate>
 
     <Style TargetType="{x:Type controls:BubbleListBoxItem}"
-           d:DataContext="{d:DesignInstance {x:Type testHostAppModeling:TypeNode}}">
+           d:DataContext="{d:DesignInstance {x:Type testHostAppModeling:TypeNodeBase}}">
         <Setter Property="ToolTip" Value="{Binding FullName}"/>
     </Style>
 </ResourceDictionary>

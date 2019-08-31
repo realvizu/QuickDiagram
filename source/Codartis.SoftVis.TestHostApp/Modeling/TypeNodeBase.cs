@@ -2,9 +2,9 @@
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
-    internal sealed class InterfaceNode : TypeNodeBase
+    internal abstract class TypeNodeBase : TestNodeBase
     {
-        public InterfaceNode([NotNull] string name)
+        protected TypeNodeBase([NotNull] string name)
             : base(name)
         {
         }

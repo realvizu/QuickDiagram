@@ -9,13 +9,13 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
     internal sealed class TypeDiagramNode : ContainerDiagramNodeBase
     {
-        public TypeDiagramNode(TypeNode typeNode)
+        public TypeDiagramNode(TypeNodeBase typeNode)
             : base(typeNode)
         {
         }
 
         public TypeDiagramNode(
-            TypeNode typeNode,
+            TypeNodeBase typeNode,
             Size2D size,
             Point2D center,
             DateTime addedAt,
@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
         {
         }
 
-        public TypeNode TypeNode => (TypeNode)ModelNode;
+        public TypeNodeBase TypeNode => (TypeNodeBase)ModelNode;
 
         protected override IDiagramNode CreateInstance(
             IModelNode modelNode,
@@ -34,6 +34,6 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
             DateTime addedAt,
             ModelNodeId? parentNodeId,
             ILayoutGroup layoutGroup)
-            => new TypeDiagramNode((TypeNode)modelNode, size, center, addedAt, parentNodeId, layoutGroup);
+            => new TypeDiagramNode((TypeNodeBase)modelNode, size, center, addedAt, parentNodeId, layoutGroup);
     }
 }
