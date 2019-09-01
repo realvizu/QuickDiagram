@@ -52,7 +52,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public Rect2D Rect => Nodes.OfType<IDiagramShape>().Union(Connectors).Where(i => i.IsRectDefined).Select(i => i.Rect).Union();
+        public Rect2D Rect => Nodes.OfType<IDiagramShape>().Union(Connectors).Where(i => i.Rect.IsDefined()).Select(i => i.Rect).Union();
 
         public ILayoutGroup AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
         {

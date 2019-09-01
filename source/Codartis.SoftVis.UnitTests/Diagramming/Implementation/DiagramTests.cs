@@ -16,7 +16,7 @@
 //        public void WithNode_RootLevel_Works()
 //        {
 //            var node = new TestDiagramNode();
-//            var diagram = Diagram.Empty.AddNode(node);
+//            var diagram = Diagram.Undefined.AddNode(node);
 
 //            diagram.Nodes.ShouldBeEquivalentById(node);
 //            diagram.RootLayoutGroup.Nodes.ShouldBeEquivalentById(node);
@@ -28,7 +28,7 @@
 //            var parentNode = new TestDiagramNode("parent");
 //            var childNode = new TestDiagramNode("child");
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode, parentNode.Id);
 
@@ -43,7 +43,7 @@
 //            var parentNode = new TestDiagramNode("parent");
 //            var childNode = new TestDiagramNode("child");
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode, parentNode.Id)
 //                .UpdateNode(childNode.WithSize(new Size2D(1, 1)));
@@ -57,7 +57,7 @@
 //        {
 //            var node = new TestDiagramNode();
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(node)
 //                .RemoveNode(node.Id);
 
@@ -70,7 +70,7 @@
 //            var parentNode = new TestDiagramNode("parent");
 //            var childNode = new TestDiagramNode("child");
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode, parentNode.Id)
 //                .RemoveNode(childNode.Id);
@@ -87,7 +87,7 @@
 //            var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(node1)
 //                .AddNode(node2)
 //                .AddConnector(connectorNode1Node2);
@@ -106,7 +106,7 @@
 //            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode1, parentNode.Id)
 //                .AddNode(childNode2, parentNode.Id)
@@ -126,7 +126,7 @@
 //            var testModelRelationship = new TestModelRelationship(parentNode.ModelNode, childNode.ModelNode);
 //            var connectorParentChild = new DiagramConnector(testModelRelationship, parentNode, childNode, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode, parentNode.Id)
 //                .AddConnector(connectorParentChild);
@@ -145,7 +145,7 @@
 //            var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(node1)
 //                .AddNode(node2)
 //                .AddConnector(connectorNode1Node2);
@@ -166,7 +166,7 @@
 //            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode1, parentNode.Id)
 //                .AddNode(childNode2, parentNode.Id)
@@ -187,7 +187,7 @@
 //            var testModelRelationship = new TestModelRelationship(parentNode.ModelNode, childNode.ModelNode);
 //            var connectorParentChild = new DiagramConnector(testModelRelationship, parentNode, childNode, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode, parentNode.Id)
 //                .AddConnector(connectorParentChild);
@@ -207,7 +207,7 @@
 //            var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(node1)
 //                .AddNode(node2)
 //                .AddConnector(connectorNode1Node2)
@@ -227,7 +227,7 @@
 //            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode1, parentNode.Id)
 //                .AddNode(childNode2, parentNode.Id)
@@ -248,7 +248,7 @@
 //            var testModelRelationship = new TestModelRelationship(parentNode.ModelNode, childNode.ModelNode);
 //            var connectorParentChild = new DiagramConnector(testModelRelationship, parentNode, childNode, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode, parentNode.Id)
 //                .AddConnector(connectorParentChild)
@@ -268,7 +268,7 @@
 //            var testModelRelationship = new TestModelRelationship(node1.ModelNode, node2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, node1, node2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(node1)
 //                .AddNode(node2)
 //                .AddConnector(connectorNode1Node2);
@@ -286,7 +286,7 @@
 //            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
 //            var connectorNode1Node2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode)
 //                .AddNode(childNode1, parentNode.Id)
 //                .AddNode(childNode2, parentNode.Id)
@@ -306,7 +306,7 @@
 //            var testModelRelationship = new TestModelRelationship(childNode1.ModelNode, childNode2.ModelNode);
 //            var connectorChild1Child2 = new DiagramConnector(testModelRelationship, childNode1, childNode2, ConnectorTypes.Dependency);
 
-//            var diagram = Diagram.Empty
+//            var diagram = Diagram.Undefined
 //                .AddNode(parentNode1)
 //                .AddNode(childNode1, parentNode1.Id)
 //                .AddNode(parentNode2)

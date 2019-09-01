@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Geometry
 {
@@ -36,18 +37,18 @@ namespace Codartis.SoftVis.Geometry
             return result;
         }
 
-        public static Rect2D Union(this IEnumerable<Rect2D> rects)
+        public static Rect2D Union([NotNull] this IEnumerable<Rect2D> rects)
         {
-            var enumerable = rects as IList<Rect2D> ?? rects.ToList();
+            var definedRects = rects.Where(i => i.IsDefined()).ToList();
 
-            return enumerable.Any()
+            return definedRects.Any()
                 ? new Rect2D(
-                    enumerable.Select(i => i.Left).Min(),
-                    enumerable.Select(i => i.Top).Min(),
-                    enumerable.Select(i => i.Right).Max(),
-                    enumerable.Select(i => i.Bottom).Max()
-                    )
-                : Rect2D.Empty;
+                    definedRects.Select(i => i.Left).Min(),
+                    definedRects.Select(i => i.Top).Min(),
+                    definedRects.Select(i => i.Right).Max(),
+                    definedRects.Select(i => i.Bottom).Max()
+                )
+                : Rect2D.Undefined;
         }
 
         public static Rect2D Intersect(this Rect2D rect1, Rect2D rect2)

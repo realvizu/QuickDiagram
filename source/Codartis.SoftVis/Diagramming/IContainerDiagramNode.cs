@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IContainerDiagramNode : IDiagramNode
     {
-        ILayoutGroup LayoutGroup { get; }
+        [NotNull] ILayoutGroup LayoutGroup { get; }
 
         [NotNull]
         IContainerDiagramNode AddNode([NotNull] IDiagramNode node, ModelNodeId parentNodeId);

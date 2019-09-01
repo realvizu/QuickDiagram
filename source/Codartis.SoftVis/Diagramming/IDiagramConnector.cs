@@ -13,10 +13,11 @@ namespace Codartis.SoftVis.Diagramming
         IImmutableEdge<ModelNodeId, IDiagramConnector, ModelRelationshipId>
     {
         IModelRelationship ModelRelationship { get; }
-
         ConnectorType ConnectorType { get; }
         Route Route { get; }
 
+        IDiagramConnector WithModelRelationship(IModelRelationship newModelRelationship);
+        IDiagramConnector WithConnectorType(ConnectorType newConnectorType);
         IDiagramConnector WithRoute(Route newRoute);
     }
 }

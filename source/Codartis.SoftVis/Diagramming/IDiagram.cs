@@ -21,6 +21,12 @@ namespace Codartis.SoftVis.Diagramming
     public interface IDiagram
     {
         /// <summary>
+        /// The underlying model. Diagram shapes represent model items.
+        /// </summary>
+        [NotNull]
+        IModel Model { get; }
+
+        /// <summary>
         /// Gets all nodes in the diagram.
         /// </summary>
         [NotNull]
@@ -65,6 +71,9 @@ namespace Codartis.SoftVis.Diagramming
         [ItemNotNull]
         IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
         //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
+
+        [NotNull]
+        IDiagram WithModel([NotNull] IModel newModel);
 
         [NotNull]
         IDiagram AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId = null);

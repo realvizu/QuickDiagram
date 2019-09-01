@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
                 throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
 
             var diagramNodeLayoutPriority = _layoutPriorityProvider.GetPriority(diagramNode);
-            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNodeLayoutPriority);
+            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNodeLayoutPriority);
             diagramNodeToLayoutVertexMap.Set(diagramNode.Id, diagramNodeLayoutVertex);
 
             return diagramNodeLayoutVertex;

@@ -8,7 +8,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public abstract class DiagramShapeBase : IDiagramShape
     {
-        public abstract bool IsRectDefined { get; }
         public abstract Rect2D Rect { get; }
     }
 }

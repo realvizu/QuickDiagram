@@ -157,8 +157,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Relative
         private LayoutPath GetEdge(EdgeSpecification edgeSpecification)
         {
             return Calculator.RelativeLayout.LayeredLayoutGraph.Edges
-                .FirstOrDefault(i => i.Source.Name == edgeSpecification.SourceVertexName
-                && i.Target.Name == edgeSpecification.TargetVertexName);
+                .FirstOrDefault(i => i.Source.Name == edgeSpecification.SourceVertexName && i.Target.Name == edgeSpecification.TargetVertexName);
         }
 
         private DiagramNodeLayoutVertex GetVertex(string vertexName)

@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -15,20 +16,32 @@ namespace Codartis.SoftVis.Diagramming
     /// </remarks>
     public interface IDiagramNode : IImmutableVertex<ModelNodeId>, IDiagramShape, IComparable<IDiagramNode>
     {
-        IModelNode ModelNode { get; }
+        [NotNull] IModelNode ModelNode { get; }
+        DateTime AddedAt { get; }
 
-        string Name { get; }
+        [NotNull] string Name { get; }
         Size2D Size { get; }
         Point2D Center { get; }
         Point2D TopLeft { get; }
         ModelNodeId? ParentNodeId { get; }
         bool HasParent { get; }
-        DateTime AddedAt { get; }
 
-        IDiagramNode WithModelNode(IModelNode modelNode);
+        [NotNull]
+        IDiagramNode WithModelNode(IModelNode newModelNode);
+
+        [NotNull]
+        IDiagramNode WithRect(Rect2D newRect);
+
+        [NotNull]
         IDiagramNode WithSize(Size2D newSize);
+
+        [NotNull]
         IDiagramNode WithCenter(Point2D newCenter);
+
+        [NotNull]
         IDiagramNode WithTopLeft(Point2D newTopLeft);
+
+        [NotNull]
         IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId);
     }
 }

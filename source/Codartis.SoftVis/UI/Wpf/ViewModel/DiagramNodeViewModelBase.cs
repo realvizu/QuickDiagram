@@ -34,7 +34,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IFocusTracker<IDiagramShapeUi> focusTracker, IDiagramNode diagramNode)
               : base(modelService, diagramService, diagramNode)
         {
-            Name = diagramNode.Name;
+            Name = diagramNode.ModelNode.Name;
             Center = diagramNode.Center.ToWpf();
             TopLeft = diagramNode.TopLeft.ToWpf();
             // Must NOT populate size from model because its value flows from the controls to the models.
@@ -156,7 +156,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected virtual void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
-            Name = diagramNode.Name;
+            Name = diagramNode.ModelNode.Name;
             Center = diagramNode.Center.ToWpf();
             TopLeft = diagramNode.TopLeft.ToWpf();
             // Must NOT populate size from model because its value flows from the controls to the models.

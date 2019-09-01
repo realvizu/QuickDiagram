@@ -10,9 +10,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class DiagramConnector : DiagramShapeBase, IDiagramConnector
     {
-        public IModelRelationship ModelRelationship { get; }
         public ModelNodeId Source { get; }
         public ModelNodeId Target { get; }
+        public IModelRelationship ModelRelationship { get; }
         public ConnectorType ConnectorType { get; }
         public Route Route { get; }
 
@@ -39,18 +39,28 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Route = route;
         }
 
-        public override bool IsRectDefined => Route.IsDefined;
         public override Rect2D Rect => Rect2D.Zero.Union(Route);
 
         public ModelRelationshipId Id => ModelRelationship.Id;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
 
-        public IDiagramConnector WithRoute(Route newRoute) => CreateInstance(Source, Target, newRoute);
+        public IDiagramConnector WithModelRelationship(IModelRelationship newModelRelationship)
+            => CreateInstance(newModelRelationship, Source, Target, ConnectorType, Route);
+
+        public IDiagramConnector WithConnectorType(ConnectorType newConnectorType)
+            => CreateInstance(ModelRelationship, Source, Target, newConnectorType, Route);
+
+        public IDiagramConnector WithRoute(Route newRoute) => CreateInstance(ModelRelationship, Source, Target, ConnectorType, newRoute);
 
         public override string ToString() => Source + "---" + ModelRelationship.Stereotype + "-->" + Target;
 
         [NotNull]
-        private IDiagramConnector CreateInstance(ModelNodeId source, ModelNodeId target, Route route)
-            => new DiagramConnector(ModelRelationship, source, target, ConnectorType, route);
+        private static IDiagramConnector CreateInstance(
+            IModelRelationship modelRelationship,
+            ModelNodeId source,
+            ModelNodeId target,
+            ConnectorType connectorType,
+            Route route)
+            => new DiagramConnector(modelRelationship, source, target, connectorType, route);
     }
 }

@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Geometry
     /// </summary>
     public struct Rect2D
     {
-        public static readonly Rect2D Empty = new Rect2D(double.NaN, double.NaN, double.NaN, double.NaN);
+        public static readonly Rect2D Undefined = new Rect2D(double.NaN, double.NaN, double.NaN, double.NaN);
         public static readonly Rect2D Zero = new Rect2D(0, 0, 0, 0);
 
         public Point2D TopLeft { get; }
@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.Geometry
             var bottom = Math.Min(rect1.Bottom, rect2.Bottom);
 
             return left >= right || top >= bottom
-                ? Empty
+                ? Undefined
                 : new Rect2D(new Point2D(left, top), new Point2D(right, bottom));
         }
 
@@ -106,8 +106,10 @@ namespace Codartis.SoftVis.Geometry
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is Rect2D && Equals((Rect2D) obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+
+            return obj is Rect2D && Equals((Rect2D)obj);
         }
 
         public override int GetHashCode()
@@ -132,5 +134,11 @@ namespace Codartis.SoftVis.Geometry
         {
             return $"[TopLeft:{TopLeft}|Size:{Size}]";
         }
+
+        public Rect2D WithSize(Size2D newSize) => new Rect2D(TopLeft, newSize);
+
+        public Rect2D WithCenter(Point2D newCenter) => CreateFromCenterAndSize(newCenter, Size);
+
+        public Rect2D WithTopLeft(Point2D newTopLeft) => new Rect2D(newTopLeft, Size);
     }
 }

@@ -1,40 +1,48 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+﻿using System;
+using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Helpers;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders
 {
     internal abstract class BuilderBase
     {
-        protected GeneralLayoutEdge CreateLayoutEdge(EdgeSpecification edgeSpecification)
+        [NotNull]
+        protected GeneralLayoutEdge CreateLayoutEdge([NotNull] EdgeSpecification edgeSpecification)
         {
             return CreateLayoutEdge(edgeSpecification.SourceVertexName, edgeSpecification.TargetVertexName);
         }
 
-        protected GeneralLayoutEdge CreateLayoutEdge(string sourceVertexName, string targetVertexName)
+        [NotNull]
+        protected GeneralLayoutEdge CreateLayoutEdge([NotNull] string sourceVertexName, [NotNull] string targetVertexName)
         {
             var source = CreateLayoutVertex(sourceVertexName);
             var target = CreateLayoutVertex(targetVertexName);
             return CreateLayoutEdge(source, target);
         }
 
-        protected GeneralLayoutEdge CreateLayoutEdge(LayoutVertexBase source, LayoutVertexBase target)
+        [NotNull]
+        protected GeneralLayoutEdge CreateLayoutEdge([NotNull] LayoutVertexBase source, [NotNull] LayoutVertexBase target)
         {
             return new GeneralLayoutEdge(source, target, null);
         }
 
-        protected static LayoutVertexBase CreateLayoutVertex(string name, int priority = 1)
+        [NotNull]
+        protected static LayoutVertexBase CreateLayoutVertex([NotNull] string name, int priority = 1)
         {
-            return name.StartsWith("*")
+            return name.StartsWith("*", StringComparison.Ordinal)
                 ? (LayoutVertexBase)CreateDummyLayoutVertex(name)
                 : CreateTestLayoutVertex(name, priority);
         }
 
-        protected static TestLayoutVertex CreateTestLayoutVertex(string name, int priority = 1)
+        [NotNull]
+        protected static TestLayoutVertex CreateTestLayoutVertex([NotNull] string name, int priority = 1)
         {
             return new TestLayoutVertex(name, priority);
         }
 
-        protected static TestDummyLayoutVertex CreateDummyLayoutVertex(string name)
+        [NotNull]
+        protected static TestDummyLayoutVertex CreateDummyLayoutVertex([NotNull] string name)
         {
             return new TestDummyLayoutVertex(int.Parse(name.Substring(1)));
         }

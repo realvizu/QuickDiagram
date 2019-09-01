@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Geometry;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
 {
@@ -8,7 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
     internal abstract class LayoutVertexBase
     {
         public abstract bool IsDummy { get; }
-        public abstract string Name { get; }
+        [NotNull] public abstract string Name { get; }
         public abstract int Priority { get; }
 
         public abstract Size2D Size { get; }

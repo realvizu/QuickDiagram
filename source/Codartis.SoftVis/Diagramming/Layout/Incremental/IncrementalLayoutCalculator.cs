@@ -73,7 +73,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
                 throw new InvalidOperationException($"Diagram node {diagramNode} already added.");
 
             var diagramNodeLayoutPriority = _layoutPriorityProvider.GetPriority(diagramNode);
-            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNode.Name, diagramNodeLayoutPriority);
+            var diagramNodeLayoutVertex = new DiagramNodeLayoutVertex(diagramNode, diagramNodeLayoutPriority);
             _diagramNodeToLayoutVertexMap.Set(diagramNode.Id, diagramNodeLayoutVertex);
 
             _statefulRelativeLayoutCalculator.OnDiagramNodeAdded(diagramNodeLayoutVertex);

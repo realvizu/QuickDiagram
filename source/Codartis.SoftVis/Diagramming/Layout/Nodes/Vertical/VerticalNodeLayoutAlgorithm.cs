@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical
         {
             var result = new Dictionary<ModelNodeId, Rect2D>();
 
-            var orderedNodes = nodes.OrderBy(i => i.Name);
+            var orderedNodes = nodes.OrderBy(i => i.ModelNode.Name);
 
             double yPos = 0;
             foreach (var node in orderedNodes)

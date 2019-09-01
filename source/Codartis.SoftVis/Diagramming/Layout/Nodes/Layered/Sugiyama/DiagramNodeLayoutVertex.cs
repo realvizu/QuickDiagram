@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
 {
@@ -8,18 +9,17 @@ namespace Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama
     /// </summary>
     internal class DiagramNodeLayoutVertex : LayoutVertexBase
     {
-        public IDiagramNode DiagramNode { get; }
-        public override string Name { get; }
+        [NotNull] public IDiagramNode DiagramNode { get; }
         public override int Priority { get; }
 
-        public DiagramNodeLayoutVertex(IDiagramNode diagramNode, string name, int priority)
+        public DiagramNodeLayoutVertex([NotNull] IDiagramNode diagramNode, int priority)
         {
             DiagramNode = diagramNode;
-            Name = name;
             Priority = priority;
         }
 
         public override bool IsDummy => false;
+        public override string Name => DiagramNode.Name;
         public override Size2D Size => DiagramNode.Size;
 
         public void Resize(Size2D size) => throw new NotSupportedException();
