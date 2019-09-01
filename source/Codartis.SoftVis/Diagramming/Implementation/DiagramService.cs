@@ -122,21 +122,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         //        DiagramStore.RemoveConnector(modelRelationshipId);
         //}
 
-        public Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
-        {
-            return diagramNode.ParentNodeId == null
-                ? Maybe<IContainerDiagramNode>.Nothing
-                : Maybe.Create((IContainerDiagramNode)GetDiagramNode(diagramNode.ParentNodeId.Value));
-        }
-
-        public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
-        {
-            var diagram = Diagram;
-            return modelNodeIds
-                .Select(i => diagram.TryGetNode(i).Match(j => j.Rect, () => Rect2D.Zero))
-                .Union();
-        }
-
         public ConnectorType GetConnectorType(string stereotype)
         {
             throw new NotImplementedException();

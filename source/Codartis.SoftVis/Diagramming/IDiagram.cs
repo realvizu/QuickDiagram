@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
@@ -14,7 +15,7 @@ namespace Codartis.SoftVis.Diagramming
     /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
     /// A diagram consists consists of layout groups that act like little diagrams that the main diagram is composed of.
     /// Each layout group consists of shapes that represent model items: diagram nodes for model nodes and diagram connectors for model relationships.
-    /// A connector belongs to a layout group id both its source and target nodes are in that group.
+    /// A connector belongs to a layout group if both its source and target nodes are in that group.
     /// Those connectors whose source and target nodes belong to different layout groups form a special connector group:
     /// the CrossLayoutGroupConnectors, that have different layout rules than other layout groups.
     /// </remarks>
@@ -50,28 +51,6 @@ namespace Codartis.SoftVis.Diagramming
         [NotNull]
         IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
 
-        bool NodeExists(ModelNodeId modelNodeId);
-        bool ConnectorExists(ModelRelationshipId modelRelationshipId);
-        bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
-        bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId);
-        bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId);
-        bool IsCrossingLayoutGroups(ModelRelationshipId modelRelationshipId);
-
-        [NotNull]
-        IDiagramNode GetNode(ModelNodeId modelNodeId);
-
-        Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId);
-
-        [NotNull]
-        IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId);
-
-        Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId);
-
-        [NotNull]
-        [ItemNotNull]
-        IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
-        //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
-
         [NotNull]
         IDiagram WithModel([NotNull] IModel newModel);
 
@@ -95,5 +74,32 @@ namespace Codartis.SoftVis.Diagramming
 
         [NotNull]
         IDiagram Clear();
+
+        bool NodeExists(ModelNodeId modelNodeId);
+        bool ConnectorExists(ModelRelationshipId modelRelationshipId);
+        bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
+        bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId);
+        bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId);
+        bool IsCrossingLayoutGroups(ModelRelationshipId modelRelationshipId);
+
+        [NotNull]
+        IDiagramNode GetNode(ModelNodeId modelNodeId);
+
+        Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId);
+
+        Maybe<IContainerDiagramNode> TryGetContainerNode([NotNull] IDiagramNode diagramNode);
+
+        Rect2D GetRect([NotNull] IEnumerable<ModelNodeId> modelNodeIds);
+
+        [NotNull]
+        IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId);
+
+        Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId);
+
+        [NotNull]
+        [ItemNotNull]
+        IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
+
+        //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
     }
 }

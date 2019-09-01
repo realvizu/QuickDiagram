@@ -168,7 +168,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _diagramNodeToViewModelMap.Set(diagramNode.Id, diagramNodeUi);
 
-            DiagramService.TryGetContainerNode(diagramNode)
+            DiagramService.Diagram.TryGetContainerNode(diagramNode)
                 .Match(
                     containerNode =>
                     {

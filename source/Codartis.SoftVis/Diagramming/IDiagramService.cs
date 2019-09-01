@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling.Definition;
-using Codartis.Util;
+﻿using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.Diagramming
 {
@@ -19,10 +16,6 @@ namespace Codartis.SoftVis.Diagramming
 
         //void ShowModelRelationship(IModelRelationship modelRelationship);
         //void HideModelRelationship(ModelRelationshipId modelRelationshipId);
-
-        Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode);
-
-        Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds);
 
         ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }

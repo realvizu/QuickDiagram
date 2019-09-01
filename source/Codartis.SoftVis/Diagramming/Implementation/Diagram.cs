@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -135,6 +136,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             var connector = GetConnector(modelRelationshipId);
             return GetNode(connector.Source).ParentNodeId != GetNode(connector.Target).ParentNodeId;
+        }
+
+        public Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
+        {
+            return diagramNode.ParentNodeId == null
+                ? Maybe<IContainerDiagramNode>.Nothing
+                : Maybe.Create((IContainerDiagramNode)GetNode(diagramNode.ParentNodeId.Value));
+        }
+
+        public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
+        {
+            return modelNodeIds
+                .Select(i => TryGetNode(i).Match(j => j.Rect, () => Rect2D.Undefined))
+                .Union();
         }
 
         [NotNull]

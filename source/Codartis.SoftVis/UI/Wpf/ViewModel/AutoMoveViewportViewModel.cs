@@ -100,7 +100,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (_followedNodeIds == null)
                 return;
 
-            var rect = DiagramService.GetRect(_followedNodeIds).ToWpf();
+            var rect = DiagramService.Diagram.GetRect(_followedNodeIds).ToWpf();
             if (rect.IsUndefined())
                 return;
 
