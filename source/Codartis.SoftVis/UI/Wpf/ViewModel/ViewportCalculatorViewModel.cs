@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _exponentialZoom = initialZoom;
             _sizeInScreenSpace = sizeInScreenSpace;
             _centerInDiagramSpace = centerInDiagramSpace;
-            _diagramContentRect = diagramService.Diagram.RootLayoutGroup.Rect.ToWpf();
+            _diagramContentRect = diagramService.LatestDiagram.RootLayoutGroup.Rect.ToWpf();
 
             ResizeCommand = new ResizeDelegateCommand(Resize);
             PanCommand = new PanDelegateCommand(Pan);

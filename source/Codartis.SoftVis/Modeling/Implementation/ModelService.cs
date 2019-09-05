@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// </remarks>
     public sealed class ModelService : IModelService
     {
-        public IModel Model { get; private set; }
+        public IModel LatestModel { get; private set; }
 
         [NotNull] private readonly object _modelUpdateLockObject;
         [NotNull] [ItemNotNull] private readonly IModelRuleProvider[] _modelRuleProviders;
@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public ModelService([NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
-            Model = Implementation.Model.Empty;
+            LatestModel = Model.Empty;
             _modelUpdateLockObject = new object();
             _modelRuleProviders = modelRuleProviders;
         }
@@ -78,8 +78,8 @@ namespace Codartis.SoftVis.Modeling.Implementation
         [ItemNotNull]
         private IEnumerable<ModelEventBase> AddNodeCore([NotNull] IModelNode node, ModelNodeId? parentNodeId = null)
         {
-            Model = Model.AddNode(node);
-            yield return new ModelNodeAddedEvent(Model, node);
+            LatestModel = LatestModel.AddNode(node);
+            yield return new ModelNodeAddedEvent(LatestModel, node);
 
             if (!parentNodeId.HasValue)
                 yield break;
@@ -94,24 +94,24 @@ namespace Codartis.SoftVis.Modeling.Implementation
         [ItemNotNull]
         private IEnumerable<ModelEventBase> UpdateNodeCore([NotNull] IModelNode newNode)
         {
-            var maybeOldNode = Model.TryGetNode(newNode.Id);
+            var maybeOldNode = LatestModel.TryGetNode(newNode.Id);
             if (!maybeOldNode.HasValue)
                 throw new InvalidOperationException($"Node with id {newNode.Id} was not found in the model.");
 
-            Model = Model.ReplaceNode(newNode);
-            yield return new ModelNodeUpdatedEvent(Model, maybeOldNode.Value, newNode);
+            LatestModel = LatestModel.ReplaceNode(newNode);
+            yield return new ModelNodeUpdatedEvent(LatestModel, maybeOldNode.Value, newNode);
         }
 
         [NotNull]
         [ItemNotNull]
         private IEnumerable<ModelEventBase> RemoveNodeCore(ModelNodeId nodeId)
         {
-            foreach (var @event in Model.GetRelationships(nodeId).SelectMany(i => RemoveRelationshipCore(i.Id)))
+            foreach (var @event in LatestModel.GetRelationships(nodeId).SelectMany(i => RemoveRelationshipCore(i.Id)))
                 yield return @event;
 
-            var oldNode = Model.GetNode(nodeId);
-            Model = Model.RemoveNode(nodeId);
-            yield return new ModelNodeRemovedEvent(Model, oldNode);
+            var oldNode = LatestModel.GetNode(nodeId);
+            LatestModel = LatestModel.RemoveNode(nodeId);
+            yield return new ModelNodeRemovedEvent(LatestModel, oldNode);
         }
 
         [NotNull]
@@ -121,31 +121,31 @@ namespace Codartis.SoftVis.Modeling.Implementation
             if (!IsRelationshipValid(relationship))
                 throw new ArgumentException($"{relationship} is invalid.");
 
-            Model = Model.AddRelationship(relationship);
-            yield return new ModelRelationshipAddedEvent(Model, relationship);
+            LatestModel = LatestModel.AddRelationship(relationship);
+            yield return new ModelRelationshipAddedEvent(LatestModel, relationship);
         }
 
         [NotNull]
         [ItemNotNull]
         private IEnumerable<ModelEventBase> RemoveRelationshipCore(ModelRelationshipId relationshipId)
         {
-            var oldRelationship = Model.GetRelationship(relationshipId);
-            Model = Model.RemoveRelationship(relationshipId);
-            yield return new ModelRelationshipRemovedEvent(Model, oldRelationship);
+            var oldRelationship = LatestModel.GetRelationship(relationshipId);
+            LatestModel = LatestModel.RemoveRelationship(relationshipId);
+            yield return new ModelRelationshipRemovedEvent(LatestModel, oldRelationship);
         }
 
         [NotNull]
         [ItemNotNull]
         private IEnumerable<ModelEventBase> ClearModelCore()
         {
-            Model = Model.Clear();
-            yield return new ModelClearedEvent(Model);
+            LatestModel = LatestModel.Clear();
+            yield return new ModelClearedEvent(LatestModel);
         }
 
         private bool IsRelationshipValid([NotNull] IModelRelationship relationship)
         {
-            var sourceNode = Model.GetNode(relationship.Source);
-            var targetNode = Model.GetNode(relationship.Target);
+            var sourceNode = LatestModel.GetNode(relationship.Source);
+            var targetNode = LatestModel.GetNode(relationship.Target);
 
             return _modelRuleProviders.All(i => i.IsRelationshipStereotypeValid(relationship.Stereotype, sourceNode, targetNode));
         }

@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private void OnModelChanged(ModelEventBase modelEvent)
         {
-            var diagram = DiagramService.Diagram;
+            var diagram = DiagramService.LatestDiagram;
 
             switch (modelEvent)
             {

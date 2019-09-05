@@ -69,7 +69,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             ViewportCalculator.TransformChanged += OnViewportTransformChanged;
             DiagramService.DiagramChanged += OnDiagramChanged;
 
-            AddDiagram(diagramService.Diagram);
+            AddDiagram(diagramService.LatestDiagram);
         }
 
         public override void Dispose()
@@ -168,7 +168,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _diagramNodeToViewModelMap.Set(diagramNode.Id, diagramNodeUi);
 
-            DiagramService.Diagram.TryGetContainerNode(diagramNode)
+            DiagramService.LatestDiagram.TryGetContainerNode(diagramNode)
                 .Match(
                     containerNode =>
                     {

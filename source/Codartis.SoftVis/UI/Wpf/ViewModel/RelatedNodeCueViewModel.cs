@@ -23,8 +23,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramNode = diagramNode;
             _directedModelRelationshipType = relatedNodeType.RelationshipType;
 
-            _lastModel = modelService.Model;
-            _lastDiagram = diagramService.Diagram;
+            _lastModel = modelService.LatestModel;
+            _lastDiagram = diagramService.LatestDiagram;
 
             ModelService.ModelChanged += OnModelChanged;
             DiagramService.DiagramChanged += OnDiagramChanged;

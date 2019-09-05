@@ -135,7 +135,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private IIncrementalLayoutEngine GetLayoutEngine(IDiagramConnector diagramConnector)
         {
-            var diagram = DiagramService.Diagram;
+            var diagram = DiagramService.LatestDiagram;
 
             return diagram.IsCrossingLayoutGroups(diagramConnector.Id)
                 ? null // TODO: _crossLayoutGroupConnectorRouter

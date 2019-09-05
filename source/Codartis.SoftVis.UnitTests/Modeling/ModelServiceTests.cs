@@ -14,18 +14,18 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         public void Create_Works()
         {
             var modelService = CreateModelService();
-            modelService.Model.Should().Be(Model.Empty);
+            modelService.LatestModel.Should().Be(Model.Empty);
         }
 
         [Fact]
         public void AddNode_ReplacesTheModel()
         {
             var modelService = CreateModelService();
-            var modelBeforeMutation = modelService.Model;
+            var modelBeforeMutation = modelService.LatestModel;
 
             modelService.AddNode(CreateModelNode("Node1"));
 
-            modelService.Model.Should().NotBeSameAs(modelBeforeMutation);
+            modelService.LatestModel.Should().NotBeSameAs(modelBeforeMutation);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             var node1 = CreateModelNode("Node1");
             modelService.AddNode(node1);
 
-            modelService.Model.Nodes.Should().BeEquivalentTo(node1);
+            modelService.LatestModel.Nodes.Should().BeEquivalentTo(node1);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
                 modelService.AddNode(node1);
 
                 monitoredSubject.Should().Raise(nameof(IModelService.ModelChanged))
-                    .WithArgs<ModelNodeAddedEvent>(args => args.NewModel == modelService.Model && args.AddedNode == node1);
+                    .WithArgs<ModelNodeAddedEvent>(args => args.NewModel == modelService.LatestModel && args.AddedNode == node1);
             }
         }
 
@@ -64,9 +64,9 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             var child = CreateModelNode("Child");
             modelService.AddNode(child, parent.Id);
 
-            modelService.Model.Nodes.Should().BeEquivalentTo(parent, child);
-            modelService.Model.GetRelatedNodes(child.Id, CommonDirectedModelRelationshipTypes.Container).Should().BeEquivalentTo(parent);
-            modelService.Model.GetRelatedNodes(parent.Id, CommonDirectedModelRelationshipTypes.Contained).Should().BeEquivalentTo(child);
+            modelService.LatestModel.Nodes.Should().BeEquivalentTo(parent, child);
+            modelService.LatestModel.GetRelatedNodes(child.Id, CommonDirectedModelRelationshipTypes.Container).Should().BeEquivalentTo(parent);
+            modelService.LatestModel.GetRelatedNodes(parent.Id, CommonDirectedModelRelationshipTypes.Contained).Should().BeEquivalentTo(child);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             var node1A = node1.WithName("Node1A");
             modelService.UpdateNode(node1A);
 
-            modelService.Model.Nodes.Should().BeEquivalentTo(node1A);
+            modelService.LatestModel.Nodes.Should().BeEquivalentTo(node1A);
         }
 
         [Fact]
@@ -105,7 +105,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             modelService.AddNode(node2);
             modelService.AddRelationship(relationship);
 
-            modelService.Model.Relationships.Should().BeEquivalentTo(relationship);
+            modelService.LatestModel.Relationships.Should().BeEquivalentTo(relationship);
         }
 
         [Fact]

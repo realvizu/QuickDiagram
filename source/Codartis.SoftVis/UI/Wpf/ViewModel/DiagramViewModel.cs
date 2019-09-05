@@ -56,7 +56,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             SubscribeToViewportEvents();
 
-            _lastDiagram = DiagramService.Diagram;
+            _lastDiagram = DiagramService.LatestDiagram;
         }
 
         public override void Dispose()

@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Diagramming
     /// </summary>
     public interface IDiagramService
     {
-        [NotNull] IDiagram Diagram { get; }
+        [NotNull] IDiagram LatestDiagram { get; }
 
         event Action<DiagramEventBase> DiagramChanged;
 

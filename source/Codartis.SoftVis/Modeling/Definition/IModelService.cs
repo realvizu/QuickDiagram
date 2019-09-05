@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// </summary>
     public interface IModelService
     {
-        [NotNull] IModel Model { get; }
+        [NotNull] IModel LatestModel { get; }
 
         event Action<ModelEventBase> ModelChanged;
 
