@@ -7,12 +7,13 @@ namespace Codartis.Util
     {
         public static readonly Maybe<T> Nothing = default;
 
+        public bool HasValue { get; }
         private readonly T _value;
 
         internal Maybe(T value)
         {
-            _value = value;
             HasValue = true;
+            _value = value;
         }
 
         public T Value
@@ -26,13 +27,21 @@ namespace Codartis.Util
             }
         }
 
-        public bool HasValue { get; }
-
         public override string ToString() => !HasValue ? "<Nothing>" : Value.ToString();
 
         public static implicit operator Maybe<T>(Maybe<Maybe<T>> doubleMaybe) => doubleMaybe.HasValue ? doubleMaybe.Value : Nothing;
 
-        public bool Equals(Maybe<T> other) => EqualityComparer<T>.Default.Equals(_value, other._value) && HasValue.Equals(other.HasValue);
+        public bool Equals(Maybe<T> other)
+        {
+            return !HasValue && !other.HasValue ||
+                   HasValue && other.HasValue && EqualityComparer<T>.Default.Equals(_value, other._value);
+        }
+
+        public bool Equals(T otherValue)
+        {
+            return !HasValue && otherValue == null ||
+                   HasValue && otherValue != null && EqualityComparer<T>.Default.Equals(_value, otherValue);
+        }
 
         public override bool Equals(object obj)
         {

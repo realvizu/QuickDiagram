@@ -98,7 +98,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             if (!maybeOldNode.HasValue)
                 throw new InvalidOperationException($"Node with id {newNode.Id} was not found in the model.");
 
-            LatestModel = LatestModel.ReplaceNode(newNode);
+            LatestModel = LatestModel.UpdateNode(newNode);
             yield return new ModelNodeUpdatedEvent(LatestModel, maybeOldNode.Value, newNode);
         }
 

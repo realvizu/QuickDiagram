@@ -130,17 +130,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             switch (diagramEvent)
             {
-                case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    AddNode(diagramNodeAddedEvent.NewNode);
+                case DiagramNodeAddedEvent nodeAddedEvent:
+                    AddNode(nodeAddedEvent.NewNode, nodeAddedEvent.NewNode.ParentNodeId.FromMaybe());
                     break;
-                case DiagramNodeRemovedEvent diagramNodeRemovedEvent:
-                    RemoveNode(diagramNodeRemovedEvent.OldNode);
+                case DiagramNodeRemovedEvent nodeRemovedEvent:
+                    RemoveNode(nodeRemovedEvent.OldNode);
                     break;
-                case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
-                    AddConnector(diagramConnectorAddedEvent.NewConnector);
+                case DiagramConnectorAddedEvent connectorAddedEvent:
+                    AddConnector(connectorAddedEvent.NewConnector);
                     break;
-                case DiagramConnectorRemovedEvent diagramConnectorRemovedEvent:
-                    RemoveConnector(diagramConnectorRemovedEvent.OldConnector);
+                case DiagramConnectorRemovedEvent connectorRemovedEvent:
+                    RemoveConnector(connectorRemovedEvent.OldConnector);
                     break;
                 case DiagramClearedEvent _:
                     ClearViewport();
@@ -150,14 +150,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddDiagram(IDiagram diagram)
         {
+            // TODO: traverse the hierarchy, add nodes by parentNodeIds
             foreach (var diagramNode in diagram.Nodes)
-                AddNode(diagramNode);
+                AddNode(diagramNode, null);
 
             foreach (var diagramConnector in diagram.Connectors)
                 AddConnector(diagramConnector);
         }
 
-        private void AddNode(IDiagramNode diagramNode)
+        private void AddNode(IDiagramNode diagramNode, ModelNodeId? parentNodeId)
         {
             var diagramNodeUi = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
 
@@ -168,21 +169,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _diagramNodeToViewModelMap.Set(diagramNode.Id, diagramNodeUi);
 
-            DiagramService.LatestDiagram.TryGetContainerNode(diagramNode)
-                .Match(
-                    containerNode =>
-                    {
-                        if (IsNodeVisibleOnDiagram(containerNode, out var containerNodeUi))
-                            ((IContainerDiagramNodeUi)containerNodeUi).AddChildNode(diagramNodeUi);
-                    },
-                    () => DiagramNodeViewModels.Add(diagramNodeUi));
+            if (parentNodeId.HasValue)
+            {
+                if (IsNodeVisibleOnDiagram(parentNodeId.Value, out var containerNodeUi))
+                    ((IContainerDiagramNodeUi)containerNodeUi).AddChildNode(diagramNodeUi);
+            }
+            else
+            {
+                DiagramNodeViewModels.Add(diagramNodeUi);
+            }
         }
 
-        private bool IsNodeVisibleOnDiagram(IDiagramNode diagramNode, out IDiagramNodeUi diagramNodeUi)
+        private bool IsNodeVisibleOnDiagram(ModelNodeId modelNodeId, out IDiagramNodeUi diagramNodeUi)
         {
             diagramNodeUi = null;
 
-            var result = _diagramNodeToViewModelMap.TryGet(diagramNode.Id, out var diagramNodeViewModel);
+            var result = _diagramNodeToViewModelMap.TryGet(modelNodeId, out var diagramNodeViewModel);
             if (result)
                 diagramNodeUi = diagramNodeViewModel;
 

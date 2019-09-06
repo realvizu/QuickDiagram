@@ -43,8 +43,7 @@ namespace Codartis.SoftVis.Services.Plugins
             if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
             
-            // TODO
-            //DiagramService.ShowModelRelationship(modelRelationship);
+            DiagramService.AddConnector(modelRelationship.Id);
         }
     }
 }

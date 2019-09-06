@@ -270,6 +270,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
                 : EmptyWithDisallowParallelEdges;
         }
 
+        [NotNull]
         public static IImmutableBidirectionalGraph<TVertex, TVertexId, TEdge, TEdgeId> Create(
             IImmutableSet<TVertex> vertices,
             IImmutableSet<TEdge> edges,

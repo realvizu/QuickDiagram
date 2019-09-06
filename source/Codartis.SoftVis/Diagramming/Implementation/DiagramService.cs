@@ -15,25 +15,33 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         public IDiagram LatestDiagram { get; private set; }
 
-        [NotNull]private readonly object _diagramUpdateLockObject;
+        [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
+        [NotNull] private readonly object _diagramUpdateLockObject;
 
         public event Action<DiagramEventBase> DiagramChanged;
 
-        public DiagramService([NotNull] IModel model)
+        public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
         {
             LatestDiagram = Diagram.Create(model);
+            _connectorTypeResolver = connectorTypeResolver;
             _diagramUpdateLockObject = new object();
         }
 
-        public void AddNode(IDiagramNode node)
+        public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId)
         {
             lock (_diagramUpdateLockObject)
             {
-                if (LatestDiagram.NodeExists(node.Id))
+                if (LatestDiagram.NodeExists(nodeId))
                     return;
 
-                LatestDiagram = LatestDiagram.AddNode(node);
-                DiagramChanged?.Invoke(new DiagramNodeAddedEvent(LatestDiagram, node));
+                LatestDiagram.Model.TryGetNode(nodeId).Match(
+                    modelNode =>
+                    {
+                        var newNode = CreateNode(modelNode).WithParentNodeId(parentNodeId.ToMaybe());
+                        LatestDiagram = LatestDiagram.AddNode(newNode);
+                        DiagramChanged?.Invoke(new DiagramNodeAddedEvent(LatestDiagram, newNode));
+                    },
+                    () => throw new Exception($"Node {nodeId} not found in model."));
             }
         }
 
@@ -118,37 +126,43 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void AddConnector([NotNull] IDiagramConnector connector)
+        public void AddConnector(ModelRelationshipId relationshipId)
         {
             lock (_diagramUpdateLockObject)
             {
-                if (LatestDiagram.ConnectorExists(connector.Id))
+                if (LatestDiagram.ConnectorExists(relationshipId))
                     return;
 
-                LatestDiagram = LatestDiagram.AddConnector(connector);
-                DiagramChanged?.Invoke(new DiagramConnectorAddedEvent(LatestDiagram, connector));
+                LatestDiagram.Model.TryGetRelationship(relationshipId).Match(
+                    relationship =>
+                    {
+                        var connector = CreateConnector(relationship);
+                        LatestDiagram = LatestDiagram.AddConnector(connector);
+                        DiagramChanged?.Invoke(new DiagramConnectorAddedEvent(LatestDiagram, connector));
+                    },
+                    () => throw new InvalidOperationException($"Relationship {relationshipId} does not exist."));
             }
         }
 
-        public void RemoveConnector(ModelRelationshipId connectorId)
+        public void RemoveConnector(ModelRelationshipId relationshipId)
         {
             lock (_diagramUpdateLockObject)
             {
-                if (!LatestDiagram.ConnectorExists(connectorId))
+                if (!LatestDiagram.ConnectorExists(relationshipId))
                     return;
 
-                var oldConnector = LatestDiagram.GetConnector(connectorId);
-                LatestDiagram = LatestDiagram.RemoveConnector(connectorId);
+                var oldConnector = LatestDiagram.GetConnector(relationshipId);
+                LatestDiagram = LatestDiagram.RemoveConnector(relationshipId);
                 DiagramChanged?.Invoke(new DiagramConnectorRemovedEvent(LatestDiagram, oldConnector));
             }
         }
 
-        public void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute)
+        public void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
         {
             lock (_diagramUpdateLockObject)
             {
                 LatestDiagram
-                    .TryGetConnector(connectorId)
+                    .TryGetConnector(relationshipId)
                     .Match(
                         oldConnector =>
                         {
@@ -156,7 +170,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                             LatestDiagram = LatestDiagram.UpdateConnector(newConnector);
                             DiagramChanged?.Invoke(new DiagramConnectorRouteChangedEvent(LatestDiagram, oldConnector, newConnector));
                         },
-                        () => throw new InvalidOperationException($"Connector {connectorId} does not exist."));
+                        () => throw new InvalidOperationException($"Connector {relationshipId} does not exist."));
             }
         }
 
@@ -169,9 +183,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public ConnectorType GetConnectorType(ModelRelationshipStereotype modelRelationshipStereotype)
+        public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
         {
-            return ConnectorTypes.Dependency;
+            return _connectorTypeResolver.GetConnectorType(stereotype);
         }
 
         //public IDiagramNode ShowModelNode(IModelNode modelNode)
@@ -247,9 +261,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         //        DiagramStore.RemoveConnector(modelRelationshipId);
         //}
 
-        public ConnectorType GetConnectorType(string stereotype)
+        [NotNull]
+        private static IDiagramNode CreateNode([NotNull] IModelNode modelNode) => new DiagramNode(modelNode);
+
+        [NotNull]
+        private IDiagramConnector CreateConnector([NotNull] IModelRelationship relationship)
         {
-            throw new NotImplementedException();
+            var connectorType = _connectorTypeResolver.GetConnectorType(relationship.Stereotype);
+            return new DiagramConnector(relationship, connectorType);
         }
     }
 }

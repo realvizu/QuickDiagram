@@ -14,15 +14,15 @@ namespace Codartis.SoftVis.Diagramming
 
         event Action<DiagramEventBase> DiagramChanged;
 
-        void AddNode(IDiagramNode node);
+        void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId);
         void RemoveNode(ModelNodeId nodeId);
         void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode);
         void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize);
         void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter);
         void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft);
-        void AddConnector(IDiagramConnector connector);
-        void RemoveConnector(ModelRelationshipId connectorId);
-        void UpdateConnectorRoute(ModelRelationshipId connectorId, Route newRoute);
+        void AddConnector(ModelRelationshipId relationshipId);
+        void RemoveConnector(ModelRelationshipId relationshipId);
+        void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
         //IDiagramNode ShowModelNode(IModelNode modelNode);
@@ -35,7 +35,6 @@ namespace Codartis.SoftVis.Diagramming
         //void ShowModelRelationship(IModelRelationship modelRelationship);
         //void HideModelRelationship(ModelRelationshipId modelRelationshipId);
 
-        [NotNull]
         ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }
 }

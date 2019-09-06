@@ -43,10 +43,10 @@ namespace Codartis.SoftVis.Modeling.Definition
         IModel AddNode([NotNull] IModelNode node);
 
         [NotNull]
-        IModel RemoveNode(ModelNodeId nodeId);
+        IModel UpdateNode([NotNull] IModelNode updatedNode);
 
         [NotNull]
-        IModel ReplaceNode([NotNull] IModelNode newNode);
+        IModel RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
         IModel AddRelationship([NotNull] IModelRelationship relationship);

@@ -9,11 +9,13 @@ namespace Codartis.SoftVis.Diagramming
 {
     /// <summary>
     /// A diagram is a partial, graphical representation of a model.
+    /// It consists of nodes and connectors.
+    /// Nodes can contain other nodes.
     /// Immutable.
     /// </summary>
     /// <remarks>
     /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
-    /// A diagram consists consists of layout groups that act like little diagrams that the main diagram is composed of.
+    /// A diagram consists of layout groups that act like little diagrams that the main diagram is composed of.
     /// Each layout group consists of shapes that represent model items: diagram nodes for model nodes and diagram connectors for model relationships.
     /// A connector belongs to a layout group if both its source and target nodes are in that group.
     /// Those connectors whose source and target nodes belong to different layout groups form a special connector group:
@@ -31,12 +33,14 @@ namespace Codartis.SoftVis.Diagramming
         /// Gets all nodes in the diagram.
         /// </summary>
         [NotNull]
+        [ItemNotNull]
         IImmutableSet<IDiagramNode> Nodes { get; }
 
         /// <summary>
         /// Gets all connectors in the diagram.
         /// </summary>
         [NotNull]
+        [ItemNotNull]
         IImmutableSet<IDiagramConnector> Connectors { get; }
 
         /// <summary>
@@ -46,16 +50,25 @@ namespace Codartis.SoftVis.Diagramming
         ILayoutGroup RootLayoutGroup { get; }
 
         /// <summary>
+        /// Gets the layout group of a given node.
+        /// </summary>
+        Maybe<ILayoutGroup> GetLayoutGroupByNodeId(ModelNodeId modelNodeId);
+
+        /// <summary>
         /// Returns those connectors that cross between layout groups therefore doesn't belong to any of them.
         /// </summary>
         [NotNull]
+        [ItemNotNull]
         IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
 
+        /// <remarks>
+        /// This should remove all shapes whose model ID does not exist in the new model.
+        /// </remarks>
         [NotNull]
         IDiagram WithModel([NotNull] IModel newModel);
 
         [NotNull]
-        IDiagram AddNode([NotNull] IDiagramNode node, ModelNodeId? parentNodeId = null);
+        IDiagram AddNode([NotNull] IDiagramNode newNode);
 
         [NotNull]
         IDiagram UpdateNode([NotNull] IDiagramNode updatedNode);
@@ -64,13 +77,13 @@ namespace Codartis.SoftVis.Diagramming
         IDiagram RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
-        IDiagram AddConnector([NotNull] IDiagramConnector connector);
+        IDiagram AddConnector([NotNull] IDiagramConnector newConnector);
 
         [NotNull]
-        IDiagram UpdateConnector([NotNull] IDiagramConnector connector);
+        IDiagram UpdateConnector([NotNull] IDiagramConnector updatedConnector);
 
         [NotNull]
-        IDiagram RemoveConnector(ModelRelationshipId connectorId);
+        IDiagram RemoveConnector(ModelRelationshipId relationshipId);
 
         [NotNull]
         IDiagram Clear();
@@ -86,8 +99,6 @@ namespace Codartis.SoftVis.Diagramming
         IDiagramNode GetNode(ModelNodeId modelNodeId);
 
         Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId);
-
-        Maybe<IContainerDiagramNode> TryGetContainerNode([NotNull] IDiagramNode diagramNode);
 
         Rect2D GetRect([NotNull] IEnumerable<ModelNodeId> modelNodeIds);
 

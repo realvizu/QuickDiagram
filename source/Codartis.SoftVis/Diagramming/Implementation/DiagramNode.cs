@@ -1,6 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
@@ -9,19 +10,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// A diagram node.
     /// Immutable.
     /// </summary>
-    public class DiagramNode : DiagramShapeBase, IDiagramNode
+    public sealed class DiagramNode : DiagramShapeBase, IDiagramNode
     {
-        public IModelNode ModelNode { get; }
         public override Rect2D Rect { get; }
+        public IModelNode ModelNode { get; }
         public DateTime AddedAt { get; }
-        public ModelNodeId? ParentNodeId { get; }
+        public Maybe<ModelNodeId> ParentNodeId { get; }
 
-        public DiagramNode([NotNull] IModelNode modelNode, ModelNodeId? parentNodeId = null)
-            : this(modelNode, Rect2D.Undefined, DateTime.Now, parentNodeId)
-        {
-        }
-
-        public DiagramNode([NotNull] IModelNode modelNode, Rect2D rect, DateTime addedAt, ModelNodeId? parentNodeId)
+        public DiagramNode(
+            [NotNull] IModelNode modelNode,
+            Rect2D rect,
+            DateTime addedAt,
+            Maybe<ModelNodeId> parentNodeId)
         {
             ModelNode = modelNode;
             Rect = rect;
@@ -29,8 +29,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ParentNodeId = parentNodeId;
         }
 
-        public bool HasParent => ParentNodeId != null;
+        public DiagramNode([NotNull] IModelNode modelNode)
+            : this(
+                modelNode,
+                Rect2D.Undefined,
+                DateTime.Now,
+                Maybe<ModelNodeId>.Nothing)
+        {
+        }
 
+        public bool HasParent => ParentNodeId.HasValue;
         public ModelNodeId Id => ModelNode.Id;
         public string Name => ModelNode.Name;
         public ModelNodeStereotype Stereotype => ModelNode.Stereotype;
@@ -45,20 +53,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public override string ToString() => Name;
 
-        public IDiagramNode WithModelNode(IModelNode modelNode) => CreateInstance(modelNode, Rect, AddedAt, ParentNodeId);
+        public IDiagramNode WithModelNode(IModelNode newModelNode) => CreateInstance(newModelNode, Rect, AddedAt, ParentNodeId);
+        public IDiagramNode WithParentNodeId(Maybe<ModelNodeId> newParentNodeId)=> CreateInstance(ModelNode, Rect, AddedAt, newParentNodeId);
         public IDiagramNode WithRect(Rect2D newRect) => CreateInstance(ModelNode, newRect, AddedAt, ParentNodeId);
-
         public IDiagramNode WithSize(Size2D newSize) => CreateInstance(ModelNode, Rect.WithSize(newSize), AddedAt, ParentNodeId);
         public IDiagramNode WithCenter(Point2D newCenter) => CreateInstance(ModelNode, Rect.WithCenter(newCenter), AddedAt, ParentNodeId);
         public IDiagramNode WithTopLeft(Point2D newTopLeft) => CreateInstance(ModelNode, Rect.WithTopLeft(newTopLeft), AddedAt, ParentNodeId);
-        public IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId) => CreateInstance(ModelNode, Rect, AddedAt, newParentNodeId);
 
         [NotNull]
-        protected virtual IDiagramNode CreateInstance(
-            [NotNull] IModelNode modelNode,
-            Rect2D rect,
-            DateTime addedAt,
-            ModelNodeId? parentNodeId)
+        private static IDiagramNode CreateInstance([NotNull] IModelNode modelNode, Rect2D rect, DateTime addedAt, Maybe<ModelNodeId> parentNodeId)
             => new DiagramNode(modelNode, rect, addedAt, parentNodeId);
     }
 }

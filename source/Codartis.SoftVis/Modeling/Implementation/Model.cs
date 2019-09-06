@@ -59,8 +59,8 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => _graph.GetAllEdges(nodeId);
 
         public IModel AddNode(IModelNode node) => CreateInstance(_graph.AddVertex(node));
+        public IModel UpdateNode(IModelNode updatedNode) => CreateInstance(_graph.UpdateVertex(updatedNode));
         public IModel RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));
-        public IModel ReplaceNode(IModelNode newNode) => CreateInstance(_graph.UpdateVertex(newNode));
         public IModel AddRelationship(IModelRelationship relationship) => CreateInstance(_graph.AddEdge(relationship));
         public IModel RemoveRelationship(ModelRelationshipId relationshipId) => CreateInstance(_graph.RemoveEdge(relationshipId));
         public IModel Clear() => Empty;

@@ -5,6 +5,7 @@ using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
@@ -73,18 +74,20 @@ namespace Codartis.SoftVis.Services.Plugins
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
-                    var addedDiagramNode = diagramNodeAddedEvent.NewNode;
-                    var addDiagramNodeAction = new AddDiagramNodeAction(addedDiagramNode);
+                    var newDiagram = diagramNodeAddedEvent.NewDiagram;
+                    var newNode = diagramNodeAddedEvent.NewNode;
+                    var addDiagramNodeAction = new AddDiagramNodeAction(newNode);
 
-                    if (addedDiagramNode is IContainerDiagramNode containerDiagramNode)
-                    {
-                        var incrementalLayoutEngine = CreateLayoutEngine(DiagramService);
-                        _layoutEnginesPerNodes.Add(containerDiagramNode.Id, incrementalLayoutEngine);
-                    }
+                    newDiagram.GetLayoutGroupByNodeId(newNode.Id).Match(
+                        layoutGroup =>
+                        {
+                            var incrementalLayoutEngine = CreateLayoutEngine(DiagramService);
+                            _layoutEnginesPerNodes.Add(newNode.Id, incrementalLayoutEngine);
+                        });
 
-                    var layoutEngineForAddedDiagramNode = GetLayoutEngine(addedDiagramNode);
+                    var layoutEngineForAddedDiagramNode = GetLayoutEngine(newNode);
                     layoutEngineForAddedDiagramNode.EnqueueDiagramAction(addDiagramNodeAction);
-                    _modelNodeToContainingLayoutEngine.Add(addedDiagramNode.Id, layoutEngineForAddedDiagramNode);
+                    _modelNodeToContainingLayoutEngine.Add(newNode.Id, layoutEngineForAddedDiagramNode);
                     break;
 
                 case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
@@ -97,6 +100,7 @@ namespace Codartis.SoftVis.Services.Plugins
                         layoutEngineForAddedDiagramConnector.EnqueueDiagramAction(addDiagramConnectorAction);
                         _modelRelationshipToContainingLayoutEngine.Add(addedDiagramConnector.Id, layoutEngineForAddedDiagramConnector);
                     }
+
                     break;
 
                 case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
@@ -139,14 +143,14 @@ namespace Codartis.SoftVis.Services.Plugins
 
             return diagram.IsCrossingLayoutGroups(diagramConnector.Id)
                 ? null // TODO: _crossLayoutGroupConnectorRouter
-                :_layoutEnginesPerNodes[diagram.GetNode(diagramConnector.Source).Id];
+                : _layoutEnginesPerNodes[diagram.GetNode(diagramConnector.Source).Id];
         }
 
         private IIncrementalLayoutEngine GetLayoutEngine(IDiagramNode diagramNode)
         {
-            return diagramNode.ParentNodeId != null
-                ? _layoutEnginesPerNodes[diagramNode.ParentNodeId.Value]
-                : _rootLayoutEngine;
+            return diagramNode.ParentNodeId.Match(
+                parentNodeId => _layoutEnginesPerNodes[parentNodeId],
+                () => _rootLayoutEngine);
         }
     }
 }

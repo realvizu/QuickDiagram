@@ -18,29 +18,68 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     public sealed class Diagram : IDiagram
     {
         public IModel Model { get; }
-        public ILayoutGroup RootLayoutGroup { get; }
-        [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _crossLayoutGroupConnectors;
-
+        [NotNull] private readonly IImmutableDictionary<ModelNodeId, IDiagramNode> _nodes;
+        [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _connectors;
         public IImmutableSet<IDiagramNode> Nodes { get; }
         public IImmutableSet<IDiagramConnector> Connectors { get; }
         [NotNull] private readonly IDiagramGraph _allShapesGraph;
 
+        public ILayoutGroup RootLayoutGroup { get; }
+        [NotNull] private readonly IDictionary<ModelNodeId, ILayoutGroup> _nodeLayoutGroups;
+        [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _crossLayoutGroupConnectors;
+        public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
+
         private Diagram(
             [NotNull] IModel model,
-            [NotNull] ILayoutGroup rootLayoutGroup,
-            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> crossLayoutGroupConnectors)
+            [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
+            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors)
         {
             Model = model;
-            RootLayoutGroup = rootLayoutGroup;
-            _crossLayoutGroupConnectors = crossLayoutGroupConnectors;
+            _nodes = nodes;
+            _connectors = connectors;
 
-            Nodes = RootLayoutGroup.NodesRecursive;
-            Connectors = RootLayoutGroup.ConnectorsRecursive.Union(CrossLayoutGroupConnectors);
+            Nodes = nodes.Values.ToImmutableHashSet();
+            Connectors = connectors.Values.ToImmutableHashSet();
             _allShapesGraph = DiagramGraph.Create(Nodes, Connectors);
+
+            RootLayoutGroup = CreateLayoutGroup(Maybe<ModelNodeId>.Nothing);
+            _nodeLayoutGroups = CreateLayoutGroupForAllNodes();
+            _crossLayoutGroupConnectors = GetCrossLayoutGroupConnectors();
+            CrossLayoutGroupConnectors = _crossLayoutGroupConnectors.Values.ToImmutableHashSet();
         }
 
-        public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values.ToImmutableHashSet();
+        private ImmutableDictionary<ModelNodeId, ILayoutGroup> CreateLayoutGroupForAllNodes()
+        {
+            return Nodes
+                .Select(i => (i.Id, CreateLayoutGroup(i.Id.ToMaybe())))
+                .ToImmutableDictionary(i => i.Id, i => i.Item2);
+        }
 
+        private IImmutableDictionary<ModelRelationshipId, IDiagramConnector> GetCrossLayoutGroupConnectors()
+        {
+            return Connectors
+                .Where(i => GetNode(i.Source).ParentNodeId != GetNode(i.Target).ParentNodeId)
+                .ToImmutableDictionary(i => i.Id);
+        }
+
+        [NotNull]
+        private ILayoutGroup CreateLayoutGroup(Maybe<ModelNodeId> containerNodeId)
+        {
+            var nodesInLayoutGroup = Nodes
+                .Where(i => i.ParentNodeId.Equals(containerNodeId))
+                .ToImmutableHashSet();
+
+            var connectorsInLayoutGroup = Connectors
+                .Where(i => GetNode(i.Source).ParentNodeId.Equals(containerNodeId) && GetNode(i.Target).ParentNodeId.Equals(containerNodeId))
+                .ToImmutableHashSet();
+
+            return LayoutGroup.Create(nodesInLayoutGroup, connectorsInLayoutGroup);
+        }
+
+        public Maybe<ILayoutGroup> GetLayoutGroupByNodeId(ModelNodeId modelNodeId)
+        {
+            return _nodeLayoutGroups[modelNodeId].ToMaybe(i => i != LayoutGroup.Empty);
+        }
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => Connectors.Any(i => i.Id == modelRelationshipId);
@@ -59,14 +98,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId) => _allShapesGraph.IsEdgeRedundant(modelRelationshipId);
 
-        public IDiagramNode GetNode(ModelNodeId modelNodeId) => Nodes.Single(i => i.Id == modelNodeId);
+        public IDiagramNode GetNode(ModelNodeId modelNodeId) => _nodes[modelNodeId];
 
-        public Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId) => Nodes.SingleOrDefault(i => i.Id == modelNodeId).ToMaybe();
+        public Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId)
+            => _nodes.TryGetValue(modelNodeId, out var node) ? Maybe.Create(node) : Maybe<IDiagramNode>.Nothing;
 
-        public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => Connectors.Single(i => i.Id == modelRelationshipId);
+        public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => _connectors[modelRelationshipId];
 
         public Maybe<IDiagramConnector> TryGetConnector(ModelRelationshipId modelRelationshipId)
-            => Connectors.SingleOrDefault(i => i.Id == modelRelationshipId).ToMaybe();
+            => _connectors.TryGetValue(modelRelationshipId, out var connector) ? Maybe.Create(connector) : Maybe<IDiagramConnector>.Nothing;
 
         public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id) => Connectors.Where(i => i.Source == id || i.Target == id);
 
@@ -92,58 +132,44 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram WithModel(IModel newModel)
         {
-            return CreateInstance(newModel, RootLayoutGroup, _crossLayoutGroupConnectors);
+            return CreateInstance(newModel, _nodes, _connectors);
         }
 
-        public IDiagram AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
+        public IDiagram AddNode(IDiagramNode newNode)
         {
-            return CreateInstance(Model, RootLayoutGroup.AddNode(node, parentNodeId), _crossLayoutGroupConnectors);
+            return CreateInstance(Model, _nodes.Add(newNode.Id, newNode), _connectors);
         }
 
         public IDiagram UpdateNode(IDiagramNode updatedNode)
         {
-            return CreateInstance(Model, RootLayoutGroup.UpdateNode(updatedNode), _crossLayoutGroupConnectors);
+            return CreateInstance(Model, _nodes.SetItem(updatedNode.Id, updatedNode), _connectors);
         }
 
         public IDiagram RemoveNode(ModelNodeId nodeId)
         {
-            return CreateInstance(Model, RootLayoutGroup.RemoveNode(nodeId), _crossLayoutGroupConnectors);
+            return CreateInstance(Model, _nodes.Remove(nodeId), _connectors);
         }
 
-        public IDiagram AddConnector(IDiagramConnector connector)
+        public IDiagram AddConnector(IDiagramConnector newConnector)
         {
-            return IsCrossingLayoutGroups(connector.Id)
-                ? CreateInstance(Model, RootLayoutGroup, _crossLayoutGroupConnectors.Add(connector.Id, connector))
-                : CreateInstance(Model, RootLayoutGroup.AddConnector(connector), _crossLayoutGroupConnectors);
+            return CreateInstance(Model, _nodes, _connectors.Add(newConnector.Id, newConnector));
         }
 
         public IDiagram UpdateConnector(IDiagramConnector updatedConnector)
         {
-            return IsCrossingLayoutGroups(updatedConnector.Id)
-                ? CreateInstance(Model, RootLayoutGroup, _crossLayoutGroupConnectors.SetItem(updatedConnector.Id, updatedConnector))
-                : CreateInstance(Model, RootLayoutGroup.UpdateConnector(updatedConnector), _crossLayoutGroupConnectors);
+            return CreateInstance(Model, _nodes, _connectors.SetItem(updatedConnector.Id, updatedConnector));
         }
 
         public IDiagram RemoveConnector(ModelRelationshipId connectorId)
         {
-            return CrossLayoutGroupConnectors.Any(i => i.Id == connectorId)
-                ? CreateInstance(Model, RootLayoutGroup, _crossLayoutGroupConnectors.Remove(connectorId))
-                : CreateInstance(Model, RootLayoutGroup.RemoveConnector(connectorId), _crossLayoutGroupConnectors);
+            return CreateInstance(Model, _nodes, _connectors.Remove(connectorId));
         }
 
-        public IDiagram Clear() => CreateInstance(Model, RootLayoutGroup.Clear(), _crossLayoutGroupConnectors.Clear());
+        public IDiagram Clear() => Create(Model);
 
         public bool IsCrossingLayoutGroups(ModelRelationshipId modelRelationshipId)
         {
-            var connector = GetConnector(modelRelationshipId);
-            return GetNode(connector.Source).ParentNodeId != GetNode(connector.Target).ParentNodeId;
-        }
-
-        public Maybe<IContainerDiagramNode> TryGetContainerNode(IDiagramNode diagramNode)
-        {
-            return diagramNode.ParentNodeId == null
-                ? Maybe<IContainerDiagramNode>.Nothing
-                : Maybe.Create((IContainerDiagramNode)GetNode(diagramNode.ParentNodeId.Value));
+            return _crossLayoutGroupConnectors.ContainsKey(modelRelationshipId);
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
@@ -156,16 +182,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull]
         private static IDiagram CreateInstance(
             [NotNull] IModel model,
-            [NotNull] ILayoutGroup rootLayoutGroup,
-            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> crossLayoutGroupConnectors)
+            [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
+            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors)
         {
-            return new Diagram(model, rootLayoutGroup, crossLayoutGroupConnectors);
+            return new Diagram(model, nodes, connectors);
         }
 
         [NotNull]
         public static IDiagram Create([NotNull] IModel model)
         {
-            return CreateInstance(model, LayoutGroup.Empty(), ImmutableDictionary<ModelRelationshipId, IDiagramConnector>.Empty);
+            return CreateInstance(
+                model,
+                ImmutableDictionary<ModelNodeId, IDiagramNode>.Empty,
+                ImmutableDictionary<ModelRelationshipId, IDiagramConnector>.Empty);
         }
     }
 }

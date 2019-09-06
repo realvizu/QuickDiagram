@@ -3,7 +3,7 @@
     /// <summary>
     /// Describes the types of components that a diagram connector is made of.
     /// </summary>
-    public class ConnectorType
+    public struct ConnectorType
     {
         public ArrowHeadType ArrowHeadType { get; }
         public LineType ShaftLineType { get; }

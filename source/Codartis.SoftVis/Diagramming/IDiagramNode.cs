@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming
@@ -9,6 +10,7 @@ namespace Codartis.SoftVis.Diagramming
     /// <summary>
     /// A diagram node is a vertex in the diagram graph that represents a model node (eg. a box representing a class).
     /// All diagram nodes have a name, a size and a position.
+    /// A diagram node can have a parent node that contains it.
     /// Immutable.
     /// </summary>
     /// <remarks>
@@ -18,16 +20,19 @@ namespace Codartis.SoftVis.Diagramming
     {
         [NotNull] IModelNode ModelNode { get; }
         DateTime AddedAt { get; }
+        Maybe<ModelNodeId> ParentNodeId { get; }
 
+        bool HasParent { get; }
         [NotNull] string Name { get; }
         Size2D Size { get; }
         Point2D Center { get; }
         Point2D TopLeft { get; }
-        ModelNodeId? ParentNodeId { get; }
-        bool HasParent { get; }
 
         [NotNull]
-        IDiagramNode WithModelNode(IModelNode newModelNode);
+        IDiagramNode WithModelNode([NotNull] IModelNode newModelNode);
+
+        [NotNull]
+        IDiagramNode WithParentNodeId(Maybe<ModelNodeId> newParentNodeId);
 
         [NotNull]
         IDiagramNode WithRect(Rect2D newRect);
@@ -40,8 +45,5 @@ namespace Codartis.SoftVis.Diagramming
 
         [NotNull]
         IDiagramNode WithTopLeft(Point2D newTopLeft);
-
-        [NotNull]
-        IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId);
     }
 }

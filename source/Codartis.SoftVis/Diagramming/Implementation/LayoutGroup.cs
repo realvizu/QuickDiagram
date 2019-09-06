@@ -1,113 +1,47 @@
-﻿using System;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Graphs.Immutable;
-using Codartis.SoftVis.Modeling.Definition;
-using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation
 {
-    using IDiagramGraph = IImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>;
-    using DiagramGraph = ImmutableBidirectionalGraph<IDiagramNode, ModelNodeId, IDiagramConnector, ModelRelationshipId>;
-
     public sealed class LayoutGroup : ILayoutGroup
     {
-        [NotNull]
-        public static ILayoutGroup Empty(ModelNodeId? parentNodeId = null)
+        public static readonly LayoutGroup Empty = new LayoutGroup(ImmutableHashSet<IDiagramNode>.Empty, ImmutableHashSet<IDiagramConnector>.Empty);
+
+        public IImmutableSet<IDiagramNode> Nodes { get; }
+        public IImmutableSet<IDiagramConnector> Connectors { get; }
+        public Rect2D Rect { get; }
+
+        private LayoutGroup(
+            [NotNull] IImmutableSet<IDiagramNode> nodes,
+            [NotNull] IImmutableSet<IDiagramConnector> connectors)
         {
-            return new LayoutGroup(parentNodeId, DiagramGraph.Empty(allowParallelEdges: false));
+            Nodes = nodes;
+            Connectors = connectors;
+            Rect = CalculateRect(nodes, connectors);
         }
 
-        private readonly ModelNodeId? _layoutGroupNodeId;
-        [NotNull] private readonly IDiagramGraph _graph;
+        public bool IsEmpty => AreEmpty(Nodes, Connectors);
 
-        public LayoutGroup(ModelNodeId? layoutGroupNodeId, [NotNull] IDiagramGraph graph)
+        private static Rect2D CalculateRect(
+            [NotNull] IImmutableSet<IDiagramNode> nodes,
+            [NotNull] IImmutableSet<IDiagramConnector> connectors)
         {
-            _graph = graph;
-            _layoutGroupNodeId = layoutGroupNodeId;
+            return nodes.OfType<IDiagramShape>().Union(connectors).Where(i => i.Rect.IsDefined()).Select(i => i.Rect).Union();
         }
 
-        public IImmutableSet<IDiagramNode> Nodes => _graph.Vertices.ToImmutableHashSet();
-        public IImmutableSet<IDiagramConnector> Connectors => _graph.Edges.ToImmutableHashSet();
-
-        public IImmutableSet<IDiagramNode> NodesRecursive
+        private static bool AreEmpty([NotNull] IImmutableSet<IDiagramNode> nodes, [NotNull] IImmutableSet<IDiagramConnector> connectors)
         {
-            get
-            {
-                return _graph.Vertices
-                    .Union(Nodes.OfType<IContainerDiagramNode>().SelectMany(i => i.LayoutGroup.NodesRecursive))
-                    .ToImmutableHashSet();
-            }
+            return !nodes.Any() && !connectors.Any();
         }
-
-        public IImmutableSet<IDiagramConnector> ConnectorsRecursive
-        {
-            get
-            {
-                return _graph.Edges
-                    .Union(Nodes.OfType<IContainerDiagramNode>().SelectMany(i => i.LayoutGroup.ConnectorsRecursive))
-                    .ToImmutableHashSet();
-            }
-        }
-
-        public Rect2D Rect => Nodes.OfType<IDiagramShape>().Union(Connectors).Where(i => i.Rect.IsDefined()).Select(i => i.Rect).Union();
-
-        public ILayoutGroup AddNode(IDiagramNode node, ModelNodeId? parentNodeId = null)
-        {
-            if (parentNodeId == _layoutGroupNodeId)
-                return CreateInstance(_graph.AddVertex(node.WithParentNodeId(parentNodeId)));
-
-            if (parentNodeId == null)
-                throw new Exception($"ParentNodeId should not be null.");
-
-            return CreateInstance(_graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).AddNode(node, parentNodeId.Value)));
-        }
-
-        public ILayoutGroup UpdateNode(IDiagramNode updatedNode)
-        {
-            return CreateInstance(
-                _graph.ContainsVertex(updatedNode.Id)
-                    ? _graph.UpdateVertex(updatedNode)
-                    : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).UpdateNode(updatedNode)));
-        }
-
-        public ILayoutGroup RemoveNode(ModelNodeId nodeId)
-        {
-            return _graph.TryGetVertex(nodeId).Match(
-                i => CreateInstance(_graph.RemoveVertex(nodeId)),
-                () => CreateInstance(_graph.UpdateVertices(j => j is IContainerDiagramNode, j => (j as IContainerDiagramNode).RemoveNode(nodeId))));
-        }
-
-        public ILayoutGroup AddConnector(IDiagramConnector connector)
-        {
-            return CreateInstance(
-                _graph.ContainsVertex(connector.Source)
-                    ? _graph.AddEdge(connector)
-                    : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).AddConnector(connector)));
-        }
-
-        public ILayoutGroup UpdateConnector(IDiagramConnector updatedConnector)
-        {
-            return CreateInstance(
-                _graph.ContainsVertex(updatedConnector.Source)
-                    ? _graph.UpdateEdge(updatedConnector)
-                    : _graph.UpdateVertices(i => i is IContainerDiagramNode, i => (i as IContainerDiagramNode).UpdateConnector(updatedConnector)));
-        }
-
-        public ILayoutGroup RemoveConnector(ModelRelationshipId connectorId)
-        {
-            return _graph.TryGetEdge(connectorId).Match(
-                i => CreateInstance(_graph.RemoveEdge(connectorId)),
-                () => CreateInstance(
-                    _graph.UpdateVertices(j => j is IContainerDiagramNode, j => (j as IContainerDiagramNode).RemoveConnector(connectorId)))
-            );
-        }
-
-        public ILayoutGroup Clear() => CreateInstance(_graph.Clear());
 
         [NotNull]
-        private ILayoutGroup CreateInstance([NotNull] IDiagramGraph graph) => new LayoutGroup(_layoutGroupNodeId, graph);
+        public static ILayoutGroup Create([NotNull] IImmutableSet<IDiagramNode> nodes, [NotNull] IImmutableSet<IDiagramConnector> connectors)
+        {
+            return AreEmpty(nodes, connectors)
+                ? Empty
+                : new LayoutGroup(nodes, connectors);
+        }
     }
 }
