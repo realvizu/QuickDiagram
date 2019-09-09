@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util;
@@ -52,8 +53,8 @@ namespace Codartis.SoftVis.UI.Wpf
         }
 
         public void ZoomToDiagram() => DiagramViewModel.ZoomToContent();
-        public void FollowDiagramNode(IDiagramNode diagramNode) => DiagramViewModel.FollowDiagramNodes(new [] {diagramNode});
-        public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes) => DiagramViewModel.FollowDiagramNodes(diagramNodes);
+        public void FollowDiagramNode(ModelNodeId nodeId) => DiagramViewModel.FollowDiagramNodes(new [] {nodeId});
+        public void FollowDiagramNodes(IReadOnlyList<ModelNodeId> nodeIds) => DiagramViewModel.FollowDiagramNodes(nodeIds);
         public void KeepDiagramCentered() => DiagramViewModel.KeepDiagramCentered();
 
         public event ShowModelItemsEventHandler ShowModelItemsRequested

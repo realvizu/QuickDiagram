@@ -97,14 +97,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes)
+        public void FollowDiagramNodes(IReadOnlyList<ModelNodeId> nodeIds)
         {
-            var autoMoveMode = _lastDiagram.Nodes.Count > diagramNodes.Count
+            var autoMoveMode = _lastDiagram.Nodes.Count > nodeIds.Count
                 ? ViewportAutoMoveMode.Contain
                 : ViewportAutoMoveMode.Center;
 
             DiagramViewportViewModel.SetFollowDiagramNodesMode(autoMoveMode);
-            DiagramViewportViewModel.FollowDiagramNodes(diagramNodes);
+            DiagramViewportViewModel.FollowDiagramNodes(nodeIds);
         }
 
         public void StopFollowingDiagramNodes()
@@ -115,7 +115,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void KeepDiagramCentered()
         {
             DiagramViewportViewModel.SetFollowDiagramNodesMode(ViewportAutoMoveMode.Center);
-            DiagramViewportViewModel.FollowDiagramNodes(_lastDiagram.Nodes);
+            DiagramViewportViewModel.FollowDiagramNodes(_lastDiagram.Nodes.Select(i => i.Id).ToArray());
         }
 
         public void ZoomToContent() => DiagramViewportViewModel.ZoomToContent();

@@ -87,9 +87,8 @@ namespace Codartis.SoftVis.TestHostApp
         {
             _diagramService.AddNodes(modelNodes.Select(i => i.Id));
 
-            // TODO: This should be done in the UI layer when DiagramNodeAddedEvents are received
-            //if (followNewDiagramNodes)
-            //    _uiService.FollowDiagramNodes(diagramNodes);
+            if (followNewDiagramNodes)
+                _uiService.FollowDiagramNodes(modelNodes.Select(i => i.Id).ToArray());
         }
 
         private void AddShapes()

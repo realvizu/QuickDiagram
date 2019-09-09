@@ -35,9 +35,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
-        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed)
+        public void FollowDiagramNodes(IEnumerable<ModelNodeId> nodeIds, TransitionSpeed transitionSpeed)
         {
-            _followedNodeIds = diagramNodes?.Select(i => i.Id).ToArray();
+            _followedNodeIds = nodeIds?.ToArray();
             _followNodesTransitionSpeed = transitionSpeed;
             MoveViewport();
         }

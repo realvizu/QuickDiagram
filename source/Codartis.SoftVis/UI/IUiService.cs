@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.UI
 {
@@ -11,8 +12,8 @@ namespace Codartis.SoftVis.UI
     public interface IUiService
     {
         void ZoomToDiagram();
-        void FollowDiagramNode(IDiagramNode diagramNode);
-        void FollowDiagramNodes(IReadOnlyList<IDiagramNode> diagramNodes);
+        void FollowDiagramNode(ModelNodeId nodeId);
+        void FollowDiagramNodes(IReadOnlyList<ModelNodeId> nodeIds);
         void KeepDiagramCentered();
 
         event ShowModelItemsEventHandler ShowModelItemsRequested;

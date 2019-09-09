@@ -89,8 +89,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 diagramConnectorViewModel.Dispose();
         }
 
-        public void FollowDiagramNodes(IEnumerable<IDiagramNode> diagramNodes, TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
-            => ViewportCalculator.FollowDiagramNodes(diagramNodes, transitionSpeed);
+        public void FollowDiagramNodes(IEnumerable<ModelNodeId> nodeIds, TransitionSpeed transitionSpeed = TransitionSpeed.Slow)
+            => ViewportCalculator.FollowDiagramNodes(nodeIds, transitionSpeed);
 
         public void SetFollowDiagramNodesMode(ViewportAutoMoveMode mode) => ViewportCalculator.Mode = mode;
         public void StopFollowingDiagramNodes() => ViewportCalculator.StopFollowingDiagramNodes();
