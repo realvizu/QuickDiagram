@@ -17,23 +17,21 @@ namespace Codartis.SoftVis.Diagramming
 
         event Action<DiagramEventBase> DiagramChanged;
 
-        IDiagramNode AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
+        void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
         void RemoveNode(ModelNodeId nodeId);
-        IDiagramConnector AddConnector(ModelRelationshipId relationshipId);
+        void AddConnector(ModelRelationshipId relationshipId);
         void RemoveConnector(ModelRelationshipId relationshipId);
 
         void UpdateModel([NotNull] IModel model);
         void UpdateModelNode([NotNull] IModelNode updatedModelNode);
 
-        void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize);
-        void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter);
-        void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft);
+        void UpdateDiagramNodeSize(ModelNodeId nodeId, Size2D newSize);
+        void UpdateDiagramNodeCenter(ModelNodeId nodeId, Point2D newCenter);
+        void UpdateDiagramNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
         void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
-        [NotNull]
-        [ItemNotNull]
-        IReadOnlyList<IDiagramNode> AddNodes(
+        void AddNodes(
             [NotNull] IEnumerable<ModelNodeId> modelNodeIds,
             CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null);

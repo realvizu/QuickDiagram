@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public int CompareTo(IDiagramNode otherNode) => string.Compare(Name, otherNode.Name, StringComparison.InvariantCultureIgnoreCase);
 
-        public override string ToString() => Name;
+        public override string ToString() => ModelNode.ToString();
 
         public IDiagramNode WithModelNode(IModelNode newModelNode) => CreateInstance(newModelNode, Rect, AddedAt, ParentNodeId);
         public IDiagramNode WithParentNodeId(Maybe<ModelNodeId> newParentNodeId)=> CreateInstance(ModelNode, Rect, AddedAt, newParentNodeId);

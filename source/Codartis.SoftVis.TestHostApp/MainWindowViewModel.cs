@@ -85,10 +85,11 @@ namespace Codartis.SoftVis.TestHostApp
 
         private void OnShowModelItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes)
         {
-            var diagramNodes = _diagramService.AddNodes(modelNodes.Select(i => i.Id));
+            _diagramService.AddNodes(modelNodes.Select(i => i.Id));
 
-            if (followNewDiagramNodes)
-                _uiService.FollowDiagramNodes(diagramNodes);
+            // TODO: This should be done in the UI layer when DiagramNodeAddedEvents are received
+            //if (followNewDiagramNodes)
+            //    _uiService.FollowDiagramNodes(diagramNodes);
         }
 
         private void AddShapes()

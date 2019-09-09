@@ -76,7 +76,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
                         var lastEvent = GetLastEventFromQueue();
                         if (lastEvent == null)
-                            return;
+                            continue;
 
                         Debug.WriteLine($"Calling layout.");
                         DoLayout(lastEvent.NewDiagram);
@@ -155,7 +155,7 @@ namespace Codartis.SoftVis.Services.Plugins
             foreach (var rect in changedRects)
             {
                 var diagramNode = diagram.GetNode(rect.Key);
-                DiagramService.UpdateDiagramNodeCenter(diagramNode, rect.Value.Center);
+                DiagramService.UpdateDiagramNodeCenter(diagramNode.Id, rect.Value.Center);
             }
         }
     }

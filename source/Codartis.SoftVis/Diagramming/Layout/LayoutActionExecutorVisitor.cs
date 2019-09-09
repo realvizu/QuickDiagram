@@ -14,7 +14,7 @@
 
         public void Visit(IMoveDiagramNodeLayoutAction layoutAction)
         {
-            _diagramService.UpdateDiagramNodeCenter(layoutAction.DiagramNode, layoutAction.To);
+            _diagramService.UpdateDiagramNodeCenter(layoutAction.DiagramNode.Id, layoutAction.To);
         }
 
         public void Visit(IRerouteDiagramConnectorLayoutAction layoutAction)

@@ -74,6 +74,13 @@ namespace Codartis.SoftVis.Modeling.Implementation
             RaiseEvents(events);
         }
 
+        
+        private void RaiseEvents([NotNull] [ItemNotNull] IEnumerable<ModelEventBase> events)
+        {
+            foreach (var @event in events)
+                ModelChanged?.Invoke(@event);
+        }
+
         [NotNull]
         [ItemNotNull]
         private IEnumerable<ModelEventBase> AddNodeCore([NotNull] IModelNode node, ModelNodeId? parentNodeId = null)
@@ -154,12 +161,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
         private static ModelRelationship CreateContainsRelationship(ModelNodeId source, ModelNodeId target)
         {
             return new ModelRelationship(ModelRelationshipId.Create(), source, target, ModelRelationshipStereotype.Containment);
-        }
-
-        private void RaiseEvents([NotNull] [ItemNotNull] IEnumerable<ModelEventBase> events)
-        {
-            foreach (var @event in events)
-                ModelChanged?.Invoke(@event);
         }
     }
 }

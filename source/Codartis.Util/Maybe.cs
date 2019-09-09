@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Codartis.Util
 {
@@ -10,12 +11,13 @@ namespace Codartis.Util
         public bool HasValue { get; }
         private readonly T _value;
 
-        internal Maybe(T value)
+        internal Maybe([NotNull] T value)
         {
             HasValue = true;
             _value = value;
         }
 
+        [NotNull]
         public T Value
         {
             get
