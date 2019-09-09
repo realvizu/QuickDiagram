@@ -34,14 +34,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
-        public DiagramViewModel(IModelService modelService, IDiagramService diagramService,
-            IDiagramShapeUiFactory diagramShapeUiFactory, double minZoom, double maxZoom, double initialZoom)
+        public DiagramViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            IDiagramShapeUiFactory diagramShapeUiFactory,
+            double minZoom,
+            double maxZoom,
+            double initialZoom)
             : base(modelService, diagramService)
         {
             DiagramShapeUiFactory = diagramShapeUiFactory;
 
-            DiagramViewportViewModel = new DiagramViewportViewModel(ModelService, DiagramService, diagramShapeUiFactory,
-                minZoom, maxZoom, initialZoom);
+            DiagramViewportViewModel = new DiagramViewportViewModel(
+                ModelService,
+                DiagramService,
+                diagramShapeUiFactory,
+                minZoom,
+                maxZoom,
+                initialZoom);
 
             RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelService, DiagramService);
             RelatedNodeListBoxViewModel.ItemSelected += OnRelatedNodeSelected;
@@ -74,7 +84,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.Dispose();
         }
 
-        public IEnumerable<DiagramNodeViewModelBase> DiagramNodeViewModels => DiagramViewportViewModel.DiagramNodeViewModels;
+        public IEnumerable<DiagramNodeViewModel> DiagramNodeViewModels => DiagramViewportViewModel.DiagramNodeViewModels;
         public IEnumerable<DiagramConnectorViewModel> DiagramConnectorViewModelsModels => DiagramViewportViewModel.DiagramConnectorViewModels;
 
         public Rect DiagramContentRect
@@ -146,7 +156,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
         }
 
-        private void OnRemoveDiagramNodeRequested(DiagramNodeViewModelBase diagramNodeViewModel)
+        private void OnRemoveDiagramNodeRequested(DiagramNodeViewModel diagramNodeViewModel)
         {
             DiagramViewportViewModel.StopFollowingDiagramNodes();
             if (RelatedNodeListBoxViewModel.OwnerDiagramShape == diagramNodeViewModel)

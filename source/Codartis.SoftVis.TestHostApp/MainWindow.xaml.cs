@@ -4,13 +4,13 @@ using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Diagramming.Layout.Nodes;
 using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
-using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -50,10 +50,11 @@ namespace Codartis.SoftVis.TestHostApp
                 .As<IVisualizationService>();
 
             builder.RegisterType<TestModelServiceFactory>().As<IModelServiceFactory>();
-            builder.RegisterType<TestDiagramShapeFactory>().As<IDiagramShapeFactory>();
             builder.RegisterType<TestDiagramServiceFactory>().As<IDiagramServiceFactory>();
             builder.RegisterType<TestUiServiceFactory>().As<IUiServiceFactory>();
             builder.RegisterType<DiagramPluginFactory>().As<IDiagramPluginFactory>();
+            builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
+            builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
             
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<SugiyamaLayoutAlgorithm>().As<INodeLayoutAlgorithm>();

@@ -8,5 +8,8 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             : base(name)
         {
         }
+
+        public string FullName => $"Full name of {Name}";
+        public abstract string StereotypeName { get; }
     }
 }

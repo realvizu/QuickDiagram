@@ -26,7 +26,7 @@
             <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
-            <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
+            <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                                          ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
                                          FocusRequestedCommand="{Binding Path=FocusTracker.FocusCommand}">
@@ -54,7 +54,7 @@
 
             <Style x:Key="DiagramNodeItemContainerStyle"
                    TargetType="{x:Type controls:AnimatedRectContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModelBase}}">
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
                 <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}"/>

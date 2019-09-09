@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// Presents a collection of diagram node view models with animated movements, appear and disappear.
     /// </summary>
-    internal class DiagramNodeItemsControl : AnimatedItemsControl<DiagramNodeViewModelBase, AnimatedRectContentPresenter>
+    internal class DiagramNodeItemsControl : AnimatedItemsControl<DiagramNodeViewModel, AnimatedRectContentPresenter>
     {
     }
 }

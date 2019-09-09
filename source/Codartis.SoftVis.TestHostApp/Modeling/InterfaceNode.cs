@@ -8,5 +8,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             : base(name)
         {
         }
+
+        public override string StereotypeName => "interface";
     }
 }

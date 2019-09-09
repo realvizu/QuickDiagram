@@ -9,13 +9,13 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 {
     internal sealed class TestModelService : ITestModelService
     {
-        [NotNull] private readonly ModelService _modelService;
+        [NotNull] private readonly IModelService _modelService;
 
         public IImmutableList<IImmutableList<IModelNode>> ItemGroups { get; private set; }
 
-        public TestModelService()
+        public TestModelService(IModelService modelService)
         {
-            _modelService = new ModelService();
+            _modelService = modelService;
             ItemGroups = ImmutableList<IImmutableList<IModelNode>>.Empty;
             StartNewGroup();
         }
@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public ITestNode GetTestNodeByName(string name)
         {
-            return (ITestNode)_modelService.Model.Nodes.Single(i => i.Name.Equals(name)).Payload;
+            return (ITestNode)_modelService.LatestModel.Nodes.Single(i => i.Name.Equals(name)).Payload;
         }
 
         private void AddItemToCurrentGroup(IModelNode modelItem)
@@ -92,7 +92,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         [NotNull]
         private IModelNode GetWrapperNode([NotNull] ITestNode testNode)
         {
-            return _modelService.Model.Nodes.Single(i => i.Payload.Equals(testNode));
+            return _modelService.LatestModel.Nodes.Single(i => i.Payload.Equals(testNode));
         }
     }
 }

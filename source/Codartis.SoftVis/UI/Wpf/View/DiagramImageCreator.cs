@@ -14,13 +14,13 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public class DiagramImageCreator : IDiagramImageCreator
     {
-        private readonly IEnumerable<DiagramNodeViewModelBase> _diagramNodeViewModels;
+        private readonly IEnumerable<DiagramNodeViewModel> _diagramNodeViewModels;
         private readonly IEnumerable<DiagramConnectorViewModel> _diagramConnectorViewModels;
         private readonly Rect _diagramRect;
         private readonly IDiagramStyleProvider _diagramStyleProvider;
         private readonly ResourceDictionary _resourceDictionary;
 
-        public DiagramImageCreator(IEnumerable<DiagramNodeViewModelBase> diagramNodeViewModels,
+        public DiagramImageCreator(IEnumerable<DiagramNodeViewModel> diagramNodeViewModels,
             IEnumerable<DiagramConnectorViewModel> diagramConnectorViewModels,
             Rect diagramRect,
             IDiagramStyleProvider diagramStyleProvider,

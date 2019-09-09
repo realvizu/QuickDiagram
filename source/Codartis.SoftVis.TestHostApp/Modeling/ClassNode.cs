@@ -11,5 +11,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         {
             IsAbstract = isAbstract;
         }
+
+        public override string StereotypeName => "class";
     }
 }

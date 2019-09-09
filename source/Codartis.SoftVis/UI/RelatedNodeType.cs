@@ -1,9 +1,9 @@
 ﻿using Codartis.SoftVis.Modeling.Definition;
 
-namespace Codartis.SoftVis.UI.Wpf.ViewModel
+namespace Codartis.SoftVis.UI
 {
     /// <summary>
-    /// A related node type is defined by the directed relationship type that connectes them to a node.
+    /// A related node type is defined by the directed relationship type that connects them to a node.
     /// </summary>
     public struct RelatedNodeType
     {

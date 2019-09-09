@@ -3,9 +3,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
-                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.TestHostApp.UI"
                     xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
-                    xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling.Definition;assembly=Codartis.SoftVis"
                     xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
                     mc:Ignorable="d" >
@@ -34,7 +32,8 @@
         <Setter Property="MinWidth" Value="50"/>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModel:PropertyDiagramNodeViewModel}">
+    <!--TODO: property-->
+    <DataTemplate DataType="{x:Type testHostAppModeling:PropertyNode}">
         <Border Background="LightGray"
                 HorizontalAlignment="Stretch">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
@@ -43,15 +42,16 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModel:TypeDiagramNodeViewModel}">
+    <!--TODO: type-->
+    <DataTemplate DataType="{x:Type testHostAppModeling:TypeNodeBase}">
         <Border BorderThickness="1"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
                 Background="{Binding DiagramFill, ElementName=ThisControl}"
-                ToolTip="{Binding Path=TypeDiagramNode.TypeNode.FullName}">
+                ToolTip="{Binding Path=FullName}">
             <StackPanel Orientation="Vertical" 
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="{Binding Path=Stereotype}" 
+                <TextBlock Text="{Binding Path=StereotypeName}" 
                            FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
                            Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
                            HorizontalAlignment="Center"/>
@@ -62,11 +62,12 @@
                 </StackPanel>
             </StackPanel>
         </Border>
-        <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Path=TypeDiagramNode.TypeNode.IsAbstract}" Value="true">
+        <!--TODO: re-enable this-->
+        <!--<DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
                 <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
             </DataTrigger>
-        </DataTemplate.Triggers>
+        </DataTemplate.Triggers>-->
     </DataTemplate>
 
     <Style TargetType="{x:Type controls:BubbleListBoxItem}"

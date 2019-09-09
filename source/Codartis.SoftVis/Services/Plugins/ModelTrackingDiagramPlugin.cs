@@ -10,11 +10,6 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public class ModelTrackingDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public ModelTrackingDiagramPlugin(IDiagramShapeFactory diagramShapeFactory)
-            : base(diagramShapeFactory)
-        {
-        }
-
         public override void Initialize(IModelService modelService, IDiagramService diagramService)
         {
             base.Initialize(modelService, diagramService);

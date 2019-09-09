@@ -17,11 +17,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private Point[] _routePoints;
 
-        public DiagramNodeViewModelBase SourceNodeViewModel { get; }
-        public DiagramNodeViewModelBase TargetNodeViewModel { get; }
+        public DiagramNodeViewModel SourceNodeViewModel { get; }
+        public DiagramNodeViewModel TargetNodeViewModel { get; }
 
         public DiagramConnectorViewModel(IModelService modelService, IDiagramService diagramService, 
-            IDiagramConnector diagramConnector, DiagramNodeViewModelBase sourceNodeViewModel, DiagramNodeViewModelBase targetNodeViewModel)
+            IDiagramConnector diagramConnector, DiagramNodeViewModel sourceNodeViewModel, DiagramNodeViewModel targetNodeViewModel)
             : base(modelService, diagramService, diagramConnector)
         {
             _routePoints = diagramConnector.Route.ToWpf();

@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     {
         [NotNull]
         private static readonly IDictionary<ModelRelationshipStereotype, (ModelNodeStereotype sourceNodeType, ModelNodeStereotype targetNodeType)[]>
-            ValidRelationshipTypes = new Dictionary<ModelRelationshipStereotype, (ModelNodeStereotype, ModelNodeStereotype )[]>()
+            ValidRelationshipTypes = new Dictionary<ModelRelationshipStereotype, (ModelNodeStereotype, ModelNodeStereotype )[]>
             {
                 [ModelRelationshipStereotype.Containment] = new[]
                 {

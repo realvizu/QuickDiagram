@@ -11,7 +11,11 @@ namespace Codartis.SoftVis.UI
     {
         void Initialize(IModelService modelService, IDiagramShapeUiRepository diagramShapeUiRepository);
 
-        IDiagramNodeUi CreateDiagramNodeUi(IDiagramService diagramService, IDiagramNode diagramNode, IFocusTracker<IDiagramShapeUi> focusTracker);
+        IDiagramNodeUi CreateDiagramNodeUi(
+            IDiagramService diagramService,
+            IDiagramNode diagramNode,
+            IFocusTracker<IDiagramShapeUi> focusTracker);
+
         IDiagramConnectorUi CreateDiagramConnectorUi(IDiagramService diagramService, IDiagramConnector diagramConnector);
     }
 }

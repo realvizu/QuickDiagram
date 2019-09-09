@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override object PlacementKey => _directedModelRelationshipType;
 
-        private DiagramNodeViewModelBase HostDiagramNodeViewModel => HostViewModel as DiagramNodeViewModelBase;
+        private DiagramNodeViewModel HostDiagramNodeViewModel => HostViewModel as DiagramNodeViewModel;
 
         public override void AssociateWith(IDiagramShapeUi host)
         {

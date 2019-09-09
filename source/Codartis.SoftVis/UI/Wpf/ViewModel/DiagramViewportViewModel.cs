@@ -24,18 +24,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double MinZoom { get; }
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
-        public ThreadSafeObservableCollection<DiagramNodeViewModelBase> DiagramNodeViewModels { get; }
+        public ThreadSafeObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
         public ThreadSafeObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public MiniButtonPanelViewModel MiniButtonPanelViewModel { get; }
 
-        private readonly Map<ModelNodeId, DiagramNodeViewModelBase> _diagramNodeToViewModelMap;
+        private readonly Map<ModelNodeId, DiagramNodeViewModel> _diagramNodeToViewModelMap;
         private readonly Map<ModelRelationshipId, DiagramConnectorViewModel> _diagramConnectorToViewModelMap;
         private readonly IDiagramShapeUiFactory _diagramShapeUiFactory;
 
         public event Action ViewportManipulation;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
-        public event Action<DiagramNodeViewModelBase> RemoveDiagramNodeRequested;
+        public event Action<DiagramNodeViewModel> RemoveDiagramNodeRequested;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
 
@@ -53,14 +53,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             MinZoom = minZoom;
             MaxZoom = maxZoom;
 
-            _diagramNodeToViewModelMap = new Map<ModelNodeId, DiagramNodeViewModelBase>();
+            _diagramNodeToViewModelMap = new Map<ModelNodeId, DiagramNodeViewModel>();
             _diagramConnectorToViewModelMap = new Map<ModelRelationshipId, DiagramConnectorViewModel>();
 
             _diagramShapeUiFactory = diagramShapeUiFactory;
             _diagramShapeUiFactory.Initialize(modelService, this);
 
             ViewportCalculator = new AutoMoveViewportViewModel(modelService, diagramService, minZoom, maxZoom, initialZoom);
-            DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModelBase>();
+            DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
             MiniButtonPanelViewModel = new MiniButtonPanelViewModel();
 
@@ -113,7 +113,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return result;
         }
 
-        private bool TryGetDiagramNodeViewModel(ModelNodeId modelNodeId, out DiagramNodeViewModelBase viewModel)
+        private bool TryGetDiagramNodeViewModel(ModelNodeId modelNodeId, out DiagramNodeViewModel viewModel)
             => _diagramNodeToViewModelMap.TryGet(modelNodeId, out viewModel);
 
         private bool TryGetDiagramConnectorViewModel(ModelRelationshipId modelRelationshipId, out DiagramConnectorViewModel viewModel)
@@ -160,7 +160,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode, ModelNodeId? parentNodeId)
         {
-            var diagramNodeUi = (DiagramNodeViewModelBase)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
+            var diagramNodeUi = (DiagramNodeViewModel)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
 
             diagramNodeUi.SizeChanged += OnDiagramNodeSizeChanged;
             diagramNodeUi.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;

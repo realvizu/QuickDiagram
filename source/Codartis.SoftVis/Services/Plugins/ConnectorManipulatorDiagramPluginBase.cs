@@ -6,13 +6,6 @@ namespace Codartis.SoftVis.Services.Plugins
 {
     public class ConnectorManipulatorDiagramPluginBase : DiagramPluginBase
     {
-        protected readonly IDiagramShapeFactory DiagramShapeFactory;
-
-        public ConnectorManipulatorDiagramPluginBase(IDiagramShapeFactory diagramShapeFactory)
-        {
-            DiagramShapeFactory = diagramShapeFactory;
-        }
-
         protected void ShowModelRelationshipsIfBothEndsAreVisible(IModelNode modelNode, IModel model, IDiagram diagram)
         {
             foreach (var modelRelationship in model.GetRelationships(modelNode.Id))

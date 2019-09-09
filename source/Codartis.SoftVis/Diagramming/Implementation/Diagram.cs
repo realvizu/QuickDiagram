@@ -132,6 +132,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram WithModel(IModel newModel)
         {
+            // TODO: remove all shapes whose model ID does not exist in the new model.
             return CreateInstance(newModel, _nodes, _connectors);
         }
 

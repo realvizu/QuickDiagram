@@ -9,14 +9,14 @@
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:ContainerDiagramNodeViewModelBase}}">
+             d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
 
     <UserControl.Resources>
         <ResourceDictionary>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-            <DataTemplate x:Key="ChildNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModelBase}">
+            <DataTemplate x:Key="ChildNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeControl x:Name="DiagramNodeControl"
                                          ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
                                          FocusRequestedCommand="{Binding Path=FocusTracker.FocusCommand}">

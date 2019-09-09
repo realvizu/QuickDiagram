@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming
@@ -14,26 +17,23 @@ namespace Codartis.SoftVis.Diagramming
 
         event Action<DiagramEventBase> DiagramChanged;
 
-        void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId);
+        IDiagramNode AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
         void RemoveNode(ModelNodeId nodeId);
         void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode);
         void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize);
         void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter);
         void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft);
-        void AddConnector(ModelRelationshipId relationshipId);
+        IDiagramConnector AddConnector(ModelRelationshipId relationshipId);
         void RemoveConnector(ModelRelationshipId relationshipId);
         void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
-        //IDiagramNode ShowModelNode(IModelNode modelNode);
-        //void HideModelNode(ModelNodeId modelNodeId);
-
-        //IReadOnlyList<IDiagramNode> ShowModelNodes(IEnumerable<IModelNode> modelNodes,
-        //    CancellationToken cancellationToken = default,
-        //    IIncrementalProgress progress = null);
-
-        //void ShowModelRelationship(IModelRelationship modelRelationship);
-        //void HideModelRelationship(ModelRelationshipId modelRelationshipId);
+        [NotNull]
+        [ItemNotNull]
+        IReadOnlyList<IDiagramNode> AddNodes(
+            [NotNull] IEnumerable<ModelNodeId> modelNodeIds,
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null);
 
         ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }

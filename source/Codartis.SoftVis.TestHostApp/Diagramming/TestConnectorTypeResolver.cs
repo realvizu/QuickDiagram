@@ -7,22 +7,17 @@ using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
 {
-    internal class TestDiagramService : DiagramService
+    internal class TestConnectorTypeResolver : IConnectorTypeResolver
     {
         private static readonly Dictionary<ModelRelationshipStereotype, ConnectorType> ModelRelationshipTypeToConnectorTypeMap =
             new Dictionary<ModelRelationshipStereotype, ConnectorType>
             {
-                {ModelRelationshipStereotypes.Inheritance, TestConnectorTypes.Generalization},
-                {ModelRelationshipStereotypes.Implementation, TestConnectorTypes.Implementation},
-                {ModelRelationshipStereotypes.Association, TestConnectorTypes.Association},
+                { ModelRelationshipStereotypes.Inheritance, TestConnectorTypes.Generalization },
+                { ModelRelationshipStereotypes.Implementation, TestConnectorTypes.Implementation },
+                { ModelRelationshipStereotypes.Association, TestConnectorTypes.Association },
             };
 
-        public TestDiagramService(IDiagram testDiagram, IModelService modelService) 
-            : base(testDiagram, modelService, new TestDiagramShapeFactory())
-        {
-        }
-
-        public override ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
+        public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
         {
             if (!ModelRelationshipTypeToConnectorTypeMap.ContainsKey(stereotype))
                 throw new Exception($"Unexpected model relationship type {stereotype}");

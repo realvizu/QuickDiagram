@@ -22,6 +22,7 @@ namespace Codartis.SoftVis.Services
         protected readonly IDiagramServiceFactory DiagramServiceFactory;
         protected readonly IUiServiceFactory UiServiceFactory;
         protected readonly IDiagramPluginFactory DiagramPluginFactory;
+        protected readonly IRelatedNodeTypeProvider RelatedNodeTypeProvider;
         protected readonly IEnumerable<DiagramPluginId> DiagramPluginIds;
 
         protected IModelService ModelService { get; }
@@ -38,12 +39,14 @@ namespace Codartis.SoftVis.Services
             IDiagramServiceFactory diagramServiceFactory,
             IUiServiceFactory uiServiceFactory,
             IDiagramPluginFactory diagramPluginFactory,
+            IRelatedNodeTypeProvider relatedNodeTypeProvider,
             IEnumerable<DiagramPluginId> diagramPluginIds)
         {
             ModelServiceFactory = modelServiceFactory;
             DiagramServiceFactory = diagramServiceFactory;
             UiServiceFactory = uiServiceFactory;
             DiagramPluginFactory = diagramPluginFactory;
+            RelatedNodeTypeProvider = relatedNodeTypeProvider;
             DiagramPluginIds = diagramPluginIds;
 
             ModelService = ModelServiceFactory.Create();
@@ -82,7 +85,7 @@ namespace Codartis.SoftVis.Services
             double initialZoom = DefaultInitialZoom)
         {
             var diagramService = GetDiagramService(diagramId);
-            var diagramUi = UiServiceFactory.Create(ModelService, diagramService, minZoom, maxZoom, initialZoom);
+            var diagramUi = UiServiceFactory.Create(ModelService, diagramService, RelatedNodeTypeProvider, minZoom, maxZoom, initialZoom);
 
             diagramUi.DiagramNodeSizeChanged += (diagramNode, size) => OnDiagramNodeSizeChanged(diagramId, diagramNode, size);
             diagramUi.RemoveDiagramNodeRequested += diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);

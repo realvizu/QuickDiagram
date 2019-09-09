@@ -7,14 +7,16 @@ using Codartis.SoftVis.Diagramming.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI;
+using Codartis.Util.UI.Wpf.Collections;
 using Codartis.Util.UI.Wpf.ViewModels;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Abstract base class for view models that define the visible properties of a diagram node.
+    /// View model for diagram nodes.
     /// </summary>
-    public abstract class DiagramNodeViewModelBase : DiagramShapeViewModelBase, IDiagramNodeUi
+    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
     {
         private string _name;
         private Point _center;
@@ -22,25 +24,33 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _size;
         private Rect _animatedRect;
 
+        [NotNull] private readonly IRelatedNodeTypeProvider _relatedNodeTypeProvider;
         public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
+        public ThreadSafeObservableCollection<DiagramNodeViewModel> ChildNodes { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event Action<IDiagramNode> RemoveRequested;
 
-        protected DiagramNodeViewModelBase(IModelService modelService, IDiagramService diagramService,
-            IFocusTracker<IDiagramShapeUi> focusTracker, IDiagramNode diagramNode)
-              : base(modelService, diagramService, diagramNode)
+        public DiagramNodeViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            IRelatedNodeTypeProvider relatedNodeTypeProvider,
+            IFocusTracker<IDiagramShapeUi> focusTracker,
+            IDiagramNode diagramNode)
+            : base(modelService, diagramService, diagramNode)
         {
             Name = diagramNode.ModelNode.Name;
             Center = diagramNode.Center.ToWpf();
             TopLeft = diagramNode.TopLeft.ToWpf();
             // Must NOT populate size from model because its value flows from the controls to the models.
 
+            _relatedNodeTypeProvider = relatedNodeTypeProvider;
             FocusTracker = (IWpfFocusTracker<IDiagramShapeUi>)focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
+            ChildNodes = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
 
             DiagramService.DiagramChanged += OnDiagramChanged;
         }
@@ -53,6 +63,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
                 relatedNodeCueViewModel.Dispose();
+
+            foreach (var childNode in ChildNodes)
+                childNode.Dispose();
         }
 
         public IDiagramNode DiagramNode => (IDiagramNode)DiagramShape;
@@ -126,13 +139,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        public void AddChildNode(IDiagramNodeUi childNode)
+        {
+            ChildNodes.Add(childNode as DiagramNodeViewModel);
+        }
+
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 
-        public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
-            ShowRelatedNodesRequested?.Invoke(ownerButton, modelNodes);
+        public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
+            => ShowRelatedNodesRequested?.Invoke(ownerButton, modelNodes);
 
-        public void ShowRelatedModelNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes) =>
-            RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
+        public void ShowRelatedModelNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
+            => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
+
+        public override object Clone()
+        {
+            return new DiagramNodeViewModel(ModelService, DiagramService, _relatedNodeTypeProvider, FocusTracker, DiagramNode);
+        }
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()
         {
@@ -142,19 +165,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 yield return new RelatedNodeMiniButtonViewModel(ModelService, DiagramService, entityRelationType);
         }
 
-        protected abstract IEnumerable<RelatedNodeType> GetRelatedNodeTypes();
+        private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => _relatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
 
-        protected virtual void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramEventBase diagramEvent)
         {
-            if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent
-                && DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
+            if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent &&
+                DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
             {
                 DiagramShape = diagramNodeChangedEvent.NewNode;
                 PopulateFromDiagramNode(diagramNodeChangedEvent.NewNode);
             }
         }
 
-        protected virtual void PopulateFromDiagramNode(IDiagramNode diagramNode)
+        private void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
             Name = diagramNode.ModelNode.Name;
             Center = diagramNode.Center.ToWpf();

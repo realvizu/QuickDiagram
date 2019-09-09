@@ -11,10 +11,10 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
     {
         public int GetPriority(IDiagramNode diagramNode)
         {
-            var nodeType = (diagramNode as TypeDiagramNode)?.TypeNode.Stereotype;
+            var nodeType = diagramNode.ModelNode.Stereotype;
 
-            if (nodeType == ModelNodeStereotypes.Class) return 2;
-            if (nodeType == ModelNodeStereotypes.Interface) return 1;
+            if (nodeType.Equals(ModelNodeStereotypes.Class)) return 2;
+            if (nodeType.Equals(ModelNodeStereotypes.Interface)) return 1;
             return 0;
         }
     }
