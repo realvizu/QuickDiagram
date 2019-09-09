@@ -32,7 +32,6 @@
         <Setter Property="MinWidth" Value="50"/>
     </Style>
 
-    <!--TODO: property-->
     <DataTemplate DataType="{x:Type testHostAppModeling:PropertyNode}">
         <Border Background="LightGray"
                 HorizontalAlignment="Stretch">
@@ -42,7 +41,6 @@
         </Border>
     </DataTemplate>
 
-    <!--TODO: type-->
     <DataTemplate DataType="{x:Type testHostAppModeling:TypeNodeBase}">
         <Border BorderThickness="1"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
@@ -51,7 +49,7 @@
             <StackPanel Orientation="Vertical" 
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="{Binding Path=StereotypeName}" 
+                <TextBlock Text="{Binding Path=Stereotype}" 
                            FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
                            Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
                            HorizontalAlignment="Center"/>
@@ -62,12 +60,11 @@
                 </StackPanel>
             </StackPanel>
         </Border>
-        <!--TODO: re-enable this-->
-        <!--<DataTemplate.Triggers>
+        <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
                 <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
             </DataTrigger>
-        </DataTemplate.Triggers>-->
+        </DataTemplate.Triggers>
     </DataTemplate>
 
     <Style TargetType="{x:Type controls:BubbleListBoxItem}"

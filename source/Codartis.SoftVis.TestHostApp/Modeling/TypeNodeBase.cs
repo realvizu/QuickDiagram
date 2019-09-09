@@ -9,7 +9,9 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         {
         }
 
+        public virtual bool IsAbstract => false;
         public string FullName => $"Full name of {Name}";
+        public string Stereotype => $"<<{StereotypeName}>>";
         public abstract string StereotypeName { get; }
     }
 }

@@ -65,7 +65,7 @@
 
         <Grid Grid.Row="0">
             
-            <ContentPresenter Content="{Binding}"/>
+            <ContentPresenter Content="{Binding ModelNode.Payload}"/>
             
             <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}" 
                           ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"
