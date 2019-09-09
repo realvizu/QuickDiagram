@@ -19,12 +19,15 @@ namespace Codartis.SoftVis.Diagramming
 
         IDiagramNode AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
         void RemoveNode(ModelNodeId nodeId);
-        void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode);
+        IDiagramConnector AddConnector(ModelRelationshipId relationshipId);
+        void RemoveConnector(ModelRelationshipId relationshipId);
+
+        void UpdateModel([NotNull] IModel model);
+        void UpdateModelNode([NotNull] IModelNode updatedModelNode);
+
         void UpdateDiagramNodeSize(IDiagramNode diagramNode, Size2D newSize);
         void UpdateDiagramNodeCenter(IDiagramNode diagramNode, Point2D newCenter);
         void UpdateDiagramNodeTopLeft(IDiagramNode diagramNode, Point2D newTopLeft);
-        IDiagramConnector AddConnector(ModelRelationshipId relationshipId);
-        void RemoveConnector(ModelRelationshipId relationshipId);
         void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 

@@ -131,7 +131,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             switch (diagramEvent)
             {
                 case DiagramNodeAddedEvent nodeAddedEvent:
-                    AddNode(nodeAddedEvent.NewNode, nodeAddedEvent.NewNode.ParentNodeId.FromMaybe());
+                    AddNode(nodeAddedEvent.NewNode, nodeAddedEvent.NewNode.ParentNodeId.ToNullable());
                     break;
                 case DiagramNodeRemovedEvent nodeRemovedEvent:
                     RemoveNode(nodeRemovedEvent.OldNode);

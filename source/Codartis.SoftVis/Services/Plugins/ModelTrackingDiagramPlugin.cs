@@ -1,7 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
-using Codartis.Util;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
@@ -24,34 +23,27 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private void OnModelChanged(ModelEventBase modelEvent)
         {
-            var diagram = DiagramService.LatestDiagram;
+            DiagramService.UpdateModel(modelEvent.NewModel);
 
             switch (modelEvent)
             {
                 case ModelNodeUpdatedEvent modelNodeUpdatedEvent:
-                    var newModelNode = modelNodeUpdatedEvent.NewNode;
-                    diagram
-                        .TryGetNode(newModelNode.Id)
-                        .Match(node => DiagramService.UpdateDiagramNodeModelNode(node, newModelNode));
+                    DiagramService.UpdateModelNode(modelNodeUpdatedEvent.NewNode);
                     break;
 
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
-                    var removedModelNode = modelNodeRemovedEvent.RemovedNode;
-                    diagram
-                        .TryGetNode(removedModelNode.Id)
-                        .Match(node => DiagramService.RemoveNode(node.Id));
+                    var removedNode = modelNodeRemovedEvent.RemovedNode;
+                    DiagramService.RemoveNode(removedNode.Id);
                     break;
 
                 case ModelRelationshipAddedEvent modelRelationshipAddedEvent:
                     var addedRelationship = modelRelationshipAddedEvent.AddedRelationship;
-                    ShowModelRelationshipIfBothEndsAreVisible(addedRelationship, diagram);
+                    ShowModelRelationshipIfBothEndsAreVisible(addedRelationship, DiagramService.LatestDiagram);
                     break;
 
                 case ModelRelationshipRemovedEvent modelRelationshipRemovedEvent:
                     var modelRelationship = modelRelationshipRemovedEvent.RemovedRelationship;
-                    diagram
-                        .TryGetConnector(modelRelationship.Id)
-                        .Match(connector => DiagramService.RemoveConnector(connector.Id));
+                    DiagramService.RemoveConnector(modelRelationship.Id);
                     break;
 
                 case ModelClearedEvent _:

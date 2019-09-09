@@ -29,6 +29,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _diagramUpdateLockObject = new object();
         }
 
+        public void UpdateModel(IModel model)
+        {
+            lock (_diagramUpdateLockObject)
+            {
+                LatestDiagram = LatestDiagram.WithModel(model);
+
+                // TODO: remove those shapes whose model item no longer exists
+            }
+        }
+
         public IDiagramNode AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
             lock (_diagramUpdateLockObject)
@@ -62,20 +72,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
         }
 
-        public void UpdateDiagramNodeModelNode(IDiagramNode diagramNode, IModelNode newModelNode)
+        public void UpdateModelNode(IModelNode updatedModelNode)
         {
             lock (_diagramUpdateLockObject)
             {
                 LatestDiagram
-                    .TryGetNode(diagramNode.Id)
+                    .TryGetNode(updatedModelNode.Id)
                     .Match(
                         oldNode =>
                         {
-                            var updatedNode = oldNode.WithModelNode(newModelNode);
+                            var updatedNode = oldNode.WithModelNode(updatedModelNode);
                             LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
                             DiagramChanged?.Invoke(new DiagramNodeModelNodeChangedEvent(LatestDiagram, oldNode, updatedNode));
                         },
-                        () => throw new InvalidOperationException($"Node {diagramNode} does not exist."));
+                        () => throw new InvalidOperationException($"Node {updatedModelNode} does not exist."));
             }
         }
 
