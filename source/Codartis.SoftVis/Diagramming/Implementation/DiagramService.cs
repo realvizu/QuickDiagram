@@ -265,9 +265,31 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             foreach (var modelNodeId in modelNodeIds)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                AddNode(modelNodeId);
+
+                var parentNodeId = GetParentDiagramNodeId(modelNodeId);
+                AddNode(modelNodeId, parentNodeId);
+
                 progress?.Report(1);
             }
+        }
+
+        private ModelNodeId? GetParentDiagramNodeId(ModelNodeId modelNodeId)
+        {
+            var containerNodes = LatestDiagram.Model
+                .GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Container, recursive: false)
+                .ToList();
+
+            if (!containerNodes.Any())
+                return null;
+
+            if (containerNodes.Count > 1)
+                throw new Exception($"{modelNodeId} has more than 1 containers.");
+
+            var potentialContainerNode = containerNodes.First();
+            if (LatestDiagram.NodeExists(potentialContainerNode.Id))
+                return potentialContainerNode.Id;
+
+            return null;
         }
 
         [NotNull]

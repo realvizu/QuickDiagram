@@ -86,8 +86,9 @@ namespace Codartis.SoftVis.Services.Plugins
                         });
 
                     var layoutEngineForAddedDiagramNode = GetLayoutEngine(newNode);
-                    layoutEngineForAddedDiagramNode.EnqueueDiagramAction(addDiagramNodeAction);
                     _modelNodeToContainingLayoutEngine.Add(newNode.Id, layoutEngineForAddedDiagramNode);
+
+                    layoutEngineForAddedDiagramNode.EnqueueDiagramAction(addDiagramNodeAction);
                     break;
 
                 case DiagramConnectorAddedEvent diagramConnectorAddedEvent:
@@ -97,8 +98,8 @@ namespace Codartis.SoftVis.Services.Plugins
                     var layoutEngineForAddedDiagramConnector = GetLayoutEngine(addedDiagramConnector);
                     if (layoutEngineForAddedDiagramConnector != null)
                     {
-                        layoutEngineForAddedDiagramConnector.EnqueueDiagramAction(addDiagramConnectorAction);
                         _modelRelationshipToContainingLayoutEngine.Add(addedDiagramConnector.Id, layoutEngineForAddedDiagramConnector);
+                        layoutEngineForAddedDiagramConnector.EnqueueDiagramAction(addDiagramConnectorAction);
                     }
 
                     break;

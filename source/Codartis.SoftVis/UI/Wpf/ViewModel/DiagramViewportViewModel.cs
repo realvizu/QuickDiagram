@@ -172,7 +172,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (parentNodeId.HasValue)
             {
                 if (IsNodeVisibleOnDiagram(parentNodeId.Value, out var containerNodeUi))
-                    ((IContainerDiagramNodeUi)containerNodeUi).AddChildNode(diagramNodeUi);
+                    containerNodeUi.AddChildNode(diagramNodeUi);
             }
             else
             {

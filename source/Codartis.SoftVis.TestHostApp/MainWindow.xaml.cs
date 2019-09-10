@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.TestHostApp
                         typeof(IEnumerable<DiagramPluginId>),
                         new[]
                         {
-                            DiagramPluginId.AutoLayoutDiagramPlugin2,
+                            DiagramPluginId.AutoLayoutDiagramPlugin,
                             DiagramPluginId.ConnectorHandlerDiagramPlugin,
                             DiagramPluginId.ModelTrackingDiagramPlugin
                         }))

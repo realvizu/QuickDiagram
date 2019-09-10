@@ -78,7 +78,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Maybe<ILayoutGroup> GetLayoutGroupByNodeId(ModelNodeId modelNodeId)
         {
-            return _nodeLayoutGroups[modelNodeId].ToMaybe(i => i != LayoutGroup.Empty);
+            return _nodeLayoutGroups[modelNodeId].ToMaybe(); //(i => i != LayoutGroup.Empty);
         }
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
