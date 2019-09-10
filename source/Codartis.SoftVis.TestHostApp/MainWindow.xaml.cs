@@ -2,7 +2,7 @@
 using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Layout;
-using Codartis.SoftVis.Diagramming.Layout.Layered.Sugiyama;
+using Codartis.SoftVis.Diagramming.Layout.Sugiyama;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;
