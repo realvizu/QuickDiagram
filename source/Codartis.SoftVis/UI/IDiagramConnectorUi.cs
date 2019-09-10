@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 
 namespace Codartis.SoftVis.UI
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Definition;
 using WpfGeometry = System.Windows.Media.Geometry;
 
 namespace Codartis.SoftVis.UI.Wpf.View

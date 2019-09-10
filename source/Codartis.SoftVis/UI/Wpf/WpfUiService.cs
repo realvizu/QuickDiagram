@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI.Wpf.View;

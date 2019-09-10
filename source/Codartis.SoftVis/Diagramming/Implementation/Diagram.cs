@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;

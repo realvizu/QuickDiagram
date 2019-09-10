@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling.Definition;
 

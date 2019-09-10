@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.Util;
 using Codartis.Util.UI.Wpf;
 using MoreLinq;

@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+﻿using Codartis.SoftVis.Diagramming.Layout.Layered.Sugiyama;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Layout
 {

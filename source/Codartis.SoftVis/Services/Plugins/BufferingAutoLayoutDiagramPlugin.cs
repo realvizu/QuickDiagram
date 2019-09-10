@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Layout.Nodes;
+using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Layout;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 

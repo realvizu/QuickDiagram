@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.Util.UI.Wpf.ViewModels;

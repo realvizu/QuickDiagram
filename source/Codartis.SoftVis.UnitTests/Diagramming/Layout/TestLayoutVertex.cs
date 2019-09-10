@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
+using Codartis.SoftVis.Diagramming.Layout.Layered.Sugiyama;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Implementation;
 

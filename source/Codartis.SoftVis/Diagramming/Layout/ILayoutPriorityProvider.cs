@@ -1,4 +1,6 @@
-﻿namespace Codartis.SoftVis.Diagramming.Layout
+﻿using Codartis.SoftVis.Diagramming.Definition;
+
+namespace Codartis.SoftVis.Diagramming.Layout
 {
     /// <summary>
     /// Provides layout priority information about diagram nodes.

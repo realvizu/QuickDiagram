@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;

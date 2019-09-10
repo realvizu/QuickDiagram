@@ -1,6 +1,6 @@
-﻿using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Layered.Sugiyama.Relative.Logic;
+﻿using Codartis.SoftVis.Diagramming.Layout.Layered.Sugiyama;
+using Codartis.SoftVis.Diagramming.Layout.Layered.Sugiyama.Relative;
+using Codartis.SoftVis.Diagramming.Layout.Layered.Sugiyama.Relative.Logic;
 using Codartis.SoftVis.UnitTests.Diagramming.Layout.Incremental.Builders;
 using FluentAssertions;
 using Xunit;

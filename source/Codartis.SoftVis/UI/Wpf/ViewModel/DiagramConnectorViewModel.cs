@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Events;
+using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel

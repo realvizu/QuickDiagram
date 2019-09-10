@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
 using JetBrains.Annotations;
 

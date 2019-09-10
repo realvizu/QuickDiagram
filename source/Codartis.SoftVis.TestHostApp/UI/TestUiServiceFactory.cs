@@ -1,4 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf;
