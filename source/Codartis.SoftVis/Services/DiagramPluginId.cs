@@ -6,7 +6,6 @@
     public class DiagramPluginId
     {
         public static readonly DiagramPluginId AutoLayoutDiagramPlugin = new DiagramPluginId(nameof(AutoLayoutDiagramPlugin));
-        public static readonly DiagramPluginId AutoLayoutDiagramPlugin2 = new DiagramPluginId(nameof(AutoLayoutDiagramPlugin2));
         public static readonly DiagramPluginId ModelTrackingDiagramPlugin = new DiagramPluginId(nameof(ModelTrackingDiagramPlugin));
         public static readonly DiagramPluginId ConnectorHandlerDiagramPlugin = new DiagramPluginId(nameof(ConnectorHandlerDiagramPlugin));
 
