@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.SoftVis.Diagramming.Layout;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
 
 namespace Codartis.SoftVis.Services.Plugins
 {

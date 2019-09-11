@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Layout;
-using Codartis.SoftVis.Diagramming.Layout.Sugiyama;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;

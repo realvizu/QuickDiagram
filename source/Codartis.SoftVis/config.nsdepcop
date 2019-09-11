@@ -1,55 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig InheritanceDepth="1">
 
-    <Allowed From="Codartis.SoftVis.Graphs.*" To="QuickGraph.*" />
-    <Allowed From="Codartis.SoftVis.Graphs.*" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.Graphs.*" To="Codartis.SoftVis.Graphs.Algorithms" />
+  <Allowed From="Codartis.SoftVis.Graphs.*" To="QuickGraph.*" />
+  <Allowed From="Codartis.SoftVis.Graphs.*" To="Codartis.SoftVis.Geometry" />
+  <Allowed From="Codartis.SoftVis.Graphs.*" To="Codartis.SoftVis.Graphs.Algorithms" />
 
-    <Allowed From="Codartis.SoftVis.Modeling.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="Codartis.SoftVis.Modeling.Definition.*" />
+  <Allowed From="Codartis.SoftVis.Modeling.*" To="Codartis.SoftVis.Graphs.*" />
+  <Allowed From="Codartis.SoftVis.Modeling.Implementation" To="Codartis.SoftVis.Modeling.Definition.*" />
 
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling.Definition.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Implementation" To="Codartis.SoftVis.Diagramming.Definition.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Geometry" />
+  <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Graphs.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.*" To="Codartis.SoftVis.Modeling.Definition.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.Implementation.*" To="Codartis.SoftVis.Diagramming.Definition.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.*" To="QuickGraph.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute" />
+  <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative.*" />
+  <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative" />
 
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="QuickGraph.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Graphs.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.*" To="Codartis.SoftVis.Diagramming.Definition" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Sugiyama" To="Codartis.SoftVis.Diagramming.Layout.Sugiyama.Absolute" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Sugiyama" To="Codartis.SoftVis.Diagramming.Layout.Sugiyama.Relative.*" />
-    <Allowed From="Codartis.SoftVis.Diagramming.Layout.Sugiyama.Absolute" To="Codartis.SoftVis.Diagramming.Layout.Sugiyama.Relative" />
+  <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
+  <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.Definition.*" />
+  <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.Definition.*" />
 
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.Definition.*" />
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.Definition.*" />
+  <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.View" />
+  <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+  <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+  <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
+  <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
 
-    <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.View" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
-    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
+  <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Geometry" />
+  <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Modeling.Definition" />
+  <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Diagramming.Definition" />
+  <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI" />
+  <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.View" />
+  <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+  <Allowed From="Codartis.SoftVis.Services" To="System.Windows">
+    <VisibleMembers>
+      <Type Name="ResourceDictionary" />
+    </VisibleMembers>
+  </Allowed>
+  <Allowed From="Codartis.SoftVis.Services" To="System.Windows.Media.Imaging">
+    <VisibleMembers>
+      <Type Name="BitmapSource" />
+    </VisibleMembers>
+  </Allowed>
 
-    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Modeling.Definition" />
-    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Diagramming.Definition" />
-    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI" />
-    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.View" />
-    <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
-    <Allowed From="Codartis.SoftVis.Services" To="System.Windows">
-        <VisibleMembers>
-            <Type Name="ResourceDictionary"/>
-        </VisibleMembers>
-    </Allowed>
-    <Allowed From="Codartis.SoftVis.Services" To="System.Windows.Media.Imaging">
-        <VisibleMembers>
-            <Type Name="BitmapSource"/>
-        </VisibleMembers>
-    </Allowed>
-
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Geometry" />
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Modeling.Definition.*" />
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Definition.*" />
-    <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Layout.*" />
+  <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Geometry" />
+  <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Modeling.Definition.*" />
+  <Allowed From="Codartis.SoftVis.Services.Plugins" To="Codartis.SoftVis.Diagramming.Definition.*" />
 
 </NsDepCopConfig>
