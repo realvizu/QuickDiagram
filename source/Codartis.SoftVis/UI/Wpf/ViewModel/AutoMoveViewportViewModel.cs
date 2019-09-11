@@ -80,18 +80,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             switch (diagramEvent)
             {
-                case DiagramNodeSizeChangedEvent diagramNodeSizeChangedEvent:
-                    FollowDiagramNode(diagramNodeSizeChangedEvent.NewNode);
-                    break;
-                case DiagramNodePositionChangedEvent diagramNodePositionChangedEvent:
-                    FollowDiagramNode(diagramNodePositionChangedEvent.NewNode);
+                case DiagramNodeRectChangedEvent diagramNodeRectChangedEvent:
+                    FollowDiagramNode(diagramNodeRectChangedEvent.NewNode);
                     break;
             }
         }
 
         private void FollowDiagramNode(IDiagramNode diagramNode)
         {
-            if (_followedNodeIds != null && _followedNodeIds.Contains(diagramNode.Id))
+            if (_followedNodeIds?.Contains(diagramNode.Id) == true)
                 MoveViewport();
         }
 

@@ -155,7 +155,7 @@ namespace Codartis.SoftVis.Services.Plugins
             foreach (var rect in changedRects)
             {
                 var diagramNode = diagram.GetNode(rect.Key);
-                DiagramService.UpdateDiagramNodeCenter(diagramNode.Id, rect.Value.Center);
+                DiagramService.UpdateCenter(diagramNode.Id, rect.Value.Center);
             }
         }
     }

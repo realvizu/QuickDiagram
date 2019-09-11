@@ -25,10 +25,11 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void UpdateModel([NotNull] IModel model);
         void UpdateModelNode([NotNull] IModelNode updatedModelNode);
 
-        void UpdateDiagramNodeSize(ModelNodeId nodeId, Size2D newSize);
-        void UpdateDiagramNodeCenter(ModelNodeId nodeId, Point2D newCenter);
-        void UpdateDiagramNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
-        void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
+        void UpdatePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
+        void UpdateChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
+        void UpdateCenter(ModelNodeId nodeId, Point2D newCenter);
+        void UpdateTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
+        void UpdateRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
         /// <summary>

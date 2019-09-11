@@ -19,14 +19,17 @@ namespace Codartis.SoftVis.Diagramming.Definition
     public interface IDiagramNode : IImmutableVertex<ModelNodeId>, IDiagramShape, IComparable<IDiagramNode>
     {
         [NotNull] IModelNode ModelNode { get; }
-        DateTime AddedAt { get; }
         Maybe<ModelNodeId> ParentNodeId { get; }
-
         bool HasParent { get; }
+
         [NotNull] string Name { get; }
-        Size2D Size { get; }
+        DateTime AddedAt { get; }
+
         Point2D Center { get; }
         Point2D TopLeft { get; }
+        Size2D PayloadAreaSize { get; }
+        Size2D ChildrenAreaSize { get; }
+        Size2D Size { get; }
 
         [NotNull]
         IDiagramNode WithModelNode([NotNull] IModelNode newModelNode);
@@ -35,15 +38,15 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IDiagramNode WithParentNodeId(Maybe<ModelNodeId> newParentNodeId);
 
         [NotNull]
-        IDiagramNode WithRect(Rect2D newRect);
-
-        [NotNull]
-        IDiagramNode WithSize(Size2D newSize);
-
-        [NotNull]
         IDiagramNode WithCenter(Point2D newCenter);
 
         [NotNull]
         IDiagramNode WithTopLeft(Point2D newTopLeft);
+
+        [NotNull]
+        IDiagramNode WithPayloadAreaSize(Size2D newSize);
+
+        [NotNull]
+        IDiagramNode WithChildrenAreaSize(Size2D newSize);
     }
 }

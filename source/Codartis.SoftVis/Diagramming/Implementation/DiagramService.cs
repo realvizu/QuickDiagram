@@ -64,24 +64,29 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             MutateWithLockThenRaiseEvents(() => UpdateModelNodeCore(updatedModelNode));
         }
 
-        public void UpdateDiagramNodeSize(ModelNodeId nodeId, Size2D newSize)
+        public void UpdatePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
         {
-            MutateWithLockThenRaiseEvents(() => UpdateDiagramNodeSizeCore(nodeId, newSize));
+            MutateWithLockThenRaiseEvents(() => UpdatePayloadAreaSizeCore(nodeId, newSize));
         }
 
-        public void UpdateDiagramNodeCenter(ModelNodeId nodeId, Point2D newCenter)
+        public void UpdateChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
         {
-            MutateWithLockThenRaiseEvents(() => UpdateDiagramNodeCenterCore(nodeId, newCenter));
+            MutateWithLockThenRaiseEvents(() => UpdateChildrenAreaSizeCore(nodeId, newSize));
         }
 
-        public void UpdateDiagramNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
+        public void UpdateCenter(ModelNodeId nodeId, Point2D newCenter)
         {
-            MutateWithLockThenRaiseEvents(() => UpdateDiagramNodeTopLeftCore(nodeId, newTopLeft));
+            MutateWithLockThenRaiseEvents(() => UpdateCenterCore(nodeId, newCenter));
         }
 
-        public void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
+        public void UpdateTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
         {
-            MutateWithLockThenRaiseEvents(() => UpdateConnectorRouteCore(relationshipId, newRoute));
+            MutateWithLockThenRaiseEvents(() => UpdateTopLeftCore(nodeId, newTopLeft));
+        }
+
+        public void UpdateRoute(ModelRelationshipId relationshipId, Route newRoute)
+        {
+            MutateWithLockThenRaiseEvents(() => UpdateRouteCore(relationshipId, newRoute));
         }
 
         public void ClearDiagram()
@@ -144,21 +149,35 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateDiagramNodeSizeCore(ModelNodeId nodeId, Size2D newSize)
+        private IEnumerable<DiagramEventBase> UpdatePayloadAreaSizeCore(ModelNodeId nodeId, Size2D newSize)
         {
             var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
             if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Trying to resize node {nodeId} but it does not exist.");
+                throw new InvalidOperationException($"Trying to resize payload are of node {nodeId} but it does not exist.");
 
             var oldNode = maybeDiagramNode.Value;
-            var updatedNode = oldNode.WithSize(newSize);
+            var updatedNode = oldNode.WithPayloadAreaSize(newSize);
             LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodeSizeChangedEvent(LatestDiagram, oldNode, updatedNode);
+            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
         }
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateDiagramNodeCenterCore(ModelNodeId nodeId, Point2D newCenter)
+        private IEnumerable<DiagramEventBase> UpdateChildrenAreaSizeCore(ModelNodeId nodeId, Size2D newSize)
+        {
+            var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
+            if (!maybeDiagramNode.HasValue)
+                throw new InvalidOperationException($"Trying to resize children are of node {nodeId} but it does not exist.");
+
+            var oldNode = maybeDiagramNode.Value;
+            var updatedNode = oldNode.WithChildrenAreaSize(newSize);
+            LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
+            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        private IEnumerable<DiagramEventBase> UpdateCenterCore(ModelNodeId nodeId, Point2D newCenter)
         {
             var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
             if (!maybeDiagramNode.HasValue)
@@ -167,12 +186,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var oldNode = maybeDiagramNode.Value;
             var updatedNode = oldNode.WithCenter(newCenter);
             LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodePositionChangedEvent(LatestDiagram, oldNode, updatedNode);
+            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
         }
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateDiagramNodeTopLeftCore(ModelNodeId nodeId, Point2D newTopLeft)
+        private IEnumerable<DiagramEventBase> UpdateTopLeftCore(ModelNodeId nodeId, Point2D newTopLeft)
         {
             var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
             if (!maybeDiagramNode.HasValue)
@@ -181,7 +200,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var oldNode = maybeDiagramNode.Value;
             var updatedNode = oldNode.WithTopLeft(newTopLeft);
             LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodePositionChangedEvent(LatestDiagram, oldNode, updatedNode);
+            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
         }
 
         [NotNull]
@@ -215,7 +234,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateConnectorRouteCore(ModelRelationshipId relationshipId, Route newRoute)
+        private IEnumerable<DiagramEventBase> UpdateRouteCore(ModelRelationshipId relationshipId, Route newRoute)
         {
             var maybeDiagramConnector = LatestDiagram.TryGetConnector(relationshipId);
             if (!maybeDiagramConnector.HasValue)

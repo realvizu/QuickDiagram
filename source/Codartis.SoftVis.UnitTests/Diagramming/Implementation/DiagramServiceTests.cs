@@ -55,11 +55,11 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramService = CreateDiagramService(modelService.LatestModel);
             diagramService.AddNode(parentNode.Id);
             diagramService.AddNode(childNode.Id, parentNode.Id);
-            diagramService.UpdateDiagramNodeSize(childNode.Id, new Size2D(1, 1));
+            diagramService.UpdatePayloadAreaSize(childNode.Id, new Size2D(1, 1));
 
             var diagram = diagramService.LatestDiagram;
             diagram.Nodes.ShouldBeEquivalentById(childNode.Id, parentNode.Id);
-            diagram.GetNode(childNode.Id).Size.Should().Be(new Size2D(1, 1));
+            diagram.GetNode(childNode.Id).PayloadAreaSize.Should().Be(new Size2D(1, 1));
         }
 
         [Fact]
@@ -162,7 +162,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramService = CreateDiagramService(modelService.LatestModel);
             diagramService.AddNodes(new[] { node1.Id, node2.Id });
             diagramService.AddConnector(relationship.Id);
-            diagramService.UpdateConnectorRoute(relationship.Id, TestRoute);
+            diagramService.UpdateRoute(relationship.Id, TestRoute);
 
             diagramService.LatestDiagram.RootLayoutGroup.Connectors.Should().HaveCount(1).And
                 .Subject.First().Route.Should().BeEquivalentTo(TestRoute);
