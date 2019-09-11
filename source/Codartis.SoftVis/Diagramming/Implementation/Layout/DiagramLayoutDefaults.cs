@@ -1,4 +1,4 @@
-namespace Codartis.SoftVis.Diagramming.Definition.Layout
+namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 {
     /// <summary>
     /// Default values for diagram layout.

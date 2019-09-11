@@ -1,7 +1,9 @@
-﻿namespace Codartis.SoftVis.Diagramming.Definition.Layout
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming.Definition.Layout
 {
     public interface ILayoutAlgorithm
     {
-        Layout Calculate(ILayoutGroup layoutGroup);
+        LayoutSpecification Calculate([NotNull] ILayoutGroup layoutGroup);
     }
 }
