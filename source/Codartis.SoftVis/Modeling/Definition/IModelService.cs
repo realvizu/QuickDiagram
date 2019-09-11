@@ -18,12 +18,24 @@ namespace Codartis.SoftVis.Modeling.Definition
         /// Adds a node to the model.
         /// If a parentNodeId is specified then also creates a containment relationship.
         /// </summary>
-        void AddNode([NotNull] IModelNode node, ModelNodeId? parentNodeId = null);
+        [NotNull]
+        IModelNode AddNode(
+            [NotNull] string name,
+            ModelNodeStereotype? stereotype = null,
+            [CanBeNull] object payload = null,
+            ModelNodeId? parentNodeId = null);
 
         void UpdateNode([NotNull] IModelNode newNode);
+
         void RemoveNode(ModelNodeId nodeId);
 
-        void AddRelationship([NotNull] IModelRelationship relationship);
+        [NotNull]
+        IModelRelationship AddRelationship(
+            ModelNodeId sourceId,
+            ModelNodeId targetId,
+            ModelRelationshipStereotype? stereotype = null,
+            [CanBeNull] object payload = null);
+
         void RemoveRelationship(ModelRelationshipId relationshipId);
 
         // Note that relationships cannot be updated just removed+added.

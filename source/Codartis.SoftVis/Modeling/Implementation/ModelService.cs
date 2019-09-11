@@ -31,9 +31,15 @@ namespace Codartis.SoftVis.Modeling.Implementation
             _modelRuleProviders = modelRuleProviders;
         }
 
-        public void AddNode(IModelNode node, ModelNodeId? parentNodeId = null)
+        public IModelNode AddNode(
+            string name,
+            ModelNodeStereotype? stereotype = null,
+            object payload = null,
+            ModelNodeId? parentNodeId = null)
         {
-            MutateWithLockThenRaiseEvents(() => AddNodeCore(node, parentNodeId));
+            var newNode = CreateNode(name, stereotype ?? ModelNodeStereotype.Default, payload);
+            MutateWithLockThenRaiseEvents(() => AddNodeCore(newNode, parentNodeId));
+            return newNode;
         }
 
         public void UpdateNode(IModelNode newNode)
@@ -46,9 +52,15 @@ namespace Codartis.SoftVis.Modeling.Implementation
             MutateWithLockThenRaiseEvents(() => RemoveNodeCore(nodeId));
         }
 
-        public void AddRelationship(IModelRelationship relationship)
+        public IModelRelationship AddRelationship(
+            ModelNodeId sourceId,
+            ModelNodeId targetId,
+            ModelRelationshipStereotype? stereotype = null,
+            object payload = null)
         {
-            MutateWithLockThenRaiseEvents(() => AddRelationshipCore(relationship));
+            var newRelationship = CreateRelationship(sourceId, targetId, stereotype ?? ModelRelationshipStereotype.Default, payload);
+            MutateWithLockThenRaiseEvents(() => AddRelationshipCore(newRelationship));
+            return newRelationship;
         }
 
         public void RemoveRelationship(ModelRelationshipId relationshipId)
@@ -74,7 +86,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
             RaiseEvents(events);
         }
 
-        
         private void RaiseEvents([NotNull] [ItemNotNull] IEnumerable<ModelEventBase> events)
         {
             foreach (var @event in events)
@@ -91,7 +102,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             if (!parentNodeId.HasValue)
                 yield break;
 
-            var containsRelationship = CreateContainsRelationship(parentNodeId.Value, node.Id);
+            var containsRelationship = CreateRelationship(parentNodeId.Value, node.Id, ModelRelationshipStereotype.Containment);
 
             foreach (var @event in AddRelationshipCore(containsRelationship))
                 yield return @event;
@@ -149,18 +160,28 @@ namespace Codartis.SoftVis.Modeling.Implementation
             yield return new ModelClearedEvent(LatestModel);
         }
 
+        [NotNull]
+        private static IModelNode CreateNode([NotNull] string name, ModelNodeStereotype stereotype, [CanBeNull] object payload)
+        {
+            return new ModelNode(ModelNodeId.Create(), name, stereotype, payload);
+        }
+
+        [NotNull]
+        private static IModelRelationship CreateRelationship(
+            ModelNodeId sourceId,
+            ModelNodeId targetId,
+            ModelRelationshipStereotype stereotype,
+            object payload = null)
+        {
+            return new ModelRelationship(ModelRelationshipId.Create(), sourceId, targetId, stereotype, payload);
+        }
+
         private bool IsRelationshipValid([NotNull] IModelRelationship relationship)
         {
             var sourceNode = LatestModel.GetNode(relationship.Source);
             var targetNode = LatestModel.GetNode(relationship.Target);
 
             return _modelRuleProviders.All(i => i.IsRelationshipStereotypeValid(relationship.Stereotype, sourceNode, targetNode));
-        }
-
-        [NotNull]
-        private static ModelRelationship CreateContainsRelationship(ModelNodeId source, ModelNodeId target)
-        {
-            return new ModelRelationship(ModelRelationshipId.Create(), source, target, ModelRelationshipStereotype.Containment);
         }
     }
 }

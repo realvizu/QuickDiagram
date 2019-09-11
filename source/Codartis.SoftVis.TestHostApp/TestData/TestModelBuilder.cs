@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.TestHostApp.Modeling;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
@@ -94,8 +93,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
         {
             var underlyingNode = ModelService.GetUnderlyingNode(node);
             var underlyingBaseNode = ModelService.GetUnderlyingNode(baseNode);
-            var relationship = new ModelRelationship(ModelRelationshipId.Create(), underlyingNode.Id, underlyingBaseNode.Id, stereotype);
-            ModelService.AddRelationship(relationship);
+            ModelService.AddRelationship(underlyingNode.Id, underlyingBaseNode.Id, stereotype);
         }
     }
 }

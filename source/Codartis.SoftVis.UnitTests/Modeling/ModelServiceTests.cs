@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             var modelService = CreateModelService();
             var modelBeforeMutation = modelService.LatestModel;
 
-            modelService.AddNode(CreateModelNode("Node1"));
+            modelService.AddNode("Node1");
 
             modelService.LatestModel.Should().NotBeSameAs(modelBeforeMutation);
         }
@@ -33,8 +33,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             var modelService = CreateModelService();
 
-            var node1 = CreateModelNode("Node1");
-            modelService.AddNode(node1);
+            var node1 = modelService.AddNode("Node1");
 
             modelService.LatestModel.Nodes.Should().BeEquivalentTo(node1);
         }
@@ -46,8 +45,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
 
             using (var monitoredSubject = modelService.Monitor())
             {
-                var node1 = CreateModelNode("Node1");
-                modelService.AddNode(node1);
+                var node1 = modelService.AddNode("Node1");
 
                 monitoredSubject.Should().Raise(nameof(IModelService.ModelChanged))
                     .WithArgs<ModelNodeAddedEvent>(args => args.NewModel == modelService.LatestModel && args.AddedNode == node1);
@@ -59,10 +57,8 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             var modelService = CreateModelService();
 
-            var parent = CreateModelNode("Parent");
-            modelService.AddNode(parent);
-            var child = CreateModelNode("Child");
-            modelService.AddNode(child, parent.Id);
+            var parent = modelService.AddNode("Parent");
+            var child = modelService.AddNode("Child", parentNodeId: parent.Id);
 
             modelService.LatestModel.Nodes.Should().BeEquivalentTo(parent, child);
             modelService.LatestModel.GetRelatedNodes(child.Id, CommonDirectedModelRelationshipTypes.Container).Should().BeEquivalentTo(parent);
@@ -74,8 +70,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             var modelService = CreateModelService();
 
-            var node1 = CreateModelNode("Node1");
-            modelService.AddNode(node1);
+            var node1 = modelService.AddNode("Node1");
             var node1A = node1.WithName("Node1A");
             modelService.UpdateNode(node1A);
 
@@ -87,8 +82,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             var modelService = CreateModelService();
 
-            var node1 = CreateModelNode("Node1");
-            Action a = () => modelService.UpdateNode(node1);
+            Action a = () => modelService.UpdateNode(new ModelNode(ModelNodeId.Create(), "A", ModelNodeStereotype.Default));
 
             a.Should().Throw<InvalidOperationException>().Where(i => i.Message.Contains("not found"));
         }
@@ -98,12 +92,9 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             var modelService = CreateModelService();
 
-            var node1 = CreateModelNode("Node1");
-            var node2 = CreateModelNode("Node2");
-            var relationship = new ModelRelationship(ModelRelationshipId.Create(), node1.Id, node2.Id, ModelRelationshipStereotype.Default);
-            modelService.AddNode(node1);
-            modelService.AddNode(node2);
-            modelService.AddRelationship(relationship);
+            var node1 = modelService.AddNode("Node1");
+            var node2 = modelService.AddNode("Node2");
+            var relationship = modelService.AddRelationship(node1.Id, node2.Id, ModelRelationshipStereotype.Default);
 
             modelService.LatestModel.Relationships.Should().BeEquivalentTo(relationship);
         }
@@ -113,22 +104,15 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             var modelService = CreateModelService(new AllInvalidModelRuleProvider());
 
-            var node1 = CreateModelNode("Node1");
-            var node2 = CreateModelNode("Node2");
-            var relationship = new ModelRelationship(ModelRelationshipId.Create(), node1.Id, node2.Id, ModelRelationshipStereotype.Default);
-            modelService.AddNode(node1);
-            modelService.AddNode(node2);
-            Action a = () => modelService.AddRelationship(relationship);
+            var node1 = modelService.AddNode("Node1");
+            var node2 = modelService.AddNode("Node2");
+            Action a = () => modelService.AddRelationship(node1.Id, node2.Id, ModelRelationshipStereotype.Default);
 
             a.Should().Throw<ArgumentException>().Where(i => i.Message.Contains("invalid"));
         }
 
         [NotNull]
         private static IModelService CreateModelService(params IModelRuleProvider[] modelRuleProviders) => new ModelService(modelRuleProviders);
-
-        [NotNull]
-        private static IModelNode CreateModelNode([NotNull] string name)
-            => new ModelNode(ModelNodeId.Create(), name, ModelNodeStereotype.Default);
 
         private sealed class AllInvalidModelRuleProvider : IModelRuleProvider
         {

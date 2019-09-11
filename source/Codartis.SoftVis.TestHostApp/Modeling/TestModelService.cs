@@ -2,7 +2,6 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
@@ -25,30 +24,23 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             ItemGroups = ItemGroups.Add(ImmutableList.Create<IModelNode>());
         }
 
-        public event Action<ModelEventBase> ModelChanged
-        {
-            add => _modelService.ModelChanged += value;
-            remove => _modelService.ModelChanged -= value;
-        }
-
         public void AddNode(ITestNode node, ITestNode parentNode = null)
         {
             var stereotype = GetNodeType(node);
-            var wrapperNode = new ModelNode(ModelNodeId.Create(), node.Name, stereotype, node);
             var parentWrapperNodeId = parentNode == null ? null : (ModelNodeId?)GetWrapperNode(parentNode).Id;
 
-            _modelService.AddNode(wrapperNode, parentWrapperNodeId);
+            var wrapperNode = _modelService.AddNode(node.Name, stereotype, parentWrapperNodeId);
             AddItemToCurrentGroup(wrapperNode);
         }
 
-        public void RemoveNode(ITestNode node)
+        public void RemoveNode(ModelNodeId nodeId)
         {
-            _modelService.RemoveNode(GetWrapperNode(node).Id);
+            _modelService.RemoveNode(nodeId);
         }
 
-        public void AddRelationship(IModelRelationship relationship)
+        public void AddRelationship(ModelNodeId sourceId, ModelNodeId targetId, ModelRelationshipStereotype? stereotype)
         {
-            _modelService.AddRelationship(relationship);
+            _modelService.AddRelationship(sourceId, targetId, stereotype);
         }
 
         public void RemoveRelationship(ModelRelationshipId relationshipId)

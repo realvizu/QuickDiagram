@@ -31,6 +31,13 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
+        /// <summary>
+        /// Adds multiple nodes to teh diagram.
+        /// Those nodes whose parent are already on the diagram are added to their parents.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: if the child is added before the parent then the parent won't contain the child.
+        /// </remarks>
         void AddNodes(
             [NotNull] IEnumerable<ModelNodeId> modelNodeIds,
             CancellationToken cancellationToken = default,
