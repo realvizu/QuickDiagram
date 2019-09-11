@@ -25,15 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.TestHostAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis", "Codartis.SoftVis\Codartis.SoftVis.csproj", "{9A600B8E-7C32-4DAE-B61C-55FB78051F81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.VisualStudioIntegration", "Codartis.SoftVis.VisualStudioIntegration\Codartis.SoftVis.VisualStudioIntegration.csproj", "{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.UnitTests", "Codartis.SoftVis.UnitTests\Codartis.SoftVis.UnitTests.csproj", "{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.Util", "Codartis.Util\Codartis.Util.csproj", "{04B8C468-787F-45B2-BD98-31E05C646099}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.Util.UnitTests", "Codartis.Util.UnitTests\Codartis.Util.UnitTests.csproj", "{715F370E-3A0C-4214-B51D-BC0A2C3259F3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.VisualStudioIntegration.UnitTests", "Codartis.SoftVis.VisualStudioIntegration.UnitTests\Codartis.SoftVis.VisualStudioIntegration.UnitTests.csproj", "{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,9 +45,6 @@ Global
 		{9A600B8E-7C32-4DAE-B61C-55FB78051F81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A600B8E-7C32-4DAE-B61C-55FB78051F81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A600B8E-7C32-4DAE-B61C-55FB78051F81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50FF6515-367A-4FFA-BFEB-3D7BF2204F5D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC3EA899-EA0E-4E39-B414-A37B648EDA5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,9 +57,6 @@ Global
 		{715F370E-3A0C-4214-B51D-BC0A2C3259F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{715F370E-3A0C-4214-B51D-BC0A2C3259F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{715F370E-3A0C-4214-B51D-BC0A2C3259F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72841FFE-93A4-4929-BD80-8BA9B7C67DC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
