@@ -22,7 +22,7 @@ namespace Codartis.Util
         }
 
         [NotNull]
-        public static IEnumerable<T> EmptyIfNull<T>([CanBeNull]this IEnumerable<T> collection)
+        public static IEnumerable<T> EmptyIfNull<T>([CanBeNull] this IEnumerable<T> collection)
         {
             return collection ?? Enumerable.Empty<T>();
         }
@@ -47,7 +47,9 @@ namespace Codartis.Util
             var comparer = EqualityComparer<T>.Default;
             foreach (var item in source)
             {
-                if (comparer.Equals(item, value)) return index;
+                if (comparer.Equals(item, value))
+                    return index;
+
                 index++;
             }
 
@@ -74,6 +76,20 @@ namespace Codartis.Util
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> enumeration)
         {
             return enumeration.Where(i => i != null);
+        }
+
+        [NotNull]
+        public static IEnumerable<TAggregate> RollingAggregate<TItem, TAggregate>(
+            [NotNull] this IEnumerable<TItem> items,
+            [NotNull] Func<TItem, TAggregate, TAggregate> aggregator,
+            TAggregate seed = default)
+        {
+            var result = seed;
+            foreach (var item in items)
+            {
+                result = aggregator(item, result);
+                yield return result;
+            }
         }
 
         [NotNull]

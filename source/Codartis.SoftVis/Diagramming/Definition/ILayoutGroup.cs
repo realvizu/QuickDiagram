@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
@@ -10,8 +11,8 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// </summary>
     public interface ILayoutGroup
     {
-        [NotNull] IImmutableSet<IDiagramNode> Nodes { get; }
-        [NotNull] IImmutableSet<IDiagramConnector> Connectors { get; }
+        [NotNull] [ItemNotNull] IImmutableSet<IDiagramNode> Nodes { get; }
+        [NotNull] [ItemNotNull] IImmutableSet<IDiagramConnector> Connectors { get; }
 
         bool IsEmpty { get; }
 
@@ -19,5 +20,11 @@ namespace Codartis.SoftVis.Diagramming.Definition
         /// The absolute position and size of the layout group.
         /// </summary>
         Rect2D Rect { get; }
+
+        [NotNull]
+        IDiagramNode GetNode(ModelNodeId nodeId);
+
+        [NotNull]
+        IDiagramConnector GetConnector(ModelRelationshipId relationshipId);
     }
 }
