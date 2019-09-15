@@ -94,6 +94,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             MutateWithLockThenRaiseEvents(ClearDiagramCore);
         }
 
+        public void ApplyLayout(LayoutSpecification layout)
+        {
+            MutateWithLockThenRaiseEvents(() => ApplyLayoutCore(layout));
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        private IEnumerable<DiagramEventBase> ApplyLayoutCore(LayoutSpecification layout)
+        {
+            return layout.NodeTopLeftPositions.SelectMany(i => UpdateTopLeftCore(i.Key, i.Value))
+                .Concat(layout.ConnectorRoutes.SelectMany(i => UpdateRouteCore(i.Key, i.Value)));
+        }
+
         [NotNull]
         [ItemNotNull]
         private IEnumerable<DiagramEventBase> AddNodeCore(ModelNodeId nodeId, ModelNodeId? parentNodeId)
@@ -279,8 +292,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void AddNodes(
             IEnumerable<ModelNodeId> modelNodeIds,
-            CancellationToken cancellationToken,
-            IIncrementalProgress progress)
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null)
         {
             foreach (var modelNodeId in modelNodeIds)
             {
@@ -288,6 +301,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
                 var parentNodeId = GetParentDiagramNodeId(modelNodeId);
                 AddNode(modelNodeId, parentNodeId);
+
+                progress?.Report(1);
+            }
+        }
+
+        public void AddConnectors(
+            IEnumerable<ModelRelationshipId> modelRelationshipIds,
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null)
+        {
+            foreach (var modelRelationshipId in modelRelationshipIds)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                AddConnector(modelRelationshipId);
 
                 progress?.Report(1);
             }

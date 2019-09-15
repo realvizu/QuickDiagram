@@ -74,6 +74,9 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IDiagram UpdateNode([NotNull] IDiagramNode updatedNode);
 
         [NotNull]
+        IDiagram UpdateNodes([NotNull] [ItemNotNull] IEnumerable<IDiagramNode> updatedNodes);
+
+        [NotNull]
         IDiagram RemoveNode(ModelNodeId nodeId);
 
         [NotNull]
@@ -81,6 +84,9 @@ namespace Codartis.SoftVis.Diagramming.Definition
 
         [NotNull]
         IDiagram UpdateConnector([NotNull] IDiagramConnector updatedConnector);
+
+        [NotNull]
+        IDiagram UpdateConnectors([NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> updatedConnectors);
 
         [NotNull]
         IDiagram RemoveConnector(ModelRelationshipId relationshipId);

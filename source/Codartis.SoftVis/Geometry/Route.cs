@@ -22,11 +22,6 @@ namespace Codartis.SoftVis.Geometry
 
         private readonly ImmutableList<Point2D> _routePoints;
 
-        public Route(params Point2D[] routePoints)
-            : this(routePoints as IEnumerable<Point2D>)
-        {
-        }
-
         public Route(IEnumerable<Point2D> routePoints = null)
         {
             var normalizedRoutePoints = Normalize(routePoints).ToImmutableList();
@@ -34,6 +29,16 @@ namespace Codartis.SoftVis.Geometry
             _routePoints = normalizedRoutePoints.Any()
                 ? normalizedRoutePoints
                 : null;
+        }
+
+        public Route(params Point2D[] routePoints)
+            : this(routePoints as IEnumerable<Point2D>)
+        {
+        }
+
+        public Route(params (double, double)[] routePoints)
+            : this(routePoints.Select(i => new Point2D(i.Item1, i.Item2)))
+        {
         }
 
         public IEnumerator<Point2D> GetEnumerator() => _routePoints?.GetEnumerator() ?? Enumerable.Empty<Point2D>().GetEnumerator();

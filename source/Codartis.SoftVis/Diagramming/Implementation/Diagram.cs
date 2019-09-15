@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public Maybe<ILayoutGroup> GetLayoutGroupByNodeId(ModelNodeId modelNodeId)
         {
-            return _nodeLayoutGroups[modelNodeId].ToMaybe(); //(i => i != LayoutGroup.Empty);
+            return _nodeLayoutGroups[modelNodeId].ToMaybe();
         }
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
@@ -147,6 +147,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return CreateInstance(Model, _nodes.SetItem(updatedNode.Id, updatedNode), _connectors);
         }
 
+        public IDiagram UpdateNodes(IEnumerable<IDiagramNode> updatedNodes)
+        {
+            return CreateInstance(Model, _nodes.SetItems(updatedNodes.ToDictionary(i => i.Id)), _connectors);
+        }
+
         public IDiagram RemoveNode(ModelNodeId nodeId)
         {
             return CreateInstance(Model, _nodes.Remove(nodeId), _connectors);
@@ -160,6 +165,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagram UpdateConnector(IDiagramConnector updatedConnector)
         {
             return CreateInstance(Model, _nodes, _connectors.SetItem(updatedConnector.Id, updatedConnector));
+        }
+
+        public IDiagram UpdateConnectors(IEnumerable<IDiagramConnector> updatedConnectors)
+        {
+            return CreateInstance(Model, _nodes, _connectors.SetItems(updatedConnectors.ToDictionary(i => i.Id)));
         }
 
         public IDiagram RemoveConnector(ModelRelationshipId connectorId)

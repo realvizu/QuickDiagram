@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.Util;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -240,6 +242,45 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             diagram.PathExists(childNode1.Id, childNode2.Id).Should().BeTrue();
             diagram.PathExists(childNode2.Id, childNode1.Id).Should().BeFalse();
             diagram.PathExists(parentNode1.Id, parentNode2.Id).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ApplyLayout_Works()
+        {
+            var modelService = CreateModelService();
+            var node1 = modelService.AddNode("node1");
+            var node2 = modelService.AddNode("node2");
+            var relationship1 = modelService.AddRelationship(node1.Id, node2.Id);
+            var relationship2 = modelService.AddRelationship(node2.Id, node1.Id);
+
+            var diagramService = CreateDiagramService(modelService.LatestModel);
+            diagramService.AddNodes(new[] { node1.Id, node2.Id });
+            diagramService.AddConnectors(new[] { relationship1.Id, relationship2.Id });
+
+            var topLeft1 = new Point2D(1, 2);
+            var topLeft2 = new Point2D(3, 4);
+            var route1 = new Route((5, 6), (7, 8));
+            var route2 = new Route((9, 10), (11, 12));
+
+            var layout = new LayoutSpecification(
+                new[] { (node1.Id, topLeft1), (node2.Id, topLeft2) }.ToImmutableDictionary(),
+                new[] { (relationship1.Id, route1), (relationship2.Id, route2) }.ToImmutableDictionary()
+            );
+
+            using (var monitoredSubject = diagramService.Monitor())
+            {
+                diagramService.ApplyLayout(layout);
+
+                monitoredSubject.Should().Raise(nameof(IDiagramService.DiagramChanged))
+                    .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Id == node1.Id && args.NewNode.TopLeft == topLeft1)
+                    .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Id == node2.Id && args.NewNode.TopLeft == topLeft2)
+                    .WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship1.Id && args.NewConnector.Route == route1)
+                    .WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship2.Id && args.NewConnector.Route == route2);
+            }
+
+            var diagram = diagramService.LatestDiagram;
+            diagram.Nodes.Select(i => (i.Id, i.TopLeft)).Should().BeEquivalentTo((node1.Id, topLeft1), (node2.Id, topLeft2));
+            diagram.Connectors.Select(i => (i.Id, i.Route)).Should().BeEquivalentTo((relationship1.Id, route1), (relationship2.Id, route2));
         }
 
         [NotNull]

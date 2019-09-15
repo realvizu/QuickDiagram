@@ -7,12 +7,12 @@ namespace Codartis.SoftVis.Diagramming.Definition
 {
     public struct LayoutSpecification
     {
-        [NotNull] public ImmutableDictionary<ModelNodeId, Point2D> NodeTopLeftPositions { get; }
-        [NotNull] public ImmutableDictionary<ModelRelationshipId, Route> ConnectorRoutes { get; }
+        [NotNull] public IImmutableDictionary<ModelNodeId, Point2D> NodeTopLeftPositions { get; }
+        [NotNull] public IImmutableDictionary<ModelRelationshipId, Route> ConnectorRoutes { get; }
 
         public LayoutSpecification(
-            [NotNull] ImmutableDictionary<ModelNodeId, Point2D> nodeTopLeftPositions,
-            [NotNull] ImmutableDictionary<ModelRelationshipId, Route> connectorRoutes)
+            [NotNull] IImmutableDictionary<ModelNodeId, Point2D> nodeTopLeftPositions,
+            [NotNull] IImmutableDictionary<ModelRelationshipId, Route> connectorRoutes)
         {
             NodeTopLeftPositions = nodeTopLeftPositions;
             ConnectorRoutes = connectorRoutes;

@@ -32,8 +32,10 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void UpdateRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
+        void ApplyLayout(LayoutSpecification layout);
+
         /// <summary>
-        /// Adds multiple nodes to teh diagram.
+        /// Adds multiple nodes to the diagram.
         /// Those nodes whose parent are already on the diagram are added to their parents.
         /// </summary>
         /// <remarks>
@@ -41,6 +43,11 @@ namespace Codartis.SoftVis.Diagramming.Definition
         /// </remarks>
         void AddNodes(
             [NotNull] IEnumerable<ModelNodeId> modelNodeIds,
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null);
+
+        void AddConnectors(
+            [NotNull] IEnumerable<ModelRelationshipId> modelRelationshipIds,
             CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null);
 
