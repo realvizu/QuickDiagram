@@ -94,17 +94,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             MutateWithLockThenRaiseEvents(ClearDiagramCore);
         }
 
-        public void ApplyLayout(LayoutSpecification layout)
+        public void ApplyLayout(DiagramLayoutInfo diagramLayout)
         {
-            MutateWithLockThenRaiseEvents(() => ApplyLayoutCore(layout));
+            MutateWithLockThenRaiseEvents(() => ApplyLayoutCore(diagramLayout));
         }
 
         [NotNull]
         [ItemNotNull]
-        private IEnumerable<DiagramEventBase> ApplyLayoutCore(LayoutSpecification layout)
+        private IEnumerable<DiagramEventBase> ApplyLayoutCore(DiagramLayoutInfo diagramLayout)
         {
-            return layout.NodeTopLeftPositions.SelectMany(i => UpdateTopLeftCore(i.Key, i.Value))
-                .Concat(layout.ConnectorRoutes.SelectMany(i => UpdateRouteCore(i.Key, i.Value)));
+            return diagramLayout.NodeTopLeftPositions.SelectMany(i => UpdateTopLeftCore(i.Key, i.Value))
+                .Concat(diagramLayout.ConnectorRoutes.SelectMany(i => UpdateRouteCore(i.Key, i.Value)));
         }
 
         [NotNull]

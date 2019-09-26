@@ -1,6 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
@@ -12,10 +13,10 @@ namespace Codartis.SoftVis.Services.Plugins
         protected IModelService ModelService { get; private set; }
         protected IDiagramService DiagramService { get; private set; }
 
-        public virtual void Initialize(IModelService modelService, IDiagramService diagramService)
+        public virtual void Initialize([NotNull] IModelService modelService, [NotNull] IDiagramService diagramService)
         {
-            ModelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
-            DiagramService = diagramService ?? throw new ArgumentNullException(nameof(diagramService));
+            ModelService = modelService;
+            DiagramService = diagramService;
         }
 
         public virtual void Dispose()

@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void UpdateRoute(ModelRelationshipId relationshipId, Route newRoute);
         void ClearDiagram();
 
-        void ApplyLayout(LayoutSpecification layout);
+        void ApplyLayout(DiagramLayoutInfo diagramLayout);
 
         /// <summary>
         /// Adds multiple nodes to the diagram.

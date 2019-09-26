@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
     /// <summary>
     /// A node layout algorithm that puts the nodes in a vertical column, ordered by their name.
     /// </summary>
-    public sealed class VerticalNodeLayoutAlgorithm : ILayoutAlgorithm
+    public sealed class VerticalNodeLayoutAlgorithm : IGroupLayoutAlgorithm
     {
         private readonly double _gapBetweenNodes;
 
@@ -21,11 +21,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
             _gapBetweenNodes = gapBetweenNodes;
         }
 
-        public LayoutSpecification Calculate(ILayoutGroup layoutGroup)
+        public DiagramLayoutInfo Calculate(ILayoutGroup layoutGroup)
         {
             var nodeTopLeftPositions = CalculateNodePositions(layoutGroup).ToImmutableDictionary(i => i.Key, i => i.Value);
             var connectorRoutes = CalculateConnectorRoutes(layoutGroup, nodeTopLeftPositions).ToImmutableDictionary(i => i.Key, i => i.Value);
-            return new LayoutSpecification(nodeTopLeftPositions, connectorRoutes);
+            return new DiagramLayoutInfo(nodeTopLeftPositions, connectorRoutes);
         }
 
         [NotNull]

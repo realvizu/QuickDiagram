@@ -5,6 +5,7 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation;
+using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         [Fact]
         public void Calculate_EmptyLayoutGroup_Works()
         {
-            var layoutGroup = LayoutGroup.Empty;
+            var layoutGroup = new LayoutGroup();
             var layoutAlgorithm = CreateLayoutAlgorithm();
             var layout = layoutAlgorithm.Calculate(layoutGroup);
             layout.ConnectorRoutes.Should().BeEmpty();
@@ -31,7 +32,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         [Fact]
         public void Calculate_Nodes_Works()
         {
-            var layoutGroup = LayoutGroup.Create(
+            var layoutGroup = LayoutGroup.CreateForRoot(
                 CreateNodes(
                     new NodeSpecification("A", new Size2D(1, 2)),
                     new NodeSpecification("B", new Size2D(3, 4)),
@@ -55,7 +56,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
 
             var connectors = CreateConnectors(nodes, new ConnectorSpecification("A", "B"));
 
-            var layoutGroup = LayoutGroup.Create(nodes, connectors);
+            var layoutGroup = LayoutGroup.CreateForRoot(nodes, connectors);
             var layoutAlgorithm = CreateLayoutAlgorithm();
             var layout = layoutAlgorithm.Calculate(layoutGroup);
 
@@ -131,7 +132,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         }
 
         [NotNull]
-        private static ILayoutAlgorithm CreateLayoutAlgorithm() => new VerticalNodeLayoutAlgorithm(gapBetweenNodes: 2);
+        private static IGroupLayoutAlgorithm CreateLayoutAlgorithm() => new VerticalNodeLayoutAlgorithm(gapBetweenNodes: 2);
 
         private struct NodeSpecification
         {

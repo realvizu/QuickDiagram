@@ -1,33 +1,46 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
-namespace Codartis.SoftVis.Diagramming.Implementation
+namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 {
     public sealed class LayoutGroup : ILayoutGroup
     {
-        public static readonly LayoutGroup Empty = new LayoutGroup(ImmutableHashSet<IDiagramNode>.Empty, ImmutableHashSet<IDiagramConnector>.Empty);
-
         [NotNull] private readonly IImmutableDictionary<ModelNodeId, IDiagramNode> _nodes;
         [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _connectors;
 
+        public Maybe<ModelNodeId> ContainerNodeId { get; }
         public IImmutableSet<IDiagramNode> Nodes { get; }
         public IImmutableSet<IDiagramConnector> Connectors { get; }
         public Rect2D Rect { get; }
 
-        private LayoutGroup(
+        public LayoutGroup()
+            : this(
+                Maybe<ModelNodeId>.Nothing,
+                ImmutableHashSet<IDiagramNode>.Empty,
+                ImmutableHashSet<IDiagramConnector>.Empty)
+        {
+        }
+
+        public LayoutGroup(
+            Maybe<ModelNodeId> containerNodeId,
             [NotNull] IImmutableSet<IDiagramNode> nodes,
             [NotNull] IImmutableSet<IDiagramConnector> connectors)
         {
-            _nodes = nodes.ToImmutableDictionary(i => i.Id);
-            _connectors = connectors.ToImmutableDictionary(i => i.Id);
-
+            ContainerNodeId = containerNodeId;
             Nodes = nodes;
             Connectors = connectors;
-            Rect = CalculateRect(nodes, connectors);
+
+            _nodes = Nodes.ToImmutableDictionary(i => i.Id);
+            _connectors = Connectors.ToImmutableDictionary(i => i.Id);
+
+            Rect = CalculateRect(Nodes, Connectors);
         }
 
         public bool IsEmpty => AreEmpty(Nodes, Connectors);
@@ -48,11 +61,23 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         [NotNull]
-        public static ILayoutGroup Create([NotNull] IImmutableSet<IDiagramNode> nodes, [NotNull] IImmutableSet<IDiagramConnector> connectors)
+        public static ILayoutGroup CreateForNode(
+            Maybe<ModelNodeId> containerNodeId,
+            [NotNull] IEnumerable<IDiagramNode> nodes,
+            [NotNull] IEnumerable<IDiagramConnector> connectors)
         {
-            return AreEmpty(nodes, connectors)
-                ? Empty
-                : new LayoutGroup(nodes, connectors);
+            var nodeSet = nodes.ToImmutableHashSet();
+            var connectorSet = connectors.ToImmutableHashSet();
+
+            return new LayoutGroup(containerNodeId, nodeSet, connectorSet);
+        }
+
+        [NotNull]
+        public static ILayoutGroup CreateForRoot(
+            [NotNull] IEnumerable<IDiagramNode> nodes,
+            [NotNull] IEnumerable<IDiagramConnector> connectors)
+        {
+            return CreateForNode(Maybe<ModelNodeId>.Nothing, nodes, connectors);
         }
     }
 }

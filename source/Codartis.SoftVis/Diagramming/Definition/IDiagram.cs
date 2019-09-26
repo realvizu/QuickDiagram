@@ -43,23 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         [ItemNotNull]
         IImmutableSet<IDiagramConnector> Connectors { get; }
 
-        /// <summary>
-        /// Gets the root level layout group of the diagram.
-        /// </summary>
-        [NotNull]
-        ILayoutGroup RootLayoutGroup { get; }
-
-        /// <summary>
-        /// Gets the layout group of a given node.
-        /// </summary>
-        Maybe<ILayoutGroup> GetLayoutGroupByNodeId(ModelNodeId modelNodeId);
-
-        /// <summary>
-        /// Returns those connectors that cross between layout groups therefore doesn't belong to any of them.
-        /// </summary>
-        [NotNull]
-        [ItemNotNull]
-        IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
+        Rect2D Rect { get; }
 
         /// <remarks>
         /// This should remove all shapes whose model ID does not exist in the new model.
@@ -94,12 +78,14 @@ namespace Codartis.SoftVis.Diagramming.Definition
         [NotNull]
         IDiagram Clear();
 
+        [NotNull]
+        IDiagram ApplyLayout(DiagramLayoutInfo diagramLayout);
+
         bool NodeExists(ModelNodeId modelNodeId);
         bool ConnectorExists(ModelRelationshipId modelRelationshipId);
         bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
         bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId);
         bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId);
-        bool IsCrossingLayoutGroups(ModelRelationshipId modelRelationshipId);
 
         [NotNull]
         IDiagramNode GetNode(ModelNodeId modelNodeId);

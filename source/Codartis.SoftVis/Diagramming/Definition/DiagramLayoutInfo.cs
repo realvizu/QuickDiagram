@@ -5,12 +5,12 @@ using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
-    public struct LayoutSpecification
+    public struct DiagramLayoutInfo
     {
         [NotNull] public IImmutableDictionary<ModelNodeId, Point2D> NodeTopLeftPositions { get; }
         [NotNull] public IImmutableDictionary<ModelRelationshipId, Route> ConnectorRoutes { get; }
 
-        public LayoutSpecification(
+        public DiagramLayoutInfo(
             [NotNull] IImmutableDictionary<ModelNodeId, Point2D> nodeTopLeftPositions,
             [NotNull] IImmutableDictionary<ModelRelationshipId, Route> connectorRoutes)
         {

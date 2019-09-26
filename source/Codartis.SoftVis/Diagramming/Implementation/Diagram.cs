@@ -23,12 +23,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _connectors;
         public IImmutableSet<IDiagramNode> Nodes { get; }
         public IImmutableSet<IDiagramConnector> Connectors { get; }
+        public Rect2D Rect { get; }
         [NotNull] private readonly IDiagramGraph _allShapesGraph;
-
-        public ILayoutGroup RootLayoutGroup { get; }
-        [NotNull] private readonly IDictionary<ModelNodeId, ILayoutGroup> _nodeLayoutGroups;
-        [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _crossLayoutGroupConnectors;
-        public IImmutableSet<IDiagramConnector> CrossLayoutGroupConnectors { get; }
 
         private Diagram(
             [NotNull] IModel model,
@@ -38,48 +34,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Model = model;
             _nodes = nodes;
             _connectors = connectors;
-
             Nodes = nodes.Values.ToImmutableHashSet();
             Connectors = connectors.Values.ToImmutableHashSet();
+            Rect = CalculateRect();
             _allShapesGraph = DiagramGraph.Create(Nodes, Connectors);
-
-            RootLayoutGroup = CreateLayoutGroup(Maybe<ModelNodeId>.Nothing);
-            _nodeLayoutGroups = CreateLayoutGroupForAllNodes();
-            _crossLayoutGroupConnectors = GetCrossLayoutGroupConnectors();
-            CrossLayoutGroupConnectors = _crossLayoutGroupConnectors.Values.ToImmutableHashSet();
-        }
-
-        private ImmutableDictionary<ModelNodeId, ILayoutGroup> CreateLayoutGroupForAllNodes()
-        {
-            return Nodes
-                .Select(i => (i.Id, CreateLayoutGroup(i.Id.ToMaybe())))
-                .ToImmutableDictionary(i => i.Id, i => i.Item2);
-        }
-
-        private IImmutableDictionary<ModelRelationshipId, IDiagramConnector> GetCrossLayoutGroupConnectors()
-        {
-            return Connectors
-                .Where(i => GetNode(i.Source).ParentNodeId != GetNode(i.Target).ParentNodeId)
-                .ToImmutableDictionary(i => i.Id);
-        }
-
-        [NotNull]
-        private ILayoutGroup CreateLayoutGroup(Maybe<ModelNodeId> containerNodeId)
-        {
-            var nodesInLayoutGroup = Nodes
-                .Where(i => i.ParentNodeId.Equals(containerNodeId))
-                .ToImmutableHashSet();
-
-            var connectorsInLayoutGroup = Connectors
-                .Where(i => GetNode(i.Source).ParentNodeId.Equals(containerNodeId) && GetNode(i.Target).ParentNodeId.Equals(containerNodeId))
-                .ToImmutableHashSet();
-
-            return LayoutGroup.Create(nodesInLayoutGroup, connectorsInLayoutGroup);
-        }
-
-        public Maybe<ILayoutGroup> GetLayoutGroupByNodeId(ModelNodeId modelNodeId)
-        {
-            return _nodeLayoutGroups[modelNodeId].ToMaybe();
         }
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
@@ -179,9 +137,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IDiagram Clear() => Create(Model);
 
-        public bool IsCrossingLayoutGroups(ModelRelationshipId modelRelationshipId)
+        public IDiagram ApplyLayout(DiagramLayoutInfo diagramLayout)
         {
-            return _crossLayoutGroupConnectors.ContainsKey(modelRelationshipId);
+            throw new System.NotImplementedException();
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
@@ -190,6 +148,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 .Select(i => TryGetNode(i).Match(j => j.Rect, () => Rect2D.Undefined))
                 .Union();
         }
+
+        private Rect2D CalculateRect() => Nodes.Select(i => i.Rect).Concat(Connectors.Select(i => i.Rect)).Union();
 
         [NotNull]
         private static IDiagram CreateInstance(

@@ -243,7 +243,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateDiagramContentRect(IDiagram diagram)
         {
-            DiagramContentRect = diagram.RootLayoutGroup.Rect.ToWpf();
+            DiagramContentRect = diagram.Rect.ToWpf();
         }
 
         private void OnDiagramChanged(DiagramEventBase diagramEvent)
