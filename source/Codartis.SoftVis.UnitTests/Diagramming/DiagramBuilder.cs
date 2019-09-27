@@ -4,6 +4,7 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming
@@ -27,6 +28,24 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
                 var node = new DiagramNode(modelNode).WithPayloadAreaSize(size);
 
                 Diagram = Diagram.AddNode(node);
+            }
+
+            return this;
+        }
+
+        [NotNull]
+        public DiagramBuilder AddChildNodes(
+            [NotNull] string parentNodeName,
+            [NotNull] params (string name, double width, double height)[] childNodeSpecifications)
+        {
+            var parentNodeId = GetModelNodeByName(parentNodeName).Id;
+
+            foreach (var childNodeSpecification in childNodeSpecifications)
+            {
+                AddNodes(childNodeSpecification);
+                
+                var childNode = GetDiagramNodeByName(childNodeSpecification.name);
+                Diagram = Diagram.UpdateNode(childNode.WithParentNodeId(Maybe.Create(parentNodeId)));
             }
 
             return this;

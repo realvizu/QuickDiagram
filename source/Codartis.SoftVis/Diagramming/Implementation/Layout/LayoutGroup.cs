@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
@@ -7,6 +6,7 @@ using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
+using MoreLinq;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 {
@@ -71,8 +71,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
             [NotNull] [ItemNotNull] IEnumerable<IDiagramNode> nodes,
             [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors)
         {
-            var nodeSet = nodes.ToImmutableHashSet();
-            var connectorSet = connectors.ToImmutableHashSet();
+            var nodeSet = nodes.ToHashSet();
+            var connectorSet = connectors.ToHashSet();
 
             return new LayoutGroup(containerNodeId, nodeSet, connectorSet);
         }

@@ -20,18 +20,25 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             foreach (var nodeName in nodeNames)
             {
-                var modelNode = new ModelNode(ModelNodeId.Create(), nodeName, ModelNodeStereotype.Default);
+                var modelNode = CreateModelNode(nodeName);
                 Model = Model.AddNode(modelNode);
             }
 
             return this;
         }
 
+        [NotNull]
         public ModelBuilder AddChildNodes(string parentName, params string[] childNames)
         {
-            throw new NotImplementedException();
-        }
+            foreach (var childName in childNames)
+            {
+                AddNodes(childName);
+                var relationship = CreateModelRelationship(parentName, childName, ModelRelationshipStereotype.Containment);
+                Model = Model.AddRelationship(relationship);
+            }
 
+            return this;
+        }
 
         [NotNull]
         public ModelBuilder AddRelationships([NotNull] params string[] relationshipNames)
@@ -39,15 +46,30 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             foreach (var relationshipName in relationshipNames)
             {
                 var nodeNames = relationshipName.Split(new[] { "->" }, StringSplitOptions.None);
-                var sourceNodeId = GetNodeIdByName(nodeNames[0]);
-                var targetNodeId = GetNodeIdByName(nodeNames[1]);
-                var modelRelationship = new ModelRelationship(ModelRelationshipId.Create(), sourceNodeId, targetNodeId, ModelRelationshipStereotype.Default);
-                Model = Model.AddRelationship(modelRelationship);
+                var relationship = CreateModelRelationship(nodeNames[0], nodeNames[1], ModelRelationshipStereotype.Default);
+                Model = Model.AddRelationship(relationship);
             }
 
             return this;
         }
 
         public ModelNodeId GetNodeIdByName(string nodeName) => Model.Nodes.Single(i => i.Name == nodeName).Id;
+
+        [NotNull]
+        private static IModelNode CreateModelNode([NotNull] string nodeName)
+        {
+            return new ModelNode(ModelNodeId.Create(), nodeName, ModelNodeStereotype.Default);
+        }
+
+        [NotNull]
+        private IModelRelationship CreateModelRelationship(
+            [NotNull] string sourceNodeName,
+            [NotNull] string targetNodeName,
+            ModelRelationshipStereotype? stereotype = null)
+        {
+            var sourceNodeId = GetNodeIdByName(sourceNodeName);
+            var targetNodeId = GetNodeIdByName(targetNodeName);
+            return new ModelRelationship(ModelRelationshipId.Create(), sourceNodeId, targetNodeId, stereotype ?? ModelRelationshipStereotype.Default);
+        }
     }
 }

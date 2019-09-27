@@ -5,16 +5,17 @@ namespace Codartis.SoftVis.Diagramming.Definition
 {
     public sealed class NodeLayoutInfo : ILayoutInfo
     {
+        private readonly Point2D _topLeft;
         [NotNull] public IDiagramNode Node { get; }
         [CanBeNull] public GroupLayoutInfo ChildrenArea { get; set; }
-        public Rect2D Rect { get; }
 
-        public NodeLayoutInfo([NotNull] IDiagramNode node, Point2D topLeft, [CanBeNull] GroupLayoutInfo childrenArea = null)
+        public NodeLayoutInfo([NotNull] IDiagramNode node, Point2D topLeft)
         {
             Node = node;
-            ChildrenArea = childrenArea;
-            Rect = new Rect2D(topLeft, CalculateSize(Node, ChildrenArea));
+            _topLeft = topLeft;
         }
+
+        public Rect2D Rect => new Rect2D(_topLeft, CalculateSize(Node, ChildrenArea));
 
         private static Size2D CalculateSize([NotNull] IDiagramNode diagramNode, [CanBeNull] GroupLayoutInfo childrenArea)
         {

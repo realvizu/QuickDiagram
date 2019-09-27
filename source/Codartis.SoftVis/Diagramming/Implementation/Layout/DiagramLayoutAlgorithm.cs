@@ -6,6 +6,10 @@ using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 {
+    /// <summary>
+    /// Traverses the diagram's node hierarchy, calculates layout for each node that has children
+    /// and assembles the results into a <see cref="DiagramLayoutInfo"/>.
+    /// </summary>
     public sealed class DiagramLayoutAlgorithm : IDiagramLayoutAlgorithm
     {
         [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
@@ -13,14 +17,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         /// <summary>
         /// The margin around the rect of the child nodes in the child area of the container nodes.
         /// </summary>
-        public double ChildAreaMargin { get; }
+        public double ChildrenAreaMargin { get; }
 
         public DiagramLayoutAlgorithm(
             [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy,
-            double childAreaMargin = 10)
+            double childrenAreaMargin = 10)
         {
             _layoutAlgorithmSelectionStrategy = layoutAlgorithmSelectionStrategy;
-            ChildAreaMargin = childAreaMargin;
+            ChildrenAreaMargin = childrenAreaMargin;
         }
 
         public DiagramLayoutInfo Calculate(IDiagram diagram)
@@ -37,7 +41,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
             [NotNull] ILayoutGroup layoutGroup,
             [NotNull] IGroupLayoutAlgorithm layoutAlgorithm)
         {
-            var childLayoutByParentNodeId = new Dictionary<ModelNodeId,GroupLayoutInfo>();
+            var childLayoutByParentNodeId = new Dictionary<ModelNodeId, GroupLayoutInfo>();
 
             foreach (var node in layoutGroup.Nodes)
             {
@@ -56,10 +60,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 
             foreach (var nodeLayoutInfo in groupLayoutInfo.Nodes)
             {
-                if (childLayoutByParentNodeId.TryGetValue(nodeLayoutInfo.Node.Id, out var childAreaLayoutInfo))
-                    nodeLayoutInfo.ChildrenArea = childAreaLayoutInfo;
+                if (childLayoutByParentNodeId.TryGetValue(nodeLayoutInfo.Node.Id, out var childrenAreaLayoutInfo))
+                    nodeLayoutInfo.ChildrenArea = childrenAreaLayoutInfo;
             }
-            
+
             return groupLayoutInfo;
         }
     }
