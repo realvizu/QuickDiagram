@@ -103,5 +103,17 @@ namespace Codartis.Util
         {
             return (await Task.WhenAll(enumeration.Select(func))).SelectMany(s => s);
         }
+
+        [NotNull]
+        public static IEnumerable<TResult> SelectPairs<T, TResult>([NotNull] this IEnumerable<T> enumeration, [NotNull] Func<T, T, TResult> func)
+        {
+            var array = enumeration.ToArray();
+
+            if (array.Length % 2 != 0)
+                throw new ArgumentException($"Collection must have even number of items but has {array.Length}");
+
+            for (int i = 0; i < array.Length; i += 2)
+                yield return func(array[i], array[i + 1]);
+        }
     }
 }

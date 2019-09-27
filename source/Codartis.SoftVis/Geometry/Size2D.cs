@@ -37,6 +37,11 @@ namespace Codartis.SoftVis.Geometry
         public static Size2D operator *(Size2D size, double factor) => new Size2D(size.Width * factor, size.Height * factor);
         public static Size2D operator /(Size2D size, double factor) => new Size2D(size.Width / factor, size.Height / factor);
 
+        public static Size2D StackVertically(Size2D size1, Size2D size2)
+        {
+            return new Size2D(Math.Max(size1.Width, size2.Width), size1.Height + size2.Height);
+        }
+
         public static bool Equals(Size2D size1, Size2D size2)
         {
             return size1.IsUndefined && size2.IsUndefined || size1.IsEqualWithTolerance(size2);

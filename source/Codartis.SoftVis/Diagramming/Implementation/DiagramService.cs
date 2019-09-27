@@ -103,8 +103,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [ItemNotNull]
         private IEnumerable<DiagramEventBase> ApplyLayoutCore(DiagramLayoutInfo diagramLayout)
         {
-            return diagramLayout.NodeTopLeftPositions.SelectMany(i => UpdateTopLeftCore(i.Key, i.Value))
-                .Concat(diagramLayout.ConnectorRoutes.SelectMany(i => UpdateRouteCore(i.Key, i.Value)));
+            //TODO
+            yield break;
         }
 
         [NotNull]

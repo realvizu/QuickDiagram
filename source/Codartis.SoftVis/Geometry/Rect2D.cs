@@ -61,6 +61,12 @@ namespace Codartis.SoftVis.Geometry
 
         public static Rect2D Union(Rect2D rect1, Rect2D rect2)
         {
+            if (rect1.IsUndefined())
+                return rect2;
+
+            if (rect2.IsUndefined())
+                return rect1;
+            
             var left = Math.Min(rect1.Left, rect2.Left);
             var top = Math.Min(rect1.Top, rect2.Top);
 
@@ -72,6 +78,9 @@ namespace Codartis.SoftVis.Geometry
 
         public static Rect2D Intersect(Rect2D rect1, Rect2D rect2)
         {
+            if (rect1.IsUndefined() || rect2.IsUndefined())
+                return Undefined;
+
             var left = Math.Max(rect1.Left, rect2.Left);
             var top = Math.Max(rect1.Top, rect2.Top);
 

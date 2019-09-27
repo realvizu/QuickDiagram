@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         {
             foreach (var nodeSpecification in nodeSpecifications)
             {
-                var modelNode = GetNodeByName(nodeSpecification.name);
+                var modelNode = GetModelNodeByName(nodeSpecification.name);
                 var size = new Size2D(nodeSpecification.width, nodeSpecification.height);
                 var node = new DiagramNode(modelNode).WithPayloadAreaSize(size);
 
@@ -45,8 +45,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             foreach (var connectorName in connectorNames)
             {
                 var nodeNames = connectorName.Split(new[] { "->" }, StringSplitOptions.None);
-                var sourceNodeId = GetNodeByName(nodeNames[0]).Id;
-                var targetNodeId = GetNodeByName(nodeNames[1]).Id;
+                var sourceNodeId = GetModelNodeByName(nodeNames[0]).Id;
+                var targetNodeId = GetModelNodeByName(nodeNames[1]).Id;
                 var relationship = GetRelationshipByNodeIds(sourceNodeId, targetNodeId);
                 var connector = CreateConnector(relationship);
                 Diagram = Diagram.AddConnector(connector);
@@ -72,7 +72,14 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
-        private IModelNode GetNodeByName(string nodeName) => Diagram.Model.Nodes.Single(i => i.Name == nodeName);
+        public IModelNode GetModelNodeByName(string nodeName) => Diagram.Model.Nodes.Single(i => i.Name == nodeName);
+
+        [NotNull]
+        public IDiagramNode GetDiagramNodeByName(string nodeName)
+        {
+            var modelNodeId = GetModelNodeByName(nodeName).Id;
+            return Diagram.Nodes.Single(i => i.Id == modelNodeId);
+        }
 
         [NotNull]
         private IModelRelationship GetRelationshipByNodeIds(ModelNodeId sourceNodeId, ModelNodeId targetNodeId)

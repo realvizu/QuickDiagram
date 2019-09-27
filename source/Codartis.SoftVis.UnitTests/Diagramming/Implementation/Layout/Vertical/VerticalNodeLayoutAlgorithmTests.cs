@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
@@ -23,10 +22,11 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         public void Calculate_EmptyLayoutGroup_Works()
         {
             var layoutGroup = new LayoutGroup();
-            var layoutAlgorithm = CreateLayoutAlgorithm();
-            var layout = layoutAlgorithm.Calculate(layoutGroup);
-            layout.ConnectorRoutes.Should().BeEmpty();
-            layout.NodeTopLeftPositions.Should().BeEmpty();
+
+            var layout = CreateLayoutAlgorithm().Calculate(layoutGroup);
+
+            layout.Connectors.Should().BeEmpty();
+            layout.Nodes.Should().BeEmpty();
         }
 
         [Fact]
@@ -39,12 +39,11 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
                     new NodeSpecification("C", new Size2D(5, 6))),
                 ImmutableHashSet<IDiagramConnector>.Empty);
 
-            var layoutAlgorithm = CreateLayoutAlgorithm();
-            var layout = layoutAlgorithm.Calculate(layoutGroup);
+            var layout = CreateLayoutAlgorithm().Calculate(layoutGroup);
 
-            layout.ConnectorRoutes.Should().BeEmpty();
-            layout.NodeTopLeftPositions.Should().BeEquivalentTo(
-                CreateNodeIdToPointDictionary(layoutGroup, new Point2D(0, 0), new Point2D(0, 4), new Point2D(0, 10)));
+            layout.Connectors.Should().BeEmpty();
+            layout.Nodes.OrderBy(i => i.Node.Name).Select(i => i.Rect.TopLeft)
+                .Should().BeEquivalentTo(new Point2D(0, 0), new Point2D(0, 4), new Point2D(0, 10));
         }
 
         [Fact]
@@ -60,30 +59,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
             var layoutAlgorithm = CreateLayoutAlgorithm();
             var layout = layoutAlgorithm.Calculate(layoutGroup);
 
-            var connectorIdToRouteDictionary = CreateConnectorIdToRouteDictionary(layoutGroup, new Route(new Point2D(0.5, 1), new Point2D(1.5, 6)));
-            layout.ConnectorRoutes.Should().BeEquivalentTo(connectorIdToRouteDictionary);
-        }
-
-        [NotNull]
-        private static IDictionary<ModelNodeId, Point2D> CreateNodeIdToPointDictionary([NotNull] ILayoutGroup layoutGroup, [NotNull] params Point2D[] points)
-        {
-            return layoutGroup.Nodes
-                .OrderBy(i => i.ModelNode.Name)
-                .Select(i => i.ModelNode.Id)
-                .Zip(points, (i, j) => new KeyValuePair<ModelNodeId, Point2D>(i, j))
-                .ToDictionary(i => i.Key, i => i.Value);
-        }
-
-        [NotNull]
-        private static IDictionary<ModelRelationshipId, Route> CreateConnectorIdToRouteDictionary(
-            [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] params Route[] routes)
-        {
-            return layoutGroup.Connectors
-                .OrderBy(i => (string)i.ModelRelationship.Payload)
-                .Select(i => i.ModelRelationship.Id)
-                .Zip(routes, (i, j) => new KeyValuePair<ModelRelationshipId, Route>(i, j))
-                .ToDictionary(i => i.Key, i => i.Value);
+            layout.Connectors.Select(i => i.Route).Should().BeEquivalentTo(new[] { new Route(new Point2D(0.5, 1), new Point2D(1.5, 6)) });
         }
 
         [NotNull]

@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -15,8 +15,8 @@ namespace Codartis.SoftVis.Diagramming.Definition.Layout
     {
         Maybe<ModelNodeId> ContainerNodeId { get; }
 
-        [NotNull] [ItemNotNull] IImmutableSet<IDiagramNode> Nodes { get; }
-        [NotNull] [ItemNotNull] IImmutableSet<IDiagramConnector> Connectors { get; }
+        [NotNull] [ItemNotNull] ISet<IDiagramNode> Nodes { get; }
+        [NotNull] [ItemNotNull] ISet<IDiagramConnector> Connectors { get; }
 
         bool IsEmpty { get; }
 
@@ -30,5 +30,7 @@ namespace Codartis.SoftVis.Diagramming.Definition.Layout
 
         [NotNull]
         IDiagramConnector GetConnector(ModelRelationshipId relationshipId);
+
+        void SetChildrenAreaSize(ModelNodeId nodeId, Size2D childrenAreaSize);
     }
 }

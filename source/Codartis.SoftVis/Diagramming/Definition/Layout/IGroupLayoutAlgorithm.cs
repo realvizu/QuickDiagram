@@ -8,6 +8,6 @@ namespace Codartis.SoftVis.Diagramming.Definition.Layout
     public interface IGroupLayoutAlgorithm
     {
         [Pure]
-        DiagramLayoutInfo Calculate([NotNull] ILayoutGroup layoutGroup);
+        GroupLayoutInfo Calculate([NotNull] ILayoutGroup layoutGroup);
     }
 }

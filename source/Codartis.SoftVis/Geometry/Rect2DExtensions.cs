@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -14,6 +13,8 @@ namespace Codartis.SoftVis.Geometry
 
         public static bool IsDefined(this Rect2D rect) => !rect.IsUndefined();
 
+        public static Rect2D ToRect(this Route route) => Union(Rect2D.Undefined, route);
+
         public static Rect2D Union(this Rect2D rect1, Rect2D rect2)
         {
             return Rect2D.Union(rect1, rect2);
@@ -26,9 +27,6 @@ namespace Codartis.SoftVis.Geometry
 
         public static Rect2D Union(this Rect2D rect, Route route)
         {
-            if (route == null)
-                throw new ArgumentNullException(nameof(route));
-
             var result = rect;
 
             foreach (var point in route)

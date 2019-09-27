@@ -1,5 +1,7 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
+﻿using System.Collections.Generic;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
@@ -9,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
 
         /// <summary>
-        /// The margin around the rect of the child nodes in the child area of container nodes.
+        /// The margin around the rect of the child nodes in the child area of the container nodes.
         /// </summary>
         public double ChildAreaMargin { get; }
 
@@ -25,34 +27,40 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         {
             var layoutStructure = new DiagramLayoutStructure(diagram);
             var rootLayoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForRoot();
-            var updatedDiagram = LayoutRecursive(diagram, layoutStructure, layoutStructure.RootLayoutGroup, rootLayoutAlgorithm);
-            //return updatedDiagram.GetLayoutSpecification();
-            return new DiagramLayoutInfo();
+            var rootLayoutInfo = LayoutRecursive(layoutStructure, layoutStructure.RootLayoutGroup, rootLayoutAlgorithm);
+            return new DiagramLayoutInfo(rootLayoutInfo.Nodes, rootLayoutInfo.Connectors);
         }
 
         [NotNull]
-        private IDiagram LayoutRecursive(
-            [NotNull] IDiagram diagram,
+        private GroupLayoutInfo LayoutRecursive(
             [NotNull] DiagramLayoutStructure layoutStructure,
             [NotNull] ILayoutGroup layoutGroup,
             [NotNull] IGroupLayoutAlgorithm layoutAlgorithm)
         {
+            var childLayoutByParentNodeId = new Dictionary<ModelNodeId,GroupLayoutInfo>();
+
             foreach (var node in layoutGroup.Nodes)
             {
                 var maybeLayoutGroup = layoutStructure.TryGetLayoutGroupByNodeId(node.Id);
-                if (!maybeLayoutGroup.HasValue)
+                if (!maybeLayoutGroup.HasValue || maybeLayoutGroup.Value.IsEmpty)
                     continue;
 
                 var nodeLayoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForNode(node);
-                diagram = LayoutRecursive(diagram, layoutStructure, maybeLayoutGroup.Value, nodeLayoutAlgorithm);
+                var childrenAreaLayoutInfo = LayoutRecursive(layoutStructure, maybeLayoutGroup.Value, nodeLayoutAlgorithm);
 
-                var updatedLayoutGroup = layoutStructure.TryGetLayoutGroupByNodeId(node.Id).Value;
-                diagram = diagram.UpdateNode(node.WithChildrenAreaSize(updatedLayoutGroup.Rect.Size));
+                layoutGroup.SetChildrenAreaSize(node.Id, childrenAreaLayoutInfo.Rect.Size);
+                childLayoutByParentNodeId.Add(node.Id, childrenAreaLayoutInfo);
             }
 
-            var layout = layoutAlgorithm.Calculate(layoutGroup);
-            diagram = diagram.ApplyLayout(layout);
-            return diagram;
+            var groupLayoutInfo = layoutAlgorithm.Calculate(layoutGroup);
+
+            foreach (var nodeLayoutInfo in groupLayoutInfo.Nodes)
+            {
+                if (childLayoutByParentNodeId.TryGetValue(nodeLayoutInfo.Node.Id, out var childAreaLayoutInfo))
+                    nodeLayoutInfo.ChildrenArea = childAreaLayoutInfo;
+            }
+            
+            return groupLayoutInfo;
         }
     }
 }

@@ -9,14 +9,14 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Hierarchical
+namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 {
-    public sealed class HierarchicalLayoutAlgorithmTests
+    public sealed class DiagramLayoutAlgorithmTests
     {
         [NotNull] private readonly ModelBuilder _modelBuilder;
         [NotNull] private readonly TestLayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
 
-        public HierarchicalLayoutAlgorithmTests()
+        public DiagramLayoutAlgorithmTests()
         {
             _modelBuilder = new ModelBuilder();
             _layoutAlgorithmSelectionStrategy = new TestLayoutAlgorithmSelectionStrategy();
@@ -26,23 +26,20 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Hierarchi
         public void Calculate_RootNodesOnly_Works()
         {
             var model = _modelBuilder.AddNodes("A", "B").AddRelationships("A->B").Model;
-            var diagram = new DiagramBuilder(model).AddNodes(("A", 2, 3), ("B", 4, 5)).AddAllRelationships().Diagram;
+            var diagramBuilder = new DiagramBuilder(model).AddNodes(("A", 2, 3), ("B", 4, 5)).AddAllRelationships();
 
-            var cannedLayoutSpecification = new DiagramLayoutInfo();
-            var testLayoutAlgorithm = new TestLayoutAlgorithm(cannedLayoutSpecification);
+            var cannedLayoutInfo = new GroupLayoutInfo(new List<NodeLayoutInfo>
+            {
+                new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName("A"), new Point2D(0,0)),
+                new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName("B"), new Point2D(1,1)),
+            });
+            var testLayoutAlgorithm = new TestLayoutAlgorithm(cannedLayoutInfo);
             _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForRoot(testLayoutAlgorithm);
 
-            var layoutSpecification = CreateLayoutAlgorithm().Calculate(diagram);
+            var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.Diagram);
 
-            // TODO: check diagramLayout for root
-
-            layoutSpecification.NodeTopLeftPositions.Should().BeEquivalentTo(
-                GetNodePosition("A", new Point2D(0, 0)),
-                GetNodePosition("B", new Point2D(0, 3)));
+            diagramLayoutInfo.RootNodes.Should().BeEquivalentTo(cannedLayoutInfo.Nodes);
         }
-
-        private KeyValuePair<ModelNodeId, Point2D> GetNodePosition(string nodeName, Point2D topLeft)
-            => new KeyValuePair<ModelNodeId, Point2D>(_modelBuilder.GetNodeIdByName(nodeName), topLeft);
 
         [NotNull]
         private IDiagramLayoutAlgorithm CreateLayoutAlgorithm()
@@ -78,16 +75,16 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Hierarchi
 
         private class TestLayoutAlgorithm : IGroupLayoutAlgorithm
         {
-            public DiagramLayoutInfo DiagramLayoutInfo { get; }
+            public GroupLayoutInfo GroupLayoutInfo { get; }
 
-            public TestLayoutAlgorithm(DiagramLayoutInfo diagramLayoutInfo)
+            public TestLayoutAlgorithm(GroupLayoutInfo groupLayoutInfo)
             {
-                DiagramLayoutInfo = diagramLayoutInfo;
+                GroupLayoutInfo = groupLayoutInfo;
             }
 
-            public DiagramLayoutInfo Calculate(ILayoutGroup layoutGroup)
+            public GroupLayoutInfo Calculate(ILayoutGroup layoutGroup)
             {
-                return DiagramLayoutInfo;
+                return GroupLayoutInfo;
             }
         }
     }

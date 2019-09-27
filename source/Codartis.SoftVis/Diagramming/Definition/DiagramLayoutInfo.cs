@@ -1,21 +1,19 @@
-﻿using System.Collections.Immutable;
-using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling.Definition;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
     public struct DiagramLayoutInfo
     {
-        [NotNull] public IImmutableDictionary<ModelNodeId, Point2D> NodeTopLeftPositions { get; }
-        [NotNull] public IImmutableDictionary<ModelRelationshipId, Route> ConnectorRoutes { get; }
+        [NotNull] public IEnumerable<NodeLayoutInfo> RootNodes { get; }
+        [NotNull] public IEnumerable<ConnectorLayoutInfo> RootConnectors { get; }
 
         public DiagramLayoutInfo(
-            [NotNull] IImmutableDictionary<ModelNodeId, Point2D> nodeTopLeftPositions,
-            [NotNull] IImmutableDictionary<ModelRelationshipId, Route> connectorRoutes)
+            [NotNull] IEnumerable<NodeLayoutInfo> rootNodes,
+            [NotNull] IEnumerable<ConnectorLayoutInfo> rootConnectors)
         {
-            NodeTopLeftPositions = nodeTopLeftPositions;
-            ConnectorRoutes = connectorRoutes;
+            RootNodes = rootNodes;
+            RootConnectors = rootConnectors;
         }
     }
 }
