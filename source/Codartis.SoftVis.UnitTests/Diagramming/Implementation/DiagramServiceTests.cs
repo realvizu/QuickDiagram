@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -13,6 +16,13 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
     public class DiagramServiceTests
     {
         private static readonly Route TestRoute = new Route(new Point2D(1, 1), new Point2D(2, 2));
+
+        [NotNull] private readonly ModelBuilder _modelBuilder;
+
+        public DiagramServiceTests()
+        {
+            _modelBuilder = new ModelBuilder();
+        }
 
         [Fact]
         public void AddNode_Works()
@@ -163,50 +173,67 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             diagram.PathExists(parentNode1.Id, parentNode2.Id).Should().BeFalse();
         }
 
+        [Fact]
+        public void ApplyLayout_RootNodesOnly_Works()
+        {
+            var model = _modelBuilder
+                .AddNodes("A", "B")
+                .AddRelationships("A->B")
+                .Model;
+
+            var diagramBuilder = new DiagramBuilder(model)
+                .AddNodes(("A", 1, 1), ("B", 2, 2))
+                .AddAllRelationships();
+
+            var diagramService = CreateDiagramService(diagramBuilder.Diagram);
+
+            var layout = new DiagramLayoutInfo(
+                new[]
+                {
+                    new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName("A"), new Point2D(1, 1)),
+                    new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName("B"), new Point2D(2, 2))
+                },
+                new List<ConnectorLayoutInfo>());
+
+            var expectedDiagram = diagramBuilder.Diagram
+                .UpdateNode(diagramBuilder.GetDiagramNodeByName("A").WithTopLeft(new Point2D(1, 1)))
+                .UpdateNode(diagramBuilder.GetDiagramNodeByName("B").WithTopLeft(new Point2D(2, 2)));
+
+            using (var monitoredSubject = diagramService.Monitor())
+            {
+                diagramService.ApplyLayout(layout);
+
+                monitoredSubject.Should().Raise(nameof(IDiagramService.DiagramChanged))
+                    .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Name == "A" && args.NewNode.TopLeft == new Point2D(1, 1))
+                    .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Name == "B" && args.NewNode.TopLeft == new Point2D(2, 2));
+                // TODO: update connectors too
+                //.WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship1.Id && args.NewConnector.Route == route1)
+                //.WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship2.Id && args.NewConnector.Route == route2);
+            }
+
+            AllRectsShouldMatch(diagramService.LatestDiagram, expectedDiagram);
+        }
+
+        // TODO
         //[Fact]
-        //public void ApplyLayout_Works()
+        //public void ApplyLayout_WithChildNodes_Works()
         //{
-        //    var modelService = CreateModelService();
-        //    var node1 = modelService.AddNode("node1");
-        //    var node2 = modelService.AddNode("node2");
-        //    var relationship1 = modelService.AddRelationship(node1.Id, node2.Id);
-        //    var relationship2 = modelService.AddRelationship(node2.Id, node1.Id);
-
-        //    var diagramService = CreateDiagramService(modelService.LatestModel);
-        //    diagramService.AddNodes(new[] { node1.Id, node2.Id });
-        //    diagramService.AddConnectors(new[] { relationship1.Id, relationship2.Id });
-
-        //    var expectedDiagram = diagramService.LatestDiagram
-        //        .UpdateNode(node1.Id, new Point2D(1, 2))
-        //        .UpdateNode(node2.Id, new Point2D(1, 2));
-
-        //    var topLeft1 = new Point2D(1, 2);
-        //    var topLeft2 = new Point2D(3, 4);
-        //    var route1 = new Route((5, 6), (7, 8));
-        //    var route2 = new Route((9, 10), (11, 12));
-        //    var expectedLayoutGroup = LayoutGroup.Create(expectedDiagram.Nodes, expectedDiagram.Connectors);
-
-        //    var expectedNodePositions = new[] { (node1.Id, topLeft1), (node2.Id, topLeft2) };
-        //    var expectedConnectorRoutes = new[] { (relationship1.Id, route1), (relationship2.Id, route2) };
-
-        //    using (var monitoredSubject = diagramService.Monitor())
-        //    {
-        //        diagramService.ApplyLayout(layout);
-
-        //        monitoredSubject.Should().Raise(nameof(IDiagramService.DiagramChanged))
-        //            .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Id == node1.Id && args.NewNode.TopLeft == topLeft1)
-        //            .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Id == node2.Id && args.NewNode.TopLeft == topLeft2)
-        //            .WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship1.Id && args.NewConnector.Route == route1)
-        //            .WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship2.Id && args.NewConnector.Route == route2);
-        //    }
-
-        //    var diagram = diagramService.LatestDiagram;
-        //    diagram.Nodes.Select(i => (i.Id, i.TopLeft)).Should().BeEquivalentTo((node1.Id, topLeft1), (node2.Id, topLeft2));
-        //    diagram.Connectors.Select(i => (i.Id, i.Route)).Should().BeEquivalentTo((relationship1.Id, route1), (relationship2.Id, route2));
         //}
+
+        private static void AllRectsShouldMatch([NotNull] IDiagram actualDiagram, [NotNull] IDiagram expectedDiagram)
+        {
+            actualDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.Rect).Should().Equal(expectedDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.Rect));
+            actualDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.Rect).Should().Equal(expectedDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.Rect));
+        }
 
         [NotNull]
         private static IModelService CreateModelService() => new ModelService();
+
+        [NotNull]
+        private static IDiagramService CreateDiagramService([NotNull] IDiagram diagram)
+        {
+            return new DiagramService(diagram, new DummyConnectorTypeResolver());
+        }
 
         [NotNull]
         private static IDiagramService CreateDiagramService([NotNull] IModel model)

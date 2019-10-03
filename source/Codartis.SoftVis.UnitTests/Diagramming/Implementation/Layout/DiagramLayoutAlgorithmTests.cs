@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Geometry;
-using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
@@ -112,47 +110,6 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         private IDiagramLayoutAlgorithm CreateLayoutAlgorithm()
         {
             return new DiagramLayoutAlgorithm(_layoutAlgorithmSelectionStrategy, childrenAreaMargin: 0);
-        }
-
-        private class TestLayoutAlgorithmSelectionStrategy : ILayoutAlgorithmSelectionStrategy
-        {
-            private IGroupLayoutAlgorithm _rootLayoutAlgorithm;
-            private readonly IDictionary<ModelNodeId, IGroupLayoutAlgorithm> _nodeLayoutAlgorithms = new Dictionary<ModelNodeId, IGroupLayoutAlgorithm>();
-
-            public void SetLayoutAlgorithmForRoot(IGroupLayoutAlgorithm layoutAlgorithm)
-            {
-                _rootLayoutAlgorithm = layoutAlgorithm;
-            }
-
-            public IGroupLayoutAlgorithm GetForRoot()
-            {
-                return _rootLayoutAlgorithm;
-            }
-
-            public void SetLayoutAlgorithmForNode(IDiagramNode node, IGroupLayoutAlgorithm layoutAlgorithm)
-            {
-                _nodeLayoutAlgorithms.Add(node.Id, layoutAlgorithm);
-            }
-
-            public IGroupLayoutAlgorithm GetForNode(IDiagramNode node)
-            {
-                return _nodeLayoutAlgorithms[node.Id];
-            }
-        }
-
-        private class TestLayoutAlgorithm : IGroupLayoutAlgorithm
-        {
-            public GroupLayoutInfo GroupLayoutInfo { get; }
-
-            public TestLayoutAlgorithm(GroupLayoutInfo groupLayoutInfo)
-            {
-                GroupLayoutInfo = groupLayoutInfo;
-            }
-
-            public GroupLayoutInfo Calculate(ILayoutGroup layoutGroup)
-            {
-                return GroupLayoutInfo;
-            }
         }
     }
 }

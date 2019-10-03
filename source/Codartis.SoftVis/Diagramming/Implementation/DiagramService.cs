@@ -27,11 +27,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public event Action<DiagramEventBase> DiagramChanged;
 
-        public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
+        public DiagramService([NotNull] IDiagram diagram, [NotNull] IConnectorTypeResolver connectorTypeResolver)
         {
-            LatestDiagram = Diagram.Create(model);
+            LatestDiagram = diagram;
             _diagramUpdateLockObject = new object();
             _connectorTypeResolver = connectorTypeResolver;
+        }
+
+        public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
+            : this(Diagram.Create(model), connectorTypeResolver)
+        {
         }
 
         public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
@@ -103,8 +108,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [ItemNotNull]
         private IEnumerable<DiagramEventBase> ApplyLayoutCore(DiagramLayoutInfo diagramLayout)
         {
-            //TODO
-            yield break;
+            var diagram = LatestDiagram;
+            var events = new List<DiagramEventBase>();
+
+            foreach (var nodeLayout in diagramLayout.RootNodes)
+            {
+                var maybeCurrentNode = diagram.TryGetNode(nodeLayout.Node.Id);
+                if (maybeCurrentNode.HasValue)
+                    events.AddRange(UpdateTopLeftCore(nodeLayout.Node.Id, nodeLayout.Rect.TopLeft));
+            }
+
+            return events;
         }
 
         [NotNull]
