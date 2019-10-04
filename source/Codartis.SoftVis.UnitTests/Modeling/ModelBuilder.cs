@@ -18,6 +18,11 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             Model = SoftVis.Modeling.Implementation.Model.Create(modelRuleProviders);
         }
 
+        public ModelBuilder([NotNull] IModel model)
+        {
+            Model = model;
+        }
+
         [NotNull]
         public ModelBuilder AddNodes([NotNull] params string[] nodeNames)
         {
