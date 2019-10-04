@@ -42,13 +42,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override object PlacementKey => _directedModelRelationshipType;
         
-        private void OnModelChanged(ModelEventBase modelEvent)
+        private void OnModelChanged(ModelEvent modelEvent)
         {
             _lastModel = modelEvent.NewModel;
             UpdateVisibility();
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
             _lastDiagram = @event.NewDiagram;
             UpdateVisibility();

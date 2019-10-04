@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UnitTests.Modeling
 {
+    /// <summary>
+    /// Test helper for creating models in a more readable way.
+    /// Ignores events returned by model mutators. Uses names instead of IDs.
+    /// </summary>
     public sealed class ModelBuilder
     {
         [NotNull] public IModel Model { get; private set; }
 
-        public ModelBuilder()
+        public ModelBuilder([NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
-            Model = SoftVis.Modeling.Implementation.Model.Empty;
+            Model = SoftVis.Modeling.Implementation.Model.Create(modelRuleProviders);
         }
 
         [NotNull]
         public ModelBuilder AddNodes([NotNull] params string[] nodeNames)
         {
             foreach (var nodeName in nodeNames)
-            {
-                var modelNode = CreateModelNode(nodeName);
-                Model = Model.AddNode(modelNode);
-            }
+                Model = Model.AddNode(nodeName, ModelNodeStereotype.Default).NewModel;
 
             return this;
         }
@@ -33,8 +33,9 @@ namespace Codartis.SoftVis.UnitTests.Modeling
             foreach (var childName in childNames)
             {
                 AddNodes(childName);
-                var relationship = CreateModelRelationship(parentName, childName, ModelRelationshipStereotype.Containment);
-                Model = Model.AddRelationship(relationship);
+                var parentId = GetNode(parentName).Id;
+                var childId = GetNode(childName).Id;
+                Model = Model.AddRelationship(parentId, childId, ModelRelationshipStereotype.Containment).NewModel;
             }
 
             return this;
@@ -45,31 +46,32 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         {
             foreach (var relationshipName in relationshipNames)
             {
-                var nodeNames = relationshipName.Split(new[] { "->" }, StringSplitOptions.None);
-                var relationship = CreateModelRelationship(nodeNames[0], nodeNames[1], ModelRelationshipStereotype.Default);
-                Model = Model.AddRelationship(relationship);
+                var nodeNames = GetNodeNames(relationshipName);
+                var sourceId = GetNode(nodeNames[0]).Id;
+                var targetId = GetNode(nodeNames[1]).Id;
+                Model = Model.AddRelationship(sourceId, targetId, ModelRelationshipStereotype.Default).NewModel;
             }
 
             return this;
         }
 
-        public ModelNodeId GetNodeIdByName(string nodeName) => Model.Nodes.Single(i => i.Name == nodeName).Id;
+        [NotNull]
+        public IModelNode GetNode([NotNull] string nodeName) => Model.Nodes.Single(i => i.Name == nodeName);
 
         [NotNull]
-        private static IModelNode CreateModelNode([NotNull] string nodeName)
+        public IModelRelationship GetRelationship([NotNull] string relationshipName)
         {
-            return new ModelNode(ModelNodeId.Create(), nodeName, ModelNodeStereotype.Default);
+            var nodeNames = GetNodeNames(relationshipName);
+            var sourceId = GetNode(nodeNames[0]).Id;
+            var targetId = GetNode(nodeNames[1]).Id;
+            return Model.Relationships.Single(i => i.Source == sourceId && i.Target == targetId);
         }
 
         [NotNull]
-        private IModelRelationship CreateModelRelationship(
-            [NotNull] string sourceNodeName,
-            [NotNull] string targetNodeName,
-            ModelRelationshipStereotype? stereotype = null)
+        [ItemNotNull]
+        private static string[] GetNodeNames([NotNull] string relationshipName)
         {
-            var sourceNodeId = GetNodeIdByName(sourceNodeName);
-            var targetNodeId = GetNodeIdByName(targetNodeName);
-            return new ModelRelationship(ModelRelationshipId.Create(), sourceNodeId, targetNodeId, stereotype ?? ModelRelationshipStereotype.Default);
+            return relationshipName.Split(new[] { "->" }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

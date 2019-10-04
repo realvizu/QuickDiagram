@@ -31,9 +31,9 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent diagramEvent)
+        private void OnDiagramChanged(DiagramEvent diagramEvent)
         {
-            if (diagramEvent.ComponentChanges.All(i => !IsLayoutAffectingChange(i)))
+            if (diagramEvent.ShapeEvents.All(i => !IsLayoutAffectingChange(i)))
                 return;
 
             var diagram = diagramEvent.NewDiagram;
@@ -41,9 +41,9 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramService.ApplyLayout(diagramLayoutInfo);
         }
 
-        private static bool IsLayoutAffectingChange(DiagramComponentChangedEventBase componentChangedEvent)
+        private static bool IsLayoutAffectingChange(DiagramShapeEventBase diagramShapeEvent)
         {
-            switch (componentChangedEvent)
+            switch (diagramShapeEvent)
             {
                 case DiagramNodeRectChangedEvent _:
                 case DiagramConnectorRouteChangedEvent _:

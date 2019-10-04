@@ -78,13 +78,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             hostDiagramNodeViewModel.ShowRelatedModelNodes(this, undisplayedRelatedModelNodes.ToList());
         }
 
-        private void OnModelChanged(ModelEventBase modelEvent)
+        private void OnModelChanged(ModelEvent modelEvent)
         {
             _lastModel = modelEvent.NewModel;
             UpdateEnabledState();
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
             _lastDiagram = @event.NewDiagram;
             UpdateEnabledState();

@@ -1,11 +1,10 @@
 ﻿namespace Codartis.SoftVis.Modeling.Definition.Events
 {
-    public class ModelRelationshipAddedEvent : ModelEventBase
+    public class ModelRelationshipAddedEvent : ModelItemEventBase
     {
         public IModelRelationship AddedRelationship { get; }
 
-        public ModelRelationshipAddedEvent(IModel newModel, IModelRelationship addedRelationship) 
-            : base(newModel)
+        public ModelRelationshipAddedEvent(IModelRelationship addedRelationship) 
         {
             AddedRelationship = addedRelationship;
         }

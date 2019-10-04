@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull] private readonly object _diagramUpdateLockObject;
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
 
-        public event Action<DiagramChangedEvent> DiagramChanged;
+        public event Action<DiagramEvent> DiagramChanged;
 
         public DiagramService([NotNull] IDiagram diagram, [NotNull] IConnectorTypeResolver connectorTypeResolver)
         {
@@ -103,17 +103,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             MutateWithLockThenRaiseEvents(() => LatestDiagram.Clear());
         }
 
-        private void MutateWithLockThenRaiseEvents([NotNull] Func<DiagramChangedEvent> diagramMutator)
+        private void MutateWithLockThenRaiseEvents([NotNull] Func<DiagramEvent> diagramMutatorFunc)
         {
-            DiagramChangedEvent diagramChangedEvent;
+            DiagramEvent diagramEvent;
 
             lock (_diagramUpdateLockObject)
             {
-                diagramChangedEvent = diagramMutator.Invoke();
-                LatestDiagram = diagramChangedEvent.NewDiagram;
+                diagramEvent = diagramMutatorFunc.Invoke();
+                LatestDiagram = diagramEvent.NewDiagram;
             }
 
-            DiagramChanged?.Invoke(diagramChangedEvent);
+            DiagramChanged?.Invoke(diagramEvent);
         }
 
         public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)

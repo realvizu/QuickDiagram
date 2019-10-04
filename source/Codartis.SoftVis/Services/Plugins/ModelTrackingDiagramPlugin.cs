@@ -21,16 +21,18 @@ namespace Codartis.SoftVis.Services.Plugins
             ModelService.ModelChanged -= OnModelChanged;
         }
 
-        private void OnModelChanged(ModelEventBase modelEvent)
+        private void OnModelChanged(ModelEvent modelEvent)
         {
             DiagramService.UpdateModel(modelEvent.NewModel);
 
-            switch (modelEvent)
-            {
-                case ModelNodeUpdatedEvent modelNodeUpdatedEvent:
-                    DiagramService.UpdateModelNode(modelNodeUpdatedEvent.NewNode);
-                    break;
+            foreach (var itemChange in modelEvent.ItemEvents)
+                ProcessModelItemEvent(itemChange);
+        }
 
+        private void ProcessModelItemEvent(ModelItemEventBase modelItemEvent)
+        {
+            switch (modelItemEvent)
+            {
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
                     var removedNode = modelNodeRemovedEvent.RemovedNode;
                     DiagramService.RemoveNode(removedNode.Id);
@@ -44,10 +46,6 @@ namespace Codartis.SoftVis.Services.Plugins
                 case ModelRelationshipRemovedEvent modelRelationshipRemovedEvent:
                     var modelRelationship = modelRelationshipRemovedEvent.RemovedRelationship;
                     DiagramService.RemoveConnector(modelRelationship.Id);
-                    break;
-
-                case ModelClearedEvent _:
-                    DiagramService.ClearDiagram();
                     break;
             }
         }

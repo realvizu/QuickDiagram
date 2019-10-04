@@ -39,22 +39,26 @@ namespace Codartis.SoftVis.Modeling.Definition
         [ItemNotNull]
         IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId);
 
-        [NotNull]
-        IModel AddNode([NotNull] IModelNode node);
+        ModelEvent AddNode(
+            [NotNull] string name,
+            ModelNodeStereotype stereotype,
+            [CanBeNull] object payload = null,
+            ModelNodeId? parentNodeId = null);
 
-        [NotNull]
-        IModel UpdateNode([NotNull] IModelNode updatedNode);
+        // TODO: UpdateNodePayload, UpdateNodeParent ?
 
-        [NotNull]
-        IModel RemoveNode(ModelNodeId nodeId);
+        ModelEvent RemoveNode(ModelNodeId nodeId);
 
-        [NotNull]
-        IModel AddRelationship([NotNull] IModelRelationship relationship);
+        ModelEvent AddRelationship(
+            ModelNodeId sourceId,
+            ModelNodeId targetId,
+            ModelRelationshipStereotype stereotype,
+            [CanBeNull] object payload = null);
 
-        [NotNull]
-        IModel RemoveRelationship(ModelRelationshipId relationshipId);
+        // TODO: UpdateRelationshipPayload ?
 
-        [NotNull]
-        IModel Clear();
+        ModelEvent RemoveRelationship(ModelRelationshipId relationshipId);
+
+        ModelEvent Clear();
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Abstract base class for a diagram component's change events.
     /// </summary>
-    public abstract class DiagramComponentChangedEventBase
+    public abstract class DiagramShapeEventBase
     {
     }
 }

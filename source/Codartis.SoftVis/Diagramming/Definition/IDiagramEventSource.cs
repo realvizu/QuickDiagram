@@ -4,6 +4,6 @@ namespace Codartis.SoftVis.Diagramming.Definition
 {
     public interface IDiagramEventSource
     {
-        event Action<DiagramChangedEvent> DiagramChanged;
+        event Action<DiagramEvent> DiagramChanged;
     }
 }

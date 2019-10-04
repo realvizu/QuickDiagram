@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Definition
 {
@@ -8,11 +7,9 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// The underlying model is immutable so each modification creates a new snapshot of the model.
     /// Keeps the latest model version, implements mutator operations and publishes change events.
     /// </summary>
-    public interface IModelService
+    public interface IModelService : IModelEventSource
     {
         [NotNull] IModel LatestModel { get; }
-
-        event Action<ModelEventBase> ModelChanged;
 
         /// <summary>
         /// Adds a node to the model.
@@ -21,11 +18,9 @@ namespace Codartis.SoftVis.Modeling.Definition
         [NotNull]
         IModelNode AddNode(
             [NotNull] string name,
-            ModelNodeStereotype? stereotype = null,
+            ModelNodeStereotype stereotype,
             [CanBeNull] object payload = null,
             ModelNodeId? parentNodeId = null);
-
-        void UpdateNode([NotNull] IModelNode newNode);
 
         void RemoveNode(ModelNodeId nodeId);
 
@@ -33,12 +28,10 @@ namespace Codartis.SoftVis.Modeling.Definition
         IModelRelationship AddRelationship(
             ModelNodeId sourceId,
             ModelNodeId targetId,
-            ModelRelationshipStereotype? stereotype = null,
+            ModelRelationshipStereotype stereotype,
             [CanBeNull] object payload = null);
 
         void RemoveRelationship(ModelRelationshipId relationshipId);
-
-        // Note that relationships cannot be updated just removed+added.
 
         void ClearModel();
     }

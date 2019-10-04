@@ -22,18 +22,18 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
             var model = ModelService.LatestModel;
             var diagram = @event.NewDiagram;
 
-            foreach (var change in @event.ComponentChanges)
+            foreach (var change in @event.ShapeEvents)
                 ProcessDiagramChange(change, model, diagram);
         }
 
-        private void ProcessDiagramChange(DiagramComponentChangedEventBase diagramComponentChangedEvent, IModel model, IDiagram diagram)
+        private void ProcessDiagramChange(DiagramShapeEventBase diagramShapeEvent, IModel model, IDiagram diagram)
         {
-            switch (diagramComponentChangedEvent)
+            switch (diagramShapeEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
                     var modelNode = diagramNodeAddedEvent.NewNode.ModelNode;

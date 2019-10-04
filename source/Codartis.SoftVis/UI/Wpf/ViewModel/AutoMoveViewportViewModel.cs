@@ -71,15 +71,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             base.ZoomWithCenterTo(newLinearZoom, zoomCenterInScreenSpace, transitionSpeed);
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent diagramChangedEvent)
+        private void OnDiagramChanged(DiagramEvent diagramEvent)
         {
-            foreach (var change in diagramChangedEvent.ComponentChanges)
+            foreach (var change in diagramEvent.ShapeEvents)
                 EnsureUiThread(() => DispatchDiagramEvent(change));
         }
 
-        private void DispatchDiagramEvent(DiagramComponentChangedEventBase diagramComponentChangedEvent)
+        private void DispatchDiagramEvent(DiagramShapeEventBase diagramShapeEvent)
         {
-            switch (diagramComponentChangedEvent)
+            switch (diagramShapeEvent)
             {
                 case DiagramNodeRectChangedEvent diagramNodeRectChangedEvent:
                     FollowDiagramNode(diagramNodeRectChangedEvent.OldNode.Id);

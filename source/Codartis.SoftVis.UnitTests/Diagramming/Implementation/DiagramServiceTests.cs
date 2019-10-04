@@ -5,7 +5,6 @@ using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
@@ -27,24 +26,24 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void AddNode_Works()
         {
-            var modelService = CreateModelService();
-            var modelNode = modelService.AddNode("node");
+            var model = _modelBuilder.AddNodes("A").Model;
+            var node = _modelBuilder.GetNode("A");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
-            diagramService.AddNode(modelNode.Id);
+            var diagramService = CreateDiagramService(model);
+            diagramService.AddNode(node.Id);
 
             var diagram = diagramService.LatestDiagram;
-            diagram.Nodes.ShouldBeEquivalentById(modelNode.Id);
+            diagram.Nodes.ShouldBeEquivalentById(node.Id);
         }
 
         [Fact]
         public void UpdateNode_Works()
         {
-            var modelService = CreateModelService();
-            var parentNode = modelService.AddNode("parent");
-            var childNode = modelService.AddNode("child", parentNodeId: parentNode.Id);
+            var model = _modelBuilder.AddNodes("Parent").AddChildNodes("Parent", "Child").Model;
+            var parentNode = _modelBuilder.GetNode("Parent");
+            var childNode = _modelBuilder.GetNode("Child");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNode(parentNode.Id);
             diagramService.AddNode(childNode.Id, parentNode.Id);
             diagramService.UpdateNodePayloadAreaSize(childNode.Id, new Size2D(1, 1));
@@ -57,12 +56,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void RemoveNode_Works()
         {
-            var modelService = CreateModelService();
-            var modelNode = modelService.AddNode("node");
+            var model = _modelBuilder.AddNodes("A").Model;
+            var node = _modelBuilder.GetNode("A");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
-            diagramService.AddNode(modelNode.Id);
-            diagramService.RemoveNode(modelNode.Id);
+            var diagramService = CreateDiagramService(model);
+            diagramService.AddNode(node.Id);
+            diagramService.RemoveNode(node.Id);
 
             var diagram = diagramService.LatestDiagram;
             diagram.Nodes.Should().BeEmpty();
@@ -71,12 +70,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void AddConnector_Works()
         {
-            var modelService = CreateModelService();
-            var node1 = modelService.AddNode("node1");
-            var node2 = modelService.AddNode("node2");
-            var relationship = modelService.AddRelationship(node1.Id, node2.Id);
+            var model = _modelBuilder.AddNodes("A", "B").AddRelationships("A->B").Model;
+            var node1 = _modelBuilder.GetNode("A");
+            var node2 = _modelBuilder.GetNode("B");
+            var relationship = _modelBuilder.GetRelationship("A->B");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNodes(new[] { node1.Id, node2.Id });
             diagramService.AddConnector(relationship.Id);
 
@@ -87,12 +86,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void UpdateConnector_Works()
         {
-            var modelService = CreateModelService();
-            var node1 = modelService.AddNode("node1");
-            var node2 = modelService.AddNode("node2");
-            var relationship = modelService.AddRelationship(node1.Id, node2.Id);
+            var model = _modelBuilder.AddNodes("A", "B").AddRelationships("A->B").Model;
+            var node1 = _modelBuilder.GetNode("A");
+            var node2 = _modelBuilder.GetNode("B");
+            var relationship = _modelBuilder.GetRelationship("A->B");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNodes(new[] { node1.Id, node2.Id });
             diagramService.AddConnector(relationship.Id);
             diagramService.UpdateConnectorRoute(relationship.Id, TestRoute);
@@ -104,12 +103,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void RemoveConnector_Works()
         {
-            var modelService = CreateModelService();
-            var node1 = modelService.AddNode("node1");
-            var node2 = modelService.AddNode("node2");
-            var relationship = modelService.AddRelationship(node1.Id, node2.Id);
+            var model = _modelBuilder.AddNodes("A", "B").AddRelationships("A->B").Model;
+            var node1 = _modelBuilder.GetNode("A");
+            var node2 = _modelBuilder.GetNode("B");
+            var relationship = _modelBuilder.GetRelationship("A->B");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNodes(new[] { node1.Id, node2.Id });
             diagramService.AddConnector(relationship.Id);
             diagramService.RemoveConnector(relationship.Id);
@@ -121,12 +120,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void PathExists_WorksInRootLayoutGroup()
         {
-            var modelService = CreateModelService();
-            var node1 = modelService.AddNode("node1");
-            var node2 = modelService.AddNode("node2");
-            var relationship = modelService.AddRelationship(node1.Id, node2.Id);
+            var model = _modelBuilder.AddNodes("A", "B").AddRelationships("A->B").Model;
+            var node1 = _modelBuilder.GetNode("A");
+            var node2 = _modelBuilder.GetNode("B");
+            var relationship = _modelBuilder.GetRelationship("A->B");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNodes(new[] { node1.Id, node2.Id });
             diagramService.AddConnector(relationship.Id);
 
@@ -138,13 +137,18 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void PathExists_WorksInNestedLayoutGroup()
         {
-            var modelService = CreateModelService();
-            var parentNode = modelService.AddNode("parent");
-            var childNode1 = modelService.AddNode("child1", parentNodeId: parentNode.Id);
-            var childNode2 = modelService.AddNode("child2", parentNodeId: parentNode.Id);
-            var relationship = modelService.AddRelationship(childNode1.Id, childNode2.Id);
+            var model = _modelBuilder
+                .AddNodes("parent")
+                .AddChildNodes("parent", "child1", "child2")
+                .AddRelationships("child1->child2")
+                .Model;
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var parentNode = _modelBuilder.GetNode("parent");
+            var childNode1 = _modelBuilder.GetNode("child1");
+            var childNode2 = _modelBuilder.GetNode("child2");
+            var relationship = _modelBuilder.GetRelationship("child1->child2");
+
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNodes(new[] { parentNode.Id, childNode1.Id, childNode2.Id });
             diagramService.AddConnector(relationship.Id);
 
@@ -156,14 +160,20 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void PathExists_WorksBetweenLayoutGroups()
         {
-            var modelService = CreateModelService();
-            var parentNode1 = modelService.AddNode("parent1");
-            var childNode1 = modelService.AddNode("child1", parentNodeId: parentNode1.Id);
-            var parentNode2 = modelService.AddNode("parent2");
-            var childNode2 = modelService.AddNode("child2", parentNodeId: parentNode2.Id);
-            var relationship = modelService.AddRelationship(childNode1.Id, childNode2.Id);
+            var model = _modelBuilder
+                .AddNodes("parent1", "parent2")
+                .AddChildNodes("parent1", "child1")
+                .AddChildNodes("parent1", "child2")
+                .AddRelationships("child1->child2")
+                .Model;
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
+            var parentNode1 = _modelBuilder.GetNode("parent1");
+            var parentNode2 = _modelBuilder.GetNode("parent2");
+            var childNode1 = _modelBuilder.GetNode("child1");
+            var childNode2 = _modelBuilder.GetNode("child2");
+            var relationship = _modelBuilder.GetRelationship("child1->child2");
+
+            var diagramService = CreateDiagramService(model);
             diagramService.AddNodes(new[] { parentNode1.Id, childNode1.Id, parentNode2.Id, childNode2.Id });
             diagramService.AddConnector(relationship.Id);
 
@@ -183,15 +193,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagramBuilder = new DiagramBuilder(model)
                 .AddNodes(("A", 0, 0), ("B", 0, 0))
-                .AddAllRelationships();
+                .AddAllModelRelationships();
 
             var diagramService = CreateDiagramService(diagramBuilder.Diagram);
 
             var layout = new DiagramLayoutInfo(
                 new[]
                 {
-                    new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName("A"), new Point2D(1, 1)),
-                    new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName("B"), new Point2D(2, 2))
+                    new NodeLayoutInfo(diagramBuilder.GetDiagramNode("A"), new Point2D(1, 1)),
+                    new NodeLayoutInfo(diagramBuilder.GetDiagramNode("B"), new Point2D(2, 2))
                 },
                 new List<ConnectorLayoutInfo>());
 
@@ -205,8 +215,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 diagramService.ApplyLayout(layout);
 
                 monitoredSubject.OccurredEvents
-                    .SelectMany(i => i.Parameters).OfType<DiagramChangedEvent>()
-                    .SelectMany(i => i.ComponentChanges)
+                    .SelectMany(i => i.Parameters).OfType<DiagramEvent>()
+                    .SelectMany(i => i.ShapeEvents)
                     .Should().SatisfyRespectively(
                         i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 1, 1)),
                         i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2))
@@ -229,9 +239,6 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             actualDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.Rect).Should().Equal(expectedDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.Rect));
             actualDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.Rect).Should().Equal(expectedDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.Rect));
         }
-
-        [NotNull]
-        private static IModelService CreateModelService() => new ModelService();
 
         [NotNull]
         private static IDiagramService CreateDiagramService([NotNull] IDiagram diagram)

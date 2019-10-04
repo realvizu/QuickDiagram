@@ -4,7 +4,9 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
+using MoreLinq;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming
 {
@@ -27,9 +29,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
-        public DiagramBuilder AddNode(ModelNodeId nodeId)
+        public DiagramBuilder AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
-            Diagram = Diagram.AddNode(nodeId).NewDiagram;
+            Diagram = Diagram.AddNode(nodeId, parentNodeId).NewDiagram;
             return this;
         }
 
@@ -56,7 +58,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         [NotNull]
         public DiagramBuilder UpdateNodeTopLeft([NotNull] string nodeName, double nodeTop, double nodeLeft)
         {
-            var modelNode = GetModelNodeByName(nodeName);
+            var modelNode = GetModelNode(nodeName);
             var newTopLeft = new Point2D(nodeTop, nodeLeft);
             Diagram = Diagram.UpdateNodeTopLeft(modelNode.Id, newTopLeft).NewDiagram;
 
@@ -69,8 +71,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             foreach (var connectorName in connectorNames)
             {
                 var nodeNames = connectorName.Split(new[] { "->" }, StringSplitOptions.None);
-                var sourceNodeId = GetModelNodeByName(nodeNames[0]).Id;
-                var targetNodeId = GetModelNodeByName(nodeNames[1]).Id;
+                var sourceNodeId = GetModelNode(nodeNames[0]).Id;
+                var targetNodeId = GetModelNode(nodeNames[1]).Id;
                 var relationship = GetRelationshipByNodeIds(sourceNodeId, targetNodeId);
                 Diagram = Diagram.AddConnector(relationship.Id).NewDiagram;
             }
@@ -86,31 +88,47 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
-        public DiagramBuilder AddAllRelationships()
+        public DiagramBuilder AddAllModelNodes()
         {
-            foreach (var modelRelationship in Diagram.Model.Relationships)
+            var modelNodes = Diagram.Model.Nodes.ToHashSet();
+
+            while (modelNodes.Any())
+            {
+                var node = modelNodes.First(i => !HasParentInModel(i.Id) || DiagramContainsItsParent(i.Id));
+                var maybeParentNode = Diagram.Model.TryGetParentNode(node.Id);
+                AddNode(node.Id, maybeParentNode.FromMaybe()?.Id);
+                modelNodes.Remove(node);
+            }
+
+            return this;
+        }
+
+        [NotNull]
+        public DiagramBuilder AddAllModelRelationships()
+        {
+            foreach (var modelRelationship in Diagram.Model.Relationships.Where(i => i.Stereotype != ModelRelationshipStereotype.Containment))
                 AddRelationship(modelRelationship.Id);
 
             return this;
         }
 
         [NotNull]
-        public IModelNode GetModelNodeByName(string nodeName) => Diagram.Model.Nodes.Single(i => i.Name == nodeName);
+        public IModelNode GetModelNode([NotNull] string nodeName) => Diagram.Model.Nodes.Single(i => i.Name == nodeName);
 
         [NotNull]
-        public IDiagramNode GetDiagramNodeByName(string nodeName)
+        public IDiagramNode GetDiagramNode([NotNull] string nodeName)
         {
-            var modelNodeId = GetModelNodeByName(nodeName).Id;
+            var modelNodeId = GetModelNode(nodeName).Id;
             return Diagram.Nodes.Single(i => i.Id == modelNodeId);
         }
 
-        private void AddNode(string nodeName, double nodeWidth, double nodeHeight, [CanBeNull] string parentNodeName = null)
+        private void AddNode([NotNull] string nodeName, double nodeWidth, double nodeHeight, [CanBeNull] string parentNodeName = null)
         {
             var parentNodeId = parentNodeName == null
                 ? (ModelNodeId?)null
-                : GetModelNodeByName(parentNodeName).Id;
+                : GetModelNode(parentNodeName).Id;
 
-            var modelNode = GetModelNodeByName(nodeName);
+            var modelNode = GetModelNode(nodeName);
             Diagram = Diagram.AddNode(modelNode.Id, parentNodeId).NewDiagram;
 
             var size = new Size2D(nodeWidth, nodeHeight);
@@ -120,6 +138,17 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         [NotNull]
         private IModelRelationship GetRelationshipByNodeIds(ModelNodeId sourceNodeId, ModelNodeId targetNodeId)
             => Diagram.Model.Relationships.Single(i => i.Source == sourceNodeId && i.Target == targetNodeId);
+
+        private bool HasParentInModel(ModelNodeId nodeId)
+        {
+            return Diagram.Model.TryGetParentNode(nodeId).HasValue;
+        }
+
+        private bool DiagramContainsItsParent(ModelNodeId nodeId)
+        {
+            var maybeParent = Diagram.Model.TryGetParentNode(nodeId);
+            return maybeParent.HasValue && Diagram.TryGetNode(maybeParent.Value.Id).HasValue;
+        }
 
         /// <summary>
         /// A dummy resolver that always returns Dependency connector type.

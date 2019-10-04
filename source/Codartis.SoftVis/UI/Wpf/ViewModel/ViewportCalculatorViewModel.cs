@@ -172,7 +172,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return viewportRect.IntersectsWith(_diagramContentRect);
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
             _diagramContentRect = @event.NewDiagram.Rect.ToWpf();
         }

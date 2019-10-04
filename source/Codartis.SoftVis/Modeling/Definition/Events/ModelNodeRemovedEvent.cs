@@ -1,11 +1,10 @@
 ﻿namespace Codartis.SoftVis.Modeling.Definition.Events
 {
-    public class ModelNodeRemovedEvent:  ModelEventBase
+    public class ModelNodeRemovedEvent : ModelItemEventBase
     {
         public IModelNode RemovedNode { get; }
 
-        public ModelNodeRemovedEvent(IModel newModel, IModelNode removedNode) 
-            : base(newModel)
+        public ModelNodeRemovedEvent(IModelNode removedNode)
         {
             RemovedNode = removedNode;
         }

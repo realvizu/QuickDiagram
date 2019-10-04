@@ -245,7 +245,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramContentRect = diagram.Rect.ToWpf();
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
             _lastDiagram = @event.NewDiagram;
 

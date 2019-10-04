@@ -1,11 +1,10 @@
 ﻿namespace Codartis.SoftVis.Modeling.Definition.Events
 {
-    public class ModelNodeAddedEvent:  ModelEventBase
+    public class ModelNodeAddedEvent:  ModelItemEventBase
     {
         public IModelNode AddedNode { get; }
 
-        public ModelNodeAddedEvent(IModel newModel, IModelNode addedNode) 
-            : base(newModel)
+        public ModelNodeAddedEvent(IModelNode addedNode) 
         {
             AddedNode = addedNode;
         }

@@ -59,21 +59,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             base.Hide();
         }
 
-        private void OnModelChanged(ModelEventBase modelEvent)
+        private void OnModelChanged(ModelEvent modelEvent)
+        {
+            foreach (var itemChange in modelEvent.ItemEvents)
+                ProcessModelItemEvent(itemChange);
+        }
+
+        private void ProcessModelItemEvent(ModelItemEventBase modelEvent)
         {
             if (modelEvent is ModelNodeRemovedEvent modelNodeRemovedEvent)
                 RemoveModelNode(modelNodeRemovedEvent.RemovedNode.Id);
         }
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
-            foreach (var diagramChange in @event.ComponentChanges)
+            foreach (var diagramChange in @event.ShapeEvents)
                 ProcessDiagramChange(diagramChange);
         }
 
-        private void ProcessDiagramChange(DiagramComponentChangedEventBase diagramComponentChangedEvent)
+        private void ProcessDiagramChange(DiagramShapeEventBase diagramShapeEvent)
         {
-            if (diagramComponentChangedEvent is DiagramNodeAddedEvent diagramNodeAddedEvent)
+            if (diagramShapeEvent is DiagramNodeAddedEvent diagramNodeAddedEvent)
                 RemoveModelNode(diagramNodeAddedEvent.NewNode.Id);
         }
 

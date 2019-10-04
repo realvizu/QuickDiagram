@@ -1,11 +1,10 @@
 ﻿namespace Codartis.SoftVis.Modeling.Definition.Events
 {
-    public class ModelRelationshipRemovedEvent: ModelEventBase
+    public class ModelRelationshipRemovedEvent: ModelItemEventBase
     {
         public IModelRelationship RemovedRelationship { get; }
 
-        public ModelRelationshipRemovedEvent(IModel newModel, IModelRelationship removedRelationship) 
-            : base(newModel)
+        public ModelRelationshipRemovedEvent(IModelRelationship removedRelationship) 
         {
             RemovedRelationship = removedRelationship;
         }

@@ -1,8 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Diagramming.Implementation.Layout;
-using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
+﻿using Codartis.SoftVis.Diagramming.Implementation.Layout;
+using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -11,18 +8,26 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 {
     public class DiagramLayoutStructureTests
     {
+        [NotNull] private readonly ModelBuilder _modelBuilder;
+
+        public DiagramLayoutStructureTests()
+        {
+            _modelBuilder = new ModelBuilder();
+        }
+
         [Fact]
         public void Create_OnlyNodes_Works()
         {
-            var modelService = CreateModelService();
-            var parentNode = modelService.AddNode("parent");
-            var childNode = modelService.AddNode("child", parentNodeId: parentNode.Id);
+            var model = _modelBuilder
+                .AddNodes("parent")
+                .AddChildNodes("parent", "child")
+                .Model;
+            var parentNode = _modelBuilder.GetNode("parent");
+            var childNode = _modelBuilder.GetNode("child");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
-            diagramService.AddNode(parentNode.Id);
-            diagramService.AddNode(childNode.Id, parentNode.Id);
+            var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramService.LatestDiagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
             layoutStructure.RootLayoutGroup.Nodes.ShouldBeEquivalentById(parentNode.Id);
             layoutStructure.TryGetLayoutGroupByNodeId(parentNode.Id).Value.Nodes.ShouldBeEquivalentById(childNode.Id);
         }
@@ -30,16 +35,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         [Fact]
         public void Create_ConnectorInRootLayoutGroup_Works()
         {
-            var modelService = CreateModelService();
-            var node1 = modelService.AddNode("node1");
-            var node2 = modelService.AddNode("node2");
-            var relationship = modelService.AddRelationship(node1.Id, node2.Id);
+            var model = _modelBuilder
+                .AddNodes("A", "B")
+                .AddRelationships("A->B")
+                .Model;
+            var relationship = _modelBuilder.GetRelationship("A->B");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
-            diagramService.AddNodes(new[] { node1.Id, node2.Id });
-            diagramService.AddConnector(relationship.Id);
+            var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes().AddAllModelRelationships();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramService.LatestDiagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
             layoutStructure.RootLayoutGroup.Connectors.ShouldBeEquivalentById(relationship.Id);
             layoutStructure.CrossLayoutGroupConnectors.Should().BeEmpty();
         }
@@ -47,17 +51,17 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         [Fact]
         public void Create_ConnectorInNestedLayoutGroup_Works()
         {
-            var modelService = CreateModelService();
-            var parentNode = modelService.AddNode("parent");
-            var childNode1 = modelService.AddNode("child1", parentNodeId: parentNode.Id);
-            var childNode2 = modelService.AddNode("child2", parentNodeId: parentNode.Id);
-            var relationship = modelService.AddRelationship(childNode1.Id, childNode2.Id);
+            var model = _modelBuilder
+                .AddNodes("parent")
+                .AddChildNodes("parent", "child1", "child2")
+                .AddRelationships("child1->child2")
+                .Model;
+            var parentNode = _modelBuilder.GetNode("parent");
+            var relationship = _modelBuilder.GetRelationship("child1->child2");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
-            diagramService.AddNodes(new[] { parentNode.Id, childNode1.Id, childNode2.Id });
-            diagramService.AddConnector(relationship.Id);
+            var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes().AddAllModelRelationships();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramService.LatestDiagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
             layoutStructure.RootLayoutGroup.Connectors.Should().BeEmpty();
             layoutStructure.CrossLayoutGroupConnectors.Should().BeEmpty();
             layoutStructure.TryGetLayoutGroupByNodeId(parentNode.Id).Value.Connectors.ShouldBeEquivalentById(relationship.Id);
@@ -66,35 +70,23 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         [Fact]
         public void Create_ConnectorInCrossLayoutGroup_Works()
         {
-            var modelService = CreateModelService();
-            var parentNode = modelService.AddNode("parent");
-            var childNode = modelService.AddNode("child", parentNodeId: parentNode.Id);
-            var relationship = modelService.AddRelationship(parentNode.Id, childNode.Id);
+            var model = _modelBuilder
+                .AddNodes("parent1", "parent2")
+                .AddChildNodes("parent1", "child1")
+                .AddChildNodes("parent2", "child2")
+                .AddRelationships("child1->child2")
+                .Model;
+            var parentNode1 = _modelBuilder.GetNode("parent1");
+            var parentNode2 = _modelBuilder.GetNode("parent2");
+            var relationship = _modelBuilder.GetRelationship("child1->child2");
 
-            var diagramService = CreateDiagramService(modelService.LatestModel);
-            diagramService.AddNode(parentNode.Id);
-            diagramService.AddNode(childNode.Id, parentNode.Id);
-            diagramService.AddConnector(relationship.Id);
+            var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes().AddAllModelRelationships();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramService.LatestDiagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
             layoutStructure.RootLayoutGroup.Connectors.Should().BeEmpty();
             layoutStructure.CrossLayoutGroupConnectors.ShouldBeEquivalentById(relationship.Id);
-            layoutStructure.TryGetLayoutGroupByNodeId(parentNode.Id).Value.Connectors.Should().BeEmpty();
+            layoutStructure.TryGetLayoutGroupByNodeId(parentNode1.Id).Value.Connectors.Should().BeEmpty();
+            layoutStructure.TryGetLayoutGroupByNodeId(parentNode2.Id).Value.Connectors.Should().BeEmpty();
         }
-
-        [NotNull]
-        private static IModelService CreateModelService() => new ModelService();
-
-        [NotNull]
-        private static IDiagramService CreateDiagramService([NotNull] IModel model)
-        {
-            return new DiagramService(model, new DummyConnectorTypeResolver());
-        }
-
-        private sealed class DummyConnectorTypeResolver : IConnectorTypeResolver
-        {
-            public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype) => ConnectorTypes.Dependency;
-        }
-
     }
 }

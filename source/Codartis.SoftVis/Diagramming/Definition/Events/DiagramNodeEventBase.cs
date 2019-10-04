@@ -1,6 +1,6 @@
 ﻿namespace Codartis.SoftVis.Diagramming.Definition.Events
 {
-    public abstract class DiagramNodeEventBase : DiagramComponentChangedEventBase
+    public abstract class DiagramNodeEventBase : DiagramShapeEventBase
     {
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.Util;
 using JetBrains.Annotations;
 
@@ -16,13 +17,13 @@ namespace Codartis.SoftVis.Modeling.Implementation
     /// </summary>
     public sealed class Model : IModel
     {
-        [NotNull] public static readonly IModel Empty = new Model(ModelGraph.Empty(allowParallelEdges: false));
-
         private readonly IModelGraph _graph;
+        [NotNull] [ItemNotNull] private readonly IModelRuleProvider[] _modelRuleProviders;
 
-        private Model(IModelGraph graph)
+        private Model(IModelGraph graph, [NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
             _graph = graph;
+            _modelRuleProviders = modelRuleProviders;
         }
 
         public IEnumerable<IModelNode> Nodes => _graph.Vertices;
@@ -58,13 +59,151 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public IEnumerable<IModelRelationship> GetRelationships(ModelNodeId nodeId) => _graph.GetAllEdges(nodeId);
 
-        public IModel AddNode(IModelNode node) => CreateInstance(_graph.AddVertex(node));
-        public IModel UpdateNode(IModelNode updatedNode) => CreateInstance(_graph.UpdateVertex(updatedNode));
-        public IModel RemoveNode(ModelNodeId nodeId) => CreateInstance(_graph.RemoveVertex(nodeId));
-        public IModel AddRelationship(IModelRelationship relationship) => CreateInstance(_graph.AddEdge(relationship));
-        public IModel RemoveRelationship(ModelRelationshipId relationshipId) => CreateInstance(_graph.RemoveEdge(relationshipId));
-        public IModel Clear() => Empty;
+        public ModelEvent AddNode(
+            string name,
+            ModelNodeStereotype stereotype,
+            object payload = null,
+            ModelNodeId? parentNodeId = null)
+        {
+            var itemEvents = new List<ModelItemEventBase>();
 
-        private static IModel CreateInstance(IModelGraph graph) => new Model(graph);
+            var newNode = CreateNode(name, stereotype, payload);
+            var newGraph = AddNodeCore(newNode, _graph, itemEvents);
+
+            if (parentNodeId.HasValue)
+            {
+                var containsRelationship = CreateRelationship(parentNodeId.Value, newNode.Id, ModelRelationshipStereotype.Containment, payload: null);
+                newGraph = AddRelationshipCore(containsRelationship, newGraph, itemEvents);
+            }
+
+            var newModel = CreateInstance(newGraph);
+            return ModelEvent.Create(newModel, itemEvents);
+        }
+
+        public ModelEvent RemoveNode(ModelNodeId nodeId)
+        {
+            var itemEvents = new List<ModelItemEventBase>();
+            var newGraph = _graph;
+
+            foreach (var relationship in GetRelationships(nodeId))
+                newGraph = RemoveRelationshipCore(relationship.Id, newGraph, itemEvents);
+
+            newGraph = RemoveNodeCore(nodeId, newGraph, itemEvents);
+
+            var newModel = CreateInstance(newGraph);
+            return ModelEvent.Create(newModel, itemEvents);
+        }
+
+        public ModelEvent AddRelationship(
+            ModelNodeId sourceId,
+            ModelNodeId targetId,
+            ModelRelationshipStereotype stereotype,
+            object payload = null)
+        {
+            var relationship = CreateRelationship(sourceId, targetId, stereotype, payload);
+
+            if (!IsRelationshipValid(relationship))
+                throw new ArgumentException($"{relationship} is invalid.");
+
+            var itemEvents = new List<ModelItemEventBase>();
+            var newGraph = AddRelationshipCore(relationship, _graph, itemEvents);
+
+            var newModel = CreateInstance(newGraph);
+            return ModelEvent.Create(newModel, itemEvents);
+        }
+
+        public ModelEvent RemoveRelationship(ModelRelationshipId relationshipId)
+        {
+            var itemEvents = new List<ModelItemEventBase>();
+            var newGraph = RemoveRelationshipCore(relationshipId, _graph, itemEvents);
+
+            var newModel = CreateInstance(newGraph);
+            return ModelEvent.Create(newModel, itemEvents);
+        }
+
+        public ModelEvent Clear()
+        {
+            var newModel = Create();
+            // Shall we raise node and relationship removed events ?
+            return ModelEvent.Create(newModel);
+        }
+
+        [NotNull]
+        private static IModelNode CreateNode(
+            [NotNull] string name,
+            ModelNodeStereotype stereotype,
+            [CanBeNull] object payload)
+        {
+            return new ModelNode(ModelNodeId.Create(), name, stereotype, payload);
+        }
+
+        [NotNull]
+        private static IModelRelationship CreateRelationship(
+            ModelNodeId sourceId,
+            ModelNodeId targetId,
+            ModelRelationshipStereotype stereotype,
+            [CanBeNull] object payload)
+        {
+            return new ModelRelationship(ModelRelationshipId.Create(), sourceId, targetId, stereotype, payload);
+        }
+
+        [NotNull]
+        private static IModelGraph AddNodeCore(
+            [NotNull] IModelNode newNode,
+            [NotNull] IModelGraph modelGraph,
+            [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
+        {
+            itemEvents.Add(new ModelNodeAddedEvent(newNode));
+            return modelGraph.AddVertex(newNode);
+        }
+
+        [NotNull]
+        private static IModelGraph AddRelationshipCore(
+            [NotNull] IModelRelationship relationship,
+            [NotNull] IModelGraph modelGraph,
+            [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
+        {
+            itemEvents.Add(new ModelRelationshipAddedEvent(relationship));
+            return modelGraph.AddEdge(relationship);
+        }
+
+        [NotNull]
+        private IModelGraph RemoveNodeCore(
+            ModelNodeId nodeId,
+            [NotNull] IModelGraph modelGraph,
+            [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
+        {
+            var oldNode = GetNode(nodeId);
+            itemEvents.Add(new ModelNodeRemovedEvent(oldNode));
+            return modelGraph.RemoveVertex(nodeId);
+        }
+
+        [NotNull]
+        private IModelGraph RemoveRelationshipCore(
+            ModelRelationshipId relationshipId,
+            [NotNull] IModelGraph modelGraph,
+            [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
+        {
+            var oldRelationship = GetRelationship(relationshipId);
+            itemEvents.Add(new ModelRelationshipRemovedEvent(oldRelationship));
+            return modelGraph.RemoveEdge(relationshipId);
+        }
+
+        private bool IsRelationshipValid([NotNull] IModelRelationship relationship)
+        {
+            var sourceNode = GetNode(relationship.Source);
+            var targetNode = GetNode(relationship.Target);
+
+            return _modelRuleProviders.All(i => i.IsRelationshipStereotypeValid(relationship.Stereotype, sourceNode, targetNode));
+        }
+
+        [NotNull]
+        private IModel CreateInstance(IModelGraph graph) => new Model(graph, _modelRuleProviders);
+
+        [NotNull]
+        public static IModel Create([NotNull] params IModelRuleProvider[] modelRuleProviders)
+        {
+            return new Model(ModelGraph.Empty(allowParallelEdges: false), modelRuleProviders);
+        }
     }
 }

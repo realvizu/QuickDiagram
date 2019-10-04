@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
 
         public void AddRelationship(ModelNodeId sourceId, ModelNodeId targetId, ModelRelationshipStereotype? stereotype)
         {
-            _modelService.AddRelationship(sourceId, targetId, stereotype);
+            _modelService.AddRelationship(sourceId, targetId, stereotype ?? ModelRelationshipStereotype.Default);
         }
 
         public void RemoveRelationship(ModelRelationshipId relationshipId)

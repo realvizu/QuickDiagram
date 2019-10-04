@@ -97,11 +97,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         //    return result;
         //}
 
-        public DiagramChangedEvent AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
+        public DiagramEvent AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
             var maybeDiagramNode = TryGetNode(nodeId);
             if (maybeDiagramNode.HasValue)
-                return DiagramChangedEvent.None(this);
+                return DiagramEvent.None(this);
 
             var maybeModelNode = Model.TryGetNode(nodeId);
             if (!maybeModelNode.HasValue)
@@ -109,10 +109,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             var newNode = CreateNode(maybeModelNode.Value).WithParentNodeId(parentNodeId.ToMaybe());
             var newDiagram = CreateInstance(Model, _nodes.Add(newNode.Id, newNode), _connectors);
-            return DiagramChangedEvent.Create(newDiagram, new DiagramNodeAddedEvent(newNode));
+            return DiagramEvent.Create(newDiagram, new DiagramNodeAddedEvent(newNode));
         }
 
-        public DiagramChangedEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
+        public DiagramEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
         {
             return UpdateNode(
                 nodeId,
@@ -120,7 +120,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
         }
 
-        public DiagramChangedEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
+        public DiagramEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
         {
             return UpdateNode(
                 nodeId,
@@ -128,7 +128,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
         }
 
-        public DiagramChangedEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
+        public DiagramEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
         {
             return UpdateNode(
                 nodeId,
@@ -136,7 +136,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
         }
 
-        public DiagramChangedEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
+        public DiagramEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
         {
             return UpdateNode(
                 nodeId,
@@ -144,21 +144,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
         }
 
-        public DiagramChangedEvent RemoveNode(ModelNodeId nodeId)
+        public DiagramEvent RemoveNode(ModelNodeId nodeId)
         {
             if (!NodeExists(nodeId))
-                return DiagramChangedEvent.None(this);
+                return DiagramEvent.None(this);
 
             var oldNode = GetNode(nodeId);
             var newDiagram = CreateInstance(Model, _nodes.Remove(nodeId), _connectors);
-            return DiagramChangedEvent.Create(newDiagram, new DiagramNodeRemovedEvent(oldNode));
+            return DiagramEvent.Create(newDiagram, new DiagramNodeRemovedEvent(oldNode));
         }
 
-        public DiagramChangedEvent AddConnector(ModelRelationshipId relationshipId)
+        public DiagramEvent AddConnector(ModelRelationshipId relationshipId)
         {
             var maybeConnector = TryGetConnector(relationshipId);
             if (maybeConnector.HasValue)
-                return DiagramChangedEvent.None(this);
+                return DiagramEvent.None(this);
 
             var maybeRelationship = Model.TryGetRelationship(relationshipId);
             if (!maybeRelationship.HasValue)
@@ -166,10 +166,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             var newConnector = CreateConnector(maybeRelationship.Value);
             var newDiagram = CreateInstance(Model, _nodes, _connectors.Add(newConnector.Id, newConnector));
-            return DiagramChangedEvent.Create(newDiagram, new DiagramConnectorAddedEvent(newConnector));
+            return DiagramEvent.Create(newDiagram, new DiagramConnectorAddedEvent(newConnector));
         }
 
-        public DiagramChangedEvent UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
+        public DiagramEvent UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
         {
             var maybeDiagramConnector = TryGetConnector(relationshipId);
             if (!maybeDiagramConnector.HasValue)
@@ -178,28 +178,28 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var oldConnector = maybeDiagramConnector.Value;
             var newConnector = oldConnector.WithRoute(newRoute);
             var newDiagram = CreateInstance(Model, _nodes, _connectors.SetItem(relationshipId, newConnector));
-            return DiagramChangedEvent.Create(newDiagram, new DiagramConnectorRouteChangedEvent(oldConnector, newConnector));
+            return DiagramEvent.Create(newDiagram, new DiagramConnectorRouteChangedEvent(oldConnector, newConnector));
         }
 
-        public DiagramChangedEvent RemoveConnector(ModelRelationshipId relationshipId)
+        public DiagramEvent RemoveConnector(ModelRelationshipId relationshipId)
         {
             if (!ConnectorExists(relationshipId))
-                return DiagramChangedEvent.None(this);
+                return DiagramEvent.None(this);
 
             var oldConnector = GetConnector(relationshipId);
             var newDiagram = CreateInstance(Model, _nodes, _connectors.Remove(relationshipId));
-            return DiagramChangedEvent.Create(newDiagram, new DiagramConnectorRemovedEvent(oldConnector));
+            return DiagramEvent.Create(newDiagram, new DiagramConnectorRemovedEvent(oldConnector));
         }
 
-        public DiagramChangedEvent UpdateModel(IModel newModel)
+        public DiagramEvent UpdateModel(IModel newModel)
         {
             // TODO: remove all shapes whose model ID does not exist in the new model.
             var newDiagram = CreateInstance(newModel, _nodes, _connectors);
 
-            return DiagramChangedEvent.Create(newDiagram, new DiagramModelUpdatedEvent());
+            return DiagramEvent.Create(newDiagram);
         }
 
-        public DiagramChangedEvent UpdateModelNode(IModelNode updatedModelNode)
+        public DiagramEvent UpdateModelNode(IModelNode updatedModelNode)
         {
             return UpdateNode(
                 updatedModelNode.Id,
@@ -207,9 +207,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 (oldNode, newNode) => new DiagramNodeModelNodeChangedEvent(oldNode, newNode));
         }
 
-        public DiagramChangedEvent ApplyLayout(DiagramLayoutInfo diagramLayout)
+        public DiagramEvent ApplyLayout(DiagramLayoutInfo diagramLayout)
         {
-            var events = new List<DiagramComponentChangedEventBase>();
+            var events = new List<DiagramShapeEventBase>();
             var updatedNodes = new Dictionary<ModelNodeId, IDiagramNode>();
 
             foreach (var nodeLayout in diagramLayout.RootNodes)
@@ -227,14 +227,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
 
             var newDiagram = CreateInstance(Model, _nodes.SetItems(updatedNodes), _connectors);
-            return DiagramChangedEvent.Create(newDiagram, events);
+            return DiagramEvent.Create(newDiagram, events);
         }
 
-        public DiagramChangedEvent Clear()
+        public DiagramEvent Clear()
         {
             var newDiagram = Create(Model, _connectorTypeResolver);
             // Shall we raise node and connector removed events ?
-            return DiagramChangedEvent.Create(newDiagram);
+            return DiagramEvent.Create(newDiagram);
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
@@ -244,7 +244,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 .Union();
         }
 
-        private DiagramChangedEvent UpdateNode(
+        private DiagramEvent UpdateNode(
             ModelNodeId nodeId,
             [NotNull] Func<IDiagramNode, IDiagramNode> nodeMutatorFunc,
             [NotNull] Func<IDiagramNode, IDiagramNode, DiagramNodeChangedEventBase> nodeChangedEventFunc)
@@ -258,7 +258,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var newDiagram = CreateInstance(Model, _nodes.SetItem(newNode.Id, newNode), _connectors);
             var diagramNodeChangedEvent = nodeChangedEventFunc(oldNode, newNode);
 
-            return DiagramChangedEvent.Create(newDiagram, diagramNodeChangedEvent);
+            return DiagramEvent.Create(newDiagram, diagramNodeChangedEvent);
         }
 
         private Rect2D CalculateRect() => Nodes.Select(i => i.Rect).Concat(Connectors.Select(i => i.Rect)).Union();

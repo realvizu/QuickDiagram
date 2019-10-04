@@ -39,28 +39,27 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IImmutableSet<IDiagramConnector> Connectors { get; }
 
         Rect2D Rect { get; }
-
         bool IsEmpty { get; }
 
-        DiagramChangedEvent AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
-        DiagramChangedEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
-        DiagramChangedEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
-        DiagramChangedEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter);
-        DiagramChangedEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
-        DiagramChangedEvent RemoveNode(ModelNodeId nodeId);
+        DiagramEvent AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
+        DiagramEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
+        DiagramEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
+        DiagramEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter);
+        DiagramEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
+        DiagramEvent RemoveNode(ModelNodeId nodeId);
 
-        DiagramChangedEvent AddConnector(ModelRelationshipId relationshipId);
-        DiagramChangedEvent UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
-        DiagramChangedEvent RemoveConnector(ModelRelationshipId relationshipId);
+        DiagramEvent AddConnector(ModelRelationshipId relationshipId);
+        DiagramEvent UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
+        DiagramEvent RemoveConnector(ModelRelationshipId relationshipId);
 
         /// <remarks>
         /// This should remove all shapes whose model ID does not exist in the new model.
         /// </remarks>
-        DiagramChangedEvent UpdateModel([NotNull] IModel newModel);
-        DiagramChangedEvent UpdateModelNode([NotNull] IModelNode updatedModelNode);
+        DiagramEvent UpdateModel([NotNull] IModel newModel);
+        DiagramEvent UpdateModelNode([NotNull] IModelNode updatedModelNode);
 
-        DiagramChangedEvent ApplyLayout(DiagramLayoutInfo diagramLayout);
-        DiagramChangedEvent Clear();
+        DiagramEvent ApplyLayout(DiagramLayoutInfo diagramLayout);
+        DiagramEvent Clear();
 
         bool NodeExists(ModelNodeId modelNodeId);
         bool ConnectorExists(ModelRelationshipId modelRelationshipId);

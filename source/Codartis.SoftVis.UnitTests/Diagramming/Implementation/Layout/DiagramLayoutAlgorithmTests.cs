@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramBuilder = new DiagramBuilder(model)
                 .AddNodes(("A", 1, 1), ("B", 2, 2))
-                .AddAllRelationships();
+                .AddAllModelRelationships();
 
             var rootLayoutInfo = SetUpRootLayoutInfo(diagramBuilder, ("A", 0, 0), ("B", 1, 1));
 
@@ -60,7 +60,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
             var diagramBuilder = new DiagramBuilder(model)
                 .AddNodes(("A", 1, 1), ("B", 2, 2))
                 .AddChildNodes("B", ("C", 3, 3), ("D", 4, 4))
-                .AddAllRelationships();
+                .AddAllModelRelationships();
 
             var rootLayoutInfo = SetUpRootLayoutInfo(diagramBuilder, ("A", 0, 0), ("B", 1, 1));
             var nodeBLayoutInfo = SetUpNodeLayoutInfo(diagramBuilder, "B", ("C", 0, 0), ("D", 1, 1));
@@ -93,7 +93,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         {
             var expectedLayoutInfo = new GroupLayoutInfo(
                 nodeLayoutSpecifications
-                    .Select(i => new NodeLayoutInfo(diagramBuilder.GetDiagramNodeByName(i.nodeName), new Point2D(i.x, i.y)))
+                    .Select(i => new NodeLayoutInfo(diagramBuilder.GetDiagramNode(i.nodeName), new Point2D(i.x, i.y)))
                     .ToList());
 
             var layoutAlgorithm = new TestLayoutAlgorithm(expectedLayoutInfo);
@@ -101,7 +101,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
             if (targetNodeName == null)
                 _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForRoot(layoutAlgorithm);
             else
-                _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForNode(diagramBuilder.GetDiagramNodeByName(targetNodeName), layoutAlgorithm);
+                _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForNode(diagramBuilder.GetDiagramNode(targetNodeName), layoutAlgorithm);
 
             return expectedLayoutInfo;
         }

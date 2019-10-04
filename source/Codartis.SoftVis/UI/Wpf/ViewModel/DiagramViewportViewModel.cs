@@ -119,7 +119,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool TryGetDiagramConnectorViewModel(ModelRelationshipId modelRelationshipId, out DiagramConnectorViewModel viewModel)
             => _diagramConnectorToViewModelMap.TryGet(modelRelationshipId, out viewModel);
 
-        private void OnDiagramChanged(DiagramChangedEvent @event)
+        private void OnDiagramChanged(DiagramEvent @event)
         {
             if (@event.NewDiagram.IsEmpty)
             {
@@ -127,7 +127,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 return;
             }
 
-            foreach (var diagramChange in @event.ComponentChanges)
+            foreach (var diagramChange in @event.ShapeEvents)
             {
                 // All diagram-induced view model manipulation must occur on the UI thread to avoid certain race conditions.
                 // (E.g. avoid the case when creating a connector view model precedes the creation of its source and target node view models.)
@@ -135,9 +135,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private void DispatchDiagramChangeEvent(DiagramComponentChangedEventBase diagramComponentChangedEvent)
+        private void DispatchDiagramChangeEvent(DiagramShapeEventBase diagramShapeEvent)
         {
-            switch (diagramComponentChangedEvent)
+            switch (diagramShapeEvent)
             {
                 case DiagramNodeAddedEvent nodeAddedEvent:
                     AddNode(nodeAddedEvent.NewNode, nodeAddedEvent.NewNode.ParentNodeId.ToNullable());
