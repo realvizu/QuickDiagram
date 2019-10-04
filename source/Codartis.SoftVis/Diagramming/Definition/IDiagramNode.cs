@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IDiagramNode WithModelNode([NotNull] IModelNode newModelNode);
 
         [NotNull]
-        IDiagramNode WithParentNodeId(Maybe<ModelNodeId> newParentNodeId);
+        IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId);
 
         [NotNull]
         IDiagramNode WithCenter(Point2D newCenter);

@@ -36,6 +36,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
+        public DiagramBuilder AddNodes([NotNull] params string[] names)
+        {
+            foreach (var name in names)
+                AddNode(name, 0, 0);
+
+            return this;
+        }
+
+        [NotNull]
         public DiagramBuilder AddNodes([NotNull] params (string name, double width, double height)[] nodeSpecifications)
         {
             foreach (var nodeSpecification in nodeSpecifications)
@@ -110,6 +119,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
                 AddRelationship(modelRelationship.Id);
 
             return this;
+        }
+
+        [NotNull]
+        public DiagramBuilder AddAllModelItems()
+        {
+            return AddAllModelNodes().AddAllModelRelationships();
         }
 
         [NotNull]

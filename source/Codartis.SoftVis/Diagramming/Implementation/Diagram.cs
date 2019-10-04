@@ -107,7 +107,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (!maybeModelNode.HasValue)
                 throw new Exception($"Node {nodeId} not found in model.");
 
-            var newNode = CreateNode(maybeModelNode.Value).WithParentNodeId(parentNodeId.ToMaybe());
+            var newNode = CreateNode(maybeModelNode.Value).WithParentNodeId(parentNodeId);
             var newDiagram = CreateInstance(Model, _nodes.Add(newNode.Id, newNode), _connectors);
             return DiagramEvent.Create(newDiagram, new DiagramNodeAddedEvent(newNode));
         }

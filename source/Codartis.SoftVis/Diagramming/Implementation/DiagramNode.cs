@@ -63,8 +63,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagramNode WithModelNode(IModelNode newModelNode)
             => CreateInstance(newModelNode, AddedAt, TopLeft, PayloadAreaSize, ChildrenAreaSize, ParentNodeId);
 
-        public IDiagramNode WithParentNodeId(Maybe<ModelNodeId> newParentNodeId)
-            => CreateInstance(ModelNode, AddedAt, TopLeft, PayloadAreaSize, ChildrenAreaSize, newParentNodeId);
+        public IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId)
+            => CreateInstance(ModelNode, AddedAt, TopLeft, PayloadAreaSize, ChildrenAreaSize, newParentNodeId.ToMaybe());
 
         public IDiagramNode WithCenter(Point2D newCenter)
             => CreateInstance(ModelNode, AddedAt, Rect.WithCenter(newCenter).TopLeft, PayloadAreaSize, ChildrenAreaSize, ParentNodeId);
