@@ -2,6 +2,7 @@
 using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
@@ -51,6 +52,7 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<TestModelServiceFactory>().As<IModelServiceFactory>();
             builder.RegisterType<TestDiagramServiceFactory>().As<IDiagramServiceFactory>();
             builder.RegisterType<TestUiServiceFactory>().As<IUiServiceFactory>();
+            builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>();
             builder.RegisterType<DiagramPluginFactory>().As<IDiagramPluginFactory>();
             builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
             builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();

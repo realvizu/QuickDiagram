@@ -84,9 +84,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateEnabledState();
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            _lastDiagram = diagramEvent.NewDiagram;
+            _lastDiagram = @event.NewDiagram;
             UpdateEnabledState();
         }
 

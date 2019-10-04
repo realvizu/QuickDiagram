@@ -8,17 +8,17 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public class DiagramPluginFactory : IDiagramPluginFactory
     {
-        private readonly INodeLayoutAlgorithm _nodeLayoutAlgorithm;
+        private readonly IDiagramLayoutAlgorithm _diagramLayoutAlgorithm;
 
-        public DiagramPluginFactory(INodeLayoutAlgorithm nodeLayoutAlgorithm)
+        public DiagramPluginFactory(IDiagramLayoutAlgorithm diagramLayoutAlgorithm)
         {
-            _nodeLayoutAlgorithm = nodeLayoutAlgorithm;
+            _diagramLayoutAlgorithm = diagramLayoutAlgorithm;
         }
 
         public virtual IDiagramPlugin Create(DiagramPluginId diagramPluginId)
         {
             if (diagramPluginId == DiagramPluginId.AutoLayoutDiagramPlugin)
-                return new BufferingAutoLayoutDiagramPlugin(_nodeLayoutAlgorithm);
+                return new AutoLayoutDiagramPlugin(_diagramLayoutAlgorithm);
             if (diagramPluginId == DiagramPluginId.ConnectorHandlerDiagramPlugin)
                 return new ConnectorHandlerDiagramPlugin();
             if (diagramPluginId == DiagramPluginId.ModelTrackingDiagramPlugin)

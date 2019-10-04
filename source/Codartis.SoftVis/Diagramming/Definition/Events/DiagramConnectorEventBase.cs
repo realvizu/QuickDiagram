@@ -1,12 +1,6 @@
-﻿using JetBrains.Annotations;
-
-namespace Codartis.SoftVis.Diagramming.Definition.Events
+﻿namespace Codartis.SoftVis.Diagramming.Definition.Events
 {
-    public abstract class DiagramConnectorEventBase : DiagramEventBase
+    public abstract class DiagramConnectorEventBase : DiagramComponentChangedEventBase
     {
-        protected DiagramConnectorEventBase([NotNull] IDiagram newDiagram)
-            : base(newDiagram)
-        {
-        }
     }
 }

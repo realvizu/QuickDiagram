@@ -15,11 +15,6 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// </summary>
     /// <remarks>
     /// A diagram shows a subset of the model and there can be many diagrams depicting different areas/aspects of the same model.
-    /// A diagram consists of layout groups that act like little diagrams that the main diagram is composed of.
-    /// Each layout group consists of shapes that represent model items: diagram nodes for model nodes and diagram connectors for model relationships.
-    /// A connector belongs to a layout group if both its source and target nodes are in that group.
-    /// Those connectors whose source and target nodes belong to different layout groups form a special connector group:
-    /// the CrossLayoutGroupConnectors, that have different layout rules than other layout groups.
     /// </remarks>
     public interface IDiagram
     {
@@ -45,41 +40,27 @@ namespace Codartis.SoftVis.Diagramming.Definition
 
         Rect2D Rect { get; }
 
+        bool IsEmpty { get; }
+
+        DiagramChangedEvent AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
+        DiagramChangedEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
+        DiagramChangedEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
+        DiagramChangedEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter);
+        DiagramChangedEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
+        DiagramChangedEvent RemoveNode(ModelNodeId nodeId);
+
+        DiagramChangedEvent AddConnector(ModelRelationshipId relationshipId);
+        DiagramChangedEvent UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
+        DiagramChangedEvent RemoveConnector(ModelRelationshipId relationshipId);
+
         /// <remarks>
         /// This should remove all shapes whose model ID does not exist in the new model.
         /// </remarks>
-        [NotNull]
-        IDiagram WithModel([NotNull] IModel newModel);
+        DiagramChangedEvent UpdateModel([NotNull] IModel newModel);
+        DiagramChangedEvent UpdateModelNode([NotNull] IModelNode updatedModelNode);
 
-        [NotNull]
-        IDiagram AddNode([NotNull] IDiagramNode newNode);
-
-        [NotNull]
-        IDiagram UpdateNode([NotNull] IDiagramNode updatedNode);
-
-        [NotNull]
-        IDiagram UpdateNodes([NotNull] [ItemNotNull] IEnumerable<IDiagramNode> updatedNodes);
-
-        [NotNull]
-        IDiagram RemoveNode(ModelNodeId nodeId);
-
-        [NotNull]
-        IDiagram AddConnector([NotNull] IDiagramConnector newConnector);
-
-        [NotNull]
-        IDiagram UpdateConnector([NotNull] IDiagramConnector updatedConnector);
-
-        [NotNull]
-        IDiagram UpdateConnectors([NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> updatedConnectors);
-
-        [NotNull]
-        IDiagram RemoveConnector(ModelRelationshipId relationshipId);
-
-        [NotNull]
-        IDiagram Clear();
-
-        [NotNull]
-        IDiagram ApplyLayout(DiagramLayoutInfo diagramLayout);
+        DiagramChangedEvent ApplyLayout(DiagramLayoutInfo diagramLayout);
+        DiagramChangedEvent Clear();
 
         bool NodeExists(ModelNodeId modelNodeId);
         bool ConnectorExists(ModelRelationshipId modelRelationshipId);

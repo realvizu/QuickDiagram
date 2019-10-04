@@ -167,9 +167,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => _relatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            if (diagramEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent &&
+            foreach (var change in @event.ComponentChanges)
+                ProcessDiagramChange(change);
+        }
+
+        private void ProcessDiagramChange(DiagramComponentChangedEventBase diagramComponentChangedEvent)
+        {
+            if (diagramComponentChangedEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent &&
                 DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
             {
                 DiagramShape = diagramNodeChangedEvent.NewNode;

@@ -8,10 +8,8 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
         [NotNull] public IDiagramConnector OldConnector { get; }
 
         public DiagramConnectorRouteChangedEvent(
-            [NotNull] IDiagram newDiagram,
             [NotNull] IDiagramConnector oldConnector,
             [NotNull] IDiagramConnector newConnector)
-            : base(newDiagram)
         {
             OldConnector = oldConnector;
             NewConnector = newConnector;

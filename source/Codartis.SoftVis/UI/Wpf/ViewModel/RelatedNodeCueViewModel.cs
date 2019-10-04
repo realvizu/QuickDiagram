@@ -48,9 +48,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateVisibility();
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            _lastDiagram = diagramEvent.NewDiagram;
+            _lastDiagram = @event.NewDiagram;
             UpdateVisibility();
         }
 

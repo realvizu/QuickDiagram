@@ -47,7 +47,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramService = CreateDiagramService(modelService.LatestModel);
             diagramService.AddNode(parentNode.Id);
             diagramService.AddNode(childNode.Id, parentNode.Id);
-            diagramService.UpdatePayloadAreaSize(childNode.Id, new Size2D(1, 1));
+            diagramService.UpdateNodePayloadAreaSize(childNode.Id, new Size2D(1, 1));
 
             var diagram = diagramService.LatestDiagram;
             diagram.Nodes.ShouldBeEquivalentById(childNode.Id, parentNode.Id);
@@ -95,7 +95,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramService = CreateDiagramService(modelService.LatestModel);
             diagramService.AddNodes(new[] { node1.Id, node2.Id });
             diagramService.AddConnector(relationship.Id);
-            diagramService.UpdateRoute(relationship.Id, TestRoute);
+            diagramService.UpdateConnectorRoute(relationship.Id, TestRoute);
 
             diagramService.LatestDiagram.Connectors.Should().HaveCount(1).And
                 .Subject.First().Route.Should().BeEquivalentTo(TestRoute);
@@ -182,7 +182,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 .Model;
 
             var diagramBuilder = new DiagramBuilder(model)
-                .AddNodes(("A", 1, 1), ("B", 2, 2))
+                .AddNodes(("A", 0, 0), ("B", 0, 0))
                 .AddAllRelationships();
 
             var diagramService = CreateDiagramService(diagramBuilder.Diagram);
@@ -195,20 +195,24 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 },
                 new List<ConnectorLayoutInfo>());
 
-            var expectedDiagram = diagramBuilder.Diagram
-                .UpdateNode(diagramBuilder.GetDiagramNodeByName("A").WithTopLeft(new Point2D(1, 1)))
-                .UpdateNode(diagramBuilder.GetDiagramNodeByName("B").WithTopLeft(new Point2D(2, 2)));
+            var expectedDiagram = diagramBuilder
+                .UpdateNodeTopLeft("A", 1, 1)
+                .UpdateNodeTopLeft("B", 2, 2)
+                .Diagram;
 
-            using (var monitoredSubject = diagramService.Monitor())
+            using (var monitoredSubject = ((IDiagramEventSource)diagramService).Monitor())
             {
                 diagramService.ApplyLayout(layout);
 
-                monitoredSubject.Should().Raise(nameof(IDiagramService.DiagramChanged))
-                    .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Name == "A" && args.NewNode.TopLeft == new Point2D(1, 1))
-                    .WithArgs2<DiagramNodeRectChangedEvent>(args => args.NewNode.Name == "B" && args.NewNode.TopLeft == new Point2D(2, 2));
-                // TODO: update connectors too
-                //.WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship1.Id && args.NewConnector.Route == route1)
-                //.WithArgs2<DiagramConnectorRouteChangedEvent>(args => args.NewConnector.Id == relationship2.Id && args.NewConnector.Route == route2);
+                monitoredSubject.OccurredEvents
+                    .SelectMany(i => i.Parameters).OfType<DiagramChangedEvent>()
+                    .SelectMany(i => i.ComponentChanges)
+                    .Should().SatisfyRespectively(
+                        i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 1, 1)),
+                        i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2))
+                    );
+
+                // TODO: check connectors updated too
             }
 
             AllRectsShouldMatch(diagramService.LatestDiagram, expectedDiagram);

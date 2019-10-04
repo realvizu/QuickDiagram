@@ -7,8 +7,7 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
         [NotNull] public IDiagramNode OldNode { get; }
         [NotNull] public IDiagramNode NewNode { get; }
 
-        protected DiagramNodeChangedEventBase([NotNull] IDiagram newDiagram, [NotNull] IDiagramNode oldNode, [NotNull] IDiagramNode newNode)
-            : base(newDiagram)
+        protected DiagramNodeChangedEventBase([NotNull] IDiagramNode oldNode, [NotNull] IDiagramNode newNode)
         {
             OldNode = oldNode;
             NewNode = newNode;

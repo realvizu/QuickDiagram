@@ -65,9 +65,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 RemoveModelNode(modelNodeRemovedEvent.RemovedNode.Id);
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            if (diagramEvent is DiagramNodeAddedEvent diagramNodeAddedEvent)
+            foreach (var diagramChange in @event.ComponentChanges)
+                ProcessDiagramChange(diagramChange);
+        }
+
+        private void ProcessDiagramChange(DiagramComponentChangedEventBase diagramComponentChangedEvent)
+        {
+            if (diagramComponentChangedEvent is DiagramNodeAddedEvent diagramNodeAddedEvent)
                 RemoveModelNode(diagramNodeAddedEvent.NewNode.Id);
         }
 

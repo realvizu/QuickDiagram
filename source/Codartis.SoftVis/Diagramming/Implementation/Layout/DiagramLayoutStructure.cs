@@ -11,6 +11,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
     /// <summary>
     /// Separates the diagram into node and connector groups that are laid out together.
     /// </summary>
+    /// <remarks>
+    /// A diagram' layout consists of layout groups that act like little diagrams that the main diagram is composed of.
+    /// Each layout group consists of shapes that represent model items: diagram nodes for model nodes and diagram connectors for model relationships.
+    /// A connector belongs to a layout group if both its source and target nodes are in that group.
+    /// Those connectors whose source and target nodes belong to different layout groups form a special connector group:
+    /// the CrossLayoutGroupConnectors, that have different layout rules than other layout groups.
+    /// </remarks>
     public sealed class DiagramLayoutStructure
     {
         [NotNull] private readonly IDiagram _diagram;
@@ -31,9 +38,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
             RootLayoutGroup = CreateLayoutGroup(Maybe<ModelNodeId>.Nothing);
         }
 
-        [NotNull]
-        [ItemNotNull]
-        public IEnumerable<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values;
+        [NotNull] [ItemNotNull] public IEnumerable<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values;
 
         /// <summary>
         /// Gets the layout group of a given node.

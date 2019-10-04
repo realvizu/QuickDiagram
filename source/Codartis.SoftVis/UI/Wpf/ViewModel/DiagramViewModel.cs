@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf.Commands;
@@ -246,14 +245,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramContentRect = diagram.Rect.ToWpf();
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            _lastDiagram = diagramEvent.NewDiagram;
+            _lastDiagram = @event.NewDiagram;
 
-            if (diagramEvent is DiagramClearedEvent)
+            if (_lastDiagram.IsEmpty)
                 HideAllWidgets();
 
-            UpdateDiagramContentRect(diagramEvent.NewDiagram);
+            UpdateDiagramContentRect(@event.NewDiagram);
         }
     }
 }

@@ -6,8 +6,7 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
     {
         [NotNull] public IDiagramConnector OldConnector { get; }
 
-        public DiagramConnectorRemovedEvent([NotNull] IDiagram newDiagram, [NotNull] IDiagramConnector removedConnector) 
-            : base(newDiagram)
+        public DiagramConnectorRemovedEvent([NotNull] IDiagramConnector removedConnector) 
         {
             OldConnector = removedConnector;
         }

@@ -6,8 +6,7 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
     {
         [NotNull] public IDiagramNode NewNode { get; }
 
-        public DiagramNodeAddedEvent([NotNull] IDiagram newDiagram, [NotNull] IDiagramNode newNode)
-            : base(newDiagram)
+        public DiagramNodeAddedEvent([NotNull] IDiagramNode newNode)
         {
             NewNode = newNode;
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
@@ -25,7 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull] private readonly object _diagramUpdateLockObject;
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
 
-        public event Action<DiagramEventBase> DiagramChanged;
+        public event Action<DiagramChangedEvent> DiagramChanged;
 
         public DiagramService([NotNull] IDiagram diagram, [NotNull] IConnectorTypeResolver connectorTypeResolver)
         {
@@ -35,268 +34,86 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
-            : this(Diagram.Create(model), connectorTypeResolver)
+            : this(Diagram.Create(model, connectorTypeResolver), connectorTypeResolver)
         {
         }
 
         public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
-            MutateWithLockThenRaiseEvents(() => AddNodeCore(nodeId, parentNodeId));
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.AddNode(nodeId, parentNodeId));
+        }
+
+        public void UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
+        {
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodePayloadAreaSize(nodeId, newSize));
+        }
+
+        public void UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
+        {
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeChildrenAreaSize(nodeId, newSize));
+        }
+
+        public void UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
+        {
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeCenter(nodeId, newCenter));
+        }
+
+        public void UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
+        {
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeTopLeft(nodeId, newTopLeft));
         }
 
         public void RemoveNode(ModelNodeId nodeId)
         {
-            MutateWithLockThenRaiseEvents(() => RemoveNodeCore(nodeId));
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.RemoveNode(nodeId));
         }
 
         public void AddConnector(ModelRelationshipId relationshipId)
         {
-            MutateWithLockThenRaiseEvents(() => AddConnectorCore(relationshipId));
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.AddConnector(relationshipId));
+        }
+
+        public void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
+        {
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateConnectorRoute(relationshipId, newRoute));
         }
 
         public void RemoveConnector(ModelRelationshipId relationshipId)
         {
-            MutateWithLockThenRaiseEvents(() => RemoveConnectorCore(relationshipId));
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.RemoveConnector(relationshipId));
         }
 
         public void UpdateModel(IModel model)
         {
-            MutateWithLockThenRaiseEvents(() => UpdateModelCore(model));
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateModel(model));
         }
 
         public void UpdateModelNode(IModelNode updatedModelNode)
         {
-            MutateWithLockThenRaiseEvents(() => UpdateModelNodeCore(updatedModelNode));
-        }
-
-        public void UpdatePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
-        {
-            MutateWithLockThenRaiseEvents(() => UpdatePayloadAreaSizeCore(nodeId, newSize));
-        }
-
-        public void UpdateChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
-        {
-            MutateWithLockThenRaiseEvents(() => UpdateChildrenAreaSizeCore(nodeId, newSize));
-        }
-
-        public void UpdateCenter(ModelNodeId nodeId, Point2D newCenter)
-        {
-            MutateWithLockThenRaiseEvents(() => UpdateCenterCore(nodeId, newCenter));
-        }
-
-        public void UpdateTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
-        {
-            MutateWithLockThenRaiseEvents(() => UpdateTopLeftCore(nodeId, newTopLeft));
-        }
-
-        public void UpdateRoute(ModelRelationshipId relationshipId, Route newRoute)
-        {
-            MutateWithLockThenRaiseEvents(() => UpdateRouteCore(relationshipId, newRoute));
-        }
-
-        public void ClearDiagram()
-        {
-            MutateWithLockThenRaiseEvents(ClearDiagramCore);
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateModelNode(updatedModelNode));
         }
 
         public void ApplyLayout(DiagramLayoutInfo diagramLayout)
         {
-            MutateWithLockThenRaiseEvents(() => ApplyLayoutCore(diagramLayout));
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.ApplyLayout(diagramLayout));
         }
 
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> ApplyLayoutCore(DiagramLayoutInfo diagramLayout)
+        public void ClearDiagram()
         {
-            var diagram = LatestDiagram;
-            var events = new List<DiagramEventBase>();
-
-            foreach (var nodeLayout in diagramLayout.RootNodes)
-            {
-                var maybeCurrentNode = diagram.TryGetNode(nodeLayout.Node.Id);
-                if (maybeCurrentNode.HasValue)
-                    events.AddRange(UpdateTopLeftCore(nodeLayout.Node.Id, nodeLayout.Rect.TopLeft));
-            }
-
-            return events;
+            MutateWithLockThenRaiseEvents(() => LatestDiagram.Clear());
         }
 
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> AddNodeCore(ModelNodeId nodeId, ModelNodeId? parentNodeId)
+        private void MutateWithLockThenRaiseEvents([NotNull] Func<DiagramChangedEvent> diagramMutator)
         {
-            var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
-            if (maybeDiagramNode.HasValue)
-                yield break;
+            DiagramChangedEvent diagramChangedEvent;
 
-            var maybeModelNode = LatestDiagram.Model.TryGetNode(nodeId);
-            if (!maybeModelNode.HasValue)
-                throw new Exception($"Node {nodeId} not found in model.");
-
-            var newNode = CreateNode(maybeModelNode.Value).WithParentNodeId(parentNodeId.ToMaybe());
-            LatestDiagram = LatestDiagram.AddNode(newNode);
-            yield return new DiagramNodeAddedEvent(LatestDiagram, newNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> RemoveNodeCore(ModelNodeId nodeId)
-        {
-            if (!LatestDiagram.NodeExists(nodeId))
-                yield break;
-
-            var oldNode = LatestDiagram.GetNode(nodeId);
-            LatestDiagram = LatestDiagram.RemoveNode(nodeId);
-            yield return new DiagramNodeRemovedEvent(LatestDiagram, oldNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateModelCore([NotNull] IModel model)
-        {
-            LatestDiagram = LatestDiagram.WithModel(model);
-            yield return new DiagramModelUpdatedEvent(LatestDiagram);
-
-            // TODO: remove those shapes whose model item no longer exists
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateModelNodeCore([NotNull] IModelNode updatedModelNode)
-        {
-            var maybeDiagramNode = LatestDiagram.TryGetNode(updatedModelNode.Id);
-            if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Node {updatedModelNode} does not exist.");
-
-            var oldNode = maybeDiagramNode.Value;
-            var updatedNode = oldNode.WithModelNode(updatedModelNode);
-            LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodeModelNodeChangedEvent(LatestDiagram, oldNode, updatedNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdatePayloadAreaSizeCore(ModelNodeId nodeId, Size2D newSize)
-        {
-            var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
-            if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Trying to resize payload are of node {nodeId} but it does not exist.");
-
-            var oldNode = maybeDiagramNode.Value;
-            var updatedNode = oldNode.WithPayloadAreaSize(newSize);
-            LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateChildrenAreaSizeCore(ModelNodeId nodeId, Size2D newSize)
-        {
-            var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
-            if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Trying to resize children are of node {nodeId} but it does not exist.");
-
-            var oldNode = maybeDiagramNode.Value;
-            var updatedNode = oldNode.WithChildrenAreaSize(newSize);
-            LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateCenterCore(ModelNodeId nodeId, Point2D newCenter)
-        {
-            var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
-            if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Trying to move node {nodeId} but it does not exist.");
-
-            var oldNode = maybeDiagramNode.Value;
-            var updatedNode = oldNode.WithCenter(newCenter);
-            LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateTopLeftCore(ModelNodeId nodeId, Point2D newTopLeft)
-        {
-            var maybeDiagramNode = LatestDiagram.TryGetNode(nodeId);
-            if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Trying to move node {nodeId} but it does not exist.");
-
-            var oldNode = maybeDiagramNode.Value;
-            var updatedNode = oldNode.WithTopLeft(newTopLeft);
-            LatestDiagram = LatestDiagram.UpdateNode(updatedNode);
-            yield return new DiagramNodeRectChangedEvent(LatestDiagram, oldNode, updatedNode);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> AddConnectorCore(ModelRelationshipId relationshipId)
-        {
-            var maybeConnector = LatestDiagram.TryGetConnector(relationshipId);
-            if (maybeConnector.HasValue)
-                yield break;
-
-            var maybeRelationship = LatestDiagram.Model.TryGetRelationship(relationshipId);
-            if (!maybeRelationship.HasValue)
-                throw new InvalidOperationException($"Relationship {relationshipId} does not exist.");
-
-            var connector = CreateConnector(maybeRelationship.Value);
-            LatestDiagram = LatestDiagram.AddConnector(connector);
-            yield return new DiagramConnectorAddedEvent(LatestDiagram, connector);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> RemoveConnectorCore(ModelRelationshipId relationshipId)
-        {
-            if (!LatestDiagram.ConnectorExists(relationshipId))
-                yield break;
-
-            var oldConnector = LatestDiagram.GetConnector(relationshipId);
-            LatestDiagram = LatestDiagram.RemoveConnector(relationshipId);
-            yield return new DiagramConnectorRemovedEvent(LatestDiagram, oldConnector);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> UpdateRouteCore(ModelRelationshipId relationshipId, Route newRoute)
-        {
-            var maybeDiagramConnector = LatestDiagram.TryGetConnector(relationshipId);
-            if (!maybeDiagramConnector.HasValue)
-                throw new InvalidOperationException($"Connector {relationshipId} does not exist.");
-
-            var oldConnector = maybeDiagramConnector.Value;
-            var newConnector = oldConnector.WithRoute(newRoute);
-            LatestDiagram = LatestDiagram.UpdateConnector(newConnector);
-            yield return new DiagramConnectorRouteChangedEvent(LatestDiagram, oldConnector, newConnector);
-        }
-
-        [NotNull]
-        [ItemNotNull]
-        private IEnumerable<DiagramEventBase> ClearDiagramCore()
-        {
-            LatestDiagram = LatestDiagram.Clear();
-            yield return new DiagramClearedEvent(LatestDiagram);
-        }
-
-        private void MutateWithLockThenRaiseEvents([NotNull] Func<IEnumerable<DiagramEventBase>> diagramMutatorFunc)
-        {
-            IList<DiagramEventBase> events;
             lock (_diagramUpdateLockObject)
             {
-                // Using ToList to force evaluation to be inside the lock block.
-                events = diagramMutatorFunc.Invoke().EmptyIfNull().ToList();
+                diagramChangedEvent = diagramMutator.Invoke();
+                LatestDiagram = diagramChangedEvent.NewDiagram;
             }
 
-            RaiseEvents(events);
-        }
-
-        private void RaiseEvents([NotNull] [ItemNotNull] IEnumerable<DiagramEventBase> events)
-        {
-            foreach (var @event in events)
-                DiagramChanged?.Invoke(@event);
+            DiagramChanged?.Invoke(diagramChangedEvent);
         }
 
         public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
@@ -352,16 +169,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 return potentialContainerNode.Id;
 
             return null;
-        }
-
-        [NotNull]
-        private static IDiagramNode CreateNode([NotNull] IModelNode modelNode) => new DiagramNode(modelNode);
-
-        [NotNull]
-        private IDiagramConnector CreateConnector([NotNull] IModelRelationship relationship)
-        {
-            var connectorType = _connectorTypeResolver.GetConnectorType(relationship.Stereotype);
-            return new DiagramConnector(relationship, connectorType);
         }
     }
 }

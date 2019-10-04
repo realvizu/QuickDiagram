@@ -1,12 +1,6 @@
-﻿using JetBrains.Annotations;
-
-namespace Codartis.SoftVis.Diagramming.Definition.Events
+﻿namespace Codartis.SoftVis.Diagramming.Definition.Events
 {
-    public sealed class DiagramModelUpdatedEvent : DiagramEventBase
+    public sealed class DiagramModelUpdatedEvent : DiagramComponentChangedEventBase
     {
-        public DiagramModelUpdatedEvent([NotNull] IDiagram newDiagram)
-            : base(newDiagram)
-        {
-        }
     }
 }

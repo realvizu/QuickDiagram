@@ -4,8 +4,8 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
 {
     public sealed class DiagramNodeRectChangedEvent : DiagramNodeChangedEventBase
     {
-        public DiagramNodeRectChangedEvent([NotNull] IDiagram newDiagram, [NotNull] IDiagramNode oldNode, [NotNull] IDiagramNode newNode)
-            : base(newDiagram, oldNode, newNode)
+        public DiagramNodeRectChangedEvent([NotNull] IDiagramNode oldNode, [NotNull] IDiagramNode newNode)
+            : base(oldNode, newNode)
         {
         }
 

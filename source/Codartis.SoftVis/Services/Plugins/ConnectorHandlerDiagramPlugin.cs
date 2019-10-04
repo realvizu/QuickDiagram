@@ -22,12 +22,18 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
             var model = ModelService.LatestModel;
-            var diagram = diagramEvent.NewDiagram;
+            var diagram = @event.NewDiagram;
 
-            switch (diagramEvent)
+            foreach (var change in @event.ComponentChanges)
+                ProcessDiagramChange(change, model, diagram);
+        }
+
+        private void ProcessDiagramChange(DiagramComponentChangedEventBase diagramComponentChangedEvent, IModel model, IDiagram diagram)
+        {
+            switch (diagramComponentChangedEvent)
             {
                 case DiagramNodeAddedEvent diagramNodeAddedEvent:
                     var modelNode = diagramNodeAddedEvent.NewNode.ModelNode;
@@ -44,9 +50,9 @@ namespace Codartis.SoftVis.Services.Plugins
                     HideRedundantConnectors(diagram);
                     break;
 
-                    // DiagramConnectorRemovedEvent is not handled 
-                    // because that would put back removed connectors immediately
-                    // (because nodes are removed after connectors)
+                // DiagramConnectorRemovedEvent is not handled 
+                // because that would put back removed connectors immediately
+                // (because nodes are removed after connectors)
             }
         }
 

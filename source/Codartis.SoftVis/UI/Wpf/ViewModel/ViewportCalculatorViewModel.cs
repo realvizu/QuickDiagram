@@ -42,14 +42,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event Action<TransitionedTransform> TransformChanged;
 
-        public ViewportCalculatorViewModel(IModelService modelService, IDiagramService diagramService,
-            double minZoom, double maxZoom, double initialZoom)
+        public ViewportCalculatorViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            double minZoom,
+            double maxZoom,
+            double initialZoom)
             : this(modelService, diagramService, minZoom, maxZoom, initialZoom, ViewportSizeDefault, ViewportCenterDefault)
         {
         }
 
-        private ViewportCalculatorViewModel(IModelService modelService, IDiagramService diagramService,
-            double minZoom, double maxZoom, double initialZoom, Size sizeInScreenSpace, Point centerInDiagramSpace)
+        private ViewportCalculatorViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            double minZoom,
+            double maxZoom,
+            double initialZoom,
+            Size sizeInScreenSpace,
+            Point centerInDiagramSpace)
             : base(modelService, diagramService)
         {
             _minZoom = minZoom;
@@ -127,7 +137,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateCalculatedProperties(transitionSpeed);
         }
 
-        public virtual void ZoomWithCenterTo(double newLinearZoom, Point zoomCenterInScreenSpace,
+        public virtual void ZoomWithCenterTo(
+            double newLinearZoom,
+            Point zoomCenterInScreenSpace,
             TransitionSpeed transitionSpeed = TransitionSpeed.Fast)
         {
             var oldExponentialZoom = _exponentialZoom;
@@ -160,9 +172,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return viewportRect.IntersectsWith(_diagramContentRect);
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            _diagramContentRect = diagramEvent.NewDiagram.Rect.ToWpf();
+            _diagramContentRect = @event.NewDiagram.Rect.ToWpf();
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -264,35 +276,40 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public class PanDelegateCommand : DelegateCommand<Vector, TransitionSpeed>
         {
-            public PanDelegateCommand(Action<Vector, TransitionSpeed> action) : base(action)
-            { }
+            public PanDelegateCommand(Action<Vector, TransitionSpeed> action)
+                : base(action)
+            {
+            }
 
-            public void Execute(Vector panVector, TransitionSpeed transitionSpeed)
-                => ExecuteCore(panVector, transitionSpeed);
+            public void Execute(Vector panVector, TransitionSpeed transitionSpeed) => ExecuteCore(panVector, transitionSpeed);
         }
 
         public class ResizeDelegateCommand : DelegateCommand<Size, TransitionSpeed>
         {
-            public ResizeDelegateCommand(Action<Size, TransitionSpeed> action) : base(action)
-            { }
+            public ResizeDelegateCommand(Action<Size, TransitionSpeed> action)
+                : base(action)
+            {
+            }
 
-            public void Execute(Size newSize, TransitionSpeed transitionSpeed)
-                => ExecuteCore(newSize, transitionSpeed);
+            public void Execute(Size newSize, TransitionSpeed transitionSpeed) => ExecuteCore(newSize, transitionSpeed);
         }
 
         public class ZoomDelegateCommand : DelegateCommand<double, Point, TransitionSpeed>
         {
-            public ZoomDelegateCommand(Action<double, Point, TransitionSpeed> action) : base(action)
-            { }
+            public ZoomDelegateCommand(Action<double, Point, TransitionSpeed> action)
+                : base(action)
+            {
+            }
 
-            public void Execute(double zoomValue, Point zoomCenter, TransitionSpeed transitionSpeed)
-                => ExecuteCore(zoomValue, zoomCenter, transitionSpeed);
+            public void Execute(double zoomValue, Point zoomCenter, TransitionSpeed transitionSpeed) => ExecuteCore(zoomValue, zoomCenter, transitionSpeed);
         }
 
         public class ZoomToContentDelegateCommand : DelegateCommand<TransitionSpeed>
         {
-            public ZoomToContentDelegateCommand(Action<TransitionSpeed> action) : base(action)
-            { }
+            public ZoomToContentDelegateCommand(Action<TransitionSpeed> action)
+                : base(action)
+            {
+            }
         }
     }
 }

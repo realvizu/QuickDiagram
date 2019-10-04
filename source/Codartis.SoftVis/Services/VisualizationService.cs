@@ -106,7 +106,7 @@ namespace Codartis.SoftVis.Services
 
         private void OnDiagramNodeSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
         {
-            GetDiagramService(diagramId).UpdatePayloadAreaSize(diagramNode.Id, newSize);
+            GetDiagramService(diagramId).UpdateNodePayloadAreaSize(diagramNode.Id, newSize);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramId diagramId, IDiagramNode diagramNode)

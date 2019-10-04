@@ -119,16 +119,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool TryGetDiagramConnectorViewModel(ModelRelationshipId modelRelationshipId, out DiagramConnectorViewModel viewModel)
             => _diagramConnectorToViewModelMap.TryGet(modelRelationshipId, out viewModel);
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            // All diagram-induced view model manipulation must occur on the UI thread to avoid certain race conditions.
-            // (E.g. avoid the case when creating a connector view model precedes the creation of its source and target node view models.)
-            EnsureUiThread(() => DispatchDiagramChangeEvent(diagramEvent));
+            if (@event.NewDiagram.IsEmpty)
+            {
+                ClearViewport();
+                return;
+            }
+
+            foreach (var diagramChange in @event.ComponentChanges)
+            {
+                // All diagram-induced view model manipulation must occur on the UI thread to avoid certain race conditions.
+                // (E.g. avoid the case when creating a connector view model precedes the creation of its source and target node view models.)
+                EnsureUiThread(() => DispatchDiagramChangeEvent(diagramChange));
+            }
         }
 
-        private void DispatchDiagramChangeEvent(DiagramEventBase diagramEvent)
+        private void DispatchDiagramChangeEvent(DiagramComponentChangedEventBase diagramComponentChangedEvent)
         {
-            switch (diagramEvent)
+            switch (diagramComponentChangedEvent)
             {
                 case DiagramNodeAddedEvent nodeAddedEvent:
                     AddNode(nodeAddedEvent.NewNode, nodeAddedEvent.NewNode.ParentNodeId.ToNullable());
@@ -141,9 +150,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     break;
                 case DiagramConnectorRemovedEvent connectorRemovedEvent:
                     RemoveConnector(connectorRemovedEvent.OldConnector);
-                    break;
-                case DiagramClearedEvent _:
-                    ClearViewport();
                     break;
             }
         }

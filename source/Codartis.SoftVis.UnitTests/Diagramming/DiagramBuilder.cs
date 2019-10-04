@@ -4,31 +4,40 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming
 {
+    /// <summary>
+    /// Test helper for creating diagrams in a more readable way.
+    /// Ignores events returned by diagram mutators. Uses names instead of IDs.
+    /// </summary>
     public sealed class DiagramBuilder
     {
         [NotNull] public IDiagram Diagram { get; private set; }
 
-        public DiagramBuilder([NotNull] IModel model)
+        public DiagramBuilder([NotNull] IModel model, IConnectorTypeResolver connectorTypeResolver = null)
         {
-            Diagram = SoftVis.Diagramming.Implementation.Diagram.Create(model);
+            Diagram = SoftVis.Diagramming.Implementation.Diagram.Create(model, connectorTypeResolver ?? new DummyConnectorTypeResolver());
+        }
+
+        public DiagramBuilder([NotNull] IDiagram diagram)
+        {
+            Diagram = diagram;
+        }
+
+        [NotNull]
+        public DiagramBuilder AddNode(ModelNodeId nodeId)
+        {
+            Diagram = Diagram.AddNode(nodeId).NewDiagram;
+            return this;
         }
 
         [NotNull]
         public DiagramBuilder AddNodes([NotNull] params (string name, double width, double height)[] nodeSpecifications)
         {
             foreach (var nodeSpecification in nodeSpecifications)
-            {
-                var modelNode = GetModelNodeByName(nodeSpecification.name);
-                var size = new Size2D(nodeSpecification.width, nodeSpecification.height);
-                var node = new DiagramNode(modelNode).WithPayloadAreaSize(size);
-
-                Diagram = Diagram.AddNode(node);
-            }
+                AddNode(nodeSpecification.name, nodeSpecification.width, nodeSpecification.height);
 
             return this;
         }
@@ -38,23 +47,19 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             [NotNull] string parentNodeName,
             [NotNull] params (string name, double width, double height)[] childNodeSpecifications)
         {
-            var parentNodeId = GetModelNodeByName(parentNodeName).Id;
-
             foreach (var childNodeSpecification in childNodeSpecifications)
-            {
-                AddNodes(childNodeSpecification);
-                
-                var childNode = GetDiagramNodeByName(childNodeSpecification.name);
-                Diagram = Diagram.UpdateNode(childNode.WithParentNodeId(Maybe.Create(parentNodeId)));
-            }
+                AddNode(childNodeSpecification.name, childNodeSpecification.width, childNodeSpecification.height, parentNodeName);
 
             return this;
         }
 
         [NotNull]
-        public DiagramBuilder AddNode(IModelNode modelNode)
+        public DiagramBuilder UpdateNodeTopLeft([NotNull] string nodeName, double nodeTop, double nodeLeft)
         {
-            Diagram = Diagram.AddNode(new DiagramNode(modelNode));
+            var modelNode = GetModelNodeByName(nodeName);
+            var newTopLeft = new Point2D(nodeTop, nodeLeft);
+            Diagram = Diagram.UpdateNodeTopLeft(modelNode.Id, newTopLeft).NewDiagram;
+
             return this;
         }
 
@@ -67,17 +72,16 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
                 var sourceNodeId = GetModelNodeByName(nodeNames[0]).Id;
                 var targetNodeId = GetModelNodeByName(nodeNames[1]).Id;
                 var relationship = GetRelationshipByNodeIds(sourceNodeId, targetNodeId);
-                var connector = CreateConnector(relationship);
-                Diagram = Diagram.AddConnector(connector);
+                Diagram = Diagram.AddConnector(relationship.Id).NewDiagram;
             }
 
             return this;
         }
 
         [NotNull]
-        public DiagramBuilder AddRelationship([NotNull] IModelRelationship modelRelationship)
+        public DiagramBuilder AddRelationship(ModelRelationshipId relationshipId)
         {
-            Diagram = Diagram.AddConnector(CreateConnector(modelRelationship));
+            Diagram = Diagram.AddConnector(relationshipId).NewDiagram;
             return this;
         }
 
@@ -85,7 +89,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         public DiagramBuilder AddAllRelationships()
         {
             foreach (var modelRelationship in Diagram.Model.Relationships)
-                AddRelationship(modelRelationship);
+                AddRelationship(modelRelationship.Id);
 
             return this;
         }
@@ -100,12 +104,29 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             return Diagram.Nodes.Single(i => i.Id == modelNodeId);
         }
 
+        private void AddNode(string nodeName, double nodeWidth, double nodeHeight, [CanBeNull] string parentNodeName = null)
+        {
+            var parentNodeId = parentNodeName == null
+                ? (ModelNodeId?)null
+                : GetModelNodeByName(parentNodeName).Id;
+
+            var modelNode = GetModelNodeByName(nodeName);
+            Diagram = Diagram.AddNode(modelNode.Id, parentNodeId).NewDiagram;
+
+            var size = new Size2D(nodeWidth, nodeHeight);
+            Diagram = Diagram.UpdateNodePayloadAreaSize(modelNode.Id, size).NewDiagram;
+        }
+
         [NotNull]
         private IModelRelationship GetRelationshipByNodeIds(ModelNodeId sourceNodeId, ModelNodeId targetNodeId)
             => Diagram.Model.Relationships.Single(i => i.Source == sourceNodeId && i.Target == targetNodeId);
 
-        [NotNull]
-        private static DiagramConnector CreateConnector([NotNull] IModelRelationship relationship)
-            => new DiagramConnector(relationship, ConnectorTypes.Dependency);
+        /// <summary>
+        /// A dummy resolver that always returns Dependency connector type.
+        /// </summary>
+        private sealed class DummyConnectorTypeResolver : IConnectorTypeResolver
+        {
+            public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype) => ConnectorTypes.Dependency;
+        }
     }
 }

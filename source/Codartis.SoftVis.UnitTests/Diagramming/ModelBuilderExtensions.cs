@@ -13,10 +13,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             var diagramBuilder = new DiagramBuilder(model);
 
             foreach (var modelNode in model.Nodes)
-                diagramBuilder.AddNode(modelNode);
+                diagramBuilder.AddNode(modelNode.Id);
 
             foreach (var modelRelationship in model.Relationships)
-                diagramBuilder.AddRelationship(modelRelationship);
+                diagramBuilder.AddRelationship(modelRelationship.Id);
 
             return diagramBuilder.Diagram;
         }

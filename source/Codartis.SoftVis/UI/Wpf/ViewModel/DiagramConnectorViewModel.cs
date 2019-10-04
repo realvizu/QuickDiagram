@@ -64,10 +64,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private void OnDiagramChanged(DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent @event)
         {
-            if (diagramEvent is DiagramConnectorRouteChangedEvent diagramConnectorRouteChangedEvent
-                && DiagramConnectorIdEqualityComparer.Instance.Equals(diagramConnectorRouteChangedEvent.NewConnector, DiagramConnector))
+            foreach (var change in @event.ComponentChanges)
+                ProcessDiagramChange(change);
+        }
+
+        private void ProcessDiagramChange(DiagramComponentChangedEventBase diagramComponentChangedEvent)
+        {
+            if (diagramComponentChangedEvent is DiagramConnectorRouteChangedEvent diagramConnectorRouteChangedEvent &&
+                DiagramConnectorIdEqualityComparer.Instance.Equals(diagramConnectorRouteChangedEvent.NewConnector, DiagramConnector))
             {
                 DiagramShape = diagramConnectorRouteChangedEvent.NewConnector;
                 RoutePoints = diagramConnectorRouteChangedEvent.NewConnector.Route.ToWpf();

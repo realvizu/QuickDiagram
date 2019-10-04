@@ -6,8 +6,7 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
     {
         [NotNull] public IDiagramNode OldNode { get; }
 
-        public DiagramNodeRemovedEvent([NotNull] IDiagram newDiagram, [NotNull] IDiagramNode removedNode)
-            : base(newDiagram)
+        public DiagramNodeRemovedEvent([NotNull] IDiagramNode removedNode)
         {
             OldNode = removedNode;
         }

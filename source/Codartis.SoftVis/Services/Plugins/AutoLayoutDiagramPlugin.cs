@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
+﻿using System.Linq;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Modeling.Definition;
@@ -30,18 +31,26 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
-        private void OnDiagramChanged([NotNull] DiagramEventBase diagramEvent)
+        private void OnDiagramChanged(DiagramChangedEvent diagramEvent)
         {
-            switch (diagramEvent)
-            {
-                case DiagramNodeRectChangedEvent _:
-                case DiagramConnectorRouteChangedEvent _:
-                    return;
-            }
+            if (diagramEvent.ComponentChanges.All(i => !IsLayoutAffectingChange(i)))
+                return;
 
             var diagram = diagramEvent.NewDiagram;
             var diagramLayoutInfo = _layoutAlgorithm.Calculate(diagram);
             DiagramService.ApplyLayout(diagramLayoutInfo);
+        }
+
+        private static bool IsLayoutAffectingChange(DiagramComponentChangedEventBase componentChangedEvent)
+        {
+            switch (componentChangedEvent)
+            {
+                case DiagramNodeRectChangedEvent _:
+                case DiagramConnectorRouteChangedEvent _:
+                    return false;
+                default:
+                    return true;
+            }
         }
     }
 }
