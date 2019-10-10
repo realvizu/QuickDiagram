@@ -47,6 +47,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
         }
 
+        public override string ShapeId => ModelNode.Id.ToString();
         public override Rect2D Rect => CalculateRect();
         public bool HasParent => ParentNodeId.HasValue;
         public ModelNodeId Id => ModelNode.Id;

@@ -207,27 +207,43 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 (oldNode, newNode) => new DiagramNodeModelNodeChangedEvent(oldNode, newNode));
         }
 
-        public DiagramEvent ApplyLayout(DiagramLayoutInfo diagramLayout)
+        public DiagramEvent ApplyLayout(GroupLayoutInfo diagramLayout)
         {
             var events = new List<DiagramShapeEventBase>();
             var updatedNodes = new Dictionary<ModelNodeId, IDiagramNode>();
 
-            foreach (var nodeLayout in diagramLayout.RootNodes)
+            ApplyLayoutRecursive(diagramLayout, events, updatedNodes);
+
+            var newDiagram = CreateInstance(Model, _nodes.SetItems(updatedNodes), _connectors);
+            return DiagramEvent.Create(newDiagram, events);
+        }
+
+        private Size2D ApplyLayoutRecursive(
+            [NotNull] GroupLayoutInfo groupLayoutInfo,
+            [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events,
+            [NotNull] IDictionary<ModelNodeId, IDiagramNode> updatedNodes)
+        {
+            foreach (var nodeLayout in groupLayoutInfo.Boxes)
             {
-                var maybeCurrentNode = TryGetNode(nodeLayout.Node.Id);
-                if (maybeCurrentNode.HasValue)
-                {
-                    var oldNode = maybeCurrentNode.Value;
-                    var newNode = oldNode.WithTopLeft(nodeLayout.Rect.TopLeft);
-                    updatedNodes.Add(oldNode.Id, newNode);
-                    events.Add(new DiagramNodeRectChangedEvent(oldNode, newNode));
-                }
+                var modelNodeId = ModelNodeId.Parse(nodeLayout.BoxShape.ShapeId);
+                var maybeCurrentNode = TryGetNode(modelNodeId);
+                if (!maybeCurrentNode.HasValue)
+                    continue;
+
+                var oldNode = maybeCurrentNode.Value;
+                var childrenAreaSize = Size2D.Zero;
+
+                if (nodeLayout.ChildrenArea != null)
+                    childrenAreaSize = ApplyLayoutRecursive(nodeLayout.ChildrenArea, events, updatedNodes);
+
+                var newNode = oldNode.WithTopLeft(nodeLayout.Rect.TopLeft).WithChildrenAreaSize(childrenAreaSize);
+                updatedNodes.Add(oldNode.Id, newNode);
+                events.Add(new DiagramNodeRectChangedEvent(oldNode, newNode));
 
                 // TODO: update connector routes too
             }
 
-            var newDiagram = CreateInstance(Model, _nodes.SetItems(updatedNodes), _connectors);
-            return DiagramEvent.Create(newDiagram, events);
+            return groupLayoutInfo.Rect.Size;
         }
 
         public DiagramEvent Clear()

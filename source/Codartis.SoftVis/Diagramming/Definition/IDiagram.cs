@@ -56,9 +56,11 @@ namespace Codartis.SoftVis.Diagramming.Definition
         /// This should remove all shapes whose model ID does not exist in the new model.
         /// </remarks>
         DiagramEvent UpdateModel([NotNull] IModel newModel);
+
         DiagramEvent UpdateModelNode([NotNull] IModelNode updatedModelNode);
 
-        DiagramEvent ApplyLayout(DiagramLayoutInfo diagramLayout);
+        DiagramEvent ApplyLayout([NotNull] GroupLayoutInfo diagramLayout);
+
         DiagramEvent Clear();
 
         bool NodeExists(ModelNodeId modelNodeId);

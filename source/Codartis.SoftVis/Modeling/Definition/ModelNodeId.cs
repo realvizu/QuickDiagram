@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Definition
 {
@@ -15,8 +16,9 @@ namespace Codartis.SoftVis.Modeling.Definition
         }
 
         public static ModelNodeId Create() => new ModelNodeId(Guid.NewGuid());
+        public static ModelNodeId Parse([NotNull] string s) => new ModelNodeId(Guid.Parse(s));
 
-        public override string ToString() => $"{GetType().Name}({_id})";
+        public override string ToString() => _id.ToString();
 
         public bool Equals(ModelNodeId other)
         {

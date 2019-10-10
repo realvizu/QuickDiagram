@@ -7,17 +7,17 @@ namespace Codartis.SoftVis.Diagramming.Definition
 {
     public sealed class GroupLayoutInfo : ILayoutInfo
     {
-        [NotNull] public IEnumerable<NodeLayoutInfo> Nodes { get; }
-        [NotNull] public IEnumerable<ConnectorLayoutInfo> Connectors { get; }
+        [NotNull] public IEnumerable<BoxLayoutInfo> Boxes { get; }
+        [NotNull] public IEnumerable<LineLayoutInfo> Lines { get; }
         public Rect2D Rect { get; }
 
         public GroupLayoutInfo(
-            IEnumerable<NodeLayoutInfo> nodes = null,
-            IEnumerable<ConnectorLayoutInfo> connectors = null)
+            IEnumerable<BoxLayoutInfo> boxes = null,
+            IEnumerable<LineLayoutInfo> lines = null)
         {
-            Nodes = nodes ?? Enumerable.Empty<NodeLayoutInfo>();
-            Connectors = connectors ?? Enumerable.Empty<ConnectorLayoutInfo>();
-            Rect = Nodes.Select(i => i.Rect).Concat(Connectors.Select(i => i.Rect)).Union();
+            Boxes = boxes ?? Enumerable.Empty<BoxLayoutInfo>();
+            Lines = lines ?? Enumerable.Empty<LineLayoutInfo>();
+            Rect = Boxes.Select(i => i.Rect).Concat(Lines.Select(i => i.Rect)).Union();
         }
     }
 }

@@ -28,30 +28,30 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
         }
 
         [NotNull]
-        private IEnumerable<NodeLayoutInfo> CalculateNodePositions([NotNull] ILayoutGroup layoutGroup)
+        private IEnumerable<BoxLayoutInfo> CalculateNodePositions([NotNull] ILayoutGroup layoutGroup)
         {
             var orderedNodes = layoutGroup.Nodes.OrderBy(i => i.ModelNode.Name).ToList();
 
             double yPos = 0;
             foreach (var node in orderedNodes)
             {
-                yield return new NodeLayoutInfo(node, new Point2D(0, yPos));
+                yield return new BoxLayoutInfo(node, new Point2D(0, yPos));
 
                 yPos += node.Size.Height + _gapBetweenNodes;
             }
         }
 
         [NotNull]
-        private static IEnumerable<ConnectorLayoutInfo> CalculateConnectorRoutes(
+        private static IEnumerable<LineLayoutInfo> CalculateConnectorRoutes(
             [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] IList<NodeLayoutInfo> nodeTopLeftPositions)
+            [NotNull] IList<BoxLayoutInfo> nodeTopLeftPositions)
         {
-            return layoutGroup.Connectors.Select(i => new ConnectorLayoutInfo(i, GetRoute(layoutGroup, nodeTopLeftPositions, i)));
+            return layoutGroup.Connectors.Select(i => new LineLayoutInfo(i, GetRoute(layoutGroup, nodeTopLeftPositions, i)));
         }
 
         private static Route GetRoute(
             [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] IList<NodeLayoutInfo> nodeLayout,
+            [NotNull] IList<BoxLayoutInfo> nodeLayout,
             [NotNull] IDiagramConnector connector)
         {
             return new Route(
@@ -61,11 +61,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
 
         private static Point2D GetNodeCenter(
             [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] IList<NodeLayoutInfo> nodeLayout,
+            [NotNull] IList<BoxLayoutInfo> nodeLayout,
             ModelNodeId nodeId)
         {
             var originalNode = layoutGroup.GetNode(nodeId);
-            var newTopLeftPosition = nodeLayout.Single(i => i.Node.Id == nodeId).Rect.TopLeft;
+            var newTopLeftPosition = nodeLayout.Single(i => i.BoxShape.ShapeId == nodeId.ToString()).Rect.TopLeft;
             return FromTopLeftToCenter(newTopLeftPosition, originalNode.Size);
         }
 

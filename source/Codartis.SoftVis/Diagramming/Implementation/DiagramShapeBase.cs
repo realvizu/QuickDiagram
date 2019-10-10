@@ -9,6 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public abstract class DiagramShapeBase : IDiagramShape
     {
+        public abstract string ShapeId { get; }
         public abstract Rect2D Rect { get; }
     }
 }

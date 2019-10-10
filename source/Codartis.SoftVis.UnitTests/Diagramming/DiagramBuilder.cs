@@ -39,16 +39,16 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         public DiagramBuilder AddNodes([NotNull] params string[] names)
         {
             foreach (var name in names)
-                AddNode(name, 0, 0);
+                AddNode(name, Size2D.Zero);
 
             return this;
         }
 
         [NotNull]
-        public DiagramBuilder AddNodes([NotNull] params (string name, double width, double height)[] nodeSpecifications)
+        public DiagramBuilder AddNodes([NotNull] params (string name, Size2D payloadAreaSize)[] nodeSpecifications)
         {
             foreach (var nodeSpecification in nodeSpecifications)
-                AddNode(nodeSpecification.name, nodeSpecification.width, nodeSpecification.height);
+                AddNode(nodeSpecification.name, nodeSpecification.payloadAreaSize);
 
             return this;
         }
@@ -56,10 +56,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         [NotNull]
         public DiagramBuilder AddChildNodes(
             [NotNull] string parentNodeName,
-            [NotNull] params (string name, double width, double height)[] childNodeSpecifications)
+            [NotNull] params (string name, Size2D payloadAreaSize)[] childNodeSpecifications)
         {
             foreach (var childNodeSpecification in childNodeSpecifications)
-                AddNode(childNodeSpecification.name, childNodeSpecification.width, childNodeSpecification.height, parentNodeName);
+                AddNode(childNodeSpecification.name, childNodeSpecification.payloadAreaSize, parentNodeName);
 
             return this;
         }
@@ -68,8 +68,16 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         public DiagramBuilder UpdateNodeTopLeft([NotNull] string nodeName, double nodeTop, double nodeLeft)
         {
             var modelNode = GetModelNode(nodeName);
-            var newTopLeft = new Point2D(nodeTop, nodeLeft);
-            Diagram = Diagram.UpdateNodeTopLeft(modelNode.Id, newTopLeft).NewDiagram;
+            Diagram = Diagram.UpdateNodeTopLeft(modelNode.Id, (nodeTop, nodeLeft)).NewDiagram;
+
+            return this;
+        }
+
+        [NotNull]
+        public DiagramBuilder UpdateChildrenAreaSize([NotNull] string nodeName, double width, double height)
+        {
+            var modelNode = GetModelNode(nodeName);
+            Diagram = Diagram.UpdateNodeChildrenAreaSize(modelNode.Id, (width, height)).NewDiagram;
 
             return this;
         }
@@ -137,7 +145,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             return Diagram.Nodes.Single(i => i.Id == modelNodeId);
         }
 
-        private void AddNode([NotNull] string nodeName, double nodeWidth, double nodeHeight, [CanBeNull] string parentNodeName = null)
+        private void AddNode([NotNull] string nodeName, Size2D nodePayloadAreaSize, [CanBeNull] string parentNodeName = null)
         {
             var parentNodeId = parentNodeName == null
                 ? (ModelNodeId?)null
@@ -146,8 +154,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             var modelNode = GetModelNode(nodeName);
             Diagram = Diagram.AddNode(modelNode.Id, parentNodeId).NewDiagram;
 
-            var size = new Size2D(nodeWidth, nodeHeight);
-            Diagram = Diagram.UpdateNodePayloadAreaSize(modelNode.Id, size).NewDiagram;
+            Diagram = Diagram.UpdateNodePayloadAreaSize(modelNode.Id, nodePayloadAreaSize).NewDiagram;
         }
 
         [NotNull]

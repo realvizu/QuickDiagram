@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 {
     public class DiagramTests
     {
-        private static readonly Route TestRoute = new Route(new Point2D(1, 1), new Point2D(2, 2));
+        private static readonly Route TestRoute = new Route((1, 1), (2, 2));
 
         [NotNull] private readonly ModelBuilder _modelBuilder;
 
@@ -197,13 +197,13 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramBuilder = new DiagramBuilder(model).AddAllModelItems();
             var diagram = diagramBuilder.Diagram;
 
-            var layout = new DiagramLayoutInfo(
+            var layout = new GroupLayoutInfo(
                 new[]
                 {
-                    new NodeLayoutInfo(diagramBuilder.GetDiagramNode("A"), new Point2D(1, 1)),
-                    new NodeLayoutInfo(diagramBuilder.GetDiagramNode("B"), new Point2D(2, 2))
+                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A"), topLeft: (1, 1)),
+                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("B"), topLeft: (2, 2))
                 },
-                new List<ConnectorLayoutInfo>());
+                new List<LineLayoutInfo>());
 
             var expectedDiagram = diagramBuilder
                 .UpdateNodeTopLeft("A", 1, 1)
@@ -221,11 +221,55 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             AllRectsShouldMatch(diagramEvent.NewDiagram, expectedDiagram);
         }
 
-        //// TODO
-        //[Fact]
-        //public void ApplyLayout_WithChildNodes_Works()
-        //{
-        //}
+        [Fact]
+        public void ApplyLayout_WithChildNodes_Works()
+        {
+            var model = _modelBuilder
+                .AddNodes("A", "B")
+                .AddChildNodes("A", "A1", "A2")
+                .AddRelationships("A->B", "A1->A2", "A2->B")
+                .Model;
+
+            var diagramBuilder = new DiagramBuilder(model).AddAllModelItems();
+            var diagram = diagramBuilder.Diagram;
+
+            var layout = new GroupLayoutInfo(
+                new[]
+                {
+                    new BoxLayoutInfo(
+                        diagramBuilder.GetDiagramNode("A"),
+                        topLeft: (1, 1),
+                        new GroupLayoutInfo(
+                            new[]
+                            {
+                                new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A1"), topLeft: (2, 2)),
+                                new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A2"), topLeft: (4, 4))
+                            })),
+                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("B"), topLeft: (9, 9))
+                },
+                new List<LineLayoutInfo>());
+
+            var expectedDiagram = diagramBuilder
+                .UpdateNodeTopLeft("A", 1, 1).UpdateChildrenAreaSize("A", 2,2)
+                .UpdateNodeTopLeft("A1", 2, 2)
+                .UpdateNodeTopLeft("A2", 4, 4)
+                .UpdateNodeTopLeft("B", 9, 9)
+                .Diagram;
+
+            var diagramEvent = diagram.ApplyLayout(layout);
+
+            AllRectsShouldMatch(diagramEvent.NewDiagram, expectedDiagram);
+            
+            diagramEvent.ShapeEvents.Should().SatisfyRespectively(
+                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2)),
+                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(4, 4, 4, 4)),
+                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 3, 3)),
+                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(9, 9, 9, 9))
+            );
+
+            // TODO: check connectors updated too
+
+        }
 
         private static void AllRectsShouldMatch([NotNull] IDiagram actualDiagram, [NotNull] IDiagram expectedDiagram)
         {

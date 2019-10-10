@@ -1,38 +1,40 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
-using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 {
     /// <summary>
     /// Traverses the diagram's node hierarchy, calculates layout for each node that has children
-    /// and assembles the results into a <see cref="DiagramLayoutInfo"/>.
+    /// and assembles the results into a <see cref="GroupLayoutInfo"/>.
     /// </summary>
     public sealed class DiagramLayoutAlgorithm : IDiagramLayoutAlgorithm
     {
         [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
+        [NotNull] private readonly LayoutUnifier _layoutUnifier;
 
         /// <summary>
-        /// The margin around the rect of the child nodes in the child area of the container nodes.
+        /// The padding around the rect of the child nodes in the child area of the container nodes.
         /// </summary>
-        public double ChildrenAreaMargin { get; }
+        public double ChildrenAreaPadding { get; }
 
         public DiagramLayoutAlgorithm(
             [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy,
-            double childrenAreaMargin = 10)
+            double childrenAreaPadding = 10)
         {
             _layoutAlgorithmSelectionStrategy = layoutAlgorithmSelectionStrategy;
-            ChildrenAreaMargin = childrenAreaMargin;
+            _layoutUnifier = new LayoutUnifier(childrenAreaPadding);
+            ChildrenAreaPadding = childrenAreaPadding;
         }
 
-        public DiagramLayoutInfo Calculate(IDiagram diagram)
+        public GroupLayoutInfo Calculate(IDiagram diagram)
         {
             var layoutStructure = new DiagramLayoutStructure(diagram);
             var rootLayoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForRoot();
-            var rootLayoutInfo = LayoutRecursive(layoutStructure, layoutStructure.RootLayoutGroup, rootLayoutAlgorithm);
-            return new DiagramLayoutInfo(rootLayoutInfo.Nodes, rootLayoutInfo.Connectors);
+            var relativeLayoutInfo = LayoutRecursive(layoutStructure, layoutStructure.RootLayoutGroup, rootLayoutAlgorithm);
+            var absoluteLayoutInfo = _layoutUnifier.CalculateAbsoluteLayout(relativeLayoutInfo);
+            return absoluteLayoutInfo;
         }
 
         [NotNull]
@@ -41,7 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
             [NotNull] ILayoutGroup layoutGroup,
             [NotNull] IGroupLayoutAlgorithm layoutAlgorithm)
         {
-            var childLayoutByParentNodeId = new Dictionary<ModelNodeId, GroupLayoutInfo>();
+            var childLayoutByParentNodeId = new Dictionary<string, GroupLayoutInfo>();
 
             foreach (var node in layoutGroup.Nodes)
             {
@@ -53,15 +55,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
                 var childrenAreaLayoutInfo = LayoutRecursive(layoutStructure, maybeLayoutGroup.Value, nodeLayoutAlgorithm);
 
                 layoutGroup.SetChildrenAreaSize(node.Id, childrenAreaLayoutInfo.Rect.Size);
-                childLayoutByParentNodeId.Add(node.Id, childrenAreaLayoutInfo);
+                childLayoutByParentNodeId.Add(node.ShapeId, childrenAreaLayoutInfo);
             }
 
             var groupLayoutInfo = layoutAlgorithm.Calculate(layoutGroup);
 
-            foreach (var nodeLayoutInfo in groupLayoutInfo.Nodes)
+            foreach (var boxLayoutInfo in groupLayoutInfo.Boxes)
             {
-                if (childLayoutByParentNodeId.TryGetValue(nodeLayoutInfo.Node.Id, out var childrenAreaLayoutInfo))
-                    nodeLayoutInfo.ChildrenArea = childrenAreaLayoutInfo;
+                if (childLayoutByParentNodeId.TryGetValue(boxLayoutInfo.BoxShape.ShapeId, out var childrenAreaLayoutInfo))
+                    boxLayoutInfo.ChildrenArea = childrenAreaLayoutInfo;
             }
 
             return groupLayoutInfo;

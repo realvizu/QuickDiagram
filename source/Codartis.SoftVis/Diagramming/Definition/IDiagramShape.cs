@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Geometry;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
@@ -8,6 +9,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// </summary>
     public interface IDiagramShape
     {
+        [NotNull] string ShapeId { get; }
         Rect2D Rect { get; }
     }
 }

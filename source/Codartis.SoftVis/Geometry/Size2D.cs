@@ -76,6 +76,9 @@ namespace Codartis.SoftVis.Geometry
             return !left.Equals(right);
         }
 
+        public static implicit operator Size2D((double width, double height) tuple) => new Size2D(tuple.width, tuple.height);
+        public static implicit operator (double width, double height)(Size2D size) => (size.Width, size.Height);
+
         public bool IsEqualWithTolerance(Size2D otherSize)
         {
             return Width.IsEqualWithTolerance(otherSize.Width) && Height.IsEqualWithTolerance(otherSize.Height);

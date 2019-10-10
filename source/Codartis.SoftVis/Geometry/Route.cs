@@ -36,11 +36,6 @@ namespace Codartis.SoftVis.Geometry
         {
         }
 
-        public Route(params (double, double)[] routePoints)
-            : this(routePoints.Select(i => new Point2D(i.Item1, i.Item2)))
-        {
-        }
-
         public IEnumerator<Point2D> GetEnumerator() => _routePoints?.GetEnumerator() ?? Enumerable.Empty<Point2D>().GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

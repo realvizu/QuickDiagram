@@ -24,11 +24,11 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void AddConnector(ModelRelationshipId relationshipId);
         void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute);
         void RemoveConnector(ModelRelationshipId relationshipId);
-        
+
         void UpdateModel([NotNull] IModel model);
         void UpdateModelNode([NotNull] IModelNode updatedModelNode);
-        
-        void ApplyLayout(DiagramLayoutInfo diagramLayout);
+
+        void ApplyLayout([NotNull] GroupLayoutInfo diagramLayout);
         void ClearDiagram();
 
         /// <summary>

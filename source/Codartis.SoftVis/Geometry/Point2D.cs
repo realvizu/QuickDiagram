@@ -11,6 +11,7 @@ namespace Codartis.SoftVis.Geometry
         public double Y { get; }
 
         public static Point2D Undefined = new Point2D(double.NaN, double.NaN);
+        public static Point2D Zero = new Point2D(0, 0);
 
         public Point2D(double x, double y)
         {
@@ -81,6 +82,9 @@ namespace Codartis.SoftVis.Geometry
         {
             return point * multiplier;
         }
+
+        public static implicit operator Point2D((double x, double y) tuple) => new Point2D(tuple.x, tuple.y);
+        public static implicit operator (double x, double y)(Point2D point) => (point.X, point.Y);
 
         public bool IsEqualWithTolerance(Point2D point)
         {
