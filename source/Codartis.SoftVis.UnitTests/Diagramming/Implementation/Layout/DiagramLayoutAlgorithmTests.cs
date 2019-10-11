@@ -61,21 +61,27 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 .AddChildNodes("B", ("C", payloadAreaSize: (3, 3)), ("D", payloadAreaSize: (4, 4)))
                 .AddAllModelRelationships();
 
-            var rootLayoutInfo = SetUpRootLayoutInfo(diagramBuilder, ("A", topLeft: (0, 0)), ("B", topLeft: (1, 1)));
-            var nodeBLayoutInfo = SetUpNodeLayoutInfo(diagramBuilder, "B", ("C", topLeft: (1, 1)), ("D", topLeft: (2, 2)));
+            SetUpRootLayoutInfo(diagramBuilder, ("A", topLeft: (0, 0)), ("B", topLeft: (1, 1)));
+            SetUpNodeLayoutInfo(diagramBuilder, "B", ("C", topLeft: (1, 1)), ("D", topLeft: (2, 2)));
 
             var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.Diagram);
 
-            diagramLayoutInfo.Boxes.Should().BeEquivalentTo(rootLayoutInfo.Boxes);
-
-            var nodeBResult = diagramLayoutInfo.Boxes.First(i => i.BoxShape.Name == "B");
-            nodeBResult.ChildrenArea.Boxes.Should().BeEquivalentTo(nodeBLayoutInfo.Boxes);
-
-            // C+D rect should be: from C.TopLeft(0,0) to D.TopLeft(1,1) + D.PayloadAreaSize(4,4)
-            nodeBResult.ChildrenArea.Rect.Should().Be(new Rect2D(1, 3, 5, 5));
-
-            // B rect should be B.TopLeft(1,1) + B.Size(5,7) which comes from stacking B.PayloadAreaSize(2,2) and B.ChildrenAreaSize(5,5)
-            nodeBResult.Rect.Should().Be(new Rect2D(1, 1, 6, 8));
+            diagramLayoutInfo.Should().BeEquivalentTo(
+                new GroupLayoutInfo(
+                    new[]
+                    {
+                        new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A"), topLeft: (0, 0)),
+                        new BoxLayoutInfo(
+                            diagramBuilder.GetDiagramNode("B"),
+                            topLeft: (1, 1),
+                            new GroupLayoutInfo(
+                                new[]
+                                {
+                                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("C"), topLeft: (1, 3)),
+                                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("D"), topLeft: (2, 4)),
+                                })),
+                    }
+                ));
         }
 
         [NotNull]
@@ -90,10 +96,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
             [CanBeNull] string targetNodeName,
             [NotNull] params (string nodeName, Point2D topLeft)[] nodeLayoutSpecifications)
         {
-            var expectedLayoutInfo = new GroupLayoutInfo(
-                nodeLayoutSpecifications
-                    .Select(i => new BoxLayoutInfo(diagramBuilder.GetDiagramNode(i.nodeName), i.topLeft))
-                    .ToList());
+            var expectedLayoutInfo = CreateGroupLayoutInfo(diagramBuilder, nodeLayoutSpecifications);
 
             var layoutAlgorithm = new TestLayoutAlgorithm(expectedLayoutInfo);
 
@@ -103,6 +106,17 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForNode(diagramBuilder.GetDiagramNode(targetNodeName), layoutAlgorithm);
 
             return expectedLayoutInfo;
+        }
+
+        [NotNull]
+        private static GroupLayoutInfo CreateGroupLayoutInfo(
+            DiagramBuilder diagramBuilder,
+            [NotNull] params (string nodeName, Point2D topLeft)[] nodeLayoutSpecifications)
+        {
+            return new GroupLayoutInfo(
+                nodeLayoutSpecifications
+                    .Select(i => new BoxLayoutInfo(diagramBuilder.GetDiagramNode(i.nodeName), i.topLeft))
+                    .ToList());
         }
 
         [NotNull]
