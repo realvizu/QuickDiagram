@@ -49,38 +49,6 @@
                 <Setter Property="ContentTemplate" Value="{StaticResource RelatedNodeCue}"/>
             </Style>
             
-            <!--<ItemsPanelTemplate x:Key="ChildNodesItemsPanel">
-                <controls:AnimatedRenderTransformCanvas 
-                    AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
-                    FastAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
-                    MediumAnimationDuration="{StaticResource MediumPanAndZoomAnimationDuration}"
-                    SlowAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
-                    MediumAnimationEasingFunction="{StaticResource MediumPanAndZoomAnimationEasingFunction}"
-                    SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
-            </ItemsPanelTemplate>-->
-
-            <!--<Style x:Key="ChildNodeContainerStyle" 
-                   TargetType="{x:Type controls:AnimatedRectContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
-                --><!-- Warning: Property setter order matters. AnimationDuration should be set first. --><!--
-                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
-                <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}"/>
-                <Setter Property="TopToAnimate" Value="{Binding Path=TopLeft.Y}"/>
-                <Setter Property="Rect">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Left"/>
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Top"/>
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth"/>
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight"/>
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="AnimatedRect" Value="{Binding Path=AnimatedRect, Mode=OneWayToSource}"/>-->
-            <!--</Style>-->
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -104,23 +72,20 @@
         <Border Grid.Row="1" 
                 BorderThickness="1,0,1,1"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                Background="{Binding DiagramFill, ElementName=ThisControl}">
-            
-            <!--<ItemsControl x:Name="ChildItemsControl"
-                          ItemsSource="{Binding ChildNodes}" 
-                          ItemsPanel="{StaticResource ChildNodesItemsPanel}"
-                          ItemTemplate="{StaticResource ChildNodeItemTemplate}"
-                          ItemContainerStyle="{StaticResource ChildNodeContainerStyle}"/>-->
+                Background="{Binding DiagramFill, ElementName=ThisControl}"
+                Width="{Binding Path=ChildrenAreaSize.Width}"
+                Height="{Binding Path=ChildrenAreaSize.Height}">
             
             <Border.Style>
                 <Style TargetType="Border">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=ChildItemsControl, Path=HasItems}" Value="False">
+                        <DataTrigger Binding="{Binding Path=HasChildren}" Value="False">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
+
         </Border>
     </Grid>
 </UserControl>

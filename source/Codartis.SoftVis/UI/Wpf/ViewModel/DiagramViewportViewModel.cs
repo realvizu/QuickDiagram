@@ -141,7 +141,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             switch (diagramShapeEvent)
             {
                 case DiagramNodeAddedEvent nodeAddedEvent:
-                    AddNode(nodeAddedEvent.NewNode, nodeAddedEvent.NewNode.ParentNodeId.ToNullable());
+                    AddNode(nodeAddedEvent.NewNode);
                     break;
                 case DiagramNodeRemovedEvent nodeRemovedEvent:
                     RemoveNode(nodeRemovedEvent.OldNode);
@@ -159,13 +159,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             // TODO: traverse the hierarchy, add nodes by parentNodeIds
             foreach (var diagramNode in diagram.Nodes)
-                AddNode(diagramNode, null);
+                AddNode(diagramNode);
 
             foreach (var diagramConnector in diagram.Connectors)
                 AddConnector(diagramConnector);
         }
 
-        private void AddNode(IDiagramNode diagramNode, ModelNodeId? parentNodeId)
+        private void AddNode(IDiagramNode diagramNode)
         {
             var diagramNodeUi = (DiagramNodeViewModel)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
 
@@ -176,27 +176,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramNodeUi.RemoveRequested += OnRemoveDiagramNodeRequested;
 
             _diagramNodeToViewModelMap.Set(diagramNode.Id, diagramNodeUi);
-
-            //if (parentNodeId.HasValue)
-            //{
-            //    if (IsNodeVisibleOnDiagram(parentNodeId.Value, out var containerNodeUi))
-            //        containerNodeUi.AddChildNode(diagramNodeUi);
-            //}
-            //else
-            {
-                DiagramNodeViewModels.Add(diagramNodeUi);
-            }
-        }
-
-        private bool IsNodeVisibleOnDiagram(ModelNodeId modelNodeId, out IDiagramNodeUi diagramNodeUi)
-        {
-            diagramNodeUi = null;
-
-            var result = _diagramNodeToViewModelMap.TryGet(modelNodeId, out var diagramNodeViewModel);
-            if (result)
-                diagramNodeUi = diagramNodeViewModel;
-
-            return result;
+            DiagramNodeViewModels.Add(diagramNodeUi);
         }
 
         private void AddConnector(IDiagramConnector diagramConnector)
@@ -264,6 +244,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize) => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
-        private void OnDiagramNodePayloadAreaSizeChanged(IDiagramNode diagramNode, Size2D newSize) => DiagramNodePayloadAreaSizeChanged?.Invoke(diagramNode, newSize);
+
+        private void OnDiagramNodePayloadAreaSizeChanged(IDiagramNode diagramNode, Size2D newSize)
+            => DiagramNodePayloadAreaSizeChanged?.Invoke(diagramNode, newSize);
     }
 }

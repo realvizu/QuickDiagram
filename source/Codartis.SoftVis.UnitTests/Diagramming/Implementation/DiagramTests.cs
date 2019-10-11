@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Implementation;
@@ -9,7 +8,6 @@ using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
 using System.Linq;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation

@@ -7,7 +7,6 @@ using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI;
-using Codartis.Util.UI.Wpf.Collections;
 using Codartis.Util.UI.Wpf.ViewModels;
 using JetBrains.Annotations;
 
@@ -23,12 +22,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point _topLeft;
         private Size _size;
         private Size _payloadAreaSize;
+        private Size _childrenAreaSize;
+        private bool _hasChildren;
         private Rect _animatedRect;
 
         [NotNull] private readonly IRelatedNodeTypeProvider _relatedNodeTypeProvider;
         public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
         public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
-        public ThreadSafeObservableCollection<DiagramNodeViewModel> ChildNodes { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
         public event Action<IDiagramNode, Size2D> PayloadAreaSizeChanged;
@@ -44,15 +44,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IDiagramNode diagramNode)
             : base(modelService, diagramService, diagramNode)
         {
-            Name = diagramNode.ModelNode.Name;
-            Center = diagramNode.Center.ToWpf();
-            TopLeft = diagramNode.TopLeft.ToWpf();
+            PopulateFromDiagramNode(diagramNode);
             // Must NOT populate size from model because its value flows from the controls to the models.
 
             _relatedNodeTypeProvider = relatedNodeTypeProvider;
             FocusTracker = (IWpfFocusTracker<IDiagramShapeUi>)focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
-            ChildNodes = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
 
             DiagramService.DiagramChanged += OnDiagramChanged;
         }
@@ -65,9 +62,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
                 relatedNodeCueViewModel.Dispose();
-
-            foreach (var childNode in ChildNodes)
-                childNode.Dispose();
         }
 
         public IDiagramNode DiagramNode => (IDiagramNode)DiagramShape;
@@ -144,6 +138,32 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        public Size ChildrenAreaSize
+        {
+            get { return _childrenAreaSize; }
+            set
+            {
+                if (_childrenAreaSize != value)
+                {
+                    _childrenAreaSize = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool HasChildren
+        {
+            get { return _hasChildren; }
+            set
+            {
+                if (_hasChildren != value)
+                {
+                    _hasChildren = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public Rect AnimatedRect
         {
             get { return _animatedRect; }
@@ -155,11 +175,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     OnPropertyChanged();
                 }
             }
-        }
-
-        public void AddChildNode(IDiagramNodeUi childNode)
-        {
-            ChildNodes.Add(childNode as DiagramNodeViewModel);
         }
 
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
@@ -206,7 +221,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Name = diagramNode.ModelNode.Name;
             Center = diagramNode.Center.ToWpf();
             TopLeft = diagramNode.TopLeft.ToWpf();
+            ChildrenAreaSize = diagramNode.ChildrenAreaSize.ToWpf();
+            HasChildren = GetHasChildren(diagramNode);
             // Must NOT populate size from model because its value flows from the controls to the models.
+        }
+
+        private static bool GetHasChildren([NotNull] IDiagramNode diagramNode)
+        {
+            return diagramNode.ChildrenAreaSize.IsDefined && diagramNode.ChildrenAreaSize != Size2D.Zero;
         }
 
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()

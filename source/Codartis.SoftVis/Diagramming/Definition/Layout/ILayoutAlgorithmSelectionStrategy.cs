@@ -1,8 +1,13 @@
-﻿namespace Codartis.SoftVis.Diagramming.Definition.Layout
+﻿using JetBrains.Annotations;
+
+namespace Codartis.SoftVis.Diagramming.Definition.Layout
 {
     public interface ILayoutAlgorithmSelectionStrategy
     {
+        [NotNull]
         IGroupLayoutAlgorithm GetForRoot();
-        IGroupLayoutAlgorithm GetForNode(IDiagramNode node);
+
+        [NotNull]
+        IGroupLayoutAlgorithm GetForNode([NotNull] IDiagramNode node);
     }
 }

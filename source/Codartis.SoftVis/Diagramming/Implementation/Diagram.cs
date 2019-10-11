@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
@@ -115,7 +114,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
         {
-            Debug.WriteLine($"UpdateNodePayloadAreaSize of {nodeId} to {newSize}");
             return UpdateNode(
                 nodeId,
                 i => i.WithPayloadAreaSize(newSize),
