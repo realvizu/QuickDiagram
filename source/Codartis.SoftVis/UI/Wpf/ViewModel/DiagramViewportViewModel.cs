@@ -38,6 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<DiagramNodeViewModel> RemoveDiagramNodeRequested;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
+        public event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged;
 
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
@@ -169,6 +170,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             var diagramNodeUi = (DiagramNodeViewModel)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
 
             diagramNodeUi.SizeChanged += OnDiagramNodeSizeChanged;
+            diagramNodeUi.PayloadAreaSizeChanged += OnDiagramNodePayloadAreaSizeChanged;
             diagramNodeUi.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
             diagramNodeUi.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
             diagramNodeUi.RemoveRequested += OnRemoveDiagramNodeRequested;
@@ -217,6 +219,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 return;
 
             diagramNodeViewModel.SizeChanged -= OnDiagramNodeSizeChanged;
+            diagramNodeViewModel.PayloadAreaSizeChanged -= OnDiagramNodePayloadAreaSizeChanged;
             diagramNodeViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             diagramNodeViewModel.RelatedNodeSelectorRequested -= OnEntitySelectorRequested;
             diagramNodeViewModel.RemoveRequested -= OnRemoveDiagramNodeRequested;
@@ -261,5 +264,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize) => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
+        private void OnDiagramNodePayloadAreaSizeChanged(IDiagramNode diagramNode, Size2D newSize) => DiagramNodePayloadAreaSizeChanged?.Invoke(diagramNode, newSize);
     }
 }

@@ -22,6 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point _center;
         private Point _topLeft;
         private Size _size;
+        private Size _payloadAreaSize;
         private Rect _animatedRect;
 
         [NotNull] private readonly IRelatedNodeTypeProvider _relatedNodeTypeProvider;
@@ -30,6 +31,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public ThreadSafeObservableCollection<DiagramNodeViewModel> ChildNodes { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
+        public event Action<IDiagramNode, Size2D> PayloadAreaSizeChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event Action<IDiagramNode> RemoveRequested;
@@ -122,6 +124,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
                     // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
                     SizeChanged?.Invoke(DiagramNode, _size.FromWpf());
+                }
+            }
+        }
+
+        public Size PayloadAreaSize
+        {
+            get { return _payloadAreaSize; }
+            set
+            {
+                if (_payloadAreaSize != value)
+                {
+                    _payloadAreaSize = value;
+                    OnPropertyChanged();
+
+                    // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
+                    PayloadAreaSizeChanged?.Invoke(DiagramNode, _payloadAreaSize.FromWpf());
                 }
             }
         }

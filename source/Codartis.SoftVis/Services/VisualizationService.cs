@@ -87,7 +87,7 @@ namespace Codartis.SoftVis.Services
             var diagramService = GetDiagramService(diagramId);
             var diagramUi = UiServiceFactory.Create(ModelService, diagramService, RelatedNodeTypeProvider, minZoom, maxZoom, initialZoom);
 
-            diagramUi.DiagramNodeSizeChanged += (diagramNode, size) => OnDiagramNodeSizeChanged(diagramId, diagramNode, size);
+            diagramUi.DiagramNodePayloadAreaSizeChanged += (diagramNode, size) => OnDiagramNodePayloadAreaSizeChanged(diagramId, diagramNode, size);
             diagramUi.RemoveDiagramNodeRequested += diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);
 
             return diagramUi;
@@ -104,7 +104,7 @@ namespace Codartis.SoftVis.Services
             }
         }
 
-        private void OnDiagramNodeSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
+        private void OnDiagramNodePayloadAreaSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
         {
             GetDiagramService(diagramId).UpdateNodePayloadAreaSize(diagramNode.Id, newSize);
         }

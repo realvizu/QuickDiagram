@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             var stereotype = GetNodeType(node);
             var parentWrapperNodeId = parentNode == null ? null : (ModelNodeId?)GetWrapperNode(parentNode).Id;
 
-            var wrapperNode = _modelService.AddNode(node.Name, stereotype, parentWrapperNodeId);
+            var wrapperNode = _modelService.AddNode(node.Name, stereotype, node, parentWrapperNodeId);
             AddItemToCurrentGroup(wrapperNode);
         }
 

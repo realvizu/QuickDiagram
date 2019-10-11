@@ -30,6 +30,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event ShowModelItemsEventHandler ShowModelItemsRequested;
         public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
+        public event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
@@ -137,6 +138,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.RemoveDiagramNodeRequested += OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked += OnDiagramNodeInvoked;
             DiagramViewportViewModel.DiagramNodeSizeChanged += OnDiagramNodeSizeChanged;
+            DiagramViewportViewModel.DiagramNodePayloadAreaSizeChanged += OnDiagramNodePayloadAreaSizeChanged;
         }
 
         private void UnsubscribeFromViewportEvents()
@@ -147,12 +149,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.RemoveDiagramNodeRequested -= OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked -= OnDiagramNodeInvoked;
             DiagramViewportViewModel.DiagramNodeSizeChanged -= OnDiagramNodeSizeChanged;
+            DiagramViewportViewModel.DiagramNodePayloadAreaSizeChanged -= OnDiagramNodePayloadAreaSizeChanged;
         }
 
         private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize)
         {
             if (newSize.IsDefined)
                 DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
+        }
+
+        private void OnDiagramNodePayloadAreaSizeChanged(IDiagramNode diagramNode, Size2D newSize)
+        {
+            if (newSize.IsDefined)
+                DiagramNodePayloadAreaSizeChanged?.Invoke(diagramNode, newSize);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramNodeViewModel diagramNodeViewModel)

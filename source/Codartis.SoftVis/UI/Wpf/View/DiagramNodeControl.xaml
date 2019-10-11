@@ -65,7 +65,8 @@
 
         <Grid Grid.Row="0">
             
-            <ContentPresenter Content="{Binding ModelNode.Payload}"/>
+            <view:DiagramNodePayloadControl DataContext="{Binding}"
+                                            ActualSize="{Binding Path=PayloadAreaSize, Mode=OneWayToSource}" />
             
             <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}" 
                           ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"

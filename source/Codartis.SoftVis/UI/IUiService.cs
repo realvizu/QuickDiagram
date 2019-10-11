@@ -18,6 +18,7 @@ namespace Codartis.SoftVis.UI
 
         event ShowModelItemsEventHandler ShowModelItemsRequested;
         event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
+        event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged;
         event Action<IDiagramNode> DiagramNodeInvoked;
         event Action<IDiagramNode> RemoveDiagramNodeRequested;
     }

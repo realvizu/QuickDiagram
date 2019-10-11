@@ -59,6 +59,7 @@ namespace Codartis.SoftVis.TestHostApp
             
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<SugiyamaLayoutAlgorithm>().As<INodeLayoutAlgorithm>();
+            builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
 
             return builder.Build();
         }
