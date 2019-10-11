@@ -3,6 +3,7 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Services.Plugins
@@ -12,6 +13,12 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class AutoLayoutDiagramPlugin : DiagramPluginBase
     {
+        private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
+        {
+            DiagramNodeMember.ChildrenAreaSize,
+            DiagramNodeMember.Position
+        };
+
         [NotNull] private readonly IDiagramLayoutAlgorithm _layoutAlgorithm;
 
         public AutoLayoutDiagramPlugin([NotNull] IDiagramLayoutAlgorithm layoutAlgorithm)
@@ -33,7 +40,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private void OnDiagramChanged(DiagramEvent diagramEvent)
         {
-            if (diagramEvent.ShapeEvents.All(i => !IsLayoutAffectingChange(i)))
+            if (diagramEvent.ShapeEvents.All(i => !IsLayoutTriggeringChange(i)))
                 return;
 
             var diagram = diagramEvent.NewDiagram;
@@ -41,11 +48,11 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramService.ApplyLayout(diagramLayoutInfo);
         }
 
-        private static bool IsLayoutAffectingChange(DiagramShapeEventBase diagramShapeEvent)
+        private static bool IsLayoutTriggeringChange(DiagramShapeEventBase diagramShapeEvent)
         {
             switch (diagramShapeEvent)
             {
-                case DiagramNodeRectChangedEvent _:
+                case DiagramNodeChangedEvent nodeChangedEvent when nodeChangedEvent.ChangedMember.In(DiagramMembersAffectedByLayout):
                 case DiagramConnectorRouteChangedEvent _:
                     return false;
                 default:

@@ -193,7 +193,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void ProcessDiagramChange(DiagramShapeEventBase diagramShapeEvent)
         {
-            if (diagramShapeEvent is DiagramNodeChangedEventBase diagramNodeChangedEvent &&
+            if (diagramShapeEvent is DiagramNodeChangedEvent diagramNodeChangedEvent &&
                 DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
             {
                 DiagramShape = diagramNodeChangedEvent.NewNode;

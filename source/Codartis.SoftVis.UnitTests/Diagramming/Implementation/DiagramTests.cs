@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Implementation;
@@ -8,6 +9,7 @@ using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
 using System.Linq;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
@@ -69,7 +71,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             diagramEvent.NewDiagram.GetNode(node.Id).PayloadAreaSize.Should().Be(new Size2D(1, 1));
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.PayloadAreaSize.Should().Be(new Size2D(1, 1))
+                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.PayloadAreaSize.Should().Be(new Size2D(1, 1))
             );
         }
 
@@ -212,8 +214,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagramEvent = diagram.ApplyLayout(layout);
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 1, 1)),
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2))
+                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 1, 1)),
+                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2))
             );
 
             // TODO: check connectors updated too
@@ -250,7 +252,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 new List<LineLayoutInfo>());
 
             var expectedDiagram = diagramBuilder
-                .UpdateNodeTopLeft("A", 1, 1).UpdateChildrenAreaSize("A", 2,2)
+                .UpdateNodeTopLeft("A", 1, 1).UpdateChildrenAreaSize("A", 2, 2)
                 .UpdateNodeTopLeft("A1", 2, 2)
                 .UpdateNodeTopLeft("A2", 4, 4)
                 .UpdateNodeTopLeft("B", 9, 9)
@@ -259,16 +261,36 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramEvent = diagram.ApplyLayout(layout);
 
             AllRectsShouldMatch(diagramEvent.NewDiagram, expectedDiagram);
-            
+
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2)),
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(4, 4, 4, 4)),
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 3, 3)),
-                i => i.Should().BeOfType<DiagramNodeRectChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(9, 9, 9, 9))
+                i =>
+                {
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2));
+                },
+                i =>
+                {
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(4, 4, 4, 4));
+                },
+                i =>
+                {
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 3, 3));
+                },
+                i =>
+                {
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.ChildrenAreaSize);
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 3, 3));
+                },
+                i =>
+                {
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
+                    i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(9, 9, 9, 9));
+                }
             );
 
             // TODO: check connectors updated too
-
         }
 
         private static void AllRectsShouldMatch([NotNull] IDiagram actualDiagram, [NotNull] IDiagram expectedDiagram)

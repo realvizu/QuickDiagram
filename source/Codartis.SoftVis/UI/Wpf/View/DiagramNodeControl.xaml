@@ -13,6 +13,10 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
+                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -45,14 +49,37 @@
                 <Setter Property="ContentTemplate" Value="{StaticResource RelatedNodeCue}"/>
             </Style>
             
-            <ItemsPanelTemplate x:Key="ChildNodesItemsPanel">
-                <StackPanel Orientation="Vertical" Margin="4,4,4,0"/>
-            </ItemsPanelTemplate>
+            <!--<ItemsPanelTemplate x:Key="ChildNodesItemsPanel">
+                <controls:AnimatedRenderTransformCanvas 
+                    AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+                    FastAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
+                    MediumAnimationDuration="{StaticResource MediumPanAndZoomAnimationDuration}"
+                    SlowAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
+                    MediumAnimationEasingFunction="{StaticResource MediumPanAndZoomAnimationEasingFunction}"
+                    SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
+            </ItemsPanelTemplate>-->
 
-            <Style x:Key="ChildNodeContainerStyle" 
-                   TargetType="{x:Type ContentPresenter}">
-                <Setter Property="Margin" Value="0,0,0,4"/>
-            </Style>
+            <!--<Style x:Key="ChildNodeContainerStyle" 
+                   TargetType="{x:Type controls:AnimatedRectContentPresenter}" 
+                   d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
+                --><!-- Warning: Property setter order matters. AnimationDuration should be set first. --><!--
+                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
+                <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}"/>
+                <Setter Property="TopToAnimate" Value="{Binding Path=TopLeft.Y}"/>
+                <Setter Property="Rect">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="Left"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="Top"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight"/>
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="AnimatedRect" Value="{Binding Path=AnimatedRect, Mode=OneWayToSource}"/>-->
+            <!--</Style>-->
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -79,11 +106,11 @@
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
                 Background="{Binding DiagramFill, ElementName=ThisControl}">
             
-            <ItemsControl x:Name="ChildItemsControl"
+            <!--<ItemsControl x:Name="ChildItemsControl"
                           ItemsSource="{Binding ChildNodes}" 
                           ItemsPanel="{StaticResource ChildNodesItemsPanel}"
                           ItemTemplate="{StaticResource ChildNodeItemTemplate}"
-                          ItemContainerStyle="{StaticResource ChildNodeContainerStyle}"/>
+                          ItemContainerStyle="{StaticResource ChildNodeContainerStyle}"/>-->
             
             <Border.Style>
                 <Style TargetType="Border">

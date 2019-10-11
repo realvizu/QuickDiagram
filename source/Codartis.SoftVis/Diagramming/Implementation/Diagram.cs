@@ -119,7 +119,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return UpdateNode(
                 nodeId,
                 i => i.WithPayloadAreaSize(newSize),
-                (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
+                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.PayloadAreaSize));
         }
 
         public DiagramEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
@@ -127,7 +127,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return UpdateNode(
                 nodeId,
                 i => i.WithChildrenAreaSize(newSize),
-                (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
+                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.ChildrenAreaSize));
         }
 
         public DiagramEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
@@ -135,7 +135,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return UpdateNode(
                 nodeId,
                 i => i.WithCenter(newCenter),
-                (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
+                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.Position));
         }
 
         public DiagramEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
@@ -143,7 +143,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return UpdateNode(
                 nodeId,
                 i => i.WithTopLeft(newTopLeft),
-                (oldNode, newNode) => new DiagramNodeRectChangedEvent(oldNode, newNode));
+                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.Position));
         }
 
         public DiagramEvent RemoveNode(ModelNodeId nodeId)
@@ -206,7 +206,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return UpdateNode(
                 updatedModelNode.Id,
                 i => i.WithModelNode(updatedModelNode),
-                (oldNode, newNode) => new DiagramNodeModelNodeChangedEvent(oldNode, newNode));
+                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.ModelNode));
         }
 
         public DiagramEvent ApplyLayout(GroupLayoutInfo diagramLayout)
@@ -240,7 +240,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
                 var newNode = oldNode.WithTopLeft(nodeLayout.Rect.TopLeft).WithChildrenAreaSize(childrenAreaSize);
                 updatedNodes.Add(oldNode.Id, newNode);
-                events.Add(new DiagramNodeRectChangedEvent(oldNode, newNode));
+
+                if (oldNode.TopLeft != newNode.TopLeft)
+                    events.Add(new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.Position));
+
+                if (oldNode.ChildrenAreaSize != newNode.ChildrenAreaSize)
+                    events.Add(new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.ChildrenAreaSize));
 
                 // TODO: update connector routes too
             }
@@ -265,7 +270,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private DiagramEvent UpdateNode(
             ModelNodeId nodeId,
             [NotNull] Func<IDiagramNode, IDiagramNode> nodeMutatorFunc,
-            [NotNull] Func<IDiagramNode, IDiagramNode, DiagramNodeChangedEventBase> nodeChangedEventFunc)
+            [NotNull] Func<IDiagramNode, IDiagramNode, DiagramNodeChangedEvent> nodeChangedEventFunc)
         {
             var maybeDiagramNode = TryGetNode(nodeId);
             if (!maybeDiagramNode.HasValue)
