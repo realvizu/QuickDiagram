@@ -43,7 +43,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                             {
                                 new BoxLayoutInfo(new TestBoxShape("A1", payloadAreaSize: (1, 1)), topLeft: (1, 1)),
                                 new BoxLayoutInfo(new TestBoxShape("A2", payloadAreaSize: (2, 2)), topLeft: (2, 2)),
-                            }
+                            },
+                            lines: null,
+                            padding: 1
                         )),
                     new BoxLayoutInfo(new TestBoxShape("B", payloadAreaSize: (8, 2)), topLeft: (2, 2)),
                 }
@@ -62,8 +64,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                             new GroupLayoutInfo(
                                 new[]
                                 {
-                                    new BoxLayoutInfo(new TestBoxShape("A1", payloadAreaSize: (1, 1)), topLeft: (2, 3)),
-                                    new BoxLayoutInfo(new TestBoxShape("A2", payloadAreaSize: (2, 2)), topLeft: (3, 4)),
+                                    new BoxLayoutInfo(new TestBoxShape("A1", payloadAreaSize: (1, 1)), topLeft: (3, 4)),
+                                    new BoxLayoutInfo(new TestBoxShape("A2", payloadAreaSize: (2, 2)), topLeft: (4, 5)),
                                 }
                             )),
                         new BoxLayoutInfo(new TestBoxShape("B", payloadAreaSize: (8, 2)), topLeft: (2, 2)),

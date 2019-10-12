@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 
         public DiagramLayoutAlgorithm(
             [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy,
-            double childrenAreaPadding = 10)
+            double childrenAreaPadding = 2)
         {
             _layoutAlgorithmSelectionStrategy = layoutAlgorithmSelectionStrategy;
             _layoutUnifier = new LayoutUnifier(childrenAreaPadding);
@@ -54,6 +54,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
                 var nodeLayoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForNode(node);
                 var childrenAreaLayoutInfo = LayoutRecursive(layoutStructure, maybeLayoutGroup.Value, nodeLayoutAlgorithm);
 
+                childrenAreaLayoutInfo.SetPadding(ChildrenAreaPadding);
                 layoutGroup.SetChildrenAreaSize(node.Id, childrenAreaLayoutInfo.Rect.Size);
                 childLayoutByParentNodeId.Add(node.ShapeId, childrenAreaLayoutInfo);
             }

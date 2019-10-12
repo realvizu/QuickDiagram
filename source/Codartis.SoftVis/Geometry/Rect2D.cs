@@ -66,7 +66,7 @@ namespace Codartis.SoftVis.Geometry
 
             if (rect2.IsUndefined())
                 return rect1;
-            
+
             var left = Math.Min(rect1.Left, rect2.Left);
             var top = Math.Min(rect1.Top, rect2.Top);
 
@@ -149,5 +149,7 @@ namespace Codartis.SoftVis.Geometry
         public Rect2D WithCenter(Point2D newCenter) => CreateFromCenterAndSize(newCenter, Size);
 
         public Rect2D WithTopLeft(Point2D newTopLeft) => new Rect2D(newTopLeft, Size);
+
+        public Rect2D WithMargin(double margin) => new Rect2D(Left - margin, Top - margin, Right + margin, Bottom + margin);
     }
 }
