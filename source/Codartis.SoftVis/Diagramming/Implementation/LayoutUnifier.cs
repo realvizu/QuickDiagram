@@ -11,11 +11,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class LayoutUnifier
     {
-        private readonly Point2D _childrenAreaPadding;
+        private readonly double _childrenAreaPadding;
 
         public LayoutUnifier(double childrenAreaPadding)
         {
-            _childrenAreaPadding = new Point2D(childrenAreaPadding, childrenAreaPadding);
+            _childrenAreaPadding = childrenAreaPadding;
         }
 
         [NotNull]
@@ -23,38 +23,46 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             return CalculateAbsoluteLayoutRecursive(
                 root,
-                Rect2D.Zero,
+                Point2D.Zero, 
                 Size2D.Zero,
                 Rect2D.Zero,
-                Point2D.Zero,
-                _childrenAreaPadding);
+                0);
         }
 
-        [NotNull]
-        private static GroupLayoutInfo CalculateAbsoluteLayoutRecursive(
-            [NotNull] GroupLayoutInfo groupLayoutInfo,
-            Rect2D parentRect,
+        private GroupLayoutInfo CalculateAbsoluteLayoutRecursive(
+            GroupLayoutInfo groupLayoutInfo,
+            Point2D parentTopLeft,
             Size2D parentPayloadAreaSize,
             Rect2D parentChildrenAreaRect,
-            Point2D padding,
-            Point2D childrenAreaPadding)
+            double padding)
         {
+            if (groupLayoutInfo == null)
+                return null;
+
             var newNodeLayout = new List<BoxLayoutInfo>();
 
             foreach (var boxLayoutInfo in groupLayoutInfo.Boxes)
             {
-                var absoluteBoxLayoutInfo = new BoxLayoutInfo(
-                    boxLayoutInfo.BoxShape,
-                    parentRect.TopLeft + new Point2D(0, parentPayloadAreaSize.Height) + padding + boxLayoutInfo.Rect.TopLeft - parentChildrenAreaRect.TopLeft);
+                var boxTopLeft =
+                    parentTopLeft +
+                    new Point2D(0, parentPayloadAreaSize.Height) +
+                    new Point2D(padding, padding) +
+                    boxLayoutInfo.TopLeft -
+                    parentChildrenAreaRect.TopLeft;
 
-                if (boxLayoutInfo.ChildrenArea != null)
-                    absoluteBoxLayoutInfo.ChildrenArea = CalculateAbsoluteLayoutRecursive(
-                        boxLayoutInfo.ChildrenArea,
-                        boxLayoutInfo.Rect,
-                        boxLayoutInfo.BoxShape.PayloadAreaSize,
-                        boxLayoutInfo.ChildrenArea.Rect,
-                        childrenAreaPadding,
-                        childrenAreaPadding);
+                var childGroup = CalculateAbsoluteLayoutRecursive(
+                    boxLayoutInfo.ChildGroup,
+                    boxTopLeft,
+                    boxLayoutInfo.PayloadAreaSize,
+                    boxLayoutInfo.ChildGroup?.Rect ?? Rect2D.Undefined,
+                    _childrenAreaPadding);
+
+                var absoluteBoxLayoutInfo = new BoxLayoutInfo(
+                        boxLayoutInfo.ShapeId,
+                        boxTopLeft,
+                        boxLayoutInfo.PayloadAreaSize,
+                        childGroup?.Rect.Size.WithMargin(_childrenAreaPadding) ?? Size2D.Zero,
+                        childGroup);
 
                 newNodeLayout.Add(absoluteBoxLayoutInfo);
             }

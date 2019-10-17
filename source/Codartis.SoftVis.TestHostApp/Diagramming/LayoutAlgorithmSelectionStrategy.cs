@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
 
         public IGroupLayoutAlgorithm GetForNode(IDiagramNode node)
         {
-            return new VerticalNodeLayoutAlgorithm();
+            return new VerticalNodeLayoutAlgorithm(2);
         }
     }
 }

@@ -52,11 +52,11 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<TestModelServiceFactory>().As<IModelServiceFactory>();
             builder.RegisterType<TestDiagramServiceFactory>().As<IDiagramServiceFactory>();
             builder.RegisterType<TestUiServiceFactory>().As<IUiServiceFactory>();
-            builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>();
+            builder.RegisterType<DiagramLayoutAlgorithm>().WithParameter("childrenAreaPadding", 2).As<IDiagramLayoutAlgorithm>();
             builder.RegisterType<DiagramPluginFactory>().As<IDiagramPluginFactory>();
             builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
             builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
-            
+
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<SugiyamaLayoutAlgorithm>().As<INodeLayoutAlgorithm>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();

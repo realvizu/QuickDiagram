@@ -218,25 +218,24 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return DiagramEvent.Create(newDiagram, events);
         }
 
-        private Size2D ApplyLayoutRecursive(
+        private void ApplyLayoutRecursive(
             [NotNull] GroupLayoutInfo groupLayoutInfo,
             [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events,
             [NotNull] IDictionary<ModelNodeId, IDiagramNode> updatedNodes)
         {
             foreach (var nodeLayout in groupLayoutInfo.Boxes)
             {
-                var modelNodeId = ModelNodeId.Parse(nodeLayout.BoxShape.ShapeId);
+                var modelNodeId = ModelNodeId.Parse(nodeLayout.ShapeId);
                 var maybeCurrentNode = TryGetNode(modelNodeId);
                 if (!maybeCurrentNode.HasValue)
                     continue;
 
                 var oldNode = maybeCurrentNode.Value;
-                var childrenAreaSize = Size2D.Zero;
 
-                if (nodeLayout.ChildrenArea != null)
-                    childrenAreaSize = ApplyLayoutRecursive(nodeLayout.ChildrenArea, events, updatedNodes);
+                if (nodeLayout.ChildGroup != null)
+                    ApplyLayoutRecursive(nodeLayout.ChildGroup, events, updatedNodes);
 
-                var newNode = oldNode.WithTopLeft(nodeLayout.Rect.TopLeft).WithChildrenAreaSize(childrenAreaSize);
+                var newNode = oldNode.WithTopLeft(nodeLayout.TopLeft).WithChildrenAreaSize(nodeLayout.ChildrenAreaSize);
                 updatedNodes.Add(oldNode.Id, newNode);
 
                 if (oldNode.TopLeft != newNode.TopLeft)
@@ -247,8 +246,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
                 // TODO: update connector routes too
             }
-
-            return groupLayoutInfo.Rect.Size;
         }
 
         public DiagramEvent Clear()

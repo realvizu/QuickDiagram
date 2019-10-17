@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
             var layout = CreateLayoutAlgorithm().Calculate(layoutGroup);
 
             layout.Lines.Should().BeEmpty();
-            layout.Boxes.OrderBy(i => i.BoxShape.Name).Select(i => i.Rect.TopLeft)
+            layout.Boxes.Select(i => i.Rect.TopLeft)
                 .Should().BeEquivalentTo(new Point2D(0, 0), new Point2D(0, 4), new Point2D(0, 10));
         }
 

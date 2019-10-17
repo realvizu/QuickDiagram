@@ -16,14 +16,17 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// <remarks>
     /// The name plays role in layout as a basis for ordering.
     /// </remarks>
-    public interface IDiagramNode : IBoxShape, IImmutableVertex<ModelNodeId>, IComparable<IDiagramNode>
+    public interface IDiagramNode : IDiagramShape, IImmutableVertex<ModelNodeId>, IComparable<IDiagramNode>
     {
         [NotNull] IModelNode ModelNode { get; }
         Maybe<ModelNodeId> ParentNodeId { get; }
         bool HasParent { get; }
+        [NotNull] string Name { get; }
         DateTime AddedAt { get; }
         Point2D Center { get; }
         Point2D TopLeft { get; }
+        Size2D PayloadAreaSize { get; }
+        Size2D ChildrenAreaSize { get; }
         Size2D Size { get; }
 
         [NotNull]

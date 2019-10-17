@@ -12,6 +12,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 {
     public sealed class DiagramLayoutAlgorithmTests
     {
+        private const double ChildrenAreaPadding = 1;
+
         [NotNull] private readonly ModelBuilder _modelBuilder;
         [NotNull] private readonly TestLayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
 
@@ -66,20 +68,29 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.Diagram);
 
+            var diagramNodeA = diagramBuilder.GetDiagramNode("A");
+            var diagramNodeB = diagramBuilder.GetDiagramNode("B");
+            var diagramNodeC = diagramBuilder.GetDiagramNode("C");
+            var diagramNodeD = diagramBuilder.GetDiagramNode("D");
+
             diagramLayoutInfo.Should().BeEquivalentTo(
                 new GroupLayoutInfo(
                     new[]
                     {
-                        new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A"), topLeft: (0, 0)),
+                        new BoxLayoutInfo(diagramNodeA.ShapeId, topLeft: (0, 0), payloadAreaSize: (1, 1), childrenAreaSize: (0, 0)),
                         new BoxLayoutInfo(
-                            diagramBuilder.GetDiagramNode("B"),
+                            diagramNodeB.ShapeId,
                             topLeft: (1, 1),
+                            payloadAreaSize: (2, 2),
+                            childrenAreaSize: (7, 7),
                             new GroupLayoutInfo(
                                 new[]
                                 {
-                                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("C"), topLeft: (1, 3)),
-                                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("D"), topLeft: (2, 4)),
-                                })),
+                                    new BoxLayoutInfo(diagramNodeC.ShapeId, topLeft: (2, 4), payloadAreaSize: (3, 3), childrenAreaSize: (0, 0)),
+                                    new BoxLayoutInfo(diagramNodeD.ShapeId, topLeft: (3, 5), payloadAreaSize: (4, 4), childrenAreaSize: (0, 0)),
+                                }
+                            )
+                        ),
                     }
                 ));
         }
@@ -87,7 +98,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         [NotNull]
         private GroupLayoutInfo SetUpRootLayoutInfo(
             [NotNull] DiagramBuilder diagramBuilder,
-            [NotNull] params (string nodeName, Point2D topLeft )[] nodeLayoutSpecifications)
+            [NotNull] params (string nodeName, Point2D topLeft)[] nodeLayoutSpecifications)
             => SetUpNodeLayoutInfo(diagramBuilder, targetNodeName: null, nodeLayoutSpecifications);
 
         [NotNull]
@@ -115,14 +126,19 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         {
             return new GroupLayoutInfo(
                 nodeLayoutSpecifications
-                    .Select(i => new BoxLayoutInfo(diagramBuilder.GetDiagramNode(i.nodeName), i.topLeft))
+                    .Select(
+                        i =>
+                        {
+                            var diagramNode = diagramBuilder.GetDiagramNode(i.nodeName);
+                            return new BoxLayoutInfo(diagramNode.ShapeId, i.topLeft, diagramNode.PayloadAreaSize, diagramNode.ChildrenAreaSize);
+                        })
                     .ToList());
         }
 
         [NotNull]
         private IDiagramLayoutAlgorithm CreateLayoutAlgorithm()
         {
-            return new DiagramLayoutAlgorithm(_layoutAlgorithmSelectionStrategy, childrenAreaPadding: 0);
+            return new DiagramLayoutAlgorithm(_layoutAlgorithmSelectionStrategy, ChildrenAreaPadding);
         }
     }
 }

@@ -1,18 +1,19 @@
 ﻿using Codartis.SoftVis.Geometry;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
     public struct LineLayoutInfo : ILayoutInfo
     {
-        public IDiagramConnector Connector { get; }
+        [NotNull] public string ShapeId { get; }
         public Route Route { get; }
-        public Rect2D Rect { get; }
 
-        public LineLayoutInfo(IDiagramConnector connector, Route route)
+        public LineLayoutInfo([NotNull] string shapeId, Route route)
         {
-            Connector = connector;
+            ShapeId = shapeId;
             Route = route;
-            Rect = route.ToRect();
         }
+
+        public Rect2D Rect => Route.ToRect();
     }
 }

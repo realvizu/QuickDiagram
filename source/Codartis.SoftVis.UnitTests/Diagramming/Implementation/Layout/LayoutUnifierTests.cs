@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Codartis.SoftVis.Diagramming.Definition;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using FluentAssertions;
@@ -18,8 +17,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
             var relativeLayoutInfo = new GroupLayoutInfo(
                 new[]
                 {
-                    new BoxLayoutInfo(new TestBoxShape("A", payloadAreaSize: (9, 1)), topLeft: (1, 1)),
-                    new BoxLayoutInfo(new TestBoxShape("B", payloadAreaSize: (8, 2)), topLeft: (2, 2)),
+                    new BoxLayoutInfo("A", payloadAreaSize: (9, 1), topLeft: (1, 1), childrenAreaSize: Size2D.Zero),
+                    new BoxLayoutInfo("B", payloadAreaSize: (8, 2), topLeft: (2, 2), childrenAreaSize: Size2D.Zero),
                 }
                 // TODO: connectors
             );
@@ -36,62 +35,47 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 new[]
                 {
                     new BoxLayoutInfo(
-                        new TestBoxShape("A", payloadAreaSize: (9, 1)),
+                        "A",
                         topLeft: (1, 1),
+                        payloadAreaSize: (9, 1),
+                        childrenAreaSize: (3, 3),
                         new GroupLayoutInfo(
                             new[]
                             {
-                                new BoxLayoutInfo(new TestBoxShape("A1", payloadAreaSize: (1, 1)), topLeft: (1, 1)),
-                                new BoxLayoutInfo(new TestBoxShape("A2", payloadAreaSize: (2, 2)), topLeft: (2, 2)),
-                            },
-                            lines: null,
-                            padding: 1
+                                new BoxLayoutInfo("A1", topLeft: (5, 5), payloadAreaSize: (1, 1), childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo("A2", topLeft: (6, 6), payloadAreaSize: (2, 2), childrenAreaSize: Size2D.Zero),
+                            }
                         )),
-                    new BoxLayoutInfo(new TestBoxShape("B", payloadAreaSize: (8, 2)), topLeft: (2, 2)),
+                    new BoxLayoutInfo("B", topLeft: (2, 2), payloadAreaSize: (8, 2), childrenAreaSize: Size2D.Zero),
                 }
                 // TODO: connectors
             );
 
             var absoluteLayoutInfo = CreateLayoutUnifier().CalculateAbsoluteLayout(relativeLayoutInfo);
 
-            absoluteLayoutInfo.Should().BeEquivalentTo(
-                new GroupLayoutInfo(
-                    new[]
-                    {
-                        new BoxLayoutInfo(
-                            new TestBoxShape("A", payloadAreaSize: (9, 1)),
-                            topLeft: (1, 1),
-                            new GroupLayoutInfo(
-                                new[]
-                                {
-                                    new BoxLayoutInfo(new TestBoxShape("A1", payloadAreaSize: (1, 1)), topLeft: (3, 4)),
-                                    new BoxLayoutInfo(new TestBoxShape("A2", payloadAreaSize: (2, 2)), topLeft: (4, 5)),
-                                }
-                            )),
-                        new BoxLayoutInfo(new TestBoxShape("B", payloadAreaSize: (8, 2)), topLeft: (2, 2)),
-                    }
-                )
+            var expectedLayoutInfo = new GroupLayoutInfo(
+                new[]
+                {
+                    new BoxLayoutInfo(
+                        "A",
+                        topLeft: (1, 1),
+                        payloadAreaSize: (9, 1),
+                        childrenAreaSize: (5, 5),
+                        new GroupLayoutInfo(
+                            new[]
+                            {
+                                new BoxLayoutInfo("A1", topLeft: (2, 3), payloadAreaSize: (1, 1), childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo("A2", topLeft: (3, 4), payloadAreaSize: (2, 2), childrenAreaSize: Size2D.Zero),
+                            }
+                        )),
+                    new BoxLayoutInfo("B", topLeft: (2, 2), payloadAreaSize: (8, 2), childrenAreaSize: Size2D.Zero),
+                }
             );
+
+            absoluteLayoutInfo.Should().BeEquivalentTo(expectedLayoutInfo);
         }
 
         [NotNull]
         public static LayoutUnifier CreateLayoutUnifier() => new LayoutUnifier(Padding);
-
-        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-        private class TestBoxShape : IBoxShape
-        {
-            public string ShapeId { get; }
-            public Size2D PayloadAreaSize { get; }
-
-            public Rect2D Rect { get; }
-            public string Name { get; }
-            public Size2D ChildrenAreaSize { get; }
-
-            public TestBoxShape(string shapeId, Size2D payloadAreaSize)
-            {
-                ShapeId = shapeId;
-                PayloadAreaSize = payloadAreaSize;
-            }
-        }
     }
 }

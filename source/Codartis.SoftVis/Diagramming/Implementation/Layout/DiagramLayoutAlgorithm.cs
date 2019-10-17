@@ -54,8 +54,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
                 var nodeLayoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForNode(node);
                 var childrenAreaLayoutInfo = LayoutRecursive(layoutStructure, maybeLayoutGroup.Value, nodeLayoutAlgorithm);
 
-                childrenAreaLayoutInfo.SetPadding(ChildrenAreaPadding);
-                layoutGroup.SetChildrenAreaSize(node.Id, childrenAreaLayoutInfo.Rect.Size);
+                layoutGroup.SetChildrenAreaSize(node.Id, childrenAreaLayoutInfo.Rect.Size.WithMargin(ChildrenAreaPadding));
                 childLayoutByParentNodeId.Add(node.ShapeId, childrenAreaLayoutInfo);
             }
 
@@ -63,8 +62,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 
             foreach (var boxLayoutInfo in groupLayoutInfo.Boxes)
             {
-                if (childLayoutByParentNodeId.TryGetValue(boxLayoutInfo.BoxShape.ShapeId, out var childrenAreaLayoutInfo))
-                    boxLayoutInfo.ChildrenArea = childrenAreaLayoutInfo;
+                if (childLayoutByParentNodeId.TryGetValue(boxLayoutInfo.ShapeId, out var childrenAreaLayoutInfo))
+                    boxLayoutInfo.ChildGroup = childrenAreaLayoutInfo;
             }
 
             return groupLayoutInfo;

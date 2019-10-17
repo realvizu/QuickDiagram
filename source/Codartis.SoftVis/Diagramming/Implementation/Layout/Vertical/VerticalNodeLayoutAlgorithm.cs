@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
             double yPos = 0;
             foreach (var node in orderedNodes)
             {
-                yield return new BoxLayoutInfo(node, new Point2D(0, yPos));
+                yield return new BoxLayoutInfo(node.ShapeId, new Point2D(0, yPos), node.PayloadAreaSize, node.ChildrenAreaSize);
 
                 yPos += node.Size.Height + _gapBetweenNodes;
             }
@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
             [NotNull] ILayoutGroup layoutGroup,
             [NotNull] IList<BoxLayoutInfo> nodeTopLeftPositions)
         {
-            return layoutGroup.Connectors.Select(i => new LineLayoutInfo(i, GetRoute(layoutGroup, nodeTopLeftPositions, i)));
+            return layoutGroup.Connectors.Select(i => new LineLayoutInfo(i.ShapeId, GetRoute(layoutGroup, nodeTopLeftPositions, i)));
         }
 
         private static Route GetRoute(
@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
             ModelNodeId nodeId)
         {
             var originalNode = layoutGroup.GetNode(nodeId);
-            var newTopLeftPosition = nodeLayout.Single(i => i.BoxShape.ShapeId == nodeId.ToString()).Rect.TopLeft;
+            var newTopLeftPosition = nodeLayout.Single(i => i.ShapeId == nodeId.ToString()).Rect.TopLeft;
             return FromTopLeftToCenter(newTopLeftPosition, originalNode.Size);
         }
 

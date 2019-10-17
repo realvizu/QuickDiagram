@@ -89,6 +89,6 @@ namespace Codartis.SoftVis.Geometry
             return $"({Width:0.##}x{Height:0.##})";
         }
 
-        public Size2D AddMargin(double margin) => new Size2D(Width + 2 * margin, Height + 2 * margin);
+        public Size2D WithMargin(double margin) => new Size2D(Width + 2 * margin, Height + 2 * margin);
     }
 }

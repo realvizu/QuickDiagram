@@ -197,11 +197,14 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramBuilder = new DiagramBuilder(model).AddAllModelItems();
             var diagram = diagramBuilder.Diagram;
 
+            var diagramNodeA = diagramBuilder.GetDiagramNode("A");
+            var diagramNodeB = diagramBuilder.GetDiagramNode("B");
+
             var layout = new GroupLayoutInfo(
                 new[]
                 {
-                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A"), topLeft: (1, 1)),
-                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("B"), topLeft: (2, 2))
+                    new BoxLayoutInfo(diagramNodeA.ShapeId, topLeft: (1, 1), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
+                    new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (2, 2), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                 },
                 new List<LineLayoutInfo>());
 
@@ -233,19 +236,26 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagramBuilder = new DiagramBuilder(model).AddAllModelItems();
             var diagram = diagramBuilder.Diagram;
 
+            var diagramNodeA = diagramBuilder.GetDiagramNode("A");
+            var diagramNodeA1 = diagramBuilder.GetDiagramNode("A1");
+            var diagramNodeA2 = diagramBuilder.GetDiagramNode("A2");
+            var diagramNodeB = diagramBuilder.GetDiagramNode("B");
+
             var layout = new GroupLayoutInfo(
                 new[]
                 {
                     new BoxLayoutInfo(
-                        diagramBuilder.GetDiagramNode("A"),
+                        diagramNodeA.ShapeId,
                         topLeft: (1, 1),
+                        payloadAreaSize: Size2D.Zero,
+                        childrenAreaSize: (2, 2),
                         new GroupLayoutInfo(
                             new[]
                             {
-                                new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A1"), topLeft: (2, 2)),
-                                new BoxLayoutInfo(diagramBuilder.GetDiagramNode("A2"), topLeft: (4, 4))
+                                new BoxLayoutInfo(diagramNodeA1.ShapeId, topLeft: (2, 2), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo(diagramNodeA2.ShapeId, topLeft: (4, 4), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                             })),
-                    new BoxLayoutInfo(diagramBuilder.GetDiagramNode("B"), topLeft: (9, 9))
+                    new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (9, 9), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                 },
                 new List<LineLayoutInfo>());
 
