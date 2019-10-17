@@ -1,5 +1,6 @@
 ﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical;
 
 namespace Codartis.SoftVis.TestHostApp.Diagramming
@@ -8,8 +9,8 @@ namespace Codartis.SoftVis.TestHostApp.Diagramming
     {
         public IGroupLayoutAlgorithm GetForRoot()
         {
-            return new VerticalNodeLayoutAlgorithm(10);
-        }
+            return new SugiyamaLayoutAlgorithm(new TestLayoutPriorityProvider());
+        }   
 
         public IGroupLayoutAlgorithm GetForNode(IDiagramNode node)
         {

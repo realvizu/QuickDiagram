@@ -3,7 +3,6 @@ using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout;
-using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;
@@ -58,7 +57,6 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
 
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
-            builder.RegisterType<SugiyamaLayoutAlgorithm>().As<INodeLayoutAlgorithm>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
 
             return builder.Build();
