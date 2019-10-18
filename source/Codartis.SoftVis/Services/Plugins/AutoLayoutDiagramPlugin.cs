@@ -30,12 +30,12 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            DiagramService.AfterDiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
-            DiagramService.DiagramChanged -= OnDiagramChanged;
+            DiagramService.AfterDiagramChanged -= OnDiagramChanged;
         }
 
         private void OnDiagramChanged(DiagramEvent diagramEvent)

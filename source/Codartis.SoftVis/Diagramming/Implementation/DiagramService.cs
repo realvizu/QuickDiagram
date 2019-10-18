@@ -25,6 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
 
         public event Action<DiagramEvent> DiagramChanged;
+        public event Action<DiagramEvent> AfterDiagramChanged;
 
         public DiagramService([NotNull] IDiagram diagram, [NotNull] IConnectorTypeResolver connectorTypeResolver)
         {
@@ -114,6 +115,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
 
             DiagramChanged?.Invoke(diagramEvent);
+            AfterDiagramChanged?.Invoke(diagramEvent);
         }
 
         public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)

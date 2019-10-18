@@ -31,12 +31,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             {
                 diagramService.AddNode(node.Id);
 
-                monitoredSubject.OccurredEvents
-                    .SelectMany(i => i.Parameters).OfType<DiagramEvent>()
-                    .SelectMany(i => i.ShapeEvents)
-                    .Should().SatisfyRespectively(
-                        i => i.Should().BeOfType<DiagramNodeAddedEvent>().Which.NewNode.Id.Should().Be(node.Id)
-                    );
+                monitoredSubject.Should().Raise(nameof(IDiagramEventSource.DiagramChanged))
+                    .WithArgs<DiagramEvent>(
+                        i => i.ShapeEvents.Count() == 1 && ((DiagramNodeAddedEvent)i.ShapeEvents.First()).NewNode.Id == node.Id);
             }
 
             diagramService.LatestDiagram.Nodes.ShouldBeEquivalentById(node.Id);
