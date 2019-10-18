@@ -192,7 +192,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void ZoomWithCenterTo(double newZoom, Point zoomCenterInScreenSpace, TransitionSpeed transitionSpeed)
         {
-            if (ViewportZoom.IsEqualWithTolerance(newZoom))
+            if (!ViewportZoom.IsEqualWithTolerance(newZoom))
                 ViewportZoomCommand?.Execute(newZoom, zoomCenterInScreenSpace, transitionSpeed);
         }
 
