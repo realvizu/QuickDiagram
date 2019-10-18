@@ -1,9 +1,13 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
     public interface IDiagramEventSource
     {
+        [NotNull]
+        IObservable<DiagramEvent> DiagramChangedEventStream { get; }
+
         /// <summary>
         /// Raised whenever the diagram changes.
         /// </summary>

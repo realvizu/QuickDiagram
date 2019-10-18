@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Threading;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
@@ -17,12 +18,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// Mutators must not run concurrently. A lock ensures it.
     /// Events are raised after the lock was released to avoid potential deadlocks.
     /// </remarks>
-    public class DiagramService : IDiagramService
+    public sealed class DiagramService : IDiagramService
     {
         public IDiagram LatestDiagram { get; private set; }
 
         [NotNull] private readonly object _diagramUpdateLockObject;
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
+        [NotNull] private readonly ISubject<DiagramEvent> _diagramChangedEventStream;
 
         public event Action<DiagramEvent> DiagramChanged;
         public event Action<DiagramEvent> AfterDiagramChanged;
@@ -32,12 +34,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             LatestDiagram = diagram;
             _diagramUpdateLockObject = new object();
             _connectorTypeResolver = connectorTypeResolver;
+            _diagramChangedEventStream = new Subject<DiagramEvent>();
         }
 
         public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
             : this(Diagram.Create(model, connectorTypeResolver), connectorTypeResolver)
         {
         }
+
+        public IObservable<DiagramEvent> DiagramChangedEventStream => _diagramChangedEventStream;
 
         public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
@@ -115,6 +120,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             }
 
             DiagramChanged?.Invoke(diagramEvent);
+            _diagramChangedEventStream.OnNext(diagramEvent);
             AfterDiagramChanged?.Invoke(diagramEvent);
         }
 

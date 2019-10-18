@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
@@ -13,6 +15,8 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class AutoLayoutDiagramPlugin : DiagramPluginBase
     {
+        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(50);
+
         private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
         {
             DiagramNodeMember.ChildrenAreaSize,
@@ -20,6 +24,7 @@ namespace Codartis.SoftVis.Services.Plugins
         };
 
         [NotNull] private readonly IDiagramLayoutAlgorithm _layoutAlgorithm;
+        private IDisposable _diagramChangedSubscription;
 
         public AutoLayoutDiagramPlugin([NotNull] IDiagramLayoutAlgorithm layoutAlgorithm)
         {
@@ -30,12 +35,14 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             base.Initialize(modelService, diagramService);
 
-            DiagramService.AfterDiagramChanged += OnDiagramChanged;
+            _diagramChangedSubscription = DiagramService.DiagramChangedEventStream
+                .Throttle(DiagramEventDebounceTimeSpan)
+                .Subscribe(OnDiagramChanged);
         }
 
         public override void Dispose()
         {
-            DiagramService.AfterDiagramChanged -= OnDiagramChanged;
+            _diagramChangedSubscription?.Dispose();
         }
 
         private void OnDiagramChanged(DiagramEvent diagramEvent)
@@ -45,6 +52,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
             var diagram = diagramEvent.NewDiagram;
             var diagramLayoutInfo = _layoutAlgorithm.Calculate(diagram);
+
             DiagramService.ApplyLayout(diagramLayoutInfo);
         }
 
