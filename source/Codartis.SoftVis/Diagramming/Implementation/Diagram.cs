@@ -148,17 +148,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent RemoveNode(ModelNodeId nodeId)
         {
-            var events = new List<DiagramShapeEventBase>();
-            var nodes = _nodes.Values.ToList();
-            var connectors = _connectors.Values.ToList();
-
-            RemoveNodeCore(nodeId, nodes, connectors, events);
-
-            if (!events.Any())
-                return DiagramEvent.None(this);
-
-            var newDiagram = CreateInstance(Model, nodes, connectors);
-            return DiagramEvent.Create(newDiagram, events);
+            return CreateDiagramEvent(RemoveNodeCore(nodeId, CreateDiagramOperationResult()));
         }
 
         public DiagramEvent AddConnector(ModelRelationshipId relationshipId)
@@ -190,16 +180,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent RemoveConnector(ModelRelationshipId relationshipId)
         {
-            var events = new List<DiagramShapeEventBase>();
-            var connectors = _connectors.Values.ToList();
-
-            RemoveConnectorCore(relationshipId, connectors, events);
-
-            if (!events.Any())
-                return DiagramEvent.None(this);
-
-            var newDiagram = CreateInstance(Model, _nodes, connectors);
-            return DiagramEvent.Create(newDiagram, events);
+            return CreateDiagramEvent(RemoveConnectorCore(relationshipId, CreateDiagramOperationResult()));
         }
 
         public DiagramEvent UpdateModel(IModel newModel)
@@ -290,41 +271,38 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return DiagramEvent.Create(newDiagram, diagramNodeChangedEvent);
         }
 
-        private void RemoveNodeCore(
-            ModelNodeId nodeId,
-            [NotNull] [ItemNotNull] ICollection<IDiagramNode> nodes,
-            [NotNull] [ItemNotNull] ICollection<IDiagramConnector> connectors,
-            [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events)
+        private DiagramOperationResult RemoveNodeCore(ModelNodeId nodeId, DiagramOperationResult diagramOperationResult)
         {
-            var maybeOldNode = TryGetNode(nodeId);
-            if (!maybeOldNode.HasValue)
-                return;
-
-            var oldNode = maybeOldNode.Value;
-
-            foreach (var connector in _allShapesGraph.GetAllEdges(oldNode.Id))
-                RemoveConnectorCore(connector.Id, connectors, events);
-
-            foreach (var childNode in GetChildNodes(oldNode.Id).ToArray())
-                RemoveNodeCore(childNode.Id, nodes, connectors, events);
-
-            nodes.Remove(oldNode);
-            events.Add(new DiagramNodeRemovedEvent(oldNode));
+            return TryGetNode(nodeId)
+                .Match(
+                    some => RemoveChildNodes(some, RemoveAllConnectorsOfNode(some, diagramOperationResult))
+                        .Remove(some)
+                        .Add(new DiagramNodeRemovedEvent(some)),
+                    () => diagramOperationResult
+                );
         }
 
-        private void RemoveConnectorCore(
-            ModelRelationshipId relationshipId,
-            [NotNull] [ItemNotNull] ICollection<IDiagramConnector> connectors,
-            [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events)
+        private DiagramOperationResult RemoveChildNodes([NotNull] IDiagramNode node, DiagramOperationResult diagramOperationResult)
         {
-            var maybeOldConnector = TryGetConnector(relationshipId);
-            if (!maybeOldConnector.HasValue)
-                return;
+            return GetChildNodes(node.Id)
+                .Aggregate(diagramOperationResult, (current, childNode) => RemoveNodeCore(childNode.Id, current));
+        }
 
-            var oldConnector = maybeOldConnector.Value;
+        private DiagramOperationResult RemoveAllConnectorsOfNode([NotNull] IDiagramNode node, DiagramOperationResult diagramOperationResult)
+        {
+            return _allShapesGraph.GetAllEdges(node.Id)
+                .Aggregate(diagramOperationResult, (current, connector) => RemoveConnectorCore(connector.Id, current));
+        }
 
-            connectors.Remove(oldConnector);
-            events.Add(new DiagramConnectorRemovedEvent(oldConnector));
+        private DiagramOperationResult RemoveConnectorCore(ModelRelationshipId relationshipId, DiagramOperationResult diagramOperationResult)
+        {
+            return TryGetConnector(relationshipId)
+                .Match(
+                    some => diagramOperationResult
+                        .Remove(some)
+                        .Add(new DiagramConnectorRemovedEvent(some)),
+                    () => diagramOperationResult
+                );
         }
 
         private Rect2D CalculateRect() => Nodes.Select(i => i.Rect).Concat(Connectors.Select(i => i.Rect)).Union();
@@ -348,22 +326,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return new Diagram(model, _connectorTypeResolver, nodes, connectors);
         }
 
-        [NotNull]
-        private IDiagram CreateInstance(
-            [NotNull] IModel model,
-            [NotNull] [ItemNotNull] IEnumerable<IDiagramNode> nodes,
-            [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors)
-        {
-            return CreateInstance(model, nodes.ToImmutableDictionary(i => i.Id), connectors.ToImmutableDictionary(i => i.Id));
-        }
+        private DiagramOperationResult CreateDiagramOperationResult() => new DiagramOperationResult(_nodes, _connectors);
 
-        [NotNull]
-        private IDiagram CreateInstance(
-            [NotNull] IModel model,
-            [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
-            [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors)
+        private DiagramEvent CreateDiagramEvent(DiagramOperationResult diagramOperationResult)
         {
-            return CreateInstance(model, nodes, connectors.ToImmutableDictionary(i => i.Id));
+            if (!diagramOperationResult.Events.Any())
+                return DiagramEvent.None(this);
+
+            var newDiagram = CreateInstance(Model, diagramOperationResult.Nodes, diagramOperationResult.Connectors);
+            return new DiagramEvent(newDiagram, diagramOperationResult.Events);
         }
 
         [NotNull]
@@ -374,6 +345,45 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 connectorTypeResolver,
                 ImmutableDictionary<ModelNodeId, IDiagramNode>.Empty,
                 ImmutableDictionary<ModelRelationshipId, IDiagramConnector>.Empty);
+        }
+
+        private struct DiagramOperationResult
+        {
+            [NotNull] public IImmutableDictionary<ModelNodeId, IDiagramNode> Nodes { get; }
+            [NotNull] public IImmutableDictionary<ModelRelationshipId, IDiagramConnector> Connectors { get; }
+            [NotNull] [ItemNotNull] public IImmutableList<DiagramShapeEventBase> Events { get; }
+
+            public DiagramOperationResult(
+                [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
+                [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors)
+                : this(nodes, connectors, ImmutableList.Create<DiagramShapeEventBase>())
+            {
+            }
+
+            private DiagramOperationResult(
+                [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
+                [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors,
+                [NotNull] [ItemNotNull] IImmutableList<DiagramShapeEventBase> events)
+            {
+                Nodes = nodes;
+                Connectors = connectors;
+                Events = events;
+            }
+
+            public DiagramOperationResult Remove([NotNull] IDiagramNode node)
+            {
+                return new DiagramOperationResult(Nodes.Remove(node.Id), Connectors, Events);
+            }
+
+            public DiagramOperationResult Remove([NotNull] IDiagramConnector connector)
+            {
+                return new DiagramOperationResult(Nodes, Connectors.Remove(connector.Id), Events);
+            }
+
+            public DiagramOperationResult Add(DiagramShapeEventBase @event)
+            {
+                return new DiagramOperationResult(Nodes, Connectors, Events.Add(@event));
+            }
         }
     }
 }
