@@ -77,6 +77,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id) => Connectors.Where(i => i.Source == id || i.Target == id);
 
+        public IEnumerable<IDiagramNode> GetChildNodes(ModelNodeId diagramNodeId) => Nodes.Where(i => i.ParentNodeId.ToNullable() == diagramNodeId);
+
         //public IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
         //{
         //    IEnumerable<IDiagramNode> result;
@@ -146,12 +148,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent RemoveNode(ModelNodeId nodeId)
         {
-            if (!NodeExists(nodeId))
+            var events = new List<DiagramShapeEventBase>();
+            var nodes = _nodes.Values.ToList();
+            var connectors = _connectors.Values.ToList();
+
+            RemoveNodeCore(nodeId, nodes, connectors, events);
+
+            if (!events.Any())
                 return DiagramEvent.None(this);
 
-            var oldNode = GetNode(nodeId);
-            var newDiagram = CreateInstance(Model, _nodes.Remove(nodeId), _connectors);
-            return DiagramEvent.Create(newDiagram, new DiagramNodeRemovedEvent(oldNode));
+            var newDiagram = CreateInstance(Model, nodes, connectors);
+            return DiagramEvent.Create(newDiagram, events);
         }
 
         public DiagramEvent AddConnector(ModelRelationshipId relationshipId)
@@ -183,12 +190,16 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent RemoveConnector(ModelRelationshipId relationshipId)
         {
-            if (!ConnectorExists(relationshipId))
+            var events = new List<DiagramShapeEventBase>();
+            var connectors = _connectors.Values.ToList();
+
+            RemoveConnectorCore(relationshipId, connectors, events);
+
+            if (!events.Any())
                 return DiagramEvent.None(this);
 
-            var oldConnector = GetConnector(relationshipId);
-            var newDiagram = CreateInstance(Model, _nodes, _connectors.Remove(relationshipId));
-            return DiagramEvent.Create(newDiagram, new DiagramConnectorRemovedEvent(oldConnector));
+            var newDiagram = CreateInstance(Model, _nodes, connectors);
+            return DiagramEvent.Create(newDiagram, events);
         }
 
         public DiagramEvent UpdateModel(IModel newModel)
@@ -279,6 +290,43 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return DiagramEvent.Create(newDiagram, diagramNodeChangedEvent);
         }
 
+        private void RemoveNodeCore(
+            ModelNodeId nodeId,
+            [NotNull] [ItemNotNull] ICollection<IDiagramNode> nodes,
+            [NotNull] [ItemNotNull] ICollection<IDiagramConnector> connectors,
+            [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events)
+        {
+            var maybeOldNode = TryGetNode(nodeId);
+            if (!maybeOldNode.HasValue)
+                return;
+
+            var oldNode = maybeOldNode.Value;
+
+            foreach (var connector in _allShapesGraph.GetAllEdges(oldNode.Id))
+                RemoveConnectorCore(connector.Id, connectors, events);
+
+            foreach (var childNode in GetChildNodes(oldNode.Id).ToArray())
+                RemoveNodeCore(childNode.Id, nodes, connectors, events);
+
+            nodes.Remove(oldNode);
+            events.Add(new DiagramNodeRemovedEvent(oldNode));
+        }
+
+        private void RemoveConnectorCore(
+            ModelRelationshipId relationshipId,
+            [NotNull] [ItemNotNull] ICollection<IDiagramConnector> connectors,
+            [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events)
+        {
+            var maybeOldConnector = TryGetConnector(relationshipId);
+            if (!maybeOldConnector.HasValue)
+                return;
+
+            var oldConnector = maybeOldConnector.Value;
+
+            connectors.Remove(oldConnector);
+            events.Add(new DiagramConnectorRemovedEvent(oldConnector));
+        }
+
         private Rect2D CalculateRect() => Nodes.Select(i => i.Rect).Concat(Connectors.Select(i => i.Rect)).Union();
 
         [NotNull]
@@ -298,6 +346,24 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors)
         {
             return new Diagram(model, _connectorTypeResolver, nodes, connectors);
+        }
+
+        [NotNull]
+        private IDiagram CreateInstance(
+            [NotNull] IModel model,
+            [NotNull] [ItemNotNull] IEnumerable<IDiagramNode> nodes,
+            [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors)
+        {
+            return CreateInstance(model, nodes.ToImmutableDictionary(i => i.Id), connectors.ToImmutableDictionary(i => i.Id));
+        }
+
+        [NotNull]
+        private IDiagram CreateInstance(
+            [NotNull] IModel model,
+            [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
+            [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors)
+        {
+            return CreateInstance(model, nodes, connectors.ToImmutableDictionary(i => i.Id));
         }
 
         [NotNull]

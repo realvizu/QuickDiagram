@@ -85,6 +85,10 @@ namespace Codartis.SoftVis.Diagramming.Definition
         [ItemNotNull]
         IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId id);
 
+        [NotNull]
+        [ItemNotNull]
+        IEnumerable<IDiagramNode> GetChildNodes(ModelNodeId diagramNodeId);
+
         //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
     }
 }
