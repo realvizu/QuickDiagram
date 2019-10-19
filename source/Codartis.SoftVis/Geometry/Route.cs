@@ -41,9 +41,9 @@ namespace Codartis.SoftVis.Geometry
 
         public bool IsDefined => _routePoints?.Any() == true;
 
-        public Route AddPoint(Point2D point) => AddPoints(point.ToEnumerable());
+        public Route Add(Point2D point) => Add(point.ToEnumerable());
 
-        public Route AddPoints(IEnumerable<Point2D> points)
+        public Route Add(IEnumerable<Point2D> points)
         {
             return points == null
                 ? this

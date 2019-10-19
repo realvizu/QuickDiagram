@@ -20,52 +20,55 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
             _gapBetweenNodes = gapBetweenNodes;
         }
 
-        public GroupLayoutInfo Calculate(ILayoutGroup layoutGroup)
+        public LayoutInfo Calculate(ILayoutGroup layoutGroup)
         {
-            var nodeLayout = CalculateNodePositions(layoutGroup).ToList();
-            var connectorLayout = CalculateConnectorRoutes(layoutGroup, nodeLayout).ToList();
-            return new GroupLayoutInfo(nodeLayout, connectorLayout);
+            var nodeLayout = CalculateNodeRects(layoutGroup);
+            var connectorLayout = CalculateConnectorRoutes(layoutGroup, nodeLayout);
+            return new LayoutInfo(nodeLayout, connectorLayout);
         }
 
         [NotNull]
-        private IEnumerable<BoxLayoutInfo> CalculateNodePositions([NotNull] ILayoutGroup layoutGroup)
+        private IDictionary<ModelNodeId, Rect2D> CalculateNodeRects([NotNull] ILayoutGroup layoutGroup)
         {
+            var result = new Dictionary<ModelNodeId, Rect2D>();
             var orderedNodes = layoutGroup.Nodes.OrderBy(i => i.ModelNode.Name).ToList();
 
             double yPos = 0;
             foreach (var node in orderedNodes)
             {
-                yield return new BoxLayoutInfo(node.ShapeId, new Point2D(0, yPos), node.PayloadAreaSize, node.ChildrenAreaSize);
+                result.Add(node.Id, new Rect2D(new Point2D(0, yPos), node.Size));
 
                 yPos += node.Size.Height + _gapBetweenNodes;
             }
+
+            return result;
         }
 
         [NotNull]
-        private static IEnumerable<LineLayoutInfo> CalculateConnectorRoutes(
+        private static IDictionary<ModelRelationshipId, Route> CalculateConnectorRoutes(
             [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] IList<BoxLayoutInfo> nodeTopLeftPositions)
+            [NotNull] IDictionary<ModelNodeId, Rect2D> nodeRects)
         {
-            return layoutGroup.Connectors.Select(i => new LineLayoutInfo(i.ShapeId, GetRoute(layoutGroup, nodeTopLeftPositions, i)));
+            return layoutGroup.Connectors.ToDictionary(i => i.Id, i => GetRoute(layoutGroup, nodeRects, i));
         }
 
         private static Route GetRoute(
             [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] IList<BoxLayoutInfo> nodeLayout,
+            [NotNull] IDictionary<ModelNodeId, Rect2D> nodeRects,
             [NotNull] IDiagramConnector connector)
         {
             return new Route(
-                GetNodeCenter(layoutGroup, nodeLayout, connector.Source),
-                GetNodeCenter(layoutGroup, nodeLayout, connector.Target));
+                GetNodeCenter(layoutGroup, nodeRects, connector.Source),
+                GetNodeCenter(layoutGroup, nodeRects, connector.Target));
         }
 
         private static Point2D GetNodeCenter(
             [NotNull] ILayoutGroup layoutGroup,
-            [NotNull] IList<BoxLayoutInfo> nodeLayout,
+            [NotNull] IDictionary<ModelNodeId, Rect2D> nodeRects,
             ModelNodeId nodeId)
         {
             var originalNode = layoutGroup.GetNode(nodeId);
-            var newTopLeftPosition = nodeLayout.Single(i => i.ShapeId == nodeId.ToString()).Rect.TopLeft;
+            var newTopLeftPosition = nodeRects[nodeId].TopLeft;
             return FromTopLeftToCenter(newTopLeftPosition, originalNode.Size);
         }
 

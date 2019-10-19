@@ -4,7 +4,6 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative.Logic;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
@@ -23,7 +22,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama
             _layoutPriorityProvider = layoutPriorityProvider;
         }
 
-        public GroupLayoutInfo Calculate(ILayoutGroup layoutGroup)
+        public LayoutInfo Calculate(ILayoutGroup layoutGroup)
         {
             var diagramNodeToLayoutVertexMap = new Map<ModelNodeId, DiagramNodeLayoutVertex>();
             var diagramConnectorToLayoutPathMap = new Map<ModelRelationshipId, LayoutPath>();
@@ -39,16 +38,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama
                 .ToList();
 
             var relativeLayout = RelativeLayoutCalculator.Calculate(layoutVertices, layoutPaths);
-            var layoutVertexToPointMap = AbsolutePositionCalculator.GetVertexCenters(relativeLayout, HorizontalGap, VerticalGap);
 
-            return new GroupLayoutInfo(
-                diagramNodeToLayoutVertexMap.Select(
-                    i => new BoxLayoutInfo(
-                        i.Key.ToString(),
-                        Rect2D.CreateFromCenterAndSize(layoutVertexToPointMap.Get(i.Value), i.Value.Size).TopLeft,
-                        // TODO: the following data are not relevant here, should get rid of them.
-                        i.Value.DiagramNode.PayloadAreaSize,
-                        i.Value.DiagramNode.ChildrenAreaSize)).ToList());
+            return new AbsolutePositionCalculator(relativeLayout, HorizontalGap, VerticalGap).CalculateLayout();
         }
 
         [NotNull]

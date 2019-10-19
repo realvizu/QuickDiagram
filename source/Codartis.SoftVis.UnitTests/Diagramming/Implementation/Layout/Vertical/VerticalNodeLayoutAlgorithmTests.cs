@@ -25,8 +25,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
 
             var layout = CreateLayoutAlgorithm().Calculate(layoutGroup);
 
-            layout.Lines.Should().BeEmpty();
-            layout.Boxes.Should().BeEmpty();
+            layout.VertexRects.Should().BeEmpty();
+            layout.EdgeRoutes.Should().BeEmpty();
         }
 
         [Fact]
@@ -41,9 +41,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
 
             var layout = CreateLayoutAlgorithm().Calculate(layoutGroup);
 
-            layout.Lines.Should().BeEmpty();
-            layout.Boxes.Select(i => i.Rect.TopLeft)
+            layout.VertexRects.Values.Select(i => i.TopLeft)
                 .Should().BeEquivalentTo(new Point2D(0, 0), new Point2D(0, 4), new Point2D(0, 10));
+
+            layout.EdgeRoutes.Should().BeEmpty();
         }
 
         [Fact]
@@ -59,7 +60,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
             var layoutAlgorithm = CreateLayoutAlgorithm();
             var layout = layoutAlgorithm.Calculate(layoutGroup);
 
-            layout.Lines.Select(i => i.Route).Should().BeEquivalentTo(new[] { new Route(new Point2D(0.5, 1), new Point2D(1.5, 6)) });
+            layout.EdgeRoutes.Values.Should().BeEquivalentTo(new[] { new Route(new Point2D(0.5, 1), new Point2D(1.5, 6)) });
         }
 
         [NotNull]

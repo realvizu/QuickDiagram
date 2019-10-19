@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Geometry;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
@@ -58,15 +60,25 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
                 childLayoutByParentNodeId.Add(node.ShapeId, childrenAreaLayoutInfo);
             }
 
-            var groupLayoutInfo = layoutAlgorithm.Calculate(layoutGroup);
+            var layoutInfo = layoutAlgorithm.Calculate(layoutGroup);
 
-            foreach (var boxLayoutInfo in groupLayoutInfo.Boxes)
-            {
-                if (childLayoutByParentNodeId.TryGetValue(boxLayoutInfo.ShapeId, out var childrenAreaLayoutInfo))
-                    boxLayoutInfo.ChildGroup = childrenAreaLayoutInfo;
-            }
+            var boxes = layoutGroup.Nodes.Select(
+                i =>
+                {
+                    childLayoutByParentNodeId.TryGetValue(i.ShapeId, out var childrenAreaLayoutInfo);
 
-            return groupLayoutInfo;
+                    return new BoxLayoutInfo(
+                        i.ShapeId,
+                        layoutInfo.VertexRects[i.Id].TopLeft,
+                        payloadAreaSize: i.PayloadAreaSize,
+                        childrenAreaLayoutInfo?.Rect.Size.WithMargin(ChildrenAreaPadding) ?? Size2D.Zero,
+                        childrenAreaLayoutInfo);
+                }
+            );
+
+            var lines = layoutGroup.Connectors.Select(i => new LineLayoutInfo(i.ShapeId, layoutInfo.EdgeRoutes[i.Id]));
+
+            return new GroupLayoutInfo(boxes, lines);
         }
     }
 }

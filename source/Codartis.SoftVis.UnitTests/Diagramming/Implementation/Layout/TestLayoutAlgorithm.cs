@@ -1,20 +1,19 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Definition.Layout;
+﻿using Codartis.SoftVis.Diagramming.Definition.Layout;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 {
     public class TestLayoutAlgorithm : IGroupLayoutAlgorithm
     {
-        public GroupLayoutInfo GroupLayoutInfo { get; }
+        public LayoutInfo LayoutInfo { get; }
 
-        public TestLayoutAlgorithm(GroupLayoutInfo groupLayoutInfo)
+        public TestLayoutAlgorithm(LayoutInfo layoutInfo)
         {
-            GroupLayoutInfo = groupLayoutInfo;
+            LayoutInfo = layoutInfo;
         }
 
-        public GroupLayoutInfo Calculate(ILayoutGroup layoutGroup)
+        public LayoutInfo Calculate(ILayoutGroup layoutGroup)
         {
-            return GroupLayoutInfo;
+            return LayoutInfo;
         }
     }
 }

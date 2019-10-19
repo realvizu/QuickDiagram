@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
@@ -36,14 +38,20 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 .Model;
 
             var diagramBuilder = new DiagramBuilder(model)
-                .AddNodes(("A", payloadAreaSize: (1, 1)), ("B", payloadAreaSize: (2, 2)))
-                .AddAllModelRelationships();
+                .AddNodes(("A", payloadAreaSize: (1, 1)), ("B", payloadAreaSize: (2, 2)));
+                //.AddAllModelRelationships();
 
-            var rootLayoutInfo = SetUpRootLayoutInfo(diagramBuilder, ("A", topLeft: (0, 0)), ("B", topLeft: (1, 1)));
+            SetUpRootLayoutInfo(diagramBuilder, ("A", topLeft: (0, 0)), ("B", topLeft: (1, 1)));
 
             var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.Diagram);
 
-            diagramLayoutInfo.Boxes.Should().BeEquivalentTo(rootLayoutInfo.Boxes);
+            var diagramNodeA = diagramBuilder.GetDiagramNode("A");
+            var diagramNodeB = diagramBuilder.GetDiagramNode("B");
+
+            diagramLayoutInfo.Boxes.Should().BeEquivalentTo(
+                new BoxLayoutInfo(diagramNodeA.ShapeId, topLeft: (0, 0), payloadAreaSize: (1, 1), childrenAreaSize: (0, 0)),
+                new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (1, 1), payloadAreaSize: (2,2), childrenAreaSize: (0, 0))
+                );
         }
 
         /// <summary>
@@ -60,8 +68,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramBuilder = new DiagramBuilder(model)
                 .AddNodes(("A", payloadAreaSize: (1, 1)), ("B", payloadAreaSize: (2, 2)))
-                .AddChildNodes("B", ("C", payloadAreaSize: (3, 3)), ("D", payloadAreaSize: (4, 4)))
-                .AddAllModelRelationships();
+                .AddChildNodes("B", ("C", payloadAreaSize: (3, 3)), ("D", payloadAreaSize: (4, 4)));
+                //.AddAllModelRelationships();
 
             SetUpRootLayoutInfo(diagramBuilder, ("A", topLeft: (0, 0)), ("B", topLeft: (1, 1)));
             SetUpNodeLayoutInfo(diagramBuilder, "B", ("C", topLeft: (1, 1)), ("D", topLeft: (2, 2)));
@@ -95,19 +103,17 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 ));
         }
 
-        [NotNull]
-        private GroupLayoutInfo SetUpRootLayoutInfo(
+        private void SetUpRootLayoutInfo(
             [NotNull] DiagramBuilder diagramBuilder,
             [NotNull] params (string nodeName, Point2D topLeft)[] nodeLayoutSpecifications)
             => SetUpNodeLayoutInfo(diagramBuilder, targetNodeName: null, nodeLayoutSpecifications);
 
-        [NotNull]
-        private GroupLayoutInfo SetUpNodeLayoutInfo(
+        private void SetUpNodeLayoutInfo(
             [NotNull] DiagramBuilder diagramBuilder,
             [CanBeNull] string targetNodeName,
             [NotNull] params (string nodeName, Point2D topLeft)[] nodeLayoutSpecifications)
         {
-            var expectedLayoutInfo = CreateGroupLayoutInfo(diagramBuilder, nodeLayoutSpecifications);
+            var expectedLayoutInfo = CreateLayoutInfo(diagramBuilder, nodeLayoutSpecifications);
 
             var layoutAlgorithm = new TestLayoutAlgorithm(expectedLayoutInfo);
 
@@ -115,24 +121,20 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForRoot(layoutAlgorithm);
             else
                 _layoutAlgorithmSelectionStrategy.SetLayoutAlgorithmForNode(diagramBuilder.GetDiagramNode(targetNodeName), layoutAlgorithm);
-
-            return expectedLayoutInfo;
         }
 
-        [NotNull]
-        private static GroupLayoutInfo CreateGroupLayoutInfo(
+        private static LayoutInfo CreateLayoutInfo(
             DiagramBuilder diagramBuilder,
             [NotNull] params (string nodeName, Point2D topLeft)[] nodeLayoutSpecifications)
         {
-            return new GroupLayoutInfo(
+            return new LayoutInfo(
                 nodeLayoutSpecifications
-                    .Select(
-                        i =>
-                        {
-                            var diagramNode = diagramBuilder.GetDiagramNode(i.nodeName);
-                            return new BoxLayoutInfo(diagramNode.ShapeId, i.topLeft, diagramNode.PayloadAreaSize, diagramNode.ChildrenAreaSize);
-                        })
-                    .ToList());
+                    .ToDictionary(
+                        i => diagramBuilder.GetDiagramNode(i.nodeName).Id,
+                        i => new Rect2D(i.topLeft, diagramBuilder.GetDiagramNode(i.nodeName).Size)
+                    ),
+                new Dictionary<ModelRelationshipId, Route>()
+            );
         }
 
         [NotNull]

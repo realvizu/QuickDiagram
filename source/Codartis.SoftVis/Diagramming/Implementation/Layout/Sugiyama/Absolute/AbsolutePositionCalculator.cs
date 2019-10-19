@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative;
 using Codartis.SoftVis.Geometry;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using MoreLinq;
 
@@ -27,7 +28,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
         private readonly Dictionary<IReadOnlyLayoutVertexLayer, double> _layerCenterYPositions;
         private readonly Dictionary<LayoutVertexBase, double> _vertexCenterXPositions;
 
-        private AbsolutePositionCalculator(IReadOnlyRelativeLayout relativeLayout, double horizontalGap, double verticalGap)
+        public AbsolutePositionCalculator(IReadOnlyRelativeLayout relativeLayout, double horizontalGap, double verticalGap)
         {
             _relativeLayout = relativeLayout;
             _horizontalGap = horizontalGap;
@@ -38,13 +39,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
         }
 
         private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
+        private IReadOnlyLayeredLayoutGraph LayeredLayoutGraph => _relativeLayout.LayeredLayoutGraph;
         private IReadOnlyQuasiProperLayoutGraph ProperLayoutGraph => _relativeLayout.ProperLayeredLayoutGraph;
-
-        public static LayoutVertexToPointMap GetVertexCenters(IReadOnlyRelativeLayout relativeLayout,
-            double horizontalGap, double verticalGap)
+        
+        public Definition.Layout.LayoutInfo CalculateLayout()
         {
-            var calculator = new AbsolutePositionCalculator(relativeLayout, horizontalGap, verticalGap);
-            return calculator.CalculateVertexCenters();
+            var vertexCenters = CalculateVertexCenters();
+            var edgeRoutes = CalculateEdgeRoutes(vertexCenters);
+
+            var diagramNodeRects = vertexCenters
+                .Where(i => i.Key is DiagramNodeLayoutVertex)
+                .Select(i => (diagramNode: ((DiagramNodeLayoutVertex)i.Key).DiagramNode, center: i.Value))
+                .ToDictionary(
+                    i => i.diagramNode.Id,
+                    i => Rect2D.CreateFromCenterAndSize(i.center, i.diagramNode.Size));
+
+            return new Definition.Layout.LayoutInfo(diagramNodeRects, edgeRoutes);
         }
 
         private LayoutVertexToPointMap CalculateVertexCenters()
@@ -66,6 +76,26 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
 
             CheckPostConditions(vertexCenters);
             return vertexCenters;
+        }
+
+        private IDictionary<ModelRelationshipId, Route> CalculateEdgeRoutes(LayoutVertexToPointMap newVertexCenters)
+        {
+            return LayeredLayoutGraph.Edges.ToDictionary(i => i.DiagramConnector.Id, i => GetRoutePoints(i, newVertexCenters));
+        }
+
+        private static Route GetRoutePoints(LayoutPath layoutPath, LayoutVertexToPointMap vertexCenters)
+        {
+            var sourceRect = vertexCenters.GetRect(layoutPath.PathSource);
+            var targetRect = vertexCenters.GetRect(layoutPath.PathTarget);
+
+            var routePoints = new Route
+            {
+                sourceRect.Center,
+                layoutPath.InterimVertices.Select(vertexCenters.Get),
+                targetRect.Center
+            };
+
+            return routePoints;
         }
 
         private void CalculateYPositions()
@@ -113,10 +143,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
                 var vertexCenterX = _vertexCenterXPositions[vertex];
 
                 var vertexLeft = vertexCenterX - vertex.Width / 2;
-                if (vertexLeft < left) left = vertexLeft;
+                if (vertexLeft < left)
+                    left = vertexLeft;
 
                 var vertexRight = vertexCenterX + vertex.Width / 2;
-                if (vertexRight > right) right = vertexRight;
+                if (vertexRight > right)
+                    right = vertexRight;
             }
 
             return (left + right) / 2;
