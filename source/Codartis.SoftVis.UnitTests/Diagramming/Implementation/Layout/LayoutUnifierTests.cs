@@ -34,21 +34,26 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
             var relativeLayoutInfo = new GroupLayoutInfo(
                 new[]
                 {
+                    new BoxLayoutInfo("A", topLeft: (0, 0), payloadAreaSize: (1, 1), childrenAreaSize: Size2D.Zero),
                     new BoxLayoutInfo(
-                        "A",
-                        topLeft: (1, 1),
-                        payloadAreaSize: (9, 1),
-                        childrenAreaSize: (3, 3),
+                        "B",
+                        topLeft: (2, 0),
+                        payloadAreaSize: (2, 2),
+                        childrenAreaSize: (10, 7),
                         new GroupLayoutInfo(
                             new[]
                             {
-                                new BoxLayoutInfo("A1", topLeft: (5, 5), payloadAreaSize: (1, 1), childrenAreaSize: Size2D.Zero),
-                                new BoxLayoutInfo("A2", topLeft: (6, 6), payloadAreaSize: (2, 2), childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo("C", topLeft: (0, 0), payloadAreaSize: (3, 3), childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo("D", topLeft: (4, 1), payloadAreaSize: (4, 4), childrenAreaSize: Size2D.Zero),
+                            },
+                            new[]
+                            {
+                                new LineLayoutInfo("C->D", new Route((3, 1.5), (4, 3)))
                             }
-                        )),
-                    new BoxLayoutInfo("B", topLeft: (2, 2), payloadAreaSize: (8, 2), childrenAreaSize: Size2D.Zero),
-                }
-                // TODO: connectors
+                        )
+                    ),
+                },
+                new[] { new LineLayoutInfo("A->B", new Route((1, 1), (2, 2))) }
             );
 
             var absoluteLayoutInfo = CreateLayoutUnifier().CalculateAbsoluteLayout(relativeLayoutInfo);
@@ -56,20 +61,26 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
             var expectedLayoutInfo = new GroupLayoutInfo(
                 new[]
                 {
+                    new BoxLayoutInfo("A", topLeft: (0, 0), payloadAreaSize: (1, 1), childrenAreaSize: Size2D.Zero),
                     new BoxLayoutInfo(
-                        "A",
-                        topLeft: (1, 1),
-                        payloadAreaSize: (9, 1),
-                        childrenAreaSize: (5, 5),
+                        "B",
+                        topLeft: (2, 0),
+                        payloadAreaSize: (2, 2),
+                        childrenAreaSize: (10, 7),
                         new GroupLayoutInfo(
                             new[]
                             {
-                                new BoxLayoutInfo("A1", topLeft: (2, 3), payloadAreaSize: (1, 1), childrenAreaSize: Size2D.Zero),
-                                new BoxLayoutInfo("A2", topLeft: (3, 4), payloadAreaSize: (2, 2), childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo("C", topLeft: (3, 3), payloadAreaSize: (3, 3), childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo("D", topLeft: (7, 4), payloadAreaSize: (4, 4), childrenAreaSize: Size2D.Zero),
+                            },
+                            new[]
+                            {
+                                new LineLayoutInfo("C->D", new Route((6, 4.5), (7, 6)))
                             }
-                        )),
-                    new BoxLayoutInfo("B", topLeft: (2, 2), payloadAreaSize: (8, 2), childrenAreaSize: Size2D.Zero),
-                }
+                        )
+                    )
+                },
+                new[] { new LineLayoutInfo("A->B", new Route((1, 1), (2, 2))) }
             );
 
             absoluteLayoutInfo.Should().BeEquivalentTo(expectedLayoutInfo);

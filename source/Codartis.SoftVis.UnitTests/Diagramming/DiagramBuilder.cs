@@ -87,7 +87,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         {
             foreach (var connectorName in connectorNames)
             {
-                var nodeNames = connectorName.Split(new[] { "->" }, StringSplitOptions.None);
+                var nodeNames = GetNodeNames(connectorName);
                 var sourceNodeId = GetModelNode(nodeNames[0]).Id;
                 var targetNodeId = GetModelNode(nodeNames[1]).Id;
                 var relationship = GetRelationshipByNodeIds(sourceNodeId, targetNodeId);
@@ -95,6 +95,17 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             }
 
             return this;
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        private static string[] GetNodeNames([NotNull] string connectorName)
+        {
+            var nodeNames = connectorName.Split(new[] { "->" }, StringSplitOptions.RemoveEmptyEntries);
+            if (nodeNames.Length != 2)
+                throw new Exception($"{connectorName} should contain 2 node names.");
+
+            return nodeNames;
         }
 
         [NotNull]
@@ -143,6 +154,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         {
             var modelNodeId = GetModelNode(nodeName).Id;
             return Diagram.Nodes.Single(i => i.Id == modelNodeId);
+        }
+
+        [NotNull]
+        public IDiagramConnector GetDiagramConnector([NotNull] string connectorName)
+        {
+            var nodeNames = GetNodeNames(connectorName);
+            var sourceNode = GetModelNode(nodeNames[0]);
+            var targetNode = GetModelNode(nodeNames[1]);
+            return Diagram.Connectors.Single(i => i.Source == sourceNode.Id && i.Target == targetNode.Id);
         }
 
         private void AddNode([NotNull] string nodeName, Size2D nodePayloadAreaSize, [CanBeNull] string parentNodeName = null)

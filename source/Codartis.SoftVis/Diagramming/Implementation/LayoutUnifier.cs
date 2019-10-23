@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
 using JetBrains.Annotations;
@@ -39,16 +40,17 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (groupLayoutInfo == null)
                 return null;
 
-            var newNodeLayout = new List<BoxLayoutInfo>();
+            var childTranslateVector = 
+                parentTopLeft +
+                new Point2D(0, parentPayloadAreaSize.Height) +
+                new Point2D(padding, padding) +
+                parentChildrenAreaRect.TopLeft;
+
+            var absoluteBoxLayout = new List<BoxLayoutInfo>();
 
             foreach (var boxLayoutInfo in groupLayoutInfo.Boxes)
             {
-                var boxTopLeft =
-                    parentTopLeft +
-                    new Point2D(0, parentPayloadAreaSize.Height) +
-                    new Point2D(padding, padding) +
-                    boxLayoutInfo.TopLeft -
-                    parentChildrenAreaRect.TopLeft;
+                var boxTopLeft = boxLayoutInfo.TopLeft + childTranslateVector;
 
                 var childGroup = CalculateAbsoluteLayoutRecursive(
                     boxLayoutInfo.ChildGroup,
@@ -64,10 +66,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                         childGroup?.Rect.Size.WithMargin(_childrenAreaPadding) ?? Size2D.Zero,
                         childGroup);
 
-                newNodeLayout.Add(absoluteBoxLayoutInfo);
+                absoluteBoxLayout.Add(absoluteBoxLayoutInfo);
             }
 
-            return new GroupLayoutInfo(newNodeLayout, groupLayoutInfo.Lines);
+            var absoluteLineLayout = groupLayoutInfo.Lines.Select(i=>i.Translate(childTranslateVector));
+
+            return new GroupLayoutInfo(absoluteBoxLayout, absoluteLineLayout);
         }
     }
 }

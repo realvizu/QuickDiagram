@@ -15,5 +15,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         }
 
         public Rect2D Rect => Route.ToRect();
+
+        public LineLayoutInfo Translate(Point2D vector) => new LineLayoutInfo(ShapeId, Route.Translate(vector));
     }
 }

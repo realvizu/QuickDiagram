@@ -50,6 +50,8 @@ namespace Codartis.SoftVis.Geometry
                 : new Route(_routePoints?.Concat(points) ?? points);
         }
 
+        public Route Translate(Point2D vector) => new Route(_routePoints.Select(i => i + vector));
+
         /// <summary>
         /// Modifies the first and last point of a route to attach to the supplied source and target rect's perimeter.
         /// </summary>
