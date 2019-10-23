@@ -19,8 +19,11 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 {
                     new BoxLayoutInfo("A", payloadAreaSize: (9, 1), topLeft: (1, 1), childrenAreaSize: Size2D.Zero),
                     new BoxLayoutInfo("B", payloadAreaSize: (8, 2), topLeft: (2, 2), childrenAreaSize: Size2D.Zero),
+                },
+                new[]
+                {
+                    new LineLayoutInfo("A->B", new Route((1, 1), (2, 2)))
                 }
-                // TODO: connectors
             );
 
             var absoluteLayoutInfo = CreateLayoutUnifier().CalculateAbsoluteLayout(relativeLayoutInfo);
@@ -53,7 +56,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                         )
                     ),
                 },
-                new[] { new LineLayoutInfo("A->B", new Route((1, 1), (2, 2))) }
+                new[]
+                {
+                    new LineLayoutInfo("A->B", new Route((1, 1), (2, 2)))
+                }
             );
 
             var absoluteLayoutInfo = CreateLayoutUnifier().CalculateAbsoluteLayout(relativeLayoutInfo);
@@ -80,7 +86,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                         )
                     )
                 },
-                new[] { new LineLayoutInfo("A->B", new Route((1, 1), (2, 2))) }
+                new[]
+                {
+                    new LineLayoutInfo("A->B", new Route((1, 1), (2, 2)))
+                }
             );
 
             absoluteLayoutInfo.Should().BeEquivalentTo(expectedLayoutInfo);

@@ -65,10 +65,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
-        public DiagramBuilder UpdateNodeTopLeft([NotNull] string nodeName, double nodeTop, double nodeLeft)
+        public DiagramBuilder UpdateNodeTopLeft([NotNull] string nodeName, Point2D nodeTopLeft)
         {
             var modelNode = GetModelNode(nodeName);
-            Diagram = Diagram.UpdateNodeTopLeft(modelNode.Id, (nodeTop, nodeLeft)).NewDiagram;
+            Diagram = Diagram.UpdateNodeTopLeft(modelNode.Id, nodeTopLeft).NewDiagram;
 
             return this;
         }
@@ -93,6 +93,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
                 var relationship = GetRelationshipByNodeIds(sourceNodeId, targetNodeId);
                 Diagram = Diagram.AddConnector(relationship.Id).NewDiagram;
             }
+
+            return this;
+        }
+
+        [NotNull]
+        public DiagramBuilder UpdateConnectorRoute(string connectorName, Route route)
+        {
+            var connector = GetDiagramConnector(connectorName);
+            Diagram = Diagram.UpdateConnectorRoute(connector.Id, route).NewDiagram;
 
             return this;
         }

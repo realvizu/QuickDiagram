@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Definition
 {
@@ -15,8 +16,9 @@ namespace Codartis.SoftVis.Modeling.Definition
         }
 
         public static ModelRelationshipId Create() => new ModelRelationshipId(Guid.NewGuid());
+        public static ModelRelationshipId Parse([NotNull] string s) => new ModelRelationshipId(Guid.Parse(s));
 
-        public override string ToString() => $"{GetType().Name}({_id})";
+        public override string ToString() => _id.ToString();
 
         public bool Equals(ModelRelationshipId other)
         {
@@ -25,7 +27,9 @@ namespace Codartis.SoftVis.Modeling.Definition
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+
             return obj is ModelRelationshipId && Equals((ModelRelationshipId)obj);
         }
 

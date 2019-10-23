@@ -199,6 +199,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagramNodeA = diagramBuilder.GetDiagramNode("A");
             var diagramNodeB = diagramBuilder.GetDiagramNode("B");
+            var diagramConnectorAtoB = diagramBuilder.GetDiagramConnector("A->B");
 
             var layout = new GroupLayoutInfo(
                 new[]
@@ -206,20 +207,24 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                     new BoxLayoutInfo(diagramNodeA.ShapeId, topLeft: (1, 1), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
                     new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (2, 2), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                 },
-                new List<LineLayoutInfo>());
+                new[]
+                {
+                    new LineLayoutInfo(diagramConnectorAtoB.ShapeId, new Route((1, 1), (2, 2)))
+                }
+            );
 
             var expectedDiagram = diagramBuilder
-                .UpdateNodeTopLeft("A", 1, 1)
-                .UpdateNodeTopLeft("B", 2, 2)
+                .UpdateNodeTopLeft("A", (1, 1))
+                .UpdateNodeTopLeft("B", (2, 2))
+                .UpdateConnectorRoute("A->B", new Route((1, 1), (2, 2)))
                 .Diagram;
 
             var diagramEvent = diagram.ApplyLayout(layout);
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
                 i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 1, 1)),
-                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2))
+                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2)),
+                i => i.Should().BeOfType<DiagramConnectorRouteChangedEvent>().Which.NewConnector.Route.Should().BeEquivalentTo(new Route((1, 1), (2, 2)))
             );
-
-            // TODO: check connectors updated too
 
             AllRectsShouldMatch(diagramEvent.NewDiagram, expectedDiagram);
         }
@@ -260,10 +265,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 new List<LineLayoutInfo>());
 
             var expectedDiagram = diagramBuilder
-                .UpdateNodeTopLeft("A", 1, 1).UpdateChildrenAreaSize("A", 2, 2)
-                .UpdateNodeTopLeft("A1", 2, 2)
-                .UpdateNodeTopLeft("A2", 4, 4)
-                .UpdateNodeTopLeft("B", 9, 9)
+                .UpdateNodeTopLeft("A", (1, 1)).UpdateChildrenAreaSize("A", 2, 2)
+                .UpdateNodeTopLeft("A1", (2, 2))
+                .UpdateNodeTopLeft("A2", (4, 4))
+                .UpdateNodeTopLeft("B", (9, 9))
                 .Diagram;
 
             var diagramEvent = diagram.ApplyLayout(layout);
