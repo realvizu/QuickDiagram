@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
@@ -42,7 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
         private IReadOnlyLayeredLayoutGraph LayeredLayoutGraph => _relativeLayout.LayeredLayoutGraph;
         private IReadOnlyQuasiProperLayoutGraph ProperLayoutGraph => _relativeLayout.ProperLayeredLayoutGraph;
         
-        public Definition.Layout.LayoutInfo CalculateLayout()
+        public LayoutInfo CalculateLayout()
         {
             var vertexCenters = CalculateVertexCenters();
             var edgeRoutes = CalculateEdgeRoutes(vertexCenters);
@@ -54,7 +55,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
                     i => i.diagramNode.Id,
                     i => Rect2D.CreateFromCenterAndSize(i.center, i.diagramNode.Size));
 
-            return new Definition.Layout.LayoutInfo(diagramNodeRects, edgeRoutes);
+            return new LayoutInfo(diagramNodeRects, edgeRoutes);
         }
 
         private LayoutVertexToPointMap CalculateVertexCenters()
@@ -88,12 +89,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
             var sourceRect = vertexCenters.GetRect(layoutPath.PathSource);
             var targetRect = vertexCenters.GetRect(layoutPath.PathTarget);
 
-            var routePoints = new Route
-            {
-                sourceRect.Center,
-                layoutPath.InterimVertices.Select(vertexCenters.Get),
-                targetRect.Center
-            };
+            var routePoints = new Route(sourceRect.Center)
+                .Add(layoutPath.InterimVertices.Select(vertexCenters.Get))
+                .Add(targetRect.Center);
 
             return routePoints;
         }

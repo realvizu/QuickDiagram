@@ -181,10 +181,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddConnector(IDiagramConnector diagramConnector)
         {
-            var diagramConnectorViewModel = (DiagramConnectorViewModel)_diagramShapeUiFactory.CreateDiagramConnectorUi(DiagramService, diagramConnector);
-            DiagramConnectorViewModels.Add(diagramConnectorViewModel);
+            var diagramConnectorUi = (DiagramConnectorViewModel)_diagramShapeUiFactory.CreateDiagramConnectorUi(DiagramService, diagramConnector);
 
-            _diagramConnectorToViewModelMap.Set(diagramConnector.Id, diagramConnectorViewModel);
+            _diagramConnectorToViewModelMap.Set(diagramConnector.Id, diagramConnectorUi);
+            DiagramConnectorViewModels.Add(diagramConnectorUi);
         }
 
         private void OnRemoveDiagramNodeRequested(IDiagramNode diagramNode)
