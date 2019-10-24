@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
         private IReadOnlyLayoutVertexLayers Layers => _relativeLayout.LayoutVertexLayers;
         private IReadOnlyLayeredLayoutGraph LayeredLayoutGraph => _relativeLayout.LayeredLayoutGraph;
         private IReadOnlyQuasiProperLayoutGraph ProperLayoutGraph => _relativeLayout.ProperLayeredLayoutGraph;
-        
+
         public LayoutInfo CalculateLayout()
         {
             var vertexCenters = CalculateVertexCenters();
@@ -89,11 +89,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute
             var sourceRect = vertexCenters.GetRect(layoutPath.PathSource);
             var targetRect = vertexCenters.GetRect(layoutPath.PathTarget);
 
-            var routePoints = new Route(sourceRect.Center)
-                .Add(layoutPath.InterimVertices.Select(vertexCenters.Get))
-                .Add(targetRect.Center);
+            var routePoints = sourceRect.Center.ToEnumerable()
+                .Concat(layoutPath.InterimVertices.Select(vertexCenters.Get))
+                .Concat(targetRect.Center.ToEnumerable());
 
-            return routePoints;
+            return new Route(routePoints).AttachToSourceRectAndTargetRect(sourceRect, targetRect);
         }
 
         private void CalculateYPositions()
