@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util;
@@ -22,6 +23,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private const double PanAndZoomControlSizeDefault = 100;
 
         private bool _isViewportObscured;
+
+        public static readonly DependencyProperty DiagramFillProperty =
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramViewportControl));
+
+        public static readonly DependencyProperty DiagramStrokeProperty =
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DependencyProperty.RegisterAttached("PanAndZoomControlHeight", typeof(double), typeof(DiagramViewportControl),
@@ -131,6 +138,18 @@ namespace Codartis.SoftVis.UI.Wpf.View
             Loaded += OnLoaded;
 
             InitializeComponent();
+        }
+
+        public Brush DiagramFill
+        {
+            get { return (Brush)GetValue(DiagramFillProperty); }
+            set { SetValue(DiagramFillProperty, value); }
+        }
+
+        public Brush DiagramStroke
+        {
+            get { return (Brush)GetValue(DiagramStrokeProperty); }
+            set { SetValue(DiagramStrokeProperty, value); }
         }
 
         private void OnKeyboardPan(Vector panVector)

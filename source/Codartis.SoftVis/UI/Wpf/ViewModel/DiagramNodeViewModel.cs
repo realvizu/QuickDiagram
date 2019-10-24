@@ -193,6 +193,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             {
                 // For image export we must set those properties that are calculated on the normal UI.
                 _size = _size,
+                _payloadAreaSize = _payloadAreaSize,
                 _center = _center,
                 _topLeft = _topLeft,
             };

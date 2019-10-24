@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         /// <summary>
         /// An object that serves as the key when the view looks up the placement specification in a dictionary.
-        /// Its value is dependent on which kind of diagram shape button is it.
+        /// Its value is dependent on which kind of diagram shape button it is.
         /// </summary>
         public abstract object PlacementKey { get; }
 

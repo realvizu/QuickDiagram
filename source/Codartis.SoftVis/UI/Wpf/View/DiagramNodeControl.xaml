@@ -2,78 +2,36 @@
              x:Name="ThisControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
-             xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-            <ItemsPanelTemplate x:Key="RelatedNodeCueItemsPanel">
-                <controls:DecoratorPanel PlacementDictionary="{Binding RelatedNodeCuePlacementDictionary, 
-                    RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}"/>
-            </ItemsPanelTemplate>
-
-            <DataTemplate x:Key="RelatedNodeCue" 
-                          DataType="{x:Type viewModel:RelatedNodeCueViewModel}">
-                <Ellipse Fill="{Binding Path=DiagramStroke, ElementName=ThisControl}"
-                         Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            </DataTemplate>
-
-            <Size x:Key="CueSize" Width="5" Height="5"/>
-
-            <Style x:Key="RelatedNodeCueContainerStyle" 
-                   TargetType="{x:Type ContentPresenter}" 
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:RelatedNodeCueViewModel}}">
-                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource CueSize}}"/>
-                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource CueSize}}"/>
-                <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
-                <Setter Property="ContentTemplate" Value="{StaticResource RelatedNodeCue}"/>
-            </Style>
-            
-        </ResourceDictionary>
-    </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            
-            <view:DiagramNodePayloadControl DataContext="{Binding}"
-                                            ActualSize="{Binding Path=PayloadAreaSize, Mode=OneWayToSource}" />
-            
-            <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}" 
-                          ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"
-                          ItemContainerStyle="{StaticResource RelatedNodeCueContainerStyle}"
-                          Background="{x:Null}" />
-        </Grid>
+        <view:DiagramNodePayloadControl Grid.Row="0"
+                                        DataContext="{Binding}"
+                                        ActualSize="{Binding Path=PayloadAreaSize, Mode=OneWayToSource}" />
 
-        <Border Grid.Row="1" 
+        <Border Grid.Row="1"
                 BorderThickness="1,0,1,1"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
                 Background="{Binding DiagramFill, ElementName=ThisControl}"
                 Width="{Binding Path=ChildrenAreaSize.Width}"
                 Height="{Binding Path=ChildrenAreaSize.Height}">
-            
+
             <Border.Style>
                 <Style TargetType="Border">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=HasChildren}" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
