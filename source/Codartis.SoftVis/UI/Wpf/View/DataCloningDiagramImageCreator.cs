@@ -43,12 +43,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private static IEnumerable<DiagramNodeViewModel> Clone(IEnumerable<DiagramNodeViewModel> diagramNodeViewModels)
         {
-            return diagramNodeViewModels.Select(i => (DiagramNodeViewModel)i.Clone()).ToArray();
+            return diagramNodeViewModels.Select(i => (DiagramNodeViewModel)i.CloneForImageExport()).ToArray();
         }
 
         private static IEnumerable<DiagramConnectorViewModel> Clone(IEnumerable<DiagramConnectorViewModel> diagramConnectorViewModels)
         {
-            return diagramConnectorViewModels.Select(i => (DiagramConnectorViewModel)i.Clone()).ToArray();
+            return diagramConnectorViewModels.Select(i => (DiagramConnectorViewModel)i.CloneForImageExport()).ToArray();
         }
     }
 }

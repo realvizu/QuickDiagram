@@ -187,9 +187,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void ShowRelatedModelNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        public override object Clone()
+        public override object CloneForImageExport()
         {
-            return new DiagramNodeViewModel(ModelService, DiagramService, _relatedNodeTypeProvider, FocusTracker, DiagramNode);
+            return new DiagramNodeViewModel(ModelService, DiagramService, _relatedNodeTypeProvider, FocusTracker, DiagramNode)
+            {
+                // For image export we must set those properties that are calculated on the normal UI.
+                _size = _size,
+                _center = _center,
+                _topLeft = _topLeft,
+            };
         }
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()

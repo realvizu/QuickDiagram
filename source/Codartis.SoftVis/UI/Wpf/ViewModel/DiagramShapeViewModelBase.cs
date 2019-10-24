@@ -22,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public abstract string Stereotype { get; }
 
-        public abstract object Clone();
+        public abstract object CloneForImageExport();
 
         public virtual IEnumerable<IMiniButton> CreateMiniButtons()
         {

@@ -20,13 +20,6 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-            <DataTemplate x:Key="ChildNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModel}">
-                <view:DiagramNodeControl x:Name="DiagramNodeControl"
-                                         ActualSize="{Binding Path=Size, Mode=OneWayToSource}"
-                                         FocusRequestedCommand="{Binding Path=FocusTracker.FocusCommand}">
-                </view:DiagramNodeControl>
-            </DataTemplate>
-
             <ItemsPanelTemplate x:Key="RelatedNodeCueItemsPanel">
                 <controls:DecoratorPanel PlacementDictionary="{Binding RelatedNodeCuePlacementDictionary, 
                     RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}"/>

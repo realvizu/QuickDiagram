@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramConnector DiagramConnector => (IDiagramConnector) DiagramShape;
 
-        public override object Clone() 
+        public override object CloneForImageExport() 
             => new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel);
 
         private ConnectorType ConnectorType => DiagramConnector.ConnectorType;
