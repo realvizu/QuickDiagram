@@ -20,9 +20,25 @@ namespace Codartis.SoftVis.Diagramming.Definition
 
         public Rect2D Rect => CalculateRect();
 
-        private Rect2D CalculateRect()
+        private Rect2D CalculateRect() => Boxes.Select(i => i.Rect).Concat(Lines.Select(i => i.Rect)).Union();
+
+        [NotNull]
+        public GroupLayoutInfo AddLineLayoutInfo([NotNull] IEnumerable<LineLayoutInfo> lines) => new GroupLayoutInfo(Boxes, Lines.Concat(lines));
+
+        [CanBeNull]
+        public BoxLayoutInfo GetBoxById([NotNull] string shapeId)
         {
-            return Boxes.Select(i => i.Rect).Concat(Lines.Select(i => i.Rect)).Union();
+            foreach (var box in Boxes)
+            {
+                if (box.ShapeId == shapeId)
+                    return box;
+
+                var childBox = box.ChildGroup?.GetBoxById(shapeId);
+                if (childBox != null)
+                    return childBox;
+            }
+
+            return null;
         }
     }
 }

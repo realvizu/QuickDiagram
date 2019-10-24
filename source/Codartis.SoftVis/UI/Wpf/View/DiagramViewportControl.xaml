@@ -2,15 +2,15 @@
              x:Name="ThisControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
 
@@ -33,7 +33,7 @@
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.DiagramNodeDoubleClickedCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}"
-                                                   CommandParameter="{Binding DiagramShape}"/>
+                                                   CommandParameter="{Binding DiagramShape}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </view:DiagramNodeControl>
@@ -45,93 +45,93 @@
                     RoutePointsToAnimate="{Binding Path=RoutePoints, Mode=OneWay}">
                     <view:DiagramConnectorControl.DisplayedRoutePoints>
                         <MultiBinding Converter="{StaticResource DiagramConnectorRouteCalculatorConverter}">
-                            <Binding Path="AnimatedRoutePoints" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-                            <Binding Path="Center" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:AnimatedRectContentPresenter}}"/>
+                            <Binding Path="AnimatedRoutePoints" RelativeSource="{RelativeSource Self}" Mode="OneWay" />
+                            <Binding Path="Center" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:AnimatedRectContentPresenter}}" />
                         </MultiBinding>
                     </view:DiagramConnectorControl.DisplayedRoutePoints>
                 </view:DiagramConnectorControl>
             </DataTemplate>
 
             <Style x:Key="DiagramNodeItemContainerStyle"
-                   TargetType="{x:Type controls:AnimatedRectContentPresenter}" 
+                   TargetType="{x:Type controls:AnimatedRectContentPresenter}"
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
-                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
-                <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}"/>
-                <Setter Property="TopToAnimate" Value="{Binding Path=TopLeft.Y}"/>
+                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}" />
+                <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}" />
+                <Setter Property="TopToAnimate" Value="{Binding Path=TopLeft.Y}" />
                 <Setter Property="Rect">
                     <Setter.Value>
                         <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Left"/>
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Top"/>
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth"/>
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight"/>
+                            <Binding RelativeSource="{RelativeSource Self}" Path="Left" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="Top" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight" />
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="AnimatedRect" Value="{Binding Path=AnimatedRect, Mode=OneWayToSource}"/>
+                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="AnimatedRect" Value="{Binding Path=AnimatedRect, Mode=OneWayToSource}" />
             </Style>
 
             <Style x:Key="DiagramConnectorItemContainerStyle"
-                   TargetType="{x:Type controls:AnimatedRectContentPresenter}" 
+                   TargetType="{x:Type controls:AnimatedRectContentPresenter}"
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
-                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}"/>
+                <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}" />
                 <Setter Property="Rect">
                     <Setter.Value>
                         <MultiBinding Converter="{StaticResource RectUnionConverter}" Mode="OneWay">
-                            <Binding Path="SourceNodeViewModel.AnimatedRect"/>
-                            <Binding Path="TargetNodeViewModel.AnimatedRect"/>
+                            <Binding Path="SourceNodeViewModel.AnimatedRect" />
+                            <Binding Path="TargetNodeViewModel.AnimatedRect" />
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Left" Value="{Binding Path=Center.X, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Top" Value="{Binding Path=Center.Y, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Left" Value="{Binding Path=Center.X, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Top" Value="{Binding Path=Center.Y, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}" />
                 <!-- No need to set Height and Width, those will adjust automatically to the content -->
             </Style>
 
             <ItemsPanelTemplate x:Key="DiagramShapeItemsPanel">
-                <controls:AnimatedRenderTransformCanvas 
+                <controls:AnimatedRenderTransformCanvas
                     AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
                     FastAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
                     MediumAnimationDuration="{StaticResource MediumPanAndZoomAnimationDuration}"
                     SlowAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
                     MediumAnimationEasingFunction="{StaticResource MediumPanAndZoomAnimationEasingFunction}"
-                    SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}"/>
+                    SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}" />
             </ItemsPanelTemplate>
 
-            <Size x:Key="MiniButtonSize" Width="16" Height="16"/>
+            <Size x:Key="MiniButtonSize" Width="16" Height="16" />
 
-            <Style x:Key="MiniButtonItemContainerStyle" 
-                   TargetType="{x:Type ContentPresenter}" 
+            <Style x:Key="MiniButtonItemContainerStyle"
+                   TargetType="{x:Type ContentPresenter}"
                    d:DataContext="{d:DesignInstance {x:Type viewModel:MiniButtonViewModelBase}}">
-                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource MiniButtonSize}}"/>
-                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource MiniButtonSize}}"/>
-                <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}"/>
+                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource MiniButtonSize}}" />
+                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource MiniButtonSize}}" />
+                <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <view:MiniButtonControl 
-                                Width="{Binding Path=Width, Source={StaticResource MiniButtonSize}}" 
+                            <view:MiniButtonControl
+                                Width="{Binding Path=Width, Source={StaticResource MiniButtonSize}}"
                                 Height="{Binding Path=Height, Source={StaticResource MiniButtonSize}}"
                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="{Binding Name}"
                                 MouseClickCommand="{Binding ClickCommand}"
-                                MouseDoubleClickCommand="{Binding DoubleClickCommand}"/>
+                                MouseDoubleClickCommand="{Binding DoubleClickCommand}" />
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
             <ItemsPanelTemplate x:Key="MiniButtonItemsPanel">
-                <view:DiagramCanvasChildDecoratorPanel 
+                <view:DiagramCanvasChildDecoratorPanel
                     DecoratedElement="{Binding Path=MiniButtonHostControl, ElementName=ThisControl}"
                     PlacementDictionary="{Binding MiniButtonPlacementDictionary, 
-                        RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}"/>
+                        RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}" />
             </ItemsPanelTemplate>
 
         </ResourceDictionary>
@@ -139,18 +139,18 @@
 
     <Grid Background="Transparent">
 
-        <view:DiagramConnectorItemsControl ItemsSource="{Binding DiagramConnectorViewModels}"
-                                           ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
-                                           ItemTemplate="{StaticResource DiagramConnectorItemTemplate}"
-                                           ItemContainerStyle="{StaticResource DiagramConnectorItemContainerStyle}"/>
-
         <view:DiagramNodeItemsControl ItemsSource="{Binding DiagramNodeViewModels}"
                                       ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
                                       ItemTemplate="{StaticResource DiagramNodeItemTemplate}"
-                                      ItemContainerStyle="{StaticResource DiagramNodeItemContainerStyle}"/>
+                                      ItemContainerStyle="{StaticResource DiagramNodeItemContainerStyle}" />
+
+        <view:DiagramConnectorItemsControl ItemsSource="{Binding DiagramConnectorViewModels}"
+                                           ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
+                                           ItemTemplate="{StaticResource DiagramConnectorItemTemplate}"
+                                           ItemContainerStyle="{StaticResource DiagramConnectorItemContainerStyle}" />
 
         <ItemsControl DataContext="{Binding MiniButtonPanelViewModel}"
-                      ItemsSource="{Binding ButtonViewModels}" 
+                      ItemsSource="{Binding ButtonViewModels}"
                       ItemsPanel="{StaticResource MiniButtonItemsPanel}"
                       ItemContainerStyle="{StaticResource MiniButtonItemContainerStyle}"
                       Background="{x:Null}" />
@@ -159,7 +159,7 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Margin="10"
-                                Height="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}" 
+                                Height="{Binding Path=PanAndZoomControlHeight, ElementName=ThisControl, Mode=OneWay}"
                                 Fill="Transparent"
                                 Opacity="0.2"
                                 PanAmount="50"
@@ -169,26 +169,26 @@
                                 VectorPanCommand="{Binding Path=WidgetPanCommand, ElementName=ThisControl, Mode=OneWay}"
                                 CenterCommand="{Binding Path=WidgetZoomToContentCommand, ElementName=ThisControl, Mode=OneWay}"
                                 MouseEnter="OnPanAndZoomControlMouseEnter"
-                                MouseLeave="OnPanAndZoomControlMouseLeave"/>
+                                MouseLeave="OnPanAndZoomControlMouseLeave" />
 
         <i:Interaction.Behaviors>
             <behaviors:MousePanAndZoomBehavior
-                PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                PanCommand="{Binding Path=MousePanCommand, ElementName=ThisControl, Mode=OneWay}"
                 PanCursor="{x:Static Cursors.SizeAll}"
-                ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}" 
+                ZoomCommand="{Binding Path=MouseZoomCommand, ElementName=ThisControl, Mode=OneWay}"
                 MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                 MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"
                 ZoomValue="{Binding Path=ViewportZoom, ElementName=ThisControl, Mode=OneWay}"
                 ZoomAmountPerWheelClick=".5" />
             <behaviors:KeyboardPanAndZoomBehavior
-                PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}" 
+                PanCommand="{Binding Path=KeyboardPanCommand, ElementName=ThisControl, Mode=OneWay}"
                 PanUpKey="{x:Static Key.Up}"
                 PanDownKey="{x:Static Key.Down}"
                 PanLeftKey="{x:Static Key.Left}"
                 PanRightKey="{x:Static Key.Right}"
                 PanAcceleration="2"
                 PanDeceleration="6"
-                PanMaxSpeed="50" 
+                PanMaxSpeed="50"
                 ZoomCommand="{Binding Path=KeyboardZoomCommand, ElementName=ThisControl, Mode=OneWay}"
                 MinZoom="{Binding Path=MinZoom, ElementName=ThisControl, Mode=OneWay}"
                 MaxZoom="{Binding Path=MaxZoom, ElementName=ThisControl, Mode=OneWay}"

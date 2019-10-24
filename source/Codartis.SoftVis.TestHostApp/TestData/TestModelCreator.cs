@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.TestHostApp.TestData
                 .AddClass("W1")
                 .AddClass("W2")
                 .AddClass("W3")
-                .AddProperty("W1", "P1", "W1")
+                .AddProperty("W1", "P1", "W2")
                 .AddProperty("W1", "P2_WithLongName", "W2")
                 .AddProperty("W2", "P3", "W3")
                 .AddProperty("W3", "P4", "W1")

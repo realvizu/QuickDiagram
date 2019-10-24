@@ -3,6 +3,7 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Geometry;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
@@ -33,10 +34,38 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         public GroupLayoutInfo Calculate(IDiagram diagram)
         {
             var layoutStructure = new DiagramLayoutStructure(diagram);
+
             var rootLayoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForRoot();
-            var relativeLayoutInfo = LayoutRecursive(layoutStructure, layoutStructure.RootLayoutGroup, rootLayoutAlgorithm);
-            var absoluteLayoutInfo = _layoutUnifier.CalculateAbsoluteLayout(relativeLayoutInfo);
-            return absoluteLayoutInfo;
+
+            var relativeLayout = LayoutRecursive(layoutStructure, layoutStructure.RootLayoutGroup, rootLayoutAlgorithm);
+
+            var absoluteLayout = _layoutUnifier.CalculateAbsoluteLayout(relativeLayout);
+
+            var crossGroupLines = CreateDirectRoutes(layoutStructure.CrossLayoutGroupConnectors, absoluteLayout);
+
+            return absoluteLayout.AddLineLayoutInfo(crossGroupLines);
+        }
+
+        [NotNull]
+        private static IEnumerable<LineLayoutInfo> CreateDirectRoutes(
+            [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors,
+            [NotNull] GroupLayoutInfo groupLayoutInfo)
+            => connectors.Select(i => CreateDirectRoute(i, groupLayoutInfo)).WhereNotNull().Select(i => i.Value);
+
+        private static LineLayoutInfo? CreateDirectRoute(
+            [NotNull] IDiagramConnector connector,
+            [NotNull] GroupLayoutInfo groupLayoutInfo)
+        {
+            var sourceBox = groupLayoutInfo.GetBoxById(connector.Source.ToShapeId());
+            var targetBox = groupLayoutInfo.GetBoxById(connector.Target.ToShapeId());
+
+            if (sourceBox == null || targetBox == null || sourceBox.Rect.Center == targetBox.Rect.Center)
+                return null;
+
+            var route = new Route(sourceBox.Rect.Center, targetBox.Rect.Center)
+                .AttachToSourceRectAndTargetRect(sourceBox.Rect, targetBox.Rect);
+
+            return new LineLayoutInfo(connector.ShapeId, route);
         }
 
         [NotNull]
