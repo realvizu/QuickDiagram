@@ -1,6 +1,7 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI
 {
@@ -9,10 +10,11 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramNodeUi : IDiagramShapeUi
     {
-        IDiagramNode DiagramNode { get; }
+        [NotNull] IDiagramNode DiagramNode { get; }
 
         event Action<IDiagramNode, Size2D> SizeChanged;
         event Action<IDiagramNode> RemoveRequested;
+
         //event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         //event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
     }

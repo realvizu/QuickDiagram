@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.Util.UI;
@@ -14,18 +13,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Tracks focus and controls minibutton visibility and minibutton (decorator) to shape (host) assignment.
     /// </summary>
     /// <remarks>
-    /// Caches the minibutton view models created for a certain kind of diagram shape.
+    /// Caches the minibutton view models created for a certain diagram shape stereotype.
     /// </remarks>
     public class MiniButtonPanelViewModel : DecorationManagerViewModelBase<IDiagramShapeUi>
     {
-        private readonly Dictionary<Type, List<IMiniButton>> _miniButtonViewModelCache;
+        private readonly Dictionary<string, List<IMiniButton>> _miniButtonViewModelCache;
         private readonly object _cacheLockObject = new object();
 
         public ObservableCollection<IMiniButton> ButtonViewModels { get; }
 
         public MiniButtonPanelViewModel()
         {
-            _miniButtonViewModelCache = new Dictionary<Type, List<IMiniButton>>();
+            _miniButtonViewModelCache = new Dictionary<string, List<IMiniButton>>();
             ButtonViewModels = new ThreadSafeObservableCollection<IMiniButton>();
         }
 
@@ -41,7 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             lock (_cacheLockObject)
             {
-                var hostType = hostViewModel.GetType();
+                var hostType = hostViewModel.Stereotype;
                 if (_miniButtonViewModelCache.ContainsKey(hostType))
                     return _miniButtonViewModelCache[hostType];
 

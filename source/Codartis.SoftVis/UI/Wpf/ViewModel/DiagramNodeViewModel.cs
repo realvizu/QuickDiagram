@@ -54,6 +54,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
+        public override string Stereotype => DiagramNode.ModelNode.Stereotype.Name;
+
         public override void Dispose()
         {
             base.Dispose();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI
 {
@@ -8,6 +9,8 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUi : ICloneable
     {
+        [NotNull] string Stereotype { get; }
+
         IEnumerable<IMiniButton> CreateMiniButtons();
     }
 }
