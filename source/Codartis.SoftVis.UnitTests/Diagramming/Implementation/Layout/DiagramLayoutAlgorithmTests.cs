@@ -175,7 +175,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
         [NotNull]
         private IDiagramLayoutAlgorithm CreateLayoutAlgorithm()
         {
-            return new DiagramLayoutAlgorithm(_layoutAlgorithmSelectionStrategy, ChildrenAreaPadding);
+            return new DiagramLayoutAlgorithm(
+                _layoutAlgorithmSelectionStrategy,
+                new TestConnectorRoutingAlgorithm(),
+                ChildrenAreaPadding);
         }
     }
 }

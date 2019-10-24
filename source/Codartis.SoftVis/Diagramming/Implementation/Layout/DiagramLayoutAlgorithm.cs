@@ -3,7 +3,6 @@ using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Geometry;
-using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Implementation.Layout
@@ -15,6 +14,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
     public sealed class DiagramLayoutAlgorithm : IDiagramLayoutAlgorithm
     {
         [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
+        [NotNull] private readonly IConnectorRoutingAlgorithm _crossLayoutGroupConnectorRoutingAlgorithm;
         [NotNull] private readonly LayoutUnifier _layoutUnifier;
 
         /// <summary>
@@ -24,9 +24,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 
         public DiagramLayoutAlgorithm(
             [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy,
+            [NotNull] IConnectorRoutingAlgorithm crossLayoutGroupConnectorRoutingAlgorithm,
             double childrenAreaPadding = 2)
         {
             _layoutAlgorithmSelectionStrategy = layoutAlgorithmSelectionStrategy;
+            _crossLayoutGroupConnectorRoutingAlgorithm = crossLayoutGroupConnectorRoutingAlgorithm;
             _layoutUnifier = new LayoutUnifier(childrenAreaPadding);
             ChildrenAreaPadding = childrenAreaPadding;
         }
@@ -41,31 +43,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 
             var absoluteLayout = _layoutUnifier.CalculateAbsoluteLayout(relativeLayout);
 
-            var crossGroupLines = CreateDirectRoutes(layoutStructure.CrossLayoutGroupConnectors, absoluteLayout);
+            var crossGroupLines = CreateDirectRoutes(layoutStructure.CrossLayoutGroupConnectors, diagram, absoluteLayout);
 
             return absoluteLayout.AddLineLayoutInfo(crossGroupLines);
         }
 
         [NotNull]
-        private static IEnumerable<LineLayoutInfo> CreateDirectRoutes(
+        private IEnumerable<LineLayoutInfo> CreateDirectRoutes(
             [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors,
-            [NotNull] GroupLayoutInfo groupLayoutInfo)
-            => connectors.Select(i => CreateDirectRoute(i, groupLayoutInfo)).WhereNotNull().Select(i => i.Value);
-
-        private static LineLayoutInfo? CreateDirectRoute(
-            [NotNull] IDiagramConnector connector,
+            [NotNull] IDiagram diagram,
             [NotNull] GroupLayoutInfo groupLayoutInfo)
         {
-            var sourceBox = groupLayoutInfo.GetBoxById(connector.Source.ToShapeId());
-            var targetBox = groupLayoutInfo.GetBoxById(connector.Target.ToShapeId());
-
-            if (sourceBox == null || targetBox == null || sourceBox.Rect.Center == targetBox.Rect.Center)
-                return null;
-
-            var route = new Route(sourceBox.Rect.Center, targetBox.Rect.Center)
-                .AttachToSourceRectAndTargetRect(sourceBox.Rect, targetBox.Rect);
-
-            return new LineLayoutInfo(connector.ShapeId, route);
+            var nodeRects = diagram.Nodes.ToDictionary(i => i.Id, i => groupLayoutInfo.GetBoxById(i.ShapeId).Rect);
+            var connectorRoutes = _crossLayoutGroupConnectorRoutingAlgorithm.Calculate(connectors, nodeRects);
+            return connectorRoutes.Select(i => new LineLayoutInfo(i.Key.ToShapeId(), i.Value));
         }
 
         [NotNull]
