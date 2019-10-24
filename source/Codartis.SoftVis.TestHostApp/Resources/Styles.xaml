@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
                     xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
-                    mc:Ignorable="d" >
+                    mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
@@ -15,29 +15,29 @@
 
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
 
-    <Style TargetType="{x:Type view:DiagramControl}" >
-        <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Background" Value="Beige"/>
-        <Setter Property="Foreground" Value="Black"/>
-        <Setter Property="DiagramFill" Value="Bisque"/>
-        <Setter Property="DiagramStroke" Value="Black"/>
-        <Setter Property="PanAndZoomControlHeight" Value="120"/>
-        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}"/>
-        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}"/>
+    <Style TargetType="{x:Type view:DiagramControl}">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Background" Value="Beige" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="DiagramFill" Value="Bisque" />
+        <Setter Property="DiagramStroke" Value="Black" />
+        <Setter Property="PanAndZoomControlHeight" Value="120" />
+        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}" />
+        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}" />
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">
-        <Setter Property="MaxWidth" Value="250"/>
-        <Setter Property="MinWidth" Value="50"/>
+        <Setter Property="MaxWidth" Value="250" />
+        <Setter Property="MinWidth" Value="50" />
     </Style>
 
     <DataTemplate DataType="{x:Type testHostAppModeling:PropertyNode}">
         <Border Background="LightGray"
                 HorizontalAlignment="Stretch">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" 
+            <TextBlock Text="{Binding Path=Name, Mode=OneWay}"
                        HorizontalAlignment="Left"
-                       Margin="2"/>
+                       Margin="2" />
         </Border>
     </DataTemplate>
 
@@ -46,29 +46,28 @@
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
                 Background="{Binding DiagramFill, ElementName=ThisControl}"
                 ToolTip="{Binding Path=FullName}">
-            <StackPanel Orientation="Vertical" 
+            <StackPanel Orientation="Vertical"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="{Binding Path=Stereotype}" 
+                <TextBlock Text="{Binding Path=Stereotype}"
                            FontSize="{Binding RelativeSource={RelativeSource Mode=Self}, Path=FontSize, Mode=OneTime,
-                           Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}" 
-                           HorizontalAlignment="Center"/>
+                           Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.75}"
+                           HorizontalAlignment="Center" />
                 <StackPanel HorizontalAlignment="Center">
                     <TextBlock x:Name="TextBlock"
-                               Text="{Binding Path=Name, Mode=OneWay}" 
+                               Text="{Binding Path=Name, Mode=OneWay}"
                                HorizontalAlignment="Left" />
                 </StackPanel>
             </StackPanel>
         </Border>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
-                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
+                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <Style TargetType="{x:Type controls:BubbleListBoxItem}"
-           d:DataContext="{d:DesignInstance {x:Type testHostAppModeling:TypeNodeBase}}">
-        <Setter Property="ToolTip" Value="{Binding FullName}"/>
+    <Style TargetType="{x:Type controls:BubbleListBoxItem}">
+        <Setter Property="ToolTip" Value="{Binding Payload.FullName}" />
     </Style>
 </ResourceDictionary>
