@@ -1,18 +1,20 @@
 ﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
     /// Listens to model events and corrects the diagram accordingly.
     /// </summary>
-    public class ModelTrackingDiagramPlugin : ConnectorManipulatorDiagramPluginBase
+    public sealed class ModelTrackingDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public override void Initialize(IModelService modelService, IDiagramService diagramService)
+        public ModelTrackingDiagramPlugin(
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService)
+            : base(modelService, diagramService)
         {
-            base.Initialize(modelService, diagramService);
-
             ModelService.ModelChanged += OnModelChanged;
         }
 

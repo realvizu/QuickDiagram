@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
@@ -15,59 +16,45 @@ namespace Codartis.SoftVis.Services
     /// </summary>
     public sealed class VisualizationService : IVisualizationService
     {
-        private const double DefaultMinZoom = .1;
-        private const double DefaultMaxZoom = 10;
-        private const double DefaultInitialZoom = 1;
-
         [NotNull] private readonly IModelService _modelService;
-        [NotNull] private readonly IDiagramServiceFactory _diagramServiceFactory;
-        [NotNull] private readonly IUiServiceFactory _uiServiceFactory;
-        [NotNull] private readonly IDiagramPluginFactory _diagramPluginFactory;
-        [NotNull] private readonly IRelatedNodeTypeProvider _relatedNodeTypeProvider;
-        [NotNull] private readonly IEnumerable<DiagramPluginId> _diagramPluginIds;
+        [NotNull] private readonly Func<IModel, IDiagramService> _diagramServiceFactory;
+        [NotNull] private readonly Func<IDiagramService, IUiService> _uiServiceFactory;
+        [NotNull] private readonly IEnumerable<Func<IDiagramService, IDiagramPlugin>> _diagramPluginFactories;
 
         [NotNull] private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
         [NotNull] private readonly Dictionary<DiagramId, IUiService> _diagramUis;
-
-        // This dictionary is just to root the plugins.
-        // ReSharper disable once CollectionNeverQueried.Local
-        [NotNull]private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
+        [NotNull] private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
 
         public VisualizationService(
             [NotNull] IModelService modelService,
-            [NotNull] IDiagramServiceFactory diagramServiceFactory,
-            [NotNull] IUiServiceFactory uiServiceFactory,
-            [NotNull] IDiagramPluginFactory diagramPluginFactory,
-            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull][ItemNotNull] IEnumerable<DiagramPluginId> diagramPluginIds)
+            [NotNull] Func<IModel, IDiagramService> diagramServiceFactory,
+            [NotNull] Func<IDiagramService, IUiService> uiServiceFactory,
+            [NotNull] IEnumerable<Func<IDiagramService, IDiagramPlugin>> diagramPluginFactories)
         {
             _modelService = modelService;
             _diagramServiceFactory = diagramServiceFactory;
             _uiServiceFactory = uiServiceFactory;
-            _diagramPluginFactory = diagramPluginFactory;
-            _relatedNodeTypeProvider = relatedNodeTypeProvider;
-            _diagramPluginIds = diagramPluginIds;
+            _diagramPluginFactories = diagramPluginFactories;
 
             _diagramServices = new Dictionary<DiagramId, IDiagramService>();
             _diagramUis = new Dictionary<DiagramId, IUiService>();
             _diagramPlugins = new Dictionary<DiagramId, List<IDiagramPlugin>>();
         }
 
-        public DiagramId CreateDiagram(
-            double minZoom = DefaultMinZoom,
-            double maxZoom = DefaultMaxZoom,
-            double initialZoom = DefaultInitialZoom)
+        public DiagramId CreateDiagram()
         {
             var diagramId = DiagramId.Create();
-            var diagramService = _diagramServiceFactory.Create(_modelService);
+
+            var diagramService = _diagramServiceFactory(_modelService.LatestModel);
             _diagramServices.Add(diagramId, diagramService);
 
-            var diagramUi = CreateDiagramUi(diagramId, minZoom, maxZoom, initialZoom);
+            var diagramUi = _uiServiceFactory(diagramService);
+            diagramUi.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUi.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUis.Add(diagramId, diagramUi);
 
-            // Warning: plugins must be created after the UI so its event callbacks don't precede UI updates.
-            var diagramPlugins = CreateAndAttachDiagramPlugins(_diagramPluginIds, _modelService, diagramService);
-            _diagramPlugins.Add(diagramId, diagramPlugins.ToList());
+            var plugins = _diagramPluginFactories.Select(i => i(diagramService)).ToList();
+            _diagramPlugins.Add(diagramId, plugins);
 
             return diagramId;
         }
@@ -76,43 +63,37 @@ namespace Codartis.SoftVis.Services
         public IDiagramService GetDiagramService(DiagramId diagramId) => _diagramServices[diagramId];
         public IUiService GetUiService(DiagramId diagramId) => _diagramUis[diagramId];
 
-        [NotNull]
-        private IUiService CreateDiagramUi(
-            DiagramId diagramId,
-            double minZoom = DefaultMinZoom,
-            double maxZoom = DefaultMaxZoom,
-            double initialZoom = DefaultInitialZoom)
+        public void RemoveDiagram(DiagramId diagramId)
         {
-            var diagramService = GetDiagramService(diagramId);
-            var diagramUi = _uiServiceFactory.Create(_modelService, diagramService, _relatedNodeTypeProvider, minZoom, maxZoom, initialZoom);
+            _diagramServices.Remove(diagramId);
 
-            diagramUi.DiagramNodePayloadAreaSizeChanged += (diagramNode, size) => OnDiagramNodePayloadAreaSizeChanged(diagramId, diagramNode, size);
-            diagramUi.RemoveDiagramNodeRequested += diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);
+            var diagramUi = _diagramUis[diagramId];
+            diagramUi.DiagramNodePayloadAreaSizeChanged -= PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUi.RemoveDiagramNodeRequested -= PropagateRemoveDiagramNodeRequested(diagramId);
+            _diagramUis.Remove(diagramId);
 
-            return diagramUi;
+            _diagramPlugins[diagramId].ForEach(i => i.Dispose());
+            _diagramPlugins.Remove(diagramId);
         }
 
         [NotNull]
-        [ItemNotNull]
-        private IEnumerable<IDiagramPlugin> CreateAndAttachDiagramPlugins(
-            IEnumerable<DiagramPluginId> diagramPluginIds,
-            IModelService modelService,
-            IDiagramService diagramService)
+        private Action<IDiagramNode> PropagateRemoveDiagramNodeRequested(DiagramId diagramId)
         {
-            foreach (var diagramPluginId in diagramPluginIds)
-            {
-                var diagramPlugin = _diagramPluginFactory.Create(diagramPluginId);
-                diagramPlugin.Initialize(modelService, diagramService);
-                yield return diagramPlugin;
-            }
+            return diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);
         }
 
-        private void OnDiagramNodePayloadAreaSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
+        [NotNull]
+        private Action<IDiagramNode, Size2D> PropagateDiagramNodePayloadAreaSizeChanged(DiagramId diagramId)
+        {
+            return (diagramNode, size) => OnDiagramNodePayloadAreaSizeChanged(diagramId, diagramNode, size);
+        }
+
+        private void OnDiagramNodePayloadAreaSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
         {
             GetDiagramService(diagramId).UpdateNodePayloadAreaSize(diagramNode.Id, newSize);
         }
 
-        private void OnRemoveDiagramNodeRequested(DiagramId diagramId, IDiagramNode diagramNode)
+        private void OnRemoveDiagramNodeRequested(DiagramId diagramId, [NotNull] IDiagramNode diagramNode)
         {
             GetDiagramService(diagramId).RemoveNode(diagramNode.Id);
         }

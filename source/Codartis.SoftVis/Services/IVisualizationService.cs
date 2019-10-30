@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.Services
     /// </summary>
     public interface IVisualizationService
     {
-        DiagramId CreateDiagram(double minZoom, double maxZoom, double initialZoom);
+        DiagramId CreateDiagram();
 
         [NotNull]
         IModelService GetModelService();
@@ -20,5 +20,7 @@ namespace Codartis.SoftVis.Services
 
         [NotNull]
         IUiService GetUiService(DiagramId diagramId);
+
+        void RemoveDiagram(DiagramId diagramId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
@@ -8,12 +9,13 @@ namespace Codartis.SoftVis.Services.Plugins
     /// Automatically shows relationships when both ends are visible
     /// and removes redundant connectors from the diagram.
     /// </summary>
-    public class ConnectorHandlerDiagramPlugin : ConnectorManipulatorDiagramPluginBase
+    public sealed class ConnectorHandlerDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public override void Initialize(IModelService modelService, IDiagramService diagramService)
+        public ConnectorHandlerDiagramPlugin(
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService)
+            : base(modelService, diagramService)
         {
-            base.Initialize(modelService, diagramService);
-
             DiagramService.AfterDiagramChanged += OnDiagramChanged;
         }
 

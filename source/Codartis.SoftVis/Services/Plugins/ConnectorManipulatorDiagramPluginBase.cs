@@ -1,11 +1,19 @@
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Services.Plugins
 {
-    public class ConnectorManipulatorDiagramPluginBase : DiagramPluginBase
+    public abstract class ConnectorManipulatorDiagramPluginBase : DiagramPluginBase
     {
+        protected ConnectorManipulatorDiagramPluginBase(
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService)
+            : base(modelService, diagramService)
+        {
+        }
+
         protected void ShowModelRelationshipsIfBothEndsAreVisible(IModelNode modelNode, IModel model, IDiagram diagram)
         {
             foreach (var modelRelationship in model.GetRelationships(modelNode.Id))
@@ -35,7 +43,7 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             if (diagram.ConnectorExists(modelRelationship.Id))
                 return;
-            
+
             DiagramService.AddConnector(modelRelationship.Id);
         }
     }
