@@ -1,4 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 
@@ -18,11 +19,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _initialIsDescriptionVisible = initialIsDescriptionVisible;
         }
 
-        public IUiService Create(IModelService modelService, IDiagramService diagramService, 
-            double minZoom, double maxZoom, double initialZoom)
+        public IUiService Create(
+            IModelService modelService,
+            IDiagramService diagramService,
+            IRelatedNodeTypeProvider relatedNodeTypeProvider,
+            double minZoom,
+            double maxZoom,
+            double initialZoom)
         {
-            var diagramViewModel = new RoslynDiagramViewModel(modelService, diagramService, 
-                _initialIsDescriptionVisible, minZoom, maxZoom, initialZoom);
+            var diagramViewModel = new RoslynDiagramViewModel(
+                modelService,
+                diagramService,
+                relatedNodeTypeProvider,
+                _initialIsDescriptionVisible,
+                minZoom,
+                maxZoom,
+                initialZoom);
 
             return new ApplicationUiService(_hostUiServices, diagramViewModel);
         }

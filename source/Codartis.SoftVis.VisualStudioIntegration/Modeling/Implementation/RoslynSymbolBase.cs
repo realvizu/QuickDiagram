@@ -6,6 +6,7 @@ using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Codartis.Util;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -14,17 +15,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// Abstract base class for model nodes that represent a Roslyn symbol.
     /// Immutable.
     /// </summary>
-    internal abstract class RoslynModelNode : ModelNode, IRoslynModelNode
+    internal abstract class RoslynSymbolBase : IRoslynSymbol
     {
-        public ISymbol RoslynSymbol { get; }
+        public ISymbol UnderlyingSymbol { get; }
+        public ModelOrigin Origin { get; }
 
-        protected RoslynModelNode(ModelNodeId id, ISymbol roslynSymbol, ModelNodeStereotype stereotype)
-            : base(id, roslynSymbol.GetName(), stereotype, roslynSymbol.GetOrigin())
+        protected RoslynSymbolBase([NotNull] ISymbol roslynSymbol)
         {
-            RoslynSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));
+            UnderlyingSymbol = roslynSymbol;
+            Origin = UnderlyingSymbol.GetOrigin();
         }
 
-        public bool SymbolEquals(ISymbol roslynSymbol) => RoslynSymbol.SymbolEquals(roslynSymbol);
+        public bool SymbolEquals(ISymbol roslynSymbol) => UnderlyingSymbol.SymbolEquals(roslynSymbol);
 
         public virtual Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
             IRoslynModelProvider roslynModelProvider,
@@ -39,12 +41,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var compilations = await enumerable.SelectAsync(async i => await i.GetCompilationAsync());
             return compilations.WhereNotNull();
         }
-
-        public IRoslynModelNode UpdateRoslynSymbol(ISymbol newSymbol)
-        {
-            return CreateInstance(Id, newSymbol);
-        }
-
-        protected abstract IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol);
     }
 }

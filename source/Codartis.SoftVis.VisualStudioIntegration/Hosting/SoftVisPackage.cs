@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
+using Codartis.Util;
 using EnvDTE;
 using EnvDTE80;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices;
@@ -143,7 +145,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public async Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync()
         {
             var componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
-            return componentModel.GetService<VisualStudioWorkspace>();
+            return componentModel.GetService<VisualStudioWorkspace>() ?? throw new Exception("Cannot get VisualStudioWorkspace service.");
         }
 
         public async Task<TWindow> CreateToolWindowAsync<TWindow>(int instanceId = 0)

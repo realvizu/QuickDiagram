@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Layout.Nodes.Vertical;
+using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
@@ -29,7 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private readonly DiagramId _diagramId;
 
         public IRoslynModelService RoslynModelService => (IRoslynModelService) _visualizationService.GetModelService();
-        public IRoslynDiagramService RoslynDiagramService => (IRoslynDiagramService) _visualizationService.GetDiagramService(_diagramId);
+        public IDiagramService DiagramService => _visualizationService.GetDiagramService(_diagramId);
         public IApplicationUiService ApplicationUiService => (IApplicationUiService) _visualizationService.GetUiService(_diagramId);
 
         /// <summary>
@@ -48,6 +50,40 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             ApplicationUiService.ShowModelItemsRequested += OnShowItemsRequested;
         }
 
+        private static IContainer CreateDependencyContainer()
+        {
+            var builder = new ContainerBuilder();
+
+            //builder.RegisterType<MainWindowViewModel>();
+
+            builder.RegisterType<VisualizationService>()
+                .WithParameter(
+                    new TypedParameter(
+                        typeof(IEnumerable<DiagramPluginId>),
+                        new[]
+                        {
+                            DiagramPluginId.AutoLayoutDiagramPlugin,
+                            DiagramPluginId.ConnectorHandlerDiagramPlugin,
+                            DiagramPluginId.ModelTrackingDiagramPlugin
+                        }))
+                .As<IVisualizationService>();
+
+            builder.RegisterType<ModelServiceFactory>().As<IModelServiceFactory>();
+            builder.RegisterType<TestDiagramServiceFactory>().As<IDiagramServiceFactory>();
+            builder.RegisterType<TestUiServiceFactory>().As<IUiServiceFactory>();
+            builder.RegisterType<DiagramLayoutAlgorithm>().WithParameter("childrenAreaPadding", 2).As<IDiagramLayoutAlgorithm>();
+            builder.RegisterType<DiagramPluginFactory>().As<IDiagramPluginFactory>();
+            builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
+            builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
+
+            builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
+            builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
+            builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
+
+            return builder.Build();
+        }
+
+
         public void Run(Func<Task> asyncMethod) => _hostUiServices.Run(asyncMethod);
 
         private static IVisualizationService CreateVisualizationService(IRoslynModelProvider roslynModelProvider, IHostUiServices hostUiServices)
@@ -56,7 +92,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
                 new RoslynModelServiceFactory(roslynModelProvider),
                 new RoslynDiagramServiceFactory(),
                 new ApplicationUiServiceFactory(hostUiServices, AppDefaults.NodeDescriptionsVisibleByDefault),
-                new ApplicationDiagramPluginFactory(new RoslynLayoutPriorityProvider(), new RoslynDiagramShapeFactory(), new VerticalNodeLayoutAlgorithm(),  hostUiServices),
+                new ApplicationDiagramPluginFactory(new LayoutPriorityProvider(), new RoslynDiagramShapeFactory(), new VerticalNodeLayoutAlgorithm(),  hostUiServices),
                 new[]
                 {
                     DiagramPluginId.AutoLayoutDiagramPlugin,
@@ -87,7 +123,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         private async Task OnShowItemsRequestAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
-            var roslynModelNodes = modelNodes.OfType<IRoslynModelNode>().ToArray();
+            var roslynModelNodes = modelNodes.OfType<IRoslynSymbol>().ToArray();
             if (roslynModelNodes.Any())
                 await new AddItemsToDiagramCommand(this, roslynModelNodes, followWithViewport).ExecuteAsync();
         }

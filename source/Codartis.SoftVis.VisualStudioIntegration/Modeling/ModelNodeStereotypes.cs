@@ -12,5 +12,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         public static readonly ModelNodeStereotype Struct = new ModelNodeStereotype(nameof(Struct));
         public static readonly ModelNodeStereotype Enum = new ModelNodeStereotype(nameof(Enum));
         public static readonly ModelNodeStereotype Delegate = new ModelNodeStereotype(nameof(Delegate));
+        public static readonly ModelNodeStereotype Property = new ModelNodeStereotype(nameof(Property));
+        public static readonly ModelNodeStereotype Method = new ModelNodeStereotype(nameof(Method));
     }
 }

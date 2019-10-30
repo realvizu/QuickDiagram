@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -9,22 +10,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// A model node created from a Roslyn struct symbol.
     /// </summary>
-    internal class RoslynStructNode : RoslynTypeNode
+    internal sealed class RoslynStruct : RoslynTypeBase
     {
-        internal RoslynStructNode(ModelNodeId id, INamedTypeSymbol namedTypeSymbol)
-            : base(id, namedTypeSymbol, ModelNodeStereotypes.Struct)
+        internal RoslynStruct([NotNull] INamedTypeSymbol namedTypeSymbol)
+            : base(namedTypeSymbol)
         {
         }
 
-        protected override IRoslynModelNode CreateInstance(ModelNodeId id, ISymbol newSymbol)
-            => new RoslynStructNode(id, EnsureNamedTypeSymbol(newSymbol));
-
-        public override Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider,
+        public override Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
+            IRoslynModelProvider roslynModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
             var result = Enumerable.Empty<RelatedSymbolPair>();
 
-            if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedRelationshipTypes.ImplementedInterface)
+            if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedModelRelationshipTypes.ImplementedInterface)
                 result = result.Concat(GetImplementedInterfaces(NamedTypeSymbol));
 
             return Task.FromResult(result);

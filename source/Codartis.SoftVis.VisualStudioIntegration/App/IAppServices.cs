@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     internal interface IAppServices
     {
         IRoslynModelService RoslynModelService { get; }
-        IRoslynDiagramService RoslynDiagramService { get; }
+        IDiagramService DiagramService { get; }
         IApplicationUiService ApplicationUiService { get; }
 
         /// <summary>

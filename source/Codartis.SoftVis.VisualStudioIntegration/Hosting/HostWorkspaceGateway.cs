@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.Util;
 using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Document = Microsoft.CodeAnalysis.Document;
@@ -32,16 +34,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             return await _packageServices.GetVisualStudioWorkspaceAsync();
         }
-        
-        public async Task<ISymbol> GetCurrentSymbolAsync()
+
+        public async Task<Maybe<ISymbol>> TryGetCurrentSymbolAsync()
         {
             var activeTextView = await GetActiveTextViewAsync();
             if (activeTextView == null)
-                return null;
+                return Maybe<ISymbol>.Nothing;
 
             var document = GetCurrentDocument(activeTextView);
             if (document == null)
-                return null;
+                return Maybe<ISymbol>.Nothing;
 
             var syntaxTree = await document.GetSyntaxTreeAsync();
             var syntaxRoot = await syntaxTree.GetRootAsync();
@@ -51,7 +53,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var semanticModel = await document.GetSemanticModelAsync();
             var symbol = GetSymbolForSyntaxNode(semanticModel, currentNode);
             Debug.WriteLine($"symbol={symbol}");
-            return symbol;
+            return Maybe.Create(symbol);
         }
 
         public async Task<bool> HasSourceAsync(ISymbol symbol)

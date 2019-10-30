@@ -5,10 +5,11 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
-    /// Describes the relationship of 2 roslyn symbols. Immutable.
+    /// Describes the relationship of 2 roslyn symbols.
+    /// Immutable.
     /// Converts from base/related to source/target concepts.
     /// </summary>
-    public class RelatedSymbolPair
+    public struct RelatedSymbolPair
     {
         /// <summary>
         /// A roslyn symbol whose related symbol is described.
@@ -25,7 +26,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         public DirectedModelRelationshipType DirectedRelationshipType { get; }
 
-        public RelatedSymbolPair(ISymbol baseSymbol, ISymbol relatedSymbol, DirectedModelRelationshipType directedRelationshipType)
+        public RelatedSymbolPair(
+            ISymbol baseSymbol,
+            ISymbol relatedSymbol,
+            DirectedModelRelationshipType directedRelationshipType)
         {
             BaseSymbol = baseSymbol;
             RelatedSymbol = relatedSymbol;
@@ -50,14 +54,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
                 ? RelatedSymbol
                 : BaseSymbol;
 
-        public RelatedSymbolPair WithRelatedSymbol(ISymbol newRelatedSymbol) 
-            => new RelatedSymbolPair(BaseSymbol, newRelatedSymbol, DirectedRelationshipType);
+        public RelatedSymbolPair WithRelatedSymbol(ISymbol newRelatedSymbol) => new RelatedSymbolPair(BaseSymbol, newRelatedSymbol, DirectedRelationshipType);
 
         public bool Matches(IModelRelationship relationship)
         {
-            return relationship.Stereotype == Stereotype
-                   && ((IRoslynModelNode) relationship.Source).SymbolEquals(SourceSymbol)
-                   && ((IRoslynModelNode) relationship.Target).SymbolEquals(TargetSymbol);
+            return relationship.Stereotype == Stereotype &&
+                   ((RoslynSymbol)relationship.Source).SymbolEquals(SourceSymbol) &&
+                   ((RoslynSymbol)relationship.Target).SymbolEquals(TargetSymbol);
         }
 
         public override string ToString()

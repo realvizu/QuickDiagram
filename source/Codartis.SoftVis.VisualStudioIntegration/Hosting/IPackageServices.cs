@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Codartis.Util;
 using EnvDTE80;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
@@ -36,6 +38,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// <summary>
         /// Returns the Roslyn workspace that can be used to access the current solution's compilation.
         /// </summary>
+        [NotNull]
+        [ItemNotNull]
         Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync();
 
         /// <summary>

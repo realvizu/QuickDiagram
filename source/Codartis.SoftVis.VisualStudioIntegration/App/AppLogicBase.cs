@@ -1,3 +1,4 @@
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -12,7 +13,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private readonly IAppServices _appServices;
 
         protected IRoslynModelService ModelService => _appServices.RoslynModelService;
-        protected IRoslynDiagramService DiagramServices => _appServices.RoslynDiagramService;
+        protected IDiagramService DiagramServices => _appServices.DiagramService;
         protected IApplicationUiService UiService => _appServices.ApplicationUiService;
 
         protected AppLogicBase(IAppServices appServices)

@@ -15,10 +15,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             new List<ICommandSpecification>
             {
                 new CommandSpecification<AddCurrentSymbolToDiagramCommand>(PackageIds.AddToDiagramCommand),
-                new CommandSpecification<AddCurrentSymbolToDiagramWithHierarchyCommand>(PackageIds.AddToDiagramWithHierarchyCommand),
-                new CommandSpecification<ClearModelCommand>(PackageIds.ClearModelCommand),
+                //new CommandSpecification<AddCurrentSymbolToDiagramWithHierarchyCommand>(PackageIds.AddToDiagramWithHierarchyCommand),
+                //new CommandSpecification<ClearModelCommand>(PackageIds.ClearModelCommand),
                 new CommandSpecification<ClearDiagramCommand>(PackageIds.ClearDiagramCommand),
-                new CommandSpecification<UpdateModelFromSourceCommand>(PackageIds.UpdateModelFromSourceCommand),
+                //new CommandSpecification<UpdateModelFromSourceCommand>(PackageIds.UpdateModelFromSourceCommand),
                 new CommandSpecification<CopyToClipboardCommand>(PackageIds.CopyToClipboardCommand),
                 new CommandSpecification<ExportToFileCommand>(PackageIds.ExportToFileCommand),
                 new CommandSpecification<ShowDiagramWindowCommand>(PackageIds.ShowDiagramWindowCommand),

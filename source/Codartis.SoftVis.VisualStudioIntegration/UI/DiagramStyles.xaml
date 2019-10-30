@@ -7,7 +7,8 @@
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:modeling="clr-namespace:Codartis.SoftVis.Modeling.Definition;assembly=Codartis.SoftVis"
-                    xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util">
+                    xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
+                    xmlns:modeling1="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
@@ -33,7 +34,7 @@
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}"
-           d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynTypeDiagramNodeViewModel}}">
+           d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynDiagramNodeViewModel}}">
         <Setter Property="MinHeight" Value="46"/>
         <Setter Property="MaxHeight" Value="112"/>
         <Setter Property="MinWidth" Value="50"/>
@@ -41,7 +42,7 @@
         <Setter Property="DiagramFill" Value="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeViewModel}">
         <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
                 BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
                 BorderThickness="1"
@@ -79,7 +80,7 @@
         </Border>
 
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Path=RoslynTypeDiagramNode.Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
+            <DataTrigger Binding="{Binding Path=RoslynTypeDiagramNode.Origin}" Value="{x:Static modeling1:ModelOrigin.SourceCode}">
                 <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">

@@ -1,6 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Layout;
-using Codartis.SoftVis.Diagramming.Layout.Nodes;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -15,19 +14,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
         private readonly IHostUiServices _hostUiServices;
 
         public ApplicationDiagramPluginFactory(
-            ILayoutPriorityProvider layoutPriorityProvider, 
-            IDiagramShapeFactory diagramShapeFactory, 
-            INodeLayoutAlgorithm nodeLayoutAlgorithm,
+            IDiagramLayoutAlgorithm diagramLayoutAlgorithm,
             IHostUiServices hostUiServices)
-            : base(layoutPriorityProvider, diagramShapeFactory, nodeLayoutAlgorithm)
+            : base(diagramLayoutAlgorithm)
         {
             _hostUiServices = hostUiServices; 
         }
 
         public override IDiagramPlugin Create(DiagramPluginId diagramPluginId)
         {
-            if (diagramPluginId == ApplicationDiagramPluginId.ModelExtenderDiagramPlugin)
-                return new ModelExtenderDiagramPlugin(_hostUiServices);
+            //if (diagramPluginId == ApplicationDiagramPluginId.ModelExtenderDiagramPlugin)
+            //    return new ModelExtenderDiagramPlugin(_hostUiServices);
 
             return base.Create(diagramPluginId);
         }

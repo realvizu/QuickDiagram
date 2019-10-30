@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 
@@ -13,21 +14,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// Abstract base class for model nodes that represent Roslyn types.
     /// Immutable.
     /// </summary>
-    internal abstract class RoslynTypeNode : RoslynModelNode, IRoslynTypeNode
+    internal abstract class RoslynTypeBase : RoslynSymbolBase, IRoslynTypeNode
     {
         public INamedTypeSymbol NamedTypeSymbol { get; }
 
-        protected RoslynTypeNode(ModelNodeId id, INamedTypeSymbol roslynSymbol, ModelNodeStereotype stereotype)
-            : base(id, roslynSymbol, stereotype)
+        protected RoslynTypeBase([NotNull] INamedTypeSymbol roslynSymbol)
+            : base(roslynSymbol)
         {
-            NamedTypeSymbol = roslynSymbol ?? throw new ArgumentNullException(nameof(roslynSymbol));
+            NamedTypeSymbol = roslynSymbol;
         }
 
         public virtual bool IsAbstract => false;
         public string FullName => NamedTypeSymbol.GetFullName();
         public string Description => NamedTypeSymbol.GetDescription();
 
-        protected INamedTypeSymbol EnsureNamedTypeSymbol(ISymbol newSymbol)
+        [NotNull]
+        protected INamedTypeSymbol EnsureNamedTypeSymbol([NotNull] ISymbol newSymbol)
         {
             if (newSymbol is INamedTypeSymbol namedTypeSymbol)
                 return namedTypeSymbol;
@@ -35,41 +37,58 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             throw new InvalidOperationException($"INamedTypeSymbol expected but received {newSymbol.GetType().Name}");
         }
 
-        protected static IEnumerable<RelatedSymbolPair> GetImplementedInterfaces(INamedTypeSymbol classOrStructSymbol)
+        [NotNull]
+        protected static IEnumerable<RelatedSymbolPair> GetImplementedInterfaces([NotNull] INamedTypeSymbol classOrStructSymbol)
         {
             foreach (var implementedInterfaceSymbol in classOrStructSymbol.Interfaces.Where(i => i.TypeKind == TypeKind.Interface))
-                yield return new RelatedSymbolPair(classOrStructSymbol, implementedInterfaceSymbol,
-                    DirectedRelationshipTypes.ImplementedInterface);
+                yield return new RelatedSymbolPair(
+                    classOrStructSymbol,
+                    implementedInterfaceSymbol,
+                    DirectedModelRelationshipTypes.ImplementedInterface);
         }
 
+        [NotNull]
+        [ItemNotNull]
         protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedTypesAsync(
-            IRoslynModelProvider roslynModelProvider, 
-            INamedTypeSymbol classSymbol)
+            [NotNull] IRoslynModelProvider roslynModelProvider,
+            [NotNull] INamedTypeSymbol classSymbol)
         {
             var workspace = await roslynModelProvider.GetWorkspaceAsync();
-
+            
             var derivedClasses = await SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution);
 
             return derivedClasses
                 .Where(i => classSymbol.SymbolEquals(i.BaseType.OriginalDefinition) && i.TypeKind == TypeKind.Class)
-                .Select(i => new RelatedSymbolPair(classSymbol, i, DirectedRelationshipTypes.Subtype));
+                .Select(i => new RelatedSymbolPair(classSymbol, i, DirectedModelRelationshipTypes.Subtype));
         }
 
-        protected static async Task<IEnumerable<RelatedSymbolPair>> GetImplementingTypesAsync(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
+        [NotNull]
+        [ItemNotNull]
+        protected static async Task<IEnumerable<RelatedSymbolPair>> GetImplementingTypesAsync(
+            [NotNull] IRoslynModelProvider roslynModelProvider,
+            [NotNull] INamedTypeSymbol interfaceSymbol)
         {
             var workspace = await roslynModelProvider.GetWorkspaceAsync();
             var implementingTypes = await FindImplementingTypesAsync(workspace, interfaceSymbol);
-            return implementingTypes.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.ImplementerType));
+            return implementingTypes.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedModelRelationshipTypes.ImplementerType));
         }
 
-        protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedInterfacesAsync(IRoslynModelProvider roslynModelProvider, INamedTypeSymbol interfaceSymbol)
+        [NotNull]
+        [ItemNotNull]
+        protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedInterfacesAsync(
+            [NotNull] IRoslynModelProvider roslynModelProvider,
+            [NotNull] INamedTypeSymbol interfaceSymbol)
         {
             var workspace = await roslynModelProvider.GetWorkspaceAsync();
             var derivedInterfaces = await FindDerivedInterfacesAsync(workspace, interfaceSymbol);
-            return derivedInterfaces.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedRelationshipTypes.Subtype));
+            return derivedInterfaces.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedModelRelationshipTypes.Subtype));
         }
 
-        private static async Task<IEnumerable<INamedTypeSymbol>> FindImplementingTypesAsync(Workspace workspace, INamedTypeSymbol interfaceSymbol)
+        [NotNull]
+        [ItemNotNull]
+        private static async Task<IEnumerable<INamedTypeSymbol>> FindImplementingTypesAsync(
+            [NotNull] Workspace workspace,
+            [NotNull] INamedTypeSymbol interfaceSymbol)
         {
             var result = new List<INamedTypeSymbol>();
 
@@ -94,7 +113,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return result;
         }
 
-        private static async Task<IEnumerable<INamedTypeSymbol>> FindDerivedInterfacesAsync(Workspace workspace, INamedTypeSymbol interfaceSymbol)
+        [NotNull]
+        [ItemNotNull]
+        private static async Task<IEnumerable<INamedTypeSymbol>> FindDerivedInterfacesAsync(
+            [NotNull] Workspace workspace,
+            [NotNull] INamedTypeSymbol interfaceSymbol)
         {
             var result = new List<INamedTypeSymbol>();
 
