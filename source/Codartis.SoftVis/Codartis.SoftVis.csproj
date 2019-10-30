@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="morelinq" Version="3.0.0" />
     <PackageReference Include="NsDepCop" Version="1.9.0">
       <PrivateAssets>all</PrivateAssets>

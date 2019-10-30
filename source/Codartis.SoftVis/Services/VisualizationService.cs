@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
@@ -17,23 +16,26 @@ namespace Codartis.SoftVis.Services
     /// </summary>
     public sealed class VisualizationService : IVisualizationService
     {
-        [NotNull] private readonly IContainer _container;
         [NotNull] private readonly IModelService _modelService;
+        [NotNull] private readonly Func<IModel, IDiagramService> _diagramServiceFactory;
+        [NotNull] private readonly Func<IDiagramService, IUiService> _uiServiceFactory;
+        [NotNull] private readonly IEnumerable<Func<IDiagramService, IDiagramPlugin>> _diagramPluginFactories;
 
-        [NotNull] private readonly Dictionary<DiagramId, ILifetimeScope> _diagramContainers;
         [NotNull] private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
         [NotNull] private readonly Dictionary<DiagramId, IUiService> _diagramUis;
-        // ReSharper disable once CollectionNeverQueried.Local
         [NotNull] private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
 
         public VisualizationService(
-            [NotNull] IContainer container,
-            [NotNull] IModelService modelService)
+            [NotNull] IModelService modelService,
+            [NotNull] Func<IModel, IDiagramService> diagramServiceFactory,
+            [NotNull] Func<IDiagramService, IUiService> uiServiceFactory,
+            [NotNull] IEnumerable<Func<IDiagramService, IDiagramPlugin>> diagramPluginFactories)
         {
-            _container = container;
             _modelService = modelService;
+            _diagramServiceFactory = diagramServiceFactory;
+            _uiServiceFactory = uiServiceFactory;
+            _diagramPluginFactories = diagramPluginFactories;
 
-            _diagramContainers = new Dictionary<DiagramId, ILifetimeScope>();
             _diagramServices = new Dictionary<DiagramId, IDiagramService>();
             _diagramUis = new Dictionary<DiagramId, IUiService>();
             _diagramPlugins = new Dictionary<DiagramId, List<IDiagramPlugin>>();
@@ -43,22 +45,15 @@ namespace Codartis.SoftVis.Services
         {
             var diagramId = DiagramId.Create();
 
-            var diagramContainer = _container.BeginLifetimeScope();
-            _diagramContainers.Add(diagramId, diagramContainer);
-
-            var diagramService = diagramContainer.Resolve<IDiagramService>(
-                new TypedParameter(typeof(IModel), _modelService.LatestModel));
+            var diagramService = _diagramServiceFactory(_modelService.LatestModel);
             _diagramServices.Add(diagramId, diagramService);
 
-            var diagramUi = diagramContainer.Resolve<IUiService>(
-                new TypedParameter(typeof(IDiagramService), diagramService));
+            var diagramUi = _uiServiceFactory(diagramService);
             diagramUi.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
             diagramUi.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUis.Add(diagramId, diagramUi);
 
-            var plugins = diagramContainer.Resolve<IEnumerable<IDiagramPlugin>>(
-                    new TypedParameter(typeof(IDiagramService), diagramService))
-                .ToList();
+            var plugins = _diagramPluginFactories.Select(i => i(diagramService)).ToList();
             _diagramPlugins.Add(diagramId, plugins);
 
             return diagramId;
@@ -77,10 +72,8 @@ namespace Codartis.SoftVis.Services
             diagramUi.RemoveDiagramNodeRequested -= PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUis.Remove(diagramId);
 
+            _diagramPlugins[diagramId].ForEach(i => i.Dispose());
             _diagramPlugins.Remove(diagramId);
-
-            _diagramContainers[diagramId].Dispose();
-            _diagramContainers.Remove(diagramId);
         }
 
         [NotNull]
