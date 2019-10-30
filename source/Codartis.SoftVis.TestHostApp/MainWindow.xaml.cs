@@ -67,15 +67,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             builder.RegisterType<VisualizationService>().SingleInstance().As<IVisualizationService>();
 
-            var container = builder.Build();
-
-            var builder2 = new ContainerBuilder();
-            builder2.RegisterInstance(container);
-#pragma warning disable 618
-            builder2.Update(container);
-#pragma warning restore 618
-
-            return container;
+            return builder.Build();
         }
     }
 }
