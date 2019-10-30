@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
@@ -16,22 +17,12 @@ namespace Codartis.SoftVis.Services
     /// </summary>
     public sealed class VisualizationService : IVisualizationService
     {
-        private const double DefaultMinZoom = .1;
-        private const double DefaultMaxZoom = 10;
-        private const double DefaultInitialZoom = 1;
-
         [NotNull] private readonly IContainer _container;
         [NotNull] private readonly IModelService _modelService;
 
-        // This dictionary is just to root the per-diagram containers.
-        // ReSharper disable once CollectionNeverQueried.Local
         [NotNull] private readonly Dictionary<DiagramId, ILifetimeScope> _diagramContainers;
-
-        // TODO: remove?
         [NotNull] private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
         [NotNull] private readonly Dictionary<DiagramId, IUiService> _diagramUis;
-
-        // This dictionary is just to root the plugins.
         // ReSharper disable once CollectionNeverQueried.Local
         [NotNull] private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
 
@@ -43,17 +34,12 @@ namespace Codartis.SoftVis.Services
             _modelService = modelService;
 
             _diagramContainers = new Dictionary<DiagramId, ILifetimeScope>();
-
-            // TODO: remove?
             _diagramServices = new Dictionary<DiagramId, IDiagramService>();
             _diagramUis = new Dictionary<DiagramId, IUiService>();
             _diagramPlugins = new Dictionary<DiagramId, List<IDiagramPlugin>>();
         }
 
-        public DiagramId CreateDiagram(
-            double minZoom = DefaultMinZoom,
-            double maxZoom = DefaultMaxZoom,
-            double initialZoom = DefaultInitialZoom)
+        public DiagramId CreateDiagram()
         {
             var diagramId = DiagramId.Create();
 
@@ -61,22 +47,19 @@ namespace Codartis.SoftVis.Services
             _diagramContainers.Add(diagramId, diagramContainer);
 
             var diagramService = diagramContainer.Resolve<IDiagramService>(
-                new TypedParameter(typeof(IModel), _modelService.LatestModel)
-            );
+                new TypedParameter(typeof(IModel), _modelService.LatestModel));
             _diagramServices.Add(diagramId, diagramService);
 
             var diagramUi = diagramContainer.Resolve<IUiService>(
-                new TypedParameter(typeof(IDiagramService), diagramService)
-            );
-            diagramUi.DiagramNodePayloadAreaSizeChanged += (diagramNode, size) => OnDiagramNodePayloadAreaSizeChanged(diagramId, diagramNode, size);
-            diagramUi.RemoveDiagramNodeRequested += diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);
+                new TypedParameter(typeof(IDiagramService), diagramService));
+            diagramUi.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUi.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUis.Add(diagramId, diagramUi);
 
-            var plugins = diagramContainer.Resolve<IEnumerable<IDiagramPlugin>>().ToList();
+            var plugins = diagramContainer.Resolve<IEnumerable<IDiagramPlugin>>(
+                    new TypedParameter(typeof(IDiagramService), diagramService))
+                .ToList();
             _diagramPlugins.Add(diagramId, plugins);
-
-            foreach (var plugin in plugins)
-                plugin.Initialize(_modelService, diagramService);
 
             return diagramId;
         }
@@ -85,12 +68,39 @@ namespace Codartis.SoftVis.Services
         public IDiagramService GetDiagramService(DiagramId diagramId) => _diagramServices[diagramId];
         public IUiService GetUiService(DiagramId diagramId) => _diagramUis[diagramId];
 
-        private void OnDiagramNodePayloadAreaSizeChanged(DiagramId diagramId, IDiagramNode diagramNode, Size2D newSize)
+        public void RemoveDiagram(DiagramId diagramId)
+        {
+            _diagramServices.Remove(diagramId);
+
+            var diagramUi = _diagramUis[diagramId];
+            diagramUi.DiagramNodePayloadAreaSizeChanged -= PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUi.RemoveDiagramNodeRequested -= PropagateRemoveDiagramNodeRequested(diagramId);
+            _diagramUis.Remove(diagramId);
+
+            _diagramPlugins.Remove(diagramId);
+
+            _diagramContainers[diagramId].Dispose();
+            _diagramContainers.Remove(diagramId);
+        }
+
+        [NotNull]
+        private Action<IDiagramNode> PropagateRemoveDiagramNodeRequested(DiagramId diagramId)
+        {
+            return diagramNode => OnRemoveDiagramNodeRequested(diagramId, diagramNode);
+        }
+
+        [NotNull]
+        private Action<IDiagramNode, Size2D> PropagateDiagramNodePayloadAreaSizeChanged(DiagramId diagramId)
+        {
+            return (diagramNode, size) => OnDiagramNodePayloadAreaSizeChanged(diagramId, diagramNode, size);
+        }
+
+        private void OnDiagramNodePayloadAreaSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
         {
             GetDiagramService(diagramId).UpdateNodePayloadAreaSize(diagramNode.Id, newSize);
         }
 
-        private void OnRemoveDiagramNodeRequested(DiagramId diagramId, IDiagramNode diagramNode)
+        private void OnRemoveDiagramNodeRequested(DiagramId diagramId, [NotNull] IDiagramNode diagramNode)
         {
             GetDiagramService(diagramId).RemoveNode(diagramNode.Id);
         }

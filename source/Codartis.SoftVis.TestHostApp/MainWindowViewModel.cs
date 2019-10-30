@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             var modelService = visualizationService.GetModelService();
             _testModelService = new TestModelService(modelService);
-            var diagramId = visualizationService.CreateDiagram(minZoom: 0.2, maxZoom: 5, initialZoom: 1);
+            var diagramId = visualizationService.CreateDiagram();
             _diagramService = visualizationService.GetDiagramService(diagramId);
             _uiService = (IWpfUiService)visualizationService.GetUiService(diagramId);
 

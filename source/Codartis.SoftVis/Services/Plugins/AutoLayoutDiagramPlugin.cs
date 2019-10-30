@@ -24,16 +24,15 @@ namespace Codartis.SoftVis.Services.Plugins
         };
 
         [NotNull] private readonly IDiagramLayoutAlgorithm _layoutAlgorithm;
-        private IDisposable _diagramChangedSubscription;
+        [NotNull] private readonly IDisposable _diagramChangedSubscription;
 
-        public AutoLayoutDiagramPlugin([NotNull] IDiagramLayoutAlgorithm layoutAlgorithm)
+        public AutoLayoutDiagramPlugin(
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IDiagramLayoutAlgorithm layoutAlgorithm)
+            : base(modelService, diagramService)
         {
             _layoutAlgorithm = layoutAlgorithm;
-        }
-
-        public override void Initialize(IModelService modelService, IDiagramService diagramService)
-        {
-            base.Initialize(modelService, diagramService);
 
             _diagramChangedSubscription = DiagramService.DiagramChangedEventStream
                 .Throttle(DiagramEventDebounceTimeSpan)
@@ -42,7 +41,7 @@ namespace Codartis.SoftVis.Services.Plugins
 
         public override void Dispose()
         {
-            _diagramChangedSubscription?.Dispose();
+            _diagramChangedSubscription.Dispose();
         }
 
         private void OnDiagramChanged(DiagramEvent diagramEvent)

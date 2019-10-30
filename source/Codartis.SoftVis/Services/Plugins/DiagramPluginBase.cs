@@ -6,14 +6,16 @@ using JetBrains.Annotations;
 namespace Codartis.SoftVis.Services.Plugins
 {
     /// <summary>
-    /// Abstract base class for diagram store plugins.
+    /// Abstract base class for diagram plugins.
     /// </summary>
     public abstract class DiagramPluginBase : IDiagramPlugin, IDisposable
     {
-        protected IModelService ModelService { get; private set; }
-        protected IDiagramService DiagramService { get; private set; }
+        [NotNull] protected IModelService ModelService { get; }
+        [NotNull] protected IDiagramService DiagramService { get; }
 
-        public virtual void Initialize([NotNull] IModelService modelService, [NotNull] IDiagramService diagramService)
+        protected DiagramPluginBase(
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService)
         {
             ModelService = modelService;
             DiagramService = diagramService;
