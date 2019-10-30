@@ -1,7 +1,7 @@
-﻿using System;
-using Codartis.SoftVis.Diagramming.Definition;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf.ViewModels;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -10,13 +10,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class ModelObserverViewModelBase : ViewModelBase
     {
-        protected readonly IModelService ModelService;
-        protected readonly IDiagramService DiagramService;
+        [NotNull] protected readonly IModelService ModelService;
+        [NotNull] protected readonly IDiagramService DiagramService;
 
-        protected ModelObserverViewModelBase(IModelService modelService, IDiagramService diagramService)
+        protected ModelObserverViewModelBase(
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService)
         {
-            ModelService = modelService ?? throw new ArgumentNullException(nameof(modelService));
-            DiagramService = diagramService ?? throw new ArgumentNullException(nameof(diagramService));
+            ModelService = modelService;
+            DiagramService = diagramService;
         }
     }
 }

@@ -24,8 +24,8 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private void OnDiagramChanged(DiagramEvent @event)
         {
-            var model = ModelService.LatestModel;
             var diagram = @event.NewDiagram;
+            var model = diagram.Model;
 
             foreach (var change in @event.ShapeEvents)
                 ProcessDiagramChange(change, model, diagram);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;

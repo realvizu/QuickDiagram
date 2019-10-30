@@ -64,6 +64,11 @@ namespace Codartis.Util
         public static bool operator ==(Maybe<T> left, Maybe<T> right) => left.Equals(right);
 
         public static bool operator !=(Maybe<T> left, Maybe<T> right) => !left.Equals(right);
+
+        public Maybe<TResult> OfType<TResult>()
+        {
+            return Value is TResult result ? new Maybe<TResult>(result) : Maybe<TResult>.Nothing;
+        }
     }
 
     public static class Maybe

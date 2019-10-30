@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for diagram nodes.
     /// </summary>
-    public sealed class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
+    public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
     {
         private string _name;
         private Point _center;
@@ -26,9 +26,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private bool _hasChildren;
         private Rect _animatedRect;
 
-        [NotNull] private readonly IRelatedNodeTypeProvider _relatedNodeTypeProvider;
-        public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
-        public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
+        [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
+        [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
+        [NotNull] [ItemNotNull] public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
         public event Action<IDiagramNode, Size2D> PayloadAreaSizeChanged;
@@ -37,17 +37,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> RemoveRequested;
 
         public DiagramNodeViewModel(
-            IModelService modelService,
-            IDiagramService diagramService,
-            IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            IFocusTracker<IDiagramShapeUi> focusTracker,
-            IDiagramNode diagramNode)
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
+            [NotNull] IFocusTracker<IDiagramShapeUi> focusTracker,
+            [NotNull] IDiagramNode diagramNode)
             : base(modelService, diagramService, diagramNode)
         {
             PopulateFromDiagramNode(diagramNode);
             // Must NOT populate size from model because its value flows from the controls to the models.
 
-            _relatedNodeTypeProvider = relatedNodeTypeProvider;
+            RelatedNodeTypeProvider = relatedNodeTypeProvider;
             FocusTracker = (IWpfFocusTracker<IDiagramShapeUi>)focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
@@ -189,14 +189,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override object CloneForImageExport()
         {
-            return new DiagramNodeViewModel(ModelService, DiagramService, _relatedNodeTypeProvider, FocusTracker, DiagramNode)
-            {
-                // For image export we must set those properties that are calculated on the normal UI.
-                _size = _size,
-                _payloadAreaSize = _payloadAreaSize,
-                _center = _center,
-                _topLeft = _topLeft,
-            };
+            var clone = new DiagramNodeViewModel(
+                ModelService,
+                DiagramService,
+                RelatedNodeTypeProvider,
+                FocusTracker,
+                DiagramNode);
+
+            SetPropertiesForImageExport(clone);
+            
+            return clone;
+        }
+
+        protected void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
+        {
+            // For image export we must set those properties that are calculated on the normal UI.
+            clone._size = _size;
+            clone._payloadAreaSize = _payloadAreaSize;
+            clone._center = _center;
+            clone._topLeft = _topLeft;
         }
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()
@@ -207,7 +218,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 yield return new RelatedNodeMiniButtonViewModel(ModelService, DiagramService, entityRelationType);
         }
 
-        private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => _relatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
+        [NotNull]
+        private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => RelatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
 
         private void OnDiagramChanged(DiagramEvent @event)
         {
@@ -240,6 +252,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return diagramNode.ChildrenAreaSize.IsDefined && diagramNode.ChildrenAreaSize != Size2D.Zero;
         }
 
+        [NotNull]
+        [ItemNotNull]
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()
         {
             return GetRelatedNodeTypes()

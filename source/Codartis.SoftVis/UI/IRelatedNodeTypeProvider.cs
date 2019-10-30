@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI
 {
@@ -8,6 +9,7 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IRelatedNodeTypeProvider
     {
+        [NotNull]
         IEnumerable<RelatedNodeType> GetRelatedNodeTypes(ModelNodeStereotype stereotype);
     }
 }

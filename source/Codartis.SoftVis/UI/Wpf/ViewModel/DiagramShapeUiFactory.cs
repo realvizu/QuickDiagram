@@ -2,39 +2,42 @@
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Abstract base class for factories that create view models from diagram shapes.
+    /// Base class for factories that create view models from diagram shapes.
     /// </summary>
-    public sealed class DiagramShapeUiFactory : IDiagramShapeUiFactory
+    public class DiagramShapeUiFactory : IDiagramShapeUiFactory
     {
-        private readonly IRelatedNodeTypeProvider _relatedNodeTypeProvider;
+        [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
+        protected IModelService ModelService { get; private set; }
+        protected IDiagramShapeUiRepository DiagramShapeUiRepository { get; private set; }
 
-        public DiagramShapeUiFactory(IRelatedNodeTypeProvider relatedNodeTypeProvider)
+        public DiagramShapeUiFactory([NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider)
         {
-            _relatedNodeTypeProvider = relatedNodeTypeProvider;
+            RelatedNodeTypeProvider = relatedNodeTypeProvider;
         }
 
-        private IModelService ModelService { get; set; }
-        private IDiagramShapeUiRepository DiagramShapeUiRepository { get; set; }
-
-        public void Initialize(IModelService modelService, IDiagramShapeUiRepository diagramShapeUiRepository)
+        // TODO: merge into ctor
+        public void Initialize([NotNull] IModelService modelService, [NotNull] IDiagramShapeUiRepository diagramShapeUiRepository)
         {
             ModelService = modelService;
             DiagramShapeUiRepository = diagramShapeUiRepository;
         }
 
-        public IDiagramNodeUi CreateDiagramNodeUi(
-            IDiagramService diagramService,
-            IDiagramNode diagramNode,
-            IFocusTracker<IDiagramShapeUi> focusTracker)
+        [NotNull]
+        public virtual IDiagramNodeUi CreateDiagramNodeUi(
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IDiagramNode diagramNode,
+            [NotNull] IFocusTracker<IDiagramShapeUi> focusTracker)
         {
-            return new DiagramNodeViewModel(ModelService, diagramService, _relatedNodeTypeProvider, focusTracker, diagramNode);
+            return new DiagramNodeViewModel(ModelService, diagramService, RelatedNodeTypeProvider, focusTracker, diagramNode);
         }
 
-        public IDiagramConnectorUi CreateDiagramConnectorUi(IDiagramService diagramService, IDiagramConnector diagramConnector)
+        [NotNull]
+        public virtual IDiagramConnectorUi CreateDiagramConnectorUi([NotNull] IDiagramService diagramService, [NotNull] IDiagramConnector diagramConnector)
         {
             if (!DiagramShapeUiRepository.TryGetDiagramNodeUi(diagramConnector.Source, out var sourceNode))
                 throw new InvalidOperationException($"ViewModel not found for node {diagramConnector.Source}");
