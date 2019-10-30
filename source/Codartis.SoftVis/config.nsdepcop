@@ -33,6 +33,7 @@
   <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI" />
   <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.View" />
   <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
+  <Allowed From="Codartis.SoftVis.Services" To="Autofac.*" />
   <Allowed From="Codartis.SoftVis.Services" To="System.Windows">
     <VisibleMembers>
       <Type Name="ResourceDictionary" />

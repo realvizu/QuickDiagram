@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Autofac;
+﻿using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
 using Codartis.SoftVis.Modeling.Definition;
@@ -11,6 +11,7 @@ using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -39,31 +40,42 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<MainWindowViewModel>();
 
             builder.RegisterType<ModelService>().SingleInstance().As<IModelService>();
-            builder.RegisterType<TestDiagramServiceFactory>().As<IDiagramServiceFactory>();
-            builder.RegisterType<TestUiServiceFactory>().As<IUiServiceFactory>();
-            builder.RegisterType<DiagramLayoutAlgorithm>().WithParameter("childrenAreaPadding", 2).As<IDiagramLayoutAlgorithm>();
-            builder.RegisterType<DiagramPluginFactory>().As<IDiagramPluginFactory>();
             builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
+
+            builder.RegisterType<DiagramService>().As<IDiagramService>();
+            builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
+
             builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
+
+            builder.RegisterType<WpfUiService>()
+                .WithParameter("minZoom", .1)
+                .WithParameter("maxZoom", 10d)
+                .WithParameter("initialZoom", 1d)
+                .As<IUiService>();
+
+            builder.RegisterType<DiagramLayoutAlgorithm>()
+                .WithParameter("childrenAreaPadding", 2)
+                .As<IDiagramLayoutAlgorithm>();
 
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
 
-            builder.RegisterType<VisualizationService>()
-                .SingleInstance()
-                .WithParameter(
-                    new TypedParameter(
-                        typeof(IEnumerable<DiagramPluginId>),
-                        new []
-                        {
-                            DiagramPluginId.AutoLayoutDiagramPlugin,
-                            DiagramPluginId.ConnectorHandlerDiagramPlugin,
-                            DiagramPluginId.ModelTrackingDiagramPlugin
-                        }))
-                .As<IVisualizationService>();
+            builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>();
+            builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>();
+            builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>();
 
-            return builder.Build();
+            builder.RegisterType<VisualizationService>().SingleInstance().As<IVisualizationService>();
+
+            var container = builder.Build();
+
+            var builder2 = new ContainerBuilder();
+            builder2.RegisterInstance(container);
+#pragma warning disable 618
+            builder2.Update(container);
+#pragma warning restore 618
+
+            return container;
         }
     }
 }
