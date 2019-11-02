@@ -56,12 +56,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         public RelatedSymbolPair WithRelatedSymbol(ISymbol newRelatedSymbol) => new RelatedSymbolPair(BaseSymbol, newRelatedSymbol, DirectedRelationshipType);
 
-        public bool Matches(IModelRelationship relationship)
-        {
-            return relationship.Stereotype == Stereotype &&
-                   ((RoslynSymbol)relationship.Source).SymbolEquals(SourceSymbol) &&
-                   ((RoslynSymbol)relationship.Target).SymbolEquals(TargetSymbol);
-        }
+        //public bool Matches(IModelRelationship relationship)
+        //{
+        //    return relationship.Stereotype == Stereotype &&
+        //           ((RoslynSymbol)relationship.Source).SymbolEquals(SourceSymbol) &&
+        //           ((RoslynSymbol)relationship.Target).SymbolEquals(TargetSymbol);
+        //}
 
         public override string ToString()
         {

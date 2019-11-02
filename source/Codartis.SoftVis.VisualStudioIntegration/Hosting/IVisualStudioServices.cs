@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Codartis.Util;
 using EnvDTE80;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Editor;
@@ -11,9 +10,9 @@ using Task = System.Threading.Tasks.Task;
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
     /// <summary>
-    /// Operations to access the services of the host package and host environment.
+    /// Operations to access the services of the host Visual Studio.
     /// </summary>
-    public interface IPackageServices
+    public interface IVisualStudioServices
     {
         /// <summary>
         /// Return the host environment service.

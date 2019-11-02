@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Definition;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 

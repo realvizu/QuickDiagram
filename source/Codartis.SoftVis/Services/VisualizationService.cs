@@ -5,6 +5,7 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Services
@@ -18,7 +19,8 @@ namespace Codartis.SoftVis.Services
     {
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly Func<IModel, IDiagramService> _diagramServiceFactory;
-        [NotNull] private readonly Func<IDiagramService, IUiService> _uiServiceFactory;
+        [NotNull] private readonly Func<IDiagramService, DiagramViewModel> _diagramViewModelFactory;
+        [NotNull] private readonly Func<DiagramViewModel, IUiService> _uiServiceFactory;
         [NotNull] private readonly IEnumerable<Func<IDiagramService, IDiagramPlugin>> _diagramPluginFactories;
 
         [NotNull] private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
@@ -28,11 +30,13 @@ namespace Codartis.SoftVis.Services
         public VisualizationService(
             [NotNull] IModelService modelService,
             [NotNull] Func<IModel, IDiagramService> diagramServiceFactory,
-            [NotNull] Func<IDiagramService, IUiService> uiServiceFactory,
+            [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
+            [NotNull] Func<DiagramViewModel, IUiService> uiServiceFactory,
             [NotNull] IEnumerable<Func<IDiagramService, IDiagramPlugin>> diagramPluginFactories)
         {
             _modelService = modelService;
             _diagramServiceFactory = diagramServiceFactory;
+            _diagramViewModelFactory = diagramViewModelFactory;
             _uiServiceFactory = uiServiceFactory;
             _diagramPluginFactories = diagramPluginFactories;
 
@@ -48,7 +52,8 @@ namespace Codartis.SoftVis.Services
             var diagramService = _diagramServiceFactory(_modelService.LatestModel);
             _diagramServices.Add(diagramId, diagramService);
 
-            var diagramUi = _uiServiceFactory(diagramService);
+            var diagramViewModel = _diagramViewModelFactory(diagramService);
+            var diagramUi = _uiServiceFactory(diagramViewModel);
             diagramUi.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
             diagramUi.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUis.Add(diagramId, diagramUi);

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig InheritanceDepth="1">
+<NsDepCopConfig InheritanceDepth="1" IsEnabled="false">
     <Allowed From="*" To="System.Windows">
         <VisibleMembers>
             <Type Name="Clipboard"/>

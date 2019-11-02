@@ -22,40 +22,40 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private const double ExportedImageMargin = 10;
 
         private readonly IHostUiServices _hostUiServices;
-        private readonly RoslynDiagramViewModel _diagramViewModel;
 
         public DiagramControl DiagramControl { get; }
         public Dpi ImageExportDpi { get; set; }
 
-        public ApplicationUiService(IHostUiServices hostUiServices, RoslynDiagramViewModel diagramViewModel)
+        public ApplicationUiService(
+            IHostUiServices hostUiServices,
+            RoslynDiagramViewModel diagramViewModel)
             : base(diagramViewModel)
         {
             _hostUiServices = hostUiServices;
-            _diagramViewModel = diagramViewModel;
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-            DiagramControl = new DiagramControl(resourceDictionary) {DataContext = _diagramViewModel};
+            DiagramControl = new DiagramControl(resourceDictionary) { DataContext = RoslynDiagramViewModel };
 
             Initialize(resourceDictionary, DiagramControl);
         }
 
+        private RoslynDiagramViewModel RoslynDiagramViewModel => (RoslynDiagramViewModel)DiagramViewModel;
+
         public Task ShowDiagramWindowAsync() => _hostUiServices.ShowDiagramWindowAsync();
 
-        public void ShowMessageBox(string message)
-            => System.Windows.MessageBox.Show(message, DialogTitle);
+        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
 
-        public void ShowPopupMessage(string message, TimeSpan hideAfter = default)
-            => _diagramViewModel.ShowPopupMessage(message, hideAfter);
+        public void ShowPopupMessage(string message, TimeSpan hideAfter = default) => RoslynDiagramViewModel.ShowPopupMessage(message, hideAfter);
 
         public string SelectSaveFilename(string title, string filter)
         {
-            var saveFileDialog = new SaveFileDialog {Title = title, Filter = filter};
+            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
             saveFileDialog.ShowDialog();
             return saveFileDialog.FileName;
         }
 
-        public void ExpandAllNodes() => _diagramViewModel.ExpandAllNodes();
-        public void CollapseAllNodes() => _diagramViewModel.CollapseAllNodes();
+        public void ExpandAllNodes() => RoslynDiagramViewModel.ExpandAllNodes();
+        public void CollapseAllNodes() => RoslynDiagramViewModel.CollapseAllNodes();
 
         public async Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0)
         {
@@ -63,13 +63,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
-        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default,
-            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
+        public async Task<BitmapSource> CreateDiagramImageAsync(
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null,
+            IProgress<int> maxProgress = null)
         {
             try
             {
-                return await CreateDiagramImageAsync(ImageExportDpi.Value, ExportedImageMargin,
-                    cancellationToken, progress, maxProgress);
+                return await CreateDiagramImageAsync(
+                    ImageExportDpi.Value,
+                    ExportedImageMargin,
+                    cancellationToken,
+                    progress,
+                    maxProgress);
             }
             catch (OutOfMemoryException)
             {

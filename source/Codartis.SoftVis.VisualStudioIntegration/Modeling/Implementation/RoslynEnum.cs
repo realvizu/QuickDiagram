@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation

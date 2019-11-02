@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {

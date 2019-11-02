@@ -7,7 +7,6 @@ using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Document = Microsoft.CodeAnalysis.Document;
@@ -19,20 +18,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// <summary>
     /// Gets information from Visual Studio about the current solution, projects and source documents.
     /// </summary>
-    internal class HostWorkspaceGateway : IRoslynModelProvider
+    internal class HostWorkspaceGateway : IHostModelProvider
     {
         private const string CSharpContentTypeName = "CSharp";
 
-        private readonly IPackageServices _packageServices;
+        private readonly IVisualStudioServices _visualStudioServices;
 
-        internal HostWorkspaceGateway(IPackageServices packageServices)
+        public HostWorkspaceGateway(IVisualStudioServices visualStudioServices)
         {
-            _packageServices = packageServices;
+            _visualStudioServices = visualStudioServices;
         }
 
         public async Task<Workspace> GetWorkspaceAsync()
         {
-            return await _packageServices.GetVisualStudioWorkspaceAsync();
+            return await _visualStudioServices.GetVisualStudioWorkspaceAsync();
         }
 
         public async Task<Maybe<ISymbol>> TryGetCurrentSymbolAsync()
@@ -63,7 +62,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public async Task ShowSourceAsync(ISymbol symbol)
         {
-            var location = symbol?.Locations.FirstOrDefault();
+            var location = symbol.Locations.FirstOrDefault();
             if (location == null)
                 return;
 
@@ -110,7 +109,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private void SelectSourceLocation(LinePositionSpan span)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var hostService = _packageServices.GetHostEnvironmentService();
+            var hostService = _visualStudioServices.GetHostEnvironmentService();
             var selection = hostService.ActiveDocument.Selection as TextSelection;
             if (selection == null)
                 return;
@@ -131,9 +130,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private async Task<IWpfTextView> GetActiveTextViewAsync()
         {
-            var textManager = await _packageServices.GetTextManagerServiceAsync();
+            var textManager = await _visualStudioServices.GetTextManagerServiceAsync();
             textManager.GetActiveView(1, null, out var textView);
-            var editorAdaptersFactoryService = await _packageServices.GetEditorAdaptersFactoryServiceAsync();
+            var editorAdaptersFactoryService = await _visualStudioServices.GetEditorAdaptersFactoryServiceAsync();
             return editorAdaptersFactoryService.GetWpfTextView(textView);
         }
 

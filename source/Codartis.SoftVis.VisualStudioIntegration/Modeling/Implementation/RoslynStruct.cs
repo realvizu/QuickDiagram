@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         public override Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
-            IRoslynModelProvider roslynModelProvider,
+            IHostModelProvider hostModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
             var result = Enumerable.Empty<RelatedSymbolPair>();

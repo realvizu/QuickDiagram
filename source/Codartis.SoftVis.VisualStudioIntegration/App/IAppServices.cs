@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 

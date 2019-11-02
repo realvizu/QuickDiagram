@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         public override async Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
-            IRoslynModelProvider roslynModelProvider,
+            IHostModelProvider hostModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
             var result = Enumerable.Empty<RelatedSymbolPair>();
@@ -27,10 +27,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 result = result.Concat(GetBaseInterfaces(NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedModelRelationshipTypes.Subtype)
-                result = result.Concat(await GetDerivedInterfacesAsync(roslynModelProvider, NamedTypeSymbol));
+                result = result.Concat(await GetDerivedInterfacesAsync(hostModelProvider, NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedModelRelationshipTypes.ImplementerType)
-                result = result.Concat(await GetImplementingTypesAsync(roslynModelProvider, NamedTypeSymbol));
+                result = result.Concat(await GetImplementingTypesAsync(hostModelProvider, NamedTypeSymbol));
 
             return result;
         }

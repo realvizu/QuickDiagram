@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 

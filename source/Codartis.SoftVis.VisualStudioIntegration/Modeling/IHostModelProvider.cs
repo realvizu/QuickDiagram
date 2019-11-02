@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Provides access to the Roslyn model of the host environment.
     /// </summary>
-    public interface IRoslynModelProvider
+    public interface IHostModelProvider
     {
         /// <summary>
         /// Returns the host workspace object that can be used to access the current Roslyn compilation.

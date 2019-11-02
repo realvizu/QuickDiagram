@@ -23,7 +23,7 @@
         <CreateVsixContainer>True</CreateVsixContainer>
         <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
         <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
-        <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+        <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
         <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
         <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
         <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>

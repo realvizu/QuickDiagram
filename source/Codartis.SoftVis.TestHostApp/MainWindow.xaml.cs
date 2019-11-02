@@ -47,11 +47,12 @@ namespace Codartis.SoftVis.TestHostApp
 
             builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
 
-            builder.RegisterType<WpfUiService>()
+            builder.RegisterType<DiagramViewModel>()
                 .WithParameter("minZoom", .2)
                 .WithParameter("maxZoom", 5d)
-                .WithParameter("initialZoom", 1d)
-                .As<IUiService>();
+                .WithParameter("initialZoom", 1d);
+
+            builder.RegisterType<WpfUiService>().As<IUiService>();
 
             builder.RegisterType<DiagramLayoutAlgorithm>()
                 .WithParameter("childrenAreaPadding", 2)

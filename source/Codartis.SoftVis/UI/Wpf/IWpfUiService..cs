@@ -16,6 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf
     {
         DiagramViewModel DiagramViewModel { get; }
 
+        // TODO: can we delete this and move the parameters to ctor?
         void Initialize(ResourceDictionary resourceDictionary, IDiagramStyleProvider diagramStyleProvider);
 
         Task<BitmapSource> CreateDiagramImageAsync(double dpi, double margin,

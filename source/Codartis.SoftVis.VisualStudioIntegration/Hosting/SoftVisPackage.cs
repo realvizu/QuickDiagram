@@ -6,12 +6,26 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Autofac;
+using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Implementation;
+using Codartis.SoftVis.Diagramming.Implementation.Layout;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
+using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.SoftVis.Services;
+using Codartis.SoftVis.Services.Plugins;
+using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.App;
+using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
-using Codartis.Util;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
+using Codartis.SoftVis.VisualStudioIntegration.UI;
 using EnvDTE;
 using EnvDTE80;
-using JetBrains.Annotations;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices;
@@ -32,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [ProvideToolWindow(typeof(DiagramHostToolWindow))]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideBindingPath]
-    public sealed class SoftVisPackage : AsyncPackage, IPackageServices
+    public sealed class SoftVisPackage : AsyncPackage, IVisualStudioServices
     {
         static SoftVisPackage()
         {
@@ -50,11 +64,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             await base.InitializeAsync(cancellationToken, progress);
 
-            var hostWorkspaceGateway = new HostWorkspaceGateway(this);
-            var hostUiGateway = new HostUiGateway(this);
+            var container = CreateDependencyContainer();
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            _diagramToolApplication = new DiagramToolApplication(hostWorkspaceGateway, hostUiGateway);
+            _diagramToolApplication = container.Resolve<DiagramToolApplication>();
 
             RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
@@ -63,6 +76,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             where TWindow : ToolWindowPane
         {
                 await ShowToolWindowAsync(
+                    // TODO: use typeof(TWindow)
                     typeof(DiagramHostToolWindow),
                     0,
                     create: true,
@@ -74,6 +88,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return toolWindowType.Equals(PackageGuids.DiagramToolWindowGuid) ? this : null;
         }
 
+        // TODO: Try to delete this. DiagramHostToolWindow sets its own caption. 
         protected override string GetToolWindowTitle(Type toolWindowType, int id)
         {
             return toolWindowType == typeof(DiagramHostToolWindow) ? DiagramHostToolWindow.WindowTitle : null;
@@ -161,6 +176,52 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             commandRegistrant.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
             commandRegistrant.RegisterToggleCommands(commandSetGuid, ShellCommands.ToggleCommandSpecifications);
             commandRegistrant.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
+        }
+
+        private IContainer CreateDependencyContainer()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ModelService>().SingleInstance().As<IModelService>();
+            builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
+
+            builder.RegisterType<DiagramService>().As<IDiagramService>();
+            builder.RegisterType<RoslynConnectorTypeResolver>().As<IConnectorTypeResolver>();
+
+            builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
+
+            builder.RegisterType<ApplicationUiService>()
+                .WithParameter("minZoom", AppDefaults.MinZoom)
+                .WithParameter("maxZoom", AppDefaults.MaxZoom)
+                .WithParameter("initialZoom", AppDefaults.InitialZoom)
+                .As<IUiService>();
+
+            builder.RegisterType<DiagramLayoutAlgorithm>()
+                .WithParameter("childrenAreaPadding", 2)
+                .As<IDiagramLayoutAlgorithm>();
+
+            builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>();
+            builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
+            builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
+
+            builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>();
+            builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>();
+            builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>();
+            //builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>();
+
+            builder.RegisterType<VisualizationService>().SingleInstance().As<IVisualizationService>();
+
+            builder.RegisterType<RoslynModelService>().As<IRoslynModelService>();
+
+            var softVisPackage = new TypedParameter(typeof(SoftVisPackage), this);
+            builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IHostModelProvider>();
+            builder.RegisterType<HostUiGateway>().WithParameter(softVisPackage).As<IHostUiServices>();
+
+            builder.RegisterInstance(this).As<IVisualStudioServices>();
+
+            builder.RegisterType<DiagramToolApplication>();
+
+            return builder.Build();
         }
     }
 }

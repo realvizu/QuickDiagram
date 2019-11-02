@@ -1,10 +1,6 @@
-﻿using System;
-using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.Util.UI;
 using JetBrains.Annotations;
 

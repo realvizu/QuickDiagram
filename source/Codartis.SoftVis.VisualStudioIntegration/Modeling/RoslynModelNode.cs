@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Codartis.SoftVis.Modeling.Definition;
+﻿using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling

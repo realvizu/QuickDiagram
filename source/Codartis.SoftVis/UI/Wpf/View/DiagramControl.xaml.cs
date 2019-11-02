@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// <summary>
     /// A DiagramControl graphically presents the contents of a DiagramViewModel using a DiagramCanvas.
     /// It is also interactive: nodes and connectors can be added/removed using mini buttons and other controls.
-    /// The layout is dictacted by the node and connector view models.
+    /// The layout is dictated by the node and connector view models.
     /// </summary>
     public partial class DiagramControl : UserControl, IDiagramStyleProvider
     {

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -50,10 +49,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [NotNull]
         [ItemNotNull]
         protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedTypesAsync(
-            [NotNull] IRoslynModelProvider roslynModelProvider,
+            [NotNull] IHostModelProvider hostModelProvider,
             [NotNull] INamedTypeSymbol classSymbol)
         {
-            var workspace = await roslynModelProvider.GetWorkspaceAsync();
+            var workspace = await hostModelProvider.GetWorkspaceAsync();
             
             var derivedClasses = await SymbolFinder.FindDerivedClassesAsync(classSymbol, workspace.CurrentSolution);
 
@@ -65,10 +64,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [NotNull]
         [ItemNotNull]
         protected static async Task<IEnumerable<RelatedSymbolPair>> GetImplementingTypesAsync(
-            [NotNull] IRoslynModelProvider roslynModelProvider,
+            [NotNull] IHostModelProvider hostModelProvider,
             [NotNull] INamedTypeSymbol interfaceSymbol)
         {
-            var workspace = await roslynModelProvider.GetWorkspaceAsync();
+            var workspace = await hostModelProvider.GetWorkspaceAsync();
             var implementingTypes = await FindImplementingTypesAsync(workspace, interfaceSymbol);
             return implementingTypes.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedModelRelationshipTypes.ImplementerType));
         }
@@ -76,10 +75,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [NotNull]
         [ItemNotNull]
         protected static async Task<IEnumerable<RelatedSymbolPair>> GetDerivedInterfacesAsync(
-            [NotNull] IRoslynModelProvider roslynModelProvider,
+            [NotNull] IHostModelProvider hostModelProvider,
             [NotNull] INamedTypeSymbol interfaceSymbol)
         {
-            var workspace = await roslynModelProvider.GetWorkspaceAsync();
+            var workspace = await hostModelProvider.GetWorkspaceAsync();
             var derivedInterfaces = await FindDerivedInterfacesAsync(workspace, interfaceSymbol);
             return derivedInterfaces.Select(i => new RelatedSymbolPair(interfaceSymbol, i, DirectedModelRelationshipTypes.Subtype));
         }

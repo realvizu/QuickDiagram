@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Codartis.Util;
 using JetBrains.Annotations;

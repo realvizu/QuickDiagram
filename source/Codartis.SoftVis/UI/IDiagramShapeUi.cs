@@ -11,9 +11,6 @@ namespace Codartis.SoftVis.UI
         [NotNull] string Stereotype { get; }
 
         [NotNull]
-        object CloneForImageExport();
-
-        [NotNull]
         [ItemNotNull]
         IEnumerable<IMiniButton> CreateMiniButtons();
     }

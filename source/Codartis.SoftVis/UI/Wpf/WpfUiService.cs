@@ -23,15 +23,9 @@ namespace Codartis.SoftVis.UI.Wpf
 
         public DiagramViewModel DiagramViewModel { get; }
 
-        public WpfUiService(
-            IModelService modelService,
-            IDiagramService diagramService,
-            IDiagramShapeUiFactory diagramShapeUiFactory,
-            double minZoom,
-            double maxZoom,
-            double initialZoom)
+        public WpfUiService(DiagramViewModel diagramViewModel)
         {
-            DiagramViewModel = new DiagramViewModel(modelService, diagramService, diagramShapeUiFactory, minZoom, maxZoom, initialZoom);
+            DiagramViewModel = diagramViewModel;
         }
 
         public void Initialize(ResourceDictionary resourceDictionary, IDiagramStyleProvider diagramStyleProvider)

@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public override bool IsAbstract => NamedTypeSymbol.IsAbstract;
 
         public override async Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
-            IRoslynModelProvider roslynModelProvider,
+            IHostModelProvider hostModelProvider,
             DirectedModelRelationshipType? directedModelRelationshipType = null)
         {
             var result = Enumerable.Empty<RelatedSymbolPair>();
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 result = result.Concat(GetBaseTypes(NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedModelRelationshipTypes.Subtype)
-                result = result.Concat(await GetDerivedTypesAsync(roslynModelProvider, NamedTypeSymbol));
+                result = result.Concat(await GetDerivedTypesAsync(hostModelProvider, NamedTypeSymbol));
 
             if (directedModelRelationshipType == null || directedModelRelationshipType == DirectedModelRelationshipTypes.ImplementedInterface)
                 result = result.Concat(GetImplementedInterfaces(NamedTypeSymbol));
