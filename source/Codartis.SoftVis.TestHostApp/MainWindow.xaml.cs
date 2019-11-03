@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Reflection;
+using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation;
@@ -12,7 +13,9 @@ using Codartis.SoftVis.TestHostApp.Diagramming;
 using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.Util.UI.Wpf.Resources;
 
 namespace Codartis.SoftVis.TestHostApp
 {
@@ -21,16 +24,24 @@ namespace Codartis.SoftVis.TestHostApp
     /// </summary>
     public partial class MainWindow
     {
+        private const string DiagramStylesXaml = "Resources/Styles.xaml";
+
         public MainWindow()
         {
             var container = CreateDependencyContainer();
 
-            var viewModel = container.Resolve<MainWindowViewModel>();
-            DataContext = viewModel;
+            var visualizationService = container.Resolve<IVisualizationService>();
+
+            var modelService = visualizationService.GetModelService();
+            var diagramId = visualizationService.CreateDiagram();
+            var diagramService = visualizationService.GetDiagramService(diagramId);
+            var wpfUiService = (IWpfUiService)visualizationService.GetUiService(diagramId);
+            var mainWindowViewModel = new MainWindowViewModel(this, modelService, diagramService, wpfUiService);
 
             InitializeComponent();
 
-            viewModel.OnUiInitialized(mainWindow: this, diagramStyleProvider: DiagramControl);
+            DataContext = mainWindowViewModel;
+            DiagramControlPresenter.Content = wpfUiService.DiagramControl;
         }
 
         private static IContainer CreateDependencyContainer()
@@ -51,6 +62,11 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("minZoom", .2)
                 .WithParameter("maxZoom", 5d)
                 .WithParameter("initialZoom", 1d);
+
+            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+
+            builder.RegisterType<DiagramControl>()
+                .WithParameter("additionalResourceDictionary", resourceDictionary);
 
             builder.RegisterType<WpfUiService>().As<IUiService>();
 

@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
     /// </summary>
     public partial class DiagramControl : UserControl, IDiagramStyleProvider
     {
-        private readonly ResourceDictionary _additionalResourceDictionary;
+        public ResourceDictionary AdditionalResourceDictionary { get; }
 
         public static readonly DependencyProperty DiagramFillProperty =
             DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramControl));
@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public DiagramControl(ResourceDictionary additionalResourceDictionary = null)
         {
-            _additionalResourceDictionary = additionalResourceDictionary;
+            AdditionalResourceDictionary = additionalResourceDictionary;
 
             InitializeComponent();
         }
@@ -72,8 +72,8 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public override void OnApplyTemplate()
         {
-            if (_additionalResourceDictionary != null)
-                this.AddResourceDictionary(_additionalResourceDictionary);
+            if (AdditionalResourceDictionary != null)
+                this.AddResourceDictionary(AdditionalResourceDictionary);
 
             base.OnApplyTemplate();
         }

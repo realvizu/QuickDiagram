@@ -17,5 +17,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         FontFamily FontFamily { get; }
         FontStretch FontStretch { get; }
         FontWeight FontWeight { get; }
+        ResourceDictionary AdditionalResourceDictionary { get; }
     }
 }

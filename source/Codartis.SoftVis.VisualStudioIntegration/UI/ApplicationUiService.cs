@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util;
 using Codartis.Util.UI.Wpf.Dialogs;
-using Codartis.Util.UI.Wpf.Resources;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -18,25 +19,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     internal sealed class ApplicationUiService : WpfUiService, IApplicationUiService
     {
         private const string DialogTitle = "Quick Diagram Tool";
-        private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
         private const double ExportedImageMargin = 10;
 
         private readonly IHostUiServices _hostUiServices;
 
-        public DiagramControl DiagramControl { get; }
         public Dpi ImageExportDpi { get; set; }
 
         public ApplicationUiService(
             IHostUiServices hostUiServices,
-            RoslynDiagramViewModel diagramViewModel)
-            : base(diagramViewModel)
+            [NotNull] IDiagramService diagramService,
+            [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
+            [NotNull] Func<DiagramControl> diagramControlFactory)
+            : base(diagramService, diagramViewModelFactory, diagramControlFactory)
         {
             _hostUiServices = hostUiServices;
-
-            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-            DiagramControl = new DiagramControl(resourceDictionary) { DataContext = RoslynDiagramViewModel };
-
-            Initialize(resourceDictionary, DiagramControl);
         }
 
         private RoslynDiagramViewModel RoslynDiagramViewModel => (RoslynDiagramViewModel)DiagramViewModel;

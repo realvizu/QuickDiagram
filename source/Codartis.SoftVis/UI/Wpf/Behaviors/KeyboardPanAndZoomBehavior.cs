@@ -209,7 +209,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
             {
                 speed += acceleration;
             }
-            else if (IsAccelaratingInNegativeDirection(speed, positiveKey, negativeKey))
+            else if (IsAcceleratingInNegativeDirection(speed, positiveKey, negativeKey))
             {
                 speed -= acceleration;
             }
@@ -240,7 +240,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
                 && speed >= 0;
         }
 
-        private bool IsAccelaratingInNegativeDirection(double speed, GestureKeys positiveKey, GestureKeys negativeKey)
+        private bool IsAcceleratingInNegativeDirection(double speed, GestureKeys positiveKey, GestureKeys negativeKey)
         {
             return _isKeyDown[(int)negativeKey]
                 && !_isKeyDown[(int)positiveKey]

@@ -17,6 +17,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public FontFamily FontFamily { get; }
         public FontStretch FontStretch { get; }
         public FontWeight FontWeight { get; }
+        public ResourceDictionary AdditionalResourceDictionary { get; }
 
         public DiagramStyleCache(IDiagramStyleProvider diagramStyleProvider)
         {
@@ -29,6 +30,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             FontFamily = diagramStyleProvider.FontFamily;
             FontStretch = diagramStyleProvider.FontStretch;
             FontWeight = diagramStyleProvider.FontWeight;
+            AdditionalResourceDictionary = diagramStyleProvider.AdditionalResourceDictionary;
         }
     }
 }

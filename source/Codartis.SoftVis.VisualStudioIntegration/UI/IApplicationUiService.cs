@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf;
-using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.Util;
 using Codartis.Util.UI.Wpf.Dialogs;
 
@@ -14,8 +13,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     internal interface IApplicationUiService : IWpfUiService
     {
-        DiagramControl DiagramControl { get; }
-
         Dpi ImageExportDpi { get; set; }
 
         Task ShowDiagramWindowAsync();

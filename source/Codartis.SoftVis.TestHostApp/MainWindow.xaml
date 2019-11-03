@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:testHostApp="clr-namespace:Codartis.SoftVis.TestHostApp"
         Title="MainWindow" Height="600" Width="1200"
@@ -70,9 +69,8 @@
             </StackPanel>
         </Border>
         
-        <view:DiagramControl x:Name="DiagramControl"
-                             Grid.Row="1" 
-                             DataContext="{Binding DiagramViewModel}"/>
+        <ContentPresenter x:Name="DiagramControlPresenter"
+                          Grid.Row="1" />
     </Grid>
 
 </Window>

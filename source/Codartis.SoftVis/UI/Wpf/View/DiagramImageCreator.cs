@@ -18,28 +18,32 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private readonly IEnumerable<DiagramConnectorViewModel> _diagramConnectorViewModels;
         private readonly Rect _diagramRect;
         private readonly IDiagramStyleProvider _diagramStyleProvider;
-        private readonly ResourceDictionary _resourceDictionary;
 
-        public DiagramImageCreator(IEnumerable<DiagramNodeViewModel> diagramNodeViewModels,
+        public DiagramImageCreator(
+            IEnumerable<DiagramNodeViewModel> diagramNodeViewModels,
             IEnumerable<DiagramConnectorViewModel> diagramConnectorViewModels,
             Rect diagramRect,
-            IDiagramStyleProvider diagramStyleProvider,
-            ResourceDictionary resourceDictionary = null)
+            IDiagramStyleProvider diagramStyleProvider)
         {
             _diagramNodeViewModels = diagramNodeViewModels;
             _diagramConnectorViewModels = diagramConnectorViewModels;
             _diagramRect = diagramRect;
             _diagramStyleProvider = diagramStyleProvider;
-            _resourceDictionary = resourceDictionary;
         }
 
-        public BitmapSource CreateImage(double dpi, double margin = 0, 
-            CancellationToken cancellationToken = default, 
-            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
+        public BitmapSource CreateImage(
+            double dpi,
+            double margin = 0,
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null,
+            IProgress<int> maxProgress = null)
         {
             using (var diagramImageViewModel = new DiagramImageViewModel(_diagramNodeViewModels, _diagramConnectorViewModels, _diagramRect, margin))
             {
-                var diagramImageControl = new DiagramImageControl(_resourceDictionary) {DataContext = diagramImageViewModel};
+                var diagramImageControl = new DiagramImageControl(_diagramStyleProvider.AdditionalResourceDictionary)
+                {
+                    DataContext = diagramImageViewModel
+                };
                 ApplyVisualProperties(diagramImageControl, _diagramStyleProvider);
                 diagramImageControl.EnsureUpToDate();
 

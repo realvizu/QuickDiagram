@@ -2,23 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Services;
 using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.TestHostApp.TestData;
 using Codartis.SoftVis.UI.Wpf;
-using Codartis.SoftVis.UI.Wpf.View;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util;
 using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.Dialogs;
-using Codartis.Util.UI.Wpf.Resources;
 using Codartis.Util.UI.Wpf.ViewModels;
 using JetBrains.Annotations;
 
@@ -26,35 +21,37 @@ namespace Codartis.SoftVis.TestHostApp
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        private const string DiagramStylesXaml = "Resources/Styles.xaml";
-
-        private readonly ITestModelService _testModelService;
-        private readonly IDiagramService _diagramService;
-        private readonly IWpfUiService _uiService;
+        [NotNull] private readonly Window _window;
+        [NotNull] private readonly ITestModelService _testModelService;
+        [NotNull] private readonly IDiagramService _diagramService;
+        [NotNull] private readonly IWpfUiService _wpfUiService;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
         private double _selectedDpi;
-        private Window _window;
 
-        public DiagramViewModel DiagramViewModel => _uiService.DiagramViewModel;
-        public ICommand AddCommand { get; }
-        public ICommand RemoveCommand { get; }
-        public ICommand ZoomToContentCommand { get; }
-        public ICommand CopyToClipboardCommand { get; }
+        [NotNull] public ICommand AddCommand { get; }
+        [NotNull] public ICommand RemoveCommand { get; }
+        [NotNull] public ICommand ZoomToContentCommand { get; }
+        [NotNull] public ICommand CopyToClipboardCommand { get; }
 
-        public MainWindowViewModel([NotNull] IVisualizationService visualizationService)
+        public MainWindowViewModel(
+            [NotNull] Window mainWindow,
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IWpfUiService wpfUiService)
         {
             SelectedDpi = 300;
 
-            var modelService = visualizationService.GetModelService();
-            _testModelService = new TestModelService(modelService);
-            var diagramId = visualizationService.CreateDiagram();
-            _diagramService = visualizationService.GetDiagramService(diagramId);
-            _uiService = (IWpfUiService)visualizationService.GetUiService(diagramId);
+            _window = mainWindow;
 
-            _uiService.DiagramNodeInvoked += i => Debug.WriteLine($"DiagramNodeInvoked: {i}");
-            _uiService.ShowModelItemsRequested += OnShowModelItemsRequested;
+            _testModelService = new TestModelService(modelService);
+
+            _diagramService = diagramService;
+
+            _wpfUiService = wpfUiService;
+            _wpfUiService.DiagramNodeInvoked += i => Debug.WriteLine($"DiagramNodeInvoked: {i}");
+            _wpfUiService.ShowModelItemsRequested += OnShowModelItemsRequested;
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
@@ -74,21 +71,12 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
-        public void OnUiInitialized(Window mainWindow, IDiagramStyleProvider diagramStyleProvider)
-        {
-            _window = mainWindow;
-
-            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-
-            _uiService.Initialize(resourceDictionary, diagramStyleProvider);
-        }
-
         private void OnShowModelItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes)
         {
             _diagramService.AddNodes(modelNodes.Select(i => i.Id));
 
             if (followNewDiagramNodes)
-                _uiService.FollowDiagramNodes(modelNodes.Select(i => i.Id).ToArray());
+                _wpfUiService.FollowDiagramNodes(modelNodes.Select(i => i.Id).ToArray());
         }
 
         private void AddShapes()
@@ -128,7 +116,7 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
-                _uiService.ZoomToDiagram();
+                _wpfUiService.ZoomToDiagram();
             };
             timer.Start();
         }
@@ -141,7 +129,7 @@ namespace Codartis.SoftVis.TestHostApp
                 {
                     await progressDialog.ShowWithDelayAsync();
 
-                    var bitmapSource = await _uiService.CreateDiagramImageAsync(
+                    var bitmapSource = await _wpfUiService.CreateDiagramImageAsync(
                         SelectedDpi,
                         10,
                         progressDialog.CancellationToken,

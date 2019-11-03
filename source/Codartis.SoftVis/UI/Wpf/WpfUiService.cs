@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
@@ -10,6 +9,7 @@ using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf
 {
@@ -18,20 +18,24 @@ namespace Codartis.SoftVis.UI.Wpf
     ///  </summary>
     public class WpfUiService : IWpfUiService
     {
-        private ResourceDictionary _resourceDictionary;
-        private IDiagramStyleProvider _diagramStyleProvider;
-
         public DiagramViewModel DiagramViewModel { get; }
+        public DiagramControl DiagramControl { get; }
 
-        public WpfUiService(DiagramViewModel diagramViewModel)
+        public WpfUiService(
+            [NotNull] IDiagramService diagramService,
+            [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
+            [NotNull] Func<DiagramControl> diagramControlFactory)
+            : this(diagramViewModelFactory.Invoke(diagramService), diagramControlFactory.Invoke())
         {
-            DiagramViewModel = diagramViewModel;
         }
 
-        public void Initialize(ResourceDictionary resourceDictionary, IDiagramStyleProvider diagramStyleProvider)
+        public WpfUiService(
+            [NotNull] DiagramViewModel diagramViewModel,
+            [NotNull] DiagramControl diagramControl)
         {
-            _resourceDictionary = resourceDictionary;
-            _diagramStyleProvider = diagramStyleProvider;
+            DiagramViewModel = diagramViewModel;
+            DiagramControl = diagramControl;
+            DiagramControl.DataContext = DiagramViewModel;
         }
 
         public async Task<BitmapSource> CreateDiagramImageAsync(
@@ -44,7 +48,7 @@ namespace Codartis.SoftVis.UI.Wpf
             try
             {
                 // The image creator must be created on the UI thread so it can read the necessary view and view model data.
-                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, _diagramStyleProvider, _resourceDictionary);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramControl);
 
                 return await Task.Factory.StartSTA(
                     () =>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Design;
 // ReSharper disable once RedundantUsingDirective
-using System.Diagnostics; // Do not remove, used in Release config.
+// Do not remove, used in Release config.
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
@@ -24,6 +27,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
+using Codartis.Util.UI.Wpf.Resources;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
@@ -48,6 +52,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [ProvideBindingPath]
     public sealed class SoftVisPackage : AsyncPackage, IVisualStudioServices
     {
+        private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
+
         static SoftVisPackage()
         {
             // HACK: Force load System.Windows.Interactivity.dll from plugin's directory.
@@ -97,7 +103,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         protected override Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
         {
             // Perform as much work as possible in this method which is being run on a background thread.
-            // The object returned from this method is passed into the constructor of the SampleToolWindow 
+            // The object returned from this method is passed into the constructor of the ToolWindow.
 
             return Task.FromResult((object)_diagramToolApplication.ApplicationUiService.DiagramControl);
         }
@@ -190,11 +196,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
 
-            builder.RegisterType<ApplicationUiService>()
-                .WithParameter("minZoom", AppDefaults.MinZoom)
-                .WithParameter("maxZoom", AppDefaults.MaxZoom)
-                .WithParameter("initialZoom", AppDefaults.InitialZoom)
-                .As<IUiService>();
+            builder.RegisterType<RoslynDiagramViewModel>().As<DiagramViewModel>()
+                .WithParameter("initialIsDescriptionVisible", true)
+                .WithParameter("minZoom", .2)
+                .WithParameter("maxZoom", 5d)
+                .WithParameter("initialZoom", 1d);
+
+            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
+
+            builder.RegisterType<DiagramControl>()
+                .WithParameter("additionalResourceDictionary", resourceDictionary);
+
+            builder.RegisterType<ApplicationUiService>().As<IUiService>();
 
             builder.RegisterType<DiagramLayoutAlgorithm>()
                 .WithParameter("childrenAreaPadding", 2)
