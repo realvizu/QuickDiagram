@@ -3,31 +3,13 @@ using System.ComponentModel.Design;
 // ReSharper disable once RedundantUsingDirective
 // Do not remove, used in Release config.
 using System.Diagnostics;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Autofac;
-using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Definition.Layout;
-using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Diagramming.Implementation.Layout;
-using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
-using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
-using Codartis.SoftVis.Services;
-using Codartis.SoftVis.Services.Plugins;
-using Codartis.SoftVis.UI;
-using Codartis.SoftVis.UI.Wpf.View;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.App;
-using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
-using Codartis.SoftVis.VisualStudioIntegration.UI;
-using Codartis.Util.UI.Wpf.Resources;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
@@ -52,8 +34,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [ProvideBindingPath]
     public sealed class SoftVisPackage : AsyncPackage, IVisualStudioServices
     {
-        private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
-
         static SoftVisPackage()
         {
             // HACK: Force load System.Windows.Interactivity.dll from plugin's directory.
@@ -70,7 +50,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             await base.InitializeAsync(cancellationToken, progress);
 
-            var container = CreateDependencyContainer();
+            var container = DependencyConfigurator.CreateDependencyContainer(this);
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             _diagramToolApplication = container.Resolve<DiagramToolApplication>();
@@ -78,15 +58,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
 
-        public async Task ShowToolWindowAsync<TWindow>(int instanceId = 0) 
+        public async Task ShowToolWindowAsync<TWindow>(int instanceId = 0)
             where TWindow : ToolWindowPane
         {
-                await ShowToolWindowAsync(
-                    // TODO: use typeof(TWindow)
-                    typeof(DiagramHostToolWindow),
-                    0,
-                    create: true,
-                    cancellationToken: DisposalToken);
+            await ShowToolWindowAsync(
+                typeof(TWindow),
+                instanceId,
+                create: true,
+                cancellationToken: DisposalToken);
         }
 
         public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
@@ -105,7 +84,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             // Perform as much work as possible in this method which is being run on a background thread.
             // The object returned from this method is passed into the constructor of the ToolWindow.
 
-            return Task.FromResult((object)_diagramToolApplication.ApplicationUiService.DiagramControl);
+            return Task.FromResult((object)_diagramToolApplication.DiagramWindowService.DiagramControl);
         }
 
         private async Task<TInterface> GetServiceAsync<TService, TInterface>()
@@ -117,6 +96,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 throw new Exception($"Unable to get {typeof(TService).FullName}.");
             if (!(service is TInterface))
                 throw new Exception($"The requested service {typeof(TService).FullName} is not of type {typeof(TInterface).FullName}.");
+
             return service as TInterface;
         }
 
@@ -138,17 +118,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var hostService = GetService(typeof(DTE)) as DTE2;
             if (hostService == null)
                 throw new Exception("Unable to get DTE service.");
+
             return hostService;
         }
 
         public async Task<IVsTextManager> GetTextManagerServiceAsync()
         {
-            return (IVsTextManager) await GetServiceAsync(typeof(SVsTextManager));
+            return (IVsTextManager)await GetServiceAsync(typeof(SVsTextManager));
         }
 
         public async Task<IVsEditorAdaptersFactoryService> GetEditorAdaptersFactoryServiceAsync()
         {
-            var componentModel = (IComponentModel) await GetServiceAsync(typeof(SComponentModel));
+            var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
             if (componentModel == null)
                 throw new ArgumentNullException(nameof(componentModel));
 
@@ -160,6 +141,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService == null)
                 throw new Exception("Unable to get IMenuCommandService.");
+
             return commandService;
         }
 
@@ -182,59 +164,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             commandRegistrant.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
             commandRegistrant.RegisterToggleCommands(commandSetGuid, ShellCommands.ToggleCommandSpecifications);
             commandRegistrant.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
-        }
-
-        private IContainer CreateDependencyContainer()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType<ModelService>().SingleInstance().As<IModelService>();
-            builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
-
-            builder.RegisterType<DiagramService>().As<IDiagramService>();
-            builder.RegisterType<RoslynConnectorTypeResolver>().As<IConnectorTypeResolver>();
-
-            builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
-
-            builder.RegisterType<RoslynDiagramViewModel>().As<DiagramViewModel>()
-                .WithParameter("initialIsDescriptionVisible", true)
-                .WithParameter("minZoom", .2)
-                .WithParameter("maxZoom", 5d)
-                .WithParameter("initialZoom", 1d);
-
-            var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
-
-            builder.RegisterType<DiagramControl>()
-                .WithParameter("additionalResourceDictionary", resourceDictionary);
-
-            builder.RegisterType<ApplicationUiService>().As<IDiagramUiService>();
-
-            builder.RegisterType<DiagramLayoutAlgorithm>()
-                .WithParameter("childrenAreaPadding", 2)
-                .As<IDiagramLayoutAlgorithm>();
-
-            builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>();
-            builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
-            builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
-
-            builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>();
-            builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>();
-            builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>();
-            //builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>();
-
-            builder.RegisterType<VisualizationService>().SingleInstance().As<IVisualizationService>();
-
-            builder.RegisterType<RoslynModelService>().As<IRoslynModelService>();
-
-            var softVisPackage = new TypedParameter(typeof(SoftVisPackage), this);
-            builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IHostModelProvider>();
-            builder.RegisterType<HostUiGateway>().WithParameter(softVisPackage).As<IHostUiService>();
-
-            builder.RegisterInstance(this).As<IVisualStudioServices>();
-
-            builder.RegisterType<DiagramToolApplication>();
-
-            return builder.Build();
         }
     }
 }

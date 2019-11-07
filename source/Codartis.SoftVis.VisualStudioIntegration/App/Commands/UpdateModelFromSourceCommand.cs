@@ -22,13 +22,13 @@
 //        public override async Task ExecuteAsync()
 //        {
 //            await ShowProgressAndUpdateModelAsync();
-//            await UiService.ShowDiagramWindowAsync();
-//            UiService.ZoomToDiagram();
+//            await HostUiService.ShowDiagramWindowAsync();
+//            HostUiService.ZoomToDiagram();
 //        }
 
 //        private async Task ShowProgressAndUpdateModelAsync()
 //        {
-//            using (var progressDialog = await UiService.CreateProgressDialogAsync("Updating model nodes:"))
+//            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Updating model nodes:"))
 //            {
 //                await progressDialog.ShowWithDelayAsync();
 

@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override Task ExecuteAsync()
         {
-            return UiService.ShowDiagramWindowAsync();
+            return HostUiService.ShowDiagramWindowAsync();
         }
     }
 }

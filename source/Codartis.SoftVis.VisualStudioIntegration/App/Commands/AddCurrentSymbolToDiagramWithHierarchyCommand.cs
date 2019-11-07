@@ -32,15 +32,15 @@
 //            if (diagramNodes == null)
 //                return;
 
-//            await UiService.ShowDiagramWindowAsync();
-//            UiService.FollowDiagramNodes(diagramNodes);
+//            await HostUiService.ShowDiagramWindowAsync();
+//            HostUiService.FollowDiagramNodes(diagramNodes);
 //        }
 
 //        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynSymbol symbol)
 //        {
 //            IReadOnlyList<IDiagramNode> diagramNodes = null;
 
-//            using (var progressDialog = await UiService.CreateProgressDialogAsync("Extending model with entities:"))
+//            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Extending model with entities:"))
 //            {
 //                await progressDialog.ShowWithDelayAsync();
 

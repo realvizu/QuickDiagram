@@ -15,29 +15,41 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        protected async Task CreateAndProcessDiagramImageAsync(Action<BitmapSource> imageProcessingAction, string imageProcessingMessage)
+        protected async Task CreateAndProcessDiagramImageAsync(
+            Action<BitmapSource> imageProcessingAction,
+            string imageProcessingMessage)
         {
             // Using int.MaxValue for max progress because the real max value is not yet known.
-            using (var progressDialog = await UiService.CreateProgressDialogAsync("Generating image..", int.MaxValue))
+            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Generating image..", int.MaxValue))
             {
                 progressDialog.ShowProgressNumber = false;
                 await progressDialog.ShowWithDelayAsync();
 
                 try
                 {
-                    var bitmapSource = await UiService.CreateDiagramImageAsync(progressDialog.CancellationToken, 
-                        progressDialog.Progress, progressDialog.MaxProgress);
+                    var bitmapSource = await DiagramWindowService.CreateDiagramImageAsync(
+                        DiagramWindowService.ImageExportDpi.Value,
+                        DiagramWindowService.ExportedImageMargin,
+                        progressDialog.CancellationToken,
+                        progressDialog.Progress,
+                        progressDialog.MaxProgress);
 
-                    if (bitmapSource != null)
-                    {
-                        progressDialog.Reset(imageProcessingMessage, showProgressNumber: false);
-                        await Task.Factory.StartSTA(() => imageProcessingAction(bitmapSource), progressDialog.CancellationToken);
-                    }
+                    progressDialog.Reset(imageProcessingMessage, showProgressNumber: false);
+                    await Task.Factory.StartSTA(() => imageProcessingAction(bitmapSource), progressDialog.CancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
                 }
+                catch (OutOfMemoryException)
+                {
+                    HandleOutOfMemory();
+                }
             }
+        }
+
+        private void HandleOutOfMemory()
+        {
+            HostUiService.ShowMessageBox("Cannot generate the image because it is too large. Please select a smaller DPI value.");
         }
     }
 }

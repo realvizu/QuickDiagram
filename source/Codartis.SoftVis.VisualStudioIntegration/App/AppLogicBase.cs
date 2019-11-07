@@ -20,6 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         [NotNull] protected IHostModelProvider HostModelProvider => _appServices.HostModelProvider;
         [NotNull] protected IRoslynModelService RoslynModelService => _appServices.RoslynModelService;
         [NotNull] protected IDiagramService DiagramService => _appServices.DiagramService;
-        [NotNull] protected IApplicationUiService UiService => _appServices.ApplicationUiService;
+        [NotNull] protected IDiagramWindowService DiagramWindowService => _appServices.DiagramWindowService;
+        [NotNull] protected IHostUiService HostUiService => _appServices.HostUiService;
     }
 }

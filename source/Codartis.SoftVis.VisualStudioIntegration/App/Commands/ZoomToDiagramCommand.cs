@@ -15,8 +15,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync()
         {
-            await UiService.ShowDiagramWindowAsync();
-            UiService.ZoomToDiagram();
+            await HostUiService.ShowDiagramWindowAsync();
+            DiagramWindowService.ZoomToDiagram();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Codartis.Util.UI.Wpf.Dialogs
     /// <summary>
     /// A modal popup window that shows the progress of a process while not blocking the execution thread.
     /// </summary>
-    public class ProgressDialog : IDisposable
+    public sealed class ProgressDialog : IDisposable
     {
         private readonly ProgressWindow _window;
         private readonly ProgressWindowViewModel _viewModel;

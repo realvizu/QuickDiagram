@@ -12,21 +12,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands.Toggle
         public ShowHideNodeDescriptionsToggleCommand(IAppServices appServices)
             : base(appServices, initialIsChecked: AppDefaults.NodeDescriptionsVisibleByDefault)
         {
-            UiService.ExpandAllNodes();
+            DiagramWindowService.ExpandAllNodes();
         }
 
         protected override async Task OnCheckedAsync()
         {
-           await UiService.ShowDiagramWindowAsync();
-            UiService.ExpandAllNodes();
-            UiService.KeepDiagramCentered();
+            await HostUiService.ShowDiagramWindowAsync();
+            DiagramWindowService.ExpandAllNodes();
+            DiagramWindowService.KeepDiagramCentered();
         }
 
         protected override async Task OnUncheckedAsync()
         {
-            await UiService.ShowDiagramWindowAsync();
-            UiService.CollapseAllNodes();
-            UiService.KeepDiagramCentered();
+            await HostUiService.ShowDiagramWindowAsync();
+            DiagramWindowService.CollapseAllNodes();
+            DiagramWindowService.KeepDiagramCentered();
         }
     }
 }

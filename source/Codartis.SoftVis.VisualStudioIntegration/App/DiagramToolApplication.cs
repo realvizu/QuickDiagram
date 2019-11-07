@@ -18,36 +18,34 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </remarks>
     internal sealed class DiagramToolApplication : IAppServices
     {
-        private readonly IVisualizationService _visualizationService;
-        private readonly DiagramId _diagramId;
-
         public IHostModelProvider HostModelProvider { get; }
-        public IHostUiService HostUiService { get; }
         public IRoslynModelService RoslynModelService { get; }
+        public IDiagramService DiagramService { get; }
+        public IDiagramWindowService DiagramWindowService { get; }
+        public IHostUiService HostUiService { get; }
 
         public DiagramToolApplication(
             [NotNull] IVisualizationService visualizationService,
             [NotNull] IHostModelProvider hostModelProvider,
-            [NotNull] IHostUiService hostUiService,
-            [NotNull] IRoslynModelService roslynModelService)
+            [NotNull] IRoslynModelService roslynModelService,
+            [NotNull] IHostUiService hostUiService)
         {
-            _visualizationService = visualizationService;
-            _diagramId = _visualizationService.CreateDiagram();
+            var diagramId = visualizationService.CreateDiagram();
+
+            DiagramService = visualizationService.GetDiagramService(diagramId);
+
+            DiagramWindowService = (IDiagramWindowService)visualizationService.GetDiagramUiService(diagramId);
+            DiagramWindowService.ImageExportDpi = Dpi.Dpi150;
+            DiagramWindowService.DiagramNodeInvoked += OnShowSourceRequested;
+            DiagramWindowService.ShowModelItemsRequested += OnShowItemsRequested;
 
             HostModelProvider = hostModelProvider;
-
-            HostUiService = hostUiService;
 
             RoslynModelService = roslynModelService;
             RoslynModelService.ExcludeTrivialTypes = AppDefaults.ExcludeTrivialTypes;
 
-            ApplicationUiService.ImageExportDpi = Dpi.Dpi150;
-            ApplicationUiService.DiagramNodeInvoked += OnShowSourceRequested;
-            ApplicationUiService.ShowModelItemsRequested += OnShowItemsRequested;
+            HostUiService = hostUiService;
         }
-
-        public IDiagramService DiagramService => _visualizationService.GetDiagramService(_diagramId);
-        public IApplicationUiService ApplicationUiService => (IApplicationUiService)_visualizationService.GetDiagramUiService(_diagramId);
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
         {

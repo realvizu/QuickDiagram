@@ -29,7 +29,7 @@
 //            if (await ModelService.HasSourceAsync(roslynModelNode))
 //                await ModelService.ShowSourceAsync(roslynModelNode);
 //            else
-//                UiService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
+//                HostUiService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
 //        }
 //    }
 //}

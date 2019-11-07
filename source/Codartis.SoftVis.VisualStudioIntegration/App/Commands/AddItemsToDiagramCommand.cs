@@ -28,17 +28,17 @@
 //        {
 //            var diagramNodes = await ShowProgressAndAddItemsAsync(_modelEntities);
 
-//            await UiService.ShowDiagramWindowAsync();
+//            await HostUiService.ShowDiagramWindowAsync();
 
 //            if (_followWithViewport)
-//                UiService.FollowDiagramNodes(diagramNodes);
+//                HostUiService.FollowDiagramNodes(diagramNodes);
 //        }
 
 //        private async Task<IReadOnlyList<IDiagramNode>> ShowProgressAndAddItemsAsync(IReadOnlyList<IRoslynSymbol> modelEntities)
 //        {
 //            IReadOnlyList<IDiagramNode> diagramNodes = null;
 
-//            using (var progressDialog = await UiService.CreateProgressDialogAsync("Adding model items:", modelEntities.Count))
+//            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Adding model items:", modelEntities.Count))
 //            {
 //                await progressDialog.ShowWithDelayAsync();
 

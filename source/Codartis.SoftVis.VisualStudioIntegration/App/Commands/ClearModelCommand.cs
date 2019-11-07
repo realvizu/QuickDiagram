@@ -15,7 +15,7 @@
 
 //        public override async Task ExecuteAsync()
 //        {
-//            await UiService.ShowDiagramWindowAsync();
+//            await HostUiService.ShowDiagramWindowAsync();
 //            ModelService.ClearModel();
 //        }
 //    }

@@ -1,8 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
+using Codartis.Util.UI.Wpf.Dialogs;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
@@ -13,39 +16,52 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// </summary>
     public sealed class HostUiGateway : IHostUiService
     {
+        private const string DialogTitle = "Quick Diagram Tool";
+
         private readonly IVisualStudioServices _visualStudioServices;
-        //private DiagramHostToolWindow _diagramHostWindow;
 
         public HostUiGateway(IVisualStudioServices visualStudioServices)
         {
             _visualStudioServices = visualStudioServices;
         }
 
-        // TODO: delete?
-        //public void HostDiagram(ContentControl diagramControl)
-        //{
-        //    ThreadHelper.JoinableTaskFactory.Run(async delegate
-        //    {
-        //        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        //        _diagramHostWindow = await _visualStudioServices.CreateToolWindowAsync<DiagramHostToolWindow>();
-        //    });
-        //}
-
         public Task ShowDiagramWindowAsync()
         {
             return _visualStudioServices.ShowToolWindowAsync<DiagramHostToolWindow>();
         }
 
-        public async Task<Window> GetMainWindowAsync()
-        {
-            var hostService = _visualStudioServices.GetHostEnvironmentService();
+        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
 
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var parentWindowHandle = new IntPtr(hostService.MainWindow.HWnd);
-            var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
-            return (Window)hwndSource?.RootVisual;
+        public string SelectSaveFilename(string title, string filter)
+        {
+            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
+            saveFileDialog.ShowDialog();
+            return saveFileDialog.FileName;
+        }
+
+        public async Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0)
+        {
+            var hostMainWindow = await GetMainWindowAsync();
+            return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
         public void Run(Func<Task> asyncMethod) => ThreadHelper.JoinableTaskFactory.RunAsync(asyncMethod);
+
+        [NotNull]
+        [ItemNotNull]
+        private async Task<Window> GetMainWindowAsync()
+        {
+            var hostEnvironmentService = _visualStudioServices.GetHostEnvironmentService();
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var parentWindowHandle = new IntPtr(hostEnvironmentService.MainWindow.HWnd);
+            var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
+            var window = (Window)hwndSource?.RootVisual;
+
+            if (window == null)
+                throw new Exception("Could not get main window.");
+
+            return window;
+        }
     }
 }

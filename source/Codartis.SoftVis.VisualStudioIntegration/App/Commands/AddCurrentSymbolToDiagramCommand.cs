@@ -25,9 +25,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             DiagramService.AddNode(modelNode.Id);
 
-            await UiService.ShowDiagramWindowAsync();
+            await HostUiService.ShowDiagramWindowAsync();
 
-            UiService.FollowDiagramNode(modelNode.Id);
+            DiagramWindowService.FollowDiagramNode(modelNode.Id);
         }
     }
 }
