@@ -16,12 +16,12 @@ namespace Codartis.SoftVis.UI.Wpf
     /// <summary>
     /// Implements a WPF UI service. 
     ///  </summary>
-    public class WpfUiService : IWpfUiService
+    public class WpfDiagramUiService : IWpfDiagramUiService
     {
         public DiagramViewModel DiagramViewModel { get; }
         public DiagramControl DiagramControl { get; }
 
-        public WpfUiService(
+        public WpfDiagramUiService(
             [NotNull] IDiagramService diagramService,
             [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
             [NotNull] Func<DiagramControl> diagramControlFactory)
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.UI.Wpf
         {
         }
 
-        public WpfUiService(
+        public WpfDiagramUiService(
             [NotNull] DiagramViewModel diagramViewModel,
             [NotNull] DiagramControl diagramControl)
         {

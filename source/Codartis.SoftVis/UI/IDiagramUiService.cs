@@ -7,9 +7,9 @@ using Codartis.SoftVis.Modeling.Definition;
 namespace Codartis.SoftVis.UI
 {
     /// <summary>
-    /// Defines UI-related operations and event hooks.
+    /// Defines diagram UI operations and event hooks.
     /// </summary>
-    public interface IUiService
+    public interface IDiagramUiService
     {
         void ZoomToDiagram();
         void FollowDiagramNode(ModelNodeId nodeId);

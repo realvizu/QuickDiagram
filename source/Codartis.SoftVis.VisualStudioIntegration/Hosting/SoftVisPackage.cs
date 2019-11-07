@@ -207,7 +207,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<DiagramControl>()
                 .WithParameter("additionalResourceDictionary", resourceDictionary);
 
-            builder.RegisterType<ApplicationUiService>().As<IUiService>();
+            builder.RegisterType<ApplicationUiService>().As<IDiagramUiService>();
 
             builder.RegisterType<DiagramLayoutAlgorithm>()
                 .WithParameter("childrenAreaPadding", 2)

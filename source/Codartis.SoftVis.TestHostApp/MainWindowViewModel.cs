@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.TestHostApp
         [NotNull] private readonly Window _window;
         [NotNull] private readonly ITestModelService _testModelService;
         [NotNull] private readonly IDiagramService _diagramService;
-        [NotNull] private readonly IWpfUiService _wpfUiService;
+        [NotNull] private readonly IWpfDiagramUiService _wpfDiagramUiService;
 
         private int _modelItemGroupIndex;
         private int _nextToRemoveModelItemGroupIndex;
@@ -39,7 +39,7 @@ namespace Codartis.SoftVis.TestHostApp
             [NotNull] Window mainWindow,
             [NotNull] IModelService modelService,
             [NotNull] IDiagramService diagramService,
-            [NotNull] IWpfUiService wpfUiService)
+            [NotNull] IWpfDiagramUiService wpfDiagramUiService)
         {
             SelectedDpi = 300;
 
@@ -49,9 +49,9 @@ namespace Codartis.SoftVis.TestHostApp
 
             _diagramService = diagramService;
 
-            _wpfUiService = wpfUiService;
-            _wpfUiService.DiagramNodeInvoked += i => Debug.WriteLine($"DiagramNodeInvoked: {i}");
-            _wpfUiService.ShowModelItemsRequested += OnShowModelItemsRequested;
+            _wpfDiagramUiService = wpfDiagramUiService;
+            _wpfDiagramUiService.DiagramNodeInvoked += i => Debug.WriteLine($"DiagramNodeInvoked: {i}");
+            _wpfDiagramUiService.ShowModelItemsRequested += OnShowModelItemsRequested;
 
             AddCommand = new DelegateCommand(AddShapes);
             RemoveCommand = new DelegateCommand(RemoveShapes);
@@ -76,7 +76,7 @@ namespace Codartis.SoftVis.TestHostApp
             _diagramService.AddNodes(modelNodes.Select(i => i.Id));
 
             if (followNewDiagramNodes)
-                _wpfUiService.FollowDiagramNodes(modelNodes.Select(i => i.Id).ToArray());
+                _wpfDiagramUiService.FollowDiagramNodes(modelNodes.Select(i => i.Id).ToArray());
         }
 
         private void AddShapes()
@@ -116,7 +116,7 @@ namespace Codartis.SoftVis.TestHostApp
             timer.Tick += (s, o) =>
             {
                 timer.Stop();
-                _wpfUiService.ZoomToDiagram();
+                _wpfDiagramUiService.ZoomToDiagram();
             };
             timer.Start();
         }
@@ -129,7 +129,7 @@ namespace Codartis.SoftVis.TestHostApp
                 {
                     await progressDialog.ShowWithDelayAsync();
 
-                    var bitmapSource = await _wpfUiService.CreateDiagramImageAsync(
+                    var bitmapSource = await _wpfDiagramUiService.CreateDiagramImageAsync(
                         SelectedDpi,
                         10,
                         progressDialog.CancellationToken,

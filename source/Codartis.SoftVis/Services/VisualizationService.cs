@@ -18,17 +18,17 @@ namespace Codartis.SoftVis.Services
     {
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly Func<IModel, IDiagramService> _diagramServiceFactory;
-        [NotNull] private readonly Func<IDiagramService, IUiService> _uiServiceFactory;
+        [NotNull] private readonly Func<IDiagramService, IDiagramUiService> _uiServiceFactory;
         [NotNull] private readonly IEnumerable<Func<IDiagramService, IDiagramPlugin>> _diagramPluginFactories;
 
         [NotNull] private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
-        [NotNull] private readonly Dictionary<DiagramId, IUiService> _diagramUiServices;
+        [NotNull] private readonly Dictionary<DiagramId, IDiagramUiService> _diagramUiServices;
         [NotNull] private readonly Dictionary<DiagramId, List<IDiagramPlugin>> _diagramPlugins;
 
         public VisualizationService(
             [NotNull] IModelService modelService,
             [NotNull] Func<IModel, IDiagramService> diagramServiceFactory,
-            [NotNull] Func<IDiagramService, IUiService> uiServiceFactory,
+            [NotNull] Func<IDiagramService, IDiagramUiService> uiServiceFactory,
             [NotNull] IEnumerable<Func<IDiagramService, IDiagramPlugin>> diagramPluginFactories)
         {
             _modelService = modelService;
@@ -37,7 +37,7 @@ namespace Codartis.SoftVis.Services
             _diagramPluginFactories = diagramPluginFactories;
 
             _diagramServices = new Dictionary<DiagramId, IDiagramService>();
-            _diagramUiServices = new Dictionary<DiagramId, IUiService>();
+            _diagramUiServices = new Dictionary<DiagramId, IDiagramUiService>();
             _diagramPlugins = new Dictionary<DiagramId, List<IDiagramPlugin>>();
         }
 
@@ -61,9 +61,9 @@ namespace Codartis.SoftVis.Services
 
         public IModelService GetModelService() => _modelService;
         public IDiagramService GetDiagramService(DiagramId diagramId) => _diagramServices[diagramId];
-        public IUiService GetUiService(DiagramId diagramId) => _diagramUiServices[diagramId];
+        public IDiagramUiService GetDiagramUiService(DiagramId diagramId) => _diagramUiServices[diagramId];
 
-        public void RemoveDiagram(DiagramId diagramId)
+        public void DeleteDiagram(DiagramId diagramId)
         {
             _diagramServices.Remove(diagramId);
 

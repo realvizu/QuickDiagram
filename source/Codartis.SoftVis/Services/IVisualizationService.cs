@@ -6,21 +6,21 @@ using JetBrains.Annotations;
 namespace Codartis.SoftVis.Services
 {
     /// <summary>
-    /// Provides model, diagram and UI services.
+    /// Provides the top level access point for model, diagram and diagram UI services.
     /// </summary>
     public interface IVisualizationService
     {
-        DiagramId CreateDiagram();
-
         [NotNull]
         IModelService GetModelService();
+
+        DiagramId CreateDiagram();
 
         [NotNull]
         IDiagramService GetDiagramService(DiagramId diagramId);
 
         [NotNull]
-        IUiService GetUiService(DiagramId diagramId);
+        IDiagramUiService GetDiagramUiService(DiagramId diagramId);
 
-        void RemoveDiagram(DiagramId diagramId);
+        void DeleteDiagram(DiagramId diagramId);
     }
 }

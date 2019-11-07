@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// Extends UI service with application specific operations.
     /// </summary>
-    internal interface IApplicationUiService : IWpfUiService
+    internal interface IApplicationUiService : IWpfDiagramUiService
     {
         Dpi ImageExportDpi { get; set; }
 

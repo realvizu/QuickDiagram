@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         public IModelService ModelService => _visualizationService.GetModelService();
         public IDiagramService DiagramService => _visualizationService.GetDiagramService(_diagramId);
-        public IApplicationUiService ApplicationUiService => (IApplicationUiService)_visualizationService.GetUiService(_diagramId);
+        public IApplicationUiService ApplicationUiService => (IApplicationUiService)_visualizationService.GetDiagramUiService(_diagramId);
 
         public IRoslynModelService RoslynModelService { get; }
 

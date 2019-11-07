@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IUiServiceFactory
     {
-        IUiService Create(
+        IDiagramUiService Create(
             IModelService modelService,
             IDiagramService diagramService,
             IRelatedNodeTypeProvider relatedNodeTypeProvider,

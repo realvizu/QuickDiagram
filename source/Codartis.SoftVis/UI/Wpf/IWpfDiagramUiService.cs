@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.UI.Wpf
     /// <summary>
     /// Defines WPF-specific UI operations.
     /// </summary>
-    public interface IWpfUiService : IUiService
+    public interface IWpfDiagramUiService : IDiagramUiService
     {
         /// <summary>
         /// Gets the view model of the diagram.

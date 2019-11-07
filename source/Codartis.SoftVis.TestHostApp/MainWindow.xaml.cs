@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.TestHostApp
             var modelService = visualizationService.GetModelService();
             var diagramId = visualizationService.CreateDiagram();
             var diagramService = visualizationService.GetDiagramService(diagramId);
-            var wpfUiService = (IWpfUiService)visualizationService.GetUiService(diagramId);
+            var wpfUiService = (IWpfDiagramUiService)visualizationService.GetDiagramUiService(diagramId);
             var mainWindowViewModel = new MainWindowViewModel(this, modelService, diagramService, wpfUiService);
 
             InitializeComponent();
@@ -68,7 +68,7 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DiagramControl>()
                 .WithParameter("additionalResourceDictionary", resourceDictionary);
 
-            builder.RegisterType<WpfUiService>().As<IUiService>();
+            builder.RegisterType<WpfDiagramUiService>().As<IDiagramUiService>();
 
             builder.RegisterType<DiagramLayoutAlgorithm>()
                 .WithParameter("childrenAreaPadding", 2)

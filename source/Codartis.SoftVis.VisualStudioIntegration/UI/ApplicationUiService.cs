@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// <summary>
     /// Provides diagram UI services. Bundles the diagram control and its view model together.
     /// </summary>
-    internal sealed class ApplicationUiService : WpfUiService, IApplicationUiService
+    internal sealed class ApplicationUiService : WpfDiagramUiService, IApplicationUiService
     {
         private const string DialogTitle = "Quick Diagram Tool";
         private const double ExportedImageMargin = 10;

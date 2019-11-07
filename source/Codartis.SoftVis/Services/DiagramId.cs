@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.SoftVis.Diagramming.Definition
+namespace Codartis.SoftVis.Services
 {
     /// <summary>
     /// Identifies a diagram.
