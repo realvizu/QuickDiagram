@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
@@ -8,15 +9,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal interface IRoslynModelService
     {
-        // TODO: move to IRoslynDiagramService ?
-        bool HideTrivialBaseNodes { get; set; }
+        /// <summary>
+        /// Controls whether trivial types like object can be added to the model.
+        /// </summary>
+        bool ExcludeTrivialTypes { get; set; }
 
         /// <summary>
-        /// Returns a value indicating whether the current symbol (the one under the caret in the active source code editor) can be added to the model.
+        /// Creates a model node from a roslyn symbol and adds it to the model or just returns it if the model already contains it.
         /// </summary>
-        /// <returns>True if there is a symbol under the caret that can be added to the model.</returns>
         [NotNull]
-        Task<bool> IsCurrentSymbolAvailableAsync();
+        IModelNode AddSymbol([NotNull] ISymbol symbol);
 
         /// <summary>
         /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.

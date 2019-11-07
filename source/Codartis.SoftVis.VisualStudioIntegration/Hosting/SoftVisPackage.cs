@@ -228,7 +228,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             var softVisPackage = new TypedParameter(typeof(SoftVisPackage), this);
             builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IHostModelProvider>();
-            builder.RegisterType<HostUiGateway>().WithParameter(softVisPackage).As<IHostUiServices>();
+            builder.RegisterType<HostUiGateway>().WithParameter(softVisPackage).As<IHostUiService>();
 
             builder.RegisterInstance(this).As<IVisualStudioServices>();
 

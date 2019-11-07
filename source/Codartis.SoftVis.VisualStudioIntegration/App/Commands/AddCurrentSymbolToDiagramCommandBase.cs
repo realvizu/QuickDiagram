@@ -7,11 +7,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// </summary>
     internal abstract class AddCurrentSymbolToDiagramCommandBase : CommandBase
     {
-        protected AddCurrentSymbolToDiagramCommandBase(IAppServices appServices) 
+        protected AddCurrentSymbolToDiagramCommandBase(IAppServices appServices)
             : base(appServices)
         {
         }
 
-        public override Task<bool> IsEnabledAsync() => ModelService.IsCurrentSymbolAvailableAsync();
+        public override async Task<bool> IsEnabledAsync() => (await HostModelProvider.TryGetCurrentSymbolAsync()).HasValue;
     }
 }

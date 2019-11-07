@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Codartis.Util;
@@ -12,36 +12,37 @@ using Microsoft.CodeAnalysis.FindSymbols;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// Implements Roslyn model related operations.
+    /// Implements Roslyn model operations.
+    /// Wraps a general-purpose IModelService.
     /// </summary>
     internal sealed class RoslynModelService : IRoslynModelService
     {
         [NotNull]
         [ItemNotNull]
-        private static readonly List<string> TrivialBaseSymbolNames =
+        private static readonly List<string> TrivialTypeNames =
             new List<string>
             {
                 "System.Object",
                 "object"
             };
 
-        [NotNull] private readonly IHostModelProvider _hostModelProvider;
         [NotNull] private readonly IModelService _modelService;
 
-        public bool HideTrivialBaseNodes { get; set; }
+        public bool ExcludeTrivialTypes { get; set; }
 
-        public RoslynModelService(
-            [NotNull] IHostModelProvider hostModelProvider,
-            [NotNull] IModelService modelService)
+        public RoslynModelService([NotNull] IModelService modelService)
         {
-            _hostModelProvider = hostModelProvider;
             _modelService = modelService;
         }
 
-        [NotNull] private IModel Model => _modelService.LatestModel;
-        [NotNull] private RoslynModel RoslynModel => new RoslynModel(_modelService.LatestModel);
-
-        public async Task<bool> IsCurrentSymbolAvailableAsync() => (await TryGetCurrentSymbolAsync()).HasValue;
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public IModelNode AddSymbol(ISymbol symbol)
+        {
+            return _modelService.LatestModel.TryGetNodeByPayload(symbol).Match(
+                some => some,
+                () => _modelService.AddNode(symbol.GetName(), symbol.GetStereotype(), symbol)
+            );
+        }
 
         //public async Task<Maybe<IModelNode>> AddCurrentSymbolAsync()
         //{
@@ -66,10 +67,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         //    );
         //}
 
-        public Task<bool> HasSourceAsync(IModelNode modelNode) => _hostModelProvider.HasSourceAsync(modelNode.GetRoslynSymbol());
-
-        public Task ShowSourceAsync(IModelNode modelNode) => _hostModelProvider.ShowSourceAsync(modelNode.GetRoslynSymbol());
-
         //public async Task UpdateFromSourceAsync(
         //    IEnumerable<ModelNodeId> visibleModelNodeIds,
         //    CancellationToken cancellationToken = default,
@@ -84,11 +81,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         //            .MatchAsync(async node => await ExtendModelWithRelatedNodesAsync(node, null, cancellationToken, progress, recursive: false));
         //    }
         //}
-
-        private async Task<Maybe<INamedTypeSymbol>> TryGetCurrentSymbolAsync()
-        {
-            return (await _hostModelProvider.TryGetCurrentSymbolAsync()).OfType<INamedTypeSymbol>();
-        }
 
         //private async Task UpdateEntitiesFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         //{
@@ -197,7 +189,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         private bool IsHidden(ISymbol roslynSymbol)
         {
-            return HideTrivialBaseNodes && TrivialBaseSymbolNames.Contains(roslynSymbol.GetFullyQualifiedName());
+            return ExcludeTrivialTypes && TrivialTypeNames.Contains(roslynSymbol.GetFullyQualifiedName());
         }
 
         //private async Task ExtendModelWithRelatedNodesRecursiveAsync(

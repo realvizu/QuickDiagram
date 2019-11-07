@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
@@ -18,11 +19,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
     public sealed class Model : IModel
     {
         private readonly IModelGraph _graph;
+        [NotNull] private readonly ImmutableDictionary<object, IModelNode> _payloadToModelNodeMap;
         [NotNull] [ItemNotNull] private readonly IModelRuleProvider[] _modelRuleProviders;
 
-        private Model(IModelGraph graph, [NotNull] params IModelRuleProvider[] modelRuleProviders)
+        private Model(
+            IModelGraph graph,
+            [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
+            [NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
             _graph = graph;
+            _payloadToModelNodeMap = payloadToModelNodeMap;
             _modelRuleProviders = modelRuleProviders;
         }
 
@@ -40,6 +46,13 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 throw new Exception($"There are {parentNodes.Count} parent nodes for node {modelNodeId}.");
 
             return Maybe.Create(parentNodes.SingleOrDefault());
+        }
+
+        public Maybe<IModelNode> TryGetNodeByPayload(object payload)
+        {
+            return _payloadToModelNodeMap.TryGetValue(payload, out var modelNode)
+                ? Maybe.Create(modelNode)
+                : Maybe<IModelNode>.Nothing;
         }
 
         public IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => _graph.GetEdge(relationshipId);
@@ -65,10 +78,13 @@ namespace Codartis.SoftVis.Modeling.Implementation
             object payload = null,
             ModelNodeId? parentNodeId = null)
         {
+            if (payload != null && _payloadToModelNodeMap.ContainsKey(payload))
+                throw new Exception($"The model already contains payload: {payload}");
+
             var itemEvents = new List<ModelItemEventBase>();
 
             var newNode = CreateNode(name, stereotype, payload);
-            var newGraph = AddNodeCore(newNode, _graph, itemEvents);
+            var (newGraph, newPayloadToModelNodeMap) = AddNodeCore(newNode, _graph, _payloadToModelNodeMap, itemEvents);
 
             if (parentNodeId.HasValue)
             {
@@ -76,7 +92,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 newGraph = AddRelationshipCore(containsRelationship, newGraph, itemEvents);
             }
 
-            var newModel = CreateInstance(newGraph);
+            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -88,9 +104,10 @@ namespace Codartis.SoftVis.Modeling.Implementation
             foreach (var relationship in GetRelationships(nodeId))
                 newGraph = RemoveRelationshipCore(relationship.Id, newGraph, itemEvents);
 
-            newGraph = RemoveNodeCore(nodeId, newGraph, itemEvents);
+            ImmutableDictionary<object, IModelNode> newPayloadToModelNodeMap;
+            (newGraph, newPayloadToModelNodeMap) = RemoveNodeCore(nodeId, newGraph, _payloadToModelNodeMap, itemEvents);
 
-            var newModel = CreateInstance(newGraph);
+            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -108,7 +125,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             var itemEvents = new List<ModelItemEventBase>();
             var newGraph = AddRelationshipCore(relationship, _graph, itemEvents);
 
-            var newModel = CreateInstance(newGraph);
+            var newModel = CreateInstance(newGraph, _payloadToModelNodeMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -117,7 +134,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             var itemEvents = new List<ModelItemEventBase>();
             var newGraph = RemoveRelationshipCore(relationshipId, _graph, itemEvents);
 
-            var newModel = CreateInstance(newGraph);
+            var newModel = CreateInstance(newGraph, _payloadToModelNodeMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -147,14 +164,20 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return new ModelRelationship(ModelRelationshipId.Create(), sourceId, targetId, stereotype, payload);
         }
 
-        [NotNull]
-        private static IModelGraph AddNodeCore(
+        private static (IModelGraph, ImmutableDictionary<object, IModelNode>) AddNodeCore(
             [NotNull] IModelNode newNode,
             [NotNull] IModelGraph modelGraph,
+            [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
         {
             itemEvents.Add(new ModelNodeAddedEvent(newNode));
-            return modelGraph.AddVertex(newNode);
+
+            return (
+                modelGraph.AddVertex(newNode),
+                newNode.Payload == null
+                    ? payloadToModelNodeMap
+                    : payloadToModelNodeMap.Add(newNode.Payload, newNode)
+            );
         }
 
         [NotNull]
@@ -167,15 +190,21 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return modelGraph.AddEdge(relationship);
         }
 
-        [NotNull]
-        private IModelGraph RemoveNodeCore(
+        private (IModelGraph, ImmutableDictionary<object, IModelNode>) RemoveNodeCore(
             ModelNodeId nodeId,
             [NotNull] IModelGraph modelGraph,
+            [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
         {
             var oldNode = GetNode(nodeId);
             itemEvents.Add(new ModelNodeRemovedEvent(oldNode));
-            return modelGraph.RemoveVertex(nodeId);
+
+            return (
+                modelGraph.RemoveVertex(nodeId),
+                oldNode.Payload == null
+                    ? payloadToModelNodeMap
+                    : payloadToModelNodeMap.Remove(oldNode.Payload)
+            );
         }
 
         [NotNull]
@@ -198,12 +227,16 @@ namespace Codartis.SoftVis.Modeling.Implementation
         }
 
         [NotNull]
-        private IModel CreateInstance(IModelGraph graph) => new Model(graph, _modelRuleProviders);
+        private IModel CreateInstance(IModelGraph graph, ImmutableDictionary<object, IModelNode> payloadToModelNodeMap)
+            => new Model(graph, payloadToModelNodeMap, _modelRuleProviders);
 
         [NotNull]
         public static IModel Create([NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
-            return new Model(ModelGraph.Empty(allowParallelEdges: false), modelRuleProviders);
+            return new Model(
+                ModelGraph.Empty(allowParallelEdges: false),
+                ImmutableDictionary<object, IModelNode>.Empty,
+                modelRuleProviders);
         }
     }
 }

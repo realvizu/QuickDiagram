@@ -14,9 +14,9 @@
 //    /// </summary>
 //    internal class ModelExtenderDiagramPlugin : DiagramPluginBase
 //    {
-//        private readonly IHostUiServices _hostUiServices;
+//        private readonly IHostUiService _hostUiServices;
 
-//        public ModelExtenderDiagramPlugin(IHostUiServices hostUiServices)
+//        public ModelExtenderDiagramPlugin(IHostUiService hostUiServices)
 //        {
 //            _hostUiServices = hostUiServices;
 //        }

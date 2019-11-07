@@ -17,13 +17,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync()
         {
-            //var modelEntity = await ModelService.AddCurrentSymbolAsync();
-            //if (modelEntity == null)
-                //return;
+            var maybeSymbol = await HostModelProvider.TryGetCurrentSymbolAsync();
+            if (!maybeSymbol.HasValue)
+                return;
 
-            //var diagramNode = DiagramServices.ShowModelNode(modelEntity);
+            var modelNode = RoslynModelService.AddSymbol(maybeSymbol.Value);
+
+            DiagramService.AddNode(modelNode.Id);
+
             await UiService.ShowDiagramWindowAsync();
-            //UiService.FollowDiagramNode(diagramNode);
+
+            UiService.FollowDiagramNode(modelNode.Id);
         }
     }
 }

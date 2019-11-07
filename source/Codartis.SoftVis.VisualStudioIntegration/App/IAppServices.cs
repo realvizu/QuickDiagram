@@ -1,23 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
-using Codartis.SoftVis.Diagramming.Definition;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App
 {
     /// <summary>
-    /// These are the application services that the application commands can use.
+    /// Provides the services that the application commands can use.
     /// </summary>
     internal interface IAppServices
     {
-        IRoslynModelService RoslynModelService { get; }
-        IDiagramService DiagramService { get; }
-        IApplicationUiService ApplicationUiService { get; }
-
-        /// <summary>
-        /// Runs an async method from a sync method.
-        /// </summary>
-        void Run(Func<Task> asyncMethod);
+        [NotNull] IHostModelProvider HostModelProvider { get; }
+        [NotNull] IRoslynModelService RoslynModelService { get; }
+        [NotNull] IDiagramService DiagramService { get; }
+        [NotNull] IApplicationUiService ApplicationUiService { get; }
     }
 }

@@ -1,6 +1,7 @@
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App
 {
@@ -9,15 +10,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </summary>
     internal abstract class AppLogicBase
     {
-        private readonly IAppServices _appServices;
+        [NotNull] private readonly IAppServices _appServices;
 
-        protected IRoslynModelService ModelService => _appServices.RoslynModelService;
-        protected IDiagramService DiagramServices => _appServices.DiagramService;
-        protected IApplicationUiService UiService => _appServices.ApplicationUiService;
-
-        protected AppLogicBase(IAppServices appServices)
+        protected AppLogicBase([NotNull] IAppServices appServices)
         {
             _appServices = appServices;
         }
+
+        [NotNull] protected IHostModelProvider HostModelProvider => _appServices.HostModelProvider;
+        [NotNull] protected IRoslynModelService RoslynModelService => _appServices.RoslynModelService;
+        [NotNull] protected IDiagramService DiagramService => _appServices.DiagramService;
+        [NotNull] protected IApplicationUiService UiService => _appServices.ApplicationUiService;
     }
 }

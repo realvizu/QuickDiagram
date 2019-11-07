@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// <summary>
     /// A gateway to access host UI operations.
     /// </summary>
-    public sealed class HostUiGateway : IHostUiServices
+    public sealed class HostUiGateway : IHostUiService
     {
         private readonly IVisualStudioServices _visualStudioServices;
         //private DiagramHostToolWindow _diagramHostWindow;

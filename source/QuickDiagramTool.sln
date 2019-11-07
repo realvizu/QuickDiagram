@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.Util.UnitTests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.VisualStudioIntegration", "Codartis.SoftVis.VisualStudioIntegration\Codartis.SoftVis.VisualStudioIntegration.csproj", "{ADCC8714-14E5-4573-8277-3B2C0B00FCDD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codartis.SoftVis.VisualStudioIntegration.UnitTests", "Codartis.SoftVis.VisualStudioIntegration.UnitTests\Codartis.SoftVis.VisualStudioIntegration.UnitTests.csproj", "{1CBB4A55-88EB-466F-823D-9FF12DE20C7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{ADCC8714-14E5-4573-8277-3B2C0B00FCDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADCC8714-14E5-4573-8277-3B2C0B00FCDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADCC8714-14E5-4573-8277-3B2C0B00FCDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CBB4A55-88EB-466F-823D-9FF12DE20C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CBB4A55-88EB-466F-823D-9FF12DE20C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CBB4A55-88EB-466F-823D-9FF12DE20C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CBB4A55-88EB-466F-823D-9FF12DE20C7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

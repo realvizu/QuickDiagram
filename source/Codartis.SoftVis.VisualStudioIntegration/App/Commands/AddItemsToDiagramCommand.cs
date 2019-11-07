@@ -58,7 +58,7 @@
 //            CancellationToken cancellationToken, IIncrementalProgress progress)
 //        {
 //            return await Task.Run(
-//                () => DiagramServices.ShowModelNodes(modelEntities, cancellationToken, progress).ToArray(),
+//                () => DiagramService.ShowModelNodes(modelEntities, cancellationToken, progress).ToArray(),
 //                cancellationToken);
 //        }
 //    }

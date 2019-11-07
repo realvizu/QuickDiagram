@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.Modeling.Definition
         /// <summary>
         /// An arbitrary extra object associated with this model node.
         /// Must be immutable.
+        /// Must be unique inside a model.
         /// </summary>
         [CanBeNull]
         object Payload { get; }

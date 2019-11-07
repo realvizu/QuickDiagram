@@ -44,7 +44,7 @@
 
 //        private async Task UpdateModelAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
 //        {
-//            var visibleModelNodeIds = DiagramServices.Diagram.Nodes.Select(i => i.ModelNode.Id);
+//            var visibleModelNodeIds = DiagramService.Diagram.Nodes.Select(i => i.ModelNode.Id);
 
 //            await ModelService.UpdateFromSourceAsync(visibleModelNodeIds, cancellationToken, progress);
 //        }

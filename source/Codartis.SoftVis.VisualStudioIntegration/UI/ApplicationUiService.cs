@@ -21,23 +21,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private const string DialogTitle = "Quick Diagram Tool";
         private const double ExportedImageMargin = 10;
 
-        private readonly IHostUiServices _hostUiServices;
+        [NotNull] private readonly IHostUiService _hostUiService;
 
         public Dpi ImageExportDpi { get; set; }
 
         public ApplicationUiService(
-            IHostUiServices hostUiServices,
+            [NotNull] IHostUiService hostUiService,
             [NotNull] IDiagramService diagramService,
             [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
             [NotNull] Func<DiagramControl> diagramControlFactory)
             : base(diagramService, diagramViewModelFactory, diagramControlFactory)
         {
-            _hostUiServices = hostUiServices;
+            _hostUiService = hostUiService;
         }
 
         private RoslynDiagramViewModel RoslynDiagramViewModel => (RoslynDiagramViewModel)DiagramViewModel;
 
-        public Task ShowDiagramWindowAsync() => _hostUiServices.ShowDiagramWindowAsync();
+        public Task ShowDiagramWindowAsync() => _hostUiService.ShowDiagramWindowAsync();
 
         public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
 
@@ -55,7 +55,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public async Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0)
         {
-            var hostMainWindow = await _hostUiServices.GetMainWindowAsync();
+            var hostMainWindow = await _hostUiService.GetMainWindowAsync();
             return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
