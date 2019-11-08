@@ -9,5 +9,10 @@ namespace Codartis.SoftVis.UI.Wpf
         {
             return new Rect(rect2D.TopLeft.ToWpf(), rect2D.Size.ToWpf());
         }
+
+        public static Rect2D FromWpf(this Rect rect)
+        {
+            return new Rect2D(rect.Left, rect.Top, rect.Right, rect.Bottom);
+        }
     }
 }

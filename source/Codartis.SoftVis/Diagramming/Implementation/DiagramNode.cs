@@ -13,6 +13,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class DiagramNode : DiagramShapeBase, IDiagramNode
     {
+        public override string ShapeId { get; }
+        public override Rect2D Rect { get; }
+
         public IModelNode ModelNode { get; }
         public Maybe<ModelNodeId> ParentNodeId { get; }
         public DateTime AddedAt { get; }
@@ -34,6 +37,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             PayloadAreaSize = payloadAreaSize;
             ChildrenAreaSize = childrenAreaSize;
             ParentNodeId = parentNodeId;
+
+            ShapeId = modelNode.Id.ToShapeId();
+            Rect = CalculateRect();
         }
 
         public DiagramNode([NotNull] IModelNode modelNode)
@@ -47,8 +53,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
         }
 
-        public override string ShapeId => ModelNode.Id.ToShapeId();
-        public override Rect2D Rect => CalculateRect();
         public bool HasParent => ParentNodeId.HasValue;
         public ModelNodeId Id => ModelNode.Id;
         public string Name => ModelNode.Name;

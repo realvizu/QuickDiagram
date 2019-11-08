@@ -22,6 +22,9 @@ namespace Codartis.Util.UI.Wpf
             return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
         }
 
+        public static Rect WithMargin(this Rect rect, double margin)
+            => new Rect(rect.Left - margin, rect.Top - margin, rect.Width + 2 * margin, rect.Height + 2 * margin);
+
         public static Rect Add(this Rect rect, Vector vector)
         {
             return new Rect(rect.TopLeft + vector, rect.Size);
@@ -45,10 +48,10 @@ namespace Codartis.Util.UI.Wpf
 
             var sides = new[]
             {
-                (rect.Left - outerPoint.X)/(center.X - outerPoint.X),
-                (rect.Top - outerPoint.Y)/(center.Y - outerPoint.Y),
-                (rect.Right - outerPoint.X)/(center.X - outerPoint.X),
-                (rect.Bottom - outerPoint.Y)/(center.Y - outerPoint.Y)
+                (rect.Left - outerPoint.X) / (center.X - outerPoint.X),
+                (rect.Top - outerPoint.Y) / (center.Y - outerPoint.Y),
+                (rect.Right - outerPoint.X) / (center.X - outerPoint.X),
+                (rect.Bottom - outerPoint.Y) / (center.Y - outerPoint.Y)
             };
 
             var fi = Math.Max(0, sides.Where(i => i <= 1).Max());

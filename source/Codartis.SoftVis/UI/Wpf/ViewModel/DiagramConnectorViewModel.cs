@@ -17,17 +17,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private Point[] _routePoints;
 
-        public DiagramNodeViewModel SourceNodeViewModel { get; }
-        public DiagramNodeViewModel TargetNodeViewModel { get; }
-
-        public DiagramConnectorViewModel(IModelService modelService, IDiagramService diagramService, 
-            IDiagramConnector diagramConnector, DiagramNodeViewModel sourceNodeViewModel, DiagramNodeViewModel targetNodeViewModel)
+        public DiagramConnectorViewModel(
+            IModelService modelService,
+            IDiagramService diagramService,
+            IDiagramConnector diagramConnector)
             : base(modelService, diagramService, diagramConnector)
         {
             _routePoints = diagramConnector.Route.ToWpf();
-
-            SourceNodeViewModel = sourceNodeViewModel;
-            TargetNodeViewModel = targetNodeViewModel;
 
             DiagramService.DiagramChanged += OnDiagramChanged;
         }
@@ -41,10 +37,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramService.DiagramChanged -= OnDiagramChanged;
         }
 
-        public IDiagramConnector DiagramConnector => (IDiagramConnector) DiagramShape;
+        public IDiagramConnector DiagramConnector => (IDiagramConnector)DiagramShape;
 
-        public override object CloneForImageExport() 
-            => new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector, SourceNodeViewModel, TargetNodeViewModel);
+        public override object CloneForImageExport() => new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector);
 
         private ConnectorType ConnectorType => DiagramConnector.ConnectorType;
         private bool IsDashed => ConnectorType.ShaftLineType == LineType.Dashed;
@@ -76,7 +71,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeEvent is DiagramConnectorRouteChangedEvent diagramConnectorRouteChangedEvent &&
                 DiagramConnectorIdEqualityComparer.Instance.Equals(diagramConnectorRouteChangedEvent.NewConnector, DiagramConnector))
             {
-                DiagramShape = diagramConnectorRouteChangedEvent.NewConnector;
+                SetDiagramShape(diagramConnectorRouteChangedEvent.NewConnector);
                 RoutePoints = diagramConnectorRouteChangedEvent.NewConnector.Route.ToWpf();
             }
         }

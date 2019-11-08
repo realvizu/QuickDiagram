@@ -8,7 +8,6 @@
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
-             xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -22,13 +21,10 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:RectUnionConverter x:Key="RectUnionConverter" />
-            <converters:RectCreatorConverter x:Key="RectCreatorConverter" />
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
             <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModel}">
-                <view:DiagramNodeWithCuesControl
-                                                 FocusRequestedCommand="{Binding Path=FocusTracker.FocusCommand}">
+                <view:DiagramNodeWithCuesControl FocusRequestedCommand="{Binding Path=FocusTracker.FocusCommand}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.DiagramNodeDoubleClickedCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DiagramViewportControl}}}"
@@ -45,49 +41,30 @@
                     <view:DiagramConnectorControl.DisplayedRoutePoints>
                         <MultiBinding Converter="{StaticResource DiagramConnectorRouteCalculatorConverter}">
                             <Binding Path="AnimatedRoutePoints" RelativeSource="{RelativeSource Self}" Mode="OneWay" />
-                            <Binding Path="Center" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:AnimatedRectContentPresenter}}" />
+                            <Binding Path="Rect.TopLeft" />
                         </MultiBinding>
                     </view:DiagramConnectorControl.DisplayedRoutePoints>
                 </view:DiagramConnectorControl>
             </DataTemplate>
 
             <Style x:Key="DiagramNodeItemContainerStyle"
-                   TargetType="{x:Type controls:AnimatedRectContentPresenter}"
+                   TargetType="{x:Type controls:AnimatedContentPresenter}"
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}" />
-                <Setter Property="LeftToAnimate" Value="{Binding Path=TopLeft.X}" />
-                <Setter Property="TopToAnimate" Value="{Binding Path=TopLeft.Y}" />
-                <Setter Property="Rect">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource RectCreatorConverter}" Mode="OneWay">
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Left" />
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Top" />
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="LeftToAnimate" Value="{Binding Path=Rect.X}" />
+                <Setter Property="TopToAnimate" Value="{Binding Path=Rect.Y}" />
                 <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}" />
                 <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}" />
-                <Setter Property="AnimatedRect" Value="{Binding Path=AnimatedRect, Mode=OneWayToSource}" />
             </Style>
 
             <Style x:Key="DiagramConnectorItemContainerStyle"
-                   TargetType="{x:Type controls:AnimatedRectContentPresenter}"
+                   TargetType="{x:Type controls:AnimatedContentPresenter}"
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramConnectorViewModel}}">
                 <!-- Warning: Property setter order matters. AnimationDuration should be set first. -->
                 <Setter Property="AnimationDuration" Value="{StaticResource DiagramShapeAnimationDuration}" />
-                <Setter Property="Rect">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource RectUnionConverter}" Mode="OneWay">
-                            <Binding Path="SourceNodeViewModel.AnimatedRect" />
-                            <Binding Path="TargetNodeViewModel.AnimatedRect" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Left" Value="{Binding Path=Center.X, RelativeSource={RelativeSource Self}}" />
-                <Setter Property="Top" Value="{Binding Path=Center.Y, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Left" Value="{Binding Path=Rect.X}" />
+                <Setter Property="Top" Value="{Binding Path=Rect.Y}" />
                 <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}" />
                 <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}" />
                 <!-- No need to set Height and Width, those will adjust automatically to the content -->

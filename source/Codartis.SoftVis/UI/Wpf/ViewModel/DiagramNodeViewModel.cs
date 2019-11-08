@@ -18,13 +18,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
     {
         private string _name;
-        private Point _center;
-        private Point _topLeft;
         private Size _size;
         private Size _payloadAreaSize;
         private Size _childrenAreaSize;
         private bool _hasChildren;
-        private Rect _animatedRect;
 
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
         [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
@@ -77,32 +74,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 if (_name != value)
                 {
                     _name = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public Point Center
-        {
-            get { return _center; }
-            set
-            {
-                if (_center != value)
-                {
-                    _center = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public Point TopLeft
-        {
-            get { return _topLeft; }
-            set
-            {
-                if (_topLeft != value)
-                {
-                    _topLeft = value;
                     OnPropertyChanged();
                 }
             }
@@ -166,19 +137,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public Rect AnimatedRect
-        {
-            get { return _animatedRect; }
-            set
-            {
-                if (_animatedRect != value)
-                {
-                    _animatedRect = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 
         public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
@@ -197,7 +155,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 DiagramNode);
 
             SetPropertiesForImageExport(clone);
-            
+
             return clone;
         }
 
@@ -206,8 +164,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             // For image export we must set those properties that are calculated on the normal UI.
             clone._size = _size;
             clone._payloadAreaSize = _payloadAreaSize;
-            clone._center = _center;
-            clone._topLeft = _topLeft;
         }
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()
@@ -232,7 +188,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (diagramShapeEvent is DiagramNodeChangedEvent diagramNodeChangedEvent &&
                 DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
             {
-                DiagramShape = diagramNodeChangedEvent.NewNode;
+                SetDiagramShape(diagramNodeChangedEvent.NewNode);
                 PopulateFromDiagramNode(diagramNodeChangedEvent.NewNode);
             }
         }
@@ -240,8 +196,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void PopulateFromDiagramNode(IDiagramNode diagramNode)
         {
             Name = diagramNode.ModelNode.Name;
-            Center = diagramNode.Center.ToWpf();
-            TopLeft = diagramNode.TopLeft.ToWpf();
             ChildrenAreaSize = diagramNode.ChildrenAreaSize.ToWpf();
             HasChildren = GetHasChildren(diagramNode);
             // Must NOT populate size from model because its value flows from the controls to the models.

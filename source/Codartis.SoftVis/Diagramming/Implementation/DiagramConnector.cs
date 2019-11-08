@@ -10,6 +10,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class DiagramConnector : DiagramShapeBase, IDiagramConnector
     {
+        public override string ShapeId { get; }
+        public override Rect2D Rect { get; }
+
         public IModelRelationship ModelRelationship { get; }
         public ConnectorType ConnectorType { get; }
         public Route Route { get; }
@@ -29,15 +32,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             ModelRelationship = relationship;
             ConnectorType = connectorType;
             Route = route;
+
+            ShapeId = relationship.Id.ToShapeId();
+            Rect = route.ToRect();
         }
 
         public ModelRelationshipId Id => ModelRelationship.Id;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;
         public ModelNodeId Source => ModelRelationship.Source;
         public ModelNodeId Target => ModelRelationship.Target;
-
-        public override string ShapeId => ModelRelationship.Id.ToShapeId();
-        public override Rect2D Rect => Rect2D.Zero.Union(Route);
 
         public IDiagramConnector WithModelRelationship(IModelRelationship newModelRelationship) => CreateInstance(newModelRelationship, ConnectorType, Route);
         public IDiagramConnector WithConnectorType(ConnectorType newConnectorType) => CreateInstance(ModelRelationship, newConnectorType, Route);

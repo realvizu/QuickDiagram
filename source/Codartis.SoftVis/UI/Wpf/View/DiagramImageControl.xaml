@@ -9,8 +9,8 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramImageViewModel}}"
-             Width="{Binding Path=Rect.Width}"
-             Height="{Binding Path=Rect.Height}">
+             Width="{Binding Path=Size.Width}"
+             Height="{Binding Path=Size.Height}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -29,11 +29,14 @@
             <ItemsPanelTemplate x:Key="DiagramImageItemsPanel">
                 <Canvas>
                     <Canvas.RenderTransform>
-                        <TranslateTransform
-                            X="{Binding Path=Rect.Left, 
-                                Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"
-                            Y="{Binding Path=Rect.Top, 
-                                Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}" />
+                        <TransformGroup>
+                            <TranslateTransform
+                                X="{Binding Path=ContentRect.Left, Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}"
+                                Y="{Binding Path=ContentRect.Top, Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=-1}" />
+                            <TranslateTransform
+                                X="{Binding Path=Margin}"
+                                Y="{Binding Path=Margin}" />
+                        </TransformGroup>
                     </Canvas.RenderTransform>
                 </Canvas>
             </ItemsPanelTemplate>
@@ -43,8 +46,8 @@
                    d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
                 <Setter Property="Width" Value="{Binding Path=Size.Width, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}" />
                 <Setter Property="Height" Value="{Binding Path=Size.Height, Converter={StaticResource DoubleEnsureNumberConverter}, ConverterParameter=0}" />
-                <Setter Property="Canvas.Left" Value="{Binding Path=TopLeft.X}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=TopLeft.Y}" />
+                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
             </Style>
 
         </ResourceDictionary>

@@ -39,18 +39,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         [NotNull]
         public virtual IDiagramConnectorUi CreateDiagramConnectorUi([NotNull] IDiagramService diagramService, [NotNull] IDiagramConnector diagramConnector)
         {
-            if (!DiagramShapeUiRepository.TryGetDiagramNodeUi(diagramConnector.Source, out var sourceNode))
-                throw new InvalidOperationException($"ViewModel not found for node {diagramConnector.Source}");
-
-            if (!DiagramShapeUiRepository.TryGetDiagramNodeUi(diagramConnector.Target, out var targetNode))
-                throw new InvalidOperationException($"ViewModel not found for node {diagramConnector.Target}");
-
             return new DiagramConnectorViewModel(
                 ModelService,
                 diagramService,
-                diagramConnector,
-                (DiagramNodeViewModel)sourceNode,
-                (DiagramNodeViewModel)targetNode);
+                diagramConnector);
         }
     }
 }
