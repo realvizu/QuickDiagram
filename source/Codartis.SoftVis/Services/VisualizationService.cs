@@ -18,7 +18,10 @@ namespace Codartis.SoftVis.Services
     {
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly Func<IModel, IDiagramService> _diagramServiceFactory;
-        [NotNull] private readonly Func<IDiagramService, IDiagramUiService> _uiServiceFactory;
+        [NotNull] private readonly Func<IDiagramService, IDiagramShapeUiFactory> _diagramShapeUiFactoryFactory;
+        [NotNull] private readonly Func<IDiagramService, IDiagramShapeUiFactory, IDiagramViewportUi> _diagramViewportUiFactory;
+        [NotNull] private readonly Func<IDiagramService, IDiagramViewportUi, IDiagramUi> _diagramUiFactory;
+        [NotNull] private readonly Func<IDiagramUi, IDiagramUiService> _diagramUiServiceFactory;
         [NotNull] private readonly IEnumerable<Func<IDiagramService, IDiagramPlugin>> _diagramPluginFactories;
 
         [NotNull] private readonly Dictionary<DiagramId, IDiagramService> _diagramServices;
@@ -28,12 +31,18 @@ namespace Codartis.SoftVis.Services
         public VisualizationService(
             [NotNull] IModelService modelService,
             [NotNull] Func<IModel, IDiagramService> diagramServiceFactory,
-            [NotNull] Func<IDiagramService, IDiagramUiService> uiServiceFactory,
+            [NotNull] Func<IDiagramService, IDiagramShapeUiFactory> diagramShapeUiFactoryFactory,
+            [NotNull] Func<IDiagramService, IDiagramShapeUiFactory, IDiagramViewportUi> diagramViewportUiFactory,
+            [NotNull] Func<IDiagramService, IDiagramViewportUi, IDiagramUi> diagramUiFactory,
+            [NotNull] Func<IDiagramUi, IDiagramUiService> diagramUiServiceFactory,
             [NotNull] IEnumerable<Func<IDiagramService, IDiagramPlugin>> diagramPluginFactories)
         {
             _modelService = modelService;
             _diagramServiceFactory = diagramServiceFactory;
-            _uiServiceFactory = uiServiceFactory;
+            _diagramShapeUiFactoryFactory = diagramShapeUiFactoryFactory;
+            _diagramViewportUiFactory = diagramViewportUiFactory;
+            _diagramUiFactory = diagramUiFactory;
+            _diagramUiServiceFactory = diagramUiServiceFactory;
             _diagramPluginFactories = diagramPluginFactories;
 
             _diagramServices = new Dictionary<DiagramId, IDiagramService>();
@@ -48,9 +57,7 @@ namespace Codartis.SoftVis.Services
             var diagramService = _diagramServiceFactory(_modelService.LatestModel);
             _diagramServices.Add(diagramId, diagramService);
 
-            var diagramUiService = _uiServiceFactory(diagramService);
-            diagramUiService.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
-            diagramUiService.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
+            var diagramUiService = CreateDiagramUiService(diagramId, diagramService);
             _diagramUiServices.Add(diagramId, diagramUiService);
 
             var plugins = _diagramPluginFactories.Select(i => i(diagramService)).ToList();
@@ -74,6 +81,19 @@ namespace Codartis.SoftVis.Services
 
             _diagramPlugins[diagramId].ForEach(i => i.Dispose());
             _diagramPlugins.Remove(diagramId);
+        }
+
+        [NotNull]
+        private IDiagramUiService CreateDiagramUiService(DiagramId diagramId, [NotNull] IDiagramService diagramService)
+        {
+            var diagramShapeUiFactory = _diagramShapeUiFactoryFactory.Invoke(diagramService);
+            var diagramViewportUi = _diagramViewportUiFactory .Invoke(diagramService, diagramShapeUiFactory);
+            var diagramUi = _diagramUiFactory.Invoke(diagramService, diagramViewportUi);
+
+            var diagramUiService = _diagramUiServiceFactory(diagramUi);
+            diagramUiService.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUiService.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
+            return diagramUiService;
         }
 
         [NotNull]

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Collections;
 using Codartis.Util.UI.Wpf.ViewModels;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -15,12 +15,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <remarks>
     /// Caches the minibutton view models created for a certain diagram shape stereotype.
     /// </remarks>
-    public class MiniButtonPanelViewModel : DecorationManagerViewModelBase<IDiagramShapeUi>
+    public class MiniButtonPanelViewModel : DecorationManagerViewModelBase<IMiniButton, IDiagramShapeUi>, IMiniButtonManager
     {
-        private readonly Dictionary<string, List<IMiniButton>> _miniButtonViewModelCache;
-        private readonly object _cacheLockObject = new object();
+        [NotNull] private readonly Dictionary<string, List<IMiniButton>> _miniButtonViewModelCache;
+        [NotNull] private readonly object _cacheLockObject = new object();
 
-        public ObservableCollection<IMiniButton> ButtonViewModels { get; }
+        [NotNull] public ObservableCollection<IMiniButton> ButtonViewModels { get; }
 
         public MiniButtonPanelViewModel()
         {
@@ -36,11 +36,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 buttonViewModel.Dispose();
         }
 
-        protected override IEnumerable<IUiDecorator<IDiagramShapeUi>> GetDecoratorsFor(IDiagramShapeUi hostViewModel)
+        protected override IEnumerable<IMiniButton> GetDecoratorsFor([NotNull] IDiagramShapeUi hostViewModel)
         {
             lock (_cacheLockObject)
             {
-                var hostType = hostViewModel.Stereotype;
+                var hostType = hostViewModel.StereotypeName;
                 if (_miniButtonViewModelCache.ContainsKey(hostType))
                     return _miniButtonViewModelCache[hostType];
 

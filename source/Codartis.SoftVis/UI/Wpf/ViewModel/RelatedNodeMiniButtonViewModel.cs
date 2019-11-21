@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override object PlacementKey => _directedModelRelationshipType;
 
-        private DiagramNodeViewModel HostDiagramNodeViewModel => HostViewModel as DiagramNodeViewModel;
+        private DiagramNodeViewModel HostDiagramNodeViewModel => HostUiElement as DiagramNodeViewModel;
 
         public override void AssociateWith(IDiagramShapeUi host)
         {
@@ -50,7 +50,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnClick()
         {
-            // Copy to variable to avoid race condition of HostViewModel changing in-flight
+            // Copy to variable to avoid race condition of HostUiElement changing in-flight
             var hostDiagramNodeViewModel = HostDiagramNodeViewModel;
             if (hostDiagramNodeViewModel == null)
                 return;
@@ -69,7 +69,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnDoubleClick()
         {
-            // Copy to variable to avoid race condition of HostViewModel changing in-flight
+            // Copy to variable to avoid race condition of HostUiElement changing in-flight
             var hostDiagramNodeViewModel = HostDiagramNodeViewModel;
             if (hostDiagramNodeViewModel == null)
                 return;
@@ -92,7 +92,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void UpdateEnabledState()
         {
-            // Copy to variable to avoid race condition of HostViewModel changing in-flight
+            // Copy to variable to avoid race condition of HostUiElement changing in-flight
             var hostDiagramNodeViewModel = HostDiagramNodeViewModel;
             if (hostDiagramNodeViewModel == null)
                 return;

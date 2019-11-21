@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUi
     {
-        [NotNull] string Stereotype { get; }
+        [NotNull] string StereotypeName { get; }
 
         [NotNull]
         [ItemNotNull]

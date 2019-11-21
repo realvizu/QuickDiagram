@@ -6,8 +6,7 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.Util.UI;
-using Codartis.Util.UI.Wpf.ViewModels;
+using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -37,7 +36,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IModelService modelService,
             [NotNull] IDiagramService diagramService,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IFocusTracker<IDiagramShapeUi> focusTracker,
+            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
             [NotNull] IDiagramNode diagramNode)
             : base(modelService, diagramService, diagramNode)
         {
@@ -45,13 +44,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             // Must NOT populate size from model because its value flows from the controls to the models.
 
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
-            FocusTracker = (IWpfFocusTracker<IDiagramShapeUi>)focusTracker;
+            FocusTracker = focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
             DiagramService.DiagramChanged += OnDiagramChanged;
         }
 
-        public override string Stereotype => DiagramNode.ModelNode.Stereotype.Name;
+        public override string StereotypeName => DiagramNode.ModelNode.Stereotype.Name;
 
         public override void Dispose()
         {

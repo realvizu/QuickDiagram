@@ -45,7 +45,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public IDiagramShapeUi OwnerDiagramShape => _ownerButton?.HostViewModel;
+        public IDiagramShapeUi OwnerDiagramShape => _ownerButton?.HostUiElement;
 
         public void Show(RelatedNodeMiniButtonViewModel ownerButton, IEnumerable<IModelNode> items)
         {

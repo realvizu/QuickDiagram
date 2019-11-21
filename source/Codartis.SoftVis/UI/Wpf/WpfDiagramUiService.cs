@@ -22,21 +22,16 @@ namespace Codartis.SoftVis.UI.Wpf
         public DiagramControl DiagramControl { get; }
 
         public WpfDiagramUiService(
-            [NotNull] IDiagramService diagramService,
-            [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
-            [NotNull] Func<DiagramControl> diagramControlFactory)
-            : this(diagramViewModelFactory.Invoke(diagramService), diagramControlFactory.Invoke())
-        {
-        }
-
-        public WpfDiagramUiService(
-            [NotNull] DiagramViewModel diagramViewModel,
+            [NotNull] IDiagramUi diagramUi,
             [NotNull] DiagramControl diagramControl)
         {
-            DiagramViewModel = diagramViewModel;
+            DiagramViewModel = (DiagramViewModel)diagramUi;
+
             DiagramControl = diagramControl;
             DiagramControl.DataContext = DiagramViewModel;
         }
+
+        public IDiagramUi DiagramUi => DiagramViewModel;
 
         public async Task<BitmapSource> CreateDiagramImageAsync(
             double dpi,

@@ -15,29 +15,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public RoslynDiagramViewModel(
             [NotNull] IModelService modelService,
             [NotNull] IDiagramService diagramService,
-            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            bool initialIsDescriptionVisible,
-            double minZoom,
-            double maxZoom,
-            double initialZoom)
-            : base(
-                modelService,
-                diagramService,
-                new RoslynDiagramShapeUiFactory(relatedNodeTypeProvider, initialIsDescriptionVisible),
-                minZoom,
-                maxZoom,
-                initialZoom)
+            [NotNull] IDiagramViewportUi diagramViewportUi)
+            : base(modelService, diagramService, diagramViewportUi)
         {
         }
 
-        [NotNull] private IRoslynDiagramShapeUiFactory RoslynDiagramShapeUiFactory => (IRoslynDiagramShapeUiFactory)DiagramShapeUiFactory;
+        //[NotNull] private IRoslynDiagramShapeUiFactory RoslynDiagramShapeUiFactory => (IRoslynDiagramShapeUiFactory)DiagramShapeUiFactory;
 
         public void ExpandAllNodes() => SetDiagramNodeDescriptionVisibility(true);
         public void CollapseAllNodes() => SetDiagramNodeDescriptionVisibility(false);
 
         private void SetDiagramNodeDescriptionVisibility(bool isVisible)
         {
-            RoslynDiagramShapeUiFactory.IsDescriptionVisible = isVisible;
+            //RoslynDiagramShapeUiFactory.IsDescriptionVisible = isVisible;
 
             foreach (var diagramNodeViewModel in DiagramNodeViewModels.OfType<RoslynDiagramNodeViewModel>())
                 diagramNodeViewModel.IsDescriptionVisible = isVisible;

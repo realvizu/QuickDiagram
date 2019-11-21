@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.UI.Wpf.View;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util;
 using JetBrains.Annotations;
 
@@ -14,12 +13,6 @@ namespace Codartis.SoftVis.UI.Wpf
     /// </summary>
     public interface IWpfDiagramUiService : IDiagramUiService
     {
-        /// <summary>
-        /// Gets the view model of the diagram.
-        /// </summary>
-        [NotNull]
-        DiagramViewModel DiagramViewModel { get; }
-
         /// <summary>
         /// Gets the view of the diagram.
         /// </summary>

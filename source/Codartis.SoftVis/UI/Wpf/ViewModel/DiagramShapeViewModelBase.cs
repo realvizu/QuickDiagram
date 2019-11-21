@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Rect = diagramShape.Rect.ToWpf();
         }
 
-        public abstract string Stereotype { get; }
+        public abstract string StereotypeName { get; }
 
         public abstract object CloneForImageExport();
 

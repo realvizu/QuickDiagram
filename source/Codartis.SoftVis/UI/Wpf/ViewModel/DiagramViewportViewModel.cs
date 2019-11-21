@@ -11,6 +11,7 @@ using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Collections;
 using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.Transforms;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -19,18 +20,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// Also handles viewport transform (resize, pan and zoom) in a transitioned style (with a given transition speed).
     /// Also handles which shape has the focus and which one has the decorators (mini buttons).
     /// </summary>
-    public class DiagramViewportViewModel : ModelObserverViewModelBase, IDiagramShapeUiRepository
+    public class DiagramViewportViewModel : ModelObserverViewModelBase, IDiagramViewportUi
     {
         public double MinZoom { get; }
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
+        public IDiagramShapeUiFactory DiagramShapeUiFactory { get; }
         public ThreadSafeObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
         public ThreadSafeObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public MiniButtonPanelViewModel MiniButtonPanelViewModel { get; }
 
         private readonly Map<ModelNodeId, DiagramNodeViewModel> _diagramNodeToViewModelMap;
         private readonly Map<ModelRelationshipId, DiagramConnectorViewModel> _diagramConnectorToViewModelMap;
-        private readonly IDiagramShapeUiFactory _diagramShapeUiFactory;
 
         public event Action ViewportManipulation;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
@@ -43,9 +44,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
         public DiagramViewportViewModel(
-            IModelService modelService,
-            IDiagramService diagramService,
-            IDiagramShapeUiFactory diagramShapeUiFactory,
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IDiagramShapeUiFactory diagramShapeUiFactory,
+            [NotNull] IDecorationManager<IMiniButton, IDiagramShapeUi> miniButtonManager,
             double minZoom,
             double maxZoom,
             double initialZoom)
@@ -57,13 +59,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramNodeToViewModelMap = new Map<ModelNodeId, DiagramNodeViewModel>();
             _diagramConnectorToViewModelMap = new Map<ModelRelationshipId, DiagramConnectorViewModel>();
 
-            _diagramShapeUiFactory = diagramShapeUiFactory;
-            _diagramShapeUiFactory.Initialize(modelService, this);
+            DiagramShapeUiFactory = diagramShapeUiFactory;
+            MiniButtonPanelViewModel = (MiniButtonPanelViewModel)miniButtonManager;
 
             ViewportCalculator = new AutoMoveViewportViewModel(modelService, diagramService, minZoom, maxZoom, initialZoom);
             DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
-            MiniButtonPanelViewModel = new MiniButtonPanelViewModel();
 
             DiagramNodeDoubleClickedCommand = new DelegateCommand<IDiagramNode>(i => DiagramNodeInvoked?.Invoke(i));
 
@@ -73,6 +74,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             AddDiagram(diagramService.LatestDiagram);
         }
 
+        public IDecorationManager<IMiniButton, IDiagramShapeUi> MiniButtonManager => MiniButtonPanelViewModel;
+        public IEnumerable<IDiagramNodeUi> DiagramNodeUis => DiagramNodeViewModels;
+        public IEnumerable<IDiagramConnectorUi> DiagramConnectorUis => DiagramConnectorViewModels;
+
         public override void Dispose()
         {
             base.Dispose();
@@ -81,7 +86,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramService.DiagramChanged -= OnDiagramChanged;
 
             ViewportCalculator.Dispose();
-            MiniButtonPanelViewModel.Dispose();
+            MiniButtonManager.Dispose();
 
             foreach (var diagramNodeViewModel in DiagramNodeViewModels)
                 diagramNodeViewModel.Dispose();
@@ -104,8 +109,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public bool IsDiagramContentVisible() => ViewportCalculator.IsDiagramRectVisible();
 
-        public void PinDecoration() => MiniButtonPanelViewModel.PinDecoration();
-        public void UnpinDecoration() => MiniButtonPanelViewModel.UnpinDecoration();
+        public void PinDecoration() => MiniButtonManager.PinDecoration();
+        public void UnpinDecoration() => MiniButtonManager.UnpinDecoration();
 
         public bool TryGetDiagramNodeUi(ModelNodeId modelNodeId, out IDiagramNodeUi viewModel)
         {
@@ -167,7 +172,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramNodeUi = (DiagramNodeViewModel)_diagramShapeUiFactory.CreateDiagramNodeUi(DiagramService, diagramNode, MiniButtonPanelViewModel);
+            var diagramNodeUi = (DiagramNodeViewModel)DiagramShapeUiFactory.CreateDiagramNodeUi(diagramNode, MiniButtonManager);
 
             diagramNodeUi.SizeChanged += OnDiagramNodeSizeChanged;
             diagramNodeUi.PayloadAreaSizeChanged += OnDiagramNodePayloadAreaSizeChanged;
@@ -181,7 +186,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddConnector(IDiagramConnector diagramConnector)
         {
-            var diagramConnectorUi = (DiagramConnectorViewModel)_diagramShapeUiFactory.CreateDiagramConnectorUi(DiagramService, diagramConnector);
+            var diagramConnectorUi = (DiagramConnectorViewModel)DiagramShapeUiFactory.CreateDiagramConnectorUi(diagramConnector, MiniButtonManager);
 
             _diagramConnectorToViewModelMap.Set(diagramConnector.Id, diagramConnectorUi);
             DiagramConnectorViewModels.Add(diagramConnectorUi);
@@ -204,7 +209,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             diagramNodeViewModel.RelatedNodeSelectorRequested -= OnEntitySelectorRequested;
             diagramNodeViewModel.RemoveRequested -= OnRemoveDiagramNodeRequested;
 
-            MiniButtonPanelViewModel.Unfocus(diagramNodeViewModel);
+            MiniButtonManager.Unfocus(diagramNodeViewModel);
             _diagramNodeToViewModelMap.Remove(diagramNode.Id);
             DiagramNodeViewModels.Remove(diagramNodeViewModel);
 
@@ -216,7 +221,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (!TryGetDiagramConnectorViewModel(diagramConnector.Id, out var diagramConnectorViewModel))
                 return;
 
-            MiniButtonPanelViewModel.Unfocus(diagramConnectorViewModel);
+            MiniButtonManager.Unfocus(diagramConnectorViewModel);
             _diagramConnectorToViewModelMap.Remove(diagramConnector.Id);
             DiagramConnectorViewModels.Remove(diagramConnectorViewModel);
 

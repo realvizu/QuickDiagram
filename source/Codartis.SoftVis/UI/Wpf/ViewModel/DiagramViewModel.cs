@@ -8,18 +8,17 @@ using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.ViewModels;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// Top level view model of the diagram control.
     /// </summary>
-    public class DiagramViewModel : ModelObserverViewModelBase
+    public class DiagramViewModel : ModelObserverViewModelBase, IDiagramUi
     {
         private IDiagram _lastDiagram;
         private Rect _diagramContentRect;
-
-        protected IDiagramShapeUiFactory DiagramShapeUiFactory { get; }
 
         public DiagramViewportViewModel DiagramViewportViewModel { get; }
         public RelatedNodeListBoxViewModel RelatedNodeListBoxViewModel { get; }
@@ -35,23 +34,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
         public DiagramViewModel(
-            IModelService modelService,
-            IDiagramService diagramService,
-            IDiagramShapeUiFactory diagramShapeUiFactory,
-            double minZoom,
-            double maxZoom,
-            double initialZoom)
+            [NotNull] IModelService modelService,
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IDiagramViewportUi diagramViewportUi)
             : base(modelService, diagramService)
         {
-            DiagramShapeUiFactory = diagramShapeUiFactory;
-
-            DiagramViewportViewModel = new DiagramViewportViewModel(
-                ModelService,
-                DiagramService,
-                diagramShapeUiFactory,
-                minZoom,
-                maxZoom,
-                initialZoom);
+            DiagramViewportViewModel = (DiagramViewportViewModel)diagramViewportUi;
 
             RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelService, DiagramService);
             RelatedNodeListBoxViewModel.ItemSelected += OnRelatedNodeSelected;
@@ -68,6 +56,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
             _lastDiagram = DiagramService.LatestDiagram;
         }
+
+        public IDiagramViewportUi Viewport => DiagramViewportViewModel;
 
         public override void Dispose()
         {

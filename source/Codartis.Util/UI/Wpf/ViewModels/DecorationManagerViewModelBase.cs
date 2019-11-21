@@ -7,15 +7,19 @@ namespace Codartis.Util.UI.Wpf.ViewModels
     /// Abstract base class for tracking focus changes and assigning a collection of decorators to a host view model.
     /// The decoration can be pinned meaning that it won't follow the focus until unpinned.
     /// </summary>
+    /// <typeparam name="TDecoratorViewModel">The tpe of the decorator view model.</typeparam>
     /// <typeparam name="THostViewModel">The type of the view model that hosts the decorators.</typeparam>
-    public abstract class DecorationManagerViewModelBase<THostViewModel> : ViewModelBase, IWpfFocusTracker<THostViewModel>
-        where THostViewModel : class 
+    public abstract class DecorationManagerViewModelBase<TDecoratorViewModel, THostViewModel> : ViewModelBase,
+        IDecorationManager<TDecoratorViewModel, THostViewModel>,
+        IWpfFocusTracker<THostViewModel>
+        where TDecoratorViewModel : IUiDecorator<THostViewModel>
+        where THostViewModel : class
     {
         /// <summary>The focused host is the one that the user points to.</summary>
         private THostViewModel _focusedHost;
 
         /// <summary>The current decorators. Null if there's no focused host. </summary>
-        private IEnumerable<IUiDecorator<THostViewModel>> _decorators;
+        public IEnumerable<TDecoratorViewModel> Decorators { get; private set; }
 
         /// <summary>The decoration is pinned if it stays visible even when focus is lost from the host.</summary>
         private bool _isDecorationPinned;
@@ -47,18 +51,18 @@ namespace Codartis.Util.UI.Wpf.ViewModels
             }
         }
 
-        public void Focus(THostViewModel host)
+        public void Focus(THostViewModel uiElement)
         {
-            if (host == _focusedHost)
+            if (uiElement == _focusedHost)
                 return;
 
             Unfocus(_focusedHost);
-            SetFocus(host);
+            SetFocus(uiElement);
         }
 
-        public void Unfocus(THostViewModel host)
+        public void Unfocus(THostViewModel uiElement)
         {
-            if (_focusedHost == host)
+            if (_focusedHost == uiElement)
                 SetFocus(null);
         }
 
@@ -79,7 +83,7 @@ namespace Codartis.Util.UI.Wpf.ViewModels
             ChangeDecorationTo(_focusedHost);
         }
 
-        protected abstract IEnumerable<IUiDecorator<THostViewModel>> GetDecoratorsFor(THostViewModel hostViewModel);
+        protected abstract IEnumerable<TDecoratorViewModel> GetDecoratorsFor(THostViewModel hostViewModel);
 
         private void SetFocus(THostViewModel hostViewModel)
         {
@@ -91,9 +95,9 @@ namespace Codartis.Util.UI.Wpf.ViewModels
 
         private void ChangeDecorationTo(THostViewModel hostViewModel)
         {
-            if (_decorators != null)
+            if (Decorators != null)
             {
-                foreach (var decorator in _decorators)
+                foreach (var decorator in Decorators)
                     decorator.Hide();
             }
 
@@ -101,12 +105,12 @@ namespace Codartis.Util.UI.Wpf.ViewModels
 
             if (hostViewModel == null)
             {
-                _decorators = null;
+                Decorators = null;
             }
             else
             {
-                _decorators = GetDecoratorsFor(hostViewModel);
-                foreach (var decorator in _decorators)
+                Decorators = GetDecoratorsFor(hostViewModel);
+                foreach (var decorator in Decorators)
                     decorator.AssociateWith(hostViewModel);
             }
         }

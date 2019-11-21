@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         protected override void OnClick()
         {
-            if (HostViewModel is DiagramNodeViewModel diagramNodeViewModel)
+            if (HostUiElement is DiagramNodeViewModel diagramNodeViewModel)
                 diagramNodeViewModel.Remove();
         }
     }

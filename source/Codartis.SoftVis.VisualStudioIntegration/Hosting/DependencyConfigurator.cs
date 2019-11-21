@@ -35,13 +35,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<DiagramService>().As<IDiagramService>();
             builder.RegisterType<RoslynConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
-            builder.RegisterType<DiagramShapeUiFactory>().As<IDiagramShapeUiFactory>();
+            builder.RegisterType<RoslynDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>()
+                .WithParameter("isDescriptionVisible", true);
 
-            builder.RegisterType<RoslynDiagramViewModel>().As<DiagramViewModel>()
-                .WithParameter("initialIsDescriptionVisible", true)
+            builder.RegisterType<DiagramViewportViewModel>()
                 .WithParameter("minZoom", .2)
                 .WithParameter("maxZoom", 5d)
                 .WithParameter("initialZoom", 1d);
+
+            builder.RegisterType<RoslynDiagramViewModel>().As<DiagramViewModel>();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 

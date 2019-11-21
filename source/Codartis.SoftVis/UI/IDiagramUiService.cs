@@ -11,6 +11,8 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramUiService
     {
+        IDiagramUi DiagramUi { get; }
+
         void ZoomToDiagram();
         void FollowDiagramNode(ModelNodeId nodeId);
         void FollowDiagramNodes(IReadOnlyList<ModelNodeId> nodeIds);

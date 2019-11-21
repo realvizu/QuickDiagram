@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     {
         private bool _isVisible;
 
-        public IDiagramShapeUi HostViewModel { get; private set; }
+        public IDiagramShapeUi HostUiElement { get; private set; }
 
         protected DiagramShapeDecoratorViewModelBase(IModelService modelService, IDiagramService diagramService)
             : base(modelService, diagramService)
@@ -41,13 +41,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public virtual void AssociateWith(IDiagramShapeUi host)
         {
-            HostViewModel = host;
+            HostUiElement = host;
             IsVisible = true;
         }
 
         public virtual void Hide()
         {
-            HostViewModel = null;
+            HostUiElement = null;
             IsVisible = false;
         }
     }

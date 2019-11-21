@@ -1,8 +1,7 @@
 ﻿using System;
-using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
-using Codartis.SoftVis.UI.Wpf.ViewModel;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -16,14 +15,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public Dpi ImageExportDpi { get; set; }
 
         public DiagramWindowService(
-            [NotNull] IDiagramService diagramService,
-            [NotNull] Func<IDiagramService, DiagramViewModel> diagramViewModelFactory,
-            [NotNull] Func<DiagramControl> diagramControlFactory)
-            : base(diagramService, diagramViewModelFactory, diagramControlFactory)
+            [NotNull] IDiagramUi diagramViewModel,
+            [NotNull] DiagramControl diagramControl)
+            : base(diagramViewModel, diagramControl)
         {
         }
 
-        private RoslynDiagramViewModel RoslynDiagramViewModel => (RoslynDiagramViewModel)DiagramViewModel;
+        private RoslynDiagramViewModel RoslynDiagramViewModel => (RoslynDiagramViewModel)DiagramUi;
 
         public void ExpandAllNodes() => RoslynDiagramViewModel.ExpandAllNodes();
         public void CollapseAllNodes() => RoslynDiagramViewModel.CollapseAllNodes();
