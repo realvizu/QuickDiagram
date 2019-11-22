@@ -72,9 +72,8 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DiagramService>().As<IDiagramService>();
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
-            builder.RegisterType<DiagramLayoutAlgorithm>()
-                .WithParameter("childrenAreaPadding", 2)
-                .As<IDiagramLayoutAlgorithm>();
+            builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
+                .WithParameter("childrenAreaPadding", 2);
 
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
@@ -87,11 +86,10 @@ namespace Codartis.SoftVis.TestHostApp
 
             builder.RegisterType<DiagramViewModel>().As<IDiagramUi>();
 
-            builder.RegisterType<DiagramViewportViewModel>()
+            builder.RegisterType<DiagramViewportViewModel>().As<IDiagramViewportUi>()
                 .WithParameter("minZoom", .2)
                 .WithParameter("maxZoom", 5d)
-                .WithParameter("initialZoom", 1d)
-                .As<IDiagramViewportUi>();
+                .WithParameter("initialZoom", 1d);
 
             builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
 
