@@ -16,11 +16,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public bool IsDescriptionVisible { get; set; }
 
         public RoslynDiagramShapeViewModelFactory(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             bool isDescriptionVisible)
-            : base(modelService, diagramService, relatedNodeTypeProvider)
+            : base(modelEventSource, diagramEventSource, relatedNodeTypeProvider)
         {
             IsDescriptionVisible = isDescriptionVisible;
         }
@@ -30,11 +30,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             IFocusTracker<IDiagramShapeUi> focusTracker)
         {
             return new RoslynDiagramNodeViewModel(
-                ModelService,
-                DiagramService,
+                ModelEventSource,
+                DiagramEventSource,
+                diagramNode,
+                PayloadUiFactory?.Create(diagramNode.ModelNode.Payload),
                 RelatedNodeTypeProvider,
                 (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
-                diagramNode,
                 IsDescriptionVisible);
         }
     }

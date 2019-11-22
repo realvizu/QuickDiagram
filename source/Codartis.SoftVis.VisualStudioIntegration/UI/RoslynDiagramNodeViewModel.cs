@@ -15,13 +15,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _isDescriptionVisible;
 
         public RoslynDiagramNodeViewModel(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
+            [NotNull] IDiagramNode diagramNode,
+            [CanBeNull] IPayloadUi payloadUi,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
-            [NotNull] IDiagramNode diagramNode,
             bool isDescriptionVisible)
-            : base(modelService, diagramService, relatedNodeTypeProvider, focusTracker, diagramNode)
+            : base(modelEventSource, diagramEventSource, diagramNode, payloadUi, relatedNodeTypeProvider, focusTracker)
         {
             IsDescriptionVisible = isDescriptionVisible;
         }
@@ -42,11 +43,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public override object CloneForImageExport()
         {
             var clone = new RoslynDiagramNodeViewModel(
-                ModelService,
-                DiagramService,
+                ModelEventSource,
+                DiagramEventSource,
+                DiagramNode,
+                PayloadUi,
                 RelatedNodeTypeProvider,
                 FocusTracker,
-                DiagramNode,
                 IsDescriptionVisible);
 
             SetPropertiesForImageExport(clone);

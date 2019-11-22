@@ -9,8 +9,6 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// </summary>
     public interface IModelService : IModelEventSource
     {
-        [NotNull] IModel LatestModel { get; }
-
         /// <summary>
         /// Adds a node to the model.
         /// If a parentNodeId is specified then also creates a containment relationship.

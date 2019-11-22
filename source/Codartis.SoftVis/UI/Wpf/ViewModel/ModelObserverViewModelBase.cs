@@ -10,15 +10,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class ModelObserverViewModelBase : ViewModelBase
     {
-        [NotNull] protected readonly IModelService ModelService;
-        [NotNull] protected readonly IDiagramService DiagramService;
+        [NotNull] protected readonly IModelEventSource ModelEventSource;
+        [NotNull] protected readonly IDiagramEventSource DiagramEventSource;
 
         protected ModelObserverViewModelBase(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService)
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource)
         {
-            ModelService = modelService;
-            DiagramService = diagramService;
+            ModelEventSource = modelEventSource;
+            DiagramEventSource = diagramEventSource;
         }
     }
 }

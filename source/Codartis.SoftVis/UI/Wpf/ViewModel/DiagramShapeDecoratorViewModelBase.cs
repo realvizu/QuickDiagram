@@ -14,8 +14,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramShapeUi HostUiElement { get; private set; }
 
-        protected DiagramShapeDecoratorViewModelBase(IModelService modelService, IDiagramService diagramService)
-            : base(modelService, diagramService)
+        protected DiagramShapeDecoratorViewModelBase(
+            IModelEventSource modelEventSource,
+            IDiagramEventSource diagramEventSource)
+            : base(modelEventSource, diagramEventSource)
         {
             _isVisible = false;
         }

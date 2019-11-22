@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Media;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -18,28 +18,31 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Point[] _routePoints;
 
         public DiagramConnectorViewModel(
-            IModelService modelService,
-            IDiagramService diagramService,
-            IDiagramConnector diagramConnector)
-            : base(modelService, diagramService, diagramConnector)
+            IModelEventSource modelEventSource,
+            IDiagramEventSource diagramEventSource,
+            [NotNull] IDiagramConnector diagramConnector,
+            [CanBeNull] IPayloadUi payloadUi)
+            : base(modelEventSource, diagramEventSource, diagramConnector, payloadUi)
         {
-            _routePoints = diagramConnector.Route.ToWpf();
-
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            UpdateDiagramConnector(diagramConnector);
         }
 
         public override string StereotypeName => DiagramConnector.ModelRelationship.Stereotype.Name;
 
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            DiagramService.DiagramChanged -= OnDiagramChanged;
-        }
-
         public IDiagramConnector DiagramConnector => (IDiagramConnector)DiagramShape;
 
-        public override object CloneForImageExport() => new DiagramConnectorViewModel(ModelService, DiagramService, DiagramConnector);
+        public void Update([NotNull] IDiagramConnector connector, IPayloadUi payloadUi)
+        {
+            UpdateDiagramShape(connector, payloadUi);
+            UpdateDiagramConnector(connector);
+        }
+
+        private void UpdateDiagramConnector([NotNull] IDiagramConnector connector)
+        {
+            RoutePoints = connector.Route.ToWpf();
+        }
+
+        public override object CloneForImageExport() => new DiagramConnectorViewModel(ModelEventSource, DiagramEventSource, DiagramConnector, PayloadUi);
 
         private ConnectorType ConnectorType => DiagramConnector.ConnectorType;
         private bool IsDashed => ConnectorType.ShaftLineType == LineType.Dashed;
@@ -52,27 +55,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             private set
             {
                 var nonNullValue = value ?? new Point[0];
-                if (!_routePoints.SequenceEqual(nonNullValue))
+                if (_routePoints?.SequenceEqual(nonNullValue) != true)
                 {
                     _routePoints = nonNullValue;
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        private void OnDiagramChanged(DiagramEvent @event)
-        {
-            foreach (var change in @event.ShapeEvents)
-                ProcessDiagramChange(change);
-        }
-
-        private void ProcessDiagramChange(DiagramShapeEventBase diagramShapeEvent)
-        {
-            if (diagramShapeEvent is DiagramConnectorRouteChangedEvent diagramConnectorRouteChangedEvent &&
-                DiagramConnectorIdEqualityComparer.Instance.Equals(diagramConnectorRouteChangedEvent.NewConnector, DiagramConnector))
-            {
-                SetDiagramShape(diagramConnectorRouteChangedEvent.NewConnector);
-                RoutePoints = diagramConnectorRouteChangedEvent.NewConnector.Route.ToWpf();
             }
         }
     }

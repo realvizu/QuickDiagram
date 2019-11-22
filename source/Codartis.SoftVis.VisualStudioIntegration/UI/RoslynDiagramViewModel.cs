@@ -14,10 +14,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         [NotNull] private readonly RoslynDiagramViewportViewModel _roslynDiagramViewportViewModel;
 
         public RoslynDiagramViewModel(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramViewportUi diagramViewportUi)
-            : base(modelService, diagramService, diagramViewportUi)
+            : base(modelEventSource, diagramEventSource, diagramViewportUi)
         {
             _roslynDiagramViewportViewModel = (RoslynDiagramViewportViewModel)diagramViewportUi;
         }

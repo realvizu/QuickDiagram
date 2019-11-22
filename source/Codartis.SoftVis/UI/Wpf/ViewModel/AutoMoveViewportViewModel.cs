@@ -19,20 +19,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public ViewportAutoMoveMode Mode { get; set; }
 
-        public AutoMoveViewportViewModel(IModelService modelService, IDiagramService diagramService,
-            double minZoom, double maxZoom, double initialZoom, ViewportAutoMoveMode mode = ViewportAutoMoveMode.Contain)
-             : base(modelService, diagramService, minZoom, maxZoom, initialZoom)
+        public AutoMoveViewportViewModel(
+            IModelEventSource modelEventSource,
+            IDiagramEventSource diagramEventSource,
+            double minZoom,
+            double maxZoom,
+            double initialZoom,
+            ViewportAutoMoveMode mode = ViewportAutoMoveMode.Contain)
+            : base(modelEventSource, diagramEventSource, minZoom, maxZoom, initialZoom)
         {
             Mode = mode;
 
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            DiagramEventSource.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            DiagramService.DiagramChanged -= OnDiagramChanged;
+            DiagramEventSource.DiagramChanged -= OnDiagramChanged;
         }
 
         public void FollowDiagramNodes(IEnumerable<ModelNodeId> nodeIds, TransitionSpeed transitionSpeed)
@@ -98,7 +103,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (_followedNodeIds == null)
                 return;
 
-            var rect = DiagramService.LatestDiagram.GetRect(_followedNodeIds).ToWpf();
+            var rect = DiagramEventSource.LatestDiagram.GetRect(_followedNodeIds).ToWpf();
             if (rect.IsUndefined())
                 return;
 

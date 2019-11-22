@@ -46,7 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterModelComponents(ContainerBuilder builder)
         {
-            builder.RegisterType<ModelService>().SingleInstance().As<IModelService>();
+            builder.RegisterType<ModelService>().SingleInstance().As<IModelService>().As<IModelEventSource>();
             builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
 
             builder.RegisterType<RoslynModelService>().As<IRoslynModelService>();
@@ -78,6 +78,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.RegisterType<RoslynDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>()
                 .WithParameter("isDescriptionVisible", true);
+
+            builder.RegisterType<NullPayloadUiFactory>().As<IPayloadUiFactory>();
 
             builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
 

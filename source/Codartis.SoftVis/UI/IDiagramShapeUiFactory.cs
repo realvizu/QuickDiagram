@@ -9,6 +9,8 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUiFactory
     {
+        [CanBeNull] IPayloadUiFactory PayloadUiFactory { get; }
+
         [NotNull]
         IDiagramNodeUi CreateDiagramNodeUi(
             [NotNull] IDiagramNode diagramNode,

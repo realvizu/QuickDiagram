@@ -11,18 +11,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramShapeViewModelFactory : IDiagramShapeUiFactory
     {
-        [NotNull] protected IModelService ModelService { get; }
-        [NotNull] protected IDiagramService DiagramService { get; }
+        [NotNull] protected IModelEventSource ModelEventSource { get; }
+        [NotNull] protected IDiagramEventSource DiagramEventSource { get; }
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
 
+        public IPayloadUiFactory PayloadUiFactory { get; }
+
         public DiagramShapeViewModelFactory(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
-            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider)
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
+            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
+            [CanBeNull] IPayloadUiFactory payloadUiFactory = null)
         {
-            ModelService = modelService;
-            DiagramService = diagramService;
+            ModelEventSource = modelEventSource;
+            DiagramEventSource = diagramEventSource;
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
+            PayloadUiFactory = payloadUiFactory;
         }
 
         public virtual IDiagramNodeUi CreateDiagramNodeUi(
@@ -30,11 +34,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IFocusTracker<IDiagramShapeUi> focusTracker)
         {
             return new DiagramNodeViewModel(
-                ModelService,
-                DiagramService,
+                ModelEventSource,
+                DiagramEventSource,
+                diagramNode,
+                PayloadUiFactory?.Create(diagramNode.ModelNode.Payload),
                 RelatedNodeTypeProvider,
-                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
-                diagramNode);
+                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker);
         }
 
         public virtual IDiagramConnectorUi CreateDiagramConnectorUi(
@@ -42,9 +47,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             IFocusTracker<IDiagramShapeUi> focusTracker)
         {
             return new DiagramConnectorViewModel(
-                ModelService,
-                DiagramService,
-                diagramConnector);
+                ModelEventSource,
+                DiagramEventSource,
+                diagramConnector,
+                PayloadUiFactory?.Create(diagramConnector.ModelRelationship.Payload));
         }
     }
 }

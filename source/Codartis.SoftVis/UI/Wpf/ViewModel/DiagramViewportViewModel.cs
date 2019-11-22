@@ -16,7 +16,8 @@ using JetBrains.Annotations;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Tracks the change events of a diagram and creates/modifies diagram shape viewmodels accordingly.
+    /// Tracks the change events of a diagram and creates/destroys diagram shape viewmodels accordingly.
+    /// However, the diagram shape viewmodels are responsible for updating themselves.
     /// Also handles viewport transform (resize, pan and zoom) in a transitioned style (with a given transition speed).
     /// Also handles which shape has the focus and which one has the decorators (mini buttons).
     /// </summary>
@@ -26,6 +27,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
         public IDiagramShapeUiFactory DiagramShapeUiFactory { get; }
+        [CanBeNull] public IPayloadUiFactory PayloadUiFactory { get; }
         public ThreadSafeObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
         public ThreadSafeObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public MiniButtonPanelViewModel MiniButtonPanelViewModel { get; }
@@ -44,14 +46,15 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
         public DiagramViewportViewModel(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramShapeUiFactory diagramShapeUiFactory,
+            [CanBeNull] IPayloadUiFactory payloadUiFactory,
             [NotNull] IDecorationManager<IMiniButton, IDiagramShapeUi> miniButtonManager,
             double minZoom,
             double maxZoom,
             double initialZoom)
-            : base(modelService, diagramService)
+            : base(modelEventSource, diagramEventSource)
         {
             MinZoom = minZoom;
             MaxZoom = maxZoom;
@@ -60,18 +63,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramConnectorToViewModelMap = new Map<ModelRelationshipId, DiagramConnectorViewModel>();
 
             DiagramShapeUiFactory = diagramShapeUiFactory;
+            PayloadUiFactory = payloadUiFactory;
             MiniButtonPanelViewModel = (MiniButtonPanelViewModel)miniButtonManager;
 
-            ViewportCalculator = new AutoMoveViewportViewModel(modelService, diagramService, minZoom, maxZoom, initialZoom);
+            ViewportCalculator = new AutoMoveViewportViewModel(modelEventSource, diagramEventSource, minZoom, maxZoom, initialZoom);
             DiagramNodeViewModels = new ThreadSafeObservableCollection<DiagramNodeViewModel>();
             DiagramConnectorViewModels = new ThreadSafeObservableCollection<DiagramConnectorViewModel>();
 
             DiagramNodeDoubleClickedCommand = new DelegateCommand<IDiagramNode>(i => DiagramNodeInvoked?.Invoke(i));
 
             ViewportCalculator.TransformChanged += OnViewportTransformChanged;
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            DiagramEventSource.DiagramChanged += OnDiagramChanged;
 
-            AddDiagram(diagramService.LatestDiagram);
+            AddDiagram(diagramEventSource.LatestDiagram);
         }
 
         public IDecorationManager<IMiniButton, IDiagramShapeUi> MiniButtonManager => MiniButtonPanelViewModel;
@@ -83,7 +87,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             base.Dispose();
 
             ViewportCalculator.TransformChanged -= OnViewportTransformChanged;
-            DiagramService.DiagramChanged -= OnDiagramChanged;
+            DiagramEventSource.DiagramChanged -= OnDiagramChanged;
 
             ViewportCalculator.Dispose();
             MiniButtonManager.Dispose();
@@ -157,6 +161,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 case DiagramConnectorRemovedEvent connectorRemovedEvent:
                     RemoveConnector(connectorRemovedEvent.OldConnector);
                     break;
+
+                case DiagramConnectorRouteChangedEvent diagramConnectorRouteChangedEvent:
+                    UpdateConnectorRoute(diagramConnectorRouteChangedEvent.NewConnector);
+                    break;
+
+                case DiagramNodeChangedEvent diagramNodeChangedEvent:
+                    UpdateNode(diagramNodeChangedEvent.NewNode);
+                    break;
             }
         }
 
@@ -226,6 +238,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramConnectorViewModels.Remove(diagramConnectorViewModel);
 
             diagramConnectorViewModel.Dispose();
+        }
+
+        private void UpdateConnectorRoute([NotNull] IDiagramConnector diagramConnector)
+        {
+            if (!TryGetDiagramConnectorViewModel(diagramConnector.Id, out var diagramConnectorViewModel))
+                return;
+
+            var payloadUi = PayloadUiFactory?.Create(diagramConnector.ModelRelationship.Payload);
+            diagramConnectorViewModel.Update(diagramConnector, payloadUi);
+        }
+
+        private void UpdateNode([NotNull] IDiagramNode diagramNode)
+        {
+            if (!TryGetDiagramNodeViewModel(diagramNode.Id, out var diagramNodeViewModel))
+                return;
+
+            var payloadUi = PayloadUiFactory?.Create(diagramNode.ModelNode.Payload);
+            diagramNodeViewModel.Update(diagramNode, payloadUi);
         }
 
         private void ClearViewport()

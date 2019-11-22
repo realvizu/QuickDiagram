@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util.UI.Wpf;
@@ -33,21 +32,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> RemoveRequested;
 
         public DiagramNodeViewModel(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
+            [NotNull] IDiagramNode diagramNode,
+            [CanBeNull] IPayloadUi payloadUi,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
-            [NotNull] IDiagramNode diagramNode)
-            : base(modelService, diagramService, diagramNode)
+            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker)
+            : base(modelEventSource, diagramEventSource, diagramNode, payloadUi)
         {
-            PopulateFromDiagramNode(diagramNode);
-            // Must NOT populate size from model because its value flows from the controls to the models.
-
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
             FocusTracker = focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
 
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            UpdateDiagramNode(diagramNode);
         }
 
         public override string StereotypeName => DiagramNode.ModelNode.Stereotype.Name;
@@ -55,8 +52,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public override void Dispose()
         {
             base.Dispose();
-
-            DiagramService.DiagramChanged -= OnDiagramChanged;
 
             foreach (var relatedNodeCueViewModel in RelatedNodeCueViewModels)
                 relatedNodeCueViewModel.Dispose();
@@ -147,11 +142,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public override object CloneForImageExport()
         {
             var clone = new DiagramNodeViewModel(
-                ModelService,
-                DiagramService,
+                ModelEventSource,
+                DiagramEventSource,
+                DiagramNode,
+                PayloadUi,
                 RelatedNodeTypeProvider,
-                FocusTracker,
-                DiagramNode);
+                FocusTracker);
 
             SetPropertiesForImageExport(clone);
 
@@ -167,32 +163,22 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()
         {
-            yield return new CloseMiniButtonViewModel(ModelService, DiagramService);
+            yield return new CloseMiniButtonViewModel(ModelEventSource, DiagramEventSource);
 
             foreach (var entityRelationType in GetRelatedNodeTypes())
-                yield return new RelatedNodeMiniButtonViewModel(ModelService, DiagramService, entityRelationType);
+                yield return new RelatedNodeMiniButtonViewModel(ModelEventSource, DiagramEventSource, entityRelationType);
         }
 
         [NotNull]
         private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => RelatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
 
-        private void OnDiagramChanged(DiagramEvent @event)
+        public void Update([NotNull] IDiagramNode diagramNode, IPayloadUi payloadUi)
         {
-            foreach (var change in @event.ShapeEvents)
-                ProcessDiagramChange(change);
+            UpdateDiagramShape(diagramNode, payloadUi);
+            UpdateDiagramNode(diagramNode);
         }
 
-        private void ProcessDiagramChange(DiagramShapeEventBase diagramShapeEvent)
-        {
-            if (diagramShapeEvent is DiagramNodeChangedEvent diagramNodeChangedEvent &&
-                DiagramNodeIdEqualityComparer.Instance.Equals(diagramNodeChangedEvent.NewNode, DiagramNode))
-            {
-                SetDiagramShape(diagramNodeChangedEvent.NewNode);
-                PopulateFromDiagramNode(diagramNodeChangedEvent.NewNode);
-            }
-        }
-
-        private void PopulateFromDiagramNode(IDiagramNode diagramNode)
+        private void UpdateDiagramNode([NotNull] IDiagramNode diagramNode)
         {
             Name = diagramNode.ModelNode.Name;
             ChildrenAreaSize = diagramNode.ChildrenAreaSize.ToWpf();
@@ -210,7 +196,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()
         {
             return GetRelatedNodeTypes()
-                .Select(i => new RelatedNodeCueViewModel(ModelService, DiagramService, DiagramNode, i))
+                .Select(i => new RelatedNodeCueViewModel(ModelEventSource, DiagramEventSource, DiagramNode, i))
                 .ToList();
         }
     }

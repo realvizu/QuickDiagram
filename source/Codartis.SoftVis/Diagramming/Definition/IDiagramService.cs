@@ -12,8 +12,6 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// </summary>
     public interface IDiagramService : IDiagramEventSource
     {
-        [NotNull] IDiagram LatestDiagram { get; }
-
         void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
         void UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
         void UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
@@ -47,7 +45,5 @@ namespace Codartis.SoftVis.Diagramming.Definition
             [NotNull] IEnumerable<ModelRelationshipId> modelRelationshipIds,
             CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null);
-
-        ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }
 }

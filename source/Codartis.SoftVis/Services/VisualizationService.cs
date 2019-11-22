@@ -18,9 +18,9 @@ namespace Codartis.SoftVis.Services
     {
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly Func<IModel, IDiagramService> _diagramServiceFactory;
-        [NotNull] private readonly Func<IDiagramService, IDiagramShapeUiFactory> _diagramShapeUiFactoryFactory;
-        [NotNull] private readonly Func<IDiagramService, IDiagramShapeUiFactory, IDiagramViewportUi> _diagramViewportUiFactory;
-        [NotNull] private readonly Func<IDiagramService, IDiagramViewportUi, IDiagramUi> _diagramUiFactory;
+        [NotNull] private readonly Func<IDiagramEventSource, IDiagramShapeUiFactory> _diagramShapeUiFactoryFactory;
+        [NotNull] private readonly Func<IDiagramEventSource, IDiagramShapeUiFactory, IDiagramViewportUi> _diagramViewportUiFactory;
+        [NotNull] private readonly Func<IDiagramEventSource, IDiagramViewportUi, IDiagramUi> _diagramUiFactory;
         [NotNull] private readonly Func<IDiagramUi, IDiagramUiService> _diagramUiServiceFactory;
         [NotNull] private readonly IEnumerable<Func<IDiagramService, IDiagramPlugin>> _diagramPluginFactories;
 
@@ -31,9 +31,9 @@ namespace Codartis.SoftVis.Services
         public VisualizationService(
             [NotNull] IModelService modelService,
             [NotNull] Func<IModel, IDiagramService> diagramServiceFactory,
-            [NotNull] Func<IDiagramService, IDiagramShapeUiFactory> diagramShapeUiFactoryFactory,
-            [NotNull] Func<IDiagramService, IDiagramShapeUiFactory, IDiagramViewportUi> diagramViewportUiFactory,
-            [NotNull] Func<IDiagramService, IDiagramViewportUi, IDiagramUi> diagramUiFactory,
+            [NotNull] Func<IDiagramEventSource, IDiagramShapeUiFactory> diagramShapeUiFactoryFactory,
+            [NotNull] Func<IDiagramEventSource, IDiagramShapeUiFactory, IDiagramViewportUi> diagramViewportUiFactory,
+            [NotNull] Func<IDiagramEventSource, IDiagramViewportUi, IDiagramUi> diagramUiFactory,
             [NotNull] Func<IDiagramUi, IDiagramUiService> diagramUiServiceFactory,
             [NotNull] IEnumerable<Func<IDiagramService, IDiagramPlugin>> diagramPluginFactories)
         {

@@ -63,7 +63,7 @@ namespace Codartis.SoftVis.TestHostApp
 
         private static void RegisterModelComponents(ContainerBuilder builder)
         {
-            builder.RegisterType<ModelService>().SingleInstance().As<IModelService>();
+            builder.RegisterType<ModelService>().SingleInstance().As<IModelService>().As<IModelEventSource>();
             builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
         }
 
@@ -92,6 +92,7 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("initialZoom", 1d);
 
             builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
+            builder.RegisterType<NullPayloadUiFactory>().As<IPayloadUiFactory>();
 
             builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
 

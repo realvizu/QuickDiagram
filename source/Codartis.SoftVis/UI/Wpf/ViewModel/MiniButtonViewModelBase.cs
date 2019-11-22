@@ -15,8 +15,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand ClickCommand { get; }
         public DelegateCommand DoubleClickCommand { get; }
 
-        protected MiniButtonViewModelBase(IModelService modelService, IDiagramService diagramService, string name)
-            : base(modelService, diagramService)
+        protected MiniButtonViewModelBase(
+            IModelEventSource modelEventSource,
+            IDiagramEventSource diagramEventSource,
+            string name)
+            : base(modelEventSource, diagramEventSource)
         {
             _isEnabled = true;
             _name = name;
@@ -51,6 +54,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         protected abstract void OnClick();
-        protected virtual void OnDoubleClick() { }
+
+        protected virtual void OnDoubleClick()
+        {
+        }
     }
 }

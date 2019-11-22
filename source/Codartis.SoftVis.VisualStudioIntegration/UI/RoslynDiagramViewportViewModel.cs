@@ -16,14 +16,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         [NotNull] private readonly IRoslynDiagramShapeUiFactory _roslynDiagramShapeUiFactory;
 
         public RoslynDiagramViewportViewModel(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramShapeUiFactory diagramShapeUiFactory,
+            [CanBeNull] IPayloadUiFactory payloadUiFactory,
             [NotNull] IDecorationManager<IMiniButton, IDiagramShapeUi> miniButtonManager,
             double minZoom,
             double maxZoom,
             double initialZoom)
-            : base(modelService, diagramService, diagramShapeUiFactory, miniButtonManager, minZoom, maxZoom, initialZoom)
+            : base(modelEventSource, diagramEventSource, diagramShapeUiFactory, payloadUiFactory, miniButtonManager, minZoom, maxZoom, initialZoom)
         {
             _roslynDiagramShapeUiFactory = (IRoslynDiagramShapeUiFactory)diagramShapeUiFactory;
         }

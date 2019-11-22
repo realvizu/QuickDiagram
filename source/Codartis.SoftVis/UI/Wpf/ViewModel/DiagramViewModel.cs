@@ -34,14 +34,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
         public DiagramViewModel(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramViewportUi diagramViewportUi)
-            : base(modelService, diagramService)
+            : base(modelEventSource, diagramEventSource)
         {
             DiagramViewportViewModel = (DiagramViewportViewModel)diagramViewportUi;
 
-            RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelService, DiagramService);
+            RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelEventSource, DiagramEventSource);
             RelatedNodeListBoxViewModel.ItemSelected += OnRelatedNodeSelected;
             RelatedNodeListBoxViewModel.Items.CollectionChanged += OnRelatedNodeCollectionChanged;
 
@@ -50,11 +50,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             PreviewMouseDownCommand = new DelegateCommand(OnAnyMouseDownEvent);
             MouseDownCommand = new DelegateCommand(OnUnhandledMouseDownEvent);
 
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            DiagramEventSource.DiagramChanged += OnDiagramChanged;
 
             SubscribeToViewportEvents();
 
-            _lastDiagram = DiagramService.LatestDiagram;
+            _lastDiagram = DiagramEventSource.LatestDiagram;
         }
 
         public IDiagramViewportUi Viewport => DiagramViewportViewModel;
@@ -67,7 +67,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedNodeListBoxViewModel.Items.CollectionChanged -= OnRelatedNodeCollectionChanged;
             RelatedNodeListBoxViewModel.Dispose();
 
-            DiagramService.DiagramChanged -= OnDiagramChanged;
+            DiagramEventSource.DiagramChanged -= OnDiagramChanged;
 
             UnsubscribeFromViewportEvents();
 

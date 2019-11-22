@@ -16,26 +16,28 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private IModel _lastModel;
         private IDiagram _lastDiagram;
 
-        public RelatedNodeMiniButtonViewModel(IModelService modelService, IDiagramService diagramService,
+        public RelatedNodeMiniButtonViewModel(
+            IModelEventSource modelEventSource,
+            IDiagramEventSource diagramEventSource,
             RelatedNodeType relatedNodeType)
-            : base(modelService, diagramService, relatedNodeType.Name)
+            : base(modelEventSource, diagramEventSource, relatedNodeType.Name)
         {
             _directedModelRelationshipType = relatedNodeType.RelationshipType;
-            ConnectorType = diagramService.GetConnectorType(relatedNodeType.RelationshipType.Stereotype);
+            ConnectorType = diagramEventSource.GetConnectorType(relatedNodeType.RelationshipType.Stereotype);
 
-            _lastModel = modelService.LatestModel;
-            _lastDiagram = diagramService.LatestDiagram;
+            _lastModel = modelEventSource.LatestModel;
+            _lastDiagram = diagramEventSource.LatestDiagram;
 
-            ModelService.ModelChanged += OnModelChanged;
-            DiagramService.DiagramChanged += OnDiagramChanged;
+            ModelEventSource.ModelChanged += OnModelChanged;
+            DiagramEventSource.DiagramChanged += OnDiagramChanged;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            ModelService.ModelChanged -= OnModelChanged;
-            DiagramService.DiagramChanged -= OnDiagramChanged;
+            ModelEventSource.ModelChanged -= OnModelChanged;
+            DiagramEventSource.DiagramChanged -= OnDiagramChanged;
         }
 
         public override object PlacementKey => _directedModelRelationshipType;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
@@ -12,20 +13,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase, IDiagramShapeUi
     {
         public IDiagramShape DiagramShape { get; private set; }
+        public IPayloadUi PayloadUi { get; private set; }
         private Rect _rect;
 
         protected DiagramShapeViewModelBase(
-            IModelService modelService,
-            IDiagramService diagramService,
-            IDiagramShape diagramShape)
-            : base(modelService, diagramService)
+            IModelEventSource modelEventSource,
+            IDiagramEventSource diagramEventSource,
+            [NotNull] IDiagramShape diagramShape,
+            [CanBeNull] IPayloadUi payloadUi)
+            : base(modelEventSource, diagramEventSource)
         {
-            SetDiagramShape(diagramShape);
+            UpdateDiagramShape(diagramShape, payloadUi);
         }
 
-        protected void SetDiagramShape(IDiagramShape diagramShape)
+        protected void UpdateDiagramShape([NotNull] IDiagramShape diagramShape, [CanBeNull] IPayloadUi payloadUi)
         {
             DiagramShape = diagramShape;
+            PayloadUi = payloadUi;
             Rect = diagramShape.Rect.ToWpf();
         }
 

@@ -239,7 +239,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         //private static RoslynSymbol GetRoslynItem(IModelNode node)
         //{
-        //    return (RoslynSymbol)node.Payload;
+        //    return (RoslynSymbol)node.PayloadUi;
         //}
     }
 }
