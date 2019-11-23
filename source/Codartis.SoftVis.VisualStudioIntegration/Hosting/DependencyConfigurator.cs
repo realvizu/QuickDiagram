@@ -79,7 +79,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<RoslynDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>()
                 .WithParameter("isDescriptionVisible", true);
 
-            builder.RegisterType<NullPayloadUiFactory>().As<IPayloadUiFactory>();
+            builder.RegisterType<RoslynSymbolPayloadUiFactory>().As<IPayloadUiFactory>();
 
             builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
 

@@ -38,10 +38,10 @@
         <Setter Property="MaxHeight" Value="112"/>
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="MaxWidth" Value="250"/>
-        <Setter Property="DiagramFill" Value="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
+        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:RoslynTypeViewModel}">
         <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
                 BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
                 BorderThickness="1"
@@ -55,7 +55,7 @@
                     <Image Grid.Row="0" 
                            Margin="1" 
                            HorizontalAlignment="Left" 
-                           Source="{Binding Path=RoslynTypeDiagramNode.Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
+                           Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
                     <TextBlock x:Name="TextBlock"
                                Grid.Row="1" 
                                Margin="4,0,4,0" 
@@ -79,7 +79,7 @@
         </Border>
 
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Path=RoslynTypeDiagramNode.Origin}" Value="{x:Static modeling1:ModelOrigin.SourceCode}">
+            <DataTrigger Binding="{Binding Path=Origin}" Value="{x:Static modeling1:ModelOrigin.SourceCode}">
                 <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">

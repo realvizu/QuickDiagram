@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [CanBeNull] IPayloadUiFactory payloadUiFactory = null)
+            [CanBeNull] IPayloadUiFactory payloadUiFactory)
         {
             ModelEventSource = modelEventSource;
             DiagramEventSource = diagramEventSource;

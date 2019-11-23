@@ -16,12 +16,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     internal abstract class RoslynSymbolBase : IRoslynSymbol
     {
         public ISymbol UnderlyingSymbol { get; }
-        public ModelOrigin Origin { get; }
 
         protected RoslynSymbolBase([NotNull] ISymbol roslynSymbol)
         {
             UnderlyingSymbol = roslynSymbol;
-            Origin = UnderlyingSymbol.GetOrigin();
         }
 
         public bool SymbolEquals(ISymbol roslynSymbol) => UnderlyingSymbol.SymbolEquals(roslynSymbol);

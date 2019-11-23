@@ -19,8 +19,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
+            [CanBeNull] IPayloadUiFactory payloadUiFactory,
             bool isDescriptionVisible)
-            : base(modelEventSource, diagramEventSource, relatedNodeTypeProvider)
+            : base(modelEventSource, diagramEventSource, relatedNodeTypeProvider, payloadUiFactory)
         {
             IsDescriptionVisible = isDescriptionVisible;
         }
