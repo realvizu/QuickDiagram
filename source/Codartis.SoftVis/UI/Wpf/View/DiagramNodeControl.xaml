@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <view:DiagramNodePayloadControl Grid.Row="0"
+        <view:DiagramNodeHeaderControl Grid.Row="0"
                                         DataContext="{Binding}"
                                         ActualSize="{Binding Path=PayloadAreaSize, Mode=OneWayToSource}" />
 

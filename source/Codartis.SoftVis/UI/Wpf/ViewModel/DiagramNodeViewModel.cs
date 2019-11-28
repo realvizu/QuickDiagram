@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for diagram nodes.
     /// </summary>
-    public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
+    public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi, IDiagramNodeHeaderUi
     {
         private string _name;
         private Size _size;
@@ -35,10 +35,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
-            [CanBeNull] IPayloadUi payloadUi,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker)
-            : base(modelEventSource, diagramEventSource, diagramNode, payloadUi)
+            : base(modelEventSource, diagramEventSource, diagramNode)
         {
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
             FocusTracker = focusTracker;
@@ -47,7 +46,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateDiagramNode(diagramNode);
         }
 
-        public override string StereotypeName => DiagramNode.ModelNode.Stereotype.Name;
+        public virtual IDiagramNodeHeaderUi HeaderUi => this;
+        public ModelNodeStereotype Stereotype => DiagramNode.ModelNode.Stereotype;
+        public override string StereotypeName => Stereotype.Name;
 
         public override void Dispose()
         {
@@ -139,22 +140,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public void ShowRelatedModelNodeSelector(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        public override object CloneForImageExport()
+        public sealed override IDiagramShapeUi CloneForImageExport()
         {
-            var clone = new DiagramNodeViewModel(
-                ModelEventSource,
-                DiagramEventSource,
-                DiagramNode,
-                PayloadUi,
-                RelatedNodeTypeProvider,
-                FocusTracker);
-
+            var clone = CreateInstance();
             SetPropertiesForImageExport(clone);
-
             return clone;
         }
 
-        protected void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
+        [NotNull]
+        protected virtual DiagramNodeViewModel CreateInstance()
+        {
+            return new DiagramNodeViewModel(
+                ModelEventSource,
+                DiagramEventSource,
+                DiagramNode,
+                RelatedNodeTypeProvider,
+                FocusTracker);
+        }
+
+        private void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
         {
             // For image export we must set those properties that are calculated on the normal UI.
             clone._size = _size;
@@ -172,9 +176,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         [NotNull]
         private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => RelatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
 
-        public void Update([NotNull] IDiagramNode diagramNode, IPayloadUi payloadUi)
+        public void Update([NotNull] IDiagramNode diagramNode)
         {
-            UpdateDiagramShape(diagramNode, payloadUi);
+            UpdateDiagramShape(diagramNode);
             UpdateDiagramNode(diagramNode);
         }
 

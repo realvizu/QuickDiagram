@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="UI\Wpf\View\DiagramNodePayloadControl.xaml" />
+    <None Remove="UI\Wpf\View\DiagramNodeHeaderControl.xaml" />
     <None Remove="UI\Wpf\View\DiagramNodeWithCuesControl.xaml" />
   </ItemGroup>
 
@@ -55,7 +55,7 @@
     <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Wpf\View\DiagramNodePayloadControl.xaml">
+    <Page Include="UI\Wpf\View\DiagramNodeHeaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\MiniButtonControl.xaml">
@@ -108,7 +108,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="UI\Wpf\View\DiagramNodePayloadControl.xaml.cs">
+    <Compile Update="UI\Wpf\View\DiagramNodeHeaderControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

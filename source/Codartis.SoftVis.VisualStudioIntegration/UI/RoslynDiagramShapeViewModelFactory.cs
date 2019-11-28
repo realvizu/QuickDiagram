@@ -1,16 +1,15 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
+﻿using System;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    /// <summary>
-    /// Creates view models for roslyn-based diagram shapes.
-    /// </summary>
     public sealed class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactory, IRoslynDiagramShapeUiFactory
     {
         public bool IsDescriptionVisible { get; set; }
@@ -19,9 +18,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [CanBeNull] IPayloadUiFactory payloadUiFactory,
             bool isDescriptionVisible)
-            : base(modelEventSource, diagramEventSource, relatedNodeTypeProvider, payloadUiFactory)
+            : base(modelEventSource, diagramEventSource, relatedNodeTypeProvider)
         {
             IsDescriptionVisible = isDescriptionVisible;
         }
@@ -30,14 +28,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             IDiagramNode diagramNode,
             IFocusTracker<IDiagramShapeUi> focusTracker)
         {
-            return new RoslynDiagramNodeViewModel(
-                ModelEventSource,
-                DiagramEventSource,
-                diagramNode,
-                PayloadUiFactory?.Create(diagramNode.ModelNode.Payload),
-                RelatedNodeTypeProvider,
-                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
-                IsDescriptionVisible);
+            var payload = diagramNode.ModelNode.Payload;
+
+            switch (payload)
+            {
+                case null:
+                    return null;
+
+                case ISymbol symbol:
+                    return new RoslynDiagramNodeViewModel(
+                        ModelEventSource,
+                        DiagramEventSource,
+                        diagramNode,
+                        RelatedNodeTypeProvider,
+                        (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
+                        IsDescriptionVisible,
+                        symbol);
+
+                default:
+                    throw new Exception($"Unexpected payload type {payload.GetType().Name}");
+            }
         }
     }
 }

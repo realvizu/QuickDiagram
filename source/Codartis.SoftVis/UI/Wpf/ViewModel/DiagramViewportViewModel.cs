@@ -27,7 +27,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public double MaxZoom { get; }
         public AutoMoveViewportViewModel ViewportCalculator { get; }
         public IDiagramShapeUiFactory DiagramShapeUiFactory { get; }
-        [CanBeNull] public IPayloadUiFactory PayloadUiFactory { get; }
         public ThreadSafeObservableCollection<DiagramNodeViewModel> DiagramNodeViewModels { get; }
         public ThreadSafeObservableCollection<DiagramConnectorViewModel> DiagramConnectorViewModels { get; }
         public MiniButtonPanelViewModel MiniButtonPanelViewModel { get; }
@@ -49,7 +48,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramShapeUiFactory diagramShapeUiFactory,
-            [CanBeNull] IPayloadUiFactory payloadUiFactory,
             [NotNull] IDecorationManager<IMiniButton, IDiagramShapeUi> miniButtonManager,
             double minZoom,
             double maxZoom,
@@ -63,7 +61,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _diagramConnectorToViewModelMap = new Map<ModelRelationshipId, DiagramConnectorViewModel>();
 
             DiagramShapeUiFactory = diagramShapeUiFactory;
-            PayloadUiFactory = payloadUiFactory;
             MiniButtonPanelViewModel = (MiniButtonPanelViewModel)miniButtonManager;
 
             ViewportCalculator = new AutoMoveViewportViewModel(modelEventSource, diagramEventSource, minZoom, maxZoom, initialZoom);
@@ -245,8 +242,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (!TryGetDiagramConnectorViewModel(diagramConnector.Id, out var diagramConnectorViewModel))
                 return;
 
-            var payloadUi = PayloadUiFactory?.Create(diagramConnector.ModelRelationship.Payload);
-            diagramConnectorViewModel.Update(diagramConnector, payloadUi);
+            diagramConnectorViewModel.Update(diagramConnector);
         }
 
         private void UpdateNode([NotNull] IDiagramNode diagramNode)
@@ -254,8 +250,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (!TryGetDiagramNodeViewModel(diagramNode.Id, out var diagramNodeViewModel))
                 return;
 
-            var payloadUi = PayloadUiFactory?.Create(diagramNode.ModelNode.Payload);
-            diagramNodeViewModel.Update(diagramNode, payloadUi);
+            diagramNodeViewModel.Update(diagramNode);
         }
 
         private void ClearViewport()

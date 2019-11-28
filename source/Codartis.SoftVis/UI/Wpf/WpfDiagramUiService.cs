@@ -18,17 +18,21 @@ namespace Codartis.SoftVis.UI.Wpf
     ///  </summary>
     public class WpfDiagramUiService : IWpfDiagramUiService
     {
-        public DiagramViewModel DiagramViewModel { get; }
+        [NotNull] public DiagramViewModel DiagramViewModel { get; }
         public DiagramControl DiagramControl { get; }
+        [NotNull] private readonly Func<DiagramViewModel, IDiagramStyleProvider, IDiagramImageCreator> _diagramImageCreatorFactory;
 
         public WpfDiagramUiService(
             [NotNull] IDiagramUi diagramUi,
-            [NotNull] DiagramControl diagramControl)
+            [NotNull] DiagramControl diagramControl,
+            [NotNull] Func<DiagramViewModel, IDiagramStyleProvider, IDiagramImageCreator> diagramImageCreatorFactory)
         {
             DiagramViewModel = (DiagramViewModel)diagramUi;
 
             DiagramControl = diagramControl;
             DiagramControl.DataContext = DiagramViewModel;
+
+            _diagramImageCreatorFactory = diagramImageCreatorFactory;
         }
 
         public IDiagramUi DiagramUi => DiagramViewModel;
@@ -43,7 +47,7 @@ namespace Codartis.SoftVis.UI.Wpf
             try
             {
                 // The image creator must be created on the UI thread so it can read the necessary view and view model data.
-                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramControl);
+                var diagramImageCreator = _diagramImageCreatorFactory.Invoke(DiagramViewModel, DiagramControl);
 
                 return await Task.Factory.StartSTA(
                     () =>

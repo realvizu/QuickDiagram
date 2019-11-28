@@ -13,29 +13,27 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase, IDiagramShapeUi
     {
         public IDiagramShape DiagramShape { get; private set; }
-        public IPayloadUi PayloadUi { get; private set; }
         private Rect _rect;
 
         protected DiagramShapeViewModelBase(
             IModelEventSource modelEventSource,
             IDiagramEventSource diagramEventSource,
-            [NotNull] IDiagramShape diagramShape,
-            [CanBeNull] IPayloadUi payloadUi)
+            [NotNull] IDiagramShape diagramShape)
             : base(modelEventSource, diagramEventSource)
         {
-            UpdateDiagramShape(diagramShape, payloadUi);
+            UpdateDiagramShape(diagramShape);
         }
 
-        protected void UpdateDiagramShape([NotNull] IDiagramShape diagramShape, [CanBeNull] IPayloadUi payloadUi)
+        protected void UpdateDiagramShape([NotNull] IDiagramShape diagramShape)
         {
             DiagramShape = diagramShape;
-            PayloadUi = payloadUi;
             Rect = diagramShape.Rect.ToWpf();
         }
 
         public abstract string StereotypeName { get; }
 
-        public abstract object CloneForImageExport();
+        [NotNull]
+        public abstract IDiagramShapeUi CloneForImageExport();
 
         public virtual IEnumerable<IMiniButton> CreateMiniButtons() => Enumerable.Empty<IMiniButton>();
 

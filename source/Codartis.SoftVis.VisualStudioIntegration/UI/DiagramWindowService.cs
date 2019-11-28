@@ -2,6 +2,7 @@
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -16,8 +17,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         public DiagramWindowService(
             [NotNull] IDiagramUi diagramViewModel,
-            [NotNull] DiagramControl diagramControl)
-            : base(diagramViewModel, diagramControl)
+            [NotNull] DiagramControl diagramControl,
+            [NotNull] Func<DiagramViewModel, IDiagramStyleProvider, IDiagramImageCreator> diagramImageCreatorFactory)
+            : base(diagramViewModel, diagramControl, diagramImageCreatorFactory)
         {
         }
 

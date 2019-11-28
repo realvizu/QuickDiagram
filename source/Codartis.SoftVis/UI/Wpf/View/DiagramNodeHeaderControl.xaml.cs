@@ -4,22 +4,19 @@ using System.Windows.Media;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
-    /// <summary>
-    /// Interaction logic for DiagramNodePayloadControl.xaml
-    /// </summary>
-    public partial class DiagramNodePayloadControl : UserControl
+    public partial class DiagramNodeHeaderControl : UserControl
     {
         public static readonly DependencyProperty DiagramFillProperty =
-            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramNodePayloadControl));
+            DiagramVisual.DiagramFillProperty.AddOwner(typeof(DiagramNodeHeaderControl));
 
         public static readonly DependencyProperty DiagramStrokeProperty =
-            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodePayloadControl));
+            DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramNodeHeaderControl));
 
         public static readonly DependencyProperty ActualSizeProperty =
-            DependencyProperty.Register("ActualSize", typeof(Size), typeof(DiagramNodePayloadControl),
+            DependencyProperty.Register("ActualSize", typeof(Size), typeof(DiagramNodeHeaderControl),
                 new FrameworkPropertyMetadata(Size.Empty));
 
-        public DiagramNodePayloadControl()
+        public DiagramNodeHeaderControl()
         {
             InitializeComponent();
         }

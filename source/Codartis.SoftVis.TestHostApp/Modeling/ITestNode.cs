@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     /// A node in the TestHostApp's model concept.
     /// Immutable.
     /// </summary>
-    internal interface ITestNode : IPayloadUi
+    internal interface ITestNode : IDiagramNodeHeaderUi
     {
         [NotNull] string Name { get; }
     }

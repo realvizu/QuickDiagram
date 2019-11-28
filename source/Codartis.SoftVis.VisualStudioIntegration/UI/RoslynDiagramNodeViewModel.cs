@@ -2,8 +2,11 @@
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -14,17 +17,34 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private bool _isDescriptionVisible;
 
+        [NotNull] private readonly ISymbol _symbol;
+
+        // The following properties' value don't ever change so no need to create wrappers that call OnPropertyChanged.
+        public ModelOrigin Origin { get; }
+        public string FullName { get; }
+        public string Description { get; }
+        public bool DescriptionExists { get; }
+        public bool IsAbstract { get; }
+
         public RoslynDiagramNodeViewModel(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
-            [CanBeNull] IPayloadUi payloadUi,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
-            bool isDescriptionVisible)
-            : base(modelEventSource, diagramEventSource, diagramNode, payloadUi, relatedNodeTypeProvider, focusTracker)
+            bool isDescriptionVisible,
+            [NotNull] ISymbol symbol)
+            : base(modelEventSource, diagramEventSource, diagramNode, relatedNodeTypeProvider, focusTracker)
         {
-            IsDescriptionVisible = isDescriptionVisible;
+            _isDescriptionVisible = isDescriptionVisible;
+            _symbol = symbol;
+
+            Origin = symbol.GetOrigin();
+            Name = symbol.GetName();
+            FullName = symbol.GetFullName();
+            Description = symbol.GetDescription();
+            DescriptionExists = !string.IsNullOrWhiteSpace(Description);
+            IsAbstract = symbol.IsAbstract;
         }
 
         public bool IsDescriptionVisible
@@ -40,20 +60,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
-        public override object CloneForImageExport()
+        protected override DiagramNodeViewModel CreateInstance()
         {
-            var clone = new RoslynDiagramNodeViewModel(
+            return new RoslynDiagramNodeViewModel(
                 ModelEventSource,
                 DiagramEventSource,
                 DiagramNode,
-                PayloadUi,
                 RelatedNodeTypeProvider,
                 FocusTracker,
-                IsDescriptionVisible);
-
-            SetPropertiesForImageExport(clone);
-
-            return clone;
+                IsDescriptionVisible,
+                _symbol);
         }
     }
 }

@@ -79,14 +79,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<RoslynDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>()
                 .WithParameter("isDescriptionVisible", true);
 
-            builder.RegisterType<RoslynSymbolPayloadUiFactory>().As<IPayloadUiFactory>();
-
             builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
             builder.RegisterType<DiagramControl>()
                 .WithParameter("additionalResourceDictionary", resourceDictionary);
+
+            builder.RegisterType<DataCloningDiagramImageCreator>().As<IDiagramImageCreator>();
         }
 
         private static void RegisterDiagramPlugins(ContainerBuilder builder)

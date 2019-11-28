@@ -91,8 +91,7 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("maxZoom", 5d)
                 .WithParameter("initialZoom", 1d);
 
-            builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
-            builder.RegisterType<TestNodePayloadUiFactory>().As<IPayloadUiFactory>();
+            builder.RegisterType<TestDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
 
             builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
 
@@ -100,6 +99,8 @@ namespace Codartis.SoftVis.TestHostApp
 
             builder.RegisterType<DiagramControl>()
                 .WithParameter("additionalResourceDictionary", resourceDictionary);
+
+            builder.RegisterType<DataCloningDiagramImageCreator>().As<IDiagramImageCreator>();
         }
 
         private static void RegisterDiagramPlugins(ContainerBuilder builder)

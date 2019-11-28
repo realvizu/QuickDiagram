@@ -23,9 +23,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
             _diagramStyleProvider = new DiagramStyleCache(diagramStyleProvider);
         }
 
-        public BitmapSource CreateImage(double dpi, double margin = 0, 
+        public BitmapSource CreateImage(
+            double dpi,
+            double margin = 0,
             CancellationToken cancellationToken = default,
-            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
+            IIncrementalProgress progress = null,
+            IProgress<int> maxProgress = null)
         {
             var diagramImageCreator = new DiagramImageCreator(
                 Clone(_diagramViewModel.DiagramNodeViewModels),

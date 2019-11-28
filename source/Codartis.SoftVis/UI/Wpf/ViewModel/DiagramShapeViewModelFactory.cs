@@ -15,18 +15,14 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         [NotNull] protected IDiagramEventSource DiagramEventSource { get; }
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
 
-        public IPayloadUiFactory PayloadUiFactory { get; }
-
         public DiagramShapeViewModelFactory(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
-            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [CanBeNull] IPayloadUiFactory payloadUiFactory)
+            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider)
         {
             ModelEventSource = modelEventSource;
             DiagramEventSource = diagramEventSource;
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
-            PayloadUiFactory = payloadUiFactory;
         }
 
         public virtual IDiagramNodeUi CreateDiagramNodeUi(
@@ -37,7 +33,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 ModelEventSource,
                 DiagramEventSource,
                 diagramNode,
-                PayloadUiFactory?.Create(diagramNode.ModelNode.Payload),
                 RelatedNodeTypeProvider,
                 (IWpfFocusTracker<IDiagramShapeUi>)focusTracker);
         }
@@ -49,8 +44,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return new DiagramConnectorViewModel(
                 ModelEventSource,
                 DiagramEventSource,
-                diagramConnector,
-                PayloadUiFactory?.Create(diagramConnector.ModelRelationship.Payload));
+                diagramConnector);
         }
     }
 }

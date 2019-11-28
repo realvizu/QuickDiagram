@@ -8,8 +8,9 @@ namespace Codartis.SoftVis.UI
     /// </summary>
     public interface IDiagramShapeUi
     {
-        [CanBeNull] IPayloadUi PayloadUi { get; }
-
+        /// <summary>
+        /// This a string to be able to unify node and connector stereotypes.
+        /// </summary>
         [NotNull] string StereotypeName { get; }
 
         [NotNull]

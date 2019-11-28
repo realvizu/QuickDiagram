@@ -41,7 +41,7 @@
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModel:RoslynTypeViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeViewModel}">
         <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
                 BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
                 BorderThickness="1"

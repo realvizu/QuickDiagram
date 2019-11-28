@@ -20,9 +20,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramConnectorViewModel(
             IModelEventSource modelEventSource,
             IDiagramEventSource diagramEventSource,
-            [NotNull] IDiagramConnector diagramConnector,
-            [CanBeNull] IPayloadUi payloadUi)
-            : base(modelEventSource, diagramEventSource, diagramConnector, payloadUi)
+            [NotNull] IDiagramConnector diagramConnector)
+            : base(modelEventSource, diagramEventSource, diagramConnector)
         {
             UpdateDiagramConnector(diagramConnector);
         }
@@ -31,9 +30,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramConnector DiagramConnector => (IDiagramConnector)DiagramShape;
 
-        public void Update([NotNull] IDiagramConnector connector, IPayloadUi payloadUi)
+        public void Update([NotNull] IDiagramConnector connector)
         {
-            UpdateDiagramShape(connector, payloadUi);
+            UpdateDiagramShape(connector);
             UpdateDiagramConnector(connector);
         }
 
@@ -42,7 +41,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RoutePoints = connector.Route.ToWpf();
         }
 
-        public override object CloneForImageExport() => new DiagramConnectorViewModel(ModelEventSource, DiagramEventSource, DiagramConnector, PayloadUi);
+        public override IDiagramShapeUi CloneForImageExport() => new DiagramConnectorViewModel(ModelEventSource, DiagramEventSource, DiagramConnector);
 
         private ConnectorType ConnectorType => DiagramConnector.ConnectorType;
         private bool IsDashed => ConnectorType.ShaftLineType == LineType.Dashed;
