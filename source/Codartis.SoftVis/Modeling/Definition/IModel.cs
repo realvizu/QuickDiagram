@@ -17,17 +17,12 @@ namespace Codartis.SoftVis.Modeling.Definition
         [NotNull] [ItemNotNull] IEnumerable<IModelNode> Nodes { get; }
         [NotNull] [ItemNotNull] IEnumerable<IModelRelationship> Relationships { get; }
 
-        [NotNull]
-        IModelNode GetNode(ModelNodeId nodeId);
-
         Maybe<IModelNode> TryGetNode(ModelNodeId nodeId);
         Maybe<IModelNode> TryGetParentNode(ModelNodeId modelNodeId);
         Maybe<IModelNode> TryGetNodeByPayload([NotNull] object payload);
 
-        [NotNull]
-        IModelRelationship GetRelationship(ModelRelationshipId relationshipId);
-
         Maybe<IModelRelationship> TryGetRelationship(ModelRelationshipId relationshipId);
+        Maybe<IModelRelationship> TryGetRelationshipByPayload([NotNull] object payload);
 
         [NotNull]
         [ItemNotNull]

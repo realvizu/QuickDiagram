@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (!maybeSymbol.HasValue)
                 return;
 
-            var modelNode = RoslynModelService.AddSymbol(maybeSymbol.Value);
+            var modelNode = RoslynModelService.GetOrAddNode(maybeSymbol.Value);
 
             DiagramService.AddNode(modelNode.Id);
 

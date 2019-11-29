@@ -20,22 +20,24 @@ namespace Codartis.SoftVis.Modeling.Implementation
     {
         private readonly IModelGraph _graph;
         [NotNull] private readonly ImmutableDictionary<object, IModelNode> _payloadToModelNodeMap;
+        [NotNull] private readonly ImmutableDictionary<object, IModelRelationship> _payloadToModelRelationshipMap;
         [NotNull] [ItemNotNull] private readonly IModelRuleProvider[] _modelRuleProviders;
 
         private Model(
             IModelGraph graph,
             [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
+            [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap,
             [NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
             _graph = graph;
             _payloadToModelNodeMap = payloadToModelNodeMap;
+            _payloadToModelRelationshipMap = payloadToModelRelationshipMap;
             _modelRuleProviders = modelRuleProviders;
         }
 
         public IEnumerable<IModelNode> Nodes => _graph.Vertices;
         public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
 
-        public IModelNode GetNode(ModelNodeId nodeId) => _graph.GetVertex(nodeId);
         public Maybe<IModelNode> TryGetNode(ModelNodeId nodeId) => _graph.TryGetVertex(nodeId);
 
         public Maybe<IModelNode> TryGetParentNode(ModelNodeId modelNodeId)
@@ -55,8 +57,14 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 : Maybe<IModelNode>.Nothing;
         }
 
-        public IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => _graph.GetEdge(relationshipId);
         public Maybe<IModelRelationship> TryGetRelationship(ModelRelationshipId relationshipId) => _graph.TryGetEdge(relationshipId);
+
+        public Maybe<IModelRelationship> TryGetRelationshipByPayload(object payload)
+        {
+            return _payloadToModelRelationshipMap.TryGetValue(payload, out var modelRelationship)
+                ? Maybe.Create(modelRelationship)
+                : Maybe<IModelRelationship>.Nothing;
+        }
 
         public IEnumerable<IModelNode> GetRelatedNodes(
             ModelNodeId nodeId,
@@ -79,20 +87,26 @@ namespace Codartis.SoftVis.Modeling.Implementation
             ModelNodeId? parentNodeId = null)
         {
             if (payload != null && _payloadToModelNodeMap.ContainsKey(payload))
-                throw new Exception($"The model already contains payload: {payload}");
+                throw new Exception($"The model already contains a node with payload: {payload}");
 
             var itemEvents = new List<ModelItemEventBase>();
 
             var newNode = CreateNode(name, stereotype, payload);
             var (newGraph, newPayloadToModelNodeMap) = AddNodeCore(newNode, _graph, _payloadToModelNodeMap, itemEvents);
 
+            var newPayloadToModelRelationshipMap = _payloadToModelRelationshipMap;
+
             if (parentNodeId.HasValue)
             {
                 var containsRelationship = CreateRelationship(parentNodeId.Value, newNode.Id, ModelRelationshipStereotype.Containment, payload: null);
-                newGraph = AddRelationshipCore(containsRelationship, newGraph, itemEvents);
+                (newGraph, newPayloadToModelRelationshipMap) = AddRelationshipCore(
+                    containsRelationship,
+                    newGraph,
+                    newPayloadToModelRelationshipMap,
+                    itemEvents);
             }
 
-            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap);
+            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap, newPayloadToModelRelationshipMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -101,13 +115,15 @@ namespace Codartis.SoftVis.Modeling.Implementation
             var itemEvents = new List<ModelItemEventBase>();
             var newGraph = _graph;
 
+            var newPayloadToModelRelationshipMap = _payloadToModelRelationshipMap;
+
             foreach (var relationship in GetRelationships(nodeId))
-                newGraph = RemoveRelationshipCore(relationship.Id, newGraph, itemEvents);
+                (newGraph, newPayloadToModelRelationshipMap) = RemoveRelationshipCore(relationship.Id, newGraph, newPayloadToModelRelationshipMap, itemEvents);
 
             ImmutableDictionary<object, IModelNode> newPayloadToModelNodeMap;
             (newGraph, newPayloadToModelNodeMap) = RemoveNodeCore(nodeId, newGraph, _payloadToModelNodeMap, itemEvents);
 
-            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap);
+            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap, newPayloadToModelRelationshipMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -117,24 +133,27 @@ namespace Codartis.SoftVis.Modeling.Implementation
             ModelRelationshipStereotype stereotype,
             object payload = null)
         {
+            if (payload != null && _payloadToModelRelationshipMap.ContainsKey(payload))
+                throw new Exception($"The model already contains a relationship with payload: {payload}");
+
             var relationship = CreateRelationship(sourceId, targetId, stereotype, payload);
 
             if (!IsRelationshipValid(relationship))
                 throw new ArgumentException($"{relationship} is invalid.");
 
             var itemEvents = new List<ModelItemEventBase>();
-            var newGraph = AddRelationshipCore(relationship, _graph, itemEvents);
+            var (newGraph, newPayloadToModelRelationshipMap) = AddRelationshipCore(relationship, _graph, _payloadToModelRelationshipMap, itemEvents);
 
-            var newModel = CreateInstance(newGraph, _payloadToModelNodeMap);
+            var newModel = CreateInstance(newGraph, _payloadToModelNodeMap, newPayloadToModelRelationshipMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
         public ModelEvent RemoveRelationship(ModelRelationshipId relationshipId)
         {
             var itemEvents = new List<ModelItemEventBase>();
-            var newGraph = RemoveRelationshipCore(relationshipId, _graph, itemEvents);
+            var (newGraph, newPayloadToModelRelationshipMap) = RemoveRelationshipCore(relationshipId, _graph, _payloadToModelRelationshipMap, itemEvents);
 
-            var newModel = CreateInstance(newGraph, _payloadToModelNodeMap);
+            var newModel = CreateInstance(newGraph, _payloadToModelNodeMap, newPayloadToModelRelationshipMap);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -180,14 +199,20 @@ namespace Codartis.SoftVis.Modeling.Implementation
             );
         }
 
-        [NotNull]
-        private static IModelGraph AddRelationshipCore(
+        private static (IModelGraph, ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap) AddRelationshipCore(
             [NotNull] IModelRelationship relationship,
             [NotNull] IModelGraph modelGraph,
+            [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap,
             [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
         {
             itemEvents.Add(new ModelRelationshipAddedEvent(relationship));
-            return modelGraph.AddEdge(relationship);
+
+            return (
+                modelGraph.AddEdge(relationship),
+                relationship.Payload == null
+                    ? payloadToModelRelationshipMap
+                    : payloadToModelRelationshipMap.Add(relationship.Payload, relationship)
+            );
         }
 
         private (IModelGraph, ImmutableDictionary<object, IModelNode>) RemoveNodeCore(
@@ -207,16 +232,28 @@ namespace Codartis.SoftVis.Modeling.Implementation
             );
         }
 
-        [NotNull]
-        private IModelGraph RemoveRelationshipCore(
+        private (IModelGraph, ImmutableDictionary<object, IModelRelationship>) RemoveRelationshipCore(
             ModelRelationshipId relationshipId,
             [NotNull] IModelGraph modelGraph,
+            [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap,
             [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
         {
             var oldRelationship = GetRelationship(relationshipId);
             itemEvents.Add(new ModelRelationshipRemovedEvent(oldRelationship));
-            return modelGraph.RemoveEdge(relationshipId);
+
+            return (
+                modelGraph.RemoveEdge(relationshipId),
+                oldRelationship.Payload == null
+                    ? payloadToModelRelationshipMap
+                    : payloadToModelRelationshipMap.Remove(oldRelationship.Payload)
+            );
         }
+
+        [NotNull]
+        private IModelNode GetNode(ModelNodeId nodeId) => _graph.GetVertex(nodeId);
+
+        [NotNull]
+        private IModelRelationship GetRelationship(ModelRelationshipId relationshipId) => _graph.GetEdge(relationshipId);
 
         private bool IsRelationshipValid([NotNull] IModelRelationship relationship)
         {
@@ -227,8 +264,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
         }
 
         [NotNull]
-        private IModel CreateInstance(IModelGraph graph, ImmutableDictionary<object, IModelNode> payloadToModelNodeMap)
-            => new Model(graph, payloadToModelNodeMap, _modelRuleProviders);
+        private IModel CreateInstance(
+            IModelGraph graph,
+            [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
+            [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap)
+            => new Model(graph, payloadToModelNodeMap, payloadToModelRelationshipMap, _modelRuleProviders);
 
         [NotNull]
         public static IModel Create([NotNull] params IModelRuleProvider[] modelRuleProviders)
@@ -236,6 +276,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return new Model(
                 ModelGraph.Empty(allowParallelEdges: false),
                 ImmutableDictionary<object, IModelNode>.Empty,
+                ImmutableDictionary<object, IModelRelationship>.Empty,
                 modelRuleProviders);
         }
     }

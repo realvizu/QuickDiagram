@@ -16,6 +16,7 @@ using Codartis.SoftVis.VisualStudioIntegration.App;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
+using Codartis.SoftVis.VisualStudioIntegration.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Resources;
@@ -94,7 +95,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>();
             builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>();
             builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>();
-            //builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>();
+            builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>();
         }
 
         private static void RegisterHostComponents(ContainerBuilder builder, IVisualStudioServices visualStudioServices)

@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util;
 using EnvDTE;
@@ -18,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// <summary>
     /// Gets information from Visual Studio about the current solution, projects and source documents.
     /// </summary>
-    internal class HostWorkspaceGateway : IHostModelProvider
+    internal sealed class HostWorkspaceGateway : IHostModelProvider
     {
         private const string CSharpContentTypeName = "CSharp";
 
@@ -53,6 +55,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var symbol = GetSymbolForSyntaxNode(semanticModel, currentNode);
             Debug.WriteLine($"symbol={symbol}");
             return Maybe.Create(symbol);
+        }
+
+        public Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(ISymbol symbol, DirectedModelRelationshipType? directedModelRelationshipType = null)
+        {
+            return Task.FromResult(Enumerable.Empty<RelatedSymbolPair>());
         }
 
         public async Task<bool> HasSourceAsync(ISymbol symbol)

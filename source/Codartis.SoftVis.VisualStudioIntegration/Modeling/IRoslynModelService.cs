@@ -1,4 +1,7 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
@@ -10,6 +13,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     internal interface IRoslynModelService
     {
         /// <summary>
+        /// The underlying general-purpose mode service.
+        /// </summary>
+        [NotNull]
+        IModelService ModelService { get; }
+
+        /// <summary>
         /// Controls whether trivial types like object can be added to the model.
         /// </summary>
         bool ExcludeTrivialTypes { get; set; }
@@ -18,14 +27,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// Creates a model node from a roslyn symbol and adds it to the model or just returns it if the model already contains it.
         /// </summary>
         [NotNull]
-        IModelNode AddSymbol([NotNull] ISymbol symbol);
+        IModelNode GetOrAddNode([NotNull] ISymbol symbol);
 
         /// <summary>
-        /// Adds the current Roslyn symbol (under the caret in the active source code editor) to the model.
+        /// Creates a model relationship from 2 related roslyn symbols and adds it to the model or just returns it if the model already contains it.
         /// </summary>
-        /// <returns>The model node that corresponds to the current Roslyn symbol or Nothing if there's no current symbol.</returns>
-        //[NotNull]
-        //Task<Maybe<IModelNode>> AddCurrentSymbolAsync();
+        [NotNull]
+        IModelRelationship GetOrAddRelationship(RelatedSymbolPair relatedSymbolPair);
 
         /// <summary>
         /// Explores related nodes and adds them to the model.
@@ -35,13 +43,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related node. Default is false.</param>
-        //[NotNull]
-        //Task ExtendModelWithRelatedNodesAsync(
-        //    [NotNull] IModelNode node,
-        //    DirectedModelRelationshipType? directedModelRelationshipType = null,
-        //    CancellationToken cancellationToken = default,
-        //    IIncrementalProgress progress = null,
-        //    bool recursive = false);
+        [NotNull]
+        Task ExtendModelWithRelatedNodesAsync(
+            [NotNull] IModelNode node,
+            DirectedModelRelationshipType? directedModelRelationshipType = null,
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null,
+            bool recursive = false);
 
         /// <summary>
         /// Returns a value indicating whether a model node has source code.

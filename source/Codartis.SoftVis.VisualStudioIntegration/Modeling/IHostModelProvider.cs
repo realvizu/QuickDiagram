@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -23,6 +25,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <returns>The Roslyn symbol under the caret or null.</returns>
         [NotNull]
         Task<Maybe<ISymbol>> TryGetCurrentSymbolAsync();
+
+        /// <summary>
+        /// Returns the related symbols of a given Roslyn symbol for a kind of relationship type (or all).
+        /// </summary>
+        [NotNull]
+        [ItemNotNull]
+        Task<IEnumerable<RelatedSymbolPair>> FindRelatedSymbolsAsync(
+            [NotNull] ISymbol symbol,
+            DirectedModelRelationshipType? directedModelRelationshipType = null);
 
         /// <summary>
         /// Returns a value indicating whether a Roslyn symbol has source code.
