@@ -30,8 +30,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty MiniButtonPlacementDictionaryProperty =
             DependencyProperty.Register("MiniButtonPlacementDictionary", typeof(IDictionary), typeof(DiagramControl));
 
-        public DiagramControl() : this(null)
-        { }
+        public DiagramControl()
+            : this(null)
+        {
+        }
 
         public DiagramControl(ResourceDictionary additionalResourceDictionary = null)
         {
@@ -39,6 +41,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
             InitializeComponent();
         }
+
+        public EdgeMode EdgeMode => (EdgeMode)GetValue(RenderOptions.EdgeModeProperty);
+        public ClearTypeHint ClearTypeHint => (ClearTypeHint)GetValue(RenderOptions.ClearTypeHintProperty);
+        public TextRenderingMode TextRenderingMode => (TextRenderingMode)GetValue(TextOptions.TextRenderingModeProperty);
+        public TextHintingMode TextHintingMode => (TextHintingMode)GetValue(TextOptions.TextHintingModeProperty);
+        public TextFormattingMode TextFormattingMode => (TextFormattingMode)GetValue(TextOptions.TextFormattingModeProperty);
 
         public Brush DiagramFill
         {

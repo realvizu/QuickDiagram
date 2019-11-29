@@ -18,6 +18,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public FontStretch FontStretch { get; }
         public FontWeight FontWeight { get; }
         public ResourceDictionary AdditionalResourceDictionary { get; }
+        public bool ClipToBounds { get; }
+        public bool SnapsToDevicePixels { get; }
+        public bool UseLayoutRounding { get; }
+        public EdgeMode EdgeMode { get; }
+        public ClearTypeHint ClearTypeHint { get; }
+        public TextRenderingMode TextRenderingMode { get; }
+        public TextHintingMode TextHintingMode { get; }
+        public TextFormattingMode TextFormattingMode { get; }
 
         public DiagramStyleCache(IDiagramStyleProvider diagramStyleProvider)
         {
@@ -31,6 +39,14 @@ namespace Codartis.SoftVis.UI.Wpf.View
             FontStretch = diagramStyleProvider.FontStretch;
             FontWeight = diagramStyleProvider.FontWeight;
             AdditionalResourceDictionary = diagramStyleProvider.AdditionalResourceDictionary;
+            ClipToBounds = diagramStyleProvider.ClipToBounds;
+            SnapsToDevicePixels = diagramStyleProvider.SnapsToDevicePixels;
+            UseLayoutRounding = diagramStyleProvider.UseLayoutRounding;
+            EdgeMode = diagramStyleProvider.EdgeMode;
+            ClearTypeHint = diagramStyleProvider.ClearTypeHint;
+            TextRenderingMode = diagramStyleProvider.TextRenderingMode;
+            TextHintingMode = diagramStyleProvider.TextHintingMode;
+            TextFormattingMode = TextFormattingMode;
         }
     }
 }

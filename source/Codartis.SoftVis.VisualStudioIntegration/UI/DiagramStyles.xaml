@@ -58,19 +58,19 @@
                            Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
                     <TextBlock x:Name="TextBlock"
                                Grid.Row="1" 
-                               Margin="4,0,4,0" 
+                               Margin="4,0,4,8" 
                                VerticalAlignment="Top" 
                                HorizontalAlignment="Center"
                                Text="{Binding Path=Name, Mode=OneWay}" 
                                TextWrapping="Wrap"/>
                 </Grid>
-                <controls:ConcealableExpander Margin="4,6,4,4"
-                                              IsButtonVisible="False"
+                <controls:ConcealableExpander IsButtonVisible="False"
                                               Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
                                               BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
                                               BorderThickness=".5"
                                               IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
-                    <TextBlock FontSize="10"
+                    <TextBlock Margin="4,0,4,4"
+                               FontSize="10"
                                TextWrapping="Wrap"
                                Text="{Binding Path=Description}"
                                ToolTip="{Binding Path=Description}"/>

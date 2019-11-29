@@ -18,5 +18,13 @@ namespace Codartis.SoftVis.UI.Wpf.View
         FontStretch FontStretch { get; }
         FontWeight FontWeight { get; }
         ResourceDictionary AdditionalResourceDictionary { get; }
+        bool ClipToBounds { get; }
+        bool SnapsToDevicePixels { get; }
+        bool UseLayoutRounding { get; }
+        EdgeMode EdgeMode { get; }
+        ClearTypeHint ClearTypeHint { get; }
+        TextRenderingMode TextRenderingMode { get; }
+        TextHintingMode TextHintingMode { get; }
+        TextFormattingMode TextFormattingMode { get; }
     }
 }
