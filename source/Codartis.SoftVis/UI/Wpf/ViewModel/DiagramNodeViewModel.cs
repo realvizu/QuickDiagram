@@ -16,8 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi, IDiagramNodeHeaderUi
     {
         private string _name;
-        private Size _size;
-        private Size _payloadAreaSize;
+        private Size _headerSize;
         private Size _childrenAreaSize;
         private bool _hasChildren;
 
@@ -25,8 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
         [NotNull] [ItemNotNull] public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
-        public event Action<IDiagramNode, Size2D> SizeChanged;
-        public event Action<IDiagramNode, Size2D> PayloadAreaSizeChanged;
+        public event Action<IDiagramNode, Size2D> HeaderSizeChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event Action<IDiagramNode> RemoveRequested;
@@ -74,34 +72,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public Size Size
+        public Size HeaderSize
         {
-            get { return _size; }
+            get { return _headerSize; }
             set
             {
-                if (_size != value)
+                if (_headerSize != value)
                 {
-                    _size = value;
+                    _headerSize = value;
                     OnPropertyChanged();
 
                     // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
-                    SizeChanged?.Invoke(DiagramNode, _size.FromWpf());
-                }
-            }
-        }
-
-        public Size PayloadAreaSize
-        {
-            get { return _payloadAreaSize; }
-            set
-            {
-                if (_payloadAreaSize != value)
-                {
-                    _payloadAreaSize = value;
-                    OnPropertyChanged();
-
-                    // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
-                    PayloadAreaSizeChanged?.Invoke(DiagramNode, _payloadAreaSize.FromWpf());
+                    HeaderSizeChanged?.Invoke(DiagramNode, _headerSize.FromWpf());
                 }
             }
         }
@@ -161,8 +143,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
         {
             // For image export we must set those properties that are calculated on the normal UI.
-            clone._size = _size;
-            clone._payloadAreaSize = _payloadAreaSize;
+            clone._headerSize = _headerSize;
         }
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()

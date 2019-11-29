@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.Services
             _diagramServices.Remove(diagramId);
 
             var diagramUi = _diagramUiServices[diagramId];
-            diagramUi.DiagramNodePayloadAreaSizeChanged -= PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUi.DiagramNodeHeaderSizeChanged -= PropagateDiagramNodeHeaderSizeChanged(diagramId);
             diagramUi.RemoveDiagramNodeRequested -= PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUiServices.Remove(diagramId);
 
@@ -91,7 +91,7 @@ namespace Codartis.SoftVis.Services
             var diagramUi = _diagramUiFactory.Invoke(diagramService, diagramViewportUi);
 
             var diagramUiService = _diagramUiServiceFactory(diagramUi);
-            diagramUiService.DiagramNodePayloadAreaSizeChanged += PropagateDiagramNodePayloadAreaSizeChanged(diagramId);
+            diagramUiService.DiagramNodeHeaderSizeChanged += PropagateDiagramNodeHeaderSizeChanged(diagramId);
             diagramUiService.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             return diagramUiService;
         }
@@ -103,14 +103,14 @@ namespace Codartis.SoftVis.Services
         }
 
         [NotNull]
-        private Action<IDiagramNode, Size2D> PropagateDiagramNodePayloadAreaSizeChanged(DiagramId diagramId)
+        private Action<IDiagramNode, Size2D> PropagateDiagramNodeHeaderSizeChanged(DiagramId diagramId)
         {
-            return (diagramNode, size) => OnDiagramNodePayloadAreaSizeChanged(diagramId, diagramNode, size);
+            return (diagramNode, size) => OnDiagramNodeHeaderSizeChanged(diagramId, diagramNode, size);
         }
 
-        private void OnDiagramNodePayloadAreaSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
+        private void OnDiagramNodeHeaderSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
         {
-            GetDiagramService(diagramId).UpdateNodePayloadAreaSize(diagramNode.Id, newSize);
+            GetDiagramService(diagramId).UpdateNodeHeaderSize(diagramNode.Id, newSize);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramId diagramId, [NotNull] IDiagramNode diagramNode)

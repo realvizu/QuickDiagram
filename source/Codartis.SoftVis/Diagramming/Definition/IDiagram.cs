@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         bool IsEmpty { get; }
 
         DiagramEvent AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
-        DiagramEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
+        DiagramEvent UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize);
         DiagramEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
         DiagramEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter);
         DiagramEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);

@@ -71,16 +71,10 @@ namespace Codartis.SoftVis.UI.Wpf
             remove => DiagramViewModel.ShowModelItemsRequested -= value;
         }
 
-        public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged
+        public event Action<IDiagramNode, Size2D> DiagramNodeHeaderSizeChanged
         {
-            add => DiagramViewModel.DiagramNodeSizeChanged += value;
-            remove => DiagramViewModel.DiagramNodeSizeChanged -= value;
-        }
-
-        public event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged
-        {
-            add => DiagramViewModel.DiagramNodePayloadAreaSizeChanged += value;
-            remove => DiagramViewModel.DiagramNodePayloadAreaSizeChanged -= value;
+            add => DiagramViewModel.DiagramNodeHeaderSizeChanged += value;
+            remove => DiagramViewModel.DiagramNodeHeaderSizeChanged -= value;
         }
 
         public event Action<IDiagramNode> DiagramNodeInvoked

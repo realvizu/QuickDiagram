@@ -19,8 +19,7 @@ namespace Codartis.SoftVis.UI
         void KeepDiagramCentered();
 
         event ShowModelItemsEventHandler ShowModelItemsRequested;
-        event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
-        event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged;
+        event Action<IDiagramNode, Size2D> DiagramNodeHeaderSizeChanged;
         event Action<IDiagramNode> DiagramNodeInvoked;
         event Action<IDiagramNode> RemoveDiagramNodeRequested;
     }

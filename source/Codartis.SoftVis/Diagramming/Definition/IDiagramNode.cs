@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         DateTime AddedAt { get; }
         Point2D Center { get; }
         Point2D TopLeft { get; }
-        Size2D PayloadAreaSize { get; }
+        Size2D HeaderSize { get; }
         Size2D ChildrenAreaSize { get; }
         Size2D Size { get; }
 
@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IDiagramNode WithTopLeft(Point2D newTopLeft);
 
         [NotNull]
-        IDiagramNode WithPayloadAreaSize(Size2D newSize);
+        IDiagramNode WithHeaderSize(Size2D newSize);
 
         [NotNull]
         IDiagramNode WithChildrenAreaSize(Size2D newSize);

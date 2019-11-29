@@ -90,7 +90,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
                     return new BoxLayoutInfo(
                         i.ShapeId,
                         layoutInfo.VertexRects[i.Id].TopLeft,
-                        payloadAreaSize: i.PayloadAreaSize,
+                        headerSize: i.HeaderSize,
                         childrenAreaLayoutInfo?.Rect.Size.WithMargin(ChildrenAreaPadding) ?? Size2D.Zero,
                         childrenAreaLayoutInfo);
                 }

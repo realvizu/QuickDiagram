@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
     public interface IDiagramService : IDiagramEventSource
     {
         void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
-        void UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize);
+        void UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize);
         void UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize);
         void UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter);
         void UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);

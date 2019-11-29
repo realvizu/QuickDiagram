@@ -47,8 +47,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <view:DiagramNodeControl DataContext="{Binding}"
-                                 ActualSize="{Binding Path=Size, Mode=OneWayToSource}" />
+        <view:DiagramNodeControl DataContext="{Binding}" />
 
         <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}"
                       ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"

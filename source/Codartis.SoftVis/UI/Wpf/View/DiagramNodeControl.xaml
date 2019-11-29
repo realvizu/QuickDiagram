@@ -18,7 +18,7 @@
 
         <view:DiagramNodeHeaderControl Grid.Row="0"
                                         DataContext="{Binding}"
-                                        ActualSize="{Binding Path=PayloadAreaSize, Mode=OneWayToSource}" />
+                                        ActualSize="{Binding Path=HeaderSize, Mode=OneWayToSource}" />
 
         <Border Grid.Row="1"
                 BorderThickness="1,0,1,1"

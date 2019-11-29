@@ -3,7 +3,7 @@
     public enum DiagramNodeMember
     {
         Position,
-        PayloadAreaSize,
+        HeaderSize,
         ChildrenAreaSize,
         ModelNode
     }

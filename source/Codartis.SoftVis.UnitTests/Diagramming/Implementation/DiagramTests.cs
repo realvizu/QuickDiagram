@@ -59,17 +59,17 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
-        public void UpdateNodePayloadAreaSize_Works()
+        public void UpdateNodeHeaderSize_Works()
         {
             var model = _modelBuilder.AddNodes("A").Model;
             var node = _modelBuilder.GetNode("A");
 
             var diagram = new DiagramBuilder(model).AddAllModelNodes().Diagram;
-            var diagramEvent = diagram.UpdateNodePayloadAreaSize(node.Id, new Size2D(1, 1));
+            var diagramEvent = diagram.UpdateNodeHeaderSize(node.Id, new Size2D(1, 1));
 
-            diagramEvent.NewDiagram.GetNode(node.Id).PayloadAreaSize.Should().Be(new Size2D(1, 1));
+            diagramEvent.NewDiagram.GetNode(node.Id).HeaderSize.Should().Be(new Size2D(1, 1));
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.PayloadAreaSize.Should().Be(new Size2D(1, 1))
+                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.HeaderSize.Should().Be(new Size2D(1, 1))
             );
         }
 
@@ -204,8 +204,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var layout = new GroupLayoutInfo(
                 new[]
                 {
-                    new BoxLayoutInfo(diagramNodeA.ShapeId, topLeft: (1, 1), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
-                    new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (2, 2), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
+                    new BoxLayoutInfo(diagramNodeA.ShapeId, topLeft: (1, 1), headerSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
+                    new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (2, 2), headerSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                 },
                 new[]
                 {
@@ -252,15 +252,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                     new BoxLayoutInfo(
                         diagramNodeA.ShapeId,
                         topLeft: (1, 1),
-                        payloadAreaSize: Size2D.Zero,
+                        headerSize: Size2D.Zero,
                         childrenAreaSize: (2, 2),
                         new GroupLayoutInfo(
                             new[]
                             {
-                                new BoxLayoutInfo(diagramNodeA1.ShapeId, topLeft: (2, 2), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
-                                new BoxLayoutInfo(diagramNodeA2.ShapeId, topLeft: (4, 4), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
+                                new BoxLayoutInfo(diagramNodeA1.ShapeId, topLeft: (2, 2), headerSize: Size2D.Zero, childrenAreaSize: Size2D.Zero),
+                                new BoxLayoutInfo(diagramNodeA2.ShapeId, topLeft: (4, 4), headerSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                             })),
-                    new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (9, 9), payloadAreaSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
+                    new BoxLayoutInfo(diagramNodeB.ShapeId, topLeft: (9, 9), headerSize: Size2D.Zero, childrenAreaSize: Size2D.Zero)
                 },
                 new List<LineLayoutInfo>());
 

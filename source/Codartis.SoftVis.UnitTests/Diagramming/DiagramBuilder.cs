@@ -44,10 +44,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
-        public DiagramBuilder AddNodes([NotNull] params (string name, Size2D payloadAreaSize)[] nodeSpecifications)
+        public DiagramBuilder AddNodes([NotNull] params (string name, Size2D headerSize)[] nodeSpecifications)
         {
             foreach (var nodeSpecification in nodeSpecifications)
-                AddNode(nodeSpecification.name, nodeSpecification.payloadAreaSize);
+                AddNode(nodeSpecification.name, nodeSpecification.headerSize);
 
             return this;
         }
@@ -55,10 +55,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         [NotNull]
         public DiagramBuilder AddChildNodes(
             [NotNull] string parentNodeName,
-            [NotNull] params (string name, Size2D payloadAreaSize)[] childNodeSpecifications)
+            [NotNull] params (string name, Size2D headerSize)[] childNodeSpecifications)
         {
             foreach (var childNodeSpecification in childNodeSpecifications)
-                AddNode(childNodeSpecification.name, childNodeSpecification.payloadAreaSize, parentNodeName);
+                AddNode(childNodeSpecification.name, childNodeSpecification.headerSize, parentNodeName);
 
             return this;
         }
@@ -173,7 +173,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             return Diagram.Connectors.Single(i => i.Source == sourceNode.Id && i.Target == targetNode.Id);
         }
 
-        private void AddNode([NotNull] string nodeName, Size2D nodePayloadAreaSize, [CanBeNull] string parentNodeName = null)
+        private void AddNode([NotNull] string nodeName, Size2D nodeHeaderSize, [CanBeNull] string parentNodeName = null)
         {
             var parentNodeId = parentNodeName == null
                 ? (ModelNodeId?)null
@@ -182,7 +182,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             var modelNode = GetModelNode(nodeName);
             Diagram = Diagram.AddNode(modelNode.Id, parentNodeId).NewDiagram;
 
-            Diagram = Diagram.UpdateNodePayloadAreaSize(modelNode.Id, nodePayloadAreaSize).NewDiagram;
+            Diagram = Diagram.UpdateNodeHeaderSize(modelNode.Id, nodeHeaderSize).NewDiagram;
         }
 
         [NotNull]

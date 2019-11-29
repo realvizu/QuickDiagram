@@ -114,12 +114,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return DiagramEvent.Create(newDiagram, new DiagramNodeAddedEvent(newNode));
         }
 
-        public DiagramEvent UpdateNodePayloadAreaSize(ModelNodeId nodeId, Size2D newSize)
+        public DiagramEvent UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize)
         {
             return UpdateNode(
                 nodeId,
-                i => i.WithPayloadAreaSize(newSize),
-                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.PayloadAreaSize));
+                i => i.WithHeaderSize(newSize),
+                (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.HeaderSize));
         }
 
         public DiagramEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)

@@ -28,8 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DelegateCommand MouseDownCommand { get; }
 
         public event ShowModelItemsEventHandler ShowModelItemsRequested;
-        public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
-        public event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged;
+        public event Action<IDiagramNode, Size2D> DiagramNodeHeaderSizeChanged;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
@@ -127,8 +126,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
             DiagramViewportViewModel.RemoveDiagramNodeRequested += OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked += OnDiagramNodeInvoked;
-            DiagramViewportViewModel.DiagramNodeSizeChanged += OnDiagramNodeSizeChanged;
-            DiagramViewportViewModel.DiagramNodePayloadAreaSizeChanged += OnDiagramNodePayloadAreaSizeChanged;
+            DiagramViewportViewModel.DiagramNodeHeaderSizeChanged += OnDiagramNodeHeaderSizeChanged;
         }
 
         private void UnsubscribeFromViewportEvents()
@@ -138,20 +136,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             DiagramViewportViewModel.RemoveDiagramNodeRequested -= OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked -= OnDiagramNodeInvoked;
-            DiagramViewportViewModel.DiagramNodeSizeChanged -= OnDiagramNodeSizeChanged;
-            DiagramViewportViewModel.DiagramNodePayloadAreaSizeChanged -= OnDiagramNodePayloadAreaSizeChanged;
+            DiagramViewportViewModel.DiagramNodeHeaderSizeChanged -= OnDiagramNodeHeaderSizeChanged;
         }
 
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize)
+        private void OnDiagramNodeHeaderSizeChanged(IDiagramNode diagramNode, Size2D newSize)
         {
             if (newSize.IsDefined)
-                DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
-        }
-
-        private void OnDiagramNodePayloadAreaSizeChanged(IDiagramNode diagramNode, Size2D newSize)
-        {
-            if (newSize.IsDefined)
-                DiagramNodePayloadAreaSizeChanged?.Invoke(diagramNode, newSize);
+                DiagramNodeHeaderSizeChanged?.Invoke(diagramNode, newSize);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramNodeViewModel diagramNodeViewModel)

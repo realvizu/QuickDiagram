@@ -20,21 +20,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public Maybe<ModelNodeId> ParentNodeId { get; }
         public DateTime AddedAt { get; }
         public Point2D TopLeft { get; }
-        public Size2D PayloadAreaSize { get; }
+        public Size2D HeaderSize { get; }
         public Size2D ChildrenAreaSize { get; }
 
         public DiagramNode(
             [NotNull] IModelNode modelNode,
             DateTime addedAt,
             Point2D topLeft,
-            Size2D payloadAreaSize,
+            Size2D headerSize,
             Size2D childrenAreaSize,
             Maybe<ModelNodeId> parentNodeId)
         {
             ModelNode = modelNode;
             TopLeft = topLeft;
             AddedAt = addedAt;
-            PayloadAreaSize = payloadAreaSize;
+            HeaderSize = headerSize;
             ChildrenAreaSize = childrenAreaSize;
             ParentNodeId = parentNodeId;
 
@@ -66,29 +66,29 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public override string ToString() => ModelNode.ToString();
 
         public IDiagramNode WithModelNode(IModelNode newModelNode)
-            => CreateInstance(newModelNode, AddedAt, TopLeft, PayloadAreaSize, ChildrenAreaSize, ParentNodeId);
+            => CreateInstance(newModelNode, AddedAt, TopLeft, HeaderSize, ChildrenAreaSize, ParentNodeId);
 
         public IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId)
-            => CreateInstance(ModelNode, AddedAt, TopLeft, PayloadAreaSize, ChildrenAreaSize, newParentNodeId.ToMaybe());
+            => CreateInstance(ModelNode, AddedAt, TopLeft, HeaderSize, ChildrenAreaSize, newParentNodeId.ToMaybe());
 
         public IDiagramNode WithCenter(Point2D newCenter)
-            => CreateInstance(ModelNode, AddedAt, Rect.WithCenter(newCenter).TopLeft, PayloadAreaSize, ChildrenAreaSize, ParentNodeId);
+            => CreateInstance(ModelNode, AddedAt, Rect.WithCenter(newCenter).TopLeft, HeaderSize, ChildrenAreaSize, ParentNodeId);
 
-        public IDiagramNode WithTopLeft(Point2D newTopLeft) => CreateInstance(ModelNode, AddedAt, newTopLeft, PayloadAreaSize, ChildrenAreaSize, ParentNodeId);
-        public IDiagramNode WithPayloadAreaSize(Size2D newSize) => CreateInstance(ModelNode, AddedAt, TopLeft, newSize, ChildrenAreaSize, ParentNodeId);
-        public IDiagramNode WithChildrenAreaSize(Size2D newSize) => CreateInstance(ModelNode, AddedAt, TopLeft, PayloadAreaSize, newSize, ParentNodeId);
+        public IDiagramNode WithTopLeft(Point2D newTopLeft) => CreateInstance(ModelNode, AddedAt, newTopLeft, HeaderSize, ChildrenAreaSize, ParentNodeId);
+        public IDiagramNode WithHeaderSize(Size2D newSize) => CreateInstance(ModelNode, AddedAt, TopLeft, newSize, ChildrenAreaSize, ParentNodeId);
+        public IDiagramNode WithChildrenAreaSize(Size2D newSize) => CreateInstance(ModelNode, AddedAt, TopLeft, HeaderSize, newSize, ParentNodeId);
 
         private Rect2D CalculateRect()
-            => new Rect2D(TopLeft, new Size2D(Math.Max(PayloadAreaSize.Width, ChildrenAreaSize.Width), PayloadAreaSize.Height + ChildrenAreaSize.Height));
+            => new Rect2D(TopLeft, new Size2D(Math.Max(HeaderSize.Width, ChildrenAreaSize.Width), HeaderSize.Height + ChildrenAreaSize.Height));
 
         [NotNull]
         private static IDiagramNode CreateInstance(
             [NotNull] IModelNode modelNode,
             DateTime addedAt,
             Point2D topLeft,
-            Size2D payloadAreaSize,
+            Size2D headerSize,
             Size2D childrenAreaSize,
             Maybe<ModelNodeId> parentNodeId)
-            => new DiagramNode(modelNode, addedAt, topLeft, payloadAreaSize, childrenAreaSize, parentNodeId);
+            => new DiagramNode(modelNode, addedAt, topLeft, headerSize, childrenAreaSize, parentNodeId);
     }
 }

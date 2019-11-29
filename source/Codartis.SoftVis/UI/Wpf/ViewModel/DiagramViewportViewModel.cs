@@ -39,8 +39,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event Action<DiagramNodeViewModel> RemoveDiagramNodeRequested;
         public event Action<IDiagramNode> DiagramNodeInvoked;
-        public event Action<IDiagramNode, Size2D> DiagramNodeSizeChanged;
-        public event Action<IDiagramNode, Size2D> DiagramNodePayloadAreaSizeChanged;
+        public event Action<IDiagramNode, Size2D> DiagramNodeHeaderSizeChanged;
 
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
@@ -183,8 +182,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         {
             var diagramNodeUi = (DiagramNodeViewModel)DiagramShapeUiFactory.CreateDiagramNodeUi(diagramNode, MiniButtonManager);
 
-            diagramNodeUi.SizeChanged += OnDiagramNodeSizeChanged;
-            diagramNodeUi.PayloadAreaSizeChanged += OnDiagramNodePayloadAreaSizeChanged;
+            diagramNodeUi.HeaderSizeChanged += OnDiagramNodeHeaderSizeChanged;
             diagramNodeUi.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
             diagramNodeUi.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
             diagramNodeUi.RemoveRequested += OnRemoveDiagramNodeRequested;
@@ -212,8 +210,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             if (!TryGetDiagramNodeViewModel(diagramNode.Id, out var diagramNodeViewModel))
                 return;
 
-            diagramNodeViewModel.SizeChanged -= OnDiagramNodeSizeChanged;
-            diagramNodeViewModel.PayloadAreaSizeChanged -= OnDiagramNodePayloadAreaSizeChanged;
+            diagramNodeViewModel.HeaderSizeChanged -= OnDiagramNodeHeaderSizeChanged;
             diagramNodeViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             diagramNodeViewModel.RelatedNodeSelectorRequested -= OnEntitySelectorRequested;
             diagramNodeViewModel.RemoveRequested -= OnRemoveDiagramNodeRequested;
@@ -273,9 +270,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnEntitySelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
             => RelatedNodeSelectorRequested?.Invoke(ownerButton, modelNodes);
 
-        private void OnDiagramNodeSizeChanged(IDiagramNode diagramNode, Size2D newSize) => DiagramNodeSizeChanged?.Invoke(diagramNode, newSize);
-
-        private void OnDiagramNodePayloadAreaSizeChanged(IDiagramNode diagramNode, Size2D newSize)
-            => DiagramNodePayloadAreaSizeChanged?.Invoke(diagramNode, newSize);
+        private void OnDiagramNodeHeaderSizeChanged(IDiagramNode diagramNode, Size2D newSize)
+            => DiagramNodeHeaderSizeChanged?.Invoke(diagramNode, newSize);
     }
 }

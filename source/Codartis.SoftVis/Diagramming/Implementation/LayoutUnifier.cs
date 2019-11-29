@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         private GroupLayoutInfo CalculateAbsoluteLayoutRecursive(
             GroupLayoutInfo groupLayoutInfo,
             Point2D parentTopLeft,
-            Size2D parentPayloadAreaSize,
+            Size2D parentHeaderSize,
             Rect2D parentChildrenAreaRect,
             double padding)
         {
@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             var childTranslateVector = 
                 parentTopLeft +
-                new Point2D(0, parentPayloadAreaSize.Height) +
+                new Point2D(0, parentHeaderSize.Height) +
                 new Point2D(padding, padding) +
                 parentChildrenAreaRect.TopLeft;
 
@@ -55,14 +55,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 var childGroup = CalculateAbsoluteLayoutRecursive(
                     boxLayoutInfo.ChildGroup,
                     boxTopLeft,
-                    boxLayoutInfo.PayloadAreaSize,
+                    boxLayoutInfo.HeaderSize,
                     boxLayoutInfo.ChildGroup?.Rect ?? Rect2D.Undefined,
                     _childrenAreaPadding);
 
                 var absoluteBoxLayoutInfo = new BoxLayoutInfo(
                         boxLayoutInfo.ShapeId,
                         boxTopLeft,
-                        boxLayoutInfo.PayloadAreaSize,
+                        boxLayoutInfo.HeaderSize,
                         childGroup?.Rect.Size.WithMargin(_childrenAreaPadding) ?? Size2D.Zero,
                         childGroup);
 
