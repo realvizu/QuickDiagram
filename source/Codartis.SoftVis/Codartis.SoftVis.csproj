@@ -25,7 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="UI\Wpf\View\DiagramNodeHeaderControl.xaml" />
     <None Remove="UI\Wpf\View\DiagramNodeWithCuesControl.xaml" />
   </ItemGroup>
 
@@ -53,9 +52,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeHeaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Wpf\View\MiniButtonControl.xaml">
@@ -105,12 +101,6 @@
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="UI\Wpf\View\DiagramNodeHeaderControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   
 </Project>

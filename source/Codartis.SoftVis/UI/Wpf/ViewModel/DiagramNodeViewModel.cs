@@ -82,7 +82,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     _headerSize = value;
                     OnPropertyChanged();
 
-                    // This property binds to its control as OneWayToSource and propagates size changes to parent viewmodels.
+                    // This property binds to its control and propagates size changes to parent viewmodels.
                     HeaderSizeChanged?.Invoke(DiagramNode, _headerSize.FromWpf());
                 }
             }

@@ -3,8 +3,9 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interactivity;
+using JetBrains.Annotations;
 
-namespace Codartis.SoftVis.UI.Wpf.Behaviors
+namespace Codartis.Util.UI.Wpf.Behaviors
 {
     /// <summary>
     /// Copies the mouse position into the given properties when a specified event occurs.
@@ -13,7 +14,7 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
     /// The event's handler must be of type DependencyPropertyChangedEventHandler.
     /// The mouse position is relative to the AssociatedObject's parent.
     /// </remarks>
-    internal class CopyMousePositionBehavior : Behavior<FrameworkElement>
+    public class CopyMousePositionBehavior : Behavior<FrameworkElement>
     {
         private EventInfo _eventInfo;
         private Delegate _eventHandler;
@@ -21,11 +22,11 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         public static readonly DependencyProperty OnEventNameProperty =
             DependencyProperty.Register("OnEventName", typeof(string), typeof(CopyMousePositionBehavior));
 
-        public static readonly DependencyProperty TopPropertyProperty =
-            DependencyProperty.Register("TopProperty", typeof(DependencyProperty), typeof(CopyMousePositionBehavior));
+        public static readonly DependencyProperty YPropertyProperty =
+            DependencyProperty.Register("YProperty", typeof(DependencyProperty), typeof(CopyMousePositionBehavior));
 
-        public static readonly DependencyProperty LeftPropertyProperty =
-            DependencyProperty.Register("LeftProperty", typeof(DependencyProperty), typeof(CopyMousePositionBehavior));
+        public static readonly DependencyProperty XPropertyProperty =
+            DependencyProperty.Register("XProperty", typeof(DependencyProperty), typeof(CopyMousePositionBehavior));
 
         public string OnEventName
         {
@@ -33,16 +34,16 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
             set { SetValue(OnEventNameProperty, value); }
         }
 
-        public DependencyProperty TopProperty
+        public DependencyProperty YProperty
         {
-            get { return (DependencyProperty)GetValue(TopPropertyProperty); }
-            set { SetValue(TopPropertyProperty, value); }
+            get { return (DependencyProperty)GetValue(YPropertyProperty); }
+            set { SetValue(YPropertyProperty, value); }
         }
 
-        public DependencyProperty LeftProperty
+        public DependencyProperty XProperty
         {
-            get { return (DependencyProperty)GetValue(LeftPropertyProperty); }
-            set { SetValue(LeftPropertyProperty, value); }
+            get { return (DependencyProperty)GetValue(XPropertyProperty); }
+            set { SetValue(XPropertyProperty, value); }
         }
 
         protected override void OnAttached()
@@ -74,12 +75,15 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
                 return;
 
             var position = Mouse.GetPosition(parentInputElement);
-            AssociatedObject.SetValue(LeftProperty, position.X);
-            AssociatedObject.SetValue(TopProperty, position.Y);
+            AssociatedObject.SetValue(XProperty, position.X);
+            AssociatedObject.SetValue(YProperty, position.Y);
         }
 
-        private static Delegate CreateEventHandlerDelegate(Type evenHandlerType, object target,
-            DependencyPropertyChangedEventHandler handler)
+        [NotNull]
+        private static Delegate CreateEventHandlerDelegate(
+            [NotNull] Type evenHandlerType,
+            [NotNull] object target,
+            [NotNull] DependencyPropertyChangedEventHandler handler)
         {
             return Delegate.CreateDelegate(evenHandlerType, target, handler.Method);
         }

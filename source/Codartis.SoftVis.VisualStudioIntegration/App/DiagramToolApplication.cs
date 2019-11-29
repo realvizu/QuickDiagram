@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Services;
+using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using JetBrains.Annotations;
@@ -52,14 +53,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             HostUiService.Run(async () => await OnShowSourceRequestAsync(diagramShape));
         }
 
-        private Task OnShowSourceRequestAsync(IDiagramShape diagramShape)
+        private async Task OnShowSourceRequestAsync(IDiagramShape diagramShape)
         {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
-                return Task.CompletedTask;
+                return;
 
-            //await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
-            return Task.CompletedTask;
+            await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
         }
 
         private void OnShowItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
