@@ -8,12 +8,12 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
-    /// Defines Roslyn-specific model operations.
+    /// Wraps a model service with Roslyn-specific operations.
     /// </summary>
     internal interface IRoslynModelService
     {
         /// <summary>
-        /// The underlying general-purpose mode service.
+        /// The underlying general-purpose model service.
         /// </summary>
         [NotNull]
         IModelService ModelService { get; }

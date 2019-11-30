@@ -13,8 +13,7 @@ using Microsoft.CodeAnalysis.FindSymbols;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
-    /// Implements Roslyn model operations.
-    /// Wraps a general-purpose IModelService.
+    /// Wraps a model service with Roslyn-specific operations.
     /// </summary>
     internal sealed class RoslynModelService : IRoslynModelService
     {
@@ -28,14 +27,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             };
 
         [NotNull] private readonly IHostModelProvider _hostModelProvider;
+        [NotNull] private readonly IRelatedSymbolProvider _relatedSymbolProvider;
         public IModelService ModelService { get; }
         public bool ExcludeTrivialTypes { get; set; }
 
         public RoslynModelService(
             [NotNull] IHostModelProvider hostModelProvider,
+            [NotNull] IRelatedSymbolProvider relatedSymbolProvider,
             [NotNull] IModelService modelService)
         {
             _hostModelProvider = hostModelProvider;
+            _relatedSymbolProvider = relatedSymbolProvider;
             ModelService = modelService;
         }
 
@@ -105,7 +107,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         //    {
         //        cancellationToken.ThrowIfCancellationRequested();
 
-        //        var namedTypeSymbol = roslynModelNode.RoslynSymbol;
+        //        var namedTypeSymbol = roslynModelNode.RoslynNode;
         //        var newVersionOfSymbol = FindSymbolInCompilations(namedTypeSymbol, compilations, cancellationToken);
 
         //        if (newVersionOfSymbol == null)
@@ -187,9 +189,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             bool recursive,
             [NotNull] ISet<ModelNodeId> alreadyDiscoveredNodes)
         {
-            var relatedSymbolPairs = await _hostModelProvider.FindRelatedSymbolsAsync((ISymbol)node.Payload, directedModelRelationshipType);
+            var relatedSymbolPairs = await _relatedSymbolProvider.GetRelatedSymbolsAsync((ISymbol)node.Payload, directedModelRelationshipType);
 
             var presentableRelatedSymbolPairs = relatedSymbolPairs
+                // TODO: do we want to go back to original definitions?
                 //.Select(GetOriginalDefinition)
                 .Where(i => !IsHidden(i.RelatedSymbol))
                 .ToList();
@@ -218,14 +221,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     directedModelRelationshipType,
                     cancellationToken,
                     progress,
-                    true,
+                    recursive: true,
                     alreadyDiscoveredNodes);
             }
         }
 
-        //private static RoslynSymbol GetRoslynItem(IModelNode node)
+        //private static RoslynNode GetRoslynItem(IModelNode node)
         //{
-        //    return (RoslynSymbol)node.PayloadUi;
+        //    return (RoslynNode)node.PayloadUi;
         //}
     }
 }

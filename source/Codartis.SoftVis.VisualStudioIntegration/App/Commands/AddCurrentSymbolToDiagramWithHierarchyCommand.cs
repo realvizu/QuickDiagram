@@ -36,7 +36,7 @@
 //            HostUiService.FollowDiagramNodes(diagramNodes);
 //        }
 
-//        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynSymbol symbol)
+//        private async Task<IReadOnlyList<IDiagramNode>> ExtendModelAndDiagramAsync(IRoslynNode symbol)
 //        {
 //            IReadOnlyList<IDiagramNode> diagramNodes = null;
 
@@ -60,7 +60,7 @@
 //            return diagramNodes;
 //        }
 
-//        private async Task ExtendModelWithRelatedEntitiesAsync(IRoslynSymbol modelEntity,
+//        private async Task ExtendModelWithRelatedEntitiesAsync(IRoslynNode modelEntity,
 //            CancellationToken cancellationToken, IIncrementalProgress progress)
 //        {
 //            await Task.WhenAll(
@@ -69,7 +69,7 @@
 //            );
 //        }
 
-//        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynSymbol symbol,
+//        private async Task<IReadOnlyList<IDiagramNode>> ExtendDiagramAsync(IRoslynNode symbol,
 //            CancellationToken cancellationToken, IIncrementalProgress progress)
 //        {
 //            return await Task.Run(
@@ -77,7 +77,7 @@
 //                cancellationToken);
 //        }
 
-//        public IEnumerable<IDiagramNode> ShowModelNodeWithHierarchy(IRoslynSymbol symbol, 
+//        public IEnumerable<IDiagramNode> ShowModelNodeWithHierarchy(IRoslynNode symbol, 
 //            CancellationToken cancellationToken, IIncrementalProgress progress)
 //        {
 //            var model = ModelService.Model;

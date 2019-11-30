@@ -59,7 +59,7 @@
 //            foreach (var declaredTypeSymbol in declaredTypeSymbols)
 //            {
 //                // Match by name
-//                var matchingEntityByName = _model.GetRoslynNodes().FirstOrDefault(i => i.RoslynSymbol.SymbolEquals(declaredTypeSymbol));
+//                var matchingEntityByName = _model.GetRoslynNodes().FirstOrDefault(i => i.RoslynNode.SymbolEquals(declaredTypeSymbol));
 //                if (matchingEntityByName != null)
 //                {
 //                    Debug.WriteLine($"Found entity {declaredTypeSymbol.Name} by name.");

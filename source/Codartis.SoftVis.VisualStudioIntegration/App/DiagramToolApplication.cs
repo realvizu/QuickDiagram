@@ -69,7 +69,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         private Task OnShowItemsRequestAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
-            //var roslynModelNodes = modelNodes.OfType<IRoslynSymbol>().ToArray();
+            //var roslynModelNodes = modelNodes.OfType<IRoslynNode>().ToArray();
             //if (roslynModelNodes.Any())
             //    await new AddItemsToDiagramCommand(this, roslynModelNodes, followWithViewport).ExecuteAsync();
             return Task.CompletedTask;

@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             builder.RegisterType<ModelService>().SingleInstance().As<IModelService>().As<IModelEventSource>();
             builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
-
+            builder.RegisterType<RelatedSymbolProvider>().SingleInstance().As<IRelatedSymbolProvider>();
             builder.RegisterType<RoslynModelService>().As<IRoslynModelService>();
         }
 

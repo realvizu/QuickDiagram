@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override Task ExecuteAsync()
         {
-            //if (!(_diagramNode?.ModelNode.Payload is IRoslynSymbol roslynModelNode))
+            //if (!(_diagramNode?.ModelNode.Payload is IRoslynNode roslynModelNode))
             //    throw new Exception("DiagramNode or ModelNode is null or not an IRoslynModelNode.");
 
             //if (await ModelService.HasSourceAsync(roslynModelNode))

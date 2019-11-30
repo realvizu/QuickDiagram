@@ -14,10 +14,10 @@
 //    /// </summary>
 //    internal sealed class AddItemsToDiagramCommand : CommandBase
 //    {
-//        private readonly IReadOnlyList<IRoslynSymbol> _modelEntities;
+//        private readonly IReadOnlyList<IRoslynNode> _modelEntities;
 //        private readonly bool _followWithViewport;
 
-//        public AddItemsToDiagramCommand(IAppServices appServices, IReadOnlyList<IRoslynSymbol> modelEntities, bool followWithViewport)
+//        public AddItemsToDiagramCommand(IAppServices appServices, IReadOnlyList<IRoslynNode> modelEntities, bool followWithViewport)
 //            : base(appServices)
 //        {
 //            _modelEntities = modelEntities;
@@ -34,7 +34,7 @@
 //                HostUiService.FollowDiagramNodes(diagramNodes);
 //        }
 
-//        private async Task<IReadOnlyList<IDiagramNode>> ShowProgressAndAddItemsAsync(IReadOnlyList<IRoslynSymbol> modelEntities)
+//        private async Task<IReadOnlyList<IDiagramNode>> ShowProgressAndAddItemsAsync(IReadOnlyList<IRoslynNode> modelEntities)
 //        {
 //            IReadOnlyList<IDiagramNode> diagramNodes = null;
 
@@ -54,7 +54,7 @@
 //            return diagramNodes;
 //        }
 
-//        private async Task<IReadOnlyList<IDiagramNode>> ShowEntitiesAsync(IReadOnlyList<IRoslynSymbol> modelEntities,
+//        private async Task<IReadOnlyList<IDiagramNode>> ShowEntitiesAsync(IReadOnlyList<IRoslynNode> modelEntities,
 //            CancellationToken cancellationToken, IIncrementalProgress progress)
 //        {
 //            return await Task.Run(
