@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
 
         public ModelBuilder([NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
-            Model = SoftVis.Modeling.Implementation.Model.Create(modelRuleProviders);
+            Model = SoftVis.Modeling.Implementation.Model.Create(payloadEqualityComparer: null, modelRuleProviders);
         }
 
         public ModelBuilder([NotNull] IModel model)

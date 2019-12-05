@@ -81,7 +81,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         }
 
         [NotNull]
-        private static IModel CreateModel(params IModelRuleProvider[] modelRuleProviders) => Model.Create(modelRuleProviders);
+        private static IModel CreateModel(params IModelRuleProvider[] modelRuleProviders) => Model.Create(payloadEqualityComparer: null, modelRuleProviders);
 
         private sealed class AllInvalidModelRuleProvider : IModelRuleProvider
         {

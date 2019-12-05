@@ -52,8 +52,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             return ModelService.LatestModel.TryGetNodeByPayload(symbol).Match(
                 some => some,
-                () => ModelService.AddNode(symbol.GetName(), symbol.GetStereotype(), symbol)
-            );
+                () => ModelService.AddNode(symbol.GetName(), symbol.GetStereotype(), symbol));
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -65,7 +64,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 {
                     var sourceNode = GetOrAddNode(relatedSymbolPair.SourceSymbol);
                     var targetNode = GetOrAddNode(relatedSymbolPair.TargetSymbol);
-                    return ModelService.AddRelationship(sourceNode.Id, targetNode.Id, relatedSymbolPair.Stereotype);
+                    return ModelService.AddRelationship(sourceNode.Id, targetNode.Id, relatedSymbolPair.Stereotype, relatedSymbolPair);
                 });
         }
 

@@ -21,17 +21,20 @@ namespace Codartis.SoftVis.Modeling.Implementation
         private readonly IModelGraph _graph;
         [NotNull] private readonly ImmutableDictionary<object, IModelNode> _payloadToModelNodeMap;
         [NotNull] private readonly ImmutableDictionary<object, IModelRelationship> _payloadToModelRelationshipMap;
+        [CanBeNull] private readonly IEqualityComparer<object> _payloadEqualityComparer;
         [NotNull] [ItemNotNull] private readonly IModelRuleProvider[] _modelRuleProviders;
 
         private Model(
             IModelGraph graph,
             [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap,
+            [CanBeNull] IEqualityComparer<object> payloadEqualityComparer,
             [NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
             _graph = graph;
             _payloadToModelNodeMap = payloadToModelNodeMap;
             _payloadToModelRelationshipMap = payloadToModelRelationshipMap;
+            _payloadEqualityComparer = payloadEqualityComparer;
             _modelRuleProviders = modelRuleProviders;
         }
 
@@ -142,7 +145,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 throw new ArgumentException($"{relationship} is invalid.");
 
             var itemEvents = new List<ModelItemEventBase>();
-            var (newGraph, newPayloadToModelRelationshipMap) = AddRelationshipCore(relationship, _graph, _payloadToModelRelationshipMap, itemEvents);
+            var (newGraph, newPayloadToModelRelationshipMap) = AddRelationshipCore(
+                relationship,
+                _graph,
+                _payloadToModelRelationshipMap,
+                itemEvents);
 
             var newModel = CreateInstance(newGraph, _payloadToModelNodeMap, newPayloadToModelRelationshipMap);
             return ModelEvent.Create(newModel, itemEvents);
@@ -159,7 +166,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public ModelEvent Clear()
         {
-            var newModel = Create();
+            var newModel = Create(_payloadEqualityComparer, _modelRuleProviders);
             // Shall we raise node and relationship removed events ?
             return ModelEvent.Create(newModel);
         }
@@ -268,15 +275,24 @@ namespace Codartis.SoftVis.Modeling.Implementation
             IModelGraph graph,
             [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap)
-            => new Model(graph, payloadToModelNodeMap, payloadToModelRelationshipMap, _modelRuleProviders);
+            => new Model(graph, payloadToModelNodeMap, payloadToModelRelationshipMap, _payloadEqualityComparer, _modelRuleProviders);
 
         [NotNull]
-        public static IModel Create([NotNull] params IModelRuleProvider[] modelRuleProviders)
+        public static IModel Create(
+            [CanBeNull] IEqualityComparer<object> payloadEqualityComparer,
+            [NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
+            var payloadToModelNodeMap = ImmutableDictionary<object, IModelNode>.Empty;
+            if (payloadEqualityComparer != null)
+                payloadToModelNodeMap = payloadToModelNodeMap.WithComparers(payloadEqualityComparer);
+
+            var payloadToModelRelationshipMap = ImmutableDictionary<object, IModelRelationship>.Empty;
+
             return new Model(
                 ModelGraph.Empty(allowParallelEdges: false),
-                ImmutableDictionary<object, IModelNode>.Empty,
-                ImmutableDictionary<object, IModelRelationship>.Empty,
+                payloadToModelNodeMap,
+                payloadToModelRelationshipMap,
+                payloadEqualityComparer,
                 modelRuleProviders);
         }
     }

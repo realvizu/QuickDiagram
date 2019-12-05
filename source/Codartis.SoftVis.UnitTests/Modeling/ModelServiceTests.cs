@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         public void Create_Works()
         {
             var modelService = CreateModelService();
-            modelService.LatestModel.Should().BeEquivalentTo(Model.Create());
+            modelService.LatestModel.Should().BeEquivalentTo(Model.Create(payloadEqualityComparer: null));
         }
 
         [Fact]
@@ -46,8 +46,9 @@ namespace Codartis.SoftVis.UnitTests.Modeling
                 modelEvent.ItemEvents.First().Should().BeOfType<ModelNodeAddedEvent>().Which.AddedNode.Id.Should().Be(node1.Id);
             }
         }
-        
+
         [NotNull]
-        private static IModelService CreateModelService(params IModelRuleProvider[] modelRuleProviders) => new ModelService(modelRuleProviders);
+        private static IModelService CreateModelService(params IModelRuleProvider[] modelRuleProviders)
+            => new ModelService(payloadEqualityComparer: null, modelRuleProviders);
     }
 }

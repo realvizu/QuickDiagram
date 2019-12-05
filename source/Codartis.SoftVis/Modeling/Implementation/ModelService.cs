@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
@@ -21,9 +22,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public event Action<ModelEvent> ModelChanged;
 
-        public ModelService([NotNull] params IModelRuleProvider[] modelRuleProviders)
+        public ModelService(
+            [CanBeNull] IEqualityComparer<object> payloadEqualityComparer,
+            [NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
-            LatestModel = Model.Create(modelRuleProviders);
+            LatestModel = Model.Create(payloadEqualityComparer, modelRuleProviders);
             _modelUpdateLockObject = new object();
         }
 
