@@ -42,6 +42,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
+        public ISymbol GetSymbol(IModelNode modelNode)
+        {
+            return (ISymbol)modelNode.Payload;
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public IModelNode GetOrAddNode(ISymbol symbol)
         {
             return ModelService.LatestModel.TryGetNodeByPayload(symbol).Match(
@@ -225,10 +231,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     alreadyDiscoveredNodes);
             }
         }
-
-        //private static RoslynNode GetRoslynItem(IModelNode node)
-        //{
-        //    return (RoslynNode)node.PayloadUi;
-        //}
     }
 }

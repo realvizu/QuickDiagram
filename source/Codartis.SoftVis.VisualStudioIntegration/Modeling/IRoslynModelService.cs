@@ -24,6 +24,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         bool ExcludeTrivialTypes { get; set; }
 
         /// <summary>
+        /// Returns the Roslyn symbol fot a given model node.
+        /// </summary>
+        [NotNull]
+        ISymbol GetSymbol([NotNull] IModelNode modelNode);
+
+        /// <summary>
         /// Creates a model node from a roslyn symbol and adds it to the model or just returns it if the model already contains it.
         /// </summary>
         [NotNull]
@@ -50,21 +56,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null,
             bool recursive = false);
-
-        /// <summary>
-        /// Returns a value indicating whether a model node has source code.
-        /// </summary>
-        /// <param name="modelNode">A model node.</param>
-        /// <remarks>True if the model node has source code, false otherwise.</remarks>
-        //[NotNull]
-        //Task<bool> HasSourceAsync([NotNull]IModelNode modelNode);
-
-        /// <summary>
-        /// Shows the source in the host environment that corresponds to the given model node.
-        /// </summary>
-        /// <param name="modelNode">A model node.</param>
-        //[NotNull]
-        //Task ShowSourceAsync([NotNull]IModelNode modelNode);
 
         /// <summary>
         /// Updates the model from the current source code.

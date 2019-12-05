@@ -1,39 +1,34 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.SoftVis.Modeling.Implementation;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
-    /// Activates the source code editor window for a given Symbol.
+    /// Activates the source code editor window for a given diagram node.
     /// </summary>
-    internal class ShowSourceFileCommand : CommandBase
+    internal sealed class ShowSourceFileCommand : CommandBase
     {
         private const string NoSourceMessage = "There's no source file for this item.";
         private static readonly TimeSpan NoSourceMessageDuration = TimeSpan.FromSeconds(5);
 
-        private readonly IDiagramNode _diagramNode;
+        [NotNull] private readonly IDiagramNode _diagramNode;
 
-        public ShowSourceFileCommand(IAppServices appServices, IDiagramNode diagramNode)
+        public ShowSourceFileCommand([NotNull] IAppServices appServices, [NotNull] IDiagramNode diagramNode)
             : base(appServices)
         {
             _diagramNode = diagramNode;
         }
 
-        public override Task ExecuteAsync()
+        public override async Task ExecuteAsync()
         {
-            //if (!(_diagramNode?.ModelNode.Payload is IRoslynNode roslynModelNode))
-            //    throw new Exception("DiagramNode or ModelNode is null or not an IRoslynModelNode.");
+            var symbol = RoslynModelService.GetSymbol(_diagramNode.ModelNode);
 
-            //if (await ModelService.HasSourceAsync(roslynModelNode))
-            //    await ModelService.ShowSourceAsync(roslynModelNode);
-            //else
-            DiagramWindowService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
-
-            return Task.CompletedTask;
+            if (await HostModelProvider.HasSourceAsync(symbol))
+                await HostModelProvider.ShowSourceAsync(symbol);
+            else
+                DiagramWindowService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
         }
     }
 }
