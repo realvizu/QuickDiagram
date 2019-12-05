@@ -166,15 +166,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         //    }
         //}
 
-        //private static RelatedSymbolPair GetOriginalDefinition(RelatedSymbolPair symbolPair)
-        //{
-        //    return symbolPair.WithRelatedSymbol(GetOriginalDefinition(symbolPair.RelatedSymbol));
-        //}
+        private static RelatedSymbolPair GetOriginalDefinition(RelatedSymbolPair symbolPair)
+        {
+            return symbolPair.WithRelatedSymbol(GetOriginalDefinition(symbolPair.RelatedSymbol));
+        }
 
-        //private static ISymbol GetOriginalDefinition(ISymbol symbol)
-        //{
-        //    return symbol.OriginalDefinition ?? symbol;
-        //}
+        [NotNull]
+        private static ISymbol GetOriginalDefinition([NotNull] ISymbol symbol)
+        {
+            return symbol.OriginalDefinition ?? symbol;
+        }
 
         private bool IsHidden(ISymbol roslynSymbol)
         {
@@ -192,8 +193,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var relatedSymbolPairs = await _relatedSymbolProvider.GetRelatedSymbolsAsync((ISymbol)node.Payload, directedModelRelationshipType);
 
             var presentableRelatedSymbolPairs = relatedSymbolPairs
-                // TODO: do we want to go back to original definitions?
-                //.Select(GetOriginalDefinition)
+                .Select(GetOriginalDefinition)
                 .Where(i => !IsHidden(i.RelatedSymbol))
                 .ToList();
 

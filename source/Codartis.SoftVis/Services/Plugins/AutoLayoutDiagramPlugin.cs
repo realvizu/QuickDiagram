@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class AutoLayoutDiagramPlugin : DiagramPluginBase
     {
-        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(50);
+        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(100);
 
         private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
         {
@@ -35,6 +35,7 @@ namespace Codartis.SoftVis.Services.Plugins
             _layoutAlgorithm = layoutAlgorithm;
 
             _diagramChangedSubscription = DiagramService.DiagramChangedEventStream
+                .Where(i => i.ShapeEvents.Any(IsLayoutTriggeringChange))
                 .Throttle(DiagramEventDebounceTimeSpan)
                 .Subscribe(OnDiagramChanged);
         }
@@ -46,9 +47,6 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private void OnDiagramChanged(DiagramEvent diagramEvent)
         {
-            if (diagramEvent.ShapeEvents.All(i => !IsLayoutTriggeringChange(i)))
-                return;
-
             var diagram = diagramEvent.NewDiagram;
             var diagramLayoutInfo = _layoutAlgorithm.Calculate(diagram);
 

@@ -10,24 +10,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class AddCurrentSymbolToDiagramCommand : AddCurrentSymbolToDiagramCommandBase
     {
-        public AddCurrentSymbolToDiagramCommand(IAppServices appServices)
+        public AddCurrentSymbolToDiagramCommand([NotNull] IAppServices appServices)
             : base(appServices)
         {
         }
 
         public override async Task ExecuteAsync()
         {
-            var maybeSymbol = await HostModelProvider.TryGetCurrentSymbolAsync();
-            if (!maybeSymbol.HasValue)
+            var maybeModelNode = await TryAddCurrentSymbolToDiagramAsync();
+            if (!maybeModelNode.HasValue)
                 return;
 
-            var modelNode = RoslynModelService.GetOrAddNode(maybeSymbol.Value);
-
-            DiagramService.AddNode(modelNode.Id);
-
             await HostUiService.ShowDiagramWindowAsync();
-
-            DiagramWindowService.FollowDiagramNode(modelNode.Id);
+            DiagramWindowService.FollowDiagramNode(maybeModelNode.Value.Id);
         }
     }
 }

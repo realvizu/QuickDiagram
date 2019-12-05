@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -7,12 +8,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// </summary>
     internal abstract class CommandBase : AppLogicBase
     {
-        protected CommandBase(IAppServices appServices) : base(appServices)
+        protected CommandBase([NotNull] IAppServices appServices)
+            : base(appServices)
         {
         }
 
+        [NotNull]
         public virtual Task<bool> IsEnabledAsync() => Task.FromResult(true);
 
+        [NotNull]
         public abstract Task ExecuteAsync();
     }
 }
