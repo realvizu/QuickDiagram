@@ -10,12 +10,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// </summary>
     internal sealed class ShowSourceFileCommand : CommandBase
     {
-        private const string NoSourceMessage = "There's no source file for this item.";
+        [NotNull] private const string NoSourceMessage = "There's no source file for this item.";
         private static readonly TimeSpan NoSourceMessageDuration = TimeSpan.FromSeconds(5);
 
         [NotNull] private readonly IDiagramNode _diagramNode;
 
-        public ShowSourceFileCommand([NotNull] IAppServices appServices, [NotNull] IDiagramNode diagramNode)
+        public ShowSourceFileCommand(
+            [NotNull] IAppServices appServices,
+            [NotNull] IDiagramNode diagramNode)
             : base(appServices)
         {
             _diagramNode = diagramNode;

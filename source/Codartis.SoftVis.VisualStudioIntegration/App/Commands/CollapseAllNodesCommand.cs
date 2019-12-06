@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class CollapseAllNodesCommand : CommandBase
     {
-        public CollapseAllNodesCommand(IAppServices appServices)
+        public CollapseAllNodesCommand([NotNull] IAppServices appServices)
             : base(appServices)
         { }
 

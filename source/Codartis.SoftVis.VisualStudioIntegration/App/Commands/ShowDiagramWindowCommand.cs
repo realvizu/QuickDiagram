@@ -9,9 +9,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class ShowDiagramWindowCommand : CommandBase
     {
-        public ShowDiagramWindowCommand(IAppServices appServices)
+        public ShowDiagramWindowCommand([NotNull] IAppServices appServices)
             : base(appServices)
-        { }
+        {
+        }
 
         public override Task ExecuteAsync()
         {

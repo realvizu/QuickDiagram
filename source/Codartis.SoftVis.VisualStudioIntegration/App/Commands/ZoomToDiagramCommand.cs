@@ -9,9 +9,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class ZoomToDiagramCommand : CommandBase
     {
-        public ZoomToDiagramCommand(IAppServices appServices)
+        public ZoomToDiagramCommand([NotNull] IAppServices appServices)
             : base(appServices)
-        { }
+        {
+        }
 
         public override async Task ExecuteAsync()
         {

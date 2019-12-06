@@ -13,9 +13,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class ExportToFileCommand : DiagramImageCreatorCommandBase
     {
-        public ExportToFileCommand(IAppServices appServices)
+        public ExportToFileCommand([NotNull] IAppServices appServices)
             : base(appServices)
-        { }
+        {
+        }
 
         public override async Task ExecuteAsync()
         {
@@ -32,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             await CreateAndProcessDiagramImageAsync(i => SaveBitmapAsPng(i, filename), "Saving image file...");
         }
 
-        private static void SaveBitmapAsPng(BitmapSource bitmapSource, string filename)
+        private static void SaveBitmapAsPng([NotNull] BitmapSource bitmapSource, [NotNull] string filename)
         {
             using (var fileStream = File.Create(filename))
                 bitmapSource.ToPng(fileStream);

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.Util;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
@@ -10,14 +11,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// </summary>
     internal abstract class DiagramImageCreatorCommandBase : CommandBase
     {
-        protected DiagramImageCreatorCommandBase(IAppServices appServices)
+        protected DiagramImageCreatorCommandBase([NotNull] IAppServices appServices)
             : base(appServices)
         {
         }
 
+        [NotNull]
         protected async Task CreateAndProcessDiagramImageAsync(
-            Action<BitmapSource> imageProcessingAction,
-            string imageProcessingMessage)
+            [NotNull] Action<BitmapSource> imageProcessingAction,
+            [NotNull] string imageProcessingMessage)
         {
             // Using int.MaxValue for max progress because the real max value is not yet known.
             using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Generating image..", int.MaxValue))

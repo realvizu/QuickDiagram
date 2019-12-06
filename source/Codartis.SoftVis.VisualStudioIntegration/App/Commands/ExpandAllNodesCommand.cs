@@ -9,9 +9,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class ExpandAllNodesCommand : CommandBase
     {
-        public ExpandAllNodesCommand(IAppServices appServices)
+        public ExpandAllNodesCommand([NotNull] IAppServices appServices)
             : base(appServices)
-        { }
+        {
+        }
 
         public override async Task ExecuteAsync()
         {

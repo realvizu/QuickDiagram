@@ -10,9 +10,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class CopyToClipboardCommand : DiagramImageCreatorCommandBase
     {
-        public CopyToClipboardCommand(IAppServices appServices)
+        public CopyToClipboardCommand([NotNull] IAppServices appServices)
             : base(appServices)
-        { }
+        {
+        }
 
         public override async Task ExecuteAsync()
         {
