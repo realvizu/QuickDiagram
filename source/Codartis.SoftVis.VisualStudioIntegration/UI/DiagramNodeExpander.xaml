@@ -1,17 +1,21 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.Util;component/UI/Wpf/Resources/CommonGeometries.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <converters:ThicknessToDoubleConverter x:Key="ThicknessToDoubleConverter"/>
-    
+    <converters:ThicknessToDoubleConverter x:Key="ThicknessToDoubleConverter" />
+    <converters:ThicknessCreatorConverter x:Key="ThicknessCreatorConverter" />
+
+    <system:Double x:Key="Zero">0</system:Double>
+
     <ControlTemplate x:Key="ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
         <Border x:Name="Border" BorderThickness="0">
             <VisualStateManager.VisualStateGroups>
@@ -19,15 +23,15 @@
                     <VisualState x:Name="Checked">
                         <Storyboard>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CollapsedArrow">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}"/>
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}" />
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ExpandededArrow">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
                             </ObjectAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
-                    <VisualState x:Name="Unchecked"/>
-                    <VisualState x:Name="Indeterminate"/>
+                    <VisualState x:Name="Unchecked" />
+                    <VisualState x:Name="Indeterminate" />
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <Grid>
@@ -37,7 +41,7 @@
                       Data="{StaticResource PlusSignInSquareGeometry}"
                       Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
                       StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessToDoubleConverter}}"
-                      Fill="Transparent"/>
+                      Fill="Transparent" />
                 <Path x:Name="ExpandededArrow"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
@@ -45,7 +49,7 @@
                       Data="{StaticResource MinusSignInSquareGeometry}"
                       Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
                       StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessToDoubleConverter}}"
-                      Fill="Transparent"/>
+                      Fill="Transparent" />
             </Grid>
         </Border>
     </ControlTemplate>
@@ -63,18 +67,23 @@
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                           BorderThickness="{TemplateBinding BorderThickness}"
                                           Template="{StaticResource ExpanderToggleButton}"
-                                          IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
-                            <Rectangle x:Name="ContentSeparator"
-                                       Visibility="Collapsed"
-                                       VerticalAlignment="Center"
-                                       Margin="0,2,0,2"
-                                       Height="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessToDoubleConverter}}"
-                                       Fill="{TemplateBinding BorderBrush}" 
-                                       Stroke="{TemplateBinding BorderBrush}">
-                            </Rectangle>
+                                          IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Border x:Name="ContentSeparator"
+                                    Visibility="Collapsed"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="{TemplateBinding BorderBrush}">
+                                <Border.BorderThickness>
+                                    <MultiBinding Converter="{StaticResource ThicknessCreatorConverter}">
+                                        <Binding Source="{StaticResource Zero}" />
+                                        <Binding Path="BorderThickness" RelativeSource="{RelativeSource TemplatedParent}" Converter="{StaticResource ThicknessToDoubleConverter}" />
+                                        <Binding Source="{StaticResource Zero}" />
+                                        <Binding Source="{StaticResource Zero}" />
+                                    </MultiBinding>
+                                </Border.BorderThickness>
+                            </Border>
                         </DockPanel>
                         <Border x:Name="Content" Visibility="Collapsed">
-                            <ContentPresenter Margin="0,2,0,0" />
+                            <ContentPresenter />
                         </Border>
                     </StackPanel>
                     <ControlTemplate.Triggers>

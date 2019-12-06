@@ -7,7 +7,8 @@
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
-                    xmlns:modeling1="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling">
+                    xmlns:modeling1="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
@@ -16,74 +17,80 @@
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <system:Double x:Key="DiagramNodeHeaderMinHeight">46</system:Double>
+    <system:Double x:Key="DiagramNodeHeaderMinWidth">50</system:Double>
+    <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
+    <system:Double x:Key="DiagramNodeMaxWidth">250</system:Double>
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <ui:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
     <ui:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
 
     <Style TargetType="{x:Type view:DiagramControl}">
-        <Setter Property="FontFamily" Value="Ariel"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Background" Value="WhiteSmoke"/>
-        <Setter Property="Foreground" Value="Black"/>
-        <Setter Property="DiagramFill" Value="White"/>
-        <Setter Property="DiagramStroke" Value="Black"/>
-        <Setter Property="PanAndZoomControlHeight" Value="120"/>
-        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}"/>
-        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}"/>
+        <Setter Property="FontFamily" Value="Ariel" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Background" Value="WhiteSmoke" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="DiagramFill" Value="White" />
+        <Setter Property="DiagramStroke" Value="Black" />
+        <Setter Property="PanAndZoomControlHeight" Value="120" />
+        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}" />
+        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}" />
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynDiagramNodeViewModel}}">
-        <Setter Property="MinHeight" Value="46"/>
-        <Setter Property="MaxHeight" Value="112"/>
-        <Setter Property="MinWidth" Value="50"/>
-        <Setter Property="MaxWidth" Value="250"/>
-        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}"/>
+        <Setter Property="MaxWidth" Value="{StaticResource DiagramNodeMaxWidth}" />
+        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}" />
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeViewModel}">
         <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
-                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
+                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
                 BorderThickness="1"
+                MinHeight="{StaticResource DiagramNodeHeaderMinHeight}"
+                MinWidth="{StaticResource DiagramNodeHeaderMinWidth}"
                 ToolTip="{Binding Path=FullName}">
             <StackPanel Orientation="Vertical">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="16"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Image Grid.Row="0" 
-                           Margin="1" 
-                           HorizontalAlignment="Left" 
-                           Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}"/>
+                    <Image Grid.Row="0"
+                           Margin="1"
+                           HorizontalAlignment="Left"
+                           Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}" />
                     <TextBlock x:Name="TextBlock"
-                               Grid.Row="1" 
-                               Margin="4,0,4,8" 
-                               VerticalAlignment="Top" 
+                               Grid.Row="1"
+                               Margin="4,0,4,4"
+                               VerticalAlignment="Top"
                                HorizontalAlignment="Center"
-                               Text="{Binding Path=Name, Mode=OneWay}" 
-                               TextWrapping="Wrap"/>
+                               Text="{Binding Path=Name, Mode=OneWay}"
+                               TextWrapping="Wrap" />
                 </Grid>
                 <controls:ConcealableExpander IsButtonVisible="False"
                                               Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                              BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}" 
+                                              BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
                                               BorderThickness=".5"
-                                              IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}">
-                    <TextBlock Margin="4,0,4,4"
+                                              IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}"
+                                              Margin="0,4,0,0"
+                                              MaxHeight="{StaticResource DiagramNodeDescriptionMaxHeight}">
+                    <TextBlock Margin="4,4,4,4"
                                FontSize="10"
                                TextWrapping="Wrap"
                                Text="{Binding Path=Description}"
-                               ToolTip="{Binding Path=Description}"/>
+                               ToolTip="{Binding Path=Description}" />
                 </controls:ConcealableExpander>
             </StackPanel>
         </Border>
 
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=Origin}" Value="{x:Static modeling1:ModelOrigin.SourceCode}">
-                <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold"></Setter>
+                <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">
-                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic"></Setter>
+                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
