@@ -1,65 +1,67 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using Codartis.SoftVis.Diagramming;
-//using Codartis.SoftVis.VisualStudioIntegration.Modeling;
-//using Codartis.Util;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
+using JetBrains.Annotations;
 
-//namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
-//{
-//    /// <summary>
-//    /// Adds the given model items to the diagram and shows a progress dialog.
-//    /// </summary>
-//    internal sealed class AddItemsToDiagramCommand : CommandBase
-//    {
-//        private readonly IReadOnlyList<IRoslynNode> _modelEntities;
-//        private readonly bool _followWithViewport;
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+{
+    /// <summary>
+    /// Adds the given model items to the diagram and shows a progress dialog.
+    /// </summary>
+    internal sealed class AddItemsToDiagramCommand : CommandBase
+    {
+        [NotNull] private readonly IReadOnlyCollection<ModelNodeId> _modelNodeIds;
+        private readonly bool _followWithViewport;
 
-//        public AddItemsToDiagramCommand(IAppServices appServices, IReadOnlyList<IRoslynNode> modelEntities, bool followWithViewport)
-//            : base(appServices)
-//        {
-//            _modelEntities = modelEntities;
-//            _followWithViewport = followWithViewport;
-//        }
+        public AddItemsToDiagramCommand(
+            [NotNull] IAppServices appServices,
+            [NotNull] IReadOnlyCollection<ModelNodeId> modelNodeIds,
+            bool followWithViewport)
+            : base(appServices)
+        {
+            _modelNodeIds = modelNodeIds;
+            _followWithViewport = followWithViewport;
+        }
 
-//        public override async Task ExecuteAsync()
-//        {
-//            var diagramNodes = await ShowProgressAndAddItemsAsync(_modelEntities);
+        public override async Task ExecuteAsync()
+        {
+            await ShowProgressAndAddItemsAsync(_modelNodeIds);
 
-//            await HostUiService.ShowDiagramWindowAsync();
+            await HostUiService.ShowDiagramWindowAsync();
 
-//            if (_followWithViewport)
-//                HostUiService.FollowDiagramNodes(diagramNodes);
-//        }
+            if (_followWithViewport)
+                DiagramWindowService.FollowDiagramNodes(_modelNodeIds);
+        }
 
-//        private async Task<IReadOnlyList<IDiagramNode>> ShowProgressAndAddItemsAsync(IReadOnlyList<IRoslynNode> modelEntities)
-//        {
-//            IReadOnlyList<IDiagramNode> diagramNodes = null;
+        [NotNull]
+        private async Task ShowProgressAndAddItemsAsync([NotNull] IReadOnlyCollection<ModelNodeId> modelNodeIds)
+        {
+            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Adding model items:", modelNodeIds.Count))
+            {
+                progressDialog.ShowWithDelay();
 
-//            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Adding model items:", modelEntities.Count))
-//            {
-//                await progressDialog.ShowWithDelayAsync();
+                try
+                {
+                    await ShowEntitiesAsync(modelNodeIds, progressDialog.CancellationToken, progressDialog.Progress);
+                }
+                catch (OperationCanceledException)
+                {
+                }
+            }
+        }
 
-//                try
-//                {
-//                    diagramNodes = await ShowEntitiesAsync(modelEntities, progressDialog.CancellationToken, progressDialog.Progress);
-//                }
-//                catch (OperationCanceledException)
-//                {
-//                }
-//            }
-
-//            return diagramNodes;
-//        }
-
-//        private async Task<IReadOnlyList<IDiagramNode>> ShowEntitiesAsync(IReadOnlyList<IRoslynNode> modelEntities,
-//            CancellationToken cancellationToken, IIncrementalProgress progress)
-//        {
-//            return await Task.Run(
-//                () => DiagramService.ShowModelNodes(modelEntities, cancellationToken, progress).ToArray(),
-//                cancellationToken);
-//        }
-//    }
-//}
+        [NotNull]
+        private async Task ShowEntitiesAsync(
+            [NotNull] IReadOnlyCollection<ModelNodeId> modelEntities,
+            CancellationToken cancellationToken,
+            IIncrementalProgress progress)
+        {
+            await Task.Run(
+                () => DiagramService.AddNodes(modelEntities, cancellationToken, progress),
+                cancellationToken);
+        }
+    }
+}

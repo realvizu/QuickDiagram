@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.UI
 
         void ZoomToDiagram();
         void FollowDiagramNode(ModelNodeId nodeId);
-        void FollowDiagramNodes(IReadOnlyList<ModelNodeId> nodeIds);
+        void FollowDiagramNodes(IReadOnlyCollection<ModelNodeId> nodeIds);
         void KeepDiagramCentered();
 
         event ShowModelItemsEventHandler ShowModelItemsRequested;

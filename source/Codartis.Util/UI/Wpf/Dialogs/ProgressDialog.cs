@@ -12,6 +12,8 @@ namespace Codartis.Util.UI.Wpf.Dialogs
     /// </summary>
     public sealed class ProgressDialog : IDisposable
     {
+        private static readonly TimeSpan DefaultDelay = TimeSpan.FromMilliseconds(500);
+
         private readonly ProgressWindow _window;
         private readonly ProgressWindowViewModel _viewModel;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -57,13 +59,20 @@ namespace Codartis.Util.UI.Wpf.Dialogs
             set { _viewModel.ShowProgressNumber = value; }
         }
 
-        public async Task ShowWithDelayAsync(int delayMillisec = 500)
+        /// <summary>
+        /// Shows the dialog after a timespan if it was not cancelled meanwhile.
+        /// </summary>
+        /// <remarks>
+        /// Does not return Task because it is not intended to be awaited, just fire and forget.
+        /// </remarks>
+        public async void ShowWithDelay(TimeSpan? delay = null)
         {
             try
             {
-                await Task.Delay(delayMillisec, CancellationToken);
+                await Task.Delay(ToMilliseconds(delay ?? DefaultDelay), CancellationToken);
 
-                CancellationToken.ThrowIfCancellationRequested();
+                if (CancellationToken.IsCancellationRequested)
+                    return;
 
                 _window.ShowNonBlockingModal(CancellationToken);
             }
@@ -98,5 +107,7 @@ namespace Codartis.Util.UI.Wpf.Dialogs
             _viewModel.ShowProgressNumber = showProgressNumber;
             _progressAccumulator.Reset();
         }
+
+        private static int ToMilliseconds(TimeSpan delay) => (int)delay.TotalMilliseconds;
     }
 }

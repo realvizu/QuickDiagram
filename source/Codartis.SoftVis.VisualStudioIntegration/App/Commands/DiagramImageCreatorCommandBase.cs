@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Generating image..", int.MaxValue))
             {
                 progressDialog.ShowProgressNumber = false;
-                await progressDialog.ShowWithDelayAsync();
+                progressDialog.ShowWithDelay();
 
                 try
                 {

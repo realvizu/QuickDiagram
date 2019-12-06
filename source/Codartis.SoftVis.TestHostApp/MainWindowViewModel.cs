@@ -127,7 +127,7 @@ namespace Codartis.SoftVis.TestHostApp
             {
                 using (var progressDialog = new ProgressDialog(_window, "TestHostApp", "Generating image.."))
                 {
-                    await progressDialog.ShowWithDelayAsync();
+                    progressDialog.ShowWithDelay();
 
                     var bitmapSource = await _wpfDiagramUiService.CreateDiagramImageAsync(
                         SelectedDpi,

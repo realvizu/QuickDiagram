@@ -86,7 +86,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public void FollowDiagramNodes(IReadOnlyList<ModelNodeId> nodeIds)
+        public void FollowDiagramNodes(IReadOnlyCollection<ModelNodeId> nodeIds)
         {
             var autoMoveMode = _lastDiagram.Nodes.Count > nodeIds.Count
                 ? ViewportAutoMoveMode.Contain

@@ -30,7 +30,7 @@
 //        {
 //            using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Updating model nodes:"))
 //            {
-//                await progressDialog.ShowWithDelayAsync();
+//                await progressDialog.ShowWithDelay();
 
 //                try
 //                {

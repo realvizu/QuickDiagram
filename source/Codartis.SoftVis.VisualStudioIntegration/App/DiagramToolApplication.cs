@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
@@ -48,31 +49,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             HostUiService = hostUiService;
         }
 
-        private void OnShowSourceRequested(IDiagramShape diagramShape)
+        private void OnShowSourceRequested([NotNull] IDiagramShape diagramShape)
         {
             HostUiService.Run(async () => await OnShowSourceRequestAsync(diagramShape));
         }
 
-        private async Task OnShowSourceRequestAsync(IDiagramShape diagramShape)
+        [NotNull]
+        private async Task OnShowSourceRequestAsync([NotNull] IDiagramShape diagramShape)
         {
-            var diagramNode = diagramShape as IDiagramNode;
-            if (diagramNode == null)
-                return;
-
-            await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
+            if (diagramShape is IDiagramNode diagramNode)
+                await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
         }
 
-        private void OnShowItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
+        private void OnShowItemsRequested([NotNull] IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
             HostUiService.Run(async () => await OnShowItemsRequestAsync(modelNodes, followWithViewport));
         }
 
-        private Task OnShowItemsRequestAsync(IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
+        [NotNull]
+        private async Task OnShowItemsRequestAsync([NotNull] IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
         {
-            //var roslynModelNodes = modelNodes.OfType<IRoslynNode>().ToArray();
-            //if (roslynModelNodes.Any())
-            //    await new AddItemsToDiagramCommand(this, roslynModelNodes, followWithViewport).ExecuteAsync();
-            return Task.CompletedTask;
+            var modelNodeIds = modelNodes.Select(i => i.Id).ToArray();
+            if (modelNodeIds.Any())
+                await new AddItemsToDiagramCommand(this, modelNodeIds, followWithViewport).ExecuteAsync();
         }
     }
 }

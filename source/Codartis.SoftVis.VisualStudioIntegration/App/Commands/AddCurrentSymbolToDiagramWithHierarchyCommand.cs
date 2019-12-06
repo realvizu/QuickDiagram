@@ -44,7 +44,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
             using (var progressDialog = await HostUiService.CreateProgressDialogAsync("Extending model with entities:"))
             {
-                await progressDialog.ShowWithDelayAsync();
+                progressDialog.ShowWithDelay();
 
                 try
                 {
