@@ -185,8 +185,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateModel(IModel newModel)
         {
-            // TODO: remove all shapes whose model ID does not exist in the new model.
-            var newDiagram = CreateInstance(newModel, _nodes, _connectors);
+            var newDiagram = CreateInstance(
+                newModel,
+                _nodes.Where(i => newModel.TryGetNode(i.Key).HasValue).ToImmutableDictionary(),
+                _connectors.Where(i => newModel.TryGetRelationship(i.Key).HasValue).ToImmutableDictionary());
 
             return DiagramEvent.Create(newDiagram);
         }

@@ -85,6 +85,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             );
         }
 
+        public void ClearModel() => ModelService.ClearModel();
+
         //public async Task UpdateFromSourceAsync(
         //    IEnumerable<ModelNodeId> visibleModelNodeIds,
         //    CancellationToken cancellationToken = default,

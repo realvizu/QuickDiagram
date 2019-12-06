@@ -166,9 +166,12 @@ namespace Codartis.SoftVis.Modeling.Implementation
 
         public ModelEvent Clear()
         {
+            var itemEvents = Relationships.Select(i => new ModelRelationshipRemovedEvent(i))
+                .OfType<ModelItemEventBase>()
+                .Concat(Nodes.Select(i => new ModelNodeRemovedEvent(i)));
+
             var newModel = Create(_payloadEqualityComparer, _modelRuleProviders);
-            // Shall we raise node and relationship removed events ?
-            return ModelEvent.Create(newModel);
+            return ModelEvent.Create(newModel, itemEvents);
         }
 
         [NotNull]

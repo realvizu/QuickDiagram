@@ -9,7 +9,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     [UsedImplicitly]
     internal sealed class ClearDiagramCommand : CommandBase
     {
-        public ClearDiagramCommand(IAppServices appServices)
+        public ClearDiagramCommand([NotNull] IAppServices appServices)
             : base(appServices)
         {
         }

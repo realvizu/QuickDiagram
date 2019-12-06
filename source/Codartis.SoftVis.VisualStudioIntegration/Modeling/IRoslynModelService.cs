@@ -66,5 +66,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         //Task UpdateFromSourceAsync(
         //    CancellationToken cancellationToken = default,
         //    IIncrementalProgress progress = null);
+        
+        void ClearModel();
     }
 }
