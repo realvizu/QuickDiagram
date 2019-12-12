@@ -14,6 +14,9 @@ namespace Codartis.SoftVis.Services.Plugins
 
         protected void ShowModelRelationshipsIfBothEndsAreVisible(IModelNode modelNode, IModel model, IDiagram diagram)
         {
+            if (!model.ContainsNode(modelNode.Id))
+                return;
+
             foreach (var modelRelationship in model.GetRelationships(modelNode.Id))
                 ShowModelRelationshipIfBothEndsAreVisible(modelRelationship, diagram);
         }

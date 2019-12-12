@@ -41,6 +41,9 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IEnumerable<IModelNode> Nodes => _graph.Vertices;
         public IEnumerable<IModelRelationship> Relationships => _graph.Edges;
 
+        public bool ContainsNode(ModelNodeId nodeId) => Nodes.Any(i => i.Id == nodeId);
+        public bool ContainsRelationship(ModelRelationshipId relationshipId) => Relationships.Any(i => i.Id == relationshipId);
+
         public Maybe<IModelNode> TryGetNode(ModelNodeId nodeId) => _graph.TryGetVertex(nodeId);
 
         public Maybe<IModelNode> TryGetParentNode(ModelNodeId modelNodeId)

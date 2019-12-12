@@ -185,13 +185,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return CreateDiagramEvent(RemoveConnectorCore(relationshipId, CreateDiagramOperationResult()));
         }
 
+        /// <remarks>
+        /// When the model (backing the diagram) is updated there can be an interim time
+        /// when there are diagram shapes that does not exist in the model any more.
+        /// This is fine because those model events will eventually arrive that remove such shapes.
+        /// </remarks>
         public DiagramEvent UpdateModel(IModel newModel)
         {
-            var newDiagram = CreateInstance(
-                newModel,
-                _nodes.Where(i => newModel.TryGetNode(i.Key).HasValue).ToImmutableDictionary(),
-                _connectors.Where(i => newModel.TryGetRelationship(i.Key).HasValue).ToImmutableDictionary());
-
+            var newDiagram = CreateInstance(newModel, _nodes, _connectors);
             return DiagramEvent.Create(newDiagram);
         }
 
@@ -278,9 +279,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent Clear()
         {
+            var itemEvents = Connectors.Select(i => new DiagramConnectorRemovedEvent(i))
+                .OfType<DiagramShapeEventBase>()
+                .Concat(Nodes.Select(i => new DiagramNodeRemovedEvent(i)));
+
             var newDiagram = Create(Model, _connectorTypeResolver);
-            // Shall we raise node and connector removed events ?
-            return DiagramEvent.Create(newDiagram);
+            return DiagramEvent.Create(newDiagram, itemEvents);
         }
 
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)

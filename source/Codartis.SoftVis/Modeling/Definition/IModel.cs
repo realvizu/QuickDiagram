@@ -17,6 +17,9 @@ namespace Codartis.SoftVis.Modeling.Definition
         [NotNull] [ItemNotNull] IEnumerable<IModelNode> Nodes { get; }
         [NotNull] [ItemNotNull] IEnumerable<IModelRelationship> Relationships { get; }
 
+        bool ContainsNode(ModelNodeId nodeId);
+        bool ContainsRelationship(ModelRelationshipId relationshipId);
+
         Maybe<IModelNode> TryGetNode(ModelNodeId nodeId);
         Maybe<IModelNode> TryGetParentNode(ModelNodeId modelNodeId);
         Maybe<IModelNode> TryGetNodeByPayload([NotNull] object payload);
