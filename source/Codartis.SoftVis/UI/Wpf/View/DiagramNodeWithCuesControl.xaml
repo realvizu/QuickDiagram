@@ -7,8 +7,6 @@
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:Codartis.Util.UI.Wpf.Behaviors;assembly=Codartis.Util"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
@@ -49,11 +47,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <view:DiagramNodeControl DataContext="{Binding}" >
-            <i:Interaction.Behaviors>
-                <behaviors:ActualSizeProviderBehavior ActualSize="{Binding ElementName=ThisControl, Path=DataContext.HeaderSize}" />
-            </i:Interaction.Behaviors>
-        </view:DiagramNodeControl>
+        <view:DiagramNodeControl DataContext="{Binding}" />
 
         <ItemsControl ItemsSource="{Binding RelatedNodeCueViewModels}"
                       ItemsPanel="{StaticResource RelatedNodeCueItemsPanel}"

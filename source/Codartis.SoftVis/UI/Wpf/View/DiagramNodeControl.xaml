@@ -5,6 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:Codartis.Util.UI.Wpf.Behaviors;assembly=Codartis.Util"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
@@ -18,7 +20,11 @@
         <ContentPresenter Grid.Row="0"
                           Content="{Binding Header}"
                           MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
-                          MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}" />
+                          MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}" >
+            <i:Interaction.Behaviors>
+                <behaviors:ActualSizeProviderBehavior ActualSize="{Binding ElementName=ThisControl, Path=DataContext.HeaderSize}" />
+            </i:Interaction.Behaviors>
+        </ContentPresenter>
 
         <Border Grid.Row="1"
                 BorderThickness="1,0,1,1"
