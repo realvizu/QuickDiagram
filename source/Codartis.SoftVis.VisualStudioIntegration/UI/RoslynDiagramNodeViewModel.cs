@@ -60,6 +60,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
+        protected override object GetHeader() => this;
+
         protected override DiagramNodeViewModel CreateInstance()
         {
             return new RoslynDiagramNodeViewModel(

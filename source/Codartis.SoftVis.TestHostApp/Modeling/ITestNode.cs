@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.UI;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
 {
@@ -7,7 +6,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
     /// A node in the TestHostApp's model concept.
     /// Immutable.
     /// </summary>
-    internal interface ITestNode : IDiagramNodeHeaderUi
+    internal interface ITestNode
     {
         [NotNull] string Name { get; }
     }

@@ -13,12 +13,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// <summary>
     /// View model for diagram nodes.
     /// </summary>
-    public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi, IDiagramNodeHeaderUi
+    public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
     {
         private string _name;
         private Size _headerSize;
         private Size _childrenAreaSize;
         private bool _hasChildren;
+        private object _header;
 
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
         [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
@@ -44,7 +45,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             UpdateDiagramNode(diagramNode);
         }
 
-        public virtual IDiagramNodeHeaderUi HeaderUi => this;
         public ModelNodeStereotype Stereotype => DiagramNode.ModelNode.Stereotype;
         public override string StereotypeName => Stereotype.Name;
 
@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         }
 
         public IDiagramNode DiagramNode => (IDiagramNode)DiagramShape;
-        public IModelNode ModelNode => DiagramNode.ModelNode;
+        [NotNull] public IModelNode ModelNode => DiagramNode.ModelNode;
 
         public string Name
         {
@@ -109,6 +109,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 if (_hasChildren != value)
                 {
                     _hasChildren = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public object Header
+        {
+            get { return _header; }
+            set
+            {
+                if (_header != value)
+                {
+                    _header = value;
                     OnPropertyChanged();
                 }
             }
@@ -168,8 +181,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Name = diagramNode.ModelNode.Name;
             ChildrenAreaSize = diagramNode.ChildrenAreaSize.ToWpf();
             HasChildren = GetHasChildren(diagramNode);
+            Header = GetHeader();
             // Must NOT populate size from model because its value flows from the controls to the models.
         }
+
+        protected virtual object GetHeader() => ModelNode.Payload;
 
         private static bool GetHasChildren([NotNull] IDiagramNode diagramNode)
         {

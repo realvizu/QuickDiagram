@@ -20,6 +20,8 @@ namespace Codartis.SoftVis.Diagramming.Definition
             ShapeEvents = shapeEvents ?? Enumerable.Empty<DiagramShapeEventBase>();
         }
 
+        public bool IsEmpty => !ShapeEvents.Any();
+
         public static DiagramEvent None([NotNull] IDiagram diagram) => new DiagramEvent(diagram);
 
         public static DiagramEvent Create(

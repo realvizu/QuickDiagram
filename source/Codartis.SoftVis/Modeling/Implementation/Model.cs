@@ -123,7 +123,6 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return ModelEvent.Create(newModel, itemEvents);
         }
 
-
         public ModelEvent RemoveNode(ModelNodeId nodeId)
         {
             var itemEvents = new List<ModelItemEventBase>();
@@ -243,8 +242,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
         {
             var oldNode = GetNode(updatedNode.Id);
-            itemEvents.Add(new ModelNodeRemovedEvent(oldNode));
-            itemEvents.Add(new ModelNodeAddedEvent(updatedNode));
+            itemEvents.Add(new ModelNodeUpdatedEvent(oldNode, updatedNode));
 
             if (oldNode.Payload != null)
                 payloadToModelNodeMap = payloadToModelNodeMap.Remove(oldNode.Payload);

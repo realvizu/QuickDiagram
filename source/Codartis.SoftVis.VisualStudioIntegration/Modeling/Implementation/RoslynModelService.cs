@@ -140,8 +140,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     _modelService.RemoveNode(modelNode.Id);
                 else
                 {
-                    var updatedNode = modelNode.WithPayload(newVersionOfSymbol);
-                    _modelService.UpdateNode(updatedNode);
+                    if (!ReferenceEquals(symbol, newVersionOfSymbol))
+                    {
+                        var updatedNode = modelNode.WithPayload(newVersionOfSymbol);
+                        _modelService.UpdateNode(updatedNode);
+                    }
                 }
 
                 progress?.Report(1);
@@ -158,10 +161,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return FindSymbolInCompilationsByName(namedTypeSymbol, compilationArray, cancellationToken);
         }
 
-        private static ISymbol FindSymbolInCompilationsByName(ISymbol namedTypeSymbol, Compilation[] compilationArray, CancellationToken cancellationToken)
+        private static ISymbol FindSymbolInCompilationsByName(ISymbol symbol, Compilation[] compilationArray, CancellationToken cancellationToken)
         {
-            var symbolMatchByName = compilationArray.SelectMany(i => SymbolFinder.FindSimilarSymbols(namedTypeSymbol, i, cancellationToken))
-                .Where(i => i.GetType() == namedTypeSymbol.GetType())
+            var symbolMatchByName = compilationArray.SelectMany(i => SymbolFinder.FindSimilarSymbols(symbol, i, cancellationToken))
+                .Where(i => i.SymbolEquals(symbol))
                 .OrderByDescending(i => i.Locations.Any(j => j.IsInSource))
                 .FirstOrDefault();
 

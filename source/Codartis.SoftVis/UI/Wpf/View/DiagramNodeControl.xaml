@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <ContentPresenter Grid.Row="0"
-                          Content="{Binding HeaderUi}"
+                          Content="{Binding Header}"
                           MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
                           MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}" />
 

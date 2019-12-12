@@ -38,6 +38,11 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             switch (modelItemEvent)
             {
+                case ModelNodeUpdatedEvent modelNodeUpdated:
+                    var updatedNode = modelNodeUpdated.NewNode;
+                    DiagramService.UpdateModelNode(updatedNode);
+                    break;
+
                 case ModelNodeRemovedEvent modelNodeRemovedEvent:
                     var removedNode = modelNodeRemovedEvent.RemovedNode;
                     DiagramService.RemoveNode(removedNode.Id);

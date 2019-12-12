@@ -1,6 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util.UI.Wpf;
@@ -19,8 +18,6 @@ namespace Codartis.SoftVis.TestHostApp.UI
             : base(modelEventSource, diagramEventSource, diagramNode, relatedNodeTypeProvider, focusTracker)
         {
         }
-
-        public override IDiagramNodeHeaderUi HeaderUi => (ITestNode)ModelNode.Payload;
 
         protected override DiagramNodeViewModel CreateInstance()
         {

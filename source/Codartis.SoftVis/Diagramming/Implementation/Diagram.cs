@@ -68,7 +68,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagramNode GetNode(ModelNodeId modelNodeId) => _nodes[modelNodeId];
 
         public Maybe<IDiagramNode> TryGetNode(ModelNodeId modelNodeId)
-            => _nodes.TryGetValue(modelNodeId, out var node) ? Maybe.Create(node) : Maybe<IDiagramNode>.Nothing;
+        {
+            return _nodes.TryGetValue(modelNodeId, out var node) ? Maybe.Create(node) : Maybe<IDiagramNode>.Nothing;
+        }
 
         public IDiagramConnector GetConnector(ModelRelationshipId modelRelationshipId) => _connectors[modelRelationshipId];
 
@@ -116,7 +118,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize)
         {
-            return UpdateNode(
+            return UpdateNodeCore(
                 nodeId,
                 i => i.WithHeaderSize(newSize),
                 (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.HeaderSize));
@@ -124,7 +126,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
         {
-            return UpdateNode(
+            return UpdateNodeCore(
                 nodeId,
                 i => i.WithChildrenAreaSize(newSize),
                 (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.ChildrenAreaSize));
@@ -132,7 +134,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
         {
-            return UpdateNode(
+            return UpdateNodeCore(
                 nodeId,
                 i => i.WithCenter(newCenter),
                 (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.Position));
@@ -140,7 +142,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
         {
-            return UpdateNode(
+            return UpdateNodeCore(
                 nodeId,
                 i => i.WithTopLeft(newTopLeft),
                 (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.Position));
@@ -195,7 +197,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent UpdateModelNode(IModelNode updatedModelNode)
         {
-            return UpdateNode(
+            return UpdateNodeCore(
                 updatedModelNode.Id,
                 i => i.WithModelNode(updatedModelNode),
                 (oldNode, newNode) => new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.ModelNode));
@@ -288,14 +290,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 .Union();
         }
 
-        private DiagramEvent UpdateNode(
+        private DiagramEvent UpdateNodeCore(
             ModelNodeId nodeId,
             [NotNull] Func<IDiagramNode, IDiagramNode> nodeMutatorFunc,
             [NotNull] Func<IDiagramNode, IDiagramNode, DiagramNodeChangedEvent> nodeChangedEventFunc)
         {
             var maybeDiagramNode = TryGetNode(nodeId);
             if (!maybeDiagramNode.HasValue)
-                throw new InvalidOperationException($"Trying to update {nodeId} but it does not exist.");
+                return DiagramEvent.None(this);
 
             var oldNode = maybeDiagramNode.Value;
             var newNode = nodeMutatorFunc(oldNode);

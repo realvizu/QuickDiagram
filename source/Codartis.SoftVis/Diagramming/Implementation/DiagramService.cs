@@ -119,6 +119,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 LatestDiagram = diagramEvent.NewDiagram;
             }
 
+            if (diagramEvent.IsEmpty)
+                return;
+
             DiagramChanged?.Invoke(diagramEvent);
             _diagramChangedEventStream.OnNext(diagramEvent);
             AfterDiagramChanged?.Invoke(diagramEvent);

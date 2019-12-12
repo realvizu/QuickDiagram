@@ -47,9 +47,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private static void RegisterModelComponents(ContainerBuilder builder)
         {
             var payloadComparer = new RoslynSymbolEqualityComparer();
-            builder.RegisterType<ModelService>().SingleInstance().WithParameter("payloadEqualityComparer", payloadComparer)
+            builder.RegisterType<ModelService>()
+                .WithParameter("payloadEqualityComparer", payloadComparer)
                 .As<IModelService>()
-                .As<IModelEventSource>();
+                .As<IModelEventSource>()
+                .SingleInstance();
 
             builder.RegisterType<RelatedNodeTypeProvider>().SingleInstance().As<IRelatedNodeTypeProvider>();
             builder.RegisterType<RelatedSymbolProvider>().SingleInstance().As<IRelatedSymbolProvider>();
