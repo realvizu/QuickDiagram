@@ -41,7 +41,7 @@ namespace Codartis.SoftVis.Modeling.Definition
             [CanBeNull] object payload = null,
             ModelNodeId? parentNodeId = null);
 
-        // TODO: UpdateNodePayload, UpdateNodeParent ?
+        ModelEvent UpdateNode([NotNull] IModelNode updatedNode);
 
         ModelEvent RemoveNode(ModelNodeId nodeId);
 

@@ -11,10 +11,8 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class ConnectorHandlerDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public ConnectorHandlerDiagramPlugin(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService)
-            : base(modelService, diagramService)
+        public ConnectorHandlerDiagramPlugin([NotNull] IDiagramService diagramService)
+            : base(diagramService)
         {
             DiagramService.AfterDiagramChanged += OnDiagramChanged;
         }

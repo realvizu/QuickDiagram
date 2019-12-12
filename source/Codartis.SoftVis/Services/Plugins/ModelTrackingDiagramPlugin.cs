@@ -10,17 +10,20 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class ModelTrackingDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
+        [NotNull] private readonly IModelService _modelService;
+
         public ModelTrackingDiagramPlugin(
             [NotNull] IModelService modelService,
             [NotNull] IDiagramService diagramService)
-            : base(modelService, diagramService)
+            : base(diagramService)
         {
-            ModelService.ModelChanged += OnModelChanged;
+            _modelService = modelService;
+            _modelService.ModelChanged += OnModelChanged;
         }
 
         public override void Dispose()
         {
-            ModelService.ModelChanged -= OnModelChanged;
+            _modelService.ModelChanged -= OnModelChanged;
         }
 
         private void OnModelChanged(ModelEvent modelEvent)

@@ -40,6 +40,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return modelEvent.ItemEvents.OfType<ModelNodeAddedEvent>().First().AddedNode;
         }
 
+        public void UpdateNode(IModelNode updatedNode)
+        {
+            MutateWithLockThenRaiseEvents(() => LatestModel.UpdateNode(updatedNode));
+        }
+
         public void RemoveNode(ModelNodeId nodeId)
         {
             MutateWithLockThenRaiseEvents(() => LatestModel.RemoveNode(nodeId));

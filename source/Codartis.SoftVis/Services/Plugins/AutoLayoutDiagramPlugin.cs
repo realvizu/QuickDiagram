@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
-using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 
@@ -27,10 +26,9 @@ namespace Codartis.SoftVis.Services.Plugins
         [NotNull] private readonly IDisposable _diagramChangedSubscription;
 
         public AutoLayoutDiagramPlugin(
-            [NotNull] IModelService modelService,
             [NotNull] IDiagramService diagramService,
             [NotNull] IDiagramLayoutAlgorithm layoutAlgorithm)
-            : base(modelService, diagramService)
+            : base(diagramService)
         {
             _layoutAlgorithm = layoutAlgorithm;
 

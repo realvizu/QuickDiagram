@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             CancellationToken cancellationToken,
             IIncrementalProgress progress)
         {
-            var model = RoslynModelService.ModelService.LatestModel;
+            var model = RoslynModelService.LatestModel;
 
             var baseTypeIds = model.GetRelatedNodes(nodeId, DirectedModelRelationshipTypes.BaseType, recursive: true).Select(i => i.Id);
             var subtypeIds = model.GetRelatedNodes(nodeId, DirectedModelRelationshipTypes.Subtype, recursive: true).Select(i => i.Id);

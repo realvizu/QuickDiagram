@@ -7,10 +7,8 @@ namespace Codartis.SoftVis.Services.Plugins
 {
     public abstract class ConnectorManipulatorDiagramPluginBase : DiagramPluginBase
     {
-        protected ConnectorManipulatorDiagramPluginBase(
-            [NotNull] IModelService modelService,
-            [NotNull] IDiagramService diagramService)
-            : base(modelService, diagramService)
+        protected ConnectorManipulatorDiagramPluginBase([NotNull] IDiagramService diagramService)
+            : base(diagramService)
         {
         }
 

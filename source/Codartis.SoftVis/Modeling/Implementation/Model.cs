@@ -113,6 +113,17 @@ namespace Codartis.SoftVis.Modeling.Implementation
             return ModelEvent.Create(newModel, itemEvents);
         }
 
+        public ModelEvent UpdateNode(IModelNode updatedNode)
+        {
+            var itemEvents = new List<ModelItemEventBase>();
+
+            var (newGraph, newPayloadToModelNodeMap) = UpdateNodeCore(updatedNode, _graph, _payloadToModelNodeMap, itemEvents);
+
+            var newModel = CreateInstance(newGraph, newPayloadToModelNodeMap, _payloadToModelRelationshipMap);
+            return ModelEvent.Create(newModel, itemEvents);
+        }
+
+
         public ModelEvent RemoveNode(ModelNodeId nodeId)
         {
             var itemEvents = new List<ModelItemEventBase>();
@@ -222,6 +233,28 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 relationship.Payload == null
                     ? payloadToModelRelationshipMap
                     : payloadToModelRelationshipMap.Add(relationship.Payload, relationship)
+            );
+        }
+
+        private (IModelGraph, ImmutableDictionary<object, IModelNode>) UpdateNodeCore(
+            [NotNull] IModelNode updatedNode,
+            [NotNull] IModelGraph modelGraph,
+            [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
+            [NotNull] [ItemNotNull] ICollection<ModelItemEventBase> itemEvents)
+        {
+            var oldNode = GetNode(updatedNode.Id);
+            itemEvents.Add(new ModelNodeRemovedEvent(oldNode));
+            itemEvents.Add(new ModelNodeAddedEvent(updatedNode));
+
+            if (oldNode.Payload != null)
+                payloadToModelNodeMap = payloadToModelNodeMap.Remove(oldNode.Payload);
+
+            if (updatedNode.Payload != null)
+                payloadToModelNodeMap = payloadToModelNodeMap.Add(updatedNode.Payload, updatedNode);
+
+            return (
+                modelGraph.UpdateVertex(updatedNode),
+                payloadToModelNodeMap
             );
         }
 

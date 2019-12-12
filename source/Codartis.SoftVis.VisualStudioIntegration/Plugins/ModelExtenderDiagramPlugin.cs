@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
             [NotNull] IRoslynModelService roslynModelService,
             [NotNull] IDiagramService diagramService,
             [NotNull] IHostUiService hostUiServices)
-            : base(roslynModelService.ModelService, diagramService)
+            : base(diagramService)
         {
             _hostUiServices = hostUiServices;
             _roslynModelService = roslynModelService;

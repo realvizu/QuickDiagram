@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using CellWars.Threading;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Codartis.Util;
@@ -26,46 +26,54 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 "object"
             };
 
-        [NotNull] private readonly IHostModelProvider _hostModelProvider;
+        [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly IRelatedSymbolProvider _relatedSymbolProvider;
-        public IModelService ModelService { get; }
+        [NotNull] private readonly IHostModelProvider _hostModelProvider;
+        [NotNull] private readonly AsyncLock _asyncLock;
+
         public bool ExcludeTrivialTypes { get; set; }
 
         public RoslynModelService(
-            [NotNull] IHostModelProvider hostModelProvider,
+            [NotNull] IModelService modelService,
             [NotNull] IRelatedSymbolProvider relatedSymbolProvider,
-            [NotNull] IModelService modelService)
+            [NotNull] IHostModelProvider hostModelProvider)
         {
-            _hostModelProvider = hostModelProvider;
+            _modelService = modelService;
             _relatedSymbolProvider = relatedSymbolProvider;
-            ModelService = modelService;
+            _hostModelProvider = hostModelProvider;
+            _asyncLock = new AsyncLock();
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        public IModel LatestModel => _modelService.LatestModel;
+
         public ISymbol GetSymbol(IModelNode modelNode)
         {
             return (ISymbol)modelNode.Payload;
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public IModelNode GetOrAddNode(ISymbol symbol)
         {
-            return ModelService.LatestModel.TryGetNodeByPayload(symbol).Match(
-                some => some,
-                () => ModelService.AddNode(symbol.GetName(), symbol.GetStereotype(), symbol));
+            using (_asyncLock.Lock())
+            {
+                return _modelService.LatestModel.TryGetNodeByPayload(symbol).Match(
+                    some => some,
+                    () => _modelService.AddNode(symbol.GetName(), symbol.GetStereotype(), symbol));
+            }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public IModelRelationship GetOrAddRelationship(RelatedSymbolPair relatedSymbolPair)
         {
-            return ModelService.LatestModel.TryGetRelationshipByPayload(relatedSymbolPair).Match(
-                some => some,
-                () =>
-                {
-                    var sourceNode = GetOrAddNode(relatedSymbolPair.SourceSymbol);
-                    var targetNode = GetOrAddNode(relatedSymbolPair.TargetSymbol);
-                    return ModelService.AddRelationship(sourceNode.Id, targetNode.Id, relatedSymbolPair.Stereotype, relatedSymbolPair);
-                });
+            using (_asyncLock.Lock())
+            {
+                return _modelService.LatestModel.TryGetRelationshipByPayload(relatedSymbolPair).Match(
+                    some => some,
+                    () =>
+                    {
+                        var sourceNode = GetOrAddNode(relatedSymbolPair.SourceSymbol);
+                        var targetNode = GetOrAddNode(relatedSymbolPair.TargetSymbol);
+                        return _modelService.AddRelationship(sourceNode.Id, targetNode.Id, relatedSymbolPair.Stereotype, relatedSymbolPair);
+                    });
+            }
         }
 
         public async Task ExtendModelWithRelatedNodesAsync(
@@ -75,59 +83,70 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             IIncrementalProgress progress = null,
             bool recursive = false)
         {
-            await ExtendModelWithRelatedNodesRecursiveAsync(
-                node,
-                directedModelRelationshipType,
-                cancellationToken,
-                progress,
-                recursive,
-                new HashSet<ModelNodeId> { node.Id }
-            );
+            using (await _asyncLock.LockAsync(cancellationToken))
+            {
+                await ExtendModelWithRelatedNodesRecursiveAsync(
+                    node,
+                    directedModelRelationshipType,
+                    cancellationToken,
+                    progress,
+                    recursive,
+                    new HashSet<ModelNodeId> { node.Id });
+            }
         }
 
-        public void ClearModel() => ModelService.ClearModel();
+        public void ClearModel()
+        {
+            using (_asyncLock.Lock())
+            {
+                _modelService.ClearModel();
+            }
+        }
 
-        //public async Task UpdateFromSourceAsync(
-        //    IEnumerable<ModelNodeId> visibleModelNodeIds,
-        //    CancellationToken cancellationToken = default,
-        //    IIncrementalProgress progress = null)
-        //{
-        //    await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
-        //    await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);
+        public async Task UpdateFromSourceAsync(
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null)
+        {
+            using (await _asyncLock.LockAsync(cancellationToken))
+            {
+                await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
+                await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);
 
-        //    foreach (var modelNodeId in visibleModelNodeIds)
-        //    {
-        //        await Model.TryGetNode(modelNodeId)
-        //            .MatchAsync(async node => await ExtendModelWithRelatedNodesAsync(node, null, cancellationToken, progress, recursive: false));
-        //    }
-        //}
+                // TODO: move it the command: 
+                //foreach (var modelNodeId in visibleModelNodeIds)
+                //{
+                //    await Model.TryGetNode(modelNodeId)
+                //        .MatchAsync(async node => await ExtendModelWithRelatedNodesAsync(node, null, cancellationToken, progress, recursive: false));
+                //}
+            }
+        }
 
-        //private async Task UpdateEntitiesFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
+        private async Task UpdateEntitiesFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
 
-        //    var workspace = await _hostModelProvider.GetWorkspaceAsync();
-        //    var projects = workspace.CurrentSolution.Projects;
-        //    var compilations = (await projects.SelectAsync(async i => await i.GetCompilationAsync(cancellationToken))).ToArray();
+            var workspace = await _hostModelProvider.GetWorkspaceAsync();
+            var projects = workspace.CurrentSolution.Projects;
+            var compilations = (await projects.SelectAsync(async i => await i.GetCompilationAsync(cancellationToken))).ToArray();
 
-        //    foreach (var roslynModelNode in Model.GetRoslynNodes())
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
+            foreach (var modelNode in LatestModel.Nodes)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-        //        var namedTypeSymbol = roslynModelNode.RoslynNode;
-        //        var newVersionOfSymbol = FindSymbolInCompilations(namedTypeSymbol, compilations, cancellationToken);
+                var symbol = GetSymbol(modelNode);
+                var newVersionOfSymbol = FindSymbolInCompilations(symbol, compilations, cancellationToken);
 
-        //        if (newVersionOfSymbol == null)
-        //            RemoveNode(roslynModelNode.Id);
-        //        else
-        //        {
-        //            var updatedNode = roslynModelNode.UpdateRoslynSymbol(newVersionOfSymbol);
-        //            UpdateNode(updatedNode);
-        //        }
+                if (newVersionOfSymbol == null)
+                    _modelService.RemoveNode(modelNode.Id);
+                else
+                {
+                    var updatedNode = modelNode.WithPayload(newVersionOfSymbol);
+                    _modelService.UpdateNode(updatedNode);
+                }
 
-        //        progress?.Report(1);
-        //    }
-        //}
+                progress?.Report(1);
+            }
+        }
 
         private static ISymbol FindSymbolInCompilations(
             ISymbol namedTypeSymbol,
@@ -149,29 +168,39 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return symbolMatchByName;
         }
 
-        //private async Task UpdateRelationshipsFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
+        private async Task UpdateRelationshipsFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
 
-        //    var allSymbolRelations = await Model.GetRoslynNodes().SelectManyAsync(
-        //        async i =>
-        //        {
-        //            var relatedSymbolPairs = await i.FindRelatedSymbolsAsync(_hostModelProvider);
-        //            progress?.Report(1);
-        //            return relatedSymbolPairs;
-        //        });
-        //    var distinctSymbolRelations = allSymbolRelations.Distinct().ToArray();
+            var allSymbolRelations = await LatestModel.Nodes.SelectManyAsync(
+                async i =>
+                {
+                    var relatedSymbolPairs = await _relatedSymbolProvider.GetRelatedSymbolsAsync(GetSymbol(i));
+                    progress?.Report(1);
+                    return relatedSymbolPairs;
+                });
+            var distinctSymbolRelations = allSymbolRelations.Distinct().ToArray();
 
-        //    foreach (var relationship in Model.Relationships)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
+            foreach (var relationship in LatestModel.Relationships)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-        //        if (distinctSymbolRelations.All(i => !i.Matches(relationship)))
-        //            RemoveRelationship(relationship.Id);
+                if (distinctSymbolRelations.All(i => !IsSymbolPairMatchingRelationship(i, relationship)))
+                    _modelService.RemoveRelationship(relationship.Id);
 
-        //        progress?.Report(1);
-        //    }
-        //}
+                progress?.Report(1);
+            }
+        }
+
+        private bool IsSymbolPairMatchingRelationship(RelatedSymbolPair symbolPair, [NotNull] IModelRelationship relationship)
+        {
+            var sourceNode = LatestModel.TryGetNode(relationship.Source).Value;
+            var targetNode = LatestModel.TryGetNode(relationship.Target).Value;
+
+            return relationship.Stereotype == symbolPair.Stereotype &&
+                   ((ISymbol)sourceNode.Payload).SymbolEquals(symbolPair.SourceSymbol) &&
+                   ((ISymbol)targetNode.Payload).SymbolEquals(symbolPair.TargetSymbol);
+        }
 
         private static RelatedSymbolPair GetOriginalDefinition(RelatedSymbolPair symbolPair)
         {

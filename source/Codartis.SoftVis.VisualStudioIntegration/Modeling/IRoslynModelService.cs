@@ -12,11 +12,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal interface IRoslynModelService
     {
-        /// <summary>
-        /// The underlying general-purpose model service.
-        /// </summary>
         [NotNull]
-        IModelService ModelService { get; }
+        IModel LatestModel { get; }
 
         /// <summary>
         /// Controls whether trivial types like object can be added to the model.
@@ -62,11 +59,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
-        //[NotNull]
-        //Task UpdateFromSourceAsync(
-        //    CancellationToken cancellationToken = default,
-        //    IIncrementalProgress progress = null);
-        
+        [NotNull]
+        Task UpdateFromSourceAsync(
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null);
+
         void ClearModel();
     }
 }
