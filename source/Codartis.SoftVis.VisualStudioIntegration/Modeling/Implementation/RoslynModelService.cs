@@ -111,13 +111,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             {
                 await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
                 await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);
-
-                // TODO: move it the command: 
-                //foreach (var modelNodeId in visibleModelNodeIds)
-                //{
-                //    await Model.TryGetNode(modelNodeId)
-                //        .MatchAsync(async node => await ExtendModelWithRelatedNodesAsync(node, null, cancellationToken, progress, recursive: false));
-                //}
             }
         }
 
