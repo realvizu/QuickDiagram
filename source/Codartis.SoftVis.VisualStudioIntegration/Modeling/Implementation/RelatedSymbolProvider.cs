@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Codartis.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -15,11 +14,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private delegate Task<IEnumerable<RelatedSymbolPair>> SymbolFinderDelegate(ISymbol symbol);
 
         [NotNull] private readonly IHostModelProvider _hostModelProvider;
+        [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
         [NotNull] private readonly IDictionary<ModelNodeStereotype, IDictionary<DirectedModelRelationshipType, SymbolFinderDelegate>> _symbolFinderMethods;
 
-        public RelatedSymbolProvider([NotNull] IHostModelProvider hostModelProvider)
+        public RelatedSymbolProvider(
+            [NotNull] IHostModelProvider hostModelProvider,
+            [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer)
         {
             _hostModelProvider = hostModelProvider;
+            _symbolEqualityComparer = symbolEqualityComparer;
             _symbolFinderMethods = CreateSymbolFinderMethodsMap();
         }
 
@@ -97,7 +100,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var derivedClasses = await SymbolFinder.FindDerivedClassesAsync(classSymbol, solution);
 
             return derivedClasses
-                .Where(i => classSymbol.SymbolEquals(i.BaseType.OriginalDefinition) && i.TypeKind == TypeKind.Class)
+                .Where(i => _symbolEqualityComparer.Equals(classSymbol, i.BaseType.OriginalDefinition) && i.TypeKind == TypeKind.Class)
                 .Select(i => new RelatedSymbolPair(classSymbol, i, DirectedModelRelationshipTypes.Subtype));
         }
 
@@ -155,7 +158,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             foreach (var namedTypeSymbol in implementerSymbols.OfType<INamedTypeSymbol>())
             {
                 var interfaces = namedTypeSymbol.Interfaces.Select(i => i.OriginalDefinition);
-                if (interfaces.Any(i => i.SymbolEquals(interfaceSymbol)))
+                if (interfaces.Any(i => _symbolEqualityComparer.Equals(i, interfaceSymbol)))
                     result.Add(namedTypeSymbol);
             }
 
@@ -181,7 +184,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             foreach (var compilation in await GetCompilationsAsync())
             {
-                var visitor = new DerivedInterfacesFinderVisitor(namedTypeSymbol);
+                var visitor = new DerivedInterfacesFinderVisitor(namedTypeSymbol, _symbolEqualityComparer);
                 compilation.Assembly?.Accept(visitor);
 
                 result.AddRange(visitor.DerivedInterfaces);

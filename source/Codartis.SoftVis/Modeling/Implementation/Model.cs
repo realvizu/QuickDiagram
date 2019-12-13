@@ -21,21 +21,24 @@ namespace Codartis.SoftVis.Modeling.Implementation
         private readonly IModelGraph _graph;
         [NotNull] private readonly ImmutableDictionary<object, IModelNode> _payloadToModelNodeMap;
         [NotNull] private readonly ImmutableDictionary<object, IModelRelationship> _payloadToModelRelationshipMap;
-        [CanBeNull] private readonly IEqualityComparer<object> _payloadEqualityComparer;
-        [NotNull] [ItemNotNull] private readonly IModelRuleProvider[] _modelRuleProviders;
+        [CanBeNull] [ItemNotNull] private readonly IEnumerable<IModelRuleProvider> _modelRuleProviders;
+        [CanBeNull] private readonly IEqualityComparer<object> _nodePayloadEqualityComparer;
+        [CanBeNull] private readonly IEqualityComparer<object> _relationshipPayloadEqualityComparer;
 
         private Model(
             IModelGraph graph,
             [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap,
-            [CanBeNull] IEqualityComparer<object> payloadEqualityComparer,
-            [NotNull] params IModelRuleProvider[] modelRuleProviders)
+            [CanBeNull] IEnumerable<IModelRuleProvider> modelRuleProviders,
+            [CanBeNull] IEqualityComparer<object> nodePayloadEqualityComparer,
+            [CanBeNull] IEqualityComparer<object> relationshipPayloadEqualityComparer)
         {
             _graph = graph;
             _payloadToModelNodeMap = payloadToModelNodeMap;
             _payloadToModelRelationshipMap = payloadToModelRelationshipMap;
-            _payloadEqualityComparer = payloadEqualityComparer;
             _modelRuleProviders = modelRuleProviders;
+            _nodePayloadEqualityComparer = nodePayloadEqualityComparer;
+            _relationshipPayloadEqualityComparer = relationshipPayloadEqualityComparer;
         }
 
         public IEnumerable<IModelNode> Nodes => _graph.Vertices;
@@ -183,7 +186,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 .OfType<ModelItemEventBase>()
                 .Concat(Nodes.Select(i => new ModelNodeRemovedEvent(i)));
 
-            var newModel = Create(_payloadEqualityComparer, _modelRuleProviders);
+            var newModel = Create(_modelRuleProviders, _nodePayloadEqualityComparer, _relationshipPayloadEqualityComparer);
             return ModelEvent.Create(newModel, itemEvents);
         }
 
@@ -304,7 +307,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             var sourceNode = GetNode(relationship.Source);
             var targetNode = GetNode(relationship.Target);
 
-            return _modelRuleProviders.All(i => i.IsRelationshipStereotypeValid(relationship.Stereotype, sourceNode, targetNode));
+            return _modelRuleProviders?.All(i => i.IsRelationshipStereotypeValid(relationship.Stereotype, sourceNode, targetNode)) == true;
         }
 
         [NotNull]
@@ -312,25 +315,35 @@ namespace Codartis.SoftVis.Modeling.Implementation
             IModelGraph graph,
             [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap)
-            => new Model(graph, payloadToModelNodeMap, payloadToModelRelationshipMap, _payloadEqualityComparer, _modelRuleProviders);
+            => new Model(
+                graph,
+                payloadToModelNodeMap,
+                payloadToModelRelationshipMap,
+                _modelRuleProviders,
+                _nodePayloadEqualityComparer,
+                _relationshipPayloadEqualityComparer);
 
         [NotNull]
         public static IModel Create(
-            [CanBeNull] IEqualityComparer<object> payloadEqualityComparer,
-            [NotNull] params IModelRuleProvider[] modelRuleProviders)
+            [CanBeNull] IEnumerable<IModelRuleProvider> modelRuleProviders = null,
+            [CanBeNull] IEqualityComparer<object> nodePayloadEqualityComparer = null,
+            [CanBeNull] IEqualityComparer<object> relationshipPayloadEqualityComparer = null)
         {
             var payloadToModelNodeMap = ImmutableDictionary<object, IModelNode>.Empty;
-            if (payloadEqualityComparer != null)
-                payloadToModelNodeMap = payloadToModelNodeMap.WithComparers(payloadEqualityComparer);
+            if (nodePayloadEqualityComparer != null)
+                payloadToModelNodeMap = payloadToModelNodeMap.WithComparers(nodePayloadEqualityComparer);
 
             var payloadToModelRelationshipMap = ImmutableDictionary<object, IModelRelationship>.Empty;
+            if (relationshipPayloadEqualityComparer != null)
+                payloadToModelRelationshipMap = payloadToModelRelationshipMap.WithComparers(relationshipPayloadEqualityComparer);
 
             return new Model(
                 ModelGraph.Empty(allowParallelEdges: false),
                 payloadToModelNodeMap,
                 payloadToModelRelationshipMap,
-                payloadEqualityComparer,
-                modelRuleProviders);
+                modelRuleProviders,
+                nodePayloadEqualityComparer,
+                relationshipPayloadEqualityComparer);
         }
     }
 }

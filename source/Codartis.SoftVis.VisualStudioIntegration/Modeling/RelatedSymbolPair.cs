@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     public struct RelatedSymbolPair : IEquatable<RelatedSymbolPair>
     {
-        [NotNull] private static readonly IEqualityComparer<object> SymbolComparer = new RoslynSymbolEqualityComparer();
+        [NotNull] private static readonly IEqualityComparer<ISymbol> SymbolComparer = new SymbolEqualityComparer();
 
         /// <summary>
         /// A roslyn symbol whose related symbol is described.

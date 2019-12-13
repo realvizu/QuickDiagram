@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
@@ -20,6 +21,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Resources;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -48,9 +50,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             builder.RegisterType<ModelRuleProvider>().As<IModelRuleProvider>().SingleInstance();
 
-            var payloadComparer = new RoslynSymbolEqualityComparer();
-            builder.RegisterType<ModelService>()
-                .WithParameter("payloadEqualityComparer", payloadComparer)
+            builder.RegisterType<SymbolEqualityComparer>()
+                .As<IEqualityComparer<ISymbol>>()
+                .Named<IEqualityComparer<object>>("node")
+                .SingleInstance();
+
+            builder.Register(
+                    i => new ModelService(
+                        i.ResolveOptional<IEnumerable<IModelRuleProvider>>(),
+                        i.ResolveOptionalNamed<IEqualityComparer<object>>("node"),
+                        i.ResolveOptionalNamed<IEqualityComparer<object>>("relationship")
+                    ))
                 .As<IModelService>()
                 .As<IModelEventSource>()
                 .SingleInstance();

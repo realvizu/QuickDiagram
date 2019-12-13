@@ -23,10 +23,11 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public event Action<ModelEvent> ModelChanged;
 
         public ModelService(
-            [CanBeNull] IEqualityComparer<object> payloadEqualityComparer,
-            [NotNull] params IModelRuleProvider[] modelRuleProviders)
+            [CanBeNull] IEnumerable<IModelRuleProvider> modelRuleProviders = null,
+            [CanBeNull] IEqualityComparer<object> nodePayloadEqualityComparer = null,
+            [CanBeNull] IEqualityComparer<object> relationshipPayloadEqualityComparer = null)
         {
-            LatestModel = Model.Create(payloadEqualityComparer, modelRuleProviders);
+            LatestModel = Model.Create(modelRuleProviders, nodePayloadEqualityComparer, relationshipPayloadEqualityComparer);
             _modelUpdateLockObject = new object();
         }
 

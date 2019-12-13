@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CellWars.Threading;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Codartis.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -28,6 +27,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly IRelatedSymbolProvider _relatedSymbolProvider;
+        [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
         [NotNull] private readonly IHostModelProvider _hostModelProvider;
         [NotNull] private readonly AsyncLock _asyncLock;
 
@@ -36,10 +36,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public RoslynModelService(
             [NotNull] IModelService modelService,
             [NotNull] IRelatedSymbolProvider relatedSymbolProvider,
+            [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer,
             [NotNull] IHostModelProvider hostModelProvider)
         {
             _modelService = modelService;
             _relatedSymbolProvider = relatedSymbolProvider;
+            _symbolEqualityComparer = symbolEqualityComparer;
             _hostModelProvider = hostModelProvider;
             _asyncLock = new AsyncLock();
         }
@@ -144,7 +146,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             }
         }
 
-        private static ISymbol FindSymbolInCompilations(
+        private ISymbol FindSymbolInCompilations(
             ISymbol namedTypeSymbol,
             IEnumerable<Compilation> compilations,
             CancellationToken cancellationToken)
@@ -154,10 +156,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return FindSymbolInCompilationsByName(namedTypeSymbol, compilationArray, cancellationToken);
         }
 
-        private static ISymbol FindSymbolInCompilationsByName(ISymbol symbol, Compilation[] compilationArray, CancellationToken cancellationToken)
+        private ISymbol FindSymbolInCompilationsByName(ISymbol symbol, Compilation[] compilationArray, CancellationToken cancellationToken)
         {
             var symbolMatchByName = compilationArray.SelectMany(i => SymbolFinder.FindSimilarSymbols(symbol, i, cancellationToken))
-                .Where(i => i.SymbolEquals(symbol))
+                .Where(i => _symbolEqualityComparer.Equals(i, symbol))
                 .OrderByDescending(i => i.Locations.Any(j => j.IsInSource))
                 .FirstOrDefault();
 
@@ -194,8 +196,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var targetNode = LatestModel.TryGetNode(relationship.Target).Value;
 
             return relationship.Stereotype == symbolPair.Stereotype &&
-                   ((ISymbol)sourceNode.Payload).SymbolEquals(symbolPair.SourceSymbol) &&
-                   ((ISymbol)targetNode.Payload).SymbolEquals(symbolPair.TargetSymbol);
+                   _symbolEqualityComparer.Equals((ISymbol)sourceNode.Payload, symbolPair.SourceSymbol) &&
+                   _symbolEqualityComparer.Equals((ISymbol)targetNode.Payload, symbolPair.TargetSymbol);
         }
 
         private static RelatedSymbolPair GetOriginalDefinition(RelatedSymbolPair symbolPair)

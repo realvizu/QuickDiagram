@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.VisualStudioIntegration.Util;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
@@ -11,26 +11,28 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal class DerivedInterfacesFinderVisitor : SymbolVisitor
     {
-        private static readonly SymbolEqualityComparer SymbolEqualityComparer = new SymbolEqualityComparer();
+        [NotNull] private readonly INamedTypeSymbol _interfaceSymbol;
+        [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
+        [NotNull] public List<INamedTypeSymbol> DerivedInterfaces { get; }
 
-        private INamedTypeSymbol InterfaceSymbol { get; }
-        public List<INamedTypeSymbol> DerivedInterfaces { get; }
-
-        internal DerivedInterfacesFinderVisitor(INamedTypeSymbol interfaceSymbol)
+        internal DerivedInterfacesFinderVisitor(
+            [NotNull] INamedTypeSymbol interfaceSymbol,
+            [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer)
         {
             if (interfaceSymbol.TypeKind != TypeKind.Interface)
                 throw new ArgumentException($"Interface expected but received {interfaceSymbol.TypeKind}.");
 
-            InterfaceSymbol = interfaceSymbol;
+            _interfaceSymbol = interfaceSymbol;
+            _symbolEqualityComparer = symbolEqualityComparer;
             DerivedInterfaces = new List<INamedTypeSymbol>();
         }
 
-        public override void VisitAssembly(IAssemblySymbol symbol)
+        public override void VisitAssembly([NotNull] IAssemblySymbol symbol)
         {
             Visit(symbol.GlobalNamespace);
         }
 
-        public override void VisitNamespace(INamespaceSymbol symbol)
+        public override void VisitNamespace([NotNull] INamespaceSymbol symbol)
         {
             foreach (var namespaceSymbol in symbol.GetNamespaceMembers())
                 Visit(namespaceSymbol);
@@ -39,10 +41,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 Visit(namedTypeSymbol);
         }
 
-        public override void VisitNamedType(INamedTypeSymbol symbol)
+        public override void VisitNamedType([NotNull] INamedTypeSymbol symbol)
         {
             if (symbol.TypeKind == TypeKind.Interface &&
-                symbol.OriginalDefinition.Interfaces.Select(i => i.OriginalDefinition).Contains(InterfaceSymbol, SymbolEqualityComparer))
+                symbol.OriginalDefinition.Interfaces.Select(i => i.OriginalDefinition).Contains(_interfaceSymbol, _symbolEqualityComparer))
                 DerivedInterfaces.Add(symbol);
 
             foreach (var namedTypeSymbol in symbol.GetTypeMembers())
