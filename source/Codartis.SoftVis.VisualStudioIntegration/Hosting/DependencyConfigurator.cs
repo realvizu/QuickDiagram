@@ -38,7 +38,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             RegisterHostComponents(builder, visualStudioServices);
 
-            builder.RegisterType<VisualizationService>().SingleInstance().As<IVisualizationService>();
+            builder.RegisterType<VisualizationService>().As<IVisualizationService>().SingleInstance();
             builder.RegisterType<DiagramToolApplication>().SingleInstance();
 
             return builder.Build();
@@ -46,6 +46,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterModelComponents(ContainerBuilder builder)
         {
+            builder.RegisterType<ModelRuleProvider>().As<IModelRuleProvider>().SingleInstance();
+
             var payloadComparer = new RoslynSymbolEqualityComparer();
             builder.RegisterType<ModelService>()
                 .WithParameter("payloadEqualityComparer", payloadComparer)
@@ -53,61 +55,65 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 .As<IModelEventSource>()
                 .SingleInstance();
 
-            builder.RegisterType<RelatedNodeTypeProvider>().SingleInstance().As<IRelatedNodeTypeProvider>();
-            builder.RegisterType<RelatedSymbolProvider>().SingleInstance().As<IRelatedSymbolProvider>();
-            builder.RegisterType<RoslynModelService>().SingleInstance().As<IRoslynModelService>();
+            builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>().SingleInstance();
+            builder.RegisterType<RelatedSymbolProvider>().As<IRelatedSymbolProvider>().SingleInstance();
+            builder.RegisterType<RoslynModelService>().As<IRoslynModelService>().SingleInstance();
         }
 
         private static void RegisterDiagramComponents(ContainerBuilder builder)
         {
-            builder.RegisterType<DiagramService>().SingleInstance().As<IDiagramService>();
-            builder.RegisterType<RoslynConnectorTypeResolver>().SingleInstance().As<IConnectorTypeResolver>();
+            builder.RegisterType<DiagramService>().As<IDiagramService>().SingleInstance();
+            builder.RegisterType<RoslynConnectorTypeResolver>().As<IConnectorTypeResolver>().SingleInstance();
 
-            builder.RegisterType<DiagramLayoutAlgorithm>().SingleInstance().As<IDiagramLayoutAlgorithm>()
-                .WithParameter("childrenAreaPadding", 2);
+            builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
+                .WithParameter("childrenAreaPadding", 2)
+                .SingleInstance();
 
-            builder.RegisterType<LayoutPriorityProvider>().SingleInstance().As<ILayoutPriorityProvider>();
-            builder.RegisterType<LayoutAlgorithmSelectionStrategy>().SingleInstance().As<ILayoutAlgorithmSelectionStrategy>();
-            builder.RegisterType<DirectConnectorRoutingAlgorithm>().SingleInstance().As<IConnectorRoutingAlgorithm>();
+            builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>().SingleInstance();
+            builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>().SingleInstance();
+            builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>().SingleInstance();
         }
 
         private static void RegisterDiagramUiComponents(ContainerBuilder builder)
         {
-            builder.RegisterType<DiagramWindowService>().SingleInstance().As<IDiagramUiService>();
+            builder.RegisterType<DiagramWindowService>().As<IDiagramUiService>().SingleInstance();
 
-            builder.RegisterType<RoslynDiagramViewModel>().SingleInstance().As<IDiagramUi>();
+            builder.RegisterType<RoslynDiagramViewModel>().As<IDiagramUi>().SingleInstance();
 
-            builder.RegisterType<RoslynDiagramViewportViewModel>().SingleInstance().As<IDiagramViewportUi>()
+            builder.RegisterType<RoslynDiagramViewportViewModel>().As<IDiagramViewportUi>()
                 .WithParameter("minZoom", AppDefaults.MinZoom)
                 .WithParameter("maxZoom", AppDefaults.MaxZoom)
-                .WithParameter("initialZoom", AppDefaults.InitialZoom);
+                .WithParameter("initialZoom", AppDefaults.InitialZoom)
+                .SingleInstance();
 
-            builder.RegisterType<RoslynDiagramShapeViewModelFactory>().SingleInstance().As<IDiagramShapeUiFactory>()
-                .WithParameter("isDescriptionVisible", true);
+            builder.RegisterType<RoslynDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>()
+                .WithParameter("isDescriptionVisible", true)
+                .SingleInstance();
 
-            builder.RegisterType<MiniButtonPanelViewModel>().SingleInstance().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
+            builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>().SingleInstance();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
-            builder.RegisterType<DiagramControl>().SingleInstance()
-                .WithParameter("additionalResourceDictionary", resourceDictionary);
+            builder.RegisterType<DiagramControl>()
+                .WithParameter("additionalResourceDictionary", resourceDictionary)
+                .SingleInstance();
 
-            builder.RegisterType<DataCloningDiagramImageCreator>().SingleInstance().As<IDiagramImageCreator>();
+            builder.RegisterType<DataCloningDiagramImageCreator>().As<IDiagramImageCreator>().SingleInstance();
         }
 
         private static void RegisterDiagramPlugins(ContainerBuilder builder)
         {
-            builder.RegisterType<AutoLayoutDiagramPlugin>().SingleInstance().As<IDiagramPlugin>();
-            builder.RegisterType<ConnectorHandlerDiagramPlugin>().SingleInstance().As<IDiagramPlugin>();
-            builder.RegisterType<ModelTrackingDiagramPlugin>().SingleInstance().As<IDiagramPlugin>();
-            builder.RegisterType<ModelExtenderDiagramPlugin>().SingleInstance().As<IDiagramPlugin>();
+            builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
+            builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
+            builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
+            builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
         }
 
         private static void RegisterHostComponents(ContainerBuilder builder, IVisualStudioServices visualStudioServices)
         {
             var softVisPackage = new TypedParameter(typeof(IVisualStudioServices), visualStudioServices);
-            builder.RegisterType<HostWorkspaceGateway>().SingleInstance().WithParameter(softVisPackage).As<IHostModelProvider>();
-            builder.RegisterType<HostUiGateway>().SingleInstance().WithParameter(softVisPackage).As<IHostUiService>();
+            builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IHostModelProvider>().SingleInstance();
+            builder.RegisterType<HostUiGateway>().WithParameter(softVisPackage).As<IHostUiService>().SingleInstance();
 
             builder.RegisterInstance(visualStudioServices).As<IVisualStudioServices>();
         }

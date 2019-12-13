@@ -11,16 +11,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private static readonly IDictionary<ModelRelationshipStereotype, (ModelNodeStereotype sourceNodeType, ModelNodeStereotype targetNodeType)[]>
             ValidRelationshipTypes = new Dictionary<ModelRelationshipStereotype, (ModelNodeStereotype, ModelNodeStereotype )[]>
             {
-                //[ModelRelationshipStereotype.Containment] = new[]
-                //{
-                //    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Property),
-                //    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Property)
-                //},
-                //[RoslynModelRelationshipStereotypes.Association] = new[]
-                //{
-                //    (ModelNodeStereotypes.Property, ModelNodeStereotypes.Class),
-                //    (ModelNodeStereotypes.Property, ModelNodeStereotypes.Interface)
-                //},
+                [ModelRelationshipStereotype.Containment] = new[]
+                {
+                    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Property),
+                    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Property)
+                },
+                [RoslynModelRelationshipStereotypes.Association] = new[]
+                {
+                    (ModelNodeStereotypes.Property, ModelNodeStereotypes.Class),
+                    (ModelNodeStereotypes.Property, ModelNodeStereotypes.Interface)
+                },
                 [RoslynModelRelationshipStereotypes.Implementation] = new[]
                 {
                     (ModelNodeStereotypes.Class, ModelNodeStereotypes.Interface),
