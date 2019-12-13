@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    public sealed class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactoryBase, IRoslynDiagramShapeUiFactory
+    public sealed class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactory, IRoslynDiagramShapeUiFactory
     {
         public bool IsDescriptionVisible { get; set; }
 

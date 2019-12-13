@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("maxZoom", 5d)
                 .WithParameter("initialZoom", 1d);
 
-            builder.RegisterType<TestDiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
+            builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
 
             builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
 

@@ -7,15 +7,15 @@ using JetBrains.Annotations;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Abstract base class of factories that create view models from diagram shapes.
+    /// Default implementation of a factory that create view models from diagram shapes.
     /// </summary>
-    public abstract class DiagramShapeViewModelFactoryBase : IDiagramShapeUiFactory
+    public class DiagramShapeViewModelFactory : IDiagramShapeUiFactory
     {
         [NotNull] protected IModelEventSource ModelEventSource { get; }
         [NotNull] protected IDiagramEventSource DiagramEventSource { get; }
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
 
-        protected DiagramShapeViewModelFactoryBase(
+        public DiagramShapeViewModelFactory(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider)

@@ -176,6 +176,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             // Must NOT populate size from model because its value flows from the controls to the models.
         }
 
+        /// <summary>
+        /// Subtypes with a different header must override this method.
+        /// </summary>
         protected virtual void UpdateHeader([NotNull] IDiagramNode diagramNode)
         {
             HeaderViewModel.Payload = diagramNode.ModelNode.Payload;
