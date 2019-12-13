@@ -1,12 +1,15 @@
 ﻿using System;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
 using Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Sugiyama.Helpers;
+using Codartis.Util.Ids;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Sugiyama.Builders
 {
     internal abstract class BuilderBase
     {
+        private readonly ISequenceProvider _sequenceProvider = new SequenceGenerator();
+
         [NotNull]
         protected GeneralLayoutEdge CreateLayoutEdge([NotNull] EdgeSpecification edgeSpecification)
         {
@@ -28,7 +31,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Sugiyama.
         }
 
         [NotNull]
-        protected static LayoutVertexBase CreateLayoutVertex([NotNull] string name, int priority = 1)
+        protected LayoutVertexBase CreateLayoutVertex([NotNull] string name, int priority = 1)
         {
             return name.StartsWith("*", StringComparison.Ordinal)
                 ? (LayoutVertexBase)CreateDummyLayoutVertex(name)
@@ -36,9 +39,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Sugiyama.
         }
 
         [NotNull]
-        protected static TestLayoutVertex CreateTestLayoutVertex([NotNull] string name, int priority = 1)
+        protected TestLayoutVertex CreateTestLayoutVertex([NotNull] string name, int priority = 1)
         {
-            return new TestLayoutVertex(name, priority);
+            var id = _sequenceProvider.GetNext();
+            return new TestLayoutVertex(id, name, priority);
         }
 
         [NotNull]

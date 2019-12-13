@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
+using Codartis.Util.Ids;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Implementation
@@ -23,11 +24,12 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public event Action<ModelEvent> ModelChanged;
 
         public ModelService(
+            [NotNull] ISequenceProvider sequenceProvider,
             [CanBeNull] IEnumerable<IModelRuleProvider> modelRuleProviders = null,
             [CanBeNull] IEqualityComparer<object> nodePayloadEqualityComparer = null,
             [CanBeNull] IEqualityComparer<object> relationshipPayloadEqualityComparer = null)
         {
-            LatestModel = Model.Create(modelRuleProviders, nodePayloadEqualityComparer, relationshipPayloadEqualityComparer);
+            LatestModel = Model.Create(sequenceProvider, modelRuleProviders, nodePayloadEqualityComparer, relationshipPayloadEqualityComparer);
             _modelUpdateLockObject = new object();
         }
 

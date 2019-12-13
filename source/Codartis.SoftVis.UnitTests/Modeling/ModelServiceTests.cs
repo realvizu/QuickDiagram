@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.Util.Ids;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -10,11 +11,13 @@ namespace Codartis.SoftVis.UnitTests.Modeling
 {
     public class ModelServiceTests
     {
+        private readonly ISequenceProvider _sequenceProvider = new SequenceGenerator();
+
         [Fact]
         public void Create_Works()
         {
             var modelService = CreateModelService();
-            modelService.LatestModel.Should().BeEquivalentTo(Model.Create());
+            modelService.LatestModel.Should().BeEquivalentTo(Model.Create(_sequenceProvider));
         }
 
         [Fact]
@@ -48,7 +51,6 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         }
 
         [NotNull]
-        private static IModelService CreateModelService(params IModelRuleProvider[] modelRuleProviders)
-            => new ModelService(modelRuleProviders);
+        private IModelService CreateModelService(params IModelRuleProvider[] modelRuleProviders) => new ModelService(_sequenceProvider, modelRuleProviders);
     }
 }

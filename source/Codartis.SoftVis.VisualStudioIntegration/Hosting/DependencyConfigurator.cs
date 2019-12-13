@@ -19,6 +19,7 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
+using Codartis.Util.Ids;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Resources;
 using Microsoft.CodeAnalysis;
@@ -48,6 +49,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterModelComponents(ContainerBuilder builder)
         {
+            builder.RegisterType<SequenceGenerator>().As<ISequenceProvider>().SingleInstance();
             builder.RegisterType<ModelRuleProvider>().As<IModelRuleProvider>().SingleInstance();
 
             builder.RegisterType<SymbolEqualityComparer>()
@@ -57,6 +59,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.Register(
                     i => new ModelService(
+                        i.Resolve<ISequenceProvider>(),
                         i.ResolveOptional<IEnumerable<IModelRuleProvider>>(),
                         i.ResolveOptionalNamed<IEqualityComparer<object>>("node"),
                         i.ResolveOptionalNamed<IEqualityComparer<object>>("relationship")

@@ -11,8 +11,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Sugiyama
     /// </remarks>
     internal class TestLayoutVertex : DiagramNodeLayoutVertex
     {
-        public TestLayoutVertex(string name, int priority = 1)
-            : base(new DiagramNode(ModelNode.Create(name)), priority)
+        public TestLayoutVertex(long id, string name, int priority = 1)
+            : base(new DiagramNode(ModelNode.Create(id, name)), priority)
         {
         }
 

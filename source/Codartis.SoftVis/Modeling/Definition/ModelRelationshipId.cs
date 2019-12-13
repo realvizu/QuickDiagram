@@ -8,15 +8,14 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// </summary>
     public struct ModelRelationshipId : IEquatable<ModelRelationshipId>, IComparable<ModelRelationshipId>
     {
-        private readonly Guid _id;
+        private readonly long _id;
 
-        public ModelRelationshipId(Guid id)
+        public ModelRelationshipId(long id)
         {
             _id = id;
         }
 
-        public static ModelRelationshipId Create() => new ModelRelationshipId(Guid.NewGuid());
-        public static ModelRelationshipId Parse([NotNull] string s) => new ModelRelationshipId(Guid.Parse(s));
+        public static ModelRelationshipId Parse([NotNull] string s) => new ModelRelationshipId(long.Parse(s));
 
         public override string ToString() => _id.ToString();
 

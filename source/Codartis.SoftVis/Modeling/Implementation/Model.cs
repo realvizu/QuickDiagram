@@ -6,6 +6,7 @@ using Codartis.SoftVis.Graphs.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.Util;
+using Codartis.Util.Ids;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Implementation
@@ -21,6 +22,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
         private readonly IModelGraph _graph;
         [NotNull] private readonly ImmutableDictionary<object, IModelNode> _payloadToModelNodeMap;
         [NotNull] private readonly ImmutableDictionary<object, IModelRelationship> _payloadToModelRelationshipMap;
+        [NotNull] private readonly ISequenceProvider _sequenceProvider;
         [CanBeNull] [ItemNotNull] private readonly IEnumerable<IModelRuleProvider> _modelRuleProviders;
         [CanBeNull] private readonly IEqualityComparer<object> _nodePayloadEqualityComparer;
         [CanBeNull] private readonly IEqualityComparer<object> _relationshipPayloadEqualityComparer;
@@ -29,6 +31,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             IModelGraph graph,
             [NotNull] ImmutableDictionary<object, IModelNode> payloadToModelNodeMap,
             [NotNull] ImmutableDictionary<object, IModelRelationship> payloadToModelRelationshipMap,
+            [NotNull] ISequenceProvider sequenceProvider,
             [CanBeNull] IEnumerable<IModelRuleProvider> modelRuleProviders,
             [CanBeNull] IEqualityComparer<object> nodePayloadEqualityComparer,
             [CanBeNull] IEqualityComparer<object> relationshipPayloadEqualityComparer)
@@ -36,6 +39,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             _graph = graph;
             _payloadToModelNodeMap = payloadToModelNodeMap;
             _payloadToModelRelationshipMap = payloadToModelRelationshipMap;
+            _sequenceProvider = sequenceProvider;
             _modelRuleProviders = modelRuleProviders;
             _nodePayloadEqualityComparer = nodePayloadEqualityComparer;
             _relationshipPayloadEqualityComparer = relationshipPayloadEqualityComparer;
@@ -186,28 +190,37 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 .OfType<ModelItemEventBase>()
                 .Concat(Nodes.Select(i => new ModelNodeRemovedEvent(i)));
 
-            var newModel = Create(_modelRuleProviders, _nodePayloadEqualityComparer, _relationshipPayloadEqualityComparer);
+            var newModel = Create(
+                _sequenceProvider,
+                _modelRuleProviders,
+                _nodePayloadEqualityComparer,
+                _relationshipPayloadEqualityComparer);
+
             return ModelEvent.Create(newModel, itemEvents);
         }
 
         [NotNull]
-        private static IModelNode CreateNode(
+        private IModelNode CreateNode(
             [NotNull] string name,
             ModelNodeStereotype stereotype,
             [CanBeNull] object payload)
         {
-            return new ModelNode(ModelNodeId.Create(), name, stereotype, payload);
+            return new ModelNode(CreateModelNodeId(), name, stereotype, payload);
         }
 
+        private ModelNodeId CreateModelNodeId() => new ModelNodeId(_sequenceProvider.GetNext());
+
         [NotNull]
-        private static IModelRelationship CreateRelationship(
+        private IModelRelationship CreateRelationship(
             ModelNodeId sourceId,
             ModelNodeId targetId,
             ModelRelationshipStereotype stereotype,
             [CanBeNull] object payload)
         {
-            return new ModelRelationship(ModelRelationshipId.Create(), sourceId, targetId, stereotype, payload);
+            return new ModelRelationship(CreateModelRelationshipId(), sourceId, targetId, stereotype, payload);
         }
+
+        private ModelRelationshipId CreateModelRelationshipId() => new ModelRelationshipId(_sequenceProvider.GetNext());
 
         private static (IModelGraph, ImmutableDictionary<object, IModelNode>) AddNodeCore(
             [NotNull] IModelNode newNode,
@@ -319,12 +332,14 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 graph,
                 payloadToModelNodeMap,
                 payloadToModelRelationshipMap,
+                _sequenceProvider,
                 _modelRuleProviders,
                 _nodePayloadEqualityComparer,
                 _relationshipPayloadEqualityComparer);
 
         [NotNull]
         public static IModel Create(
+            [NotNull] ISequenceProvider sequenceProvider,
             [CanBeNull] IEnumerable<IModelRuleProvider> modelRuleProviders = null,
             [CanBeNull] IEqualityComparer<object> nodePayloadEqualityComparer = null,
             [CanBeNull] IEqualityComparer<object> relationshipPayloadEqualityComparer = null)
@@ -341,6 +356,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 ModelGraph.Empty(allowParallelEdges: false),
                 payloadToModelNodeMap,
                 payloadToModelRelationshipMap,
+                sequenceProvider,
                 modelRuleProviders,
                 nodePayloadEqualityComparer,
                 relationshipPayloadEqualityComparer);

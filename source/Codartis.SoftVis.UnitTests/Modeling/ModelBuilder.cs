@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util.Ids;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UnitTests.Modeling
@@ -11,11 +12,12 @@ namespace Codartis.SoftVis.UnitTests.Modeling
     /// </summary>
     public sealed class ModelBuilder
     {
+        private readonly ISequenceProvider _sequenceProvider = new SequenceGenerator();
         [NotNull] public IModel Model { get; private set; }
 
         public ModelBuilder([NotNull] params IModelRuleProvider[] modelRuleProviders)
         {
-            Model = SoftVis.Modeling.Implementation.Model.Create(modelRuleProviders);
+            Model = SoftVis.Modeling.Implementation.Model.Create(_sequenceProvider, modelRuleProviders);
         }
 
         public ModelBuilder([NotNull] IModel model)

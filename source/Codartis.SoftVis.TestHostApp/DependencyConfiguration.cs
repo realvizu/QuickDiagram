@@ -15,6 +15,7 @@ using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.Util.Ids;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Resources;
 
@@ -42,6 +43,8 @@ namespace Codartis.SoftVis.TestHostApp
 
         private static void RegisterModelComponents(ContainerBuilder builder)
         {
+            builder.RegisterType<SequenceGenerator>().As<ISequenceProvider>().SingleInstance();
+
             builder.RegisterType<ModelService>()
                 .WithParameter("payloadEqualityComparer", null)
                 .As<IModelService>()

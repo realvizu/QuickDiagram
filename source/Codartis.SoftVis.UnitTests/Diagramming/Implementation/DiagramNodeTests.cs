@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [Fact]
         public void Rect_IsCalculatedCorrectly()
         {
-            var modelNode = new ModelNode(ModelNodeId.Create(), "A", ModelNodeStereotype.Default);
+            var modelNode = new ModelNode(new ModelNodeId(1), "A", ModelNodeStereotype.Default);
             var diagramNode = new DiagramNode(
                 modelNode,
                 DateTime.Now,

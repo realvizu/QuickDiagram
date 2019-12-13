@@ -3,6 +3,7 @@ using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.SoftVis.Modeling.Implementation;
+using Codartis.Util.Ids;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -11,6 +12,8 @@ namespace Codartis.SoftVis.UnitTests.Modeling
 {
     public class ModelTests
     {
+        private readonly ISequenceProvider _sequenceProvider = new SequenceGenerator();
+
         [Fact]
         public void AddNode_Works()
         {
@@ -81,7 +84,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
         }
 
         [NotNull]
-        private static IModel CreateModel(params IModelRuleProvider[] modelRuleProviders) => Model.Create(modelRuleProviders);
+        private IModel CreateModel(params IModelRuleProvider[] modelRuleProviders) => Model.Create(_sequenceProvider, modelRuleProviders);
 
         private sealed class AllInvalidModelRuleProvider : IModelRuleProvider
         {

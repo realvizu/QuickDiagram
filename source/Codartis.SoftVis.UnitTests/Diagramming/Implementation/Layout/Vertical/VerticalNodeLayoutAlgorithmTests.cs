@@ -10,6 +10,7 @@ using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.Util;
+using Codartis.Util.Ids;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -18,6 +19,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
 {
     public class VerticalNodeLayoutAlgorithmTests
     {
+        private readonly ISequenceProvider _sequenceProvider = new SequenceGenerator();
+
         [Fact]
         public void Calculate_EmptyLayoutGroup_Works()
         {
@@ -65,7 +68,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
 
         [NotNull]
         [ItemNotNull]
-        private static IImmutableSet<IDiagramNode> CreateNodes([NotNull] params NodeSpecification[] nodeSpecifications)
+        private IImmutableSet<IDiagramNode> CreateNodes([NotNull] params NodeSpecification[] nodeSpecifications)
         {
             return nodeSpecifications
                 .Select(i => new DiagramNode(CreateModelNode(i.Name), DateTime.Now, Point2D.Undefined, i.Size, Size2D.Zero, Maybe<ModelNodeId>.Nothing))
@@ -74,14 +77,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         }
 
         [NotNull]
-        private static IModelNode CreateModelNode([NotNull] string name)
+        private IModelNode CreateModelNode([NotNull] string name)
         {
-            return new ModelNode(ModelNodeId.Create(), name, ModelNodeStereotype.Default);
+            var id = _sequenceProvider.GetNext();
+            return new ModelNode(new ModelNodeId(id), name, ModelNodeStereotype.Default);
         }
 
         [NotNull]
         [ItemNotNull]
-        private static IImmutableSet<IDiagramConnector> CreateConnectors(
+        private IImmutableSet<IDiagramConnector> CreateConnectors(
             [NotNull] IImmutableSet<IDiagramNode> nodes,
             [NotNull] params ConnectorSpecification[] connectorSpecifications)
         {
@@ -89,7 +93,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         }
 
         [NotNull]
-        private static IDiagramConnector CreateConnector(
+        private IDiagramConnector CreateConnector(
             [NotNull] IImmutableSet<IDiagramNode> nodes,
             [NotNull] string sourceNodeName,
             [NotNull] string targetNodeName)
@@ -98,8 +102,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
             var targetNode = nodes.Single(i => i.Name == targetNodeName);
             var relationshipName = $"{sourceNodeName}->{targetNodeName}";
 
+            var id = _sequenceProvider.GetNext();
+
             var relationship = new ModelRelationship(
-                ModelRelationshipId.Create(),
+                new ModelRelationshipId(id),
                 sourceNode.Id,
                 targetNode.Id,
                 ModelRelationshipStereotype.Default,

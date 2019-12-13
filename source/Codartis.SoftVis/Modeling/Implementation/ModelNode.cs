@@ -33,9 +33,9 @@ namespace Codartis.SoftVis.Modeling.Implementation
         public IModelNode WithPayload(object newPayload) => CreateInstance(Id, Name, Stereotype, newPayload);
 
         [NotNull]
-        public static IModelNode Create([NotNull] string name, ModelNodeStereotype? stereotype = null, object payload = null)
+        public static IModelNode Create(long id, [NotNull] string name, ModelNodeStereotype? stereotype = null, object payload = null)
         {
-            return CreateInstance(ModelNodeId.Create(), name, stereotype ?? ModelNodeStereotype.Default, payload);
+            return CreateInstance(new ModelNodeId(id), name, stereotype ?? ModelNodeStereotype.Default, payload);
         }
 
         [NotNull]
