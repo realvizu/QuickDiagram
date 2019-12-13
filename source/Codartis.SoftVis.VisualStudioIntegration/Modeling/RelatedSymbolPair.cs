@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Codartis.SoftVis.Graphs;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 

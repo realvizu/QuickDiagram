@@ -30,6 +30,7 @@
     <Allowed From="*" To="MoreLinq.*" />
     <Allowed From="*" To="JetBrains.Annotations" />
     <Allowed From="*" To="Codartis.Util.*" />
+    <Allowed From="*" To="CellWars.Threading" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
     

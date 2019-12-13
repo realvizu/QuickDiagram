@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
+namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
     /// Compares roslyn symbols for equality.

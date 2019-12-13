@@ -3,7 +3,7 @@ using System.Xml;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
+namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     public static class SymbolExtensions
     {

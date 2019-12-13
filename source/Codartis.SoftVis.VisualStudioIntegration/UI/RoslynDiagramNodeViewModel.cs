@@ -2,7 +2,7 @@
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
