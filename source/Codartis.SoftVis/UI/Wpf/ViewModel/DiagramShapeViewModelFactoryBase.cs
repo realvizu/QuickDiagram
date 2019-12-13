@@ -7,15 +7,15 @@ using JetBrains.Annotations;
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
-    /// Base class for factories that create view models from diagram shapes.
+    /// Abstract base class of factories that create view models from diagram shapes.
     /// </summary>
-    public class DiagramShapeViewModelFactory : IDiagramShapeUiFactory
+    public abstract class DiagramShapeViewModelFactoryBase : IDiagramShapeUiFactory
     {
         [NotNull] protected IModelEventSource ModelEventSource { get; }
         [NotNull] protected IDiagramEventSource DiagramEventSource { get; }
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
 
-        public DiagramShapeViewModelFactory(
+        protected DiagramShapeViewModelFactoryBase(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider)
@@ -34,7 +34,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 DiagramEventSource,
                 diagramNode,
                 RelatedNodeTypeProvider,
-                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker);
+                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
+                new DiagramNodeHeaderViewModel { Payload = diagramNode.ModelNode.Payload });
         }
 
         public virtual IDiagramConnectorUi CreateDiagramConnectorUi(

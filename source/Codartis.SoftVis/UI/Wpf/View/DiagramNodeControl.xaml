@@ -11,6 +11,15 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!--The default visualization of the header is just displaying the payload.-->
+            <DataTemplate DataType="{x:Type viewModel:DiagramNodeHeaderViewModel}">
+                <ContentPresenter Content="{Binding Payload}" />
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -20,7 +29,7 @@
         <ContentPresenter Grid.Row="0"
                           Content="{Binding Header}"
                           MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
-                          MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}" >
+                          MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}">
             <i:Interaction.Behaviors>
                 <behaviors:ActualSizeProviderBehavior ActualSize="{Binding ElementName=ThisControl, Path=DataContext.HeaderSize}" />
             </i:Interaction.Behaviors>

@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IDiagramConnector diagramConnector)
             : base(modelEventSource, diagramEventSource, diagramConnector)
         {
-            UpdateDiagramConnector(diagramConnector);
+            SetDiagramConnectorProperties(diagramConnector);
         }
 
         public override string StereotypeName => DiagramConnector.ModelRelationship.Stereotype.Name;
@@ -32,11 +32,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Update([NotNull] IDiagramConnector connector)
         {
-            UpdateDiagramShape(connector);
-            UpdateDiagramConnector(connector);
+            SetDiagramShapeProperties(connector);
+            SetDiagramConnectorProperties(connector);
         }
 
-        private void UpdateDiagramConnector([NotNull] IDiagramConnector connector)
+        private void SetDiagramConnectorProperties([NotNull] IDiagramConnector connector)
         {
             RoutePoints = connector.Route.ToWpf();
         }

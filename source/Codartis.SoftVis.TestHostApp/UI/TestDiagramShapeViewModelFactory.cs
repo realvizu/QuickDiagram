@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp.UI
 {
-    public sealed class TestDiagramShapeViewModelFactory : DiagramShapeViewModelFactory
+    public sealed class TestDiagramShapeViewModelFactory : DiagramShapeViewModelFactoryBase
     {
         public TestDiagramShapeViewModelFactory(
             [NotNull] IModelEventSource modelEventSource,
@@ -27,7 +27,8 @@ namespace Codartis.SoftVis.TestHostApp.UI
                 DiagramEventSource,
                 diagramNode,
                 RelatedNodeTypeProvider,
-                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker);
+                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
+                new DiagramNodeHeaderViewModel { Payload = diagramNode.ModelNode.Payload });
         }
     }
 }

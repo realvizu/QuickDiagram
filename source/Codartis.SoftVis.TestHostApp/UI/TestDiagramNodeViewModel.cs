@@ -14,8 +14,15 @@ namespace Codartis.SoftVis.TestHostApp.UI
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker)
-            : base(modelEventSource, diagramEventSource, diagramNode, relatedNodeTypeProvider, focusTracker)
+            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
+            [NotNull] IDiagramNodeHeaderUi header)
+            : base(
+                modelEventSource,
+                diagramEventSource,
+                diagramNode,
+                relatedNodeTypeProvider,
+                focusTracker,
+                header)
         {
         }
 
@@ -26,7 +33,8 @@ namespace Codartis.SoftVis.TestHostApp.UI
                 DiagramEventSource,
                 DiagramNode,
                 RelatedNodeTypeProvider,
-                FocusTracker);
+                FocusTracker,
+                Header);
         }
     }
 }

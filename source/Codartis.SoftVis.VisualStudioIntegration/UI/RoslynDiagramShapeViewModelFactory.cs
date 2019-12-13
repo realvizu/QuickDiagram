@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    public sealed class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactory, IRoslynDiagramShapeUiFactory
+    public sealed class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactoryBase, IRoslynDiagramShapeUiFactory
     {
         public bool IsDescriptionVisible { get; set; }
 
@@ -43,7 +43,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                         RelatedNodeTypeProvider,
                         (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
                         IsDescriptionVisible,
-                        symbol);
+                        symbol,
+                        new RoslynDiagramNodeHeaderViewModel(symbol, IsDescriptionVisible));
 
                 default:
                     throw new Exception($"Unexpected payload type {payload.GetType().Name}");

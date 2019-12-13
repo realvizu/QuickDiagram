@@ -2,7 +2,6 @@
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
@@ -19,13 +18,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         [NotNull] private readonly ISymbol _symbol;
 
-        // The following properties' value don't ever change so no need to create wrappers that call OnPropertyChanged.
-        public ModelOrigin Origin { get; }
-        public string FullName { get; }
-        public string Description { get; }
-        public bool DescriptionExists { get; }
-        public bool IsAbstract { get; }
-
         public RoslynDiagramNodeViewModel(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
@@ -33,19 +25,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
             bool isDescriptionVisible,
-            [NotNull] ISymbol symbol)
-            : base(modelEventSource, diagramEventSource, diagramNode, relatedNodeTypeProvider, focusTracker)
+            [NotNull] ISymbol symbol,
+            RoslynDiagramNodeHeaderViewModel header)
+            : base(
+                modelEventSource,
+                diagramEventSource,
+                diagramNode,
+                relatedNodeTypeProvider,
+                focusTracker,
+                header)
         {
             _isDescriptionVisible = isDescriptionVisible;
             _symbol = symbol;
-
-            Origin = symbol.GetOrigin();
             Name = symbol.GetName();
-            FullName = symbol.GetFullName();
-            Description = symbol.GetDescription();
-            DescriptionExists = !string.IsNullOrWhiteSpace(Description);
-            IsAbstract = symbol.IsAbstract;
         }
+
+        [NotNull] private RoslynDiagramNodeHeaderViewModel TypedHeader => (RoslynDiagramNodeHeaderViewModel)Header;
 
         public bool IsDescriptionVisible
         {
@@ -56,11 +51,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 {
                     _isDescriptionVisible = value;
                     OnPropertyChanged();
+
+                    TypedHeader.IsDescriptionVisible = value;
                 }
             }
         }
 
-        protected override object GetHeader() => this;
+        protected override void UpdateHeader(IDiagramNode diagramNode)
+        {
+            TypedHeader.Update((ISymbol)diagramNode.ModelNode.Payload);
+        }
 
         protected override DiagramNodeViewModel CreateInstance()
         {
@@ -70,8 +70,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 DiagramNode,
                 RelatedNodeTypeProvider,
                 FocusTracker,
-                IsDescriptionVisible,
-                _symbol);
+                _isDescriptionVisible,
+                _symbol,
+                TypedHeader);
         }
     }
 }

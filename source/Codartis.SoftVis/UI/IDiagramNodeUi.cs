@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.UI
     public interface IDiagramNodeUi : IDiagramShapeUi
     {
         [NotNull] IDiagramNode DiagramNode { get; }
-        [NotNull] object Header { get; }
+        [NotNull] IDiagramNodeHeaderUi Header { get; }
 
         event Action<IDiagramNode> RemoveRequested;
 

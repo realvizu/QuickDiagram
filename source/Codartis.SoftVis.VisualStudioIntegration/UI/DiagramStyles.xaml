@@ -7,7 +7,7 @@
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
-                    xmlns:modeling1="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.Modeling"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
@@ -44,7 +44,7 @@
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}" />
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeHeaderViewModel}">
         <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
                 BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
                 BorderThickness="1"
@@ -86,7 +86,7 @@
         </Border>
 
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Path=Origin}" Value="{x:Static modeling1:ModelOrigin.SourceCode}">
+            <DataTrigger Binding="{Binding Path=Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
                 <Setter TargetName="TextBlock" Property="FontWeight" Value="Bold" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsAbstract}" Value="true">

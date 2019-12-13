@@ -19,7 +19,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _headerSize;
         private Size _childrenAreaSize;
         private bool _hasChildren;
-        private object _header;
+
+        public IDiagramNodeHeaderUi Header { get; }
 
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
         [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
@@ -35,18 +36,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker)
+            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
+            [NotNull] IDiagramNodeHeaderUi header)
             : base(modelEventSource, diagramEventSource, diagramNode)
         {
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
             FocusTracker = focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
+            Header = header;
 
-            UpdateDiagramNode(diagramNode);
+            SetDiagramNodeProperties(diagramNode);
         }
-
-        public ModelNodeStereotype Stereotype => DiagramNode.ModelNode.Stereotype;
-        public override string StereotypeName => Stereotype.Name;
 
         public override void Dispose()
         {
@@ -56,8 +56,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 relatedNodeCueViewModel.Dispose();
         }
 
+        public ModelNodeStereotype Stereotype => DiagramNode.ModelNode.Stereotype;
+        public override string StereotypeName => Stereotype.Name;
         public IDiagramNode DiagramNode => (IDiagramNode)DiagramShape;
         [NotNull] public IModelNode ModelNode => DiagramNode.ModelNode;
+        [NotNull] private DiagramNodeHeaderViewModel HeaderViewModel => (DiagramNodeHeaderViewModel)Header;
 
         public string Name
         {
@@ -114,19 +117,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public object Header
-        {
-            get { return _header; }
-            set
-            {
-                if (_header != value)
-                {
-                    _header = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 
         public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
@@ -150,7 +140,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 DiagramEventSource,
                 DiagramNode,
                 RelatedNodeTypeProvider,
-                FocusTracker);
+                FocusTracker,
+                Header);
         }
 
         private void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
@@ -172,20 +163,23 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Update([NotNull] IDiagramNode diagramNode)
         {
-            UpdateDiagramShape(diagramNode);
-            UpdateDiagramNode(diagramNode);
+            SetDiagramShapeProperties(diagramNode);
+            SetDiagramNodeProperties(diagramNode);
+            UpdateHeader(diagramNode);
         }
 
-        private void UpdateDiagramNode([NotNull] IDiagramNode diagramNode)
+        private void SetDiagramNodeProperties([NotNull] IDiagramNode diagramNode)
         {
             Name = diagramNode.ModelNode.Name;
             ChildrenAreaSize = diagramNode.ChildrenAreaSize.ToWpf();
             HasChildren = GetHasChildren(diagramNode);
-            Header = GetHeader();
             // Must NOT populate size from model because its value flows from the controls to the models.
         }
 
-        protected virtual object GetHeader() => ModelNode.Payload;
+        protected virtual void UpdateHeader([NotNull] IDiagramNode diagramNode)
+        {
+            HeaderViewModel.Payload = diagramNode.ModelNode.Payload;
+        }
 
         private static bool GetHasChildren([NotNull] IDiagramNode diagramNode)
         {

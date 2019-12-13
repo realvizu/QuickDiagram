@@ -12,32 +12,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public abstract class DiagramShapeViewModelBase : ModelObserverViewModelBase, IDiagramShapeUi
     {
-        public IDiagramShape DiagramShape { get; private set; }
+        [NotNull] public IDiagramShape DiagramShape { get; private set; }
         private Rect _rect;
 
         protected DiagramShapeViewModelBase(
-            IModelEventSource modelEventSource,
-            IDiagramEventSource diagramEventSource,
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramShape diagramShape)
             : base(modelEventSource, diagramEventSource)
         {
-            UpdateDiagramShape(diagramShape);
+            SetDiagramShapeProperties(diagramShape);
         }
 
-        protected void UpdateDiagramShape([NotNull] IDiagramShape diagramShape)
+        protected void SetDiagramShapeProperties([NotNull] IDiagramShape diagramShape)
         {
             DiagramShape = diagramShape;
             Rect = diagramShape.Rect.ToWpf();
         }
 
         public abstract string StereotypeName { get; }
-
-        [NotNull]
-        public abstract IDiagramShapeUi CloneForImageExport();
-
-        public virtual IEnumerable<IMiniButton> CreateMiniButtons() => Enumerable.Empty<IMiniButton>();
-
-        public override string ToString() => DiagramShape.ToString();
 
         public Rect Rect
         {
@@ -51,5 +44,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 }
             }
         }
+
+        [NotNull]
+        public abstract IDiagramShapeUi CloneForImageExport();
+
+        public virtual IEnumerable<IMiniButton> CreateMiniButtons() => Enumerable.Empty<IMiniButton>();
+
+        public override string ToString() => DiagramShape.ToString();
     }
 }
