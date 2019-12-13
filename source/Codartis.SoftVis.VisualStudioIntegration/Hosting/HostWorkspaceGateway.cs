@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util;
@@ -51,7 +50,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             var semanticModel = await document.GetSemanticModelAsync();
             var symbol = GetSymbolForSyntaxNode(semanticModel, currentNode);
-            Debug.WriteLine($"symbol={symbol}");
             return Maybe.Create(symbol);
         }
 
