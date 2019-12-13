@@ -16,8 +16,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// </summary>
     public sealed class HostUiGateway : IHostUiService
     {
-        private const string DialogTitle = "Quick Diagram Tool";
-
         private readonly IVisualStudioServices _visualStudioServices;
 
         public HostUiGateway(IVisualStudioServices visualStudioServices)
@@ -30,7 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return _visualStudioServices.ShowToolWindowAsync<DiagramHostToolWindow>();
         }
 
-        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
+        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, Constants.ToolName);
 
         public string SelectSaveFilename(string title, string filter)
         {
@@ -42,7 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         public async Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0)
         {
             var hostMainWindow = await GetMainWindowAsync();
-            return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
+            return new ProgressDialog(hostMainWindow, Constants.ToolName, text, maxProgress);
         }
 
         public void Run(Func<Task> asyncMethod) => ThreadHelper.JoinableTaskFactory.RunAsync(asyncMethod);

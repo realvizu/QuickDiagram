@@ -78,9 +78,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<RoslynDiagramViewModel>().SingleInstance().As<IDiagramUi>();
 
             builder.RegisterType<RoslynDiagramViewportViewModel>().SingleInstance().As<IDiagramViewportUi>()
-                .WithParameter("minZoom", .2)
-                .WithParameter("maxZoom", 5d)
-                .WithParameter("initialZoom", 1d);
+                .WithParameter("minZoom", AppDefaults.MinZoom)
+                .WithParameter("maxZoom", AppDefaults.MaxZoom)
+                .WithParameter("initialZoom", AppDefaults.InitialZoom);
 
             builder.RegisterType<RoslynDiagramShapeViewModelFactory>().SingleInstance().As<IDiagramShapeUiFactory>()
                 .WithParameter("isDescriptionVisible", true);

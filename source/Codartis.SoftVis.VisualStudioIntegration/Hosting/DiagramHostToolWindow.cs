@@ -11,11 +11,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [Guid(PackageGuids.DiagramToolWindowGuidString)]
     public sealed class DiagramHostToolWindow : ToolWindowPane
     {
-        public const string WindowTitle = "Quick Diagram";
-
         public DiagramHostToolWindow(DiagramControl diagramControl)
         {
-            Caption = WindowTitle;
+            Caption = Constants.ToolName;
             ToolBar = new CommandID(PackageGuids.SoftVisCommandSetGuid, PackageIds.ToolWindowToolbar);
             Content = diagramControl;
         }

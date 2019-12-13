@@ -73,12 +73,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return toolWindowType.Equals(PackageGuids.DiagramToolWindowGuid) ? this : null;
         }
 
-        // TODO: Try to delete this. DiagramHostToolWindow sets its own caption. 
-        protected override string GetToolWindowTitle(Type toolWindowType, int id)
-        {
-            return toolWindowType == typeof(DiagramHostToolWindow) ? DiagramHostToolWindow.WindowTitle : null;
-        }
-
         protected override Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
         {
             // Perform as much work as possible in this method which is being run on a background thread.
