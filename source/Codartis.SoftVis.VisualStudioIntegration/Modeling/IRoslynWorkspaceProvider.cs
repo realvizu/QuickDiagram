@@ -6,9 +6,9 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
-    /// Provides access to the Roslyn model of the host environment.
+    /// Provides access to the Roslyn workspace of the host environment.
     /// </summary>
-    public interface IHostModelProvider
+    public interface IRoslynWorkspaceProvider
     {
         /// <summary>
         /// Returns the host workspace object that can be used to access the current Roslyn compilation.

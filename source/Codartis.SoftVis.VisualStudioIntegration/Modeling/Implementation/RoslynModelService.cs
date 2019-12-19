@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly IRelatedSymbolProvider _relatedSymbolProvider;
         [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
-        [NotNull] private readonly IHostModelProvider _hostModelProvider;
+        [NotNull] private readonly IRoslynWorkspaceProvider _roslynWorkspaceProvider;
         [NotNull] private readonly AsyncLock _asyncLock;
 
         public bool ExcludeTrivialTypes { get; set; }
@@ -37,12 +37,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             [NotNull] IModelService modelService,
             [NotNull] IRelatedSymbolProvider relatedSymbolProvider,
             [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer,
-            [NotNull] IHostModelProvider hostModelProvider)
+            [NotNull] IRoslynWorkspaceProvider roslynWorkspaceProvider)
         {
             _modelService = modelService;
             _relatedSymbolProvider = relatedSymbolProvider;
             _symbolEqualityComparer = symbolEqualityComparer;
-            _hostModelProvider = hostModelProvider;
+            _roslynWorkspaceProvider = roslynWorkspaceProvider;
             _asyncLock = new AsyncLock();
         }
 
@@ -120,7 +120,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var workspace = await _hostModelProvider.GetWorkspaceAsync();
+            var workspace = await _roslynWorkspaceProvider.GetWorkspaceAsync();
             var projects = workspace.CurrentSolution.Projects;
             var compilations = (await projects.SelectAsync(async i => await i.GetCompilationAsync(cancellationToken))).ToArray();
 

@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 {
     /// <summary>
-    /// Wraps a model service with Roslyn-specific operations.
+    /// Connects our own model with the underlying Roslyn model.
     /// </summary>
     internal interface IRoslynModelService
     {
@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         bool ExcludeTrivialTypes { get; set; }
 
         /// <summary>
-        /// Returns the Roslyn symbol fot a given model node.
+        /// Returns the Roslyn symbol for a given model node.
         /// </summary>
         [NotNull]
         ISymbol GetSymbol([NotNull] IModelNode modelNode);

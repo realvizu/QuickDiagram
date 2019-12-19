@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     /// <summary>
     /// Gets information from Visual Studio about the current solution, projects and source documents.
     /// </summary>
-    internal sealed class HostWorkspaceGateway : IHostModelProvider
+    internal sealed class HostWorkspaceGateway : IRoslynWorkspaceProvider
     {
         private const string CSharpContentTypeName = "CSharp";
 

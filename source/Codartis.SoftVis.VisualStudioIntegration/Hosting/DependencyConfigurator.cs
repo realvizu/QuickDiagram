@@ -125,7 +125,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private static void RegisterHostComponents(ContainerBuilder builder, IVisualStudioServices visualStudioServices)
         {
             var softVisPackage = new TypedParameter(typeof(IVisualStudioServices), visualStudioServices);
-            builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IHostModelProvider>().SingleInstance();
+            builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IRoslynWorkspaceProvider>().SingleInstance();
             builder.RegisterType<HostUiGateway>().WithParameter(softVisPackage).As<IHostUiService>().SingleInstance();
 
             builder.RegisterInstance(visualStudioServices).As<IVisualStudioServices>();

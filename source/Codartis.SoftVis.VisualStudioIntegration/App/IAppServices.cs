@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     /// </summary>
     internal interface IAppServices
     {
-        [NotNull] IHostModelProvider HostModelProvider { get; }
+        [NotNull] IRoslynWorkspaceProvider RoslynWorkspaceProvider { get; }
         [NotNull] IRoslynModelService RoslynModelService { get; }
         [NotNull] IDiagramService DiagramService { get; }
         [NotNull] IDiagramWindowService DiagramWindowService { get; }

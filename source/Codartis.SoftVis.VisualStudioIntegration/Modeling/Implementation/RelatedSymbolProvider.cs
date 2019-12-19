@@ -13,15 +13,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         private delegate Task<IEnumerable<RelatedSymbolPair>> SymbolFinderDelegate(ISymbol symbol);
 
-        [NotNull] private readonly IHostModelProvider _hostModelProvider;
+        [NotNull] private readonly IRoslynWorkspaceProvider _roslynWorkspaceProvider;
         [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
         [NotNull] private readonly IDictionary<ModelNodeStereotype, IDictionary<DirectedModelRelationshipType, SymbolFinderDelegate>> _symbolFinderMethods;
 
         public RelatedSymbolProvider(
-            [NotNull] IHostModelProvider hostModelProvider,
+            [NotNull] IRoslynWorkspaceProvider roslynWorkspaceProvider,
             [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer)
         {
-            _hostModelProvider = hostModelProvider;
+            _roslynWorkspaceProvider = roslynWorkspaceProvider;
             _symbolEqualityComparer = symbolEqualityComparer;
             _symbolFinderMethods = CreateSymbolFinderMethodsMap();
         }
@@ -207,7 +207,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemCanBeNull]
         private async Task<Solution> GetCurrentSolutionAsync()
         {
-            var workspace = await _hostModelProvider.GetWorkspaceAsync();
+            var workspace = await _roslynWorkspaceProvider.GetWorkspaceAsync();
             return workspace?.CurrentSolution;
         }
     }

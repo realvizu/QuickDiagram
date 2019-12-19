@@ -15,11 +15,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override async Task<bool> IsEnabledAsync() => (await HostModelProvider.TryGetCurrentSymbolAsync()).HasValue;
+        public override async Task<bool> IsEnabledAsync() => (await RoslynWorkspaceProvider.TryGetCurrentSymbolAsync()).HasValue;
 
         protected async Task<Maybe<IModelNode>> TryAddCurrentSymbolToDiagramAsync()
         {
-            var maybeSymbol = await HostModelProvider.TryGetCurrentSymbolAsync();
+            var maybeSymbol = await RoslynWorkspaceProvider.TryGetCurrentSymbolAsync();
             if (!maybeSymbol.HasValue)
                 return Maybe<IModelNode>.Nothing;
 

@@ -27,8 +27,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             var symbol = RoslynModelService.GetSymbol(_diagramNode.ModelNode);
 
-            if (await HostModelProvider.HasSourceAsync(symbol))
-                await HostModelProvider.ShowSourceAsync(symbol);
+            if (await RoslynWorkspaceProvider.HasSourceAsync(symbol))
+                await RoslynWorkspaceProvider.ShowSourceAsync(symbol);
             else
                 DiagramWindowService.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
         }
