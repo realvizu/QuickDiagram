@@ -6,10 +6,7 @@ namespace Codartis.Util
 {
     public static class ObjectExtensions
     {
-        public static bool In([NotNull] this object o, [NotNull] params object[] others)
-        {
-            return others.Any(o.Equals);
-        }
+        public static bool In<T>([NotNull] this T o, [NotNull] params T[] others) => others.Any(i => o.Equals(i));
 
         [NotNull]
         public static T Ensure<T>([CanBeNull] this object o)

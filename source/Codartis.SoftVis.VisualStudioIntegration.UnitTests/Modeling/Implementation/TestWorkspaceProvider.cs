@@ -5,7 +5,6 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementation
@@ -33,8 +32,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
 
         public async Task<ISymbol> GetSymbolAsync(string symbolName)
         {
-            var project = _workspace.CurrentSolution.GetProject(_projectId);
-            var symbols = await SymbolFinder.FindDeclarationsAsync(project, symbolName, ignoreCase: false);
+            var compilation = await _workspace.CurrentSolution.GetProject(_projectId).GetCompilationAsync();
+            var symbols = compilation.GetSymbolsWithName(symbolName);
             return symbols.First();
         }
 

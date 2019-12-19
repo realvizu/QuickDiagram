@@ -26,5 +26,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         public static readonly DirectedModelRelationshipType AssociatingType =
             new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Association, EdgeDirection.In);
 
+        public static readonly DirectedModelRelationshipType Member =
+            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Member, EdgeDirection.Out);
+
+        public static readonly DirectedModelRelationshipType DeclaringType =
+            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Member, EdgeDirection.In);
     }
 }

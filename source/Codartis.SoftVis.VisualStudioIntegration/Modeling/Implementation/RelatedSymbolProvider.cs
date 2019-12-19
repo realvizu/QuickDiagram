@@ -13,6 +13,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         private delegate Task<IEnumerable<RelatedSymbolPair>> SymbolFinderDelegate(ISymbol symbol);
 
+        [NotNull] private static readonly SymbolKind[] MemberSymbolKinds = { SymbolKind.Event, SymbolKind.Field, SymbolKind.Method, SymbolKind.Property };
+        [NotNull] private static readonly MethodKind[] MethodMemberMethodKinds = { MethodKind.Ordinary };
+
         [NotNull] private readonly IRoslynWorkspaceProvider _roslynWorkspaceProvider;
         [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
         [NotNull] private readonly IDictionary<ModelNodeStereotype, IDictionary<DirectedModelRelationshipType, SymbolFinderDelegate>> _symbolFinderMethods;
@@ -26,6 +29,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             _symbolFinderMethods = CreateSymbolFinderMethodsMap();
         }
 
+        /// <remarks>
+        /// This cannot be a field with an initializer because it references non-static methods.
+        /// </remarks>
         [NotNull]
         private IDictionary<ModelNodeStereotype, IDictionary<DirectedModelRelationshipType, SymbolFinderDelegate>> CreateSymbolFinderMethodsMap()
         {
@@ -36,16 +42,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     [DirectedModelRelationshipTypes.BaseType] = GetBaseTypesAsync,
                     [DirectedModelRelationshipTypes.Subtype] = GetDerivedTypesAsync,
                     [DirectedModelRelationshipTypes.ImplementedInterface] = GetImplementedInterfacesAsync,
+                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
                 },
                 [ModelNodeStereotypes.Interface] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
                     [DirectedModelRelationshipTypes.BaseType] = GetBaseInterfacesAsync,
                     [DirectedModelRelationshipTypes.Subtype] = GetDerivedInterfacesAsync,
                     [DirectedModelRelationshipTypes.ImplementerType] = GetImplementingTypesAsync,
+                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
                 },
                 [ModelNodeStereotypes.Struct] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
                     [DirectedModelRelationshipTypes.ImplementedInterface] = GetImplementedInterfacesAsync,
+                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
+                },
+                [ModelNodeStereotypes.Enum] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
+                {
+                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
                 },
             };
         }
@@ -192,6 +205,30 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             return result;
         }
+
+        [NotNull]
+        [ItemNotNull]
+        private static Task<IEnumerable<RelatedSymbolPair>> GetMembersAsync([NotNull] ISymbol symbol)
+        {
+            var typeSymbol = symbol.Ensure<ITypeSymbol>();
+
+            var result = typeSymbol.GetMembers()
+                .Where(IsModeledMember)
+                .Where(IfMethodThenModeledMethod)
+                .Where(IsExplicitlyDeclared)
+                .Select(i => new RelatedSymbolPair(typeSymbol, i, DirectedModelRelationshipTypes.Member));
+
+            return Task.FromResult(result);
+        }
+
+        private static bool IsModeledMember([NotNull] ISymbol i) => i.Kind.In(MemberSymbolKinds);
+
+        private static bool IfMethodThenModeledMethod([NotNull] ISymbol i)
+        {
+            return !(i is IMethodSymbol methodSymbol) || methodSymbol.MethodKind.In(MethodMemberMethodKinds);
+        }
+
+        private static bool IsExplicitlyDeclared([NotNull] ISymbol i) => !i.IsImplicitlyDeclared;
 
         [NotNull]
         [ItemNotNull]
