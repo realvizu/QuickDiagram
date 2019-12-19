@@ -31,7 +31,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
             _workspace.AddDocument(_projectId, documentName, SourceText.From(sourceText));
         }
 
-        public async Task<ISymbol> GetSymbolByNameAsync(string symbolName)
+        public async Task<ISymbol> GetSymbolAsync(string symbolName)
         {
             var project = _workspace.CurrentSolution.GetProject(_projectId);
             var symbols = await SymbolFinder.FindDeclarationsAsync(project, symbolName, ignoreCase: false);
