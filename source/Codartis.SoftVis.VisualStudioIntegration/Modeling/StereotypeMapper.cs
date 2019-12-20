@@ -10,9 +10,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         {
             switch (symbol.Kind)
             {
-                //case SymbolKind.Field:
-                //case SymbolKind.Event:
-                //case SymbolKind.Method:
+                case SymbolKind.Field:
+                    return ModelNodeStereotypes.Field;
+                case SymbolKind.Event:
+                    return ModelNodeStereotypes.Event;
+                case SymbolKind.Method:
+                    return ModelNodeStereotypes.Method;
                 case SymbolKind.Property:
                     return ModelNodeStereotypes.Property;
                 case SymbolKind.NamedType:

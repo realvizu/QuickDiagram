@@ -320,7 +320,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
             var sourceNode = GetNode(relationship.Source);
             var targetNode = GetNode(relationship.Target);
 
-            return _modelRuleProviders?.All(i => i.IsRelationshipStereotypeValid(relationship.Stereotype, sourceNode, targetNode)) == true;
+            return _modelRuleProviders?.All(i => i.IsRelationshipTypeValid(relationship.Stereotype, sourceNode, targetNode)) == true;
         }
 
         [NotNull]

@@ -39,26 +39,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             {
                 [ModelNodeStereotypes.Class] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
+                    [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
                     [DirectedModelRelationshipTypes.BaseType] = GetBaseTypesAsync,
                     [DirectedModelRelationshipTypes.Subtype] = GetDerivedTypesAsync,
                     [DirectedModelRelationshipTypes.ImplementedInterface] = GetImplementedInterfacesAsync,
-                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
                 },
                 [ModelNodeStereotypes.Interface] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
+                    [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
                     [DirectedModelRelationshipTypes.BaseType] = GetBaseInterfacesAsync,
                     [DirectedModelRelationshipTypes.Subtype] = GetDerivedInterfacesAsync,
                     [DirectedModelRelationshipTypes.ImplementerType] = GetImplementingTypesAsync,
-                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
                 },
                 [ModelNodeStereotypes.Struct] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
+                    [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
                     [DirectedModelRelationshipTypes.ImplementedInterface] = GetImplementedInterfacesAsync,
-                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
                 },
                 [ModelNodeStereotypes.Enum] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
-                    [DirectedModelRelationshipTypes.Member] = GetMembersAsync,
+                    [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
                 },
             };
         }
@@ -216,7 +216,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 .Where(IsModeledMember)
                 .Where(IfMethodThenModeledMethod)
                 .Where(IsExplicitlyDeclared)
-                .Select(i => new RelatedSymbolPair(typeSymbol, i, DirectedModelRelationshipTypes.Member));
+                .Select(i => new RelatedSymbolPair(typeSymbol, i, CommonDirectedModelRelationshipTypes.Contained));
 
             return Task.FromResult(result);
         }

@@ -88,7 +88,7 @@ namespace Codartis.SoftVis.UnitTests.Modeling
 
         private sealed class AllInvalidModelRuleProvider : IModelRuleProvider
         {
-            public bool IsRelationshipStereotypeValid(ModelRelationshipStereotype modelRelationshipStereotype, IModelNode source, IModelNode target)
+            public bool IsRelationshipTypeValid(ModelRelationshipStereotype modelRelationshipStereotype, IModelNode source, IModelNode target)
             {
                 return false;
             }

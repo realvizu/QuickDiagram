@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using FluentAssertions;
@@ -32,8 +33,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), DirectedModelRelationshipTypes.BaseType),
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C3"), DirectedModelRelationshipTypes.Subtype),
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("I1"), DirectedModelRelationshipTypes.ImplementedInterface),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("_f1"), DirectedModelRelationshipTypes.Member),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("m1"), DirectedModelRelationshipTypes.Member)
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("_f1"), CommonDirectedModelRelationshipTypes.Contained),
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("m1"), CommonDirectedModelRelationshipTypes.Contained)
             );
         }
 
@@ -60,8 +61,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("I1"), DirectedModelRelationshipTypes.BaseType),
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("I3"), DirectedModelRelationshipTypes.Subtype),
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), DirectedModelRelationshipTypes.ImplementerType),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("m1"), DirectedModelRelationshipTypes.Member),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("P1"), DirectedModelRelationshipTypes.Member)
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("m1"), CommonDirectedModelRelationshipTypes.Contained),
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("P1"), CommonDirectedModelRelationshipTypes.Contained)
             );
         }
 
@@ -84,8 +85,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
 
             relatedSymbolPairs.Should().BeEquivalentTo(
                 new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("I1"), DirectedModelRelationshipTypes.ImplementedInterface),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("_f1"), DirectedModelRelationshipTypes.Member),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("m1"), DirectedModelRelationshipTypes.Member)
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("_f1"), CommonDirectedModelRelationshipTypes.Contained),
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("m1"), CommonDirectedModelRelationshipTypes.Contained)
             );
         }
 
@@ -106,8 +107,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
             var relatedSymbolPairs = await CreateRelatedSymbolProvider(modelProvider).GetRelatedSymbolsAsync(baseSymbol);
 
             relatedSymbolPairs.Should().BeEquivalentTo(
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), DirectedModelRelationshipTypes.Member),
-                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C2"), DirectedModelRelationshipTypes.Member)
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), CommonDirectedModelRelationshipTypes.Contained),
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C2"), CommonDirectedModelRelationshipTypes.Contained)
             );
         }
 

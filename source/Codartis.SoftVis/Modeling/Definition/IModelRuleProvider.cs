@@ -7,6 +7,12 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// </summary>
     public interface IModelRuleProvider
     {
-        bool IsRelationshipStereotypeValid(ModelRelationshipStereotype modelRelationshipStereotype, [NotNull] IModelNode source, [NotNull] IModelNode target);
+        /// <summary>
+        /// Returns a value indicating whether the given relationship stereotype is valid between the given source and target node.
+        /// </summary>
+        bool IsRelationshipTypeValid(
+            ModelRelationshipStereotype modelRelationshipStereotype,
+            [NotNull] IModelNode source,
+            [NotNull] IModelNode target);
     }
 }
