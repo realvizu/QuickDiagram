@@ -15,16 +15,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
     internal sealed class ModelExtenderDiagramPlugin : DiagramPluginBase
     {
         [NotNull] private readonly IHostUiService _hostUiServices;
-        [NotNull] private readonly IRoslynModelService _roslynModelService;
+        [NotNull] private readonly IRoslynBasedModelService _roslynBasedModelService;
 
         public ModelExtenderDiagramPlugin(
-            [NotNull] IRoslynModelService roslynModelService,
+            [NotNull] IRoslynBasedModelService roslynBasedModelService,
             [NotNull] IDiagramService diagramService,
             [NotNull] IHostUiService hostUiServices)
             : base(diagramService)
         {
             _hostUiServices = hostUiServices;
-            _roslynModelService = roslynModelService;
+            _roslynBasedModelService = roslynBasedModelService;
 
             DiagramService.DiagramChanged += OnDiagramChanged;
         }
@@ -60,7 +60,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Plugins
         [NotNull]
         private async Task ExtendModelNodeAsync([NotNull] IModelNode modelNode)
         {
-            await _roslynModelService.ExtendModelWithRelatedNodesAsync(modelNode, recursive: false);
+            await _roslynBasedModelService.ExtendModelWithRelatedNodesAsync(modelNode, recursive: false);
         }
     }
 }

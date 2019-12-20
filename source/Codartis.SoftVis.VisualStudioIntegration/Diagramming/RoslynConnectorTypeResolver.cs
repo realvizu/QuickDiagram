@@ -11,9 +11,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         private static readonly Dictionary<ModelRelationshipStereotype, ConnectorType> ModelRelationshipTypeToConnectorTypeMap =
             new Dictionary<ModelRelationshipStereotype, ConnectorType>
             {
-                { RoslynModelRelationshipStereotypes.Inheritance, RoslynConnectorTypes.Generalization },
-                { RoslynModelRelationshipStereotypes.Implementation, RoslynConnectorTypes.Implementation },
-                { RoslynModelRelationshipStereotypes.Association, RoslynConnectorTypes.Association },
+                { ModelRelationshipStereotypes.Inheritance, RoslynConnectorTypes.Generalization },
+                { ModelRelationshipStereotypes.Implementation, RoslynConnectorTypes.Implementation },
+                { ModelRelationshipStereotypes.Association, RoslynConnectorTypes.Association },
             };
 
         public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)

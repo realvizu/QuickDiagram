@@ -21,7 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
     internal sealed class DiagramToolApplication : IAppServices
     {
         public IRoslynWorkspaceProvider RoslynWorkspaceProvider { get; }
-        public IRoslynModelService RoslynModelService { get; }
+        public IRoslynBasedModelService RoslynBasedModelService { get; }
         public IDiagramService DiagramService { get; }
         public IDiagramWindowService DiagramWindowService { get; }
         public IHostUiService HostUiService { get; }
@@ -29,7 +29,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         public DiagramToolApplication(
             [NotNull] IVisualizationService visualizationService,
             [NotNull] IRoslynWorkspaceProvider roslynWorkspaceProvider,
-            [NotNull] IRoslynModelService roslynModelService,
+            [NotNull] IRoslynBasedModelService roslynBasedModelService,
             [NotNull] IHostUiService hostUiService)
         {
             var diagramId = visualizationService.CreateDiagram();
@@ -43,8 +43,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
             RoslynWorkspaceProvider = roslynWorkspaceProvider;
 
-            RoslynModelService = roslynModelService;
-            RoslynModelService.ExcludeTrivialTypes = AppDefaults.ExcludeTrivialTypes;
+            RoslynBasedModelService = roslynBasedModelService;
+            RoslynBasedModelService.ExcludeTrivialTypes = AppDefaults.ExcludeTrivialTypes;
 
             HostUiService = hostUiService;
         }

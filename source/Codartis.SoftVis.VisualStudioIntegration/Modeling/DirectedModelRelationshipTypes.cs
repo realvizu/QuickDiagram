@@ -9,27 +9,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     public static class DirectedModelRelationshipTypes
     {
         public static readonly DirectedModelRelationshipType BaseType = 
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Inheritance, EdgeDirection.Out);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Inheritance, EdgeDirection.Out);
         
         public static readonly DirectedModelRelationshipType Subtype =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Inheritance, EdgeDirection.In);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Inheritance, EdgeDirection.In);
 
         public static readonly DirectedModelRelationshipType ImplementedInterface =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Implementation, EdgeDirection.Out);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Implementation, EdgeDirection.Out);
 
         public static readonly DirectedModelRelationshipType ImplementerType =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Implementation, EdgeDirection.In);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Implementation, EdgeDirection.In);
         
         public static readonly DirectedModelRelationshipType AssociatedType =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Association, EdgeDirection.Out);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Association, EdgeDirection.Out);
 
         public static readonly DirectedModelRelationshipType AssociatingType =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Association, EdgeDirection.In);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Association, EdgeDirection.In);
 
         public static readonly DirectedModelRelationshipType Member =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Member, EdgeDirection.Out);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Member, EdgeDirection.Out);
 
         public static readonly DirectedModelRelationshipType DeclaringType =
-            new DirectedModelRelationshipType(RoslynModelRelationshipStereotypes.Member, EdgeDirection.In);
+            new DirectedModelRelationshipType(ModelRelationshipStereotypes.Member, EdgeDirection.In);
     }
 }

@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (!maybeSymbol.HasValue)
                 return Maybe<IModelNode>.Nothing;
 
-            var modelNode = RoslynModelService.GetOrAddNode(maybeSymbol.Value);
+            var modelNode = RoslynBasedModelService.GetOrAddNode(maybeSymbol.Value);
             DiagramService.AddNode(modelNode.Id);
             return Maybe.Create(modelNode);
         }

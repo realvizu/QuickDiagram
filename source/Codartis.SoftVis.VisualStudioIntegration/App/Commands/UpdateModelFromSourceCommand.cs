@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
                 try
                 {
-                    await RoslynModelService.UpdateFromSourceAsync(progressDialog.CancellationToken, progressDialog.Progress);
+                    await RoslynBasedModelService.UpdateFromSourceAsync(progressDialog.CancellationToken, progressDialog.Progress);
                 }
                 catch (OperationCanceledException)
                 {

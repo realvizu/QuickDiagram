@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// <summary>
     /// Wraps a model service with Roslyn-specific operations.
     /// </summary>
-    internal sealed class RoslynModelService : IRoslynModelService
+    internal sealed class RoslynBasedModelService : IRoslynBasedModelService
     {
         [NotNull]
         [ItemNotNull]
@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public bool ExcludeTrivialTypes { get; set; }
 
-        public RoslynModelService(
+        public RoslynBasedModelService(
             [NotNull] IModelService modelService,
             [NotNull] IRelatedSymbolProvider relatedSymbolProvider,
             [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer,

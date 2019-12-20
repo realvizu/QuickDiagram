@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 
         public override async Task ExecuteAsync()
         {
-            var symbol = RoslynModelService.GetSymbol(_diagramNode.ModelNode);
+            var symbol = RoslynBasedModelService.GetSymbol(_diagramNode.ModelNode);
 
             if (await RoslynWorkspaceProvider.HasSourceAsync(symbol))
                 await RoslynWorkspaceProvider.ShowSourceAsync(symbol);

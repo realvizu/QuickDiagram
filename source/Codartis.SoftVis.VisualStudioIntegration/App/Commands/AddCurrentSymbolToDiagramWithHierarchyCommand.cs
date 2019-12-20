@@ -69,13 +69,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             IIncrementalProgress progress)
         {
             await Task.WhenAll(
-                RoslynModelService.ExtendModelWithRelatedNodesAsync(
+                RoslynBasedModelService.ExtendModelWithRelatedNodesAsync(
                     modelNode,
                     DirectedModelRelationshipTypes.BaseType,
                     cancellationToken,
                     progress,
                     recursive: true),
-                RoslynModelService.ExtendModelWithRelatedNodesAsync(
+                RoslynBasedModelService.ExtendModelWithRelatedNodesAsync(
                     modelNode,
                     DirectedModelRelationshipTypes.Subtype,
                     cancellationToken,
@@ -102,7 +102,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             CancellationToken cancellationToken,
             IIncrementalProgress progress)
         {
-            var model = RoslynModelService.LatestModel;
+            var model = RoslynBasedModelService.LatestModel;
 
             var baseTypeIds = model.GetRelatedNodes(nodeId, DirectedModelRelationshipTypes.BaseType, recursive: true).Select(i => i.Id);
             var subtypeIds = model.GetRelatedNodes(nodeId, DirectedModelRelationshipTypes.Subtype, recursive: true).Select(i => i.Id);

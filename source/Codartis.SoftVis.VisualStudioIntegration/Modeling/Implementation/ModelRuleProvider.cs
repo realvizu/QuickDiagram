@@ -16,17 +16,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     (ModelNodeStereotypes.Class, ModelNodeStereotypes.Property),
                     (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Property)
                 },
-                [RoslynModelRelationshipStereotypes.Association] = new[]
+                [ModelRelationshipStereotypes.Association] = new[]
                 {
                     (ModelNodeStereotypes.Property, ModelNodeStereotypes.Class),
                     (ModelNodeStereotypes.Property, ModelNodeStereotypes.Interface)
                 },
-                [RoslynModelRelationshipStereotypes.Implementation] = new[]
+                [ModelRelationshipStereotypes.Implementation] = new[]
                 {
                     (ModelNodeStereotypes.Class, ModelNodeStereotypes.Interface),
                     (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Interface)
                 },
-                [RoslynModelRelationshipStereotypes.Inheritance] = new[]
+                [ModelRelationshipStereotypes.Inheritance] = new[]
                 {
                     (ModelNodeStereotypes.Class, ModelNodeStereotypes.Class),
                     (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Interface)

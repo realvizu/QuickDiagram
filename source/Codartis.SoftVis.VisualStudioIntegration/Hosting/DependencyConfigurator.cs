@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>().SingleInstance();
             builder.RegisterType<RelatedSymbolProvider>().As<IRelatedSymbolProvider>().SingleInstance();
-            builder.RegisterType<RoslynModelService>().As<IRoslynModelService>().SingleInstance();
+            builder.RegisterType<RoslynBasedModelService>().As<IRoslynBasedModelService>().SingleInstance();
         }
 
         private static void RegisterDiagramComponents(ContainerBuilder builder)

@@ -10,7 +10,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// <summary>
     /// Connects our own model with the underlying Roslyn model.
     /// </summary>
-    internal interface IRoslynModelService
+    internal interface IRoslynBasedModelService
     {
         [NotNull]
         IModel LatestModel { get; }
