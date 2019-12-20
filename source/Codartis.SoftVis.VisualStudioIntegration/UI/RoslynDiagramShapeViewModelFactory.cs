@@ -1,5 +1,4 @@
-﻿using System;
-using Codartis.SoftVis.Diagramming.Definition;
+﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -30,24 +29,31 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             var payload = diagramNode.ModelNode.Payload;
 
-            switch (payload)
-            {
-                case null:
-                    return null;
+            if (!(payload is ISymbol symbol))
+                return null;
 
-                case ISymbol symbol:
-                    return new RoslynDiagramNodeViewModel(
-                        ModelEventSource,
-                        DiagramEventSource,
-                        diagramNode,
-                        RelatedNodeTypeProvider,
-                        (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
-                        IsDescriptionVisible,
-                        symbol,
-                        new RoslynDiagramNodeHeaderViewModel(symbol, IsDescriptionVisible));
+            var headerUi = CreateDiagramNodeHeaderUi(symbol);
+
+            return new RoslynDiagramNodeViewModel(
+                ModelEventSource,
+                DiagramEventSource,
+                diagramNode,
+                RelatedNodeTypeProvider,
+                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
+                IsDescriptionVisible,
+                symbol,
+                headerUi);
+        }
+
+        private RoslynDiagramNodeHeaderViewModelBase CreateDiagramNodeHeaderUi(ISymbol symbol)
+        {
+            switch (symbol)
+            {
+                case INamedTypeSymbol namedTypeSymbol:
+                    return new RoslynTypeDiagramNodeHeaderViewModel(namedTypeSymbol, IsDescriptionVisible);
 
                 default:
-                    throw new Exception($"Unexpected payload type {payload.GetType().Name}");
+                    return new RoslynMemberDiagramNodeHeaderViewModel(symbol);
             }
         }
     }

@@ -26,7 +26,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
             bool isDescriptionVisible,
             [NotNull] ISymbol symbol,
-            RoslynDiagramNodeHeaderViewModel header)
+            RoslynDiagramNodeHeaderViewModelBase header)
             : base(
                 modelEventSource,
                 diagramEventSource,
@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             Name = symbol.GetName();
         }
 
-        [NotNull] private RoslynDiagramNodeHeaderViewModel TypedHeader => (RoslynDiagramNodeHeaderViewModel)Header;
+        [NotNull] private RoslynDiagramNodeHeaderViewModelBase TypedHeader => (RoslynDiagramNodeHeaderViewModelBase)Header;
 
         public bool IsDescriptionVisible
         {

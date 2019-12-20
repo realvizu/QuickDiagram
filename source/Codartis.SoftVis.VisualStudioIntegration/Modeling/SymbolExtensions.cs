@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
@@ -53,7 +54,24 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
             return summary;
         }
 
-        public static string GetName(this ISymbol symbol) => symbol.GetMinimallyQualifiedName();
+        public static string GetName(this ISymbol symbol)
+        {
+            switch (symbol)
+            {
+                case IMethodSymbol methodSymbol:
+                    var parametersString = string.Join(", ", methodSymbol.Parameters.Select(ToDisplayString));
+                    return $"{methodSymbol.Name}({parametersString})";
+                default:
+                    return symbol.GetMinimallyQualifiedName();
+            }
+        }
+
+        [NotNull]
+        private static string ToDisplayString([NotNull] IParameterSymbol parameterSymbol)
+        {
+            return $"{parameterSymbol.Type?.Name} {parameterSymbol.Name}";
+        }
+
         public static string GetFullName(this ISymbol symbol) => symbol.GetNamespaceQualifiedName();
         public static string GetDescription(this ISymbol symbol) => symbol.GetCommentSummary()?.Trim();
     }

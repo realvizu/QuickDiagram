@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    public sealed class RoslynDiagramNodeHeaderViewModel : ViewModelBase, IDiagramNodeHeaderUi
+    public abstract class RoslynDiagramNodeHeaderViewModelBase : ViewModelBase, IDiagramNodeHeaderUi
     {
         private ModelOrigin _origin;
         private ModelNodeStereotype _stereotype;
@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _isDescriptionVisible;
         private bool _isAbstract;
 
-        public RoslynDiagramNodeHeaderViewModel([NotNull] ISymbol symbol, bool isDescriptionVisible)
+        protected RoslynDiagramNodeHeaderViewModelBase([NotNull] ISymbol symbol, bool isDescriptionVisible)
         {
             _isDescriptionVisible = isDescriptionVisible;
             SetProperties(symbol);

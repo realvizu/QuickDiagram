@@ -17,8 +17,10 @@
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <system:Double x:Key="DiagramNodeHeaderMinHeight">46</system:Double>
-    <system:Double x:Key="DiagramNodeHeaderMinWidth">50</system:Double>
+    <system:Double x:Key="TypeDiagramNodeHeaderMinHeight">46</system:Double>
+    <system:Double x:Key="TypeDiagramNodeHeaderMinWidth">50</system:Double>
+    <system:Double x:Key="MemberDiagramNodeHeaderMinHeight">20</system:Double>
+    <system:Double x:Key="MemberDiagramNodeHeaderMinWidth">50</system:Double>
     <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
     <system:Double x:Key="DiagramNodeMaxWidth">250</system:Double>
 
@@ -44,12 +46,12 @@
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}" />
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModel:RoslynDiagramNodeHeaderViewModel}">
+    <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeHeaderViewModel}">
         <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
                 BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
                 BorderThickness="1"
-                MinHeight="{StaticResource DiagramNodeHeaderMinHeight}"
-                MinWidth="{StaticResource DiagramNodeHeaderMinWidth}"
+                MinHeight="{StaticResource TypeDiagramNodeHeaderMinHeight}"
+                MinWidth="{StaticResource TypeDiagramNodeHeaderMinWidth}"
                 ToolTip="{Binding Path=FullName}">
             <StackPanel Orientation="Vertical">
                 <Grid>
@@ -93,6 +95,27 @@
                 <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
             </DataTrigger>
         </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:RoslynMemberDiagramNodeHeaderViewModel}">
+        <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
+                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
+                BorderThickness="1"
+                MinWidth="{StaticResource MemberDiagramNodeHeaderMinWidth}"
+                ToolTip="{Binding Path=FullName}">
+            <StackPanel Orientation="Horizontal"
+                        Margin="4">
+                <Image Margin="1"
+                       HorizontalAlignment="Left"
+                       Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}" />
+                <TextBlock x:Name="TextBlock"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Text="{Binding Path=Name, Mode=OneWay}"
+                           TextWrapping="Wrap"
+                           TextTrimming="WordEllipsis" />
+            </StackPanel>
+        </Border>
     </DataTemplate>
 
 </ResourceDictionary>
