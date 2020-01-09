@@ -46,6 +46,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related node. Default is false.</param>
+        // TODO: not SRP, move it into a ModelExtender class
         [NotNull]
         Task ExtendModelWithRelatedNodesAsync(
             [NotNull] IModelNode node,
@@ -59,6 +60,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
+        // TODO: not SRP, move it into a ModelUpdater class
         [NotNull]
         Task UpdateFromSourceAsync(
             CancellationToken cancellationToken = default,

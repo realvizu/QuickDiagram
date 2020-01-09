@@ -13,7 +13,6 @@
     <UserControl.Resources>
         <converters:ThicknessToDoubleConverter x:Key="ThicknessToDoubleConverter"/>
         <converters:ThicknessMultiplierConverter x:Key="ThicknessMultiplierConverter"/>
-        <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"/>
     </UserControl.Resources>
 
     <Button Width="{Binding Path=Width, ElementName=ThisControl}"
@@ -35,13 +34,7 @@
                     <Ellipse x:Name="PressedEffect" Fill="Black" Opacity=".4"
                              Visibility="Collapsed" />
 
-                    <ContentPresenter
-                        Width="{TemplateBinding Width,
-                            Converter={StaticResource DoubleMultiplierConverter}, 
-                            ConverterParameter=.7}"
-                        Height="{TemplateBinding Height, 
-                            Converter={StaticResource DoubleMultiplierConverter}, 
-                            ConverterParameter=.7}" />
+                    <ContentPresenter Margin="1.5" />
 
                     <Ellipse x:Name="Border" Fill="Transparent" 
                              StrokeThickness="{TemplateBinding BorderThickness, 

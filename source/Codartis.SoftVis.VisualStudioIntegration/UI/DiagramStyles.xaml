@@ -13,12 +13,12 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
-        <ResourceDictionary Source="/QuickDiagramTool;component/UI/DecoratorPlacementDictionary.xaml" />
+        <ResourceDictionary Source="/QuickDiagramTool;component/UI/MiniButtonStyles.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <system:Double x:Key="TypeDiagramNodeHeaderMinHeight">46</system:Double>
-    <system:Double x:Key="TypeDiagramNodeHeaderMinWidth">50</system:Double>
+    <system:Double x:Key="TypeDiagramNodeHeaderMinWidth">60</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinHeight">20</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinWidth">50</system:Double>
     <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
@@ -36,8 +36,8 @@
         <Setter Property="DiagramFill" Value="White" />
         <Setter Property="DiagramStroke" Value="Black" />
         <Setter Property="PanAndZoomControlHeight" Value="120" />
-        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}" />
-        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}" />
+        <Setter Property="RelatedNodeCuePlacementMap" Value="{StaticResource RelatedNodeCuePlacementMap}" />
+        <Setter Property="MiniButtonPlacementMap" Value="{StaticResource MiniButtonPlacementMap}" />
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}"

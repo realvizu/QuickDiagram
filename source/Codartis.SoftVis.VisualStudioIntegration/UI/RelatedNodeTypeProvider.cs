@@ -20,6 +20,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 yield return new RelatedNodeType(DirectedModelRelationshipTypes.Subtype, "Subtypes");
                 yield return new RelatedNodeType(DirectedModelRelationshipTypes.ImplementerType, "Implementers");
                 yield return new RelatedNodeType(DirectedModelRelationshipTypes.ImplementedInterface, "Interfaces");
+                yield return new RelatedNodeType(CommonDirectedModelRelationshipTypes.Container, "Parent");
+                yield return new RelatedNodeType(CommonDirectedModelRelationshipTypes.Contained, "Members");
             }
         }
     }

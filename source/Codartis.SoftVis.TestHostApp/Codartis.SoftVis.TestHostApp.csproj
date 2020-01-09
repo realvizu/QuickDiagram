@@ -40,7 +40,7 @@
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\DecoratorPlacementDictionary.xaml">
+    <Page Include="Resources\MiniButtonStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles.xaml">

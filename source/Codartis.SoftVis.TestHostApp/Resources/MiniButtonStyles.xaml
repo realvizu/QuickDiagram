@@ -1,0 +1,90 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:modeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
+                    xmlns:markupExtensions="clr-namespace:Codartis.Util.UI.Wpf.MarkupExtensions;assembly=Codartis.Util"
+                    xmlns:wpf="clr-namespace:Codartis.Util.UI.Wpf;assembly=Codartis.Util"
+                    xmlns:definition="clr-namespace:Codartis.SoftVis.Modeling.Definition;assembly=Codartis.SoftVis"
+                    xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=Codartis.SoftVis"
+                    xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
+                    xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
+                    mc:Ignorable="d">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <markupExtensions:Dictionary x:Key="RelatedNodeCuePlacementMap"
+                                 KeyType="{x:Type system:Object}"
+                                 ValueType="{x:Type wpf:RectRelativePlacement}"
+                                 Init="{StaticResource DefaultRelatedNodeCuePlacementMap}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.BaseType}"
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.Subtype}"
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementedInterface}"
+                                   Vertical="Top" Horizontal="Center" Translate="9,0.5" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementerType}"
+                                   Vertical="Bottom" Horizontal="Center" Translate="9,-0.5" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatedType}"
+                                   Vertical="Center" Horizontal="Right" Translate="-0.5,0" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}"
+                                   Vertical="Center" Horizontal="Left" Translate="0.5,0" />
+
+    </markupExtensions:Dictionary>
+
+    <markupExtensions:Dictionary x:Key="MiniButtonPlacementMap"
+                                 KeyType="{x:Type system:Object}"
+                                 ValueType="{x:Type wpf:RectRelativePlacement}"
+                                 Init="{StaticResource DefaultMiniButtonPlacementMap}">
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.BaseType}"
+                                   Vertical="Top" Horizontal="Center" Translate="-9,3" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.Subtype}"
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-3" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementedInterface}"
+                                   Vertical="Top" Horizontal="Center" Translate="9,3" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementerType}"
+                                   Vertical="Bottom" Horizontal="Center" Translate="9,-3" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatedType}"
+                                   Vertical="Center" Horizontal="Right" Translate="-3,0" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}"
+                                   Vertical="Center" Horizontal="Left" Translate="3,0" />
+
+    </markupExtensions:Dictionary>
+
+    <markupExtensions:Dictionary x:Key="RelatedNodeButtonGeometryMap"
+                                 KeyType="{x:Type definition:DirectedModelRelationshipType}"
+                                 ValueType="{x:Type Geometry}"
+                                 Init="{StaticResource DefaultRelatedNodeButtonGeometryMap}">
+
+        <Geometry x:Key="{x:Static modeling:DirectedModelRelationshipTypes.BaseType}">M -3 0 L 0 -5 L 3 0 Z M 0 0 L 0 5</Geometry>
+        <Geometry x:Key="{x:Static modeling:DirectedModelRelationshipTypes.Subtype}">M -3 0 L 0 -5 L 3 0 Z M 0 0 L 0 5</Geometry>
+        <Geometry x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementedInterface}">M -3 0 L 0 -5 L 3 0 Z M 0 1 L 0 2.5 M 0 3.5 L 0 5</Geometry>
+        <Geometry x:Key="{x:Static modeling:DirectedModelRelationshipTypes.ImplementerType}">M -3 0 L 0 -5 L 3 0 Z M 0 1 L 0 2.5 M 0 3.5 L 0 5</Geometry>
+        <Geometry x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatedType}">M 0 -3 L 5 0 L 0 3 M -5 0 L 5 0</Geometry>
+        <Geometry x:Key="{x:Static modeling:DirectedModelRelationshipTypes.AssociatingType}">M 0 -3 L 5 0 L 0 3 M -5 0 L 5 0</Geometry>
+
+    </markupExtensions:Dictionary>
+
+    <DataTemplate DataType="{x:Type viewModel:RelatedNodeMiniButtonViewModel}">
+        <view:PathControl Stretch="Uniform"
+                          Data="{Binding DirectedModelRelationshipType, 
+                                Converter={converters:DictionaryItemSelectorConverter 
+                                    Dictionary={StaticResource RelatedNodeButtonGeometryMap}}}" />
+    </DataTemplate>
+
+</ResourceDictionary>

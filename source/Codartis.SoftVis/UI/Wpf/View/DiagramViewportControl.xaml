@@ -108,7 +108,7 @@
             <ItemsPanelTemplate x:Key="MiniButtonItemsPanel">
                 <view:DiagramCanvasChildDecoratorPanel
                     DecoratedElement="{Binding Path=MiniButtonHostControl, ElementName=ThisControl}"
-                    PlacementDictionary="{Binding MiniButtonPlacementDictionary, 
+                    PlacementDictionary="{Binding MiniButtonPlacementMap, 
                         RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}" />
             </ItemsPanelTemplate>
 

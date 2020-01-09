@@ -10,8 +10,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class RelatedNodeMiniButtonViewModel : MiniButtonViewModelBase
     {
-        private readonly DirectedModelRelationshipType _directedModelRelationshipType;
-        public ConnectorType ConnectorType { get; }
+        public DirectedModelRelationshipType DirectedModelRelationshipType { get; }
 
         private IModel _lastModel;
         private IDiagram _lastDiagram;
@@ -22,8 +21,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedNodeType relatedNodeType)
             : base(modelEventSource, diagramEventSource, relatedNodeType.Name)
         {
-            _directedModelRelationshipType = relatedNodeType.RelationshipType;
-            ConnectorType = diagramEventSource.GetConnectorType(relatedNodeType.RelationshipType.Stereotype);
+            DirectedModelRelationshipType = relatedNodeType.RelationshipType;
 
             _lastModel = modelEventSource.LatestModel;
             _lastDiagram = diagramEventSource.LatestDiagram;
@@ -40,7 +38,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramEventSource.DiagramChanged -= OnDiagramChanged;
         }
 
-        public override object PlacementKey => _directedModelRelationshipType;
+        public override object PlacementKey => DirectedModelRelationshipType;
 
         private DiagramNodeViewModel HostDiagramNodeViewModel => HostUiElement as DiagramNodeViewModel;
 
@@ -104,7 +102,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private IEnumerable<IModelNode> GetUndisplayedRelatedModelNodes(IModelNode modelNode)
         {
-            return _lastModel.GetRelatedNodes(modelNode.Id, _directedModelRelationshipType)
+            return _lastModel.GetRelatedNodes(modelNode.Id, DirectedModelRelationshipType)
                 .Except(_lastDiagram.Nodes.Select(j => j.ModelNode));
         }
     }

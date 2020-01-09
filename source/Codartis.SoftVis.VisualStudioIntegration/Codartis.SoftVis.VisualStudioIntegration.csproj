@@ -92,7 +92,7 @@
         <Page Include="UI\DiagramNodeExpander.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
-        <Page Include="UI\DecoratorPlacementDictionary.xaml">
+        <Page Include="UI\MiniButtonStyles.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Include="UI\DiagramStyles.xaml">

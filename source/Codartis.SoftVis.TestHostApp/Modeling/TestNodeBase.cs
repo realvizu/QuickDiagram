@@ -10,5 +10,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         {
             Name = name;
         }
+
+        public string FullName => $"Full name of {Name}";
     }
 }

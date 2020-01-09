@@ -17,6 +17,7 @@ namespace Codartis.Util.UI.Wpf.MarkupExtensions
         public IDictionary Init { get; set; }
 
         private IDictionary _dictionary;
+
         private IDictionary Dictionary
         {
             get
@@ -36,6 +37,7 @@ namespace Codartis.Util.UI.Wpf.MarkupExtensions
                         foreach (var key in Init.Keys)
                             Add(key, Init[key]);
                 }
+
                 return _dictionary;
             }
         }
@@ -53,7 +55,10 @@ namespace Codartis.Util.UI.Wpf.MarkupExtensions
             if (key == null)
                 throw new ArgumentException("Key was converted to null.", nameof(key));
 
-            Dictionary.Add(key, value);
+            if (Dictionary.Contains(key))
+                Dictionary[key] = value;
+            else
+                Dictionary.Add(key, value);
         }
 
         public object this[object key]

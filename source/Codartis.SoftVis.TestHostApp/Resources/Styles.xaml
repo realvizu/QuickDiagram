@@ -10,7 +10,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="/TestHostApp;component/Resources/DecoratorPlacementDictionary.xaml" />
+        <ResourceDictionary Source="/TestHostApp;component/Resources/MiniButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
@@ -23,13 +23,13 @@
         <Setter Property="DiagramFill" Value="Bisque" />
         <Setter Property="DiagramStroke" Value="Black" />
         <Setter Property="PanAndZoomControlHeight" Value="120" />
-        <Setter Property="RelatedNodeCuePlacementDictionary" Value="{StaticResource RelatedNodeCuePlacementDictionary}" />
-        <Setter Property="MiniButtonPlacementDictionary" Value="{StaticResource MiniButtonPlacementDictionary}" />
+        <Setter Property="RelatedNodeCuePlacementMap" Value="{StaticResource RelatedNodeCuePlacementMap}" />
+        <Setter Property="MiniButtonPlacementMap" Value="{StaticResource MiniButtonPlacementMap}" />
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">
         <Setter Property="MaxWidth" Value="250" />
-        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="MinWidth" Value="60" />
     </Style>
 
     <DataTemplate DataType="{x:Type testHostAppModeling:PropertyNode}">

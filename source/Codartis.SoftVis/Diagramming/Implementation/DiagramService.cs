@@ -23,22 +23,20 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagram LatestDiagram { get; private set; }
 
         [NotNull] private readonly object _diagramUpdateLockObject;
-        [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
         [NotNull] private readonly ISubject<DiagramEvent> _diagramChangedEventStream;
 
         public event Action<DiagramEvent> DiagramChanged;
         public event Action<DiagramEvent> AfterDiagramChanged;
 
-        public DiagramService([NotNull] IDiagram diagram, [NotNull] IConnectorTypeResolver connectorTypeResolver)
+        public DiagramService([NotNull] IDiagram diagram)
         {
             LatestDiagram = diagram;
             _diagramUpdateLockObject = new object();
-            _connectorTypeResolver = connectorTypeResolver;
             _diagramChangedEventStream = new Subject<DiagramEvent>();
         }
 
         public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
-            : this(Diagram.Create(model, connectorTypeResolver), connectorTypeResolver)
+            : this(Diagram.Create(model, connectorTypeResolver))
         {
         }
 
@@ -129,11 +127,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             DiagramChanged?.Invoke(diagramEvent);
             _diagramChangedEventStream.OnNext(diagramEvent);
             AfterDiagramChanged?.Invoke(diagramEvent);
-        }
-
-        public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype)
-        {
-            return _connectorTypeResolver.GetConnectorType(stereotype);
         }
 
         public void AddNodes(

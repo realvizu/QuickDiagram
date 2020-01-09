@@ -13,16 +13,12 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
-            </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <ItemsPanelTemplate x:Key="RelatedNodeCueItemsPanel">
                 <!-- BUGBUG: should not reference DiagramControl -->
-                <controls:DecoratorPanel PlacementDictionary="{Binding RelatedNodeCuePlacementDictionary, 
+                <controls:DecoratorPanel PlacementDictionary="{Binding RelatedNodeCuePlacementMap, 
                     RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}" />
             </ItemsPanelTemplate>
 

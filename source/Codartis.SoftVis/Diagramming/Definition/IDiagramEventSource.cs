@@ -1,5 +1,4 @@
 ﻿using System;
-using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
@@ -25,7 +24,5 @@ namespace Codartis.SoftVis.Diagramming.Definition
         /// This is a hack for prioritizing change event handlers.
         /// </remarks>
         event Action<DiagramEvent> AfterDiagramChanged;
-
-        ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype);
     }
 }

@@ -45,9 +45,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Include="UI\Wpf\View\DefaultDecoratorPlacementDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UI\Wpf\View\DiagramNodeWithCuesControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
