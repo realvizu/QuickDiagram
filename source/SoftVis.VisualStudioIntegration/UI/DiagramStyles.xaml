@@ -12,8 +12,8 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/SoftVis.Diagramming;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/SoftVis.Diagramming;component/UI/Wpf/View/AnimationConstants.xaml" />
-        <ResourceDictionary Source="/SoftVis.VisualStudioIntegration;component/UI/DecoratorPlacementDictionary.xaml" />
-        <ResourceDictionary Source="/SoftVis.VisualStudioIntegration;component/UI/DiagramNodeExpander.xaml" />
+        <ResourceDictionary Source="/QuickDiagramTool;component/UI/DecoratorPlacementDictionary.xaml" />
+        <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
