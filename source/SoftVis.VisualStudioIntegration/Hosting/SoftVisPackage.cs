@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -106,7 +107,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 #if DEBUG
                 System.Diagnostics.Debugger.Break();
 #else
-                Trace.WriteLine($"[{PackageInfo.ToolName}] unhandled exception: {args.Exception}");
+                Trace.WriteLine($"[QuickDiagram] unhandled exception: {args.Exception}");
 #endif
             };
         }
