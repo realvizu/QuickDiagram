@@ -50,15 +50,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 : GetOrAddEntity(GetOriginalDefinition(namedTypeSymbol));
         }
 
-        public void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
+        public async Task ExtendModelWithRelatedEntitiesAsync(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false)
         {
             var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
             if (roslynBasedModelEntity == null)
                 return;
 
-            var symbolRelations = roslynBasedModelEntity
-                .FindRelatedSymbols(_roslynModelProvider, entityRelationType)
+            var symbolRelations = (await roslynBasedModelEntity.FindRelatedSymbolsAsync(_roslynModelProvider, entityRelationType))
                 .Select(GetOriginalDefinition)
                 .Where(i => !IsHidden(i.RelatedSymbol)).ToList();
 
@@ -71,32 +70,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
                 // TODO: loop detection?
                 if (recursive)
-                    ExtendModelWithRelatedEntities(relatedEntity, entityRelationType, cancellationToken, progress, recursive: true);
+                   await  ExtendModelWithRelatedEntitiesAsync( relatedEntity, entityRelationType, cancellationToken, progress, recursive: true);
             }
         }
 
-        public bool HasSource(IModelEntity modelEntity)
+        public async Task<bool> HasSourceAsync(IModelEntity modelEntity)
         {
             var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;
             if (roslyBasedModelEntity == null)
                 return false;
 
-            return _roslynModelProvider.HasSource(roslyBasedModelEntity.RoslynSymbol);
+            return await _roslynModelProvider.HasSourceAsync(roslyBasedModelEntity.RoslynSymbol);
         }
 
-        public void ShowSource(IModelEntity modelEntity)
+        public async Task ShowSourceAsync(IModelEntity modelEntity)
         {
             var roslyBasedModelEntity = modelEntity as IRoslynBasedModelEntity;
             if (roslyBasedModelEntity == null)
                 return;
 
-            _roslynModelProvider.ShowSource(roslyBasedModelEntity.RoslynSymbol);
+            await _roslynModelProvider.ShowSourceAsync(roslyBasedModelEntity.RoslynSymbol);
         }
 
-        public void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
+        public async Task UpdateFromSourceAsync(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
         {
-            UpdateEntitiesFromSource(cancellationToken, progress);
-            UpdateRelationshipsFromSource(cancellationToken, progress);
+            await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
+            await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);
         }
 
         public void Clear()
@@ -109,11 +108,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return await _roslynModelProvider.GetCurrentSymbolAsync() as INamedTypeSymbol;
         }
 
-        private void UpdateEntitiesFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private async Task UpdateEntitiesFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var workspace = _roslynModelProvider.GetWorkspace();
+            var workspace = await _roslynModelProvider.GetWorkspaceAsync();
             var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken))
                 .Select(i => i.Result).ToArray();
 
@@ -170,23 +169,28 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return symbolMatchByLocation;
         }
 
-        private void UpdateRelationshipsFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private async Task UpdateRelationshipsFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var allSymbolRelations = _model.Entities.OfType<RoslynBasedModelEntity>()
-                .SelectMany(i =>
-                {
-                    progress?.Report(1);
-                    return i.FindRelatedSymbols(_roslynModelProvider);
-                })
-                .Distinct().ToArray();
+            var roslynBasedModelEntities = _model.Entities.OfType<RoslynBasedModelEntity>();
+
+            var allSymbolRelations = new List<RoslynSymbolRelation>();
+
+            foreach (var entity in roslynBasedModelEntities)
+            {
+                progress?.Report(1);
+                foreach (var symbolRelation in await entity.FindRelatedSymbolsAsync(_roslynModelProvider))
+                    allSymbolRelations.Add(symbolRelation);
+            }
+
+            var roslynSymbolRelations = allSymbolRelations.Distinct().ToArray();
 
             foreach (var relationship in _model.Relationships.OfType<ModelRelationship>().ToArray())
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (allSymbolRelations.All(i => !i.Matches(relationship)))
+                if (roslynSymbolRelations.All(i => !i.Matches(relationship)))
                     _model.RemoveRelationship(relationship);
 
                 progress?.Report(1);

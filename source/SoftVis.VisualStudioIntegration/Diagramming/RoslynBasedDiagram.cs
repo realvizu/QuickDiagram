@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Modeling;
@@ -57,11 +58,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
              return ShowModelItems(entities, cancellationToken, progress).OfType<IDiagramNode>().ToArray();
         }
 
-        public void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress)
+        public async Task UpdateFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
             foreach (var diagramNode in Nodes)
             {
-                _modelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity, cancellationToken: cancellationToken);
+                await _modelServices.ExtendModelWithRelatedEntitiesAsync(diagramNode.ModelEntity, cancellationToken: cancellationToken);
                 progress?.Report(1);
             }
         }

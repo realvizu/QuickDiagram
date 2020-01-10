@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling;
 using Microsoft.CodeAnalysis;
 
@@ -26,7 +27,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="roslynModelProvider">Query API for the Roslyn model.</param>
         /// <param name="entityRelationType">Optionally specifies what kind of relations should be found. Null means all relations.</param>
         /// <returns>Related Roslyn symbols.</returns>
-        IEnumerable<RoslynSymbolRelation> FindRelatedSymbols(IRoslynModelProvider roslynModelProvider, 
+        Task<IEnumerable<RoslynSymbolRelation>> FindRelatedSymbolsAsync(IRoslynModelProvider roslynModelProvider, 
             EntityRelationType? entityRelationType = null);
     }
 }

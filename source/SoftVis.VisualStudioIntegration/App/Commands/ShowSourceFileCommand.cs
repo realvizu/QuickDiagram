@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
@@ -6,7 +7,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
     /// <summary>
     /// Activates the source code editor window for a given Symbol.
     /// </summary>
-    internal class ShowSourceFileCommand : SyncCommandWithParameterBase<IDiagramNode>
+    internal class ShowSourceFileCommand : AsyncCommandWithParameterBase<IDiagramNode>
     {
         private const string NoSourceMessage = "There's no source file for this item.";
         private static readonly TimeSpan NoSourceMessageDuration = TimeSpan.FromSeconds(5);
@@ -16,14 +17,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override void Execute(IDiagramNode diagramNode)
+        public override async Task ExecuteAsync(IDiagramNode diagramNode)
         {
             var modelEntity = diagramNode?.ModelEntity;
             if (modelEntity == null)
                 throw new Exception("Entity missing in DiagramNode.");
 
-            if (ModelServices.HasSource(modelEntity))
-                ModelServices.ShowSource(modelEntity);
+            if (await ModelServices.HasSourceAsync(modelEntity))
+                await ModelServices.ShowSourceAsync(modelEntity);
             else
                 UiServices.ShowPopupMessage(NoSourceMessage, NoSourceMessageDuration);
         }

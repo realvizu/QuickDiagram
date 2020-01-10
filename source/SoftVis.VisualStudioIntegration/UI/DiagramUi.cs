@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private readonly IHostUiServices _hostUiServices;
         private readonly ResourceDictionary _resourceDictionary;
         private readonly DiagramViewModel _diagramViewModel;
-        private readonly DiagramControl _diagramControl;
+        public DiagramControl DiagramControl { get; }
 
         public Dpi ImageExportDpi { get; set; }
 
@@ -46,14 +46,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
-            _diagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
-
-            hostUiServices.HostDiagram(_diagramControl);
+            DiagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
             SubscribeToDiagramViewModelEvents(_diagramViewModel);
         }
 
-        public void ShowDiagramWindow() => _hostUiServices.ShowDiagramWindow();
+        public Task ShowDiagramWindowAsync() => _hostUiServices.ShowDiagramWindowAsync();
 
         public void ShowMessageBox(string message)
             => System.Windows.MessageBox.Show(message, DialogTitle);
@@ -102,22 +100,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 _diagramViewModel.ZoomToContent();
         }
 
-        public void ExecuteWhenUiIsIdle(Action action)
-            => Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Background);
-
-        public ProgressDialog CreateProgressDialog(string text, int maxProgress = 0)
-        {
-            var hostMainWindow = _hostUiServices.GetMainWindow();
-            return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
-        }
-
         public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken),
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             try
             {
                 // The image creator must be created on the UI thread so it can read the necessary view and view model data.
-                var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, _diagramControl, _resourceDictionary);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, DiagramControl, _resourceDictionary);
 
                 return await Task.Factory.StartSTA(() =>
                     diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress, maxProgress), cancellationToken);

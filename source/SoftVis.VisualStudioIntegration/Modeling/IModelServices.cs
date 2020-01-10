@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
         /// <param name="recursive">True means repeat exploring for related entities. Default is false.</param>
-        void ExtendModelWithRelatedEntities(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
+        Task ExtendModelWithRelatedEntitiesAsync(IModelEntity modelEntity, EntityRelationType? entityRelationType = null, 
             CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false);
 
         /// <summary>
@@ -43,20 +43,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <param name="modelEntity">A model entity.</param>
         /// <remarks>True if the model entity has source code, false otherwise.</remarks>
-        bool HasSource(IModelEntity modelEntity);
+        Task<bool> HasSourceAsync(IModelEntity modelEntity);
 
         /// <summary>
         /// Shows the source in the host environment that corresponds to the given model entity.
         /// </summary>
         /// <param name="modelEntity">A model entity.</param>
-        void ShowSource(IModelEntity modelEntity);
+        Task ShowSourceAsync(IModelEntity modelEntity);
 
         /// <summary>
         /// Updates the model from the current source code.
         /// </summary>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <param name="progress">Optional progress reporting object.</param>
-        void UpdateFromSource(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
+        Task UpdateFromSourceAsync(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null);
 
         /// <summary>
         /// Clears the model.

@@ -1,4 +1,6 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands
+﻿using System.Threading.Tasks;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands
 {
     /// <summary>
     /// Show or hides all node descriptions. Works like a toggle button.
@@ -11,16 +13,16 @@
             UiServices.ExpandAllNodes();
         }
 
-        protected override void OnChecked()
+        protected override async Task OnCheckedAsync()
         {
-            UiServices.ShowDiagramWindow();
+            await HostUiServices.ShowDiagramWindowAsync();
             UiServices.ExpandAllNodes();
             UiServices.KeepDiagramCentered();
         }
 
-        protected override void OnUnchecked()
+        protected override async Task OnUncheckedAsync()
         {
-            UiServices.ShowDiagramWindow();
+            await HostUiServices.ShowDiagramWindowAsync();
             UiServices.CollapseAllNodes();
             UiServices.KeepDiagramCentered();
         }

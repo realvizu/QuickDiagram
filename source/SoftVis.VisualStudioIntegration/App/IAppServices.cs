@@ -12,5 +12,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         IModelServices ModelServices { get; }
         IDiagramServices DiagramServices { get; }
         IUiServices UiServices { get; }
+        IHostUiServices HostUiServices { get; }
     }
 }

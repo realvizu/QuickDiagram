@@ -12,7 +12,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// Returns the host workspace object that can be used to access the current Roslyn compilation.
         /// </summary>
         /// <returns>The current Roslyn compilation workspace.</returns>
-        Workspace GetWorkspace();
+        Task<Workspace> GetWorkspaceAsync();
 
         /// <summary>
         /// Returns the Roslyn symbol under the caret in the active source code editor.
@@ -25,12 +25,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <param name="symbol">A Roslyn symbol.</param>
         /// <remarks>True if the Roslyn symbol has source code, false otherwise.</remarks>
-        bool HasSource(ISymbol symbol);
+        Task<bool> HasSourceAsync(ISymbol symbol);
 
         /// <summary>
         /// Shows the source file in the host environment that corresponds to the given Roslyn symbol.
         /// </summary>
         /// <param name="symbol">A Roslyn symbol from the source file to be shown.</param>
-        void ShowSource(ISymbol symbol);
+        Task ShowSourceAsync(ISymbol symbol);
     }
 }

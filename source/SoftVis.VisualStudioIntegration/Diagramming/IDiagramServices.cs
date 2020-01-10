@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.Util;
@@ -26,6 +27,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
         IReadOnlyList<IDiagramNode> ShowEntityWithHierarchy(IModelEntity modelEntity, CancellationToken cancellationToken, IIncrementalProgress progress);
 
         void Clear();
-        void UpdateFromSource(CancellationToken cancellationToken, IIncrementalProgress progress);
+        Task UpdateFromSourceAsync(CancellationToken cancellationToken, IIncrementalProgress progress);
     }
 }

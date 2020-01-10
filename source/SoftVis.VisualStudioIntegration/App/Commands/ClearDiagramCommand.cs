@@ -1,17 +1,19 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+﻿using System.Threading.Tasks;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Clears the diagram.
     /// </summary>
-    internal sealed class ClearDiagramCommand : SyncCommandBase
+    internal sealed class ClearDiagramCommand : AsyncCommandBase
     {
         public ClearDiagramCommand(IAppServices appServices)
             : base(appServices)
         { }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
-            UiServices.ShowDiagramWindow();
+            await HostUiServices.ShowDiagramWindowAsync();
             DiagramServices.Clear();
         }
     }

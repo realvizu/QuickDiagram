@@ -27,8 +27,10 @@
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.Diagramming" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.Modeling.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.Hosting.*" To="Codartis.SoftVis.UI.Wpf.View" />
 
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App" To="Codartis.SoftVis.VisualStudioIntegration.App.Commands.*" />
+    <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.ToggleCommands" To="Codartis.SoftVis.VisualStudioIntegration.App.Commands.*" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.VisualStudioIntegration.Modeling" />
     <Allowed From="Codartis.SoftVis.VisualStudioIntegration.App.*" To="Codartis.SoftVis.Diagramming" />

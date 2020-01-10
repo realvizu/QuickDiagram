@@ -1,7 +1,10 @@
-﻿using EnvDTE80;
+﻿using System.Threading.Tasks;
+using EnvDTE80;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -23,23 +26,26 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         OleMenuCommandService GetMenuCommandService();
 
         /// <summary>
-        /// Returns the service that can be used to access documents that are open in the host environment.
+        /// Returns the service that provides info about the active text views.
         /// </summary>
-        /// <returns>The service to access operations related to active documents.</returns>
-        IVsRunningDocumentTable GetRunningDocumentTableService();
+        Task<IVsTextManager> GetTextManagerServiceAsync();
+
+        /// <summary>
+        /// Returns the service that converts old VS editor representation to new.
+        /// </summary>
+        Task<IVsEditorAdaptersFactoryService> GetEditorAdaptersFactoryServiceAsync();
+
+        ///// <summary>
+        ///// Returns the service that can be used to access documents that are open in the host environment.
+        ///// </summary>
+        ///// <returns>The service to access operations related to active documents.</returns>
+        //IVsRunningDocumentTable GetRunningDocumentTableService();
 
         /// <summary>
         /// Returns the Roslyn workspace that can be used to access the current solution's compilation.
         /// </summary>
-        /// <returns>The Roslyn workspace of the current solution.</returns>
-        VisualStudioWorkspace GetVisualStudioWorkspace();
+        Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync();
 
-        /// <summary>
-        /// Creates a tool window of the given type.
-        /// </summary>
-        /// <typeparam name="TWindow">The type that implements the tool window. Must be a subclass of ToolWindowPane.</typeparam>
-        /// <param name="instanceId">The instance id, for multi-instance tool windows. Omit for single-instance tool windows.</param>
-        /// <returns>The created tool window.</returns>
-        TWindow CreateToolWindow<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
+        Task ShowToolWindowAsync<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
     }
 }

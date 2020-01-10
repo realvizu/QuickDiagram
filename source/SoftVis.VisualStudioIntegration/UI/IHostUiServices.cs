@@ -1,5 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using System.Threading.Tasks;
+using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -9,20 +10,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     public interface IHostUiServices
     {
         /// <summary>
-        /// Hosts a diagram control in a host-provided tool window.
-        /// </summary>
-        /// <param name="diagramControl">The diagram control.</param>
-        void HostDiagram(ContentControl diagramControl);
-
-        /// <summary>
         /// Shows the diagram-hosting tool window.
         /// </summary>
-        void ShowDiagramWindow();
+        Task ShowDiagramWindowAsync();
+
+        void ShowMessageBox(string message);
 
         /// <summary>
-        /// Returns the main window of the host process.
+        /// Shows a SaveFileDialog and returns the selected filename.
         /// </summary>
-        /// <returns>The main window of the host process.</returns>
-        Window GetMainWindow();
+        string SelectSaveFilename(string title, string filter);
+
+        /// <summary>
+        /// Returns a new progress dialog.
+        /// </summary>
+        /// <remarks>
+        /// Invoke it in a using block for automatic disposing.
+        /// </remarks>
+        Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0);
+
+        /// <summary>
+        /// Runs an async method from a sync method.
+        /// </summary>
+        void Run(Func<Task> asyncMethod);
+
     }
 }

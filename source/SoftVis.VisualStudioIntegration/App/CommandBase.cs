@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.Diagramming;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -17,12 +18,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         protected IModelServices ModelServices => _appServices.ModelServices;
         protected IDiagramServices DiagramServices => _appServices.DiagramServices;
         protected IUiServices UiServices => _appServices.UiServices;
+        protected IHostUiServices HostUiServices => _appServices.HostUiServices;
 
         protected CommandBase(IAppServices appServices)
         {
             _appServices = appServices;
         }
 
-        public virtual bool IsEnabled() => true;
+        public virtual Task<bool> IsEnabledAsync() => Task.FromResult(true);
     }
 }

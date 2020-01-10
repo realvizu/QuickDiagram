@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         protected async Task CreateAndProcessDiagramImageAsync(Action<BitmapSource> imageProcessingAction, string imageProcessingMessage)
         {
             // Using int.MaxValue for max progress because the real max value is not yet known.
-            using (var progressDialog = UiServices.CreateProgressDialog("Generating image..", int.MaxValue))
+            using (var progressDialog = await HostUiServices.CreateProgressDialogAsync("Generating image..", int.MaxValue))
             {
                 progressDialog.ShowProgressNumber = false;
                 progressDialog.ShowWithDelayAsync();

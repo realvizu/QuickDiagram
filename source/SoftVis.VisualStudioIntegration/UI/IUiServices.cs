@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
@@ -15,12 +15,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     public interface IUiServices
     {
+        DiagramControl DiagramControl { get; }
+
         Dpi ImageExportDpi { get; set; }
 
         event Action<IDiagramShape> ShowSourceRequested;
         event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
 
-        void ShowDiagramWindow();
         void ShowMessageBox(string message);
         void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
         string SelectSaveFilename(string title, string filter);
@@ -32,7 +33,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         void ExpandAllNodes();
         void CollapseAllNodes();
 
-        ProgressDialog CreateProgressDialog(string text, int maxProgress = 0);
         Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null);
     }

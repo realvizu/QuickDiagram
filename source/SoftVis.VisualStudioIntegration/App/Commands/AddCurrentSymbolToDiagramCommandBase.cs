@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
@@ -10,6 +12,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override bool IsEnabled() => ModelServices.CurrentSymbolAvailableAsync().Result;
+        public override async Task<bool> IsEnabledAsync()
+        {
+            return await ModelServices.CurrentSymbolAvailableAsync();
+        }
     }
 }

@@ -1,17 +1,19 @@
-﻿namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
+﻿using System.Threading.Tasks;
+
+namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
     /// Positions the viewport so that the whole diagram is visible.
     /// </summary>
-    internal sealed class ZoomToDiagramCommand : SyncCommandBase
+    internal sealed class ZoomToDiagramCommand : AsyncCommandBase
     {
         public ZoomToDiagramCommand(IAppServices appServices)
             : base(appServices)
         { }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
-            UiServices.ShowDiagramWindow();
+            await HostUiServices.ShowDiagramWindowAsync();
             UiServices.ZoomToDiagram();
         }
     }

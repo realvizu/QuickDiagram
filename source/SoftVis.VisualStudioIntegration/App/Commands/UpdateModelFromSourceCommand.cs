@@ -20,13 +20,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
             await ShowProgressAndUpdateModelAsync();
 
-            UiServices.ShowDiagramWindow();
+            await HostUiServices.ShowDiagramWindowAsync();
             UiServices.ZoomToDiagram();
         }
 
         private async Task ShowProgressAndUpdateModelAsync()
         {
-            using (var progressDialog = UiServices.CreateProgressDialog("Updating model entities:"))
+            using (var progressDialog = await HostUiServices.CreateProgressDialogAsync("Updating model entities:"))
             {
                 progressDialog.ShowWithDelayAsync();
 
@@ -44,14 +44,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             }
         }
 
-        private Task UpdateModelAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private async Task UpdateModelAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return Task.Run(() => ModelServices.UpdateFromSource(cancellationToken, progress), cancellationToken);
+            await ModelServices.UpdateFromSourceAsync(cancellationToken, progress);
         }
 
-        private Task UpdateDiagramAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
+        private async Task UpdateDiagramAsync(CancellationToken cancellationToken, IIncrementalProgress progress)
         {
-            return Task.Run(() => DiagramServices.UpdateFromSource(cancellationToken, progress), cancellationToken);
+            await DiagramServices.UpdateFromSourceAsync(cancellationToken, progress);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Codartis.SoftVis.Diagramming;
 using Codartis.SoftVis.Modeling;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
@@ -21,15 +22,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         public IModelServices ModelServices { get; }
         public IDiagramServices DiagramServices { get; }
         public IUiServices UiServices { get; }
+        public IHostUiServices HostUiServices { get; }
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public DiagramToolApplication(IModelServices modelServices, IDiagramServices diagramServices, IUiServices uiServices)
+        public DiagramToolApplication(
+            IModelServices modelServices,
+            IDiagramServices diagramServices,
+            IUiServices uiServices,
+            IHostUiServices hostUiServices)
         {
             ModelServices = modelServices;
             DiagramServices = diagramServices;
             UiServices = uiServices;
+            HostUiServices = hostUiServices;
 
             UiServices.ImageExportDpi = Dpi.Dpi150;
 
@@ -45,32 +52,47 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
         private void SubscribeToUiEvents(IUiServices uiServices)
         {
             uiServices.ShowSourceRequested += OnShowSourceRequested;
-            uiServices.ShowModelItemsRequested += OnShowItemsRequestedAsync;
+            uiServices.ShowModelItemsRequested += OnShowItemsRequested;
+        }
+
+        private void OnShapeAdded(IDiagramShape diagramShape)
+        {
+            HostUiServices.Run(async () => await OnShapeAddedAsync(diagramShape));
         }
 
         /// <summary>
         /// Whenever a shape is added to the diagram we try to proactively expand the model with the related entities.
         /// </summary>
         /// <param name="diagramShape">The shape that was added to the diagram.</param>
-        private void OnShapeAdded(IDiagramShape diagramShape)
+        private async Task OnShapeAddedAsync(IDiagramShape diagramShape)
         {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
                 return;
 
-            ModelServices.ExtendModelWithRelatedEntities(diagramNode.ModelEntity);
+            await ModelServices.ExtendModelWithRelatedEntitiesAsync(diagramNode.ModelEntity);
         }
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
         {
+            HostUiServices.Run(async () => await OnShowSourceRequestedAsync(diagramShape));
+        }
+
+        private async Task OnShowSourceRequestedAsync(IDiagramShape diagramShape)
+        {
             var diagramNode = diagramShape as IDiagramNode;
             if (diagramNode == null)
                 return;
 
-            new ShowSourceFileCommand(this).Execute(diagramNode);
+            await new ShowSourceFileCommand(this).ExecuteAsync(diagramNode);
         }
 
-        private async void OnShowItemsRequestedAsync(IReadOnlyList<IModelEntity> modelEntities)
+        private void OnShowItemsRequested(IReadOnlyList<IModelEntity> modelEntities)
+        {
+            HostUiServices.Run(async () => await OnShowItemsRequestAsync(modelEntities));
+        }
+
+        private async Task OnShowItemsRequestAsync(IReadOnlyList<IModelEntity> modelEntities)
         {
             if (!modelEntities.Any())
                 return;
