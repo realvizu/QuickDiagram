@@ -41,10 +41,7 @@
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return Width.GetHashCode() ^ Height.GetHashCode();
-            }
+            return Width.GetHashCode() ^ Height.GetHashCode();
         }
 
         public static bool operator ==(Size2D left, Size2D right)

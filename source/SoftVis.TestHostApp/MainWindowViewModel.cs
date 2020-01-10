@@ -15,9 +15,8 @@ using Codartis.SoftVis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.TestHostApp
 {
-    class MainWindowViewModel : ViewModelBase
+    internal class MainWindowViewModel : ViewModelBase
     {
-        private readonly TestModel _testModel;
         private readonly TestDiagram _testDiagram;
 
         private int _modelItemGroupIndex;
@@ -31,17 +30,17 @@ namespace Codartis.SoftVis.TestHostApp
         public ICommand CopyToClipboardCommand { get; }
 
         public MainWindow Window { get; set; }
-        public IDiagramStlyeProvider DiagramStlyeProvider { get; set; }
+        public IDiagramStlyeProvider DiagramStyleProvider { get; set; }
 
         public MainWindowViewModel()
         {
-            _testModel = new TestModelBuilder().Create();
+            var testModel = new TestModelBuilder().Create();
             //_testModel = new BigTestModelBuilder().Create(4, 4);
 
-            _testDiagram = new TestDiagram(_testModel);
+            _testDiagram = new TestDiagram(testModel);
 
             DiagramViewModel = new DiagramViewModel(_testDiagram, minZoom: 0.2, maxZoom: 5, initialZoom: 1);
-            DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem.ToString()}");
+            DiagramViewModel.ShowSourceRequested += shape => Debug.WriteLine($"ShowSourceRequest: {shape.ModelItem}");
             DiagramViewModel.ShowModelItemsRequested += i => _testDiagram.ShowModelItems(i);
 
             AddCommand = new DelegateCommand(AddShapes);
@@ -112,7 +111,7 @@ namespace Codartis.SoftVis.TestHostApp
         {
             try
             {
-                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStlyeProvider);
+                var diagramImageCreator = new DataCloningDiagramImageCreator(DiagramViewModel, DiagramStyleProvider);
                 var cancellationToken = progressDialog.CancellationToken;
 
                 return await Task.Factory.StartSTA(() =>

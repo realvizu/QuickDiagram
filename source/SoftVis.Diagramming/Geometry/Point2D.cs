@@ -42,10 +42,7 @@ namespace Codartis.SoftVis.Geometry
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return X.GetHashCode() ^ Y.GetHashCode();
-            }
+            return X.GetHashCode() ^ Y.GetHashCode();
         }
 
         public override string ToString()

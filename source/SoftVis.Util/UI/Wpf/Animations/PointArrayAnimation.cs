@@ -50,34 +50,34 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Animations
         {
         }
 
-        public PointArrayAnimation(Point[] @from, Point[] to, Duration duration, IEasingFunction easingFunction = null)
+        public PointArrayAnimation(Point[] from, Point[] to, Duration duration, IEasingFunction easingFunction = null)
         {
-            if (@from == null || !@from.Any())
-                throw new ArgumentException("Array should not be null or empty.", nameof(@from));
+            if (from == null || !from.Any())
+                throw new ArgumentException("Array should not be null or empty.", nameof(from));
 
             if (to == null || !to.Any())
                 throw new ArgumentException("Array should not be null or empty.", nameof(to));
 
             OriginalTo = to;
-            From = CalculateSourceValue(@from, to);
-            To = CalculateTargetValue(@from, to);
+            From = CalculateSourceValue(from, to);
+            To = CalculateTargetValue(from, to);
             Duration = duration;
             Animations = CreatePointAnimations(From, To, Duration, easingFunction);
         }
 
         public override Type TargetPropertyType => typeof(Point[]);
 
-        private static Point[] CalculateSourceValue(Point[] @from, Point[] to)
+        private static Point[] CalculateSourceValue(Point[] from, Point[] to)
         {
-            var missingSourcePointCount = to.Length - @from.Length;
+            var missingSourcePointCount = to.Length - from.Length;
             if (missingSourcePointCount > 0)
-                return ExtendPointArray(@from, missingSourcePointCount);
-            return @from;
+                return ExtendPointArray(from, missingSourcePointCount);
+            return from;
         }
 
-        private static Point[] CalculateTargetValue(Point[] @from, Point[] to)
+        private static Point[] CalculateTargetValue(Point[] from, Point[] to)
         {
-            var missingTargetPointCount = @from.Length - to.Length;
+            var missingTargetPointCount = from.Length - to.Length;
             if (missingTargetPointCount > 0)
                 return ExtendPointArray(to, missingTargetPointCount);
             return to;
@@ -92,12 +92,12 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Animations
             return result.ToArray();
         }
 
-        private static PointAnimation[] CreatePointAnimations(Point[] @from, Point[] to, Duration duration, IEasingFunction easingFunction)
+        private static PointAnimation[] CreatePointAnimations(Point[] from, Point[] to, Duration duration, IEasingFunction easingFunction)
         {
-            var pointAnimations = new PointAnimation[@from.Length];
-            for (var i = 0; i < @from.Length; i++)
+            var pointAnimations = new PointAnimation[from.Length];
+            for (var i = 0; i < from.Length; i++)
             {
-                pointAnimations[i] = new PointAnimation(@from[i], to[i], duration);
+                pointAnimations[i] = new PointAnimation(from[i], to[i], duration);
                 if (easingFunction != null)
                     pointAnimations[i].EasingFunction = easingFunction;
             }

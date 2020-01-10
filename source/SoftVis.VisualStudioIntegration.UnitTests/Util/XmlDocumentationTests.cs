@@ -3,6 +3,7 @@ using System.Xml;
 using Codartis.SoftVis.VisualStudioIntegration.Util;
 using FluentAssertions;
 using Xunit;
+// ReSharper disable ObjectCreationAsStatement
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Util
 {

@@ -35,6 +35,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             set { SetValue(CenterProperty, value); }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void OnRectChanged(Rect oldValue, Rect newValue)
         {
             Center = newValue.GetCenter();

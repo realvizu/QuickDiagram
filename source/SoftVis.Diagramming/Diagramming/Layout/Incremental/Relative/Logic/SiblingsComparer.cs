@@ -26,8 +26,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
 
         private string GetNameForComparison(LayoutVertexBase vertex)
         {
-            var dummyVertex = vertex as DummyLayoutVertex;
-            if (dummyVertex != null)
+            if (vertex is DummyLayoutVertex dummyVertex)
             {
                 var inEdge = _properLayeredLayoutGraph.GetInEdge(dummyVertex);
                 if (inEdge == null)

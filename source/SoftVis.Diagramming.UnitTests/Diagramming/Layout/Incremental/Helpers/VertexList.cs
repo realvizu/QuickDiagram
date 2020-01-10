@@ -12,12 +12,12 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 
         public string[] VertexNames { get; }
 
-        protected VertexList(IEnumerable<string> vertexNames)
+        protected VertexList(string[] vertexNames)
         {
-            VertexNames = vertexNames as string[] ?? vertexNames.ToArray();
+            VertexNames = vertexNames;
         }
 
-        protected static IEnumerable<string> InternalParse(string pathString)
+        protected static string[] InternalParse(string pathString)
         {
             var leftToRight = pathString.Contains(LeftToRightSeparator);
             var rightToLeft = pathString.Contains(RightToLeftSeparator);
@@ -29,8 +29,8 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
             var vertexNames = pathString.Split(new[] { separator }, StringSplitOptions.None);
 
             return leftToRight
-                ? vertexNames
-                : vertexNames.Reverse();
+                ? vertexNames.ToArray()
+                : vertexNames.Reverse().ToArray();
         }
 
         public IEnumerator<string> GetEnumerator() => VertexNames.AsEnumerable().GetEnumerator();

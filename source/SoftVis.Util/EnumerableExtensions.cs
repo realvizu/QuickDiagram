@@ -31,8 +31,7 @@ namespace Codartis.SoftVis.Util
 
         public static int IndexOf<T>(this IEnumerable<T> source, T value)
         {
-            var sourceAsList = source as IList<T>;
-            if (sourceAsList != null)
+            if (source is IList<T> sourceAsList)
                 return sourceAsList.IndexOf(value);
 
             var index = 0;

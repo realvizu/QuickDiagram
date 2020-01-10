@@ -2,7 +2,6 @@
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
 using Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.Builders;
-using Codartis.SoftVis.Diagramming.UnitTests.TestSubjects;
 using FluentAssertions;
 using Xunit;
 

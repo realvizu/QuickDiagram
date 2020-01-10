@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -149,6 +148,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return viewportRect.IntersectsWith(diagramRect);
         }
 
+        // ReSharper disable once UnusedMember.Local
         private Point ProjectFromDiagramSpaceToScreenSpace(Point pointInDiagramSpace)
         {
             return _diagramSpaceToScreenSpaceTransform.Transform(pointInDiagramSpace);

@@ -153,6 +153,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return symbolMatchByName;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private static INamedTypeSymbol FindSymbolInCompilationsByLocation(INamedTypeSymbol namedTypeSymbol, Compilation[] compilationArray)
         {
             var syntaxReference = namedTypeSymbol.DeclaringSyntaxReferences.FirstOrDefault();
@@ -214,6 +215,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return modelEntity;
         }
 
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private ModelRelationship AddRelationshipIfNotExists(RoslynSymbolRelation symbolRelation)
         {
             var sourceEntity = _model.GetEntityBySymbol(symbolRelation.SourceSymbol);

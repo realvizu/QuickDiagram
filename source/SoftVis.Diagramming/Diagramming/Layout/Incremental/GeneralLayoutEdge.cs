@@ -1,13 +1,13 @@
-﻿using Codartis.SoftVis.Diagramming.Implementation;
-
-namespace Codartis.SoftVis.Diagramming.Layout.Incremental
+﻿namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {
     /// <summary>
     /// An edge that can connect any subtypes of layout vertices.
     /// </summary>
     internal class GeneralLayoutEdge : LayoutEdge<LayoutVertexBase>
     {
-        public GeneralLayoutEdge(LayoutVertexBase source, LayoutVertexBase target,
+        public GeneralLayoutEdge(
+            LayoutVertexBase source,
+            LayoutVertexBase target,
             IDiagramConnector diagramConnector)
             : base(source, target, diagramConnector)
         {

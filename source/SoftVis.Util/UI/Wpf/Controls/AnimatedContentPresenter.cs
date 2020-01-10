@@ -179,14 +179,13 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
         {
             var animation = new DoubleAnimation(1, 0, AnimationDuration);
 
-            EventHandler onAnimationCompleted = null;
-            onAnimationCompleted = (sender, e) =>
+            void OnAnimationCompleted(object sender, EventArgs e)
             {
-                animation.Completed -= onAnimationCompleted;
+                animation.Completed -= OnAnimationCompleted;
                 readyToBeRemovedCallback((ViewModelBase)DataContext);
-            };
+            }
 
-            animation.Completed += onAnimationCompleted;
+            animation.Completed += OnAnimationCompleted;
             BeginAnimation(ScalingProperty, animation);
         }
 

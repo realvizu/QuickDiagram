@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
 namespace Codartis.SoftVis.Util.UI.Wpf
@@ -38,6 +39,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
             return obj is RectRelativePlacement && Equals((RectRelativePlacement)obj);
         }
 
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             unchecked

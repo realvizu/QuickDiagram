@@ -58,6 +58,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         {
             var edge1 = _layoutPathBuilder.CreateLayoutEdge("A->*1");
             var edge2 = _layoutPathBuilder.CreateLayoutEdge("*2->D");
+            // ReSharper disable once ObjectCreationAsStatement
             Action action = () => new LayoutPath(new[] { edge1, edge2 });
             action.ShouldThrow<PathException>();
         }

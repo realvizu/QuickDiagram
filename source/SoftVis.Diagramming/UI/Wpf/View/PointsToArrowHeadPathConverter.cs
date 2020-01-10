@@ -24,7 +24,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 return null;
 
             var routePoints = (IList<Point>)values[0];
-            var arrowHeadType = (ArrowHeadType)values[1];
+            //var arrowHeadType = (ArrowHeadType)values[1];
             var arrowHeadSize = (double)values[2];
             var arrowHeadLengthPerWidth = (double)values[3];
 

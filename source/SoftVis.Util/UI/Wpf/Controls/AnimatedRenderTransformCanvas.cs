@@ -92,6 +92,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Controls
             set { SetValue(SlowAnimationEasingFunctionProperty, value); }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void TransitionTransform(TransitionedTransform oldTransitionedTransform, TransitionedTransform newTransitionedTransform)
         {
             if (newTransitionedTransform.TransitionSpeed == TransitionSpeed.Instant)

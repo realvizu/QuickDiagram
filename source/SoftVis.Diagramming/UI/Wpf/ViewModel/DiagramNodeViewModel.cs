@@ -131,7 +131,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public Point Center
         {
-            get { return _center; }
+            get
+            {
+                lock (_positionUpdateLock)
+                {
+                    return _center;
+                }
+            }
             set
             {
                 lock (_positionUpdateLock)
@@ -208,6 +214,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Center = newCenter.ToWpf();
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void OnSizeChanged(Size oldSize, Size newSize)
         {
             DiagramNode.Size = newSize.FromWpf();

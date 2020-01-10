@@ -13,6 +13,7 @@ namespace Codartis.SoftVis.Util
         /// <param name="action">The action to be executed by the task.</param>
         /// <param name="cancellationToken">Optional cancellation toke.n</param>
         /// <returns>The task representing the async work.</returns>
+        // ReSharper disable once InconsistentNaming
         public static Task StartSTA(this TaskFactory taskFactory, Action action,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -32,6 +33,7 @@ namespace Codartis.SoftVis.Util
         /// <param name="func">The func to be executed by the task.</param>
         /// <param name="cancellationToken">Optional cancellation toke.n</param>
         /// <returns>The task representing the async work and providing the result.</returns>
+        // ReSharper disable once InconsistentNaming
         public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func,
             CancellationToken cancellationToken = default(CancellationToken))
         {

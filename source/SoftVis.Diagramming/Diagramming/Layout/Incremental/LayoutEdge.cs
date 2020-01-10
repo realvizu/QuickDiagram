@@ -1,5 +1,4 @@
-﻿using Codartis.SoftVis.Diagramming.Implementation;
-using QuickGraph;
+﻿using QuickGraph;
 
 namespace Codartis.SoftVis.Diagramming.Layout.Incremental
 {

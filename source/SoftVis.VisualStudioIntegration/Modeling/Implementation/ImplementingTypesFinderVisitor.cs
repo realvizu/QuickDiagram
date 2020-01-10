@@ -7,7 +7,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
     /// <summary>
     /// Finds those types that implement the given interface symbol.
-    /// </summary>		      
+    /// </summary>
     internal class ImplementingTypesFinderVisitor : SymbolVisitor
     {
         private INamedTypeSymbol InterfaceSymbol { get; }

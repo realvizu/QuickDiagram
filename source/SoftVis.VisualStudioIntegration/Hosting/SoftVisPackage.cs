@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+// ReSharper disable once RedundantUsingDirective
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -38,6 +39,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         {
             // HACK: Force load System.Windows.Interactivity.dll from plugin's directory.
             // See: http://stackoverflow.com/questions/29362125/visual-studio-extension-could-not-find-a-required-assembly
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             typeof(System.Windows.Interactivity.Behavior).ToString();
         }
 

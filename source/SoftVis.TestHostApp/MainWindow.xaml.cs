@@ -13,7 +13,7 @@
             InitializeComponent();
 
             viewModel.Window = this;
-            viewModel.DiagramStlyeProvider = DiagramControl;
+            viewModel.DiagramStyleProvider = DiagramControl;
         }
     }
 }

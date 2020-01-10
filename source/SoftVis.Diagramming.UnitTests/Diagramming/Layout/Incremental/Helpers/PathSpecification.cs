@@ -4,7 +4,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
 {
     internal class PathSpecification : VertexList
     {
-        public PathSpecification(IEnumerable<string> vertexNames)
+        public PathSpecification(string[] vertexNames)
             :base(vertexNames)
         {
         }

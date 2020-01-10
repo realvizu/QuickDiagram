@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Codartis.SoftVis.Diagramming.Layout.Incremental;
 using Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic;
@@ -10,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         protected override PathSpecification GetPathSpecification(string pathString)
         {
             var originalPathSpecification = base.GetPathSpecification(pathString);
-            var nonDummyVertices = originalPathSpecification.Where(i => !i.StartsWith("*"));
+            var nonDummyVertices = originalPathSpecification.Where(i => !i.StartsWith("*", StringComparison.Ordinal)).ToArray();
             return new PathSpecification(nonDummyVertices);
         }
 

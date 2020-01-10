@@ -46,9 +46,10 @@
             <Setter.Value>
                 <ControlTemplate>
 
+                    <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
                     <Border Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramFill}"
                             BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DiagramStroke}" 
-							BorderThickness="1">
+                            BorderThickness="1">
                         <StackPanel Orientation="Vertical">
                             <Grid>
                                 <Grid.RowDefinitions>

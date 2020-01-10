@@ -12,6 +12,7 @@
     <view:ConnectorTypeToGeometryConverter x:Key="ConnectorTypeToGeometryConverter"/>
 
     <DataTemplate DataType="{x:Type viewModel:CloseShapeButtonViewModel}">
+        <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
         <view:PathControl Stretch="Uniform" 
                           Foreground="Red"
                           StrokeThickness="1.5"
@@ -20,6 +21,7 @@
                               Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}"
                           Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Height, 
                               Converter={StaticResource DoubleMultiplierConverter}, ConverterParameter=.8}" />
+        <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModel:ShowRelatedNodeButtonViewModel}">

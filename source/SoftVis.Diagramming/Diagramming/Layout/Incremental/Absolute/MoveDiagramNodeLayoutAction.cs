@@ -12,10 +12,10 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Absolute
         public Point2D To { get; }
         public Point2D By { get; }
 
-        public MoveDiagramNodeLayoutAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D @from, Point2D to)
+        public MoveDiagramNodeLayoutAction(DiagramNodeLayoutVertex diagramNodeLayoutVertex, Point2D from, Point2D to)
         {
             Vertex = diagramNodeLayoutVertex;
-            From = @from;
+            From = from;
             To = to;
             By = To - From;
         }

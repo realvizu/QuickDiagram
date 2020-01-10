@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,12 +61,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void OnShapeAdded(IDiagramShape diagramShape)
         {
-            var diagramNode = diagramShape as DiagramNode;
-            if (diagramNode != null)
+            if (diagramShape is DiagramNode diagramNode)
                 EnqueueDiagramAction(new AddDiagramNodeAction(diagramNode));
 
-            var diagramConnector = diagramShape as DiagramConnector;
-            if (diagramConnector != null)
+            if (diagramShape is DiagramConnector diagramConnector)
                 EnqueueDiagramAction(new AddDiagramConnectorAction(diagramConnector));
         }
 
@@ -78,12 +75,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void OnShapeRemoved(IDiagramShape diagramShape)
         {
-            var diagramNode = diagramShape as DiagramNode;
-            if (diagramNode != null)
+            if (diagramShape is DiagramNode diagramNode)
                 EnqueueDiagramAction(new RemoveDiagramNodeAction(diagramNode));
 
-            var diagramConnector = diagramShape as DiagramConnector;
-            if (diagramConnector != null)
+            if (diagramShape is DiagramConnector diagramConnector)
                 EnqueueDiagramAction(new RemoveDiagramConnectorAction(diagramConnector));
         }
 
