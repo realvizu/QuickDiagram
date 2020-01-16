@@ -27,8 +27,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
 
         public void RegisterCommands(Guid commandSetGuid, List<ICommandSpecification> commandSpecifications)
         {
-            RegisterAsyncCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(AsyncCommandBase))));
-            RegisterToggleCommands(commandSetGuid, commandSpecifications.Where(i => i.CommandType.IsSubclassOf(typeof(ToggleCommandBase))));
+            RegisterAsyncCommands(commandSetGuid, commandSpecifications.Where(IsNonToggleCommand));
+            RegisterToggleCommands(commandSetGuid, commandSpecifications.Where(IsToggleCommand));
+        }
+
+        private static bool IsNonToggleCommand(ICommandSpecification commandSpecification)
+        {
+            return commandSpecification.CommandType.IsSubclassOf(typeof(AsyncCommandBase)) && !IsToggleCommand(commandSpecification);
+        }
+
+        private static bool IsToggleCommand(ICommandSpecification commandSpecification)
+        {
+            return commandSpecification.CommandType.IsSubclassOf(typeof(ToggleCommandBase));
         }
 
         public void RegisterCombos(Guid commandSetGuid, IEnumerable<IComboSpecification> comboSpecifications)
