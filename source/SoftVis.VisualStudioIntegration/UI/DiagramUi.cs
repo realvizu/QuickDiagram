@@ -46,6 +46,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
             DiagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
+            hostUiServices.HostDiagram(DiagramControl);
+
             SubscribeToDiagramViewModelEvents(_diagramViewModel);
         }
 

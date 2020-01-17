@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio.Shell;
@@ -18,15 +19,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private const string DialogTitle = "Quick Diagram Tool";
 
         private readonly IPackageServices _packageServices;
+        private readonly DiagramHostToolWindow _diagramHostWindow;
 
         public HostUiGateway(IPackageServices packageServices)
         {
             _packageServices = packageServices;
+            _diagramHostWindow = _packageServices.CreateToolWindow<DiagramHostToolWindow>();
+        }
+
+        public void HostDiagram(DiagramControl diagramControl)
+        {
+            _diagramHostWindow.Initialize(diagramControl);
         }
 
         public Task ShowDiagramWindowAsync()
         {
-            return _packageServices.ShowToolWindowAsync<DiagramHostToolWindow>();
+            _diagramHostWindow.Show();
+            return Task.CompletedTask;
         }
 
         public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);

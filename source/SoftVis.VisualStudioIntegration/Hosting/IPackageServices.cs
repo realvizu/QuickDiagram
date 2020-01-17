@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
-using Task = System.Threading.Tasks.Task;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -46,6 +45,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// </summary>
         Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync();
 
-        Task ShowToolWindowAsync<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
+        TWindow CreateToolWindow<TWindow>(int instanceId = 0) where TWindow : ToolWindowPane;
     }
 }

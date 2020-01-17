@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using Codartis.SoftVis.UI.Wpf.View;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
@@ -12,12 +15,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [ProvideKeyBindingTable(PackageGuids.DiagramToolWindowGuidString, 115)]
     public sealed class DiagramHostToolWindow : ToolWindowPane
     {
-        public DiagramHostToolWindow(DiagramControl diagramControl)
+        public DiagramHostToolWindow()
             : base(null)
         {
             Caption = "Quick Diagram";
             ToolBar = new CommandID(PackageGuids.SoftVisCommandSetGuid, PackageIds.ToolWindowToolbar);
+        }
+
+        private IVsWindowFrame WindowFrame => (IVsWindowFrame)Frame;
+
+        public void Initialize(DiagramControl diagramControl)
+        {
+            WindowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, PackageGuids.DiagramToolWindowGuidString);
             Content = diagramControl;
+        }
+
+        public void Show() => InvokeOnWindowFrame(i => i.Show());
+        public void Hide() => InvokeOnWindowFrame(i => i.Hide());
+
+        private void InvokeOnWindowFrame(Func<IVsWindowFrame, int> windowFrameAction)
+        {
+            ErrorHandler.ThrowOnFailure(windowFrameAction.Invoke(WindowFrame));
         }
     }
 }

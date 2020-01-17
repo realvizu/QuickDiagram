@@ -52,7 +52,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             await base.InitializeAsync(cancellationToken, progress);
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            
+
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
             var hostUiGateway = new HostUiGateway(this);
 
@@ -65,27 +65,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
         }
 
-        public async Task ShowToolWindowAsync<TWindow>(int instanceId = 0)
+        public TWindow CreateToolWindow<TWindow>(int instanceId = 0)
             where TWindow : ToolWindowPane
         {
-            await ShowToolWindowAsync(
-                typeof(TWindow),
-                instanceId,
-                create: true,
-                cancellationToken: DisposalToken);
-        }
-
-        public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
-        {
-            return toolWindowType.Equals(PackageGuids.DiagramToolWindowGuid) ? this : null;
-        }
-
-        protected override Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
-        {
-            // Perform as much work as possible in this method which is being run on a background thread.
-            // The object returned from this method is passed into the constructor of the ToolWindow.
-
-            return Task.FromResult((object)_diagramToolApplication.UiServices.DiagramControl);
+            var toolWindow = CreateToolWindow(typeof(TWindow), instanceId) as TWindow;
+            if (toolWindow?.Frame == null)
+                throw new NotSupportedException("Cannot create tool window.");
+            return toolWindow;
         }
 
         private async Task<TInterface> GetServiceAsync<TService, TInterface>()
@@ -119,6 +105,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var hostService = GetService(typeof(DTE)) as DTE2;
             if (hostService == null)
                 throw new Exception("Unable to get DTE service.");
+
             return hostService;
         }
 
@@ -141,6 +128,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService == null)
                 throw new Exception("Unable to get IMenuCommandService.");
+
             return commandService;
         }
 
