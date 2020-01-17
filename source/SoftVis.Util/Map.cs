@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.Util
                 return Dictionary[key];
 
             if (IsValueNullable)
-                return default(TValue);
+                return default;
 
             throw new KeyNotFoundException($"Key {key} not found in the map.");
         }

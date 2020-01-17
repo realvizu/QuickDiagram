@@ -54,7 +54,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void ShowMessageBox(string message)
             => System.Windows.MessageBox.Show(message, DialogTitle);
 
-        public void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan))
+        public void ShowPopupMessage(string message, TimeSpan hideAfter = default)
             => _diagramViewModel.ShowPopupMessage(message, hideAfter);
 
         public string SelectSaveFilename(string title, string filter)
@@ -98,7 +98,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 _diagramViewModel.ZoomToContent();
         }
 
-        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken),
+        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             try

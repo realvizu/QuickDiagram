@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.ViewModels
         {
             base.Show();
 
-            if (_autoHideAfter == default(TimeSpan) || _autoHideAfter <= TimeSpan.Zero)
+            if (_autoHideAfter == default || _autoHideAfter <= TimeSpan.Zero)
                 return;
 
             SetUpAutoHideAsync();

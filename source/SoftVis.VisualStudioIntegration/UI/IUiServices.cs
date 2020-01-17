@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
 
         void ShowMessageBox(string message);
-        void ShowPopupMessage(string message, TimeSpan hideAfter = default(TimeSpan));
+        void ShowPopupMessage(string message, TimeSpan hideAfter = default);
         string SelectSaveFilename(string title, string filter);
 
         void FollowDiagramNode(IDiagramNode diagramNode);
@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         void ExpandAllNodes();
         void CollapseAllNodes();
 
-        Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default(CancellationToken), 
+        Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default, 
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null);
     }
 }

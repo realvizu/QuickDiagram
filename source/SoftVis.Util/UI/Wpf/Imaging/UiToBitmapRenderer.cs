@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf.Imaging
         private const int RenderingTileSize = 64;
 
         public static BitmapSource RenderUiElementToBitmap(UIElement uiElement, Rect bounds, double targetDpi,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             var drawingVisual = new DrawingVisual();

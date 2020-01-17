@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// <param name="maxProgress">Object for reporting the maximum (target) progress value, optional.</param>
         /// <returns>The image of a diagram.</returns>
         BitmapSource CreateImage(double dpi, double margin = 0, 
-            CancellationToken cancellationToken = default(CancellationToken), 
+            CancellationToken cancellationToken = default, 
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null);
     }
 }

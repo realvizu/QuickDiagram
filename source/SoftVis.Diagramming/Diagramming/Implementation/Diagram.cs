@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void HideModelItem(IModelItem modelItem) => HideModelItems(new[] { modelItem });
 
         public virtual IReadOnlyList<IDiagramShape> ShowModelItems(IEnumerable<IModelItem> modelItems,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null)
         {
             var diagramShapes = new List<IDiagramShape>();
@@ -111,7 +111,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         public virtual void HideModelItems(IEnumerable<IModelItem> modelItems,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null)
         {
             foreach (var modelItem in modelItems)

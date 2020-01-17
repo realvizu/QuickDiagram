@@ -51,7 +51,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         public async Task ExtendModelWithRelatedEntitiesAsync(IModelEntity modelEntity, EntityRelationType? entityRelationType = null,
-            CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null, bool recursive = false)
+            CancellationToken cancellationToken = default, IIncrementalProgress progress = null, bool recursive = false)
         {
             var roslynBasedModelEntity = modelEntity as RoslynBasedModelEntity;
             if (roslynBasedModelEntity == null)
@@ -92,7 +92,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             await _roslynModelProvider.ShowSourceAsync(roslyBasedModelEntity.RoslynSymbol);
         }
 
-        public async Task UpdateFromSourceAsync(CancellationToken cancellationToken = default(CancellationToken), IIncrementalProgress progress = null)
+        public async Task UpdateFromSourceAsync(CancellationToken cancellationToken = default, IIncrementalProgress progress = null)
         {
             await UpdateEntitiesFromSourceAsync(cancellationToken, progress);
             await UpdateRelationshipsFromSourceAsync(cancellationToken, progress);

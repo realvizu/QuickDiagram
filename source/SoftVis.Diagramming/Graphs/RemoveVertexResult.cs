@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Graphs
 
         public static RemoveVertexResult<TVertex, TEdge> Empty = new RemoveVertexResult<TVertex, TEdge>();
 
-        public RemoveVertexResult(TVertex removedVertex = default(TVertex), IReadOnlyList<TEdge> removedEdges = null)
+        public RemoveVertexResult(TVertex removedVertex = default, IReadOnlyList<TEdge> removedEdges = null)
         {
             RemovedVertex = removedVertex;
             RemovedEdges = removedEdges;

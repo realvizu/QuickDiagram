@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         }
 
         public BitmapSource CreateImage(double dpi, double margin = 0, 
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
         {
             var diagramImageCreator = new DiagramImageCreator(

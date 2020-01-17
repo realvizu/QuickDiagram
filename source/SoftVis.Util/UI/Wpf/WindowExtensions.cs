@@ -17,7 +17,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
         /// </summary>
         /// <param name="window">The window to be shown as non-blocking modal.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
-        public static void ShowNonBlockingModal(this Window window, CancellationToken cancellationToken = default(CancellationToken))
+        public static void ShowNonBlockingModal(this Window window, CancellationToken cancellationToken = default)
         {
             lock (window)
             {

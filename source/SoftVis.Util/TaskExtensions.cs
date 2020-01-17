@@ -15,7 +15,7 @@ namespace Codartis.SoftVis.Util
         /// <returns>The task representing the async work.</returns>
         // ReSharper disable once InconsistentNaming
         public static Task StartSTA(this TaskFactory taskFactory, Action action,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var taskCompletionSource = new TaskCompletionSource<object>();
             return ExecuteOnNewSTAThread(taskCompletionSource, i =>
@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.Util
         /// <returns>The task representing the async work and providing the result.</returns>
         // ReSharper disable once InconsistentNaming
         public static Task<T> StartSTA<T>(this TaskFactory taskFactory, Func<T> func,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
             return ExecuteOnNewSTAThread(taskCompletionSource, i => i.SetResult(func()), cancellationToken);

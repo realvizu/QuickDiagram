@@ -28,8 +28,7 @@ namespace Codartis.SoftVis.Util.UI.Wpf
             {
                 var child = VisualTreeHelper.GetChild(dependencyObject, i);
 
-                var childAsT = child as T;
-                if (childAsT != null && (predicate == null || predicate(childAsT)))
+                if (child is T childAsT && (predicate == null || predicate(childAsT)))
                     yield return childAsT;
 
                 children.Add(child);
