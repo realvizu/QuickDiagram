@@ -22,10 +22,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             ToolBar = new CommandID(PackageGuids.SoftVisCommandSetGuid, PackageIds.ToolWindowToolbar);
         }
 
-        private IVsWindowFrame WindowFrame => (IVsWindowFrame)Frame;
+        private IVsWindowFrame WindowFrame
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return (IVsWindowFrame)Frame;
+            }
+        }
 
         public void Initialize(DiagramControl diagramControl)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             WindowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, PackageGuids.DiagramToolWindowGuidString);
             Content = diagramControl;
         }

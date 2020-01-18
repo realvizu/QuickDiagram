@@ -113,8 +113,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             cancellationToken.ThrowIfCancellationRequested();
 
             var workspace = await _roslynModelProvider.GetWorkspaceAsync();
-            var compilations = workspace.CurrentSolution.Projects.Select(i => i.GetCompilationAsync(cancellationToken))
-                .Select(i => i.Result).ToArray();
+
+            var compilations = new List<Compilation>();
+            foreach (var project in workspace.CurrentSolution.Projects)
+            {
+                var compilation = await project.GetCompilationAsync(cancellationToken);
+                compilations.Add(compilation);
+            }
 
             foreach (var roslynBasedModelEntity in _model.Entities.OfType<RoslynBasedModelEntity>().ToArray())
             {
