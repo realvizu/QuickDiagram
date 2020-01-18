@@ -40,7 +40,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             // HACK: Force load System.Windows.Interactivity.dll from plugin's directory.
             // See: http://stackoverflow.com/questions/29362125/visual-studio-extension-could-not-find-a-required-assembly
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            typeof(System.Windows.Interactivity.Behavior).ToString();
+            typeof(Microsoft.Xaml.Behaviors.Behavior).ToString();
         }
 
         private DiagramToolApplication _diagramToolApplication;
