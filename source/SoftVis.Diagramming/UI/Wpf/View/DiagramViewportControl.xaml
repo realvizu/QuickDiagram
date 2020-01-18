@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"

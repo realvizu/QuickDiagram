@@ -1,354 +1,107 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9A600B8E-7C32-4DAE-B61C-55FB78051F81}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net471</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Platforms>AnyCPU</Platforms>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>Codartis.SoftVis</RootNamespace>
     <AssemblyName>SoftVis.Diagramming</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn></NoWarn>
+    <WarningsAsErrors />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn />
+    <WarningsAsErrors />
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
-    </Reference>
-    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>..\packages\morelinq.2.3.0\lib\net35\MoreLinq.dll</HintPath>
-    </Reference>
+    <None Remove="UI\Wpf\View\DiagramNodeWithCuesControl.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="morelinq" Version="2.3.0" />
+    <PackageReference Include="NsDepCop" Version="1.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="UI\Wpf\View\DefaultDecoratorPlacementDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramButtonControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\AnimationConstants.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramImageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramNodeCoreControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramConnectorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramNodeButtonDataTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\PathControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\DiagramViewportControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Wpf\View\PanAndZoomControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="QuickGraph">
       <HintPath>..\lib\QuickGraph\QuickGraph.dll</HintPath>
     </Reference>
     <Reference Include="QuickGraph.Serialization">
       <HintPath>..\lib\QuickGraph\QuickGraph.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Include\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Include\VersionInfo.cs">
-      <Link>Properties\VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="Diagramming\ArrowHeadType.cs" />
-    <Compile Include="Diagramming\ConnectorTypes.cs" />
-    <Compile Include="Diagramming\ConnectorType.cs" />
-    <Compile Include="Diagramming\IArrangedDiagram.cs" />
-    <Compile Include="Diagramming\IDiagramNode.cs" />
-    <Compile Include="Diagramming\IDiagramConnector.cs" />
-    <Compile Include="Diagramming\IDiagram.cs" />
-    <Compile Include="Diagramming\IDiagramShape.cs" />
-    <Compile Include="Diagramming\Implementation\AutoArrangingDiagram.cs" />
-    <Compile Include="Diagramming\Layout\RemoveDiagramConnectorAction.cs" />
-    <Compile Include="Diagramming\Layout\AddDiagramConnectorAction.cs" />
-    <Compile Include="Diagramming\Layout\ResizeDiagramNodeAction.cs" />
-    <Compile Include="Diagramming\Layout\RemoveDiagramNodeAction.cs" />
-    <Compile Include="Diagramming\Layout\DiagramAction.cs" />
-    <Compile Include="Diagramming\Layout\AddDiagramNodeAction.cs" />
-    <Compile Include="Diagramming\Layout\IDiagramActionVisitor.cs" />
-    <Compile Include="Diagramming\Layout\IDiagramActionConsumer.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\DiagramActionDispatcherVisitor.cs" />
-    <Compile Include="Graphs\ConcurrentBidirectionalGraph.cs" />
-    <Compile Include="Graphs\RemoveVertexResult.cs" />
-    <Compile Include="Modeling\Implementation\Model.cs" />
-    <Compile Include="Modeling\Implementation\ModelGraph.cs" />
-    <Compile Include="Modeling\ModelRelationshipType.cs" />
-    <Compile Include="Modeling\EntityRelationTypes.cs" />
-    <Compile Include="Modeling\ModelOrigin.cs" />
-    <Compile Include="UI\Wpf\Behaviors\CopyMousePositionBehavior.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ViewportAutoMoveMode.cs" />
-    <Compile Include="UI\Wpf\ViewModel\AutoMoveViewportViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramImageViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\RelatedEntityListBoxViewModel.cs" />
-    <Compile Include="UI\Wpf\View\DiagramButtonControl.xaml.cs">
-      <DependentUpon>DiagramButtonControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\DiagramConnectorRouteCalculatorConverter.cs" />
-    <Compile Include="UI\Wpf\View\DiagramConnectorItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\IDiagramImageCreator.cs" />
-    <Compile Include="UI\Wpf\View\DataCloningDiagramImageCreator.cs" />
-    <Compile Include="UI\Wpf\View\DiagramImageCreator.cs" />
-    <Compile Include="UI\Wpf\View\DiagramStyleCache.cs" />
-    <Compile Include="UI\ZoomDirection.cs" />
-    <Compile Include="UI\Wpf\Commands\DoubleDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\PanDirectionDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\ModelEntityDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\ZoomDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Commands\VectorDelegateCommand.cs" />
-    <Compile Include="UI\Wpf\Behaviors\KeyboardPanAndZoomBehavior.cs" />
-    <Compile Include="UI\Wpf\Behaviors\MousePanAndZoomBehavior.cs" />
-    <Compile Include="UI\Wpf\Behaviors\PanAndZoomBehaviorBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeDecoratorViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonEventHandler.cs" />
-    <Compile Include="UI\Wpf\ViewModel\RelatedEntityCueViewModel.cs" />
-    <Compile Include="UI\Wpf\View\DiagramCanvasChildDecoratorPanel.cs" />
-    <Compile Include="UI\Wpf\View\DiagramImageControl.xaml.cs">
-      <DependentUpon>DiagramImageControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Modeling\EntityRelationType.cs" />
-    <Compile Include="Diagramming\Implementation\Diagram.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramConnector.cs" />
-    <Compile Include="Diagramming\Layout\DiagramConnectorAction.cs" />
-    <Compile Include="Diagramming\DiagramDefaults.cs" />
-    <Compile Include="Diagramming\Layout\DiagramNodeAction.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramPath.cs" />
-    <Compile Include="Diagramming\Layout\DiagramShapeAction.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Absolute\AbsolutePositionCalculator.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertexToPointMap.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutVertexToPointMap.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutEdge.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\GeneralLayoutEdge.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutPath.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutVertexBase.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayeredLayoutGraph.cs" />
-    <Compile Include="Diagramming\LineType.cs" />
-    <Compile Include="Diagramming\Layout\ShapeActionType.cs" />
-    <Compile Include="Graphs\IReadOnlyLayeredGraph.cs" />
-    <Compile Include="Graphs\LayeredGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\RelativeLayout.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\RelativeLocationCalculator.cs" />
-    <Compile Include="Diagramming\Layout\IRerouteDiagramConnectorLayoutAction.cs" />
-    <Compile Include="Diagramming\Layout\ILayoutActionVisitor.cs" />
-    <Compile Include="Diagramming\Implementation\LayoutActionExecutorVisitor.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyRelativeLayout.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Absolute\MoveDiagramNodeLayoutAction.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Absolute\ReroutePathLayoutAction.cs" />
-    <Compile Include="Diagramming\Layout\ILayoutAction.cs" />
-    <Compile Include="Diagramming\Layout\IIncrementalLayoutEngine.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\DiagramNodeLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\DummyLayoutVertex.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\IncrementalLayoutEngine.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyQuasiProperLayoutGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\LayoutPathException.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LayeredLayoutGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\QuasiProperLayoutGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayoutVertexLayer.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LayoutVertexLayer.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\IReadOnlyLayoutVertexLayers.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\LayoutVertexLayers.cs" />
-    <Compile Include="Diagramming\Layout\IMoveDiagramNodeLayoutAction.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\RelativeLayoutCalculator.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramGraph.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\RelativeLocation.cs" />
-    <Compile Include="Diagramming\Layout\Incremental\Relative\Logic\SiblingsComparer.cs" />
-    <Compile Include="Geometry\Point2D.cs" />
-    <Compile Include="Geometry\Rect2D.cs" />
-    <Compile Include="Geometry\Rect2DExtensions.cs" />
-    <Compile Include="Geometry\Route.cs" />
-    <Compile Include="Geometry\Size2D.cs" />
-    <Compile Include="Geometry\Side.cs" />
-    <Compile Include="Graphs\EdgeDirection.cs" />
-    <Compile Include="Graphs\EdgeExtensions.cs" />
-    <Compile Include="Graphs\INotifyGraphChange.cs" />
-    <Compile Include="Graphs\Layout\LayoutParametersBase.cs" />
-    <Compile Include="Graphs\IAlgorithm.cs" />
-    <Compile Include="Graphs\Layout\IEdgeRoutingSupportAlgorithm.cs" />
-    <Compile Include="Graphs\Layout\IEdgeRoutingAlgorithm.cs" />
-    <Compile Include="Graphs\Layout\ILayoutParameters.cs" />
-    <Compile Include="Graphs\Layout\VertexPlacement\IVertexPositioningAlgorithm.cs" />
-    <Compile Include="Graphs\Layout\LayoutType.cs" />
-    <Compile Include="Geometry\ISized.cs" />
-    <Compile Include="Graphs\GraphExtensions.cs" />
-    <Compile Include="Graphs\ClusteredTopologicalSortAlgorithm.cs" />
-    <Compile Include="Graphs\Layout\EdgeRoutingType.cs" />
-    <Compile Include="Graphs\PathException.cs" />
-    <Compile Include="Graphs\TopologicalSortOrder.cs" />
-    <Compile Include="Graphs\Layout\VertexPlacement\SimpleTreeLayoutAlgorithm.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramNode.cs" />
-    <Compile Include="Diagramming\Implementation\DiagramShape.cs" />
-    <Compile Include="Graphs\Layout\EdgeRouting\StraightEdgeRoutingAlgorithm.cs" />
-    <Compile Include="Geometry\IPositioned.cs" />
-    <Compile Include="Geometry\IRect.cs" />
-    <Compile Include="Graphs\Layout\EdgeRouting\EdgeRoutingAlgorithm.cs" />
-    <Compile Include="Graphs\Path.cs" />
-    <Compile Include="Modeling\IModelItem.cs" />
-    <Compile Include="Modeling\IModelEntity.cs" />
-    <Compile Include="Modeling\IModelRelationship.cs" />
-    <Compile Include="Modeling\EntityRelationDirection.cs" />
-    <Compile Include="Modeling\ModelRelationshipStereotype.cs" />
-    <Compile Include="Modeling\ModelEntityStereotype.cs" />
-    <Compile Include="Modeling\ModelRelationshipClassifier.cs" />
-    <Compile Include="Modeling\ModelEntityClassifier.cs" />
-    <Compile Include="Modeling\IReadOnlyModel.cs" />
-    <Compile Include="Modeling\Implementation\ModelRelationship.cs" />
-    <Compile Include="Modeling\Implementation\ModelEntity.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\ScaleCalculator.cs" />
-    <Compile Include="UI\Wpf\Size2DExtensions.cs" />
-    <Compile Include="UI\Wpf\Point2DExtensions.cs" />
-    <Compile Include="UI\Wpf\Rect2DExtensions.cs" />
-    <Compile Include="UI\Wpf\View\DiagramNodeCoreControl.xaml.cs">
-      <DependentUpon>DiagramNodeCoreControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\IDiagramStlyeProvider.cs" />
-    <Compile Include="UI\Wpf\View\ZoomableVisual.cs" />
-    <Compile Include="UI\Wpf\View\DiagramVisual.cs" />
-    <Compile Include="UI\Wpf\View\PathControl.xaml.cs">
-      <DependentUpon>PathControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\PointsToArrowHeadPathConverter.cs" />
-    <Compile Include="UI\Wpf\View\PointsToArrowShaftPathConverter.cs" />
-    <Compile Include="UI\PanDirection.cs" />
-    <Compile Include="UI\Wpf\ViewModel\ShowRelatedNodeButtonViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramConnectorViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\CloseShapeButtonViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeButtonViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramNodeViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelBase.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramShapeViewModelFactory.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramViewModel.cs" />
-    <Compile Include="UI\Wpf\ViewModel\DiagramViewportViewModel.cs" />
-    <Compile Include="UI\Wpf\View\ConnectorTypeToGeometryConverter.cs" />
-    <Compile Include="UI\Wpf\View\DiagramConnectorControl.xaml.cs">
-      <DependentUpon>DiagramConnectorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\DiagramControl.xaml.cs">
-      <DependentUpon>DiagramControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\DiagramNodeItemsControl.cs" />
-    <Compile Include="UI\Wpf\View\DiagramNodeControl.xaml.cs">
-      <DependentUpon>DiagramNodeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\DiagramViewportControl.DepProps.cs" />
-    <Compile Include="UI\Wpf\View\DiagramViewportControl.xaml.cs">
-      <DependentUpon>DiagramViewportControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\View\PanAndZoomControl.xaml.cs">
-      <DependentUpon>PanAndZoomControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Wpf\ViewModel\ViewportCalculatorViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Key.snk">
-      <Link>Key.snk</Link>
-    </None>
-    <None Include="app.config" />
-    <None Include="config.nsdepcop">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\Wpf\View\DefaultDecoratorPlacementDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramButtonControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\AnimationConstants.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramImageControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeCoreControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramConnectorControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramNodeButtonDataTemplates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Wpf\View\PathControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\DiagramViewportControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Wpf\View\PanAndZoomControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SoftVis.Util\SoftVis.Util.csproj">
-      <Project>{04b8c468-787f-45b2-bd98-31e05c646099}</Project>
-      <Name>SoftVis.Util</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\NsDepCop.1.10.1-beta1\build\NsDepCop.targets" Condition="Exists('..\packages\NsDepCop.1.10.1-beta1\build\NsDepCop.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NsDepCop.1.10.1-beta1\build\NsDepCop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NsDepCop.1.10.1-beta1\build\NsDepCop.targets'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
 </Project>

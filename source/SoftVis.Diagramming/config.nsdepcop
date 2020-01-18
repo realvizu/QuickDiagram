@@ -24,6 +24,7 @@
     <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling" />
 
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
+    <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Microsoft.Xaml.Behaviors"/>
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.Util.UI.*" />
     <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
 
