@@ -5,7 +5,6 @@ using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Document = Microsoft.CodeAnalysis.Document;
 using TextSpan = Microsoft.CodeAnalysis.Text.TextSpan;
@@ -99,14 +98,13 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var workspace = await GetWorkspaceAsync();
             workspace.OpenDocument(documentId, activate: true);
 
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            SelectSourceLocation(location.GetLineSpan().Span);
+            await SelectSourceLocationAsync(location.GetLineSpan().Span);
         }
 
-        private void SelectSourceLocation(LinePositionSpan span)
+        private async Task SelectSourceLocationAsync(LinePositionSpan span)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var hostService = _packageServices.GetHostEnvironmentService();
+            var hostService = await _packageServices.GetHostEnvironmentServiceAsync();
+
             var selection = hostService.ActiveDocument.Selection as TextSelection;
             if (selection == null)
                 return;

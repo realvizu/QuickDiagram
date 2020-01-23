@@ -14,8 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// <summary>
         /// Return the host environment service.
         /// </summary>
-        /// <returns>The host environment service.</returns>
-        DTE2 GetHostEnvironmentService();
+        Task<DTE2> GetHostEnvironmentServiceAsync();
 
         /// <summary>
         /// Returns the service that provides info about the active text views.
@@ -35,7 +34,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// <summary>
         /// Returns the Diagram tool window. Also creates and initializes it if necessary.
         /// </summary>
-        /// <returns></returns>
         Task<DiagramHostToolWindow> GetToolWindowAsync();
     }
 }

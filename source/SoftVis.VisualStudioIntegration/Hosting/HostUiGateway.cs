@@ -42,9 +42,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private async Task<Window> GetMainWindowAsync()
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            var hostEnvironmentService = _packageServices.GetHostEnvironmentService();
+            var hostEnvironmentService = await _packageServices.GetHostEnvironmentServiceAsync();
+            
             var parentWindowHandle = new IntPtr(hostEnvironmentService.MainWindow.HWnd);
             var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
             var window = (Window)hwndSource?.RootVisual;

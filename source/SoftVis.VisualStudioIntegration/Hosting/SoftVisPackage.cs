@@ -78,13 +78,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return toolWindow;
         }
 
-        public DTE2 GetHostEnvironmentService()
+        public async Task<DTE2> GetHostEnvironmentServiceAsync()
         {
-            var hostService = GetService(typeof(DTE)) as DTE2;
-            if (hostService == null)
-                throw new Exception("Unable to get DTE service.");
-
-            return hostService;
+            return await GetServiceAsync<DTE, DTE2>();
         }
 
         public async Task<IVsTextManager> GetTextManagerServiceAsync()
