@@ -14,13 +14,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         /// </summary>
         Task ShowDiagramWindowAsync();
 
-        void ShowMessageBox(string message);
-
-        /// <summary>
-        /// Shows a SaveFileDialog and returns the selected filename.
-        /// </summary>
-        string SelectSaveFilename(string title, string filter);
-
         /// <summary>
         /// Returns a new progress dialog.
         /// </summary>
@@ -30,9 +23,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0);
 
         /// <summary>
-        /// Runs an async method from a sync method.
+        /// Runs an async method in such a way that don't cause deadlock in the host.
         /// </summary>
-        void Run(Func<Task> asyncMethod);
+        Task RunAsync(Func<Task> asyncMethod);
 
     }
 }

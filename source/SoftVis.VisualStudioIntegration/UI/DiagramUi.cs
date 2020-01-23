@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,13 +7,10 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Codartis.SoftVis.Diagramming;
-using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling;
-using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.Util;
-using Codartis.SoftVis.Util.UI.Wpf;
 using Codartis.SoftVis.Util.UI.Wpf.Resources;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -47,11 +43,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             SubscribeToDiagramViewModelEvents(_diagramViewModel);
         }
 
-        public void ShowMessageBox(string message)
-            => System.Windows.MessageBox.Show(message, DialogTitle);
+        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
 
-        public void ShowPopupMessage(string message, TimeSpan hideAfter = default)
-            => _diagramViewModel.ShowPopupMessage(message, hideAfter);
+        public void ShowPopupMessage(string message, TimeSpan hideAfter = default) => _diagramViewModel.ShowPopupMessage(message, hideAfter);
 
         public string SelectSaveFilename(string title, string filter)
         {
@@ -67,43 +61,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public void ExpandAllNodes() => _diagramViewModel.ExpandAllNodes();
         public void CollapseAllNodes() => _diagramViewModel.CollapseAllNodes();
 
-        public void ZoomToDiagramNode(IDiagramNode diagramNode)
-        {
-            var rect = diagramNode.Rect.ToWpf();
-            if (rect.IsDefined())
-                _diagramViewModel.EnsureRectIsVisible(rect);
-        }
-
-        public void ZoomToDiagramNodes(IEnumerable<IDiagramNode> diagramNodes)
-        {
-            var rect = diagramNodes.Select(i => i.Rect).Where(i => i.IsDefined()).Union().ToWpf();
-            if (rect.IsDefined())
-                _diagramViewModel.ZoomToRect(rect);
-        }
-
-        public void EnsureDiagramNodeIsVisible(IDiagramNode diagramNode)
-        {
-            var rect = diagramNode.Rect.ToWpf();
-            if (rect.IsDefined())
-                _diagramViewModel.EnsureRectIsVisible(rect);
-        }
-
-        public void EnsureDiagramIsVisible()
-        {
-            if (!_diagramViewModel.IsDiagramContentVisible())
-                _diagramViewModel.ZoomToContent();
-        }
-
-        public async Task<BitmapSource> CreateDiagramImageAsync(CancellationToken cancellationToken = default,
-            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
+        public async Task<BitmapSource> CreateDiagramImageAsync(
+            CancellationToken cancellationToken = default,
+            IIncrementalProgress progress = null,
+            IProgress<int> maxProgress = null)
         {
             try
             {
                 // The image creator must be created on the UI thread so it can read the necessary view and view model data.
                 var diagramImageCreator = new DataCloningDiagramImageCreator(_diagramViewModel, DiagramControl, _resourceDictionary);
 
-                return await Task.Factory.StartSTA(() =>
-                    diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress, maxProgress), cancellationToken);
+                return await Task.Factory.StartSTA(
+                    () =>
+                        diagramImageCreator.CreateImage(ImageExportDpi.Value, ExportedImageMargin, cancellationToken, progress, maxProgress),
+                    cancellationToken);
             }
             catch (OperationCanceledException)
             {

@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         private void OnShapeAdded(IDiagramShape diagramShape)
         {
-            HostUiServices.Run(async () => await OnShapeAddedAsync(diagramShape));
+            HostUiServices.RunAsync(async () => await OnShapeAddedAsync(diagramShape));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         private void OnShowSourceRequested(IDiagramShape diagramShape)
         {
-            HostUiServices.Run(async () => await OnShowSourceRequestedAsync(diagramShape));
+            HostUiServices.RunAsync(async () => await OnShowSourceRequestedAsync(diagramShape));
         }
 
         private async Task OnShowSourceRequestedAsync(IDiagramShape diagramShape)
@@ -89,7 +89,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
 
         private void OnShowItemsRequested(IReadOnlyList<IModelEntity> modelEntities)
         {
-            HostUiServices.Run(async () => await OnShowItemsRequestAsync(modelEntities));
+            HostUiServices.RunAsync(async () => await OnShowItemsRequestAsync(modelEntities));
         }
 
         private async Task OnShowItemsRequestAsync(IReadOnlyList<IModelEntity> modelEntities)

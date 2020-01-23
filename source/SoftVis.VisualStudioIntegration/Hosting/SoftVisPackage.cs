@@ -78,32 +78,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return toolWindow;
         }
 
-        private async Task<TInterface> GetServiceAsync<TService, TInterface>()
-            where TService : class
-            where TInterface : class
-        {
-            var service = await GetServiceAsync(typeof(TService));
-            if (service == null)
-                throw new Exception($"Unable to get {typeof(TService).FullName}.");
-            if (!(service is TInterface))
-                throw new Exception($"The requested service {typeof(TService).FullName} is not of type {typeof(TInterface).FullName}.");
-
-            return service as TInterface;
-        }
-
-        private static void RegisterExceptionHandler()
-        {
-            // This is needed otherwise VS catches the exception and shows no stack trace.
-            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) =>
-            {
-#if DEBUG
-                System.Diagnostics.Debugger.Break();
-#else
-                Trace.WriteLine($"[QuickDiagram] unhandled exception: {args.Exception}");
-#endif
-            };
-        }
-
         public DTE2 GetHostEnvironmentService()
         {
             var hostService = GetService(typeof(DTE)) as DTE2;
@@ -148,6 +122,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var commandRegistrator = new CommandRegistrator(menuCommandService, appServices);
             commandRegistrator.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
             commandRegistrator.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);
+        }
+
+        private async Task<TInterface> GetServiceAsync<TService, TInterface>()
+            where TService : class
+            where TInterface : class
+        {
+            var service = await GetServiceAsync(typeof(TService));
+            if (service == null)
+                throw new Exception($"Unable to get {typeof(TService).FullName}.");
+            if (!(service is TInterface))
+                throw new Exception($"The requested service {typeof(TService).FullName} is not of type {typeof(TInterface).FullName}.");
+
+            return service as TInterface;
+        }
+
+        private static void RegisterExceptionHandler()
+        {
+            // This is needed otherwise VS catches the exception and shows no stack trace.
+            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) =>
+            {
+#if DEBUG
+                System.Diagnostics.Debugger.Break();
+#else
+                Trace.WriteLine($"[QuickDiagram] unhandled exception: {args.Exception}");
+#endif
+            };
         }
     }
 }

@@ -32,6 +32,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         /// </summary>
         Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync();
 
+        /// <summary>
+        /// Returns the Diagram tool window. Also creates and initializes it if necessary.
+        /// </summary>
+        /// <returns></returns>
         Task<DiagramHostToolWindow> GetToolWindowAsync();
     }
 }

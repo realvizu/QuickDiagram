@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Interop;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
@@ -30,22 +29,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             toolWindow.Show();
         }
 
-        public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
-
-        public string SelectSaveFilename(string title, string filter)
-        {
-            var saveFileDialog = new SaveFileDialog { Title = title, Filter = filter };
-            saveFileDialog.ShowDialog();
-            return saveFileDialog.FileName;
-        }
-
         public async Task<ProgressDialog> CreateProgressDialogAsync(string text, int maxProgress = 0)
         {
             var hostMainWindow = await GetMainWindowAsync();
             return new ProgressDialog(hostMainWindow, DialogTitle, text, maxProgress);
         }
 
-        public void Run(Func<Task> asyncMethod) => ThreadHelper.JoinableTaskFactory.RunAsync(asyncMethod);
+        public async Task RunAsync(Func<Task> asyncMethod)
+        {
+            await ThreadHelper.JoinableTaskFactory.RunAsync(asyncMethod);
+        }
 
         private async Task<Window> GetMainWindowAsync()
         {
