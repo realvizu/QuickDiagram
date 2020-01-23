@@ -28,7 +28,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
         private const double ExportedImageMargin = 10;
 
-        private readonly IHostUiServices _hostUiServices;
         private readonly ResourceDictionary _resourceDictionary;
         private readonly DiagramViewModel _diagramViewModel;
         public DiagramControl DiagramControl { get; }
@@ -38,20 +37,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public event Action<IDiagramShape> ShowSourceRequested;
         public event Action<IReadOnlyList<IModelEntity>> ShowModelItemsRequested;
 
-        public DiagramUi(IHostUiServices hostUiServices, IArrangedDiagram diagram)
+        public DiagramUi(IArrangedDiagram diagram)
         {
-            _hostUiServices = hostUiServices;
             _resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
             _diagramViewModel = new DiagramViewModel(diagram, minZoom: .1, maxZoom: 10, initialZoom: 1);
             DiagramControl = new DiagramControl(_resourceDictionary) { DataContext = _diagramViewModel };
 
-            hostUiServices.HostDiagram(DiagramControl);
-
             SubscribeToDiagramViewModelEvents(_diagramViewModel);
         }
-
-        public Task ShowDiagramWindowAsync() => _hostUiServices.ShowDiagramWindowAsync();
 
         public void ShowMessageBox(string message)
             => System.Windows.MessageBox.Show(message, DialogTitle);

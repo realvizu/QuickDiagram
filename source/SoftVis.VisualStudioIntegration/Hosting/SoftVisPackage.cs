@@ -58,19 +58,23 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             var modelServices = new RoslynBasedModelBuilder(hostWorkspaceGateway);
             var diagramServices = new RoslynBasedDiagram(modelServices);
-            var uiServices = new DiagramUi(hostUiGateway, diagramServices);
+            var uiServices = new DiagramUi(diagramServices);
 
             _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices, hostUiGateway);
 
-            RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
+            await RegisterShellCommandsAsync(_diagramToolApplication);
         }
 
-        public TWindow CreateToolWindow<TWindow>(int instanceId = 0)
-            where TWindow : ToolWindowPane
+        public async Task<DiagramHostToolWindow> GetToolWindowAsync()
         {
-            var toolWindow = CreateToolWindow(typeof(TWindow), instanceId) as TWindow;
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var toolWindow = FindToolWindow(typeof(DiagramHostToolWindow), 0, create: true) as DiagramHostToolWindow;
             if (toolWindow?.Frame == null)
                 throw new NotSupportedException("Cannot create tool window.");
+
+            toolWindow.Initialize(_diagramToolApplication.UiServices.DiagramControl);
+
             return toolWindow;
         }
 
@@ -111,35 +115,35 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         public async Task<IVsTextManager> GetTextManagerServiceAsync()
         {
-            return (IVsTextManager)await GetServiceAsync(typeof(SVsTextManager));
+            return await GetServiceAsync<SVsTextManager, IVsTextManager>();
         }
 
         public async Task<IVsEditorAdaptersFactoryService> GetEditorAdaptersFactoryServiceAsync()
         {
-            var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
-            if (componentModel == null)
-                throw new ArgumentNullException(nameof(componentModel));
-
+            var componentModel = await GetComponentModelService();
             return componentModel.GetService<IVsEditorAdaptersFactoryService>();
-        }
-
-        public OleMenuCommandService GetMenuCommandService()
-        {
-            var commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService == null)
-                throw new Exception("Unable to get IMenuCommandService.");
-
-            return commandService;
         }
 
         public async Task<VisualStudioWorkspace> GetVisualStudioWorkspaceAsync()
         {
-            var componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
+            var componentModel = await GetComponentModelService();
             return componentModel.GetService<VisualStudioWorkspace>() ?? throw new Exception("Cannot get VisualStudioWorkspace service.");
         }
 
-        private static void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
+        private async Task<IMenuCommandService> GetMenuCommandServiceAsync()
         {
+            return await GetServiceAsync<IMenuCommandService, OleMenuCommandService>();
+        }
+
+        private async Task<IComponentModel> GetComponentModelService()
+        {
+            return await GetServiceAsync<SComponentModel, IComponentModel>();
+        }
+
+        private async Task RegisterShellCommandsAsync(IAppServices appServices)
+        {
+            var menuCommandService = await GetMenuCommandServiceAsync();
+
             var commandSetGuid = PackageGuids.SoftVisCommandSetGuid;
             var commandRegistrator = new CommandRegistrator(menuCommandService, appServices);
             commandRegistrator.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
@@ -10,12 +9,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     /// </summary>
     public interface IHostUiServices
     {
-        /// <summary>
-        /// Hosts a diagram control in a host-provided tool window.
-        /// </summary>
-        /// <param name="diagramControl">The diagram control.</param>
-        void HostDiagram(DiagramControl diagramControl);
-
         /// <summary>
         /// Shows the diagram-hosting tool window.
         /// </summary>

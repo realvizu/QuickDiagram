@@ -1,6 +1,6 @@
-﻿using System;
-using System.ComponentModel.Design;
+﻿using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using Codartis.SoftVis.UI.Wpf.View;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -15,35 +15,38 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     [ProvideKeyBindingTable(PackageGuids.DiagramToolWindowGuidString, 115)]
     public sealed class DiagramHostToolWindow : ToolWindowPane
     {
+        private readonly ContentPresenter _contentPresenter;
+
         public DiagramHostToolWindow()
             : base(null)
         {
             Caption = "Quick Diagram";
             ToolBar = new CommandID(PackageGuids.SoftVisCommandSetGuid, PackageIds.ToolWindowToolbar);
-        }
 
-        private IVsWindowFrame WindowFrame
-        {
-            get
-            {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                return (IVsWindowFrame)Frame;
-            }
+            // Must assign a control to Content otherwise the tool window creation throws COMException (E_UNEXPECTED)
+            // so we use an empty ContentPresenter and set its content to the DiagramControl later.
+            _contentPresenter = new ContentPresenter();
+            Content = _contentPresenter;
         }
 
         public void Initialize(DiagramControl diagramControl)
         {
+            if (_contentPresenter.Content != null)
+            {
+                // Already initialized.
+                return;
+            }
+
             ThreadHelper.ThrowIfNotOnUIThread();
-            WindowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, PackageGuids.DiagramToolWindowGuidString);
-            Content = diagramControl;
+            ((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, PackageGuids.DiagramToolWindowGuidString);
+            _contentPresenter.Content = diagramControl;
         }
 
-        public void Show() => InvokeOnWindowFrame(i => i.Show());
-        public void Hide() => InvokeOnWindowFrame(i => i.Hide());
-
-        private void InvokeOnWindowFrame(Func<IVsWindowFrame, int> windowFrameAction)
+        public void Show()
         {
-            ErrorHandler.ThrowOnFailure(windowFrameAction.Invoke(WindowFrame));
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var windowFrame = (IVsWindowFrame)Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
-using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.Util.UI.Wpf.Dialogs;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Microsoft.VisualStudio.Shell;
@@ -19,23 +18,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
         private const string DialogTitle = "Quick Diagram Tool";
 
         private readonly IPackageServices _packageServices;
-        private readonly DiagramHostToolWindow _diagramHostWindow;
 
         public HostUiGateway(IPackageServices packageServices)
         {
             _packageServices = packageServices;
-            _diagramHostWindow = _packageServices.CreateToolWindow<DiagramHostToolWindow>();
         }
 
-        public void HostDiagram(DiagramControl diagramControl)
+        public async Task ShowDiagramWindowAsync()
         {
-            _diagramHostWindow.Initialize(diagramControl);
-        }
-
-        public Task ShowDiagramWindowAsync()
-        {
-            _diagramHostWindow.Show();
-            return Task.CompletedTask;
+            var toolWindow = await _packageServices.GetToolWindowAsync();
+            toolWindow.Show();
         }
 
         public void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message, DialogTitle);
@@ -57,9 +49,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private async Task<Window> GetMainWindowAsync()
         {
-            var hostEnvironmentService = _packageServices.GetHostEnvironmentService();
-
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var hostEnvironmentService = _packageServices.GetHostEnvironmentService();
             var parentWindowHandle = new IntPtr(hostEnvironmentService.MainWindow.HWnd);
             var hwndSource = HwndSource.FromHwnd(parentWindowHandle);
             var window = (Window)hwndSource?.RootVisual;
