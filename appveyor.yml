@@ -31,4 +31,4 @@ test:
   assemblies: '**\*UnitTests.dll'
 
 artifacts:
-- path: source\SoftVis.VisualStudioIntegration\bin\Release\QuickDiagramTool.vsix
+- path: source\SoftVis.VisualStudioIntegration\bin\Release\net46\QuickDiagramTool.vsix

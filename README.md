@@ -2,7 +2,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/sw2picivqnv5buj8?svg=true)](https://ci.appveyor.com/project/realvizu/softvis)
 
 Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships. 
-Integrates into Visual Studio 2015 and 2017.
+Integrates into Visual Studio 2015, 2017 and 2019.
 Similar to the Code Map feature of Visual Studio Enterprise Edition but more lightweight ... and free.
 
 Install from: [![Visual Studio extension](https://vsmarketplacebadge.apphb.com/version/FerencVizkeleti.QuickDiagramToolforC.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC)
