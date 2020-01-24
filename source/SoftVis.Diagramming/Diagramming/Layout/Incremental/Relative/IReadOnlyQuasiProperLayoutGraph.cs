@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative
     /// <summary>
     /// Provides a read-only view of a proper layered graph used for layout calculation.
     /// </summary>
-    internal interface IReadOnlyQuasiProperLayoutGraph : IReadOnlyLayeredGraph<LayoutVertexBase, GeneralLayoutEdge>
+    public interface IReadOnlyQuasiProperLayoutGraph : IReadOnlyLayeredGraph<LayoutVertexBase, GeneralLayoutEdge>
     {
         GeneralLayoutEdge GetInEdge(DummyLayoutVertex dummyVertex);
         GeneralLayoutEdge GetOutEdge(DummyLayoutVertex dummyVertex);

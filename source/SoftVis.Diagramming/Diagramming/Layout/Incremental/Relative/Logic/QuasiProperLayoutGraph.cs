@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// Invariants:
     /// <para>Dummy vertices' in/out degree (number of in/out edges) must be at most 1.</para>
     /// </remarks>
-    internal class QuasiProperLayoutGraph : LayeredGraph<LayoutVertexBase, GeneralLayoutEdge>,
+    public class QuasiProperLayoutGraph : LayeredGraph<LayoutVertexBase, GeneralLayoutEdge>,
         IReadOnlyQuasiProperLayoutGraph
     {
         public bool IsProper() => Vertices.All(AreAllRelationshipsProper);

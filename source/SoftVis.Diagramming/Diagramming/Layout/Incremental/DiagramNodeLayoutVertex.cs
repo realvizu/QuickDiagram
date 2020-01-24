@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// A layout vertex that represents a normal diagram node. 
     /// </summary>
-    internal class DiagramNodeLayoutVertex : LayoutVertexBase
+    public class DiagramNodeLayoutVertex : LayoutVertexBase
     {
         private Size2D _size;
         public IDiagramNode DiagramNode { get; }

@@ -25,7 +25,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P1<-C"
                 );
 
-            TestGraph.GetPrimaryParent(GetVertex("C")).ShouldBeEquivalentTo(GetVertex("P1"));
+            TestGraph.GetPrimaryParent(GetVertex("C")).Should().Be(GetVertex("P1"));
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P1<-P2<-C"
                 );
 
-            TestGraph.GetPrimaryParent(GetVertex("C")).ShouldBeEquivalentTo(GetVertex("P2"));
+            TestGraph.GetPrimaryParent(GetVertex("C")).Should().Be(GetVertex("P2"));
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P2<-C"
                 );
 
-            TestGraph.GetPrimaryParent(GetVertex("C")).ShouldBeEquivalentTo(GetVertex("P2"));
+            TestGraph.GetPrimaryParent(GetVertex("C")).Should().Be(GetVertex("P2"));
         }
 
         [Fact]
@@ -63,11 +63,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 );
 
             TestGraph.GetPrimaryChildren(GetVertex("P1")).Select(i => i.Name)
-                .ShouldBeEquivalentTo(new[]
-                {
+                .Should().BeEquivalentTo(
                     GetVertex("C1").Name,
-                    GetVertex("C2").Name
-                });
+                    GetVertex("C2").Name);
         }
 
         [Fact]
@@ -82,10 +80,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 );
 
             TestGraph.GetPrimarySiblings(GetVertex("C2")).Select(i => i.Name)
-                .ShouldBeEquivalentTo(new[]
-                {
-                    GetVertex("C1").Name
-                });
+                .Should().BeEquivalentTo(GetVertex("C1").Name);
         }
 
         [Fact]
@@ -95,9 +90,9 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
                 "P1<-C1<-C2"
                 );
 
-            TestGraph.GetRank(GetVertex("P1")).ShouldBeEquivalentTo(0);
-            TestGraph.GetRank(GetVertex("C1")).ShouldBeEquivalentTo(1);
-            TestGraph.GetRank(GetVertex("C2")).ShouldBeEquivalentTo(2);
+            TestGraph.GetRank(GetVertex("P1")).Should().Be(0);
+            TestGraph.GetRank(GetVertex("C1")).Should().Be(1);
+            TestGraph.GetRank(GetVertex("C2")).Should().Be(2);
         }
 
         [Fact]

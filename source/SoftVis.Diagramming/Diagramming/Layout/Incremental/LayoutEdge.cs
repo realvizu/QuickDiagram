@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// An edge in the layout graph.
     /// </summary>
-    internal abstract class LayoutEdge<TVertex> : Edge<TVertex>
+    public abstract class LayoutEdge<TVertex> : Edge<TVertex>
     {
         public IDiagramConnector DiagramConnector { get; }
 

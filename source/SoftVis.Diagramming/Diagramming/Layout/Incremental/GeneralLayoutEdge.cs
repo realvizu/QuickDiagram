@@ -3,7 +3,7 @@
     /// <summary>
     /// An edge that can connect any subtypes of layout vertices.
     /// </summary>
-    internal class GeneralLayoutEdge : LayoutEdge<LayoutVertexBase>
+    public class GeneralLayoutEdge : LayoutEdge<LayoutVertexBase>
     {
         public GeneralLayoutEdge(
             LayoutVertexBase source,

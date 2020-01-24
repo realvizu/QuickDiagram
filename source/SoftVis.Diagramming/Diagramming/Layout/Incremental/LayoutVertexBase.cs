@@ -5,7 +5,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <summary>
     /// Abstract base class for vertices used in a layout graph. 
     /// </summary>
-    internal abstract class LayoutVertexBase
+    public abstract class LayoutVertexBase
     {
         public abstract bool IsDummy { get; }
         public abstract string Name { get; }

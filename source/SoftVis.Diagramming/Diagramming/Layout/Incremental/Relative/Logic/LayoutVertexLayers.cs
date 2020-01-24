@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// <summary>
     /// An ordered collection of LayoutVertexLayer items.
     /// </summary>
-    internal class LayoutVertexLayers : IReadOnlyLayoutVertexLayers
+    public class LayoutVertexLayers : IReadOnlyLayoutVertexLayers
     {
         private readonly List<LayoutVertexLayer> _layers;
         private readonly Map<LayoutVertexBase, int> _vertexToLayerIndexMap;

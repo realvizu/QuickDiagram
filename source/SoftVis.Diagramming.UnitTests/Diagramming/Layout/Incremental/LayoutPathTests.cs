@@ -21,15 +21,15 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         {
             {
                 Action action = () => _layoutPathBuilder.CreateLayoutPath("A->B");
-                action.ShouldNotThrow();
+                action.Should().NotThrow();
             }
             {
                 Action action = () => _layoutPathBuilder.CreateLayoutPath("A->*1->C");
-                action.ShouldNotThrow();
+                action.Should().NotThrow();
             }
             {
                 Action action = () => _layoutPathBuilder.CreateLayoutPath("A->*1->*2->C");
-                action.ShouldNotThrow();
+                action.Should().NotThrow();
             }
         }
 
@@ -38,11 +38,11 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         {
             {
                 Action action = () => _layoutPathBuilder.CreateLayoutPath("*1->B");
-                action.ShouldThrow<LayoutPathException>();
+                action.Should().Throw<LayoutPathException>();
             }
             {
                 Action action = () => _layoutPathBuilder.CreateLayoutPath("A->*1");
-                action.ShouldThrow<LayoutPathException>();
+                action.Should().Throw<LayoutPathException>();
             }
         }
 
@@ -50,7 +50,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
         public void CheckInvariant_ViolatesInvariant_InterimVertexMustBeDummyLayoutVertex()
         {
             Action action = () => _layoutPathBuilder.CreateLayoutPath("A->B->C");
-            action.ShouldThrow<LayoutPathException>();
+            action.Should().Throw<LayoutPathException>();
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental
             var edge2 = _layoutPathBuilder.CreateLayoutEdge("*2->D");
             // ReSharper disable once ObjectCreationAsStatement
             Action action = () => new LayoutPath(new[] { edge1, edge2 });
-            action.ShouldThrow<PathException>();
+            action.Should().Throw<PathException>();
         }
     }
 }

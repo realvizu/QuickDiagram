@@ -80,7 +80,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _testGraphBuilder.SetUp("P1<-C1", "P1<-C2", "P1<-C3", "P2<-C2", "P2<-C3", "C2<-CC2", "P4<-C4");
             TestGraph.GetParents(GetVertex("C2")).Select(i => i.Name)
-                .ShouldBeEquivalentTo(new[] { "P1", "P2" });
+                .Should().BeEquivalentTo("P1", "P2");
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _testGraphBuilder.SetUp("P1<-C1", "P1<-C2", "P1<-C3", "P2<-C2", "P2<-C3", "C2<-CC2", "P4<-C4");
             TestGraph.GetChildren(GetVertex("P2")).Select(i => i.Name)
-                .ShouldBeEquivalentTo(new[] { "C2", "C3" });
+                .Should().BeEquivalentTo("C2", "C3");
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _testGraphBuilder.SetUp("P1<-C1", "P1<-C2", "P1<-C3", "P2<-C2", "P2<-C3", "C2<-CC2", "P4<-C4");
             TestGraph.GetSiblings(GetVertex("C2")).Select(i=>i.Name)
-                .ShouldBeEquivalentTo(new[] {"C1", "C3"});
+                .Should().BeEquivalentTo("C1", "C3");
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _testGraphBuilder.SetUp("P1<-C1<-C2", "C1<-C3", "P1<-C4", "P2");
             TestGraph.GetDescendants(GetVertex("P1")).Select(i => i.Name)
-                .ShouldBeEquivalentTo(new[] { "C1", "C2", "C3", "C4" });
+                .Should().BeEquivalentTo("C1", "C2", "C3", "C4");
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Diagramming.Layout.Incremental.
         {
             _testGraphBuilder.SetUp("P1<-C1<-C2", "C1<-C3", "P1<-C4", "P2");
             TestGraph.GetVertexAndDescendants(GetVertex("P1")).Select(i => i.Name)
-                .ShouldBeEquivalentTo(new[] { "P1", "C1", "C2", "C3", "C4" });
+                .Should().BeEquivalentTo("P1", "C1", "C2", "C3", "C4");
         }
 
         [Fact]

@@ -6,7 +6,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// <summary>
     /// Comparer used to sort sibling vertices.
     /// </summary>
-    internal class SiblingsComparer : IComparer<LayoutVertexBase>
+    public class SiblingsComparer : IComparer<LayoutVertexBase>
     {
         private readonly IReadOnlyQuasiProperLayoutGraph _properLayeredLayoutGraph;
 

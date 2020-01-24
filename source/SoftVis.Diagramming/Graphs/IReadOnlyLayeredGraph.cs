@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Graphs
     /// </summary>
     /// <typeparam name="TVertex">The type of the vertices.</typeparam>
     /// <typeparam name="TEdge">The type of the edges.</typeparam>
-    internal interface IReadOnlyLayeredGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
+    public interface IReadOnlyLayeredGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         IEnumerable<TVertex> GetParents(TVertex vertex);

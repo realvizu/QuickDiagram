@@ -13,7 +13,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// <para>all edges span exactly 2 layers (by using dummy vertices as necessary)</para>
     /// <para>vertices in all layers ar ordered so that primary edges never cross.</para>
     /// </remarks>
-    internal class RelativeLayoutCalculator
+    public class RelativeLayoutCalculator
     {
         private readonly LayeredLayoutGraph _layoutGraph;
         private readonly LayoutVertexLayers _layers;

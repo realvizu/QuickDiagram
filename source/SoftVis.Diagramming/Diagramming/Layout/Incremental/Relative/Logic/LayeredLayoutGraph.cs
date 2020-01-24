@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental.Relative.Logic
     /// Invariants:
     /// <para>All operations leave the proper graph in proper state.</para>
     /// </remarks>
-    internal class LayeredLayoutGraph : LayeredGraph<DiagramNodeLayoutVertex, LayoutPath>, 
+    public class LayeredLayoutGraph : LayeredGraph<DiagramNodeLayoutVertex, LayoutPath>, 
         IReadOnlyLayeredLayoutGraph
     {
         private readonly QuasiProperLayoutGraph _properGraph;

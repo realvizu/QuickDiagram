@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.Graphs
     /// Invariants:
     /// <para>The target of an edge is the source of the next edge.</para>
     /// </remarks>
-    internal class Path<TVertex, TEdge> : IEnumerable<TEdge>
+    public class Path<TVertex, TEdge> : IEnumerable<TEdge>
         where TVertex : class
         where TEdge : IEdge<TVertex>
     {

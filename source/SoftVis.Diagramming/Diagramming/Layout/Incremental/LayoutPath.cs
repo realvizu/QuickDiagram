@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.Diagramming.Layout.Incremental
     /// <para>Source and Target are always of type DiagramNodeLayoutVertex.</para>
     /// <para>Interim vertices are always of type DummyLayoutVertex.</para>
     /// </remarks>
-    internal sealed class LayoutPath : Path<LayoutVertexBase, GeneralLayoutEdge>, IEdge<DiagramNodeLayoutVertex>
+    public sealed class LayoutPath : Path<LayoutVertexBase, GeneralLayoutEdge>, IEdge<DiagramNodeLayoutVertex>
     {
         public LayoutPath(DiagramNodeLayoutVertex sourceVertex, DiagramNodeLayoutVertex targetVertex,
             IDiagramConnector diagramConnector)

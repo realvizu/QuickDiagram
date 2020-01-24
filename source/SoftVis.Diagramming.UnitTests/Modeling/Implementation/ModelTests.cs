@@ -39,7 +39,7 @@ namespace Codartis.SoftVis.Diagramming.UnitTests.Modeling.Implementation
 
             Task.WaitAll(tasks.ToArray());
 
-            model.Relationships.Count.ShouldBeEquivalentTo(repeat);
+            model.Relationships.Count.Should().Be(repeat);
         }
 
         private static void GetOrAddRelationship(Model model, IModelEntity sourceEntity, ModelRelationshipType relationshipType, int repeat)
