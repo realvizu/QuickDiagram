@@ -1,5 +1,10 @@
 # Change log
 
+## 0.5.63
+(01/2020)
+
+- [x] Visual Studio 2019 support.
+
 ## 0.5.61
 (07/2017)
 

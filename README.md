@@ -2,7 +2,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/sw2picivqnv5buj8?svg=true)](https://ci.appveyor.com/project/realvizu/softvis)
 
 Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships. 
-Integrates into Visual Studio 2015 and 2017.
+Integrates into Visual Studio 2015, 2017 and 2019.
 Similar to the Code Map feature of Visual Studio Enterprise Edition but more lightweight ... and free.
 
 Install from: [![Visual Studio extension](https://vsmarketplacebadge.apphb.com/version/FerencVizkeleti.QuickDiagramToolforC.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC)
@@ -16,6 +16,13 @@ Install from: [![Visual Studio extension](https://vsmarketplacebadge.apphb.com/v
 
 **Document with diagrams**
 * Copy/paste diagrams into documentation.
+
+## NEWS
+The next version of this tool will no longer be free. It will become a commercial product to finance the ongoing efforts of development.
+
+Any questions, feedback or feature requests are more than welcome!
+
+Please use the [Q&A on Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC&ssr=false#qna), or send a twitter message to [![@realvizu](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
  
 ## Getting Started
 * Use the context menu in the source code editor to add types or entire hierarchies to the diagram.
@@ -40,11 +47,6 @@ The current version (v0.5) is an **experimental release** to showcase the approa
 * Please use the [**Issue Tracker**](https://github.com/realvizu/QuickDiagram/issues) to record bugs and feature requests.
 * Write a [**review**](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC#review-details).
 * Contact me on Twitter [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
-
-## Donation
-If you find this tool useful please consider donating. Your support is much appreciated!
-
-[![PayPal Donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DVWTC38V826TY&source=url)
 
 ## Thanks to 
 * [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
