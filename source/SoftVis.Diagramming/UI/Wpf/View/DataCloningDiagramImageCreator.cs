@@ -17,25 +17,30 @@ namespace Codartis.SoftVis.UI.Wpf.View
     {
         private readonly DiagramViewModel _diagramViewModel;
         private readonly ResourceDictionary _resourceDictionary;
-        private readonly IDiagramStlyeProvider _diagramStlyeProvider;
+        private readonly IDiagramStlyeProvider _diagramStyleProvider;
 
-        public DataCloningDiagramImageCreator(DiagramViewModel diagramViewModel, IDiagramStlyeProvider diagramStlyeProvider,
+        public DataCloningDiagramImageCreator(
+            DiagramViewModel diagramViewModel,
+            IDiagramStlyeProvider diagramStyleProvider,
             ResourceDictionary resourceDictionary = null)
         {
             _diagramViewModel = diagramViewModel;
             _resourceDictionary = resourceDictionary;
-            _diagramStlyeProvider = new DiagramStyleCache(diagramStlyeProvider);
+            _diagramStyleProvider = new DiagramStyleCache(diagramStyleProvider);
         }
 
-        public BitmapSource CreateImage(double dpi, double margin = 0, 
+        public BitmapSource CreateImage(
+            double dpi,
+            double margin = 0,
             CancellationToken cancellationToken = default,
-            IIncrementalProgress progress = null, IProgress<int> maxProgress = null)
+            IIncrementalProgress progress = null,
+            IProgress<int> maxProgress = null)
         {
             var diagramImageCreator = new DiagramImageCreator(
                 Clone(_diagramViewModel.DiagramNodeViewModels),
                 Clone(_diagramViewModel.DiagramConnectorViewModelsModels),
                 _diagramViewModel.DiagramContentRect,
-                _diagramStlyeProvider,
+                _diagramStyleProvider,
                 _resourceDictionary);
 
             return diagramImageCreator.CreateImage(dpi, margin, cancellationToken, progress, maxProgress);

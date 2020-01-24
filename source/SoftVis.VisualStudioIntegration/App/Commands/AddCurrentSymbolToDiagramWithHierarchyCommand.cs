@@ -26,11 +26,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (modelEntity == null)
                 return;
 
+            await HostUiServices.ShowDiagramWindowAsync();
+
             var diagramNodes = await ExtendModelAndDiagramAsync(modelEntity);
             if (diagramNodes == null)
                 return;
 
-            await HostUiServices.ShowDiagramWindowAsync();
             UiServices.FollowDiagramNodes(diagramNodes);
         }
 

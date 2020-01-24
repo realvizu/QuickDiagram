@@ -19,8 +19,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (modelEntity == null)
                 return;
 
-            var diagramNode = DiagramServices.ShowEntity(modelEntity);
             await HostUiServices.ShowDiagramWindowAsync();
+            var diagramNode = DiagramServices.ShowEntity(modelEntity);
             UiServices.FollowDiagramNode(diagramNode);
         }
     }

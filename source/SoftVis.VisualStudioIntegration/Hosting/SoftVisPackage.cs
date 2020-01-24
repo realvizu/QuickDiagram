@@ -43,7 +43,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             typeof(Microsoft.Xaml.Behaviors.Behavior).ToString();
         }
 
-        private DiagramToolApplication _diagramToolApplication;
+        // This is public static to work around the limitation that no ctor param can be passed to DiagramHostToolWindow.
+        public static DiagramToolApplication DiagramToolApplication { get; private set; }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
@@ -51,7 +52,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             await base.InitializeAsync(cancellationToken, progress);
 
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var hostWorkspaceGateway = new HostWorkspaceGateway(this);
             var hostUiGateway = new HostUiGateway(this);
@@ -60,20 +61,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var diagramServices = new RoslynBasedDiagram(modelServices);
             var uiServices = new DiagramUi(diagramServices);
 
-            _diagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices, hostUiGateway);
+            DiagramToolApplication = new DiagramToolApplication(modelServices, diagramServices, uiServices, hostUiGateway);
 
-            await RegisterShellCommandsAsync(_diagramToolApplication);
+            await RegisterShellCommandsAsync(DiagramToolApplication);
         }
 
         public async Task<DiagramHostToolWindow> GetToolWindowAsync()
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var toolWindow = FindToolWindow(typeof(DiagramHostToolWindow), 0, create: true) as DiagramHostToolWindow;
             if (toolWindow?.Frame == null)
                 throw new NotSupportedException("Cannot create tool window.");
-
-            toolWindow.Initialize(_diagramToolApplication.UiServices.DiagramControl);
 
             return toolWindow;
         }
