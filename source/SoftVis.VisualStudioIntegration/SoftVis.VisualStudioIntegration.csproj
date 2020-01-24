@@ -120,7 +120,7 @@
         <PackageReference Include="Microsoft.VisualStudio.Editor" Version="14.3.25407" />
         <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="1.2.0" />
         <PackageReference Include="Microsoft.VisualStudio.Shell.14.0" Version="14.3.25407" />
-        <PackageReference Include="NsDepCop" Version="1.9.0">
+        <PackageReference Include="NsDepCop" Version="1.10.1-beta1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
