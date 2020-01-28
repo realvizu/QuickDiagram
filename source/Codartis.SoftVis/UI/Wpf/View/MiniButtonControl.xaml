@@ -34,7 +34,7 @@
                     <Ellipse x:Name="PressedEffect" Fill="Black" Opacity=".4"
                              Visibility="Collapsed" />
 
-                    <ContentPresenter Margin="1.5" />
+                    <ContentPresenter />
 
                     <Ellipse x:Name="Border" Fill="Transparent" 
                              StrokeThickness="{TemplateBinding BorderThickness, 

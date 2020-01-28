@@ -37,18 +37,8 @@
                                    Vertical="Top" Horizontal="Right" Translate="-3,22" />
     </markupExtensions:Dictionary>
 
-    <markupExtensions:Dictionary x:Key="DefaultRelatedNodeButtonGeometryMap"
-                                 KeyType="{x:Type definition:DirectedModelRelationshipType}"
-                                 ValueType="{x:Type Geometry}">
-
-        <Geometry x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Container}">M 0 0 L 1 0 L 1 1 L 0 1 Z</Geometry>
-        <Geometry x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}">M 0 0 L 1 0 L 1 1 L 0 1 Z</Geometry>
-
-    </markupExtensions:Dictionary>
-
     <DataTemplate DataType="{x:Type viewModel:CloseMiniButtonViewModel}">
-        <view:PathControl Stretch="Uniform"
-                          Padding="1.5"
+        <view:PathControl Padding="3"
                           Foreground="Red"
                           StrokeThickness="1.5"
                           Data="M -1 -1 L 1 1 M -1 1 L 1 -1" />

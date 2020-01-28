@@ -32,10 +32,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public override void Dispose()
         {
-            base.Dispose();
-
             ModelEventSource.ModelChanged -= OnModelChanged;
             DiagramEventSource.DiagramChanged -= OnDiagramChanged;
+
+            base.Dispose();
         }
 
         public override object PlacementKey => DirectedModelRelationshipType;

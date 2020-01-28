@@ -14,6 +14,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         public static readonly DependencyProperty StrokeThicknessProperty = Shape.StrokeThicknessProperty.AddOwner(typeof(PathControl));
         public static readonly DependencyProperty StretchProperty = Shape.StretchProperty.AddOwner(typeof(PathControl));
         public static readonly DependencyProperty DataProperty = Path.DataProperty.AddOwner(typeof(PathControl));
+        public static readonly DependencyProperty FillProperty = Shape.FillProperty.AddOwner(typeof(PathControl), new PropertyMetadata(Brushes.Transparent));
 
         public PathControl()
         {
@@ -36,6 +37,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (WpfGeometry)GetValue(DataProperty); }
             set { SetValue(DataProperty, value); }
+        }
+
+        public Brush Fill
+        {
+            get { return (Brush)GetValue(FillProperty); }
+            set { SetValue(FillProperty, value); }
         }
     }
 }
