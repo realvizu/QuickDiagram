@@ -9,7 +9,7 @@
                     xmlns:definition="clr-namespace:Codartis.SoftVis.Modeling.Definition;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel;assembly=Codartis.SoftVis"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
-                    xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
+                    xmlns:dataTemplateSelectors="clr-namespace:Codartis.Util.UI.Wpf.DataTemplateSelectors;assembly=Codartis.Util"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
@@ -60,24 +60,58 @@
 
     </markupExtensions:Dictionary>
 
-    <markupExtensions:Dictionary x:Key="RelatedNodeButtonGeometryMap"
-                                 KeyType="{x:Type definition:DirectedModelRelationshipType}"
-                                 ValueType="{x:Type Geometry}"
-                                 Init="{StaticResource DefaultRelatedNodeButtonGeometryMap}">
+    <markupExtensions:Dictionary x:Key="RelatedNodeMiniButtonDataTemplates"
+                                 KeyType="{x:Type system:Object}"
+                                 ValueType="{x:Type DataTemplate}">
 
-        <Geometry x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}">M -3 0 L 0 -5 L 3 0 Z M 0 0 L 0 5</Geometry>
-        <Geometry x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.Subtype}">M -3 0 L 0 -5 L 3 0 Z M 0 0 L 0 5</Geometry>
-        <Geometry x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementedInterface}">M -3 0 L 0 -5 L 3 0 Z M 0 1 L 0 2.5 M 0 3.5 L 0 5</Geometry>
-        <Geometry x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementerType}">M -3 0 L 0 -5 L 3 0 Z M 0 1 L 0 2.5 M 0 3.5 L 0 5</Geometry>
-        <Geometry x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatedType}">M 0 -3 L 5 0 L 0 3 M -5 0 L 5 0</Geometry>
-        <Geometry x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatingType}">M 0 -3 L 5 0 L 0 3 M -5 0 L 5 0</Geometry>
+        <DataTemplate x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Container}">
+            <view:PathControl Padding="4" Data="M 0 0 L 1 0 L 1 1 L 0 1 Z" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}">
+            <view:PathControl Padding="4" Fill="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}" StrokeThickness=".5">
+                <view:PathControl.Data>
+                    <GeometryGroup>
+                        <EllipseGeometry Center="0,0" RadiusX="1" RadiusY="1" />
+                        <EllipseGeometry Center="4,0" RadiusX="1" RadiusY="1" />
+                        <EllipseGeometry Center="8,0" RadiusX="1" RadiusY="1" />
+                    </GeometryGroup>
+                </view:PathControl.Data>
+            </view:PathControl>
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}">
+            <view:PathControl Padding="1.5" Data="M -3 0 L 0 -5 L 3 0 Z M 0 0 L 0 5" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.Subtype}">
+            <view:PathControl Padding="1.5" Data="M -3 0 L 0 -5 L 3 0 Z M 0 0 L 0 5" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementedInterface}">
+            <view:PathControl Padding="1.5" Data="M -3 0 L 0 -5 L 3 0 Z M 0 1 L 0 2.5 M 0 3.5 L 0 5" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementerType}">
+            <view:PathControl Padding="1.5" Data="M -3 0 L 0 -5 L 3 0 Z M 0 1 L 0 2.5 M 0 3.5 L 0 5" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatedType}">
+            <view:PathControl Padding="1.5" Data="M 0 -3 L 5 0 L 0 3 M -5 0 L 5 0" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatingType}">
+            <view:PathControl Padding="1.5" Data="M 0 -3 L 5 0 L 0 3 M -5 0 L 5 0" />
+        </DataTemplate>
 
     </markupExtensions:Dictionary>
 
+    <dataTemplateSelectors:DataTemplateMapItemSelector x:Key="RelatedNodeMiniButtonDataTemplateSelector"
+                                                       DataTemplateMap="{StaticResource RelatedNodeMiniButtonDataTemplates}" />
+
     <DataTemplate DataType="{x:Type viewModel:RelatedNodeMiniButtonViewModel}">
-        <view:PathControl Stretch="Uniform"
-                          Data="{Binding DirectedModelRelationshipType, 
-                                Converter={converters:DictionaryItemSelectorConverter 
-                                    Dictionary={StaticResource RelatedNodeButtonGeometryMap}}}" />
+        <ContentPresenter Content="{Binding DirectedModelRelationshipType}"
+                          ContentTemplateSelector="{StaticResource RelatedNodeMiniButtonDataTemplateSelector}" />
     </DataTemplate>
+
 </ResourceDictionary>
