@@ -17,12 +17,12 @@
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <system:Double x:Key="TypeDiagramNodeHeaderMinHeight">46</system:Double>
+    <system:Double x:Key="TypeDiagramNodeHeaderMinHeight">38</system:Double>
     <system:Double x:Key="TypeDiagramNodeHeaderMinWidth">60</system:Double>
+    <system:Double x:Key="NodeNameMaxWidth">250</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinHeight">20</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinWidth">50</system:Double>
     <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
-    <system:Double x:Key="DiagramNodeMaxWidth">250</system:Double>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <ui:StereotypeToImageUriConverter x:Key="StereotypeToImageUriConverter" />
@@ -42,50 +42,52 @@
 
     <Style TargetType="{x:Type view:DiagramNodeControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynDiagramNodeViewModel}}">
-        <Setter Property="MaxWidth" Value="{StaticResource DiagramNodeMaxWidth}" />
         <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}" />
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeHeaderViewModel}">
-        <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
-                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
-                BorderThickness="1"
-                MinHeight="{StaticResource TypeDiagramNodeHeaderMinHeight}"
-                MinWidth="{StaticResource TypeDiagramNodeHeaderMinWidth}"
-                ToolTip="{Binding Path=FullName}">
-            <StackPanel Orientation="Vertical">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="16" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Image Grid.Row="0"
-                           Margin="1"
-                           HorizontalAlignment="Left"
-                           Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}" />
-                    <TextBlock x:Name="TextBlock"
-                               Grid.Row="1"
-                               Margin="4,0,4,4"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Center"
-                               Text="{Binding Path=Name, Mode=OneWay}"
-                               TextWrapping="Wrap" />
-                </Grid>
-                <controls:ConcealableExpander IsButtonVisible="False"
-                                              Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                              BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
-                                              BorderThickness=".5"
-                                              IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}"
-                                              Margin="0,4,0,0"
-                                              MaxHeight="{StaticResource DiagramNodeDescriptionMaxHeight}">
+        <StackPanel Orientation="Vertical"
+                    MinHeight="{StaticResource TypeDiagramNodeHeaderMinHeight}"
+                    MinWidth="{StaticResource TypeDiagramNodeHeaderMinWidth}"
+                    ToolTip="{Binding Path=FullName}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="16" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0"
+                       Margin="1"
+                       HorizontalAlignment="Left"
+                       Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}" />
+                <TextBlock x:Name="TextBlock"
+                           Grid.Row="1"
+                           Margin="4,0,4,4"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Center"
+                           MaxWidth="{StaticResource NodeNameMaxWidth}"
+                           Text="{Binding Path=Name, Mode=OneWay}"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis" />
+            </Grid>
+            <controls:ConcealableExpander IsButtonVisible="False"
+                                          Visibility="{Binding Path=DescriptionExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                          BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
+                                          BorderThickness="1"
+                                          IsExpanded="{Binding Path=IsDescriptionVisible, Mode=TwoWay}"
+                                          Margin="0,4,0,0"
+                                          MaxHeight="{StaticResource DiagramNodeDescriptionMaxHeight}">
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Auto">
                     <TextBlock Margin="4,4,4,4"
                                FontSize="10"
+                               HorizontalAlignment="Left"
                                TextWrapping="Wrap"
+                               MaxWidth="{StaticResource NodeNameMaxWidth}"
                                Text="{Binding Path=Description}"
                                ToolTip="{Binding Path=Description}" />
-                </controls:ConcealableExpander>
-            </StackPanel>
-        </Border>
+                </ScrollViewer>
+            </controls:ConcealableExpander>
+        </StackPanel>
 
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=Origin}" Value="{x:Static modeling:ModelOrigin.SourceCode}">
@@ -98,24 +100,27 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModel:RoslynMemberDiagramNodeHeaderViewModel}">
-        <Border Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramFill}"
-                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:DiagramNodeControl}}, Path=DiagramStroke}"
-                BorderThickness="1"
-                MinWidth="{StaticResource MemberDiagramNodeHeaderMinWidth}"
-                ToolTip="{Binding Path=FullName}">
-            <StackPanel Orientation="Horizontal"
-                        Margin="4">
-                <Image Margin="1"
+        <Grid MinWidth="{StaticResource MemberDiagramNodeHeaderMinWidth}"
+              ToolTip="{Binding Path=FullName}"
+              Margin="4"
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"
+                   Margin="1"
+                   HorizontalAlignment="Left"
+                   Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}" />
+            <TextBlock x:Name="TextBlock"
+                       Grid.Column="1"
+                       VerticalAlignment="Top"
                        HorizontalAlignment="Left"
-                       Source="{Binding Path=Stereotype, Converter={StaticResource StereotypeToImageUriConverter}}" />
-                <TextBlock x:Name="TextBlock"
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Left"
-                           Text="{Binding Path=Name, Mode=OneWay}"
-                           TextWrapping="Wrap"
-                           TextTrimming="WordEllipsis" />
-            </StackPanel>
-        </Border>
+                       MaxWidth="{StaticResource NodeNameMaxWidth}"
+                       Text="{Binding Path=Name, Mode=OneWay}"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis" />
+        </Grid>
     </DataTemplate>
 
 </ResourceDictionary>

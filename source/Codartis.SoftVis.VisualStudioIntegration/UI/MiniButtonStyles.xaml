@@ -22,7 +22,7 @@
                                  Init="{StaticResource DefaultRelatedNodeCuePlacementMap}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}"
-                                   Vertical="Top" Horizontal="Right" Translate="-0.5,45.5" />
+                                   Vertical="Top" Horizontal="Right" Translate="-0.5,39.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}"
                                    Vertical="Top" Horizontal="Center" Translate="-9,0.5" />
@@ -44,7 +44,7 @@
                                  Init="{StaticResource DefaultMiniButtonPlacementMap}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}"
-                                   Vertical="Top" Horizontal="Right" Translate="-3,43" />
+                                   Vertical="Top" Horizontal="Right" Translate="-3,37" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}"
                                    Vertical="Top" Horizontal="Center" Translate="-9,3" />

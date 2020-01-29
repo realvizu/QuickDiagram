@@ -26,21 +26,25 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ContentPresenter Grid.Row="0"
-                          Content="{Binding Header}"
-                          MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
-                          MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}">
+        <Border Grid.Row="0"
+                BorderThickness="1"
+                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                Background="{Binding DiagramFill, ElementName=ThisControl}">
+
+            <ContentPresenter Content="{Binding Header}"
+                              MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
+                              MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}">
+            </ContentPresenter>
+
             <i:Interaction.Behaviors>
                 <behaviors:ActualSizeProviderBehavior ActualSize="{Binding ElementName=ThisControl, Path=DataContext.HeaderSize}" />
             </i:Interaction.Behaviors>
-        </ContentPresenter>
+        </Border>
 
         <Border Grid.Row="1"
                 BorderThickness="1,0,1,1"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                Background="{Binding DiagramFill, ElementName=ThisControl}"
-                Width="{Binding Path=ChildrenAreaSize.Width}"
-                Height="{Binding Path=ChildrenAreaSize.Height}">
+                Background="{Binding DiagramFill, ElementName=ThisControl}">
 
             <Border.Style>
                 <Style TargetType="Border">
@@ -51,6 +55,10 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
+
+            <Rectangle Width="{Binding Path=ChildrenAreaSize.Width}"
+                       Height="{Binding Path=ChildrenAreaSize.Height}" />
+
         </Border>
     </Grid>
 </UserControl>

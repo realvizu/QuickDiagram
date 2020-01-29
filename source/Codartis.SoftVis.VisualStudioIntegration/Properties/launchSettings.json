@@ -3,7 +3,7 @@
     "Codartis.SoftVis.VisualStudioIntegration": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\devenv.exe",
-      "commandLineArgs": "/rootsuffix Exp /log c:\\temp\\activitylog.xml"
+      "commandLineArgs": "c:\\temp\\simpleapp\\simpleapp.sln /rootsuffix Exp /log c:\\temp\\activitylog.xml"
     }
   }
 }
