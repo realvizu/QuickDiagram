@@ -33,7 +33,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="NsDepCop" Version="1.10.1-beta1">
+    <PackageReference Include="NsDepCop" Version="1.10.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
