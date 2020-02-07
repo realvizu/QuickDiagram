@@ -108,11 +108,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateModelNode(updatedModelNode));
         }
 
-        public void ApplyLayout(GroupLayoutInfo diagramLayout)
-        {
-            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.ApplyLayout(diagramLayout));
-        }
-
         public void ApplyLayout(LayoutInfo layoutInfo)
         {
             MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.ApplyLayout(layoutInfo));

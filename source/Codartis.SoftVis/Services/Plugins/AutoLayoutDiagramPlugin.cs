@@ -20,7 +20,6 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
         {
-            DiagramNodeMember.ChildrenAreaSize,
             DiagramNodeMember.Position
         };
 
@@ -46,17 +45,18 @@ namespace Codartis.SoftVis.Services.Plugins
         private IDisposable CreateDiagramChangedSubscription()
         {
             return DiagramService.DiagramChangedEventStream
-                .SelectMany(i => i.ShapeEvents, (diagramEvent, shapeEvent) => (diagramEvent.NewDiagram, shapeEvent))
+                .SelectMany(i => i.ShapeEvents, (diagramEvent, shapeEvent) => (diagramEvent.OldDiagram, diagramEvent.NewDiagram, shapeEvent))
                 .Where(i => IsLayoutTriggeringChange(i.shapeEvent))
-                .GroupBy(i => GetParentId(i.NewDiagram, i.shapeEvent))
+                .GroupBy(i => GetParentId(i.OldDiagram, i.NewDiagram, i.shapeEvent))
                 .Subscribe(
                     group =>
                         group
                             .Throttle(DiagramEventDebounceTimeSpan)
-                            .Subscribe(i => OnDiagramChanged(i.NewDiagram, i.shapeEvent)));
+                            .Subscribe(i => OnDiagramChanged(i.OldDiagram, i.NewDiagram, i.shapeEvent)));
         }
 
         private static ModelNodeId? GetParentId(
+            [NotNull] IDiagram oldDiagram,
             [NotNull] IDiagram newDiagram,
             [NotNull] DiagramShapeEventBase diagramShapeEvent)
         {
@@ -67,7 +67,7 @@ namespace Codartis.SoftVis.Services.Plugins
                 DiagramNodeRemovedEvent i => GetParentId(i.OldNode),
                 DiagramConnectorAddedEvent i => GetParentId(i.NewConnector, newDiagram),
                 DiagramConnectorRouteChangedEvent i => GetParentId(i.NewConnector, newDiagram),
-                DiagramConnectorRemovedEvent i => GetParentId(i.OldConnector, newDiagram),
+                DiagramConnectorRemovedEvent i => GetParentId(i.OldConnector, oldDiagram),
                 _ => throw new Exception($"Unexpected DiagramShapeEvent: {diagramShapeEvent}")
             };
         }
@@ -84,17 +84,29 @@ namespace Codartis.SoftVis.Services.Plugins
                 : null;
         }
 
-        private void OnDiagramChanged([NotNull] IDiagram newDiagram, [NotNull] DiagramShapeEventBase diagramShapeEvent)
+        private void OnDiagramChanged([NotNull] IDiagram oldDiagram, [NotNull] IDiagram newDiagram, [NotNull] DiagramShapeEventBase diagramShapeEvent)
         {
             Debug.WriteLine($"DiagramShapeEvent={diagramShapeEvent}");
 
-            var parentId = GetParentId(newDiagram, diagramShapeEvent);
+            IGroupLayoutAlgorithm layoutAlgorithm;
 
-            var layoutAlgorithm = parentId == null
-                ? _layoutAlgorithmSelectionStrategy.GetForRoot()
-                : _layoutAlgorithmSelectionStrategy.GetForNode(newDiagram.GetNode(parentId.Value));
+            var parentId = GetParentId(oldDiagram, newDiagram, diagramShapeEvent);
+            if (parentId == null)
+            {
+                layoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForRoot();
+            }
+            else
+            {
+                if (!newDiagram.NodeExists(parentId.Value))
+                    return;
+
+                layoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForNode(newDiagram.GetNode(parentId.Value));
+            }
 
             var layoutGroup = newDiagram.CreateLayoutGroup(parentId.ToMaybe());
+            if (layoutGroup.IsEmpty)
+                return;
+
             var layoutInfo = layoutAlgorithm.Calculate(layoutGroup);
 
             DiagramService.ApplyLayout(layoutInfo);
@@ -107,6 +119,7 @@ namespace Codartis.SoftVis.Services.Plugins
                 case DiagramNodeChangedEvent nodeChangedEvent when nodeChangedEvent.ChangedMember.In(DiagramMembersAffectedByLayout):
                 case DiagramConnectorRouteChangedEvent _:
                     return false;
+
                 default:
                     return true;
             }

@@ -9,35 +9,20 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// </summary>
     public struct DiagramEvent
     {
+        [NotNull] public IDiagram OldDiagram { get; }
         [NotNull] public IDiagram NewDiagram { get; }
         [NotNull] [ItemNotNull] public IEnumerable<DiagramShapeEventBase> ShapeEvents { get; }
 
         public DiagramEvent(
+            [NotNull] IDiagram oldDiagram,
             [NotNull] IDiagram newDiagram,
             [NotNull] [ItemNotNull] IEnumerable<DiagramShapeEventBase> shapeEvents = null)
         {
+            OldDiagram = oldDiagram;
             NewDiagram = newDiagram;
             ShapeEvents = shapeEvents ?? Enumerable.Empty<DiagramShapeEventBase>();
         }
 
         public bool IsEmpty => !ShapeEvents.Any();
-
-        public static DiagramEvent None([NotNull] IDiagram diagram) => new DiagramEvent(diagram);
-
-        public static DiagramEvent Create(
-            [NotNull] IDiagram diagram,
-            [NotNull] [ItemNotNull] IEnumerable<DiagramShapeEventBase> shapeEvents)
-        {
-            return new DiagramEvent(diagram, shapeEvents);
-        }
-
-        public static DiagramEvent Create([NotNull] IDiagram diagram, DiagramShapeEventBase shapeEvent = null)
-        {
-            var shapeEvents = shapeEvent == null
-                ? Enumerable.Empty<DiagramShapeEventBase>()
-                : new[] { shapeEvent };
-
-            return new DiagramEvent(diagram, shapeEvents);
-        }
     }
 }

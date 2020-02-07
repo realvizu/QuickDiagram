@@ -17,6 +17,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class DiagramMutator : IDiagramMutator
     {
+        [NotNull] private readonly IDiagram _initialDiagram;
         [NotNull] private IModel _model;
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
         private readonly double _childrenAreaPadding;
@@ -30,6 +31,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             [NotNull] IConnectorTypeResolver connectorTypeResolver,
             double childrenAreaPadding)
         {
+            _initialDiagram = diagram;
             _model = diagram.Model;
             _connectorTypeResolver = connectorTypeResolver;
             _childrenAreaPadding = childrenAreaPadding;
@@ -42,12 +44,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public DiagramEvent GetDiagramEvent()
         {
-            var diagram = new ImmutableDiagram(
+            var newDiagram = new ImmutableDiagram(
                 _model,
                 _nodes.ToImmutableDictionary(),
                 _connectors.ToImmutableDictionary());
 
-            return new DiagramEvent(diagram, _shapeEvents);
+            return new DiagramEvent(_initialDiagram, newDiagram, _shapeEvents);
         }
 
         public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
@@ -146,23 +148,22 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private void RemoveChildNodes([NotNull] IDiagramNode node)
         {
-            foreach (var childNode in GetChildNodes(node.Id))
+            foreach (var childNode in GetChildNodes(node.Id).ToList())
                 RemoveNode(childNode.Id);
         }
 
         private void RemoveAllConnectorsOfNode([NotNull] IDiagramNode node)
         {
-            foreach (var connector in GetConnectorsByNode(node.Id))
+            foreach (var connector in GetConnectorsByNode(node.Id).ToList())
                 RemoveConnector(connector.Id);
         }
 
         [NotNull]
         [ItemNotNull]
-        private List<IDiagramConnector> GetConnectorsByNode(ModelNodeId nodeId)
+        private IEnumerable<IDiagramConnector> GetConnectorsByNode(ModelNodeId nodeId)
         {
             return _connectors.Values
-                .Where(i => i.Source == nodeId || i.Target == nodeId)
-                .ToList();
+                .Where(i => i.Source == nodeId || i.Target == nodeId);
         }
 
         public void AddConnector(ModelRelationshipId relationshipId)
@@ -223,11 +224,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 DiagramNodeMember.ModelNode);
         }
 
-        public void ApplyLayout(GroupLayoutInfo diagramLayout)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ApplyLayout(LayoutInfo layoutInfo)
         {
             foreach (var vertexRecKeyValue in layoutInfo.VertexRects)
@@ -243,7 +239,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 throw new Exception($"Diagram node: {nodeId} not found.");
 
             return _nodes[nodeId].ParentNodeId.Match(
-                some => _nodes[some].TopLeft + ChildrenAreaPaddingVector + rect.TopLeft,
+                some =>
+                {
+                    var parentNode = _nodes[some];
+                    return parentNode.TopLeft + new Point2D(0, parentNode.HeaderSize.Height) + ChildrenAreaPaddingVector + rect.TopLeft;
+                },
                 () => rect.TopLeft);
         }
 

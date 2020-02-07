@@ -22,7 +22,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         public static ILayoutGroup CreateLayoutGroup([NotNull] this IDiagram diagram, Maybe<ModelNodeId> containerNodeId)
         {
             var nodesInLayoutGroup = diagram.Nodes
-                .Where(i => i.ParentNodeId.Equals(containerNodeId));
+                .Where(i => i.ParentNodeId.Equals(containerNodeId))
+                .Where(i => i.Size.IsDefined);
 
             var connectorsInLayoutGroup = diagram.Connectors
                 .Where(i => diagram.GetNode(i.Source).ParentNodeId.Equals(containerNodeId) && diagram.GetNode(i.Target).ParentNodeId.Equals(containerNodeId));
