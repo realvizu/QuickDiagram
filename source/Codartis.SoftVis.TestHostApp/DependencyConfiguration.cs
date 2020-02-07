@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.TestHostApp
     public static class DependencyConfiguration
     {
         private const string DiagramStylesXaml = "Resources/Styles.xaml";
+        private const double ChildrenAreaPadding = 2;
 
         public static IContainer Create()
         {
@@ -56,11 +57,12 @@ namespace Codartis.SoftVis.TestHostApp
 
         private static void RegisterDiagramComponents(ContainerBuilder builder)
         {
-            builder.RegisterType<DiagramService>().As<IDiagramService>();
+            builder.RegisterType<DiagramService>().As<IDiagramService>()
+                .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
             builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
-                .WithParameter("childrenAreaPadding", 2);
+                .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
 
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();

@@ -20,7 +20,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
-        public void AddNode_Works()
+        public void AddNode_RaisesDiagramEvent()
         {
             var model = _modelBuilder.AddNodes("A").Model;
             var node = _modelBuilder.GetNode("A");

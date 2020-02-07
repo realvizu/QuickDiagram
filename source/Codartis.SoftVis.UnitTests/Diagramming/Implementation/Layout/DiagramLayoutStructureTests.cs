@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.GetDiagram());
             layoutStructure.RootLayoutGroup.Nodes.ShouldBeEquivalentById(parentNode.Id);
             layoutStructure.TryGetLayoutGroupByNodeId(parentNode.Id).Value.Nodes.ShouldBeEquivalentById(childNode.Id);
         }
@@ -43,7 +43,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes().AddAllModelRelationships();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.GetDiagram());
             layoutStructure.RootLayoutGroup.Connectors.ShouldBeEquivalentById(relationship.Id);
             layoutStructure.CrossLayoutGroupConnectors.Should().BeEmpty();
         }
@@ -61,7 +61,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes().AddAllModelRelationships();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.GetDiagram());
             layoutStructure.RootLayoutGroup.Connectors.Should().BeEmpty();
             layoutStructure.CrossLayoutGroupConnectors.Should().BeEmpty();
             layoutStructure.TryGetLayoutGroupByNodeId(parentNode.Id).Value.Connectors.ShouldBeEquivalentById(relationship.Id);
@@ -82,7 +82,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 
             var diagramBuilder = new DiagramBuilder(model).AddAllModelNodes().AddAllModelRelationships();
 
-            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.Diagram);
+            var layoutStructure = new DiagramLayoutStructure(diagramBuilder.GetDiagram());
             layoutStructure.RootLayoutGroup.Connectors.Should().BeEmpty();
             layoutStructure.CrossLayoutGroupConnectors.ShouldBeEquivalentById(relationship.Id);
             layoutStructure.TryGetLayoutGroupByNodeId(parentNode1.Id).Value.Connectors.Should().BeEmpty();

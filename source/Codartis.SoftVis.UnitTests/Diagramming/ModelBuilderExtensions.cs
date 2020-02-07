@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             foreach (var modelRelationship in model.Relationships)
                 diagramBuilder.AddRelationship(modelRelationship.Id);
 
-            return diagramBuilder.Diagram;
+            return diagramBuilder.GetDiagram();
         }
     }
 }

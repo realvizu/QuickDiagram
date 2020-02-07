@@ -47,7 +47,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 new[] { ("A->B", new Route((0.5, 0.5), (1.5, 1.5))) }
             );
 
-            var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.Diagram);
+            var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.GetDiagram());
 
             var diagramNodeA = diagramBuilder.GetDiagramNode("A");
             var diagramNodeB = diagramBuilder.GetDiagramNode("B");
@@ -91,7 +91,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
                 new[] { ("C->D", new Route((3, 1.5), (4, 3))) }
             );
 
-            var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.Diagram);
+            var diagramLayoutInfo = CreateLayoutAlgorithm().Calculate(diagramBuilder.GetDiagram());
 
             var diagramNodeA = diagramBuilder.GetDiagramNode("A");
             var diagramNodeB = diagramBuilder.GetDiagramNode("B");

@@ -20,23 +20,35 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </remarks>
     public sealed class DiagramService : IDiagramService
     {
+        private const double DefaultChildrenAreaPadding = 1;
+
         public IDiagram LatestDiagram { get; private set; }
 
+        [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
+        private readonly double _childrenAreaPadding;
         [NotNull] private readonly object _diagramUpdateLockObject;
         [NotNull] private readonly ISubject<DiagramEvent> _diagramChangedEventStream;
 
         public event Action<DiagramEvent> DiagramChanged;
         public event Action<DiagramEvent> AfterDiagramChanged;
 
-        public DiagramService([NotNull] IDiagram diagram)
+        public DiagramService(
+            [NotNull] IDiagram diagram,
+            [NotNull] IConnectorTypeResolver connectorTypeResolver,
+            double childrenAreaPadding = DefaultChildrenAreaPadding)
         {
             LatestDiagram = diagram;
+            _connectorTypeResolver = connectorTypeResolver;
+            _childrenAreaPadding = childrenAreaPadding;
             _diagramUpdateLockObject = new object();
             _diagramChangedEventStream = new Subject<DiagramEvent>();
         }
 
-        public DiagramService([NotNull] IModel model, [NotNull] IConnectorTypeResolver connectorTypeResolver)
-            : this(Diagram.Create(model, connectorTypeResolver))
+        public DiagramService(
+            [NotNull] IModel model,
+            [NotNull] IConnectorTypeResolver connectorTypeResolver,
+            double childrenAreaPadding = DefaultChildrenAreaPadding)
+            : this(ImmutableDiagram.Create(model), connectorTypeResolver, childrenAreaPadding)
         {
         }
 
@@ -44,89 +56,66 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.AddNode(nodeId, parentNodeId));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.AddNode(nodeId, parentNodeId));
 
             // Temp
-            foreach (var relatedNode in LatestDiagram.Model.GetRelatedNodes(nodeId,CommonDirectedModelRelationshipTypes.Contained))
+            foreach (var relatedNode in LatestDiagram.Model.GetRelatedNodes(nodeId, CommonDirectedModelRelationshipTypes.Contained))
                 AddNode(relatedNode.Id, nodeId);
         }
 
         public void UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeHeaderSize(nodeId, newSize));
-        }
-
-        public void UpdateNodeChildrenAreaSize(ModelNodeId nodeId, Size2D newSize)
-        {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeChildrenAreaSize(nodeId, newSize));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateNodeHeaderSize(nodeId, newSize));
         }
 
         public void UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeCenter(nodeId, newCenter));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateNodeCenter(nodeId, newCenter));
         }
 
         public void UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateNodeTopLeft(nodeId, newTopLeft));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateNodeTopLeft(nodeId, newTopLeft));
         }
 
         public void RemoveNode(ModelNodeId nodeId)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.RemoveNode(nodeId));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.RemoveNode(nodeId));
         }
 
         public void AddConnector(ModelRelationshipId relationshipId)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.AddConnector(relationshipId));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.AddConnector(relationshipId));
         }
 
         public void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateConnectorRoute(relationshipId, newRoute));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateConnectorRoute(relationshipId, newRoute));
         }
 
         public void RemoveConnector(ModelRelationshipId relationshipId)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.RemoveConnector(relationshipId));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.RemoveConnector(relationshipId));
         }
 
         public void UpdateModel(IModel model)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateModel(model));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateModel(model));
         }
 
         public void UpdateModelNode(IModelNode updatedModelNode)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.UpdateModelNode(updatedModelNode));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateModelNode(updatedModelNode));
         }
 
         public void ApplyLayout(GroupLayoutInfo diagramLayout)
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.ApplyLayout(diagramLayout));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.ApplyLayout(diagramLayout));
         }
 
-        public void ClearDiagram()
+        public void Clear()
         {
-            MutateWithLockThenRaiseEvents(() => LatestDiagram.Clear());
-        }
-
-        private void MutateWithLockThenRaiseEvents([NotNull] Func<DiagramEvent> diagramMutatorFunc)
-        {
-            DiagramEvent diagramEvent;
-
-            lock (_diagramUpdateLockObject)
-            {
-                diagramEvent = diagramMutatorFunc.Invoke();
-                LatestDiagram = diagramEvent.NewDiagram;
-            }
-
-            if (diagramEvent.IsEmpty)
-                return;
-
-            DiagramChanged?.Invoke(diagramEvent);
-            _diagramChangedEventStream.OnNext(diagramEvent);
-            AfterDiagramChanged?.Invoke(diagramEvent);
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.Clear());
         }
 
         public void AddNodes(
@@ -177,6 +166,32 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 return potentialContainerNode.Id;
 
             return null;
+        }
+
+        private void MutateWithLockThenRaiseEvents([NotNull] Action<IDiagramMutator> diagramMutatorFunc)
+        {
+            DiagramEvent diagramEvent;
+
+            lock (_diagramUpdateLockObject)
+            {
+                var diagramMutator = CreateDiagramMutator();
+                diagramMutatorFunc.Invoke(diagramMutator);
+                diagramEvent = diagramMutator.GetDiagramEvent();
+                LatestDiagram = diagramEvent.NewDiagram;
+            }
+
+            if (diagramEvent.IsEmpty)
+                return;
+
+            DiagramChanged?.Invoke(diagramEvent);
+            _diagramChangedEventStream.OnNext(diagramEvent);
+            AfterDiagramChanged?.Invoke(diagramEvent);
+        }
+
+        [NotNull]
+        private DiagramMutator CreateDiagramMutator()
+        {
+            return new DiagramMutator(LatestDiagram, _connectorTypeResolver, _childrenAreaPadding);
         }
     }
 }
