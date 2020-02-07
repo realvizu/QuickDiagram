@@ -38,6 +38,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _shapeEvents = new List<DiagramShapeEventBase>();
         }
 
+        private Point2D ChildrenAreaPaddingVector => new Point2D(_childrenAreaPadding, _childrenAreaPadding);
+
         public DiagramEvent GetDiagramEvent()
         {
             var diagram = new ImmutableDiagram(
@@ -224,6 +226,25 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void ApplyLayout(GroupLayoutInfo diagramLayout)
         {
             throw new NotImplementedException();
+        }
+
+        public void ApplyLayout(LayoutInfo layoutInfo)
+        {
+            foreach (var vertexRecKeyValue in layoutInfo.VertexRects)
+                UpdateNodeTopLeft(vertexRecKeyValue.Key, CalculateAbsolutePosition(vertexRecKeyValue.Key, vertexRecKeyValue.Value));
+
+            foreach (var edgeRouteKeyValue in layoutInfo.EdgeRoutes)
+                UpdateConnectorRoute(edgeRouteKeyValue.Key, edgeRouteKeyValue.Value);
+        }
+
+        private Point2D CalculateAbsolutePosition(ModelNodeId nodeId, Rect2D rect)
+        {
+            if (!_nodes.ContainsKey(nodeId))
+                throw new Exception($"Diagram node: {nodeId} not found.");
+
+            return _nodes[nodeId].ParentNodeId.Match(
+                some => _nodes[some].TopLeft + ChildrenAreaPaddingVector + rect.TopLeft,
+                () => rect.TopLeft);
         }
 
         public void Clear()

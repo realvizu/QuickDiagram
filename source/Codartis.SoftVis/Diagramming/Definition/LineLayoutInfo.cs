@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
-    public struct LineLayoutInfo : ILayoutInfo
+    public struct LineLayoutInfo
     {
         [NotNull] public string ShapeId { get; }
         public Route Route { get; }

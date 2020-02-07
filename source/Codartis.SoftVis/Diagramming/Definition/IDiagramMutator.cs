@@ -27,6 +27,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void UpdateModelNode([NotNull] IModelNode updatedModelNode);
 
         void ApplyLayout([NotNull] GroupLayoutInfo diagramLayout);
+        void ApplyLayout(LayoutInfo layoutInfo);
 
         void Clear();
     }

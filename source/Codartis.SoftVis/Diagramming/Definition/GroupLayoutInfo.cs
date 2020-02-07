@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
-    public sealed class GroupLayoutInfo : ILayoutInfo
+    public sealed class GroupLayoutInfo
     {
         [NotNull] public IEnumerable<BoxLayoutInfo> Boxes { get; }
         [NotNull] public IEnumerable<LineLayoutInfo> Lines { get; }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;

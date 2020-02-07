@@ -42,10 +42,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type testHostAppModeling:TypeNodeBase}">
-        <Border BorderThickness="1"
-                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                Background="{Binding DiagramFill, ElementName=ThisControl}"
-                ToolTip="{Binding Path=FullName}">
+        <Border ToolTip="{Binding Path=FullName}">
             <StackPanel Orientation="Vertical"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">

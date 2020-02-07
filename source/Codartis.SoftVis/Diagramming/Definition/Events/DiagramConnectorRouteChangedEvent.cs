@@ -16,6 +16,6 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
         }
 
         public override string ToString()
-            => $"{GetType().Name}: {OldConnector}, {OldConnector.Route}->{NewConnector.Route}";
+            => $"{GetType().Name}: {OldConnector}, {OldConnector.Route}->{NewConnector.Route} on {NewConnector}";
     }
 }

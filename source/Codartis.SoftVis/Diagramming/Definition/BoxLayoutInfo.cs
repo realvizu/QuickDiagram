@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Diagramming.Definition
 {
-    public sealed class BoxLayoutInfo : ILayoutInfo
+    public sealed class BoxLayoutInfo 
     {
         [NotNull] public string ShapeId { get; }
         public Point2D TopLeft { get; }

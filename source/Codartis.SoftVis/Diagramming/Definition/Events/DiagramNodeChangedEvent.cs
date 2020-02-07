@@ -18,6 +18,6 @@ namespace Codartis.SoftVis.Diagramming.Definition.Events
             ChangedMember = changedMember;
         }
 
-        public override string ToString() => $"{nameof(DiagramNodeChangedEvent)}, {ChangedMember}: {OldNode.Id}";
+        public override string ToString() => $"{nameof(DiagramNodeChangedEvent)}, {ChangedMember}: {OldNode.Id} on {NewNode}";
     }
 }

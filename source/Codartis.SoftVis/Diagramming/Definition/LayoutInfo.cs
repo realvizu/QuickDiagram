@@ -3,7 +3,7 @@ using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
-namespace Codartis.SoftVis.Diagramming.Definition.Layout
+namespace Codartis.SoftVis.Diagramming.Definition
 {
     public struct LayoutInfo
     {

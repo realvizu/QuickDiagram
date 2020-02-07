@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming.Definition.Layout;
+﻿using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Layout;
 
 namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout
 {

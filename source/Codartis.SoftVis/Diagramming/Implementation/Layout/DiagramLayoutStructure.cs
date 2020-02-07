@@ -20,7 +20,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
     /// </remarks>
     public sealed class DiagramLayoutStructure
     {
-        [NotNull] private readonly IDiagram _diagram;
         [NotNull] private readonly IDictionary<ModelNodeId, ILayoutGroup> _nodeLayoutGroups;
         [NotNull] private readonly IDictionary<ModelRelationshipId, IDiagramConnector> _crossLayoutGroupConnectors;
 
@@ -32,10 +31,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
 
         public DiagramLayoutStructure([NotNull] IDiagram diagram)
         {
-            _diagram = diagram;
-            _nodeLayoutGroups = CreateLayoutGroupForAllNodes();
-            _crossLayoutGroupConnectors = GetCrossLayoutGroupConnectors();
-            RootLayoutGroup = CreateLayoutGroup(Maybe<ModelNodeId>.Nothing);
+            _nodeLayoutGroups = CreateLayoutGroupForAllNodes(diagram);
+            _crossLayoutGroupConnectors = diagram.GetCrossLayoutGroupConnectors();
+            RootLayoutGroup = diagram.CreateLayoutGroup(Maybe<ModelNodeId>.Nothing);
         }
 
         [NotNull] [ItemNotNull] public IEnumerable<IDiagramConnector> CrossLayoutGroupConnectors => _crossLayoutGroupConnectors.Values;
@@ -54,31 +52,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         }
 
         [NotNull]
-        private IDictionary<ModelNodeId, ILayoutGroup> CreateLayoutGroupForAllNodes()
+        private static IDictionary<ModelNodeId, ILayoutGroup> CreateLayoutGroupForAllNodes([NotNull] IDiagram diagram)
         {
-            return _diagram.Nodes
-                .Select(i => (i.Id, CreateLayoutGroup(i.Id.ToMaybe())))
+            return diagram.Nodes
+                .Select(i => (i.Id, diagram.CreateLayoutGroup(i.Id.ToMaybe())))
                 .ToDictionary(i => i.Id, i => i.Item2);
-        }
-
-        [NotNull]
-        private IDictionary<ModelRelationshipId, IDiagramConnector> GetCrossLayoutGroupConnectors()
-        {
-            return _diagram.Connectors
-                .Where(i => _diagram.GetNode(i.Source).ParentNodeId != _diagram.GetNode(i.Target).ParentNodeId)
-                .ToDictionary(i => i.Id);
-        }
-
-        [NotNull]
-        private ILayoutGroup CreateLayoutGroup(Maybe<ModelNodeId> containerNodeId)
-        {
-            var nodesInLayoutGroup = _diagram.Nodes
-                .Where(i => i.ParentNodeId.Equals(containerNodeId));
-
-            var connectorsInLayoutGroup = _diagram.Connectors
-                .Where(i => _diagram.GetNode(i.Source).ParentNodeId.Equals(containerNodeId) && _diagram.GetNode(i.Target).ParentNodeId.Equals(containerNodeId));
-
-            return LayoutGroup.CreateForNode(containerNodeId, nodesInLayoutGroup, connectorsInLayoutGroup);
         }
     }
 }

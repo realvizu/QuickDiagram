@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Reactive.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
+using Codartis.SoftVis.Diagramming.Implementation.Layout;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
 
@@ -14,7 +16,7 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class AutoLayoutDiagramPlugin : DiagramPluginBase
     {
-        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(100);
+        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(200);
 
         private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
         {
@@ -22,20 +24,17 @@ namespace Codartis.SoftVis.Services.Plugins
             DiagramNodeMember.Position
         };
 
-        [NotNull] private readonly IDiagramLayoutAlgorithm _layoutAlgorithm;
+        [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
         [NotNull] private readonly IDisposable _diagramChangedSubscription;
 
         public AutoLayoutDiagramPlugin(
             [NotNull] IDiagramService diagramService,
-            [NotNull] IDiagramLayoutAlgorithm layoutAlgorithm)
+            [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy)
             : base(diagramService)
         {
-            _layoutAlgorithm = layoutAlgorithm;
+            _layoutAlgorithmSelectionStrategy = layoutAlgorithmSelectionStrategy;
 
-            _diagramChangedSubscription = DiagramService.DiagramChangedEventStream
-                .Where(i => i.ShapeEvents.Any(IsLayoutTriggeringChange))
-                .Throttle(DiagramEventDebounceTimeSpan)
-                .Subscribe(OnDiagramChanged);
+            _diagramChangedSubscription = CreateDiagramChangedSubscription();
         }
 
         public override void Dispose()
@@ -43,12 +42,62 @@ namespace Codartis.SoftVis.Services.Plugins
             _diagramChangedSubscription.Dispose();
         }
 
-        private void OnDiagramChanged(DiagramEvent diagramEvent)
+        [NotNull]
+        private IDisposable CreateDiagramChangedSubscription()
         {
-            var diagram = diagramEvent.NewDiagram;
-            var diagramLayoutInfo = _layoutAlgorithm.Calculate(diagram);
+            return DiagramService.DiagramChangedEventStream
+                .SelectMany(i => i.ShapeEvents, (diagramEvent, shapeEvent) => (diagramEvent.NewDiagram, shapeEvent))
+                .Where(i => IsLayoutTriggeringChange(i.shapeEvent))
+                .GroupBy(i => GetParentId(i.NewDiagram, i.shapeEvent))
+                .Subscribe(
+                    group =>
+                        group
+                            .Throttle(DiagramEventDebounceTimeSpan)
+                            .Subscribe(i => OnDiagramChanged(i.NewDiagram, i.shapeEvent)));
+        }
 
-            DiagramService.ApplyLayout(diagramLayoutInfo);
+        private static ModelNodeId? GetParentId(
+            [NotNull] IDiagram newDiagram,
+            [NotNull] DiagramShapeEventBase diagramShapeEvent)
+        {
+            return diagramShapeEvent switch
+            {
+                DiagramNodeAddedEvent i => GetParentId(i.NewNode),
+                DiagramNodeChangedEvent i => GetParentId(i.NewNode),
+                DiagramNodeRemovedEvent i => GetParentId(i.OldNode),
+                DiagramConnectorAddedEvent i => GetParentId(i.NewConnector, newDiagram),
+                DiagramConnectorRouteChangedEvent i => GetParentId(i.NewConnector, newDiagram),
+                DiagramConnectorRemovedEvent i => GetParentId(i.OldConnector, newDiagram),
+                _ => throw new Exception($"Unexpected DiagramShapeEvent: {diagramShapeEvent}")
+            };
+        }
+
+        private static ModelNodeId? GetParentId([NotNull] IDiagramNode diagramNode) => diagramNode.ParentNodeId.ToNullable();
+
+        private static ModelNodeId? GetParentId([NotNull] IDiagramConnector diagramConnector, [NotNull] IDiagram diagram)
+        {
+            var sourceNode = diagram.GetNode(diagramConnector.Source);
+            var targetNode = diagram.GetNode(diagramConnector.Target);
+
+            return sourceNode.ParentNodeId == targetNode.ParentNodeId
+                ? sourceNode.ParentNodeId.ToNullable()
+                : null;
+        }
+
+        private void OnDiagramChanged([NotNull] IDiagram newDiagram, [NotNull] DiagramShapeEventBase diagramShapeEvent)
+        {
+            Debug.WriteLine($"DiagramShapeEvent={diagramShapeEvent}");
+
+            var parentId = GetParentId(newDiagram, diagramShapeEvent);
+
+            var layoutAlgorithm = parentId == null
+                ? _layoutAlgorithmSelectionStrategy.GetForRoot()
+                : _layoutAlgorithmSelectionStrategy.GetForNode(newDiagram.GetNode(parentId.Value));
+
+            var layoutGroup = newDiagram.CreateLayoutGroup(parentId.ToMaybe());
+            var layoutInfo = layoutAlgorithm.Calculate(layoutGroup);
+
+            DiagramService.ApplyLayout(layoutInfo);
         }
 
         private static bool IsLayoutTriggeringChange(DiagramShapeEventBase diagramShapeEvent)
