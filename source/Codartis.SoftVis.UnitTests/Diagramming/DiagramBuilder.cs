@@ -70,7 +70,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         public DiagramBuilder UpdateNodeTopLeft([NotNull] string nodeName, Point2D nodeTopLeft)
         {
             var modelNode = GetModelNode(nodeName);
-            _diagramMutator.UpdateNodeTopLeft(modelNode.Id, nodeTopLeft);
+            _diagramMutator.UpdateNodeRelativeTopLeft(modelNode.Id, nodeTopLeft);
 
             return this;
         }

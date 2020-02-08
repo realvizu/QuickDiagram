@@ -7,12 +7,14 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// <summary>
     /// Mutates a diagram.
     /// </summary>
+    /// <remarks>
+    /// Absolute positions and ChildrenAreaSize cannot be mutated directly, they are calculated.
+    /// </remarks>
     public interface IDiagramMutator
     {
         void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
         void UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize);
-        void UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter);
-        void UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
+        void UpdateNodeRelativeTopLeft(ModelNodeId nodeId, Point2D newRelativeTopLeft);
         void RemoveNode(ModelNodeId nodeId);
 
         void AddConnector(ModelRelationshipId relationshipId);

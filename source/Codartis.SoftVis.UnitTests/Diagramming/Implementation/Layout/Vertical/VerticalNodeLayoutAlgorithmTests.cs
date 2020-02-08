@@ -71,7 +71,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         private IImmutableSet<IDiagramNode> CreateNodes([NotNull] params NodeSpecification[] nodeSpecifications)
         {
             return nodeSpecifications
-                .Select(i => new DiagramNode(CreateModelNode(i.Name), DateTime.Now, Point2D.Undefined, i.Size, Size2D.Zero, Maybe<ModelNodeId>.Nothing))
+                .Select(
+                    i => new DiagramNode(
+                        CreateModelNode(i.Name),
+                        DateTime.Now,
+                        Point2D.Undefined,
+                        Point2D.Undefined,
+                        i.Size,
+                        Size2D.Zero,
+                        Maybe<ModelNodeId>.Nothing))
                 .OfType<IDiagramNode>()
                 .ToImmutableHashSet();
         }

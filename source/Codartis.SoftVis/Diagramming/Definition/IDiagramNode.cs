@@ -23,8 +23,17 @@ namespace Codartis.SoftVis.Diagramming.Definition
         bool HasParent { get; }
         [NotNull] string Name { get; }
         DateTime AddedAt { get; }
-        Point2D Center { get; }
-        Point2D TopLeft { get; }
+
+        /// <summary>
+        /// Absolute position in the canvas.
+        /// </summary>
+        Point2D AbsoluteTopLeft { get; }
+
+        /// <summary>
+        /// Position relative to the parent's ChildrenArea.
+        /// </summary>
+        Point2D RelativeTopLeft { get; }
+
         Size2D HeaderSize { get; }
         Size2D ChildrenAreaSize { get; }
         Size2D Size { get; }
@@ -36,10 +45,11 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId);
 
         [NotNull]
-        IDiagramNode WithCenter(Point2D newCenter);
+        IDiagramNode WithAbsoluteTopLeft(Point2D newAbsoluteTopLeft);
 
         [NotNull]
-        IDiagramNode WithTopLeft(Point2D newTopLeft);
+        IDiagramNode WithRelativeTopLeft(Point2D newRelativeTopLeft);
+
 
         [NotNull]
         IDiagramNode WithHeaderSize(Size2D newSize);

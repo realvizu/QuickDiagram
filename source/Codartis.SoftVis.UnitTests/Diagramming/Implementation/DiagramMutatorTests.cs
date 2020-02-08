@@ -216,15 +216,15 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         //    );
 
         //    var expectedDiagram = diagramBuilder
-        //        .UpdateNodeTopLeft("A", (1, 1))
-        //        .UpdateNodeTopLeft("B", (2, 2))
+        //        .UpdateNodeAbsoluteTopLeft("A", (1, 1))
+        //        .UpdateNodeAbsoluteTopLeft("B", (2, 2))
         //        .UpdateConnectorRoute("A->B", new Route((1, 1), (2, 2)))
         //        .GetDiagram();
 
         //    var diagramEvent = diagram.ApplyLayout(layout);
         //    diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-        //        i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 1, 1)),
-        //        i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2)),
+        //        i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(1, 1, 1, 1)),
+        //        i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(2, 2, 2, 2)),
         //        i => i.Should().BeOfType<DiagramConnectorRouteChangedEvent>().Which.NewConnector.Route.Should().BeEquivalentTo(new Route((1, 1), (2, 2)))
         //    );
 
@@ -267,10 +267,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         //        new List<LineLayoutInfo>());
 
         //    var expectedDiagram = diagramBuilder
-        //        .UpdateNodeTopLeft("A", (1, 1))
-        //        .UpdateNodeTopLeft("A1", (2, 2))
-        //        .UpdateNodeTopLeft("A2", (4, 4))
-        //        .UpdateNodeTopLeft("B", (9, 9))
+        //        .UpdateNodeAbsoluteTopLeft("A", (1, 1))
+        //        .UpdateNodeAbsoluteTopLeft("A1", (2, 2))
+        //        .UpdateNodeAbsoluteTopLeft("A2", (4, 4))
+        //        .UpdateNodeAbsoluteTopLeft("B", (9, 9))
         //        .GetDiagram;
 
         //    var diagramEvent = diagram.ApplyLayout(layout);
@@ -281,27 +281,27 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         //        i =>
         //        {
         //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
-        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(2, 2, 2, 2));
+        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(2, 2, 2, 2));
         //        },
         //        i =>
         //        {
         //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
-        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(4, 4, 4, 4));
+        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(4, 4, 4, 4));
         //        },
         //        i =>
         //        {
         //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
-        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 3, 3));
+        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(1, 1, 3, 3));
         //        },
         //        i =>
         //        {
         //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.ChildrenAreaSize);
-        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(1, 1, 3, 3));
+        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(1, 1, 3, 3));
         //        },
         //        i =>
         //        {
         //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.ChangedMember.Should().Be(DiagramNodeMember.Position);
-        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Rect.Should().Be(new Rect2D(9, 9, 9, 9));
+        //            i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.AbsoluteRect.Should().Be(new Rect2D(9, 9, 9, 9));
         //        }
         //    );
 
@@ -310,8 +310,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
         private static void AllRectsShouldMatch([NotNull] IDiagram actualDiagram, [NotNull] IDiagram expectedDiagram)
         {
-            actualDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.Rect).Should().Equal(expectedDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.Rect));
-            actualDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.Rect).Should().Equal(expectedDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.Rect));
+            actualDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.AbsoluteRect).Should().Equal(expectedDiagram.Nodes.OrderBy(i => i.Id).Select(i => i.AbsoluteRect));
+            actualDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.AbsoluteRect).Should().Equal(expectedDiagram.Connectors.OrderBy(i => i.Id).Select(i => i.AbsoluteRect));
         }
 
         [NotNull]

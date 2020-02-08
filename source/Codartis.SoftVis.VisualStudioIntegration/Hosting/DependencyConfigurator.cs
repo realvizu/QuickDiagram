@@ -4,7 +4,6 @@ using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
@@ -29,6 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     public static class DependencyConfigurator
     {
         private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
+        private const double ChildrenAreaPadding = 2;
 
         public static IContainer CreateDependencyContainer(IVisualStudioServices visualStudioServices)
         {
@@ -75,12 +75,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterDiagramComponents(ContainerBuilder builder)
         {
-            builder.RegisterType<DiagramService>().As<IDiagramService>().SingleInstance();
+            builder.RegisterType<DiagramService>().As<IDiagramService>()
+                .WithParameter("childrenAreaPadding", ChildrenAreaPadding)
+                .SingleInstance();
+
             builder.RegisterType<RoslynConnectorTypeResolver>().As<IConnectorTypeResolver>().SingleInstance();
 
-            builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
-                .WithParameter("childrenAreaPadding", 2)
-                .SingleInstance();
+            //builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
+            //    .WithParameter("childrenAreaPadding", 2)
+            //    .SingleInstance();
 
             builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>().SingleInstance();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>().SingleInstance();

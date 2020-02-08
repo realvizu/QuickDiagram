@@ -57,7 +57,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
             [NotNull] [ItemNotNull] IEnumerable<IDiagramNode> nodes,
             [NotNull] [ItemNotNull] IEnumerable<IDiagramConnector> connectors)
         {
-            return nodes.OfType<IDiagramShape>().Union(connectors).Where(i => i.Rect.IsDefined()).Select(i => i.Rect).Union();
+            return nodes.OfType<IDiagramShape>().Union(connectors).Where(i => i.AbsoluteRect.IsDefined()).Select(i => i.AbsoluteRect).Union();
         }
 
         private static bool AreEmpty([NotNull] IEnumerable<IDiagramNode> nodes, [NotNull] IEnumerable<IDiagramConnector> connectors)

@@ -11,7 +11,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     public sealed class DiagramConnector : DiagramShapeBase, IDiagramConnector
     {
         public override string ShapeId { get; }
-        public override Rect2D Rect { get; }
+        public override Rect2D AbsoluteRect { get; }
 
         public IModelRelationship ModelRelationship { get; }
         public ConnectorType ConnectorType { get; }
@@ -34,8 +34,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Route = route;
 
             ShapeId = relationship.Id.ToShapeId();
-            Rect = route.ToRect();
+            AbsoluteRect = route.ToRect();
         }
+
+        public override Rect2D RelativeRect => AbsoluteRect;
 
         public ModelRelationshipId Id => ModelRelationship.Id;
         public ModelRelationshipStereotype Stereotype => ModelRelationship.Stereotype;

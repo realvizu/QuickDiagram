@@ -17,6 +17,24 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     /// </summary>
     public sealed class DiagramMutator : IDiagramMutator
     {
+        private static readonly DiagramNodeMember[] ParentNodeChildrenAreaSizeAffectingMembers =
+        {
+            DiagramNodeMember.HeaderSize,
+            DiagramNodeMember.ChildrenAreaSize,
+            DiagramNodeMember.RelativePosition
+        };
+
+        private static readonly DiagramNodeMember[] AbsolutePositionAffectingMembers =
+        {
+            DiagramNodeMember.RelativePosition
+        };
+
+        private static readonly DiagramNodeMember[] ChildrenAbsolutePositionAffectingMembers =
+        {
+            DiagramNodeMember.HeaderSize,
+            DiagramNodeMember.AbsolutePosition
+        };
+
         [NotNull] private readonly IDiagram _initialDiagram;
         [NotNull] private IModel _model;
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
@@ -76,20 +94,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 DiagramNodeMember.HeaderSize);
         }
 
-        public void UpdateNodeCenter(ModelNodeId nodeId, Point2D newCenter)
+        public void UpdateNodeRelativeTopLeft(ModelNodeId nodeId, Point2D newRelativeTopLeft)
         {
             UpdateNodeCore(
                 nodeId,
-                i => i.WithCenter(newCenter),
-                DiagramNodeMember.Position);
-        }
-
-        public void UpdateNodeTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
-        {
-            UpdateNodeCore(
-                nodeId,
-                i => i.WithTopLeft(newTopLeft),
-                DiagramNodeMember.Position);
+                i => i.WithRelativeTopLeft(newRelativeTopLeft),
+                DiagramNodeMember.RelativePosition);
         }
 
         private void UpdateNodeCore(
@@ -107,10 +117,33 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
             _shapeEvents.Add(new DiagramNodeChangedEvent(oldNode, newNode, updatedMember));
 
-            UpdateParentNodesRecursive(newNode);
+            if (updatedMember.In(ParentNodeChildrenAreaSizeAffectingMembers))
+                UpdateParentNodeChildrenAreaSize(newNode);
+
+            if (updatedMember.In(AbsolutePositionAffectingMembers))
+                UpdateAbsolutePosition(newNode);
+
+            if (updatedMember.In(ChildrenAbsolutePositionAffectingMembers))
+                UpdateChildrenAbsolutePosition(newNode);
         }
 
-        private void UpdateParentNodesRecursive([NotNull] IDiagramNode updatedNode)
+        private void UpdateAbsolutePosition([NotNull] IDiagramNode updatedNode)
+        {
+            var newAbsoluteTopLeft = CalculateAbsolutePosition(updatedNode.Id);
+
+            UpdateNodeCore(
+                updatedNode.Id,
+                i => i.WithAbsoluteTopLeft(newAbsoluteTopLeft),
+                DiagramNodeMember.AbsolutePosition);
+        }
+
+        private void UpdateChildrenAbsolutePosition([NotNull] IDiagramNode updatedNode)
+        {
+            foreach (var childNode in GetChildNodes(updatedNode.Id).ToList())
+                UpdateAbsolutePosition(childNode);
+        }
+
+        private void UpdateParentNodeChildrenAreaSize([NotNull] IDiagramNode updatedNode)
         {
             if (!updatedNode.HasParent)
                 return;
@@ -118,18 +151,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var parentNode = _nodes[updatedNode.ParentNodeId.Value];
 
             var newChildrenAreaSize = CalculateChildrenAreaSize(parentNode.Id);
+
             if (newChildrenAreaSize.IsUndefined && parentNode.ChildrenAreaSize.IsUndefined ||
                 newChildrenAreaSize == parentNode.ChildrenAreaSize)
                 return;
 
-            var updatedParentNode = parentNode.WithChildrenAreaSize(newChildrenAreaSize);
-
             UpdateNodeCore(
                 parentNode.Id,
-                _ => updatedParentNode,
+                i => i.WithChildrenAreaSize(newChildrenAreaSize),
                 DiagramNodeMember.ChildrenAreaSize);
-
-            UpdateParentNodesRecursive(updatedParentNode);
         }
 
         public void RemoveNode(ModelNodeId nodeId)
@@ -144,6 +174,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _nodes.Remove(nodeId);
 
             _shapeEvents.Add(new DiagramNodeRemovedEvent(oldNode));
+
+            UpdateParentNodeChildrenAreaSize(oldNode);
         }
 
         private void RemoveChildNodes([NotNull] IDiagramNode node)
@@ -227,24 +259,32 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void ApplyLayout(LayoutInfo layoutInfo)
         {
             foreach (var vertexRecKeyValue in layoutInfo.VertexRects)
-                UpdateNodeTopLeft(vertexRecKeyValue.Key, CalculateAbsolutePosition(vertexRecKeyValue.Key, vertexRecKeyValue.Value));
+            {
+                var newRelativeTopLeft = vertexRecKeyValue.Value.TopLeft;
+                var modelNodeId = vertexRecKeyValue.Key;
+
+                UpdateNodeRelativeTopLeft(modelNodeId, newRelativeTopLeft);
+            }
 
             foreach (var edgeRouteKeyValue in layoutInfo.EdgeRoutes)
                 UpdateConnectorRoute(edgeRouteKeyValue.Key, edgeRouteKeyValue.Value);
         }
 
-        private Point2D CalculateAbsolutePosition(ModelNodeId nodeId, Rect2D rect)
+        private Point2D CalculateAbsolutePosition(ModelNodeId nodeId)
         {
             if (!_nodes.ContainsKey(nodeId))
                 throw new Exception($"Diagram node: {nodeId} not found.");
 
-            return _nodes[nodeId].ParentNodeId.Match(
+            var diagramNode = _nodes[nodeId];
+
+            return diagramNode.ParentNodeId.Match(
                 some =>
                 {
                     var parentNode = _nodes[some];
-                    return parentNode.TopLeft + new Point2D(0, parentNode.HeaderSize.Height) + ChildrenAreaPaddingVector + rect.TopLeft;
+                    var parentHeaderVector = new Point2D(0, parentNode.HeaderSize.Height);
+                    return parentNode.AbsoluteTopLeft + parentHeaderVector + ChildrenAreaPaddingVector + diagramNode.RelativeTopLeft;
                 },
-                () => rect.TopLeft);
+                () => diagramNode.RelativeTopLeft);
         }
 
         public void Clear()
@@ -271,9 +311,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private Size2D CalculateChildrenAreaSize(ModelNodeId parentNodeId)
         {
-            return GetChildNodes(parentNodeId)
-                .Select(i => i.Rect).Where(i => i.IsDefined()).Union()
+            var childrenAreaSize = GetChildNodes(parentNodeId)
+                .Select(i => i.RelativeRect).Where(i => i.IsDefined()).Union()
                 .WithMargin(_childrenAreaPadding).Size;
+
+            return childrenAreaSize.IsDefined ? childrenAreaSize : Size2D.Zero;
         }
 
         [NotNull]

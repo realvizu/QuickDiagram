@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         protected void SetDiagramShapeProperties([NotNull] IDiagramShape diagramShape)
         {
             DiagramShape = diagramShape;
-            Rect = diagramShape.Rect.ToWpf();
+            Rect = diagramShape.AbsoluteRect.ToWpf();
         }
 
         public abstract string StereotypeName { get; }

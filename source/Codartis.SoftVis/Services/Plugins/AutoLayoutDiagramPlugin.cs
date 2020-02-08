@@ -20,7 +20,8 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
         {
-            DiagramNodeMember.Position
+            DiagramNodeMember.RelativePosition,
+            DiagramNodeMember.AbsolutePosition
         };
 
         [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;

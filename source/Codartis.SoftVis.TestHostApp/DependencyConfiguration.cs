@@ -3,7 +3,6 @@ using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation;
-using Codartis.SoftVis.Diagramming.Implementation.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
@@ -61,8 +60,8 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
-            builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
-                .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
+            //builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
+            //    .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
 
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();

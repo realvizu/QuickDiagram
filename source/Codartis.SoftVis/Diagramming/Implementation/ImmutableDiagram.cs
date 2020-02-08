@@ -95,88 +95,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         //    return result;
         //}
-
-        //public DiagramEvent ApplyLayout(GroupLayoutInfo diagramLayout)
-        //{
-        //    var events = new List<DiagramShapeEventBase>();
-        //    var updatedNodes = new Dictionary<ModelNodeId, IDiagramNode>();
-        //    var updatedConnectors = new Dictionary<ModelRelationshipId, IDiagramConnector>();
-
-        //    ApplyLayoutRecursive(diagramLayout, events, updatedNodes, updatedConnectors);
-
-        //    var newDiagram = CreateInstance(Model, _nodes.SetItems(updatedNodes), _connectors.SetItems(updatedConnectors));
-        //    return DiagramEvent.Create(newDiagram, events);
-        //}
-
-        //private void ApplyLayoutRecursive(
-        //    [NotNull] GroupLayoutInfo groupLayoutInfo,
-        //    [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events,
-        //    [NotNull] IDictionary<ModelNodeId, IDiagramNode> updatedNodes,
-        //    [NotNull] IDictionary<ModelRelationshipId, IDiagramConnector> updatedConnectors)
-        //{
-        //    ApplyNodeLayout(groupLayoutInfo.Boxes, events, updatedNodes, updatedConnectors);
-        //    ApplyConnectorLayout(groupLayoutInfo.Lines, events, updatedConnectors);
-        //}
-
-        //private void ApplyNodeLayout(
-        //    [NotNull] [ItemNotNull] IEnumerable<BoxLayoutInfo> boxLayoutList,
-        //    [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events,
-        //    [NotNull] IDictionary<ModelNodeId, IDiagramNode> updatedNodes,
-        //    [NotNull] IDictionary<ModelRelationshipId, IDiagramConnector> updatedConnectors)
-        //{
-        //    foreach (var boxLayoutInfo in boxLayoutList)
-        //    {
-        //        var modelNodeId = ModelNodeId.Parse(boxLayoutInfo.ShapeId);
-        //        var maybeCurrentNode = TryGetNode(modelNodeId);
-        //        if (!maybeCurrentNode.HasValue)
-        //            continue;
-
-        //        var oldNode = maybeCurrentNode.Value;
-
-        //        if (boxLayoutInfo.ChildGroup != null)
-        //            ApplyLayoutRecursive(boxLayoutInfo.ChildGroup, events, updatedNodes, updatedConnectors);
-
-        //        var newNode = oldNode.WithTopLeft(boxLayoutInfo.TopLeft).WithChildrenAreaSize(boxLayoutInfo.ChildrenAreaSize);
-        //        updatedNodes.Add(oldNode.Id, newNode);
-
-        //        if (oldNode.TopLeft != newNode.TopLeft)
-        //            events.Add(new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.Position));
-
-        //        if (oldNode.ChildrenAreaSize != newNode.ChildrenAreaSize)
-        //            events.Add(new DiagramNodeChangedEvent(oldNode, newNode, DiagramNodeMember.ChildrenAreaSize));
-        //    }
-        //}
-
-        //private void ApplyConnectorLayout(
-        //    [NotNull] IEnumerable<LineLayoutInfo> lineLayoutList,
-        //    [NotNull] [ItemNotNull] ICollection<DiagramShapeEventBase> events,
-        //    [NotNull] IDictionary<ModelRelationshipId, IDiagramConnector> updatedConnectors)
-        //{
-        //    foreach (var lineLayoutInfo in lineLayoutList)
-        //    {
-        //        var modelRelationshipIdNodeId = ModelRelationshipId.Parse(lineLayoutInfo.ShapeId);
-        //        var maybeCurrentConnector = TryGetConnector(modelRelationshipIdNodeId);
-        //        if (!maybeCurrentConnector.HasValue)
-        //            continue;
-
-        //        var oldConnector = maybeCurrentConnector.Value;
-
-        //        var newConnector = oldConnector.WithRoute(lineLayoutInfo.Route);
-        //        updatedConnectors.Add(oldConnector.Id, newConnector);
-
-        //        if (oldConnector.Route != newConnector.Route)
-        //            events.Add(new DiagramConnectorRouteChangedEvent(oldConnector, newConnector));
-        //    }
-        //}
-
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
         {
             return modelNodeIds
-                .Select(i => TryGetNode(i).Match(j => j.Rect, () => Rect2D.Undefined))
+                .Select(i => TryGetNode(i).Match(j => j.AbsoluteRect, () => Rect2D.Undefined))
                 .Union();
         }
 
-        private Rect2D CalculateRect() => Nodes.Select(i => i.Rect).Concat(Connectors.Select(i => i.Rect)).Union();
+        private Rect2D CalculateRect() => Nodes.Select(i => i.AbsoluteRect).Concat(Connectors.Select(i => i.AbsoluteRect)).Union();
 
         [NotNull]
         public static IDiagram Create([NotNull] IModel model)
