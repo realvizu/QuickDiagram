@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive.Linq;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation.Layout;
+using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.Util;
 using JetBrains.Annotations;
@@ -25,14 +27,17 @@ namespace Codartis.SoftVis.Services.Plugins
         };
 
         [NotNull] private readonly ILayoutAlgorithmSelectionStrategy _layoutAlgorithmSelectionStrategy;
+        [NotNull] private readonly IConnectorRoutingAlgorithm _crossLayoutGroupConnectorRoutingAlgorithm;
         [NotNull] private readonly IDisposable _diagramChangedSubscription;
 
         public AutoLayoutDiagramPlugin(
             [NotNull] IDiagramService diagramService,
-            [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy)
+            [NotNull] ILayoutAlgorithmSelectionStrategy layoutAlgorithmSelectionStrategy,
+            [NotNull] IConnectorRoutingAlgorithm crossLayoutGroupConnectorRoutingAlgorithm)
             : base(diagramService)
         {
             _layoutAlgorithmSelectionStrategy = layoutAlgorithmSelectionStrategy;
+            _crossLayoutGroupConnectorRoutingAlgorithm = crossLayoutGroupConnectorRoutingAlgorithm;
 
             _diagramChangedSubscription = CreateDiagramChangedSubscription();
         }
@@ -45,6 +50,8 @@ namespace Codartis.SoftVis.Services.Plugins
         [NotNull]
         private IDisposable CreateDiagramChangedSubscription()
         {
+            // Filter on layout triggering events, group them by parent and debounce each group individually.
+
             return DiagramService.DiagramChangedEventStream
                 .SelectMany(i => i.ShapeEvents, (diagramEvent, shapeEvent) => (diagramEvent.OldDiagram, diagramEvent.NewDiagram, shapeEvent))
                 .Where(i => IsLayoutTriggeringChange(i.shapeEvent))
@@ -89,6 +96,16 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             Debug.WriteLine($"DiagramShapeEvent={diagramShapeEvent}");
 
+            LayoutParentGroup(oldDiagram, newDiagram, diagramShapeEvent);
+
+            LayoutCrossGroupConnectors(DiagramService.LatestDiagram);
+        }
+
+        private void LayoutParentGroup(
+            [NotNull] IDiagram oldDiagram,
+            [NotNull] IDiagram newDiagram,
+            [NotNull] DiagramShapeEventBase diagramShapeEvent)
+        {
             IGroupLayoutAlgorithm layoutAlgorithm;
 
             var parentId = GetParentId(oldDiagram, newDiagram, diagramShapeEvent);
@@ -110,6 +127,16 @@ namespace Codartis.SoftVis.Services.Plugins
 
             var layoutInfo = layoutAlgorithm.Calculate(layoutGroup);
 
+            DiagramService.ApplyLayout(layoutInfo);
+        }
+
+        private void LayoutCrossGroupConnectors([NotNull] IDiagram diagram)
+        {
+            var connectors = diagram.GetCrossLayoutGroupConnectors();
+            var nodeRects = diagram.Nodes.Where(i => i.AbsoluteRect.IsDefined()).ToDictionary(i => i.Id, i => i.AbsoluteRect);
+
+            var connectorRoutes = _crossLayoutGroupConnectorRoutingAlgorithm.Calculate(connectors.Values, nodeRects);
+            var layoutInfo = new LayoutInfo(connectorRoutes);
             DiagramService.ApplyLayout(layoutInfo);
         }
 

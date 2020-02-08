@@ -81,10 +81,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.RegisterType<RoslynConnectorTypeResolver>().As<IConnectorTypeResolver>().SingleInstance();
 
-            //builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
-            //    .WithParameter("childrenAreaPadding", 2)
-            //    .SingleInstance();
-
             builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>().SingleInstance();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>().SingleInstance();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>().SingleInstance();

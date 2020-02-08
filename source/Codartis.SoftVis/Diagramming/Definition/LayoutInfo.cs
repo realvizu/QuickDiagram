@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
@@ -15,6 +16,12 @@ namespace Codartis.SoftVis.Diagramming.Definition
             [NotNull] IDictionary<ModelRelationshipId, Route> edgeRoutes)
         {
             VertexRects = vertexRects;
+            EdgeRoutes = edgeRoutes;
+        }
+
+        public LayoutInfo([NotNull] IDictionary<ModelRelationshipId, Route> edgeRoutes)
+            : this(ImmutableDictionary.Create<ModelNodeId, Rect2D>(), edgeRoutes)
+        {
             EdgeRoutes = edgeRoutes;
         }
     }

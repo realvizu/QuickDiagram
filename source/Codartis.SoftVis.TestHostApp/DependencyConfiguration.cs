@@ -60,9 +60,6 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
-            //builder.RegisterType<DiagramLayoutAlgorithm>().As<IDiagramLayoutAlgorithm>()
-            //    .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
-
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
