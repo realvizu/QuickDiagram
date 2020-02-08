@@ -35,7 +35,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         [Fact]
         public void Calculate_Nodes_Works()
         {
-            var layoutGroup = LayoutGroup.CreateForRoot(
+            var layoutGroup = LayoutGroup.Create(
                 CreateNodes(
                     new NodeSpecification("A", new Size2D(1, 2)),
                     new NodeSpecification("B", new Size2D(3, 4)),
@@ -59,7 +59,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
 
             var connectors = CreateConnectors(nodes, new ConnectorSpecification("A", "B"));
 
-            var layoutGroup = LayoutGroup.CreateForRoot(nodes, connectors);
+            var layoutGroup = LayoutGroup.Create(nodes, connectors);
             var layoutAlgorithm = CreateLayoutAlgorithm();
             var layout = layoutAlgorithm.Calculate(layoutGroup);
 

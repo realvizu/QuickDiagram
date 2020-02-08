@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
             var connectorsInLayoutGroup = diagram.Connectors
                 .Where(i => diagram.GetNode(i.Source).ParentNodeId.Equals(containerNodeId) && diagram.GetNode(i.Target).ParentNodeId.Equals(containerNodeId));
 
-            return LayoutGroup.CreateForNode(containerNodeId, nodesInLayoutGroup, connectorsInLayoutGroup);
+            return LayoutGroup.Create(nodesInLayoutGroup, connectorsInLayoutGroup);
         }
     }
 }
