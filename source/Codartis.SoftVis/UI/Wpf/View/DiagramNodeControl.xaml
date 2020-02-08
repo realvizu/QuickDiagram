@@ -44,7 +44,9 @@
         <Border Grid.Row="1"
                 BorderThickness="1,0,1,1"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                Background="{Binding DiagramFill, ElementName=ThisControl}">
+                Background="{Binding DiagramFill, ElementName=ThisControl}"
+                Width="{Binding Path=ChildrenAreaSize.Width}"
+                Height="{Binding Path=ChildrenAreaSize.Height}" >
 
             <Border.Style>
                 <Style TargetType="Border">
@@ -55,10 +57,6 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-
-            <Rectangle Width="{Binding Path=ChildrenAreaSize.Width}"
-                       Height="{Binding Path=ChildrenAreaSize.Height}" />
-
         </Border>
     </Grid>
 </UserControl>

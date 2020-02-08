@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class AutoLayoutDiagramPlugin : DiagramPluginBase
     {
-        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(200);
+        private static readonly TimeSpan DiagramEventDebounceTimeSpan = TimeSpan.FromMilliseconds(100);
 
         private static readonly DiagramNodeMember[] DiagramMembersAffectedByLayout =
         {
@@ -99,6 +99,10 @@ namespace Codartis.SoftVis.Services.Plugins
             LayoutParentGroup(oldDiagram, newDiagram, diagramShapeEvent);
 
             LayoutCrossGroupConnectors(DiagramService.LatestDiagram);
+
+            // This is a bit vague to lay out all cross-group connectors after any group layout.
+            // A better approach could be to create a separate subscription
+            // that reacts to cross-group connectors' source/target node absolute position change (optionally with debounce).
         }
 
         private void LayoutParentGroup(
