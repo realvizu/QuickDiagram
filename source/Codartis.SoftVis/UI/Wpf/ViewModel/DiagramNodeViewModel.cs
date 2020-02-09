@@ -16,7 +16,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     public class DiagramNodeViewModel : DiagramShapeViewModelBase, IDiagramNodeUi
     {
         private string _name;
-        private Size _headerSize;
+        private Size _size;
         private Size _childrenAreaSize;
         private bool _hasChildren;
         private Point _childrenAreaTopLeft;
@@ -27,7 +27,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
         [NotNull] [ItemNotNull] public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
-        public event Action<IDiagramNode, Size2D> HeaderSizeChanged;
+        public event Action<IDiagramNode, Size2D> SizeChanged;
         public event Action<IDiagramNode, Point2D> ChildrenAreaTopLeftChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
@@ -77,18 +77,18 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public Size HeaderSize
+        public Size Size
         {
-            get { return _headerSize; }
+            get { return _size; }
             set
             {
-                if (!_headerSize.IsEqualWithTolerance(value))
+                if (!_size.IsEqualWithTolerance(value))
                 {
-                    _headerSize = value;
+                    _size = value;
                     OnPropertyChanged();
 
                     // This property binds to its control and propagates size changes to parent viewmodels.
-                    HeaderSizeChanged?.Invoke(DiagramNode, _headerSize.FromWpf());
+                    SizeChanged?.Invoke(DiagramNode, _size.FromWpf());
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
         {
             // For image export we must set those properties that are calculated on the normal UI.
-            clone._headerSize = _headerSize;
+            clone._childrenAreaSize = _childrenAreaSize;
         }
 
         public override IEnumerable<IMiniButton> CreateMiniButtons()

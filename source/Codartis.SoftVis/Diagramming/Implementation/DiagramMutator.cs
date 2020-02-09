@@ -19,7 +19,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
     {
         private static readonly DiagramNodeMember[] ParentNodeChildrenAreaSizeAffectingMembers =
         {
-            DiagramNodeMember.HeaderSize,
+            DiagramNodeMember.Size,
             DiagramNodeMember.ChildrenAreaSize,
             DiagramNodeMember.RelativePosition
         };
@@ -31,8 +31,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private static readonly DiagramNodeMember[] ChildrenAbsolutePositionAffectingMembers =
         {
-            DiagramNodeMember.HeaderSize,
-            DiagramNodeMember.AbsolutePosition
+            DiagramNodeMember.AbsolutePosition,
+            DiagramNodeMember.ChildrenAreaTopLeft
         };
 
         [NotNull] private readonly IDiagram _initialDiagram;
@@ -86,12 +86,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             _shapeEvents.Add(new DiagramNodeAddedEvent(newNode));
         }
 
-        public void UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize)
+        public void UpdateSize(ModelNodeId nodeId, Size2D newSize)
         {
             UpdateNodeCore(
                 nodeId,
-                i => i.WithHeaderSize(newSize),
-                DiagramNodeMember.HeaderSize);
+                i => i.WithSize(newSize),
+                DiagramNodeMember.Size);
         }
 
         public void UpdateNodeRelativeTopLeft(ModelNodeId nodeId, Point2D newRelativeTopLeft)
@@ -289,8 +289,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 some =>
                 {
                     var parentNode = _nodes[some];
-                    var parentHeaderVector = new Point2D(0, parentNode.HeaderSize.Height);
-                    return parentNode.AbsoluteTopLeft + parentHeaderVector + ChildrenAreaPaddingVector + diagramNode.RelativeTopLeft;
+                    return parentNode.AbsoluteTopLeft + parentNode.ChildrenAreaTopLeft + ChildrenAreaPaddingVector + diagramNode.RelativeTopLeft;
                 },
                 () => diagramNode.RelativeTopLeft);
         }

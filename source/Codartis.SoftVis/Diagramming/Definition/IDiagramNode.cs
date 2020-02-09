@@ -34,15 +34,14 @@ namespace Codartis.SoftVis.Diagramming.Definition
         /// </summary>
         Point2D RelativeTopLeft { get; }
 
-        Size2D HeaderSize { get; }
-        Size2D ChildrenAreaSize { get; }
+        Size2D Size { get; }
 
         /// <summary>
         /// The children area's top left corner's position relative to the node's top left corner.
         /// </summary>
         Point2D ChildrenAreaTopLeft { get; }
 
-        Size2D Size { get; }
+        Size2D ChildrenAreaSize { get; }
 
         [NotNull]
         IDiagramNode WithModelNode([NotNull] IModelNode newModelNode);
@@ -57,12 +56,12 @@ namespace Codartis.SoftVis.Diagramming.Definition
         IDiagramNode WithRelativeTopLeft(Point2D newRelativeTopLeft);
 
         [NotNull]
-        IDiagramNode WithHeaderSize(Size2D newSize);
-
-        [NotNull]
-        IDiagramNode WithChildrenAreaSize(Size2D newSize);
+        IDiagramNode WithSize(Size2D newSize);
 
         [NotNull]
         IDiagramNode WithChildrenAreaTopLeft(Point2D newTopLeft);
+
+        [NotNull]
+        IDiagramNode WithChildrenAreaSize(Size2D newSize);
     }
 }

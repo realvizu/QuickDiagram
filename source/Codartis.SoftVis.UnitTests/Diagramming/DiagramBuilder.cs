@@ -47,10 +47,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         }
 
         [NotNull]
-        public DiagramBuilder AddNodes([NotNull] params (string name, Size2D headerSize)[] nodeSpecifications)
+        public DiagramBuilder AddNodes([NotNull] params (string name, Size2D size)[] nodeSpecifications)
         {
             foreach (var nodeSpecification in nodeSpecifications)
-                AddNode(nodeSpecification.name, nodeSpecification.headerSize);
+                AddNode(nodeSpecification.name, nodeSpecification.size);
 
             return this;
         }
@@ -58,10 +58,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         [NotNull]
         public DiagramBuilder AddChildNodes(
             [NotNull] string parentNodeName,
-            [NotNull] params (string name, Size2D headerSize)[] childNodeSpecifications)
+            [NotNull] params (string name, Size2D size)[] childNodeSpecifications)
         {
             foreach (var childNodeSpecification in childNodeSpecifications)
-                AddNode(childNodeSpecification.name, childNodeSpecification.headerSize, parentNodeName);
+                AddNode(childNodeSpecification.name, childNodeSpecification.size, parentNodeName);
 
             return this;
         }
@@ -167,7 +167,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             return GetDiagram().Connectors.Single(i => i.Source == sourceNode.Id && i.Target == targetNode.Id);
         }
 
-        private void AddNode([NotNull] string nodeName, Size2D nodeHeaderSize, [CanBeNull] string parentNodeName = null)
+        private void AddNode([NotNull] string nodeName, Size2D nodeSize, [CanBeNull] string parentNodeName = null)
         {
             var parentNodeId = parentNodeName == null
                 ? (ModelNodeId?)null
@@ -175,7 +175,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
 
             var modelNode = GetModelNode(nodeName);
             _diagramMutator.AddNode(modelNode.Id, parentNodeId);
-            _diagramMutator.UpdateNodeHeaderSize(modelNode.Id, nodeHeaderSize);
+            _diagramMutator.UpdateSize(modelNode.Id, nodeSize);
         }
 
         [NotNull]

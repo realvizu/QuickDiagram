@@ -75,7 +75,7 @@ namespace Codartis.SoftVis.Services
             _diagramServices.Remove(diagramId);
 
             var diagramUi = _diagramUiServices[diagramId];
-            diagramUi.DiagramNodeHeaderSizeChanged -= PropagateDiagramNodeHeaderSizeChanged(diagramId);
+            diagramUi.DiagramNodeSizeChanged -= PropagateDiagramNodeSizeChanged(diagramId);
             diagramUi.DiagramNodeChildrenAreaTopLeftChanged -= PropagateDiagramNodeChildrenAreaTopLeftChanged(diagramId);
             diagramUi.RemoveDiagramNodeRequested -= PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUiServices.Remove(diagramId);
@@ -92,7 +92,7 @@ namespace Codartis.SoftVis.Services
             var diagramUi = _diagramUiFactory.Invoke(diagramService, diagramViewportUi);
 
             var diagramUiService = _diagramUiServiceFactory(diagramUi);
-            diagramUiService.DiagramNodeHeaderSizeChanged += PropagateDiagramNodeHeaderSizeChanged(diagramId);
+            diagramUiService.DiagramNodeSizeChanged += PropagateDiagramNodeSizeChanged(diagramId);
             diagramUiService.DiagramNodeChildrenAreaTopLeftChanged += PropagateDiagramNodeChildrenAreaTopLeftChanged(diagramId);
             diagramUiService.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             return diagramUiService;
@@ -105,14 +105,14 @@ namespace Codartis.SoftVis.Services
         }
 
         [NotNull]
-        private Action<IDiagramNode, Size2D> PropagateDiagramNodeHeaderSizeChanged(DiagramId diagramId)
+        private Action<IDiagramNode, Size2D> PropagateDiagramNodeSizeChanged(DiagramId diagramId)
         {
-            return (diagramNode, size) => OnDiagramNodeHeaderSizeChanged(diagramId, diagramNode, size);
+            return (diagramNode, size) => OnDiagramNodeSizeChanged(diagramId, diagramNode, size);
         }
 
-        private void OnDiagramNodeHeaderSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
+        private void OnDiagramNodeSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
         {
-            GetDiagramService(diagramId).UpdateNodeHeaderSize(diagramNode.Id, newSize);
+            GetDiagramService(diagramId).UpdateSize(diagramNode.Id, newSize);
         }
 
         [NotNull]

@@ -62,7 +62,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
-        public void UpdateNodeHeaderSize_Works()
+        public void UpdateNodeSize_Works()
         {
             var model = _modelBuilder.AddNodes("A").Model;
             var node = _modelBuilder.GetNode("A");
@@ -70,12 +70,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagram = new DiagramBuilder(model).AddAllModelNodes().GetDiagram();
 
             var diagramMutator = CreateDiagramMutator(diagram);
-            diagramMutator.UpdateNodeHeaderSize(node.Id, new Size2D(1, 1));
+            diagramMutator.UpdateSize(node.Id, new Size2D(1, 1));
             var diagramEvent = diagramMutator.GetDiagramEvent();
 
-            diagramEvent.NewDiagram.GetNode(node.Id).HeaderSize.Should().Be(new Size2D(1, 1));
+            diagramEvent.NewDiagram.GetNode(node.Id).Size.Should().Be(new Size2D(1, 1));
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.HeaderSize.Should().Be(new Size2D(1, 1))
+                i => i.Should().BeOfType<DiagramNodeChangedEvent>().Which.NewNode.Size.Should().Be(new Size2D(1, 1))
             );
         }
 
@@ -96,7 +96,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 .GetDiagram();
 
             var diagramMutator = CreateDiagramMutator(diagram);
-            diagramMutator.UpdateNodeHeaderSize(childNode.Id, (2, 2));
+            diagramMutator.UpdateSize(childNode.Id, (2, 2));
             var diagramEvent = diagramMutator.GetDiagramEvent();
 
             diagramEvent.ShapeEvents.Should().SatisfyRespectively(
@@ -104,8 +104,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 {
                     var changedEvent = i.Should().BeOfType<DiagramNodeChangedEvent>().Subject;
                     changedEvent.NewNode.Id.Should().Be(childNode.Id);
-                    changedEvent.ChangedMember.Should().Be(DiagramNodeMember.HeaderSize);
-                    changedEvent.NewNode.HeaderSize.Should().Be(new Size2D(2, 2));
+                    changedEvent.ChangedMember.Should().Be(DiagramNodeMember.Size);
+                    changedEvent.NewNode.Size.Should().Be(new Size2D(2, 2));
                 },
                 i =>
                 {

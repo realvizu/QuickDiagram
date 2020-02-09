@@ -12,14 +12,14 @@
         /// </summary>
         RelativePosition,
 
-        HeaderSize,
-
-        ChildrenAreaSize,
+        Size,
 
         /// <summary>
         /// The children area's top left corner's position relative to the diagram node's top left corner.
         /// </summary>
         ChildrenAreaTopLeft,
+
+        ChildrenAreaSize,
 
         ModelNode
     }

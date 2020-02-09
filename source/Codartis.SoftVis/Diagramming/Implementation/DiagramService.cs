@@ -63,9 +63,9 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 AddNode(relatedNode.Id, nodeId);
         }
 
-        public void UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize)
+        public void UpdateSize(ModelNodeId nodeId, Size2D newSize)
         {
-            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateNodeHeaderSize(nodeId, newSize));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateSize(nodeId, newSize));
         }
 
         public void UpdateNodeRelativeTopLeft(ModelNodeId nodeId, Point2D newRelativeTopLeft)
