@@ -10,6 +10,11 @@ namespace Codartis.SoftVis.UI.Wpf
             return new Point(point2D.X, point2D.Y);
         }
 
+        public static Point2D FromWpf(this Point size)
+        {
+            return new Point2D(size.X, size.Y);
+        }
+
         public static Vector ToVector(this Point2D point2D)
         {
             return new Vector(point2D.X, point2D.Y);

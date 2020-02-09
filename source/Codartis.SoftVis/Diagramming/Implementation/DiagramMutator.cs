@@ -102,6 +102,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 DiagramNodeMember.RelativePosition);
         }
 
+        public void UpdateChildrenAreaTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
+        {
+            UpdateNodeCore(
+                nodeId,
+                i => i.WithChildrenAreaTopLeft(newTopLeft),
+                DiagramNodeMember.ChildrenAreaTopLeft);
+        }
+
         private void UpdateNodeCore(
             ModelNodeId nodeId,
             [NotNull] Func<IDiagramNode, IDiagramNode> nodeMutatorFunc,

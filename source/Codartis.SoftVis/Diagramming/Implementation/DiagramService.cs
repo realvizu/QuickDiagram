@@ -73,6 +73,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateNodeRelativeTopLeft(nodeId, newRelativeTopLeft));
         }
 
+        public void UpdateChildrenAreaTopLeft(ModelNodeId nodeId, Point2D newTopLeft)
+        {
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateChildrenAreaTopLeft(nodeId, newTopLeft));
+        }
+
         public void RemoveNode(ModelNodeId nodeId)
         {
             MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.RemoveNode(nodeId));

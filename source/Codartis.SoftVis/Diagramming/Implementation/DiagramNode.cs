@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public Point2D RelativeTopLeft { get; }
         public Size2D HeaderSize { get; }
         public Size2D ChildrenAreaSize { get; }
+        public Point2D ChildrenAreaTopLeft { get; }
         public Size2D Size { get; }
 
         public DiagramNode(
@@ -33,6 +34,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Point2D relativeTopLeft,
             Size2D headerSize,
             Size2D childrenAreaSize,
+            Point2D childrenAreaTopLeft,
             Maybe<ModelNodeId> parentNodeId)
         {
             ModelNode = modelNode;
@@ -41,6 +43,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             AddedAt = addedAt;
             HeaderSize = headerSize;
             ChildrenAreaSize = childrenAreaSize;
+            ChildrenAreaTopLeft = childrenAreaTopLeft;
             Size = CalculateSize();
             ParentNodeId = parentNodeId;
 
@@ -57,6 +60,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 Point2D.Undefined,
                 Size2D.Zero,
                 Size2D.Zero,
+                Point2D.Zero,
                 Maybe<ModelNodeId>.Nothing)
         {
         }
@@ -74,22 +78,33 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public override string ToString() => ModelNode.ToString();
 
         public IDiagramNode WithModelNode(IModelNode newModelNode)
-            => CreateInstance(newModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, HeaderSize, ChildrenAreaSize, ParentNodeId);
+            => CreateInstance(newModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, HeaderSize, ChildrenAreaSize, ChildrenAreaTopLeft, ParentNodeId);
 
         public IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId)
-            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, HeaderSize, ChildrenAreaSize, newParentNodeId.ToMaybe());
+            => CreateInstance(
+                ModelNode,
+                AddedAt,
+                AbsoluteTopLeft,
+                RelativeTopLeft,
+                HeaderSize,
+                ChildrenAreaSize,
+                ChildrenAreaTopLeft,
+                newParentNodeId.ToMaybe());
 
         public IDiagramNode WithAbsoluteTopLeft(Point2D newAbsoluteTopLeft)
-            => CreateInstance(ModelNode, AddedAt, newAbsoluteTopLeft, RelativeTopLeft, HeaderSize, ChildrenAreaSize, ParentNodeId);
+            => CreateInstance(ModelNode, AddedAt, newAbsoluteTopLeft, RelativeTopLeft, HeaderSize, ChildrenAreaSize, ChildrenAreaTopLeft, ParentNodeId);
 
         public IDiagramNode WithRelativeTopLeft(Point2D newRelativeTopLeft)
-            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, newRelativeTopLeft, HeaderSize, ChildrenAreaSize, ParentNodeId);
+            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, newRelativeTopLeft, HeaderSize, ChildrenAreaSize, ChildrenAreaTopLeft, ParentNodeId);
 
         public IDiagramNode WithHeaderSize(Size2D newSize)
-            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, newSize, ChildrenAreaSize, ParentNodeId);
+            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, newSize, ChildrenAreaSize, ChildrenAreaTopLeft, ParentNodeId);
 
         public IDiagramNode WithChildrenAreaSize(Size2D newSize)
-            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, HeaderSize, newSize, ParentNodeId);
+            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, HeaderSize, newSize, ChildrenAreaTopLeft, ParentNodeId);
+
+        public IDiagramNode WithChildrenAreaTopLeft(Point2D newTopLeft)
+            => CreateInstance(ModelNode, AddedAt, AbsoluteTopLeft, RelativeTopLeft, HeaderSize, ChildrenAreaSize, newTopLeft, ParentNodeId);
 
         private Size2D CalculateSize() => new Size2D(Math.Max(HeaderSize.Width, ChildrenAreaSize.Width), HeaderSize.Height + ChildrenAreaSize.Height);
 
@@ -105,7 +120,18 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Point2D relativeTopLeft,
             Size2D headerSize,
             Size2D childrenAreaSize,
+            Point2D childrenAreaTopLeft,
             Maybe<ModelNodeId> parentNodeId)
-            => new DiagramNode(modelNode, addedAt, absoluteTopLeft, relativeTopLeft, headerSize, childrenAreaSize, parentNodeId);
+        {
+            return new DiagramNode(
+                modelNode,
+                addedAt,
+                absoluteTopLeft,
+                relativeTopLeft,
+                headerSize,
+                childrenAreaSize,
+                childrenAreaTopLeft,
+                parentNodeId);
+        }
     }
 }

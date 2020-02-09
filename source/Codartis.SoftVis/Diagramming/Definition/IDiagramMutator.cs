@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.Diagramming.Definition
         void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
         void UpdateNodeHeaderSize(ModelNodeId nodeId, Size2D newSize);
         void UpdateNodeRelativeTopLeft(ModelNodeId nodeId, Point2D newRelativeTopLeft);
+        void UpdateChildrenAreaTopLeft(ModelNodeId nodeId, Point2D newTopLeft);
         void RemoveNode(ModelNodeId nodeId);
 
         void AddConnector(ModelRelationshipId relationshipId);

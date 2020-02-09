@@ -19,6 +19,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _headerSize;
         private Size _childrenAreaSize;
         private bool _hasChildren;
+        private Point _childrenAreaTopLeft;
 
         public IDiagramNodeHeaderUi Header { get; }
 
@@ -27,6 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         [NotNull] [ItemNotNull] public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event Action<IDiagramNode, Size2D> HeaderSizeChanged;
+        public event Action<IDiagramNode, Point2D> ChildrenAreaTopLeftChanged;
         public event RelatedNodeMiniButtonEventHandler ShowRelatedNodesRequested;
         public event RelatedNodeMiniButtonEventHandler RelatedNodeSelectorRequested;
         public event Action<IDiagramNode> RemoveRequested;
@@ -80,7 +82,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             get { return _headerSize; }
             set
             {
-                if (_headerSize != value)
+                if (!_headerSize.IsEqualWithTolerance(value))
                 {
                     _headerSize = value;
                     OnPropertyChanged();
@@ -96,7 +98,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             get { return _childrenAreaSize; }
             set
             {
-                if (_childrenAreaSize != value)
+                if (!_childrenAreaSize.IsEqualWithTolerance(value))
                 {
                     _childrenAreaSize = value;
                     OnPropertyChanged();
@@ -113,6 +115,24 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 {
                     _hasChildren = value;
                     OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The children area's top left corner's position relative to the diagram node.
+        /// </summary>
+        public Point ChildrenAreaTopLeft
+        {
+            get { return _childrenAreaTopLeft; }
+            set
+            {
+                if (!_childrenAreaTopLeft.IsEqualWithTolerance(value))
+                {
+                    _childrenAreaTopLeft = value;
+                    OnPropertyChanged();
+
+                    ChildrenAreaTopLeftChanged?.Invoke(DiagramNode, _childrenAreaTopLeft.FromWpf());
                 }
             }
         }

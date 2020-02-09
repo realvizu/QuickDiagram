@@ -29,6 +29,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public event ShowModelItemsEventHandler ShowModelItemsRequested;
         public event Action<IDiagramNode, Size2D> DiagramNodeHeaderSizeChanged;
+        public event Action<IDiagramNode, Point2D> DiagramNodeChildrenAreaTopLeftChanged;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode> RemoveDiagramNodeRequested;
 
@@ -127,6 +128,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.RemoveDiagramNodeRequested += OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked += OnDiagramNodeInvoked;
             DiagramViewportViewModel.DiagramNodeHeaderSizeChanged += OnDiagramNodeHeaderSizeChanged;
+            DiagramViewportViewModel.DiagramNodeChildrenAreaTopLeftChanged += OnDiagramNodeChildrenAreaTopLeftChanged;
         }
 
         private void UnsubscribeFromViewportEvents()
@@ -137,12 +139,19 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             DiagramViewportViewModel.RemoveDiagramNodeRequested -= OnRemoveDiagramNodeRequested;
             DiagramViewportViewModel.DiagramNodeInvoked -= OnDiagramNodeInvoked;
             DiagramViewportViewModel.DiagramNodeHeaderSizeChanged -= OnDiagramNodeHeaderSizeChanged;
+            DiagramViewportViewModel.DiagramNodeChildrenAreaTopLeftChanged -= OnDiagramNodeChildrenAreaTopLeftChanged;
         }
 
         private void OnDiagramNodeHeaderSizeChanged(IDiagramNode diagramNode, Size2D newSize)
         {
             if (newSize.IsDefined)
                 DiagramNodeHeaderSizeChanged?.Invoke(diagramNode, newSize);
+        }
+
+        private void OnDiagramNodeChildrenAreaTopLeftChanged(IDiagramNode diagramNode, Point2D newTopLeft)
+        {
+            if (newTopLeft.IsDefined)
+                DiagramNodeChildrenAreaTopLeftChanged?.Invoke(diagramNode, newTopLeft);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramNodeViewModel diagramNodeViewModel)

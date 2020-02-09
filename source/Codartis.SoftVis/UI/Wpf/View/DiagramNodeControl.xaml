@@ -57,6 +57,11 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
+
+            <i:Interaction.Behaviors>
+                <behaviors:RelativePositionProviderBehavior RelativePosition="{Binding ElementName=ThisControl, Path=DataContext.ChildrenAreaTopLeft}"
+                                                            ReferenceUiElement="{Binding ElementName=ThisControl}"/>
+            </i:Interaction.Behaviors>
         </Border>
     </Grid>
 </UserControl>

@@ -11,8 +11,7 @@ namespace Codartis.Util.UI.Wpf
 
         public static bool IsUndefined(this Point point)
         {
-            return double.IsNaN(point.X) || double.IsNaN(point.Y)
-                || double.IsInfinity(point.X) || double.IsInfinity(point.Y);
+            return double.IsNaN(point.X) || double.IsNaN(point.Y) || double.IsInfinity(point.X) || double.IsInfinity(point.Y);
         }
 
         public static PathFigure ToPathFigure(this IEnumerable<Point> points, bool closed)
@@ -42,10 +41,15 @@ namespace Codartis.Util.UI.Wpf
             return new Rect(new Point(left, top), new Point(right, bottom));
         }
 
-        public static Point[] MakeRelativeTo(this IEnumerable<Point> points, Point refrencePoint)
+        public static Point[] MakeRelativeTo(this IEnumerable<Point> points, Point referencePoint)
         {
-            var translate = -(Vector)refrencePoint;
+            var translate = -(Vector)referencePoint;
             return points.Select(i => i + translate).ToArray();
+        }
+
+        public static bool IsEqualWithTolerance(this Point point, Point otherPoint)
+        {
+            return point.X.IsEqualWithTolerance(otherPoint.X) && point.Y.IsEqualWithTolerance(otherPoint.Y);
         }
     }
 }

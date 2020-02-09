@@ -77,6 +77,12 @@ namespace Codartis.SoftVis.UI.Wpf
             remove => DiagramViewModel.DiagramNodeHeaderSizeChanged -= value;
         }
 
+        public event Action<IDiagramNode, Point2D> DiagramNodeChildrenAreaTopLeftChanged
+        {
+            add => DiagramViewModel.DiagramNodeChildrenAreaTopLeftChanged += value;
+            remove => DiagramViewModel.DiagramNodeChildrenAreaTopLeftChanged -= value;
+        }
+
         public event Action<IDiagramNode> DiagramNodeInvoked
         {
             add => DiagramViewModel.DiagramNodeInvoked += value;

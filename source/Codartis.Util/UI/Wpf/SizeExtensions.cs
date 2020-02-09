@@ -22,5 +22,11 @@ namespace Codartis.Util.UI.Wpf
         }
 
         public static bool IsDefined(this Size size) => !size.IsUndefined();
+
+        public static bool IsEqualWithTolerance(this Size size, Size otherSize)
+        {
+            return size.Width.IsEqualWithTolerance(otherSize.Width) && size.Height.IsEqualWithTolerance(otherSize.Height);
+        }
+
     }
 }

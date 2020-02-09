@@ -40,6 +40,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public event Action<DiagramNodeViewModel> RemoveDiagramNodeRequested;
         public event Action<IDiagramNode> DiagramNodeInvoked;
         public event Action<IDiagramNode, Size2D> DiagramNodeHeaderSizeChanged;
+        public event Action<IDiagramNode, Point2D> DiagramNodeChildrenAreaTopLeftChanged;
 
         public DelegateCommand<IDiagramNode> DiagramNodeDoubleClickedCommand { get; }
 
@@ -180,15 +181,16 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void AddNode(IDiagramNode diagramNode)
         {
-            var diagramNodeUi = (DiagramNodeViewModel)DiagramShapeUiFactory.CreateDiagramNodeUi(diagramNode, MiniButtonManager);
+            var diagramNodeViewModel = (DiagramNodeViewModel)DiagramShapeUiFactory.CreateDiagramNodeUi(diagramNode, MiniButtonManager);
 
-            diagramNodeUi.HeaderSizeChanged += OnDiagramNodeHeaderSizeChanged;
-            diagramNodeUi.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
-            diagramNodeUi.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
-            diagramNodeUi.RemoveRequested += OnRemoveDiagramNodeRequested;
+            diagramNodeViewModel.HeaderSizeChanged += OnDiagramNodeHeaderSizeChanged;
+            diagramNodeViewModel.ChildrenAreaTopLeftChanged += OnDiagramNodeChildrenAreaTopLeftChanged;
+            diagramNodeViewModel.ShowRelatedNodesRequested += OnShowRelatedNodesRequested;
+            diagramNodeViewModel.RelatedNodeSelectorRequested += OnEntitySelectorRequested;
+            diagramNodeViewModel.RemoveRequested += OnRemoveDiagramNodeRequested;
 
-            _diagramNodeToViewModelMap.Set(diagramNode.Id, diagramNodeUi);
-            DiagramNodeViewModels.Add(diagramNodeUi);
+            _diagramNodeToViewModelMap.Set(diagramNode.Id, diagramNodeViewModel);
+            DiagramNodeViewModels.Add(diagramNodeViewModel);
         }
 
         private void AddConnector(IDiagramConnector diagramConnector)
@@ -211,6 +213,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 return;
 
             diagramNodeViewModel.HeaderSizeChanged -= OnDiagramNodeHeaderSizeChanged;
+            diagramNodeViewModel.ChildrenAreaTopLeftChanged -= OnDiagramNodeChildrenAreaTopLeftChanged;
             diagramNodeViewModel.ShowRelatedNodesRequested -= OnShowRelatedNodesRequested;
             diagramNodeViewModel.RelatedNodeSelectorRequested -= OnEntitySelectorRequested;
             diagramNodeViewModel.RemoveRequested -= OnRemoveDiagramNodeRequested;
@@ -272,5 +275,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnDiagramNodeHeaderSizeChanged(IDiagramNode diagramNode, Size2D newSize)
             => DiagramNodeHeaderSizeChanged?.Invoke(diagramNode, newSize);
+
+        private void OnDiagramNodeChildrenAreaTopLeftChanged(IDiagramNode diagramNode, Point2D newTopLeft)
+            => DiagramNodeChildrenAreaTopLeftChanged?.Invoke(diagramNode, newTopLeft);
+
     }
 }

@@ -76,6 +76,7 @@ namespace Codartis.SoftVis.Services
 
             var diagramUi = _diagramUiServices[diagramId];
             diagramUi.DiagramNodeHeaderSizeChanged -= PropagateDiagramNodeHeaderSizeChanged(diagramId);
+            diagramUi.DiagramNodeChildrenAreaTopLeftChanged -= PropagateDiagramNodeChildrenAreaTopLeftChanged(diagramId);
             diagramUi.RemoveDiagramNodeRequested -= PropagateRemoveDiagramNodeRequested(diagramId);
             _diagramUiServices.Remove(diagramId);
 
@@ -92,6 +93,7 @@ namespace Codartis.SoftVis.Services
 
             var diagramUiService = _diagramUiServiceFactory(diagramUi);
             diagramUiService.DiagramNodeHeaderSizeChanged += PropagateDiagramNodeHeaderSizeChanged(diagramId);
+            diagramUiService.DiagramNodeChildrenAreaTopLeftChanged += PropagateDiagramNodeChildrenAreaTopLeftChanged(diagramId);
             diagramUiService.RemoveDiagramNodeRequested += PropagateRemoveDiagramNodeRequested(diagramId);
             return diagramUiService;
         }
@@ -111,6 +113,17 @@ namespace Codartis.SoftVis.Services
         private void OnDiagramNodeHeaderSizeChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Size2D newSize)
         {
             GetDiagramService(diagramId).UpdateNodeHeaderSize(diagramNode.Id, newSize);
+        }
+
+        [NotNull]
+        private Action<IDiagramNode, Point2D> PropagateDiagramNodeChildrenAreaTopLeftChanged(DiagramId diagramId)
+        {
+            return (diagramNode, topLeft) => OnDiagramNodeChildrenAreaTopLeftChanged(diagramId, diagramNode, topLeft);
+        }
+
+        private void OnDiagramNodeChildrenAreaTopLeftChanged(DiagramId diagramId, [NotNull] IDiagramNode diagramNode, Point2D newTopLeft)
+        {
+            GetDiagramService(diagramId).UpdateChildrenAreaTopLeft(diagramNode.Id, newTopLeft);
         }
 
         private void OnRemoveDiagramNodeRequested(DiagramId diagramId, [NotNull] IDiagramNode diagramNode)

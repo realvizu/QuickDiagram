@@ -19,9 +19,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 modelNode,
                 DateTime.Now,
                 new Point2D(1, 2),
-                Point2D.Undefined, 
+                Point2D.Undefined,
                 new Size2D(3, 4),
                 new Size2D(5, 6),
+                new Point2D(3, 4),
                 Maybe<ModelNodeId>.Nothing);
 
             diagramNode.AbsoluteRect.Should().Be(new Rect2D(1, 2, 1 + 5, 2 + 10));
