@@ -140,7 +140,8 @@
                                    ViewportSize="{TemplateBinding ViewportHeight}"
                                    Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                                    Style="{StaticResource VerticalOnlyBubbleScrollBar}" />
-                        <ScrollContentPresenter />
+                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                CanContentScroll="True" />
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>

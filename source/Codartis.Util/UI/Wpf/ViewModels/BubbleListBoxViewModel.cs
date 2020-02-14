@@ -57,6 +57,7 @@ namespace Codartis.Util.UI.Wpf.ViewModels
         }
 
         protected virtual void OnItemSelected(TItem item)
-        { }
+        {
+        }
     }
 }

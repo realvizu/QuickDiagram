@@ -5,7 +5,7 @@
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:testHostAppModeling="clr-namespace:Codartis.SoftVis.TestHostApp.Modeling"
                     xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
-                    xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
+                    xmlns:implementation="clr-namespace:Codartis.SoftVis.Modeling.Implementation;assembly=Codartis.SoftVis"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
@@ -64,7 +64,15 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <Style TargetType="{x:Type controls:BubbleListBoxItem}">
-        <Setter Property="ToolTip" Value="{Binding Payload.FullName}" />
-    </Style>
+    <Style TargetType="{x:Type ListBoxItem}" />
+
+    <DataTemplate DataType="{x:Type implementation:ModelNode}">
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+        <TextBlock Text="{Binding Name}"
+                   ToolTip="{Binding Payload.FullName}"
+                   TextTrimming="CharacterEllipsis"
+                   MinWidth="150"
+                   MaxWidth="200" />
+    </DataTemplate>
+
 </ResourceDictionary>
