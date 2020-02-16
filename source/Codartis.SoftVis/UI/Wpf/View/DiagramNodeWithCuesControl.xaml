@@ -18,7 +18,7 @@
 
             <ItemsPanelTemplate x:Key="RelatedNodeCueItemsPanel">
                 <!-- BUGBUG: should not reference DiagramControl -->
-                <controls:DecoratorPanel PlacementDictionary="{Binding RelatedNodeCuePlacementMap, 
+                <controls:RelativePlacementPanel PlacementDictionary="{Binding RelatedNodeCuePlacementMap, 
                     RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}" />
             </ItemsPanelTemplate>
 
@@ -35,7 +35,7 @@
                    d:DataContext="{d:DesignInstance {x:Type viewModel:RelatedNodeCueViewModel}}">
                 <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource CueSize}}" />
                 <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource CueSize}}" />
-                <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}" />
+                <Setter Property="controls:RelativePlacementPanel.PlacementKey" Value="{Binding PlacementKey}" />
                 <Setter Property="ContentTemplate" Value="{StaticResource RelatedNodeCue}" />
             </Style>
 

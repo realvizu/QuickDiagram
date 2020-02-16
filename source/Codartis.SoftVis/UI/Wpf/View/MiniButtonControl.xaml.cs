@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(MiniButtonControl));
 
         public static readonly DependencyProperty PlacementProperty =
-            DecoratorPanel.PlacementProperty.AddOwner(typeof(MiniButtonControl));
+            RelativePlacementPanel.PlacementProperty.AddOwner(typeof(MiniButtonControl));
 
         public static readonly DependencyProperty MouseClickCommandProperty =
             DependencyProperty.Register("MouseClickCommand", typeof(DelegateCommand), typeof(MiniButtonControl));
@@ -68,11 +68,11 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public HandleOrientation GetHandleOrientation()
         {
-            var rectRelativePlacement = DecoratorPanel.GetPlacement(this);
+            var rectRelativePlacement = RelativePlacementPanel.GetPlacement(this);
             if (rectRelativePlacement == null)
                 return HandleOrientation.None;
 
-            return rectRelativePlacement.Vertical == VerticalAlignment.Bottom
+            return rectRelativePlacement.Value.Vertical == VerticalAlignment.Bottom
                 ? HandleOrientation.Top
                 : HandleOrientation.Bottom;
         }

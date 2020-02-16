@@ -6,7 +6,7 @@ namespace Codartis.Util.UI.Wpf
     /// <summary>
     /// Defines a position relative to a rectangle.
     /// </summary>
-    public class RectRelativePlacement
+    public struct RectRelativePlacement
     {
         public HorizontalAlignment Horizontal { get; set; }
         public VerticalAlignment Vertical { get; set; }

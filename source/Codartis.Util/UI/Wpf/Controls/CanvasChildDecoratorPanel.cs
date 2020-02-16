@@ -11,9 +11,9 @@ namespace Codartis.Util.UI.Wpf.Controls
     /// and also to the canvas' transform so it can arrange its children accordingly.
     /// The decorated element can be changed dynamically.
     /// The children's arrangement relative to the decorated element are specified with placement specifications.
-    /// <see cref="DecoratorPanel"/>
+    /// <see cref="RelativePlacementPanel"/>
     /// </summary>
-    public class CanvasChildDecoratorPanel : DecoratorPanel
+    public class CanvasChildDecoratorPanel : RelativePlacementPanel
     {
         public static readonly DependencyProperty DecoratedElementProperty =
             DependencyProperty.Register("DecoratedElement", typeof(UIElement), typeof(CanvasChildDecoratorPanel),

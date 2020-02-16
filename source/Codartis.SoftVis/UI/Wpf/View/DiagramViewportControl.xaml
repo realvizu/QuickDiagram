@@ -89,7 +89,7 @@
                    d:DataContext="{d:DesignInstance {x:Type viewModel:MiniButtonViewModelBase}}">
                 <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource MiniButtonSize}}" />
                 <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource MiniButtonSize}}" />
-                <Setter Property="controls:DecoratorPanel.PlacementKey" Value="{Binding PlacementKey}" />
+                <Setter Property="controls:RelativePlacementPanel.PlacementKey" Value="{Binding PlacementKey}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
