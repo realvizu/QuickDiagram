@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,6 +21,16 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty FocusRequestedCommandProperty =
             DependencyProperty.Register("FocusRequestedCommand", typeof(DelegateCommand<IDiagramShapeUi>), typeof(DiagramNodeWithCuesControl));
+
+        public static readonly DependencyProperty RelatedNodeCuePlacementMapProperty =
+            DependencyProperty.RegisterAttached(
+                "RelatedNodeCuePlacementMap",
+                typeof(IDictionary),
+                typeof(DiagramNodeWithCuesControl),
+                new FrameworkPropertyMetadata(defaultValue: null, FrameworkPropertyMetadataOptions.Inherits));
+
+        public static void SetRelatedNodeCuePlacementMap(UIElement element, IDictionary value) => element.SetValue(RelatedNodeCuePlacementMapProperty, value);
+        public static IDictionary GetRelatedNodeCuePlacementMap(UIElement element) => (IDictionary)element.GetValue(RelatedNodeCuePlacementMapProperty);
 
         public DiagramNodeWithCuesControl()
         {
@@ -43,6 +54,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (DelegateCommand<IDiagramShapeUi>)GetValue(FocusRequestedCommandProperty); }
             set { SetValue(FocusRequestedCommandProperty, value); }
+        }
+
+        public IDictionary RelatedNodeCuePlacementMap
+        {
+            get { return (IDictionary)GetValue(RelatedNodeCuePlacementMapProperty); }
+            set { SetValue(RelatedNodeCuePlacementMapProperty, value); }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

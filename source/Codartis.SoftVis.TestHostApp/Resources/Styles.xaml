@@ -23,7 +23,7 @@
         <Setter Property="DiagramFill" Value="Bisque" />
         <Setter Property="DiagramStroke" Value="Black" />
         <Setter Property="PanAndZoomControlHeight" Value="120" />
-        <Setter Property="RelatedNodeCuePlacementMap" Value="{StaticResource RelatedNodeCuePlacementMap}" />
+        <Setter Property="view:DiagramNodeWithCuesControl.RelatedNodeCuePlacementMap" Value="{StaticResource RelatedNodeCuePlacementMap}" />
         <Setter Property="MiniButtonPlacementMap" Value="{StaticResource MiniButtonPlacementMap}" />
     </Style>
 

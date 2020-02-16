@@ -17,9 +17,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <ItemsPanelTemplate x:Key="RelatedNodeCueItemsPanel">
-                <!-- BUGBUG: should not reference DiagramControl -->
-                <controls:RelativePlacementPanel PlacementDictionary="{Binding RelatedNodeCuePlacementMap, 
-                    RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}" />
+                <controls:RelativePlacementPanel PlacementDictionary="{Binding ElementName=ThisControl, Path=RelatedNodeCuePlacementMap}" />
             </ItemsPanelTemplate>
 
             <DataTemplate x:Key="RelatedNodeCue"
