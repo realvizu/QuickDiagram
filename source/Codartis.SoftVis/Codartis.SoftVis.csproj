@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <None Remove="UI\Wpf\View\DiagramNodeWithCuesControl.xaml" />
+    <None Remove="UI\Wpf\View\MiniButtonPanel.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="UI\Wpf\View\MiniButtonPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Wpf\View\DiagramNodeWithCuesControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

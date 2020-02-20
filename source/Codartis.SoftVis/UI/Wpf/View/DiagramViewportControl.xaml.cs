@@ -9,6 +9,7 @@ using Codartis.Util;
 using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf;
 using Codartis.Util.UI.Wpf.Commands;
+using Codartis.Util.UI.Wpf.Controls;
 using Codartis.Util.UI.Wpf.Transforms;
 
 namespace Codartis.SoftVis.UI.Wpf.View
@@ -31,23 +32,32 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DiagramVisual.DiagramStrokeProperty.AddOwner(typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
-            DependencyProperty.RegisterAttached("PanAndZoomControlHeight", typeof(double), typeof(DiagramViewportControl),
-                new FrameworkPropertyMetadata(PanAndZoomControlSizeDefault,
+            DependencyProperty.RegisterAttached(
+                "PanAndZoomControlHeight",
+                typeof(double),
+                typeof(DiagramViewportControl),
+                new FrameworkPropertyMetadata(
+                    PanAndZoomControlSizeDefault,
                     FrameworkPropertyMetadataOptions.Inherits));
 
         public static readonly DependencyProperty MinZoomProperty =
-            ZoomableVisual.MinZoomProperty.AddOwner(typeof(DiagramViewportControl),
+            ZoomableVisual.MinZoomProperty.AddOwner(
+                typeof(DiagramViewportControl),
                 new FrameworkPropertyMetadata(0d, OnZoomIntervalChanged));
 
         public static readonly DependencyProperty MaxZoomProperty =
-            ZoomableVisual.MaxZoomProperty.AddOwner(typeof(DiagramViewportControl),
+            ZoomableVisual.MaxZoomProperty.AddOwner(
+                typeof(DiagramViewportControl),
                 new FrameworkPropertyMetadata(0d, OnZoomIntervalChanged));
 
         private static void OnZoomIntervalChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
             => ((DiagramViewportControl)obj).OnZoomIntervalChanged();
 
         public static readonly DependencyProperty LargeZoomIncrementProperty =
-            DependencyProperty.Register("LargeZoomIncrement", typeof(double), typeof(DiagramViewportControl),
+            DependencyProperty.Register(
+                "LargeZoomIncrement",
+                typeof(double),
+                typeof(DiagramViewportControl),
                 new PropertyMetadata(LargeZoomIncrementDefault));
 
         public static readonly DependencyProperty ViewportZoomProperty =
@@ -58,14 +68,20 @@ namespace Codartis.SoftVis.UI.Wpf.View
         /// The type TransitionedTransform means that it also contains a hint for the animation's length.
         /// </summary>
         public static readonly DependencyProperty ViewportTransformProperty =
-            DependencyProperty.Register("ViewportTransform", typeof(TransitionedTransform), typeof(DiagramViewportControl),
+            DependencyProperty.Register(
+                "ViewportTransform",
+                typeof(TransitionedTransform),
+                typeof(DiagramViewportControl),
                 new PropertyMetadata(TransitionedTransform.Identity));
 
         /// <summary>
         /// The diagram node view model that currently owns the decorators (mini buttons).
         /// </summary>
         public static readonly DependencyProperty MiniButtonHostDiagramShapeProperty =
-            DependencyProperty.Register("MiniButtonHostDiagramShape", typeof(DiagramShapeViewModelBase), typeof(DiagramViewportControl),
+            DependencyProperty.Register(
+                "MiniButtonHostDiagramShape",
+                typeof(DiagramShapeViewModelBase),
+                typeof(DiagramViewportControl),
                 new PropertyMetadata(OnDecoratedDiagramShapeChanged));
 
         private static void OnDecoratedDiagramShapeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -100,7 +116,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("KeyboardZoomCommand", typeof(ZoomDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportResizeCommandProperty =
-            DependencyProperty.Register("ViewportResizeCommand", typeof(ViewportCalculatorViewModel.ResizeDelegateCommand), typeof(DiagramViewportControl),
+            DependencyProperty.Register(
+                "ViewportResizeCommand",
+                typeof(ViewportCalculatorViewModel.ResizeDelegateCommand),
+                typeof(DiagramViewportControl),
                 new FrameworkPropertyMetadata(OnViewportResizeCommandChanged));
 
         private static void OnViewportResizeCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -118,7 +137,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             DependencyProperty.Register("ViewportZoomCommand", typeof(ViewportCalculatorViewModel.ZoomDelegateCommand), typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty ViewportZoomToContentCommandProperty =
-            DependencyProperty.Register("ViewportZoomToContentCommand", typeof(ViewportCalculatorViewModel.ZoomToContentDelegateCommand), typeof(DiagramViewportControl));
+            DependencyProperty.Register(
+                "ViewportZoomToContentCommand",
+                typeof(ViewportCalculatorViewModel.ZoomToContentDelegateCommand),
+                typeof(DiagramViewportControl));
 
         public static readonly DependencyProperty UnfocusAllCommandProperty =
             DependencyProperty.Register("UnfocusAllCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
@@ -152,26 +174,19 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(DiagramStrokeProperty, value); }
         }
 
-        private void OnKeyboardPan(Vector panVector)
-            => PanViewport(panVector, TransitionSpeed.Fast);
+        private void OnKeyboardPan(Vector panVector) => PanViewport(panVector, TransitionSpeed.Fast);
 
-        private void OnKeyboardZoom(ZoomDirection direction, double amount, Point center)
-            => ZoomTo(direction, amount, center, TransitionSpeed.Fast);
+        private void OnKeyboardZoom(ZoomDirection direction, double amount, Point center) => ZoomTo(direction, amount, center, TransitionSpeed.Fast);
 
-        private void OnMousePan(Vector panVector)
-            => PanViewport(panVector, TransitionSpeed.Instant);
+        private void OnMousePan(Vector panVector) => PanViewport(panVector, TransitionSpeed.Instant);
 
-        private void OnMouseZoom(ZoomDirection direction, double amount, Point center)
-            => ZoomTo(direction, amount, center, TransitionSpeed.Fast);
+        private void OnMouseZoom(ZoomDirection direction, double amount, Point center) => ZoomTo(direction, amount, center, TransitionSpeed.Fast);
 
-        private void OnWidgetPan(Vector panVector)
-            => PanViewport(panVector, TransitionSpeed.Fast);
+        private void OnWidgetPan(Vector panVector) => PanViewport(panVector, TransitionSpeed.Fast);
 
-        private void OnWidgetZoom(double newZoom)
-            => ZoomTo(newZoom, TransitionSpeed.Fast);
+        private void OnWidgetZoom(double newZoom) => ZoomTo(newZoom, TransitionSpeed.Fast);
 
-        private void OnWidgetZoomToContent()
-            => ZoomToContent(TransitionSpeed.Medium);
+        private void OnWidgetZoomToContent() => ZoomToContent(TransitionSpeed.Medium);
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
@@ -249,7 +264,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
         }
-        
+
         private void OnPanAndZoomControlMouseEnter(object sender, MouseEventArgs e)
         {
             _isViewportObscured = true;
@@ -263,7 +278,7 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         private void OnDecoratedDiagramShapeChanged()
         {
-            MiniButtonHostControl = this.FindFirstDescendant<DiagramNodeControl>(i => i.DataContext == MiniButtonHostDiagramShape);
+            MiniButtonHostControl = this.FindDescendantByDataContext<AnimatedContentPresenter>(MiniButtonHostDiagramShape);
         }
 
         private void UnfocusAllDiagramShapes()

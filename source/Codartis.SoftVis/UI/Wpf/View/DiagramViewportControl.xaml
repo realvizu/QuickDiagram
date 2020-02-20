@@ -9,6 +9,7 @@
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:utilBehaviors="clr-namespace:Codartis.Util.UI.Wpf.Behaviors;assembly=Codartis.Util"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
@@ -19,10 +20,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
-                <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/MiniButtonDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
 
             <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModel}">
@@ -82,36 +81,6 @@
                     SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}" />
             </ItemsPanelTemplate>
 
-            <Size x:Key="MiniButtonSize" Width="16" Height="16" />
-
-            <Style x:Key="MiniButtonItemContainerStyle"
-                   TargetType="{x:Type ContentPresenter}"
-                   d:DataContext="{d:DesignInstance {x:Type viewModel:MiniButtonViewModelBase}}">
-                <Setter Property="Width" Value="{Binding Path=Width, Source={StaticResource MiniButtonSize}}" />
-                <Setter Property="Height" Value="{Binding Path=Height, Source={StaticResource MiniButtonSize}}" />
-                <Setter Property="controls:RelativePlacementPanel.PlacementKey" Value="{Binding PlacementKey}" />
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <view:MiniButtonControl
-                                Width="{Binding Path=Width, Source={StaticResource MiniButtonSize}}"
-                                Height="{Binding Path=Height, Source={StaticResource MiniButtonSize}}"
-                                Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="{Binding Name}"
-                                MouseClickCommand="{Binding ClickCommand}"
-                                MouseDoubleClickCommand="{Binding DoubleClickCommand}" />
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <ItemsPanelTemplate x:Key="MiniButtonItemsPanel">
-                <view:DiagramCanvasChildDecoratorPanel
-                    DecoratedElement="{Binding Path=MiniButtonHostControl, ElementName=ThisControl}"
-                    PlacementDictionary="{Binding MiniButtonPlacementMap, 
-                        RelativeSource={RelativeSource AncestorType={x:Type view:DiagramControl}}}" />
-            </ItemsPanelTemplate>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -127,11 +96,34 @@
                                            ItemTemplate="{StaticResource DiagramConnectorItemTemplate}"
                                            ItemContainerStyle="{StaticResource DiagramConnectorItemContainerStyle}" />
 
-        <ItemsControl DataContext="{Binding MiniButtonPanelViewModel}"
-                      ItemsSource="{Binding ButtonViewModels}"
-                      ItemsPanel="{StaticResource MiniButtonItemsPanel}"
-                      ItemContainerStyle="{StaticResource MiniButtonItemContainerStyle}"
-                      Background="{x:Null}" />
+        <controls:AnimatedRenderTransformCanvas
+            AnimatedRenderTransform="{Binding Path=ViewportTransform, ElementName=ThisControl, Mode=OneWay}"
+            FastAnimationDuration="{StaticResource FastPanAndZoomAnimationDuration}"
+            MediumAnimationDuration="{StaticResource MediumPanAndZoomAnimationDuration}"
+            SlowAnimationDuration="{StaticResource SlowPanAndZoomAnimationDuration}"
+            MediumAnimationEasingFunction="{StaticResource MediumPanAndZoomAnimationEasingFunction}"
+            SlowAnimationEasingFunction="{StaticResource SlowPanAndZoomAnimationEasingFunction}" >
+
+            <view:MiniButtonPanel DataContext="{Binding MiniButtonPanelViewModel}"
+                                  DecoratedElement="{Binding Path=MiniButtonHostControl, ElementName=ThisControl}">
+
+                <b:Interaction.Behaviors>
+                    <utilBehaviors:CopycatBehavior CopiedObject="{Binding ElementName=ThisControl, Path=MiniButtonHostControl}">
+                        <utilBehaviors:CopycatBehavior.PropertyMappings>
+                            <utilBehaviors:PropertyMappingList>
+                                <utilBehaviors:PropertyMapping Source="{x:Static FrameworkElement.ActualHeightProperty}"
+                                                               Target="{x:Static FrameworkElement.HeightProperty}" />
+                                <utilBehaviors:PropertyMapping Source="{x:Static FrameworkElement.ActualWidthProperty}"
+                                                               Target="{x:Static FrameworkElement.WidthProperty}" />
+                                <utilBehaviors:PropertyMapping Source="{x:Static Canvas.TopProperty}" />
+                                <utilBehaviors:PropertyMapping Source="{x:Static Canvas.LeftProperty}" />
+                            </utilBehaviors:PropertyMappingList>
+                        </utilBehaviors:CopycatBehavior.PropertyMappings>
+                    </utilBehaviors:CopycatBehavior>
+                </b:Interaction.Behaviors>
+
+            </view:MiniButtonPanel>
+        </controls:AnimatedRenderTransformCanvas>
 
         <view:PanAndZoomControl Focusable="False"
                                 HorizontalAlignment="Left"

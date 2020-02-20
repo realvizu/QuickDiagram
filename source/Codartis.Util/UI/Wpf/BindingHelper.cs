@@ -6,17 +6,25 @@ namespace Codartis.Util.UI.Wpf
 {
     public static class BindingHelper
     {
-        public static void Bind(
-            [NotNull] this DependencyProperty property,
-            [NotNull] DependencyObject source,
-            [NotNull] DependencyObject target)
+        public static void SetBinding(
+            [NotNull] this DependencyObject targetObject,
+            [NotNull] DependencyProperty targetProperty,
+            [NotNull] DependencyObject sourceObject,
+            [NotNull] DependencyProperty sourceProperty)
         {
             var binding = new Binding
             {
-                Source = source,
-                Path = new PropertyPath(property)
+                Source = sourceObject,
+                Path = new PropertyPath(sourceProperty)
             };
-            BindingOperations.SetBinding(target, property, binding);
+            BindingOperations.SetBinding(targetObject, targetProperty, binding);
+        }
+
+        public static void ClearBinding(
+            [NotNull] this DependencyObject dependencyObject,
+            [NotNull] DependencyProperty dependencyProperty)
+        {
+            BindingOperations.ClearBinding(dependencyObject, dependencyProperty);
         }
     }
 }

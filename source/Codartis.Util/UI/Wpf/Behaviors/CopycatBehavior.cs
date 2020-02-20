@@ -9,16 +9,18 @@ namespace Codartis.Util.UI.Wpf.Behaviors
             "CopiedObject",
             typeof(DependencyObject),
             typeof(CopycatBehavior),
-            new PropertyMetadata(default(DependencyObject)));
+            new PropertyMetadata(default(DependencyObject), OnCopiedObjectChanged));
 
-        public static readonly DependencyProperty CopiedPropertiesProperty = DependencyProperty.Register(
-            "CopiedProperties",
-            typeof(DependencyPropertyList),
+        private static void OnCopiedObjectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((CopycatBehavior)d).OnCopiedObjectChanged();
+
+        public static readonly DependencyProperty PropertyMappingsProperty = DependencyProperty.Register(
+            "PropertyMappings",
+            typeof(PropertyMappingList),
             typeof(CopycatBehavior));
 
         public CopycatBehavior()
         {
-            SetValue(CopiedPropertiesProperty, new DependencyPropertyList());
+            SetValue(PropertyMappingsProperty, new PropertyMappingList());
         }
 
         public DependencyObject CopiedObject
@@ -27,18 +29,24 @@ namespace Codartis.Util.UI.Wpf.Behaviors
             set { SetValue(CopiedObjectProperty, value); }
         }
 
-        public DependencyPropertyList CopiedProperties
+        public PropertyMappingList PropertyMappings
         {
-            get { return (DependencyPropertyList)GetValue(CopiedPropertiesProperty); }
-            set { SetValue(CopiedPropertiesProperty, value); }
+            get { return (PropertyMappingList)GetValue(PropertyMappingsProperty); }
+            set { SetValue(PropertyMappingsProperty, value); }
         }
 
-        protected override void OnAttached()
+        private void OnCopiedObjectChanged()
         {
-            base.OnAttached();
-
-            foreach (var copiedProperty in CopiedProperties)
-                copiedProperty.Bind(source: CopiedObject, target: AssociatedObject);
+            if (CopiedObject == null)
+            {
+                foreach (var propertyMapping in PropertyMappings)
+                    AssociatedObject.ClearBinding(propertyMapping.Target);
+            }
+            else
+            {
+                foreach (var propertyMapping in PropertyMappings)
+                    AssociatedObject.SetBinding(propertyMapping.Target, CopiedObject, propertyMapping.Source);
+            }
         }
     }
 }
