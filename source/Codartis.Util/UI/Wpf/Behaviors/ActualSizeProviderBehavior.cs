@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Interactivity;
 using JetBrains.Annotations;
+using Microsoft.Xaml.Behaviors;
 
 namespace Codartis.Util.UI.Wpf.Behaviors
 {

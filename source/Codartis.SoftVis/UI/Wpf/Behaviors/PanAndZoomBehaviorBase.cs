@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Interactivity;
 using Codartis.SoftVis.UI.Wpf.Commands;
+using Microsoft.Xaml.Behaviors;
 
 namespace Codartis.SoftVis.UI.Wpf.Behaviors
 {

@@ -26,6 +26,7 @@
   <Allowed From="Codartis.SoftVis.UI.Wpf.View" To="Codartis.SoftVis.UI.Wpf.ViewModel" />
   <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Codartis.SoftVis.UI.Wpf.Commands" />
   <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="System.Windows.*" />
+  <Allowed From="Codartis.SoftVis.UI.Wpf.*" To="Microsoft.Xaml.Behaviors.*" />
 
   <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Geometry" />
   <Allowed From="Codartis.SoftVis.Services" To="Codartis.SoftVis.Modeling.Definition" />

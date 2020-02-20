@@ -3,6 +3,7 @@
     <Allowed From="Codartis.Util.UI.Wpf.*" To="System.ComponentModel" />
     <Allowed From="Codartis.Util.UI.Wpf.*" To="System.Runtime.InteropServices" />
     <Allowed From="Codartis.Util.UI.Wpf.*" To="System.Windows.*" />
+    <Allowed From="Codartis.Util.UI.Wpf.*" To="Microsoft.Xaml.Behaviors.*" />
     <Allowed From="Codartis.Util.UI.Wpf.*" To="Codartis.Util.UI.Wpf.Collections" />
     <Allowed From="Codartis.Util.UI.Wpf.*" To="Codartis.Util.UI.Wpf.Commands" />
 

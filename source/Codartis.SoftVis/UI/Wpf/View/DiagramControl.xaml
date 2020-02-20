@@ -6,9 +6,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              xmlns:behaviors="clr-namespace:Codartis.Util.UI.Wpf.Behaviors;assembly=Codartis.Util"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewModel}}"
@@ -63,20 +63,20 @@
                 <DropShadowEffect Direction="315" ShadowDepth="2" BlurRadius="3" RenderingBias="Performance" />
             </controls:PopupTextControl.Effect>
 
-            <i:Interaction.Behaviors>
+            <b:Interaction.Behaviors>
                 <behaviors:CopyMousePositionBehavior OnEventName="IsVisibleChanged"
                                                      YProperty="{x:Static Canvas.TopProperty}"
                                                      XProperty="{x:Static Canvas.LeftProperty}" />
-            </i:Interaction.Behaviors>
+            </b:Interaction.Behaviors>
         </controls:PopupTextControl>
     </Canvas>
 
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="PreviewMouseDown">
-            <i:InvokeCommandAction Command="{Binding PreviewMouseDownCommand}" />
-        </i:EventTrigger>
-        <i:EventTrigger EventName="MouseDown">
-            <i:InvokeCommandAction Command="{Binding MouseDownCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="PreviewMouseDown">
+            <b:InvokeCommandAction Command="{Binding PreviewMouseDownCommand}" />
+        </b:EventTrigger>
+        <b:EventTrigger EventName="MouseDown">
+            <b:InvokeCommandAction Command="{Binding MouseDownCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
 </UserControl>

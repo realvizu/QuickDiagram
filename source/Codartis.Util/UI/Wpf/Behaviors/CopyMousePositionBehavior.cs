@@ -2,8 +2,8 @@
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interactivity;
 using JetBrains.Annotations;
+using Microsoft.Xaml.Behaviors;
 
 namespace Codartis.Util.UI.Wpf.Behaviors
 {

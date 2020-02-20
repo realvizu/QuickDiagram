@@ -5,8 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Codartis.Util.UI.Wpf.Behaviors;assembly=Codartis.Util"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
@@ -56,18 +56,18 @@
                        Width="{Binding Path=ChildrenAreaSize.Width}"
                        Height="{Binding Path=ChildrenAreaSize.Height}">
 
-                <i:Interaction.Behaviors>
+                <b:Interaction.Behaviors>
                     <behaviors:RelativePositionProviderBehavior RelativePosition="{Binding ElementName=ThisControl, Path=DataContext.ChildrenAreaTopLeft}"
                                                                 ReferenceUiElement="{Binding ElementName=ThisControl}" />
-                </i:Interaction.Behaviors>
+                </b:Interaction.Behaviors>
 
             </Rectangle>
 
         </Border>
 
-        <i:Interaction.Behaviors>
+        <b:Interaction.Behaviors>
             <behaviors:ActualSizeProviderBehavior ActualSize="{Binding ElementName=ThisControl, Path=DataContext.Size}" />
-        </i:Interaction.Behaviors>
+        </b:Interaction.Behaviors>
 
     </Grid>
 </UserControl>
