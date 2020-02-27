@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Codartis.Util.UI.Wpf
+namespace Codartis.Util.UI.Wpf.Controls
 {
     public static class FrameworkElementExtensions
     {

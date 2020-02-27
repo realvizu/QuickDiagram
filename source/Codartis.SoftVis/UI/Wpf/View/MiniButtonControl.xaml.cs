@@ -84,13 +84,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
             return new Point(vectorX, vectorY);
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            // Handling the mouse move event stops it from bubbling up
-            // so the diagram shape can retains focus while hovering on its buttons
-            e.Handled = true;
-        }
-
         private void OnClick(object sender, RoutedEventArgs e)
         {
             MouseClickCommand?.Execute();

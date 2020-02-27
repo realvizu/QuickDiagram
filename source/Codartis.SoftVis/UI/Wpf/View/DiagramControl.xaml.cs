@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Codartis.Util.UI.Wpf;
+using Codartis.Util.UI.Wpf.Controls;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -23,12 +22,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
 
         public static readonly DependencyProperty PanAndZoomControlHeightProperty =
             DiagramViewportControl.PanAndZoomControlHeightProperty.AddOwner(typeof(DiagramControl));
-
-        public static readonly DependencyProperty RelatedNodeCuePlacementMapProperty =
-            DependencyProperty.Register("RelatedNodeCuePlacementMap", typeof(IDictionary), typeof(DiagramControl));
-
-        public static readonly DependencyProperty MiniButtonPlacementMapProperty =
-            DependencyProperty.Register("MiniButtonPlacementMap", typeof(IDictionary), typeof(DiagramControl));
 
         public DiagramControl()
             : this(null)
@@ -64,18 +57,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (double)GetValue(PanAndZoomControlHeightProperty); }
             set { SetValue(PanAndZoomControlHeightProperty, value); }
-        }
-
-        public IDictionary RelatedNodeCuePlacementMap
-        {
-            get { return (IDictionary)GetValue(RelatedNodeCuePlacementMapProperty); }
-            set { SetValue(RelatedNodeCuePlacementMapProperty, value); }
-        }
-
-        public IDictionary MiniButtonPlacementMap
-        {
-            get { return (IDictionary)GetValue(MiniButtonPlacementMapProperty); }
-            set { SetValue(MiniButtonPlacementMapProperty, value); }
         }
 
         public override void OnApplyTemplate()

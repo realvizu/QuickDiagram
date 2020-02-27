@@ -24,7 +24,7 @@
         <Setter Property="DiagramStroke" Value="Black" />
         <Setter Property="PanAndZoomControlHeight" Value="120" />
         <Setter Property="view:DiagramNodeWithCuesControl.RelatedNodeCuePlacementMap" Value="{StaticResource RelatedNodeCuePlacementMap}" />
-        <Setter Property="MiniButtonPlacementMap" Value="{StaticResource MiniButtonPlacementMap}" />
+        <Setter Property="view:MiniButtonPanel.MiniButtonPlacementMap" Value="{StaticResource MiniButtonPlacementMap}" />
     </Style>
 
     <Style TargetType="{x:Type view:DiagramNodeControl}">

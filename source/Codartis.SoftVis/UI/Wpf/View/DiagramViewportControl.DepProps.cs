@@ -44,16 +44,10 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(ViewportTransformProperty, value); }
         }
 
-        public DiagramShapeViewModelBase MiniButtonHostDiagramShape
+        public UIElement FocusedControl
         {
-            get { return (DiagramShapeViewModelBase)GetValue(MiniButtonHostDiagramShapeProperty); }
-            set { SetValue(MiniButtonHostDiagramShapeProperty, value); }
-        }
-
-        public UIElement MiniButtonHostControl
-        {
-            get { return (UIElement)GetValue(MiniButtonHostControlProperty); }
-            set { SetValue(MiniButtonHostControlProperty, value); }
+            get { return (UIElement)GetValue(FocusedControlProperty); }
+            set { SetValue(FocusedControlProperty, value); }
         }
 
         public VectorDelegateCommand WidgetPanCommand
@@ -120,6 +114,12 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (ViewportCalculatorViewModel.ZoomToContentDelegateCommand)GetValue(ViewportZoomToContentCommandProperty); }
             set { SetValue(ViewportZoomToContentCommandProperty, value); }
+        }
+
+        public DelegateCommand<IDiagramShapeUi> FocusCommand
+        {
+            get { return (DelegateCommand<IDiagramShapeUi>)GetValue(FocusCommandProperty); }
+            set { SetValue(FocusCommandProperty, value); }
         }
 
         public DelegateCommand UnfocusAllCommand
