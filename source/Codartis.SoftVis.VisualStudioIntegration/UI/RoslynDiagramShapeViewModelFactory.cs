@@ -2,8 +2,6 @@
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.Util.UI;
-using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
@@ -23,9 +21,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             IsDescriptionVisible = isDescriptionVisible;
         }
 
-        public override IDiagramNodeUi CreateDiagramNodeUi(
-            IDiagramNode diagramNode,
-            IFocusTracker<IDiagramShapeUi> focusTracker)
+        public override IDiagramNodeUi CreateDiagramNodeUi(IDiagramNode diagramNode)
         {
             var payload = diagramNode.ModelNode.Payload;
 
@@ -39,7 +35,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 DiagramEventSource,
                 diagramNode,
                 RelatedNodeTypeProvider,
-                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
                 IsDescriptionVisible,
                 symbol,
                 headerUi);

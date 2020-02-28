@@ -9,8 +9,8 @@
              xmlns:behaviors="clr-namespace:Codartis.SoftVis.UI.Wpf.Behaviors"
              xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:focusTracking="clr-namespace:Codartis.Util.UI.Wpf.FocusTracking;assembly=Codartis.Util"
              xmlns:converters="clr-namespace:Codartis.Util.UI.Wpf.Converters;assembly=Codartis.Util"
+             xmlns:mouseTracking="clr-namespace:Codartis.Util.UI.Wpf.MouseTracking;assembly=Codartis.Util"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramViewportViewModel}}">
@@ -25,6 +25,7 @@
 
             <view:DiagramConnectorRouteCalculatorConverter x:Key="DiagramConnectorRouteCalculatorConverter" />
             <converters:AncestorFinderConverter x:Key="AncestorFinderConverter" />
+            <converters:DescendantFinderByPropertyValueConverter x:Key="DescendantFinderByPropertyValueConverter" />
 
             <DataTemplate x:Key="DiagramNodeItemTemplate" DataType="{x:Type viewModel:DiagramNodeViewModel}">
                 <view:DiagramNodeWithCuesControl>
@@ -36,7 +37,7 @@
                     </b:Interaction.Triggers>
 
                     <b:Interaction.Behaviors>
-                        <focusTracking:FocusTrackingParticipantBehavior FocusTracker="{Binding ElementName=FocusTracker}"
+                        <mouseTracking:MouseTrackingParticipantBehavior MouseTracker="{Binding ElementName=MouseTracker}"
                                                                         Role="TrackedElement" />
                     </b:Interaction.Behaviors>
                 </view:DiagramNodeWithCuesControl>
@@ -92,14 +93,14 @@
     </UserControl.Resources>
 
     <b:Interaction.Behaviors>
-        <focusTracking:FocusTrackerBehavior x:Name="FocusTracker"
-                                            BackgroundElement="{Binding ElementName=ThisControl}"
-                                            FocusedElement="{Binding ElementName=ThisControl, Path=FocusedControl, Mode=OneWayToSource}" />
+        <mouseTracking:MouseTrackerBehavior x:Name="MouseTracker"
+                                            BackgroundElement="{Binding ElementName=ThisControl}" />
     </b:Interaction.Behaviors>
 
     <Grid Background="Transparent">
 
-        <view:DiagramNodeItemsControl ItemsSource="{Binding DiagramNodeViewModels}"
+        <view:DiagramNodeItemsControl x:Name="DiagramNodeItemsControl"
+                                      ItemsSource="{Binding DiagramNodeViewModels}"
                                       ItemsPanel="{StaticResource DiagramShapeItemsPanel}"
                                       ItemTemplate="{StaticResource DiagramNodeItemTemplate}"
                                       ItemContainerStyle="{StaticResource DiagramNodeItemContainerStyle}" />
@@ -109,14 +110,26 @@
                                            ItemTemplate="{StaticResource DiagramConnectorItemTemplate}"
                                            ItemContainerStyle="{StaticResource DiagramConnectorItemContainerStyle}" />
 
-        <view:MiniButtonPanel DataContext="{Binding MiniButtonPanelViewModel}"
-                              PanAndZoomProviderElement="{Binding ElementName=ThisControl, Path=FocusedControl,
+        <view:MiniButtonPanel x:Name="MiniButtonPanel"
+                              DataContext="{Binding MiniButtonPanelViewModel}"
+                              MouseFocusedUiElement="{Binding ElementName=MouseTracker, Path=CurrentUiElement}"
+                              DiagramShapeUiUnderMouseChangedCommand="{Binding Path=MouseFocusChangedCommand}"
+                              PanAndZoomProviderElement="{Binding ElementName=MiniButtonPanel, Path=FocusedDiagramNodeControl,
                                         Converter={StaticResource AncestorFinderConverter}, ConverterParameter={x:Type controls:AnimatedRenderTransformCanvas}}"
-                              PositionAndSizeProviderElement="{Binding ElementName=ThisControl, Path=FocusedControl, 
+                              PositionAndSizeProviderElement="{Binding ElementName=MiniButtonPanel, Path=FocusedDiagramNodeControl, 
                                         Converter={StaticResource AncestorFinderConverter}, ConverterParameter={x:Type controls:AnimatedContentPresenter}}">
+
+            <view:MiniButtonPanel.FocusedDiagramNodeControl>
+                <MultiBinding Converter="{StaticResource DescendantFinderByPropertyValueConverter}"
+                              ConverterParameter="{x:Static FrameworkElement.DataContextProperty}">
+                    <Binding ElementName="DiagramNodeItemsControl" />
+                    <Binding Path="FocusedDiagramShapeUi" />
+                </MultiBinding>
+            </view:MiniButtonPanel.FocusedDiagramNodeControl>
+
             <b:Interaction.Behaviors>
                 <!-- Marking MiniButtons as NonTrackedElement means that they don't try to steal focus so they don't flicker. -->
-                <focusTracking:FocusTrackingParticipantBehavior FocusTracker="{Binding ElementName=FocusTracker}"
+                <mouseTracking:MouseTrackingParticipantBehavior MouseTracker="{Binding ElementName=MouseTracker}"
                                                                 Role="NonTrackedElement" />
             </b:Interaction.Behaviors>
         </view:MiniButtonPanel>

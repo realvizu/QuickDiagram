@@ -54,7 +54,7 @@
 
     <Canvas Background="{x:Null}">
         <!-- Background=Null means it won't raise mouse events. (But the MiniButtons will.) -->
-        <ItemsControl ItemsSource="{Binding ButtonViewModels}"
+        <ItemsControl ItemsSource="{Binding MiniButtonViewModels}"
                       ItemsPanel="{StaticResource MiniButtonItemsPanel}"
                       ItemContainerStyle="{StaticResource MiniButtonItemContainerStyle}"
                       Background="{x:Null}">

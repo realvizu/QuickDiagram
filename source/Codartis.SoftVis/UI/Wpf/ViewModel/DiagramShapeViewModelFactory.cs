@@ -1,7 +1,5 @@
 ﻿using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.Util.UI;
-using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
@@ -25,22 +23,17 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
         }
 
-        public virtual IDiagramNodeUi CreateDiagramNodeUi(
-            IDiagramNode diagramNode,
-            IFocusTracker<IDiagramShapeUi> focusTracker)
+        public virtual IDiagramNodeUi CreateDiagramNodeUi(IDiagramNode diagramNode)
         {
             return new DiagramNodeViewModel(
                 ModelEventSource,
                 DiagramEventSource,
                 diagramNode,
                 RelatedNodeTypeProvider,
-                (IWpfFocusTracker<IDiagramShapeUi>)focusTracker,
                 new DiagramNodeHeaderViewModel { Payload = diagramNode.ModelNode.Payload });
         }
 
-        public virtual IDiagramConnectorUi CreateDiagramConnectorUi(
-            IDiagramConnector diagramConnector,
-            IFocusTracker<IDiagramShapeUi> focusTracker)
+        public virtual IDiagramConnectorUi CreateDiagramConnectorUi(IDiagramConnector diagramConnector)
         {
             return new DiagramConnectorViewModel(
                 ModelEventSource,

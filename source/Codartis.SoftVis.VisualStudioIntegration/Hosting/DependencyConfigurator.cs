@@ -19,7 +19,6 @@ using Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation;
 using Codartis.SoftVis.VisualStudioIntegration.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Codartis.Util.Ids;
-using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Resources;
 using Microsoft.CodeAnalysis;
 
@@ -102,7 +101,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 .WithParameter("isDescriptionVisible", true)
                 .SingleInstance();
 
-            builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>().SingleInstance();
+            builder.RegisterType<MiniButtonPanelViewModel>().As<IMiniButtonManager>().SingleInstance();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 

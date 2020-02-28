@@ -1,7 +1,7 @@
 ﻿namespace Codartis.Util.UI
 {
     /// <summary>
-    /// A UI element that can be added as a decorator of another (host) UI element.
+    /// A UI element that can be added to another UI element (the host).
     /// </summary>
     /// <typeparam name="THost">The type of the UI element that hosts the decorators.</typeparam>
     public interface IUiDecorator<THost>

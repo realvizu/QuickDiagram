@@ -70,16 +70,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 typeof(DiagramViewportControl),
                 new PropertyMetadata(TransitionedTransform.Identity));
 
-        public static readonly DependencyProperty FocusedControlProperty =
-            DependencyProperty.Register(
-                "FocusedControl",
-                typeof(UIElement),
-                typeof(DiagramViewportControl),
-                new PropertyMetadata(OnFocusedControlChanged));
-
-        private static void OnFocusedControlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => ((DiagramViewportControl)d).OnFocusedControlChanged((FrameworkElement)e.NewValue);
-
         public static readonly DependencyProperty WidgetPanCommandProperty =
             DependencyProperty.Register("WidgetPanCommand", typeof(VectorDelegateCommand), typeof(DiagramViewportControl));
 
@@ -127,12 +117,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 "ViewportZoomToContentCommand",
                 typeof(ViewportCalculatorViewModel.ZoomToContentDelegateCommand),
                 typeof(DiagramViewportControl));
-
-        public static readonly DependencyProperty FocusCommandProperty =
-            DependencyProperty.Register("FocusCommand", typeof(DelegateCommand<IDiagramShapeUi>), typeof(DiagramViewportControl));
-
-        public static readonly DependencyProperty UnfocusAllCommandProperty =
-            DependencyProperty.Register("UnfocusAllCommand", typeof(DelegateCommand), typeof(DiagramViewportControl));
 
         public DiagramViewportControl()
         {
@@ -237,16 +221,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         private void OnZoomIntervalChanged()
         {
             LargeZoomIncrement = Math.Max(0, MaxZoom - MinZoom) * LargeZoomIncrementProportion;
-        }
-
-        private void OnFocusedControlChanged(FrameworkElement focusedControl)
-        {
-            var diagramShapeUi = focusedControl?.DataContext as IDiagramShapeUi;
-
-            if (diagramShapeUi == null)
-                UnfocusAllCommand?.Execute();
-            else
-                FocusCommand?.Execute(diagramShapeUi);
         }
     }
 }

@@ -165,7 +165,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void OnRelatedNodeSelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
         {
-            DiagramViewportViewModel.PinDecoration();
+            DiagramViewportViewModel.PinFocus();
             RelatedNodeListBoxViewModel.Show(ownerButton, modelNodes);
         }
 
@@ -224,7 +224,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         private void HideRelatedNodeListBox()
         {
-            DiagramViewportViewModel.UnpinDecoration();
+            DiagramViewportViewModel.UnpinFocus();
             RelatedNodeListBoxViewModel.Hide();
         }
 

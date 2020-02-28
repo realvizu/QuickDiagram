@@ -3,7 +3,6 @@ using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
-using Codartis.Util.UI.Wpf;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
@@ -23,7 +22,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
             bool isDescriptionVisible,
             [NotNull] ISymbol symbol,
             RoslynDiagramNodeHeaderViewModelBase header)
@@ -32,7 +30,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 diagramEventSource,
                 diagramNode,
                 relatedNodeTypeProvider,
-                focusTracker,
                 header)
         {
             _isDescriptionVisible = isDescriptionVisible;
@@ -69,7 +66,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 DiagramEventSource,
                 DiagramNode,
                 RelatedNodeTypeProvider,
-                FocusTracker,
                 _isDescriptionVisible,
                 _symbol,
                 TypedHeader);

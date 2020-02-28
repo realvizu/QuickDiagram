@@ -1,5 +1,4 @@
 ﻿using Codartis.SoftVis.Diagramming.Definition;
-using Codartis.Util.UI;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI
@@ -10,13 +9,9 @@ namespace Codartis.SoftVis.UI
     public interface IDiagramShapeUiFactory
     {
         [NotNull]
-        IDiagramNodeUi CreateDiagramNodeUi(
-            [NotNull] IDiagramNode diagramNode,
-            [NotNull] IFocusTracker<IDiagramShapeUi> focusTracker);
+        IDiagramNodeUi CreateDiagramNodeUi([NotNull] IDiagramNode diagramNode);
 
         [NotNull]
-        IDiagramConnectorUi CreateDiagramConnectorUi(
-            [NotNull] IDiagramConnector diagramConnector,
-            [NotNull] IFocusTracker<IDiagramShapeUi> focusTracker);
+        IDiagramConnectorUi CreateDiagramConnectorUi([NotNull] IDiagramConnector diagramConnector);
     }
 }

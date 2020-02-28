@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Codartis.SoftVis.UI.Wpf.Commands;
+﻿using Codartis.SoftVis.UI.Wpf.Commands;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.Transforms;
@@ -42,12 +41,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (TransitionedTransform)GetValue(ViewportTransformProperty); }
             set { SetValue(ViewportTransformProperty, value); }
-        }
-
-        public UIElement FocusedControl
-        {
-            get { return (UIElement)GetValue(FocusedControlProperty); }
-            set { SetValue(FocusedControlProperty, value); }
         }
 
         public VectorDelegateCommand WidgetPanCommand
@@ -114,18 +107,6 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (ViewportCalculatorViewModel.ZoomToContentDelegateCommand)GetValue(ViewportZoomToContentCommandProperty); }
             set { SetValue(ViewportZoomToContentCommandProperty, value); }
-        }
-
-        public DelegateCommand<IDiagramShapeUi> FocusCommand
-        {
-            get { return (DelegateCommand<IDiagramShapeUi>)GetValue(FocusCommandProperty); }
-            set { SetValue(FocusCommandProperty, value); }
-        }
-
-        public DelegateCommand UnfocusAllCommand
-        {
-            get { return (DelegateCommand)GetValue(UnfocusAllCommandProperty); }
-            set { SetValue(UnfocusAllCommandProperty, value); }
         }
     }
 }

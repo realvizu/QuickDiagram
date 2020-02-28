@@ -43,8 +43,8 @@ namespace Codartis.SoftVis.UI.Wpf.Behaviors
         {
             base.OnAttached();
 
-            // Handled MouseMove events must be captured too otherwise focus tracking interferes with panning.
-            // (Focus tracking stops mouse move event bubbling when moving inside a node.)
+            // Already handled MouseMove events must be processed too otherwise mouse tracking interferes with panning.
+            // (Mouse tracking stops mouse move event bubbling when moving inside a node.)
             AssociatedObject.AddHandler(UIElement.MouseMoveEvent, (MouseEventHandler)OnMouseMove, handledEventsToo: true);
             AssociatedObject.MouseLeftButtonDown += OnMouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp += OnMouseLeftButtonUp;

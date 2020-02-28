@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Codartis.Util.UI;
 
 namespace Codartis.SoftVis.UI
 {
@@ -9,8 +8,7 @@ namespace Codartis.SoftVis.UI
     public interface IDiagramViewportUi
     {
         IDiagramShapeUiFactory DiagramShapeUiFactory { get; }
-        IDecorationManager<IMiniButton, IDiagramShapeUi> MiniButtonManager { get; }
-
+        IMiniButtonManager MiniButtonManager { get; }
         IEnumerable<IDiagramNodeUi> DiagramNodeUis { get; }
         IEnumerable<IDiagramConnectorUi> DiagramConnectorUis { get; }
     }

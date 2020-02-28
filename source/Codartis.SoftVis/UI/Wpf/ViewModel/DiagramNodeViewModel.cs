@@ -24,7 +24,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public IDiagramNodeHeaderUi Header { get; }
 
         [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
-        [NotNull] public IWpfFocusTracker<IDiagramShapeUi> FocusTracker { get; }
         [NotNull] [ItemNotNull] public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
@@ -38,12 +37,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IWpfFocusTracker<IDiagramShapeUi> focusTracker,
             [NotNull] IDiagramNodeHeaderUi header)
             : base(modelEventSource, diagramEventSource, diagramNode)
         {
             RelatedNodeTypeProvider = relatedNodeTypeProvider;
-            FocusTracker = focusTracker;
             RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
             Header = header;
 
@@ -160,7 +157,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 DiagramEventSource,
                 DiagramNode,
                 RelatedNodeTypeProvider,
-                FocusTracker,
                 Header);
         }
 

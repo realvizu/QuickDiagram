@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
+using Codartis.Util.UI.Wpf.Commands;
 
 namespace Codartis.SoftVis.UI.Wpf.View
 {
@@ -29,6 +30,27 @@ namespace Codartis.SoftVis.UI.Wpf.View
                 typeof(IDictionary),
                 typeof(MiniButtonPanel),
                 new FrameworkPropertyMetadata(defaultValue: null, FrameworkPropertyMetadataOptions.Inherits));
+
+        public static readonly DependencyProperty MouseFocusedUiElementProperty =
+            DependencyProperty.Register(
+                "MouseFocusedUiElement",
+                typeof(UIElement),
+                typeof(MiniButtonPanel),
+                new PropertyMetadata(OnMouseFocusedUiElementChanged));
+
+        private static void OnMouseFocusedUiElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            => ((MiniButtonPanel)d).OnMouseFocusedUiElementChanged((UIElement)e.NewValue);
+
+        public static readonly DependencyProperty FocusedDiagramNodeControlProperty = DependencyProperty.Register(
+            "FocusedDiagramNodeControl",
+            typeof(DiagramNodeControl),
+            typeof(MiniButtonPanel));
+
+        public static readonly DependencyProperty DiagramShapeUiUnderMouseChangedCommandProperty =
+            DependencyProperty.Register(
+                "DiagramShapeUiUnderMouseChangedCommand",
+                typeof(DelegateCommand<IDiagramShapeUi>),
+                typeof(MiniButtonPanel));
 
         public static void SetMiniButtonPlacementMap(UIElement element, IDictionary value) => element.SetValue(MiniButtonPlacementMapProperty, value);
         public static IDictionary GetMiniButtonPlacementMap(UIElement element) => (IDictionary)element.GetValue(MiniButtonPlacementMapProperty);
@@ -60,6 +82,31 @@ namespace Codartis.SoftVis.UI.Wpf.View
         {
             get { return (IDictionary)GetValue(MiniButtonPlacementMapProperty); }
             set { SetValue(MiniButtonPlacementMapProperty, value); }
+        }
+
+        public UIElement MouseFocusedUiElement
+        {
+            get { return (UIElement)GetValue(MouseFocusedUiElementProperty); }
+            set { SetValue(MouseFocusedUiElementProperty, value); }
+        }
+
+        public DiagramNodeControl FocusedDiagramNodeControl
+        {
+            get { return (DiagramNodeControl)GetValue(FocusedDiagramNodeControlProperty); }
+            set { SetValue(FocusedDiagramNodeControlProperty, value); }
+        }
+
+        public DelegateCommand<IDiagramShapeUi> DiagramShapeUiUnderMouseChangedCommand
+        {
+            get { return (DelegateCommand<IDiagramShapeUi>)GetValue(DiagramShapeUiUnderMouseChangedCommandProperty); }
+            set { SetValue(DiagramShapeUiUnderMouseChangedCommandProperty, value); }
+        }
+
+        private void OnMouseFocusedUiElementChanged(UIElement uiElement)
+        {
+            var diagramShapeUi = (uiElement as FrameworkElement)?.DataContext as IDiagramShapeUi;
+
+            DiagramShapeUiUnderMouseChangedCommand?.Execute(diagramShapeUi);
         }
     }
 }

@@ -15,7 +15,6 @@ using Codartis.SoftVis.UI.Wpf;
 using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util.Ids;
-using Codartis.Util.UI;
 using Codartis.Util.UI.Wpf.Resources;
 
 namespace Codartis.SoftVis.TestHostApp
@@ -78,7 +77,7 @@ namespace Codartis.SoftVis.TestHostApp
 
             builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
 
-            builder.RegisterType<MiniButtonPanelViewModel>().As<IDecorationManager<IMiniButton, IDiagramShapeUi>>();
+            builder.RegisterType<MiniButtonPanelViewModel>().As<IMiniButtonManager>();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 
