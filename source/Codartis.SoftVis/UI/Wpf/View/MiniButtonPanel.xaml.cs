@@ -46,9 +46,9 @@ namespace Codartis.SoftVis.UI.Wpf.View
             typeof(DiagramNodeControl),
             typeof(MiniButtonPanel));
 
-        public static readonly DependencyProperty DiagramShapeUiUnderMouseChangedCommandProperty =
+        public static readonly DependencyProperty MouseFocusedDiagramShapeChangedCommandProperty =
             DependencyProperty.Register(
-                "DiagramShapeUiUnderMouseChangedCommand",
+                "MouseFocusedDiagramShapeChangedCommand",
                 typeof(DelegateCommand<IDiagramShapeUi>),
                 typeof(MiniButtonPanel));
 
@@ -96,17 +96,17 @@ namespace Codartis.SoftVis.UI.Wpf.View
             set { SetValue(FocusedDiagramNodeControlProperty, value); }
         }
 
-        public DelegateCommand<IDiagramShapeUi> DiagramShapeUiUnderMouseChangedCommand
+        public DelegateCommand<IDiagramShapeUi> MouseFocusedDiagramShapeChangedCommand
         {
-            get { return (DelegateCommand<IDiagramShapeUi>)GetValue(DiagramShapeUiUnderMouseChangedCommandProperty); }
-            set { SetValue(DiagramShapeUiUnderMouseChangedCommandProperty, value); }
+            get { return (DelegateCommand<IDiagramShapeUi>)GetValue(MouseFocusedDiagramShapeChangedCommandProperty); }
+            set { SetValue(MouseFocusedDiagramShapeChangedCommandProperty, value); }
         }
 
         private void OnMouseFocusedUiElementChanged(UIElement uiElement)
         {
             var diagramShapeUi = (uiElement as FrameworkElement)?.DataContext as IDiagramShapeUi;
 
-            DiagramShapeUiUnderMouseChangedCommand?.Execute(diagramShapeUi);
+            MouseFocusedDiagramShapeChangedCommand?.Execute(diagramShapeUi);
         }
     }
 }

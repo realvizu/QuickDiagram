@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// <summary>
         /// The diagram shape that currently has the focus (ie. the minibuttons). Null if none has it.
         /// </summary>
-        private IDiagramShapeUi _focusedDiagramShapeUi;
+        private IDiagramShapeUi _focusedDiagramShape;
 
         /// <summary>
         /// The diagram shape that the mouse points at. Null if none.
@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             _miniButtonViewModelCache = new Dictionary<string, List<MiniButtonViewModelBase>>();
             _cacheLockObject = new object();
 
-            _focusedDiagramShapeUi = null;
+            _focusedDiagramShape = null;
             _isFocusPinned = false;
 
             MiniButtonViewModels = new List<MiniButtonViewModelBase>();
@@ -75,12 +75,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     buttonViewModel.Dispose();
         }
 
-        public IDiagramShapeUi FocusedDiagramShapeUi
+        public IDiagramShapeUi FocusedDiagramShape
         {
-            get { return _focusedDiagramShapeUi; }
+            get { return _focusedDiagramShape; }
             set
             {
-                _focusedDiagramShapeUi = value;
+                _focusedDiagramShape = value;
                 OnPropertyChanged();
             }
         }
@@ -110,7 +110,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Focus(IDiagramShapeUi diagramShapeUi)
         {
-            if (_focusedDiagramShapeUi == diagramShapeUi)
+            if (_focusedDiagramShape == diagramShapeUi)
                 return;
 
             AssignMiniButtonsTo(diagramShapeUi);
@@ -118,7 +118,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void Unfocus(IDiagramShapeUi diagramShapeUi)
         {
-            if (_focusedDiagramShapeUi != diagramShapeUi)
+            if (_focusedDiagramShape != diagramShapeUi)
                 return;
 
             AssignMiniButtonsTo(null);
@@ -126,7 +126,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void UnfocusAll()
         {
-            if (_focusedDiagramShapeUi == null)
+            if (_focusedDiagramShape == null)
                 return;
 
             AssignMiniButtonsTo(null);
@@ -152,7 +152,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     decorator.Hide();
             }
 
-            FocusedDiagramShapeUi = diagramShapeUi;
+            FocusedDiagramShape = diagramShapeUi;
 
             if (diagramShapeUi == null)
             {

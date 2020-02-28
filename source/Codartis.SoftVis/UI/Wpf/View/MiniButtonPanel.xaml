@@ -87,6 +87,16 @@
                 </behaviors:CopycatBehavior.PropertyMappings>
             </behaviors:CopycatBehavior>
 
+            <behaviors:CopycatBehavior
+                CopiedObject="{Binding ElementName=ThisControl, Path=DiagramVisualProviderElement}">
+                <behaviors:CopycatBehavior.PropertyMappings>
+                    <behaviors:PropertyMappingList>
+                        <behaviors:PropertyMapping Source="{x:Static view:DiagramVisual.DiagramFillProperty}" />
+                        <behaviors:PropertyMapping Source="{x:Static view:DiagramVisual.DiagramStrokeProperty}" />
+                    </behaviors:PropertyMappingList>
+                </behaviors:CopycatBehavior.PropertyMappings>
+            </behaviors:CopycatBehavior>
+
         </b:Interaction.Behaviors>
 
     </Canvas>

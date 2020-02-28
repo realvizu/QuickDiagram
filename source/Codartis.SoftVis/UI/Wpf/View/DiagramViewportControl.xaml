@@ -113,17 +113,18 @@
         <view:MiniButtonPanel x:Name="MiniButtonPanel"
                               DataContext="{Binding MiniButtonPanelViewModel}"
                               MouseFocusedUiElement="{Binding ElementName=MouseTracker, Path=CurrentUiElement}"
-                              DiagramShapeUiUnderMouseChangedCommand="{Binding Path=MouseFocusChangedCommand}"
+                              MouseFocusedDiagramShapeChangedCommand="{Binding Path=MouseFocusChangedCommand}"
                               PanAndZoomProviderElement="{Binding ElementName=MiniButtonPanel, Path=FocusedDiagramNodeControl,
                                         Converter={StaticResource AncestorFinderConverter}, ConverterParameter={x:Type controls:AnimatedRenderTransformCanvas}}"
                               PositionAndSizeProviderElement="{Binding ElementName=MiniButtonPanel, Path=FocusedDiagramNodeControl, 
-                                        Converter={StaticResource AncestorFinderConverter}, ConverterParameter={x:Type controls:AnimatedContentPresenter}}">
+                                        Converter={StaticResource AncestorFinderConverter}, ConverterParameter={x:Type controls:AnimatedContentPresenter}}"
+                              DiagramVisualProviderElement="{Binding ElementName=MiniButtonPanel, Path=FocusedDiagramNodeControl}">
 
             <view:MiniButtonPanel.FocusedDiagramNodeControl>
                 <MultiBinding Converter="{StaticResource DescendantFinderByPropertyValueConverter}"
                               ConverterParameter="{x:Static FrameworkElement.DataContextProperty}">
                     <Binding ElementName="DiagramNodeItemsControl" />
-                    <Binding Path="FocusedDiagramShapeUi" />
+                    <Binding Path="FocusedDiagramShape" />
                 </MultiBinding>
             </view:MiniButtonPanel.FocusedDiagramNodeControl>
 
