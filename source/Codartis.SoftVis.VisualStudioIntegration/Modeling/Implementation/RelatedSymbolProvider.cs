@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
@@ -14,6 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private delegate Task<IEnumerable<RelatedSymbolPair>> SymbolFinderDelegate(ISymbol symbol);
 
         [NotNull] private static readonly SymbolKind[] MemberSymbolKinds = { SymbolKind.Event, SymbolKind.Field, SymbolKind.Method, SymbolKind.Property };
+        [NotNull] private static readonly SymbolKind[] AssociationMemberSymbolKinds = { SymbolKind.Field, SymbolKind.Property };
         [NotNull] private static readonly MethodKind[] MethodMemberMethodKinds = { MethodKind.Ordinary };
 
         [NotNull] private readonly IRoslynWorkspaceProvider _roslynWorkspaceProvider;
@@ -40,6 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 [ModelNodeStereotypes.Class] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
                     [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
+                    [DirectedModelRelationshipTypes.AssociatedType] = GetAssociatedTypesAsync,
                     [DirectedModelRelationshipTypes.BaseType] = GetBaseTypesAsync,
                     [DirectedModelRelationshipTypes.Subtype] = GetDerivedTypesAsync,
                     [DirectedModelRelationshipTypes.ImplementedInterface] = GetImplementedInterfacesAsync,
@@ -47,6 +50,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 [ModelNodeStereotypes.Interface] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
                     [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
+                    [DirectedModelRelationshipTypes.AssociatedType] = GetAssociatedTypesAsync,
                     [DirectedModelRelationshipTypes.BaseType] = GetBaseInterfacesAsync,
                     [DirectedModelRelationshipTypes.Subtype] = GetDerivedInterfacesAsync,
                     [DirectedModelRelationshipTypes.ImplementerType] = GetImplementingTypesAsync,
@@ -54,6 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 [ModelNodeStereotypes.Struct] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
                     [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
+                    [DirectedModelRelationshipTypes.AssociatedType] = GetAssociatedTypesAsync,
                     [DirectedModelRelationshipTypes.ImplementedInterface] = GetImplementedInterfacesAsync,
                 },
                 [ModelNodeStereotypes.Enum] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
@@ -221,12 +226,38 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return Task.FromResult(result);
         }
 
+        [NotNull]
+        [ItemNotNull]
+        private static Task<IEnumerable<RelatedSymbolPair>> GetAssociatedTypesAsync([NotNull] ISymbol symbol)
+        {
+            var typeSymbol = symbol.Ensure<ITypeSymbol>();
+
+            var result = typeSymbol.GetMembers()
+                .Where(IsAssociationMember)
+                .Where(IsExplicitlyDeclared)
+                .Select(i => new RelatedSymbolPair(typeSymbol, GetTypeSymbolOfMemberSymbol(i), DirectedModelRelationshipTypes.AssociatedType));
+
+            return Task.FromResult(result);
+        }
+
+        private static ISymbol GetTypeSymbolOfMemberSymbol([NotNull] ISymbol symbol)
+        {
+            return symbol switch
+            {
+                IPropertySymbol propertySymbol => propertySymbol.Type,
+                IFieldSymbol fieldSymbol => fieldSymbol.Type,
+                _ => throw new Exception($"Unexpected symbol type {symbol.GetType().Name}")
+            };
+        }
+
         private static bool IsModeledMember([NotNull] ISymbol i) => i.Kind.In(MemberSymbolKinds);
 
         private static bool IfMethodThenModeledMethod([NotNull] ISymbol i)
         {
             return !(i is IMethodSymbol methodSymbol) || methodSymbol.MethodKind.In(MethodMemberMethodKinds);
         }
+
+        private static bool IsAssociationMember([NotNull] ISymbol i) => i.Kind.In(AssociationMemberSymbolKinds);
 
         private static bool IsExplicitlyDeclared([NotNull] ISymbol i) => !i.IsImplicitlyDeclared;
 
