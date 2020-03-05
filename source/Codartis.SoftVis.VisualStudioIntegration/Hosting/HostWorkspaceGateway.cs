@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util;
@@ -77,15 +78,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static ISymbol GetSymbolForSyntaxNode(SemanticModel semanticModel, SyntaxNode node)
         {
-            if (node is TypeDeclarationSyntax ||
-                node is EnumDeclarationSyntax ||
-                node is DelegateDeclarationSyntax)
-                return semanticModel.GetDeclaredSymbol(node);
+            switch (node)
+            {
+                // MemberDeclarationSyntax includes type declarations too.
+                case MemberDeclarationSyntax _:
+                    return semanticModel.GetDeclaredSymbol(node);
 
-            var identifierNode = FindSimpleNameSyntax(node);
-            return identifierNode == null
-                ? null
-                : semanticModel.GetSymbolInfo(identifierNode).Symbol;
+                case VariableDeclaratorSyntax variableDeclaratorSyntax:
+                {
+                    var symbol = semanticModel.GetDeclaredSymbol(variableDeclaratorSyntax);
+                    return symbol switch
+                    {
+                        ILocalSymbol localSymbol => localSymbol.Type,
+                        IFieldSymbol _ => symbol,
+                        _ => throw new Exception($"Symbol {symbol} is unexpected.")
+                    };
+                }
+
+                default:
+                    var simpleNameSyntax = FindSimpleNameSyntax(node);
+                    return simpleNameSyntax == null
+                        ? null
+                        : semanticModel.GetSymbolInfo(simpleNameSyntax).Symbol;
+            }
         }
 
         private static SimpleNameSyntax FindSimpleNameSyntax(SyntaxNode node)
@@ -139,10 +154,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             var workspace = await GetWorkspaceAsync();
 
             var location = symbol?.Locations.FirstOrDefault();
-            if (location == null)
-                return null;
-
-            return workspace?.CurrentSolution?.GetDocumentId(location.SourceTree);
+            return location == null 
+                ? null 
+                : workspace.CurrentSolution?.GetDocumentId(location.SourceTree);
         }
 
         private static TextSpan GetSelection(ITextView activeWpfTextView)

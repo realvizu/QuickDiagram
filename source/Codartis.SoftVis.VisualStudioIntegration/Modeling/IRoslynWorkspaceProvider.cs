@@ -15,6 +15,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         /// <returns>The current Roslyn compilation workspace.</returns>
         [NotNull]
+        [ItemNotNull]
         Task<Workspace> GetWorkspaceAsync();
 
         /// <summary>

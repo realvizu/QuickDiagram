@@ -22,8 +22,29 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             new List<string>
             {
                 "System.Object",
-                "object"
+                "object",
+                "System.Int32",
+                "int"
             };
+
+        [NotNull]
+        private static readonly SymbolKind[] ModeledSymbolKinds =
+        {
+            SymbolKind.NamedType,
+            SymbolKind.Field,
+            SymbolKind.Method,
+            SymbolKind.Property
+        };
+
+        [NotNull]
+        private static readonly TypeKind[] ModeledTypeKinds =
+        {
+            TypeKind.Class,
+            TypeKind.Delegate,
+            TypeKind.Enum,
+            TypeKind.Interface,
+            TypeKind.Struct
+        };
 
         [NotNull] private readonly IModelService _modelService;
         [NotNull] private readonly IRelatedSymbolProvider _relatedSymbolProvider;
@@ -48,12 +69,27 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public IModel LatestModel => _modelService.LatestModel;
 
+        public bool IsModeledSymbol(ISymbol symbol)
+        {
+            return symbol.Kind.In(ModeledSymbolKinds) &&
+                   (symbol is INamedTypeSymbol).Implies(() => ((INamedTypeSymbol)symbol).TypeKind.In(ModeledTypeKinds)) &&
+                   !IsHidden(symbol);
+        }
+
         public ISymbol GetSymbol(IModelNode modelNode)
         {
             return (ISymbol)modelNode.Payload;
         }
 
-        public IModelNode GetOrAddNode(ISymbol symbol)
+        public Maybe<IModelNode> TryGetOrAddNode(ISymbol symbol)
+        {
+            return IsModeledSymbol(symbol)
+                ? Maybe.Create(GetOrAddNode(symbol))
+                : Maybe<IModelNode>.Nothing;
+        }
+
+        [NotNull]
+        private IModelNode GetOrAddNode([NotNull] ISymbol symbol)
         {
             using (_asyncLock.Lock())
             {
@@ -228,7 +264,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             var presentableRelatedSymbolPairs = relatedSymbolPairs
                 .Select(GetOriginalDefinition)
-                .Where(i => !IsHidden(i.RelatedSymbol))
+                .Where(i => IsModeledSymbol(i.RelatedSymbol))
                 .ToList();
 
             foreach (var relatedSymbolPair in presentableRelatedSymbolPairs)

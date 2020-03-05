@@ -12,13 +12,17 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
     /// </summary>
     internal interface IRoslynBasedModelService
     {
-        [NotNull]
-        IModel LatestModel { get; }
+        [NotNull] IModel LatestModel { get; }
 
         /// <summary>
         /// Controls whether trivial types like object can be added to the model.
         /// </summary>
         bool ExcludeTrivialTypes { get; set; }
+
+        /// <summary>
+        /// Returns a value indicating whether the given symbol can be added to the model.
+        /// </summary>
+        bool IsModeledSymbol([NotNull] ISymbol symbol);
 
         /// <summary>
         /// Returns the Roslyn symbol for a given model node.
@@ -28,9 +32,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         /// <summary>
         /// Creates a model node from a roslyn symbol and adds it to the model or just returns it if the model already contains it.
+        /// Returns Maybe<see cref="Maybe{T}.Nothing"/> if the symbol is not modeled.
         /// </summary>
-        [NotNull]
-        IModelNode GetOrAddNode([NotNull] ISymbol symbol);
+        Maybe<IModelNode> TryGetOrAddNode([NotNull] ISymbol symbol);
 
         /// <summary>
         /// Creates a model relationship from 2 related roslyn symbols and adds it to the model or just returns it if the model already contains it.

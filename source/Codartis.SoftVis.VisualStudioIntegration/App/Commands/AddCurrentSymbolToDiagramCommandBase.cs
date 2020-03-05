@@ -15,7 +15,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         {
         }
 
-        public override async Task<bool> IsEnabledAsync() => (await RoslynWorkspaceProvider.TryGetCurrentSymbolAsync()).HasValue;
+        public override async Task<bool> IsEnabledAsync()
+        {
+            var maybeSymbol = await RoslynWorkspaceProvider.TryGetCurrentSymbolAsync();
+            return maybeSymbol.Select(RoslynBasedModelService.IsModeledSymbol).Match(i => i, () => false);
+        }
 
         protected async Task<Maybe<IModelNode>> TryAddCurrentSymbolToDiagramAsync()
         {
@@ -23,9 +27,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
             if (!maybeSymbol.HasValue)
                 return Maybe<IModelNode>.Nothing;
 
-            var modelNode = RoslynBasedModelService.GetOrAddNode(maybeSymbol.Value);
-            DiagramService.AddNode(modelNode.Id);
-            return Maybe.Create(modelNode);
+            var maybeNode = RoslynBasedModelService.TryGetOrAddNode(maybeSymbol.Value);
+            if (maybeNode.HasValue)
+                DiagramService.AddNode(maybeNode.Value.Id);
+
+            return maybeNode;
         }
     }
 }
