@@ -80,6 +80,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
                         i.Size,
                         Point2D.Zero, 
                         Size2D.Zero,
+                        0,
                         Maybe<ModelNodeId>.Nothing))
                 .OfType<IDiagramNode>()
                 .ToImmutableHashSet();

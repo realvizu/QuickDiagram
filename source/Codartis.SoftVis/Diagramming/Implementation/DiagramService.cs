@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using Codartis.SoftVis.Diagramming.Definition;
@@ -54,9 +53,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IObservable<DiagramEvent> DiagramChangedEventStream => _diagramChangedEventStream;
 
-        public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
+        public void AddNode(ModelNodeId nodeId)
         {
-            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.AddNode(nodeId, parentNodeId));
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.AddNode(nodeId));
+        }
+
+        public void UpdateParent(ModelNodeId nodeId, ModelNodeId? parentNodeId)
+        {
+            MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.UpdateParent(nodeId, parentNodeId));
         }
 
         public void UpdateSize(ModelNodeId nodeId, Size2D newSize)
@@ -123,8 +127,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var parentNodeId = GetParentDiagramNodeId(modelNodeId);
-                AddNode(modelNodeId, parentNodeId);
+                AddNode(modelNodeId);
 
                 progress?.Report(1);
             }
@@ -143,25 +146,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
                 progress?.Report(1);
             }
-        }
-
-        private ModelNodeId? GetParentDiagramNodeId(ModelNodeId modelNodeId)
-        {
-            var containerNodes = LatestDiagram.Model
-                .GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Container, recursive: false)
-                .ToList();
-
-            if (!containerNodes.Any())
-                return null;
-
-            if (containerNodes.Count > 1)
-                throw new Exception($"{modelNodeId} has more than 1 containers.");
-
-            var potentialContainerNode = containerNodes.First();
-            if (LatestDiagram.NodeExists(potentialContainerNode.Id))
-                return potentialContainerNode.Id;
-
-            return null;
         }
 
         private void MutateWithLockThenRaiseEvents([NotNull] Action<IDiagramMutator> diagramMutatorFunc)

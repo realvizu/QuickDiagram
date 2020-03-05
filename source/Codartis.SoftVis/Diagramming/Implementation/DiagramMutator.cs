@@ -21,18 +21,19 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             DiagramNodeMember.Size,
             DiagramNodeMember.ChildrenAreaSize,
-            DiagramNodeMember.RelativePosition
+            DiagramNodeMember.RelativePosition,
+            DiagramNodeMember.ParentNode
         };
 
         private static readonly DiagramNodeMember[] AbsolutePositionAffectingMembers =
         {
-            DiagramNodeMember.RelativePosition
+            DiagramNodeMember.RelativePosition,
         };
 
         private static readonly DiagramNodeMember[] ChildrenAbsolutePositionAffectingMembers =
         {
             DiagramNodeMember.AbsolutePosition,
-            DiagramNodeMember.ChildrenAreaTopLeft
+            DiagramNodeMember.ChildrenAreaTopLeft,
         };
 
         [NotNull] private readonly IDiagram _initialDiagram;
@@ -70,20 +71,36 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             return new DiagramEvent(_initialDiagram, newDiagram, _shapeEvents);
         }
 
-        public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
+        public void AddNode(ModelNodeId nodeId)
         {
-            if (_nodes.ContainsKey(nodeId))
-                return;
-
             var maybeModelNode = _model.TryGetNode(nodeId);
             if (!maybeModelNode.HasValue)
                 throw new Exception($"Node {nodeId} not found in model.");
 
-            var newNode = CreateNode(maybeModelNode.Value).WithParentNodeId(parentNodeId);
+            AddNodeCore(maybeModelNode.Value);
 
-            _nodes.Add(newNode.Id, newNode);
+            var parentNodeId = GetParentNodeId(nodeId);
+            if (parentNodeId != null && DiagramNodeExists(parentNodeId.Value))
+                UpdateParent(nodeId, parentNodeId);
 
-            _shapeEvents.Add(new DiagramNodeAddedEvent(newNode));
+            var childNodeIds = GetChildDiagramNodeIds(nodeId);
+            foreach (var childNodeId in childNodeIds)
+                UpdateParent(childNodeId, nodeId);
+        }
+
+        public void UpdateParent(ModelNodeId nodeId, ModelNodeId? parentNodeId)
+        {
+            UpdateNodeCore(
+                nodeId,
+                i => i.WithParentNode(parentNodeId, CalculateHierarchyLevel(parentNodeId)),
+                DiagramNodeMember.ParentNode);
+        }
+
+        private int CalculateHierarchyLevel(ModelNodeId? parentNodeId)
+        {
+            return parentNodeId.HasValue && DiagramNodeExists(parentNodeId.Value)
+                ? GetDiagramNode(parentNodeId.Value).HierarchyLevel + 1
+                : 0;
         }
 
         public void UpdateSize(ModelNodeId nodeId, Size2D newSize)
@@ -110,15 +127,26 @@ namespace Codartis.SoftVis.Diagramming.Implementation
                 DiagramNodeMember.ChildrenAreaTopLeft);
         }
 
+        private void AddNodeCore([NotNull] IModelNode modelNode)
+        {
+            if (DiagramNodeExists(modelNode.Id))
+                return;
+
+            var newNode = CreateNode(modelNode);
+            _nodes.Add(newNode.Id, newNode);
+
+            _shapeEvents.Add(new DiagramNodeAddedEvent(newNode));
+        }
+
         private void UpdateNodeCore(
             ModelNodeId nodeId,
             [NotNull] Func<IDiagramNode, IDiagramNode> nodeMutatorFunc,
             DiagramNodeMember updatedMember)
         {
-            if (!_nodes.ContainsKey(nodeId))
+            if (!DiagramNodeExists(nodeId))
                 return;
 
-            var oldNode = _nodes[nodeId];
+            var oldNode = GetDiagramNode(nodeId);
             var newNode = nodeMutatorFunc(oldNode);
 
             _nodes[newNode.Id] = newNode;
@@ -156,7 +184,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             if (!updatedNode.HasParent)
                 return;
 
-            var parentNode = _nodes[updatedNode.ParentNodeId.Value];
+            var parentNode = GetDiagramNode(updatedNode.ParentNodeId.Value);
 
             var newChildrenAreaSize = CalculateChildrenAreaSize(parentNode.Id);
 
@@ -172,10 +200,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void RemoveNode(ModelNodeId nodeId)
         {
-            if (!_nodes.ContainsKey(nodeId))
+            if (!DiagramNodeExists(nodeId))
                 return;
 
-            var oldNode = _nodes[nodeId];
+            var oldNode = GetDiagramNode(nodeId);
 
             RemoveAllConnectorsOfNode(oldNode);
             RemoveChildNodes(oldNode);
@@ -208,7 +236,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void AddConnector(ModelRelationshipId relationshipId)
         {
-            if (_connectors.ContainsKey(relationshipId))
+            if (DiagramConnectorExists(relationshipId))
                 return;
 
             var maybeRelationship = _model.TryGetRelationship(relationshipId);
@@ -223,10 +251,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void UpdateConnectorRoute(ModelRelationshipId relationshipId, Route newRoute)
         {
-            if (!_connectors.ContainsKey(relationshipId))
+            if (!DiagramConnectorExists(relationshipId))
                 return;
 
-            var oldConnector = _connectors[relationshipId];
+            var oldConnector = GetDiagramConnector(relationshipId);
             var newConnector = oldConnector.WithRoute(newRoute);
 
             _connectors[relationshipId] = newConnector;
@@ -236,10 +264,10 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public void RemoveConnector(ModelRelationshipId relationshipId)
         {
-            if (!_connectors.ContainsKey(relationshipId))
+            if (!DiagramConnectorExists(relationshipId))
                 return;
 
-            var oldConnector = _connectors[relationshipId];
+            var oldConnector = GetDiagramConnector(relationshipId);
 
             _connectors.Remove(relationshipId);
 
@@ -280,15 +308,15 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         private Point2D CalculateAbsolutePosition(ModelNodeId nodeId)
         {
-            if (!_nodes.ContainsKey(nodeId))
+            if (!DiagramNodeExists(nodeId))
                 throw new Exception($"Diagram node: {nodeId} not found.");
 
-            var diagramNode = _nodes[nodeId];
+            var diagramNode = GetDiagramNode(nodeId);
 
             return diagramNode.ParentNodeId.Match(
                 some =>
                 {
-                    var parentNode = _nodes[some];
+                    var parentNode = GetDiagramNode(some);
                     return parentNode.AbsoluteTopLeft + parentNode.ChildrenAreaTopLeft + ChildrenAreaPaddingVector + diagramNode.RelativeTopLeft;
                 },
                 () => diagramNode.RelativeTopLeft);
@@ -331,5 +359,40 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         {
             return _nodes.Values.Where(i => i.ParentNodeId.ToNullable() == diagramNodeId);
         }
+
+        private ModelNodeId? GetParentNodeId(ModelNodeId modelNodeId)
+        {
+            var containerNodes = _model
+                .GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Container, recursive: false)
+                .ToList();
+
+            if (!containerNodes.Any())
+                return null;
+
+            if (containerNodes.Count > 1)
+                throw new Exception($"{modelNodeId} has more than 1 containers.");
+
+            return containerNodes.First().Id;
+        }
+
+        [NotNull]
+        private List<ModelNodeId> GetChildDiagramNodeIds(ModelNodeId modelNodeId)
+        {
+            return _model
+                .GetRelatedNodes(modelNodeId, CommonDirectedModelRelationshipTypes.Contained, recursive: false)
+                .Select(i => i.Id)
+                .Where(DiagramNodeExists)
+                .ToList();
+        }
+
+        private bool DiagramNodeExists(ModelNodeId modelNodeId) => _nodes.ContainsKey(modelNodeId);
+
+        [NotNull]
+        private IDiagramNode GetDiagramNode(ModelNodeId modelNodeId) => _nodes[modelNodeId];
+
+        private bool DiagramConnectorExists(ModelRelationshipId modelRelationshipId) => _connectors.ContainsKey(modelRelationshipId);
+
+        [NotNull]
+        private IDiagramConnector GetDiagramConnector(ModelRelationshipId modelRelationshipId) => _connectors[modelRelationshipId];
     }
 }

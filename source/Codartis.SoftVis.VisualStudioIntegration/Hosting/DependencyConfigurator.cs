@@ -118,7 +118,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
             builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
             builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
-        }
+            builder.RegisterType<DiagramExtenderPlugin>().As<IDiagramPlugin>().SingleInstance();        }
 
         private static void RegisterHostComponents(ContainerBuilder builder, IVisualStudioServices visualStudioServices)
         {

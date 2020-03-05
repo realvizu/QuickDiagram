@@ -43,11 +43,16 @@ namespace Codartis.SoftVis.Diagramming.Definition
 
         Size2D ChildrenAreaSize { get; }
 
+        /// <summary>
+        /// This node's level in the parent-child hierarchy.
+        /// </summary>
+        int HierarchyLevel { get; }
+
         [NotNull]
         IDiagramNode WithModelNode([NotNull] IModelNode newModelNode);
 
         [NotNull]
-        IDiagramNode WithParentNodeId(ModelNodeId? newParentNodeId);
+        IDiagramNode WithParentNode(ModelNodeId? newParentNodeId, int newHierarchyLevel);
 
         [NotNull]
         IDiagramNode WithAbsoluteTopLeft(Point2D newAbsoluteTopLeft);

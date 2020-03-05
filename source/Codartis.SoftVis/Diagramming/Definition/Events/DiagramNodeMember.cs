@@ -12,6 +12,9 @@
         /// </summary>
         RelativePosition,
 
+        /// <summary>
+        /// The size of the whole node.
+        /// </summary>
         Size,
 
         /// <summary>
@@ -19,8 +22,12 @@
         /// </summary>
         ChildrenAreaTopLeft,
 
+        /// <summary>
+        /// The size of the children area.
+        /// </summary>
         ChildrenAreaSize,
 
-        ModelNode
+        ModelNode,
+        ParentNode
     }
 }

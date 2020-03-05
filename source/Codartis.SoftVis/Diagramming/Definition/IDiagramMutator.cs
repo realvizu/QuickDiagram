@@ -12,7 +12,8 @@ namespace Codartis.SoftVis.Diagramming.Definition
     /// </remarks>
     public interface IDiagramMutator
     {
-        void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null);
+        void AddNode(ModelNodeId nodeId);
+        void UpdateParent(ModelNodeId nodeId, ModelNodeId? parentNodeId);
         void UpdateSize(ModelNodeId nodeId, Size2D newSize);
         void UpdateNodeRelativeTopLeft(ModelNodeId nodeId, Point2D newRelativeTopLeft);
         void UpdateChildrenAreaTopLeft(ModelNodeId nodeId, Point2D newTopLeft);

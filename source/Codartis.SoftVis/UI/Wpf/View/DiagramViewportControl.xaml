@@ -65,6 +65,7 @@
                 <Setter Property="TopToAnimate" Value="{Binding Path=Rect.Y}" />
                 <Setter Property="Canvas.Left" Value="{Binding Path=Left, RelativeSource={RelativeSource Self}}" />
                 <Setter Property="Canvas.Top" Value="{Binding Path=Top, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Canvas.ZIndex" Value="{Binding Path=HierarchyLevel}"/>
             </Style>
 
             <Style x:Key="DiagramConnectorItemContainerStyle"

@@ -48,7 +48,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             var diagram = new DiagramBuilder(model).AddNodes("A").GetDiagram();
 
             var diagramMutator = CreateDiagramMutator(diagram);
-            diagramMutator.AddNode(childNode.Id, parentNode.Id);
+            diagramMutator.AddNode(childNode.Id);
             var diagramEvent = diagramMutator.GetDiagramEvent();
 
             diagramEvent.NewDiagram.Nodes.ShouldBeEquivalentById(parentNode.Id, childNode.Id);
@@ -57,33 +57,16 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                 {
                     var newNode = i.Should().BeOfType<DiagramNodeAddedEvent>().Which.NewNode;
                     newNode.Id.Should().Be(childNode.Id);
-                    newNode.ParentNodeId.Value.Should().Be(parentNode.Id);
+                },
+                i =>
+                {
+                    var @event = i.Should().BeOfType<DiagramNodeChangedEvent>().Which;
+                    @event.ChangedMember.Should().Be(DiagramNodeMember.ParentNode);
+                    @event.NewNode.Id.Should().Be(childNode.Id);
+                    @event.NewNode.ParentNodeId.Value.Should().Be(parentNode.Id);
                 }
-                );
+            );
         }
-
-        //[Fact]
-        //public void AddParentToExistingNode_Works()
-        //{
-        //    var model = _modelBuilder.AddNodes("A").AddChildNodes("A", "B").Model;
-        //    var parentNode = _modelBuilder.GetNode("A");
-        //    var childNode = _modelBuilder.GetNode("B");
-
-        //    var diagram = new DiagramBuilder(model).AddNodes("B").GetDiagram();
-
-        //    var diagramMutator = CreateDiagramMutator(diagram);
-        //    diagramMutator.AddNode(childNode.Id, parentNode.Id);
-        //    var diagramEvent = diagramMutator.GetDiagramEvent();
-
-        //    diagramEvent.NewDiagram.Nodes.ShouldBeEquivalentById(parentNode.Id, childNode.Id);
-        //    diagramEvent.ShapeEvents.Should().SatisfyRespectively(
-        //        i =>
-        //        {
-        //            var newNode = i.Should().BeOfType<DiagramNodeAddedEvent>().Which.NewNode;
-        //            newNode.Id.Should().Be(childNode.Id);
-        //            newNode.ParentNodeId.Value.Should().Be(parentNode.Id);
-        //        });
-        //}
 
         [Fact]
         public void UpdateNodeSize_Works()
@@ -115,7 +98,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagram = new DiagramBuilder(model)
                 .AddNodes("A")
-                .AddChildNodes("A", ("B", (1, 1)))
+                .AddNodes(("B", (1, 1)))
                 .UpdateNodeTopLeft("B", (0, 0))
                 .GetDiagram();
 

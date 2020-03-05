@@ -20,6 +20,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private Size _childrenAreaSize;
         private bool _hasChildren;
         private Point _childrenAreaTopLeft;
+        private int _hierarchyLevel;
 
         public IDiagramNodeHeaderUi Header { get; }
 
@@ -134,6 +135,25 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
+        /// <summary>
+        /// This node's level in the parent-child hierarchy.
+        /// </summary>
+        /// <remarks>
+        /// Important in displaying the lower level nodes on top of the higher level ones.
+        /// </remarks>
+        public int HierarchyLevel
+        {
+            get { return _hierarchyLevel; }
+            set
+            {
+                if (_hierarchyLevel != value)
+                {
+                    _hierarchyLevel = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void Remove() => RemoveRequested?.Invoke(DiagramNode);
 
         public void ShowRelatedModelNodes(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
@@ -189,6 +209,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             Name = diagramNode.ModelNode.Name;
             ChildrenAreaSize = diagramNode.ChildrenAreaSize.ToWpf();
             HasChildren = GetHasChildren(diagramNode);
+            HierarchyLevel = diagramNode.HierarchyLevel;
             // Must NOT populate size from model because its value flows from the controls to the models.
         }
 

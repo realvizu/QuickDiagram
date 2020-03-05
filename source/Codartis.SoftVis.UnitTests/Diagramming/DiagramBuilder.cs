@@ -4,7 +4,6 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Geometry;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.Util;
 using JetBrains.Annotations;
 using MoreLinq;
 
@@ -31,9 +30,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         public IDiagram GetDiagram() => _diagramMutator.GetDiagramEvent().NewDiagram;
 
         [NotNull]
-        public DiagramBuilder AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
+        public DiagramBuilder AddNode(ModelNodeId nodeId)
         {
-            _diagramMutator.AddNode(nodeId, parentNodeId);
+            _diagramMutator.AddNode(nodeId);
             return this;
         }
 
@@ -51,17 +50,6 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
         {
             foreach (var nodeSpecification in nodeSpecifications)
                 AddNode(nodeSpecification.name, nodeSpecification.size);
-
-            return this;
-        }
-
-        [NotNull]
-        public DiagramBuilder AddChildNodes(
-            [NotNull] string parentNodeName,
-            [NotNull] params (string name, Size2D size)[] childNodeSpecifications)
-        {
-            foreach (var childNodeSpecification in childNodeSpecifications)
-                AddNode(childNodeSpecification.name, childNodeSpecification.size, parentNodeName);
 
             return this;
         }
@@ -125,8 +113,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             while (modelNodes.Any())
             {
                 var node = modelNodes.First(i => !HasParentInModel(i.Id) || DiagramContainsItsParent(i.Id));
-                var maybeParentNode = GetDiagram().Model.TryGetParentNode(node.Id);
-                AddNode(node.Id, maybeParentNode.FromMaybe()?.Id);
+                AddNode(node.Id);
                 modelNodes.Remove(node);
             }
 
@@ -167,14 +154,10 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             return GetDiagram().Connectors.Single(i => i.Source == sourceNode.Id && i.Target == targetNode.Id);
         }
 
-        private void AddNode([NotNull] string nodeName, Size2D nodeSize, [CanBeNull] string parentNodeName = null)
+        private void AddNode([NotNull] string nodeName, Size2D nodeSize)
         {
-            var parentNodeId = parentNodeName == null
-                ? (ModelNodeId?)null
-                : GetModelNode(parentNodeName).Id;
-
             var modelNode = GetModelNode(nodeName);
-            _diagramMutator.AddNode(modelNode.Id, parentNodeId);
+            _diagramMutator.AddNode(modelNode.Id);
             _diagramMutator.UpdateSize(modelNode.Id, nodeSize);
         }
 

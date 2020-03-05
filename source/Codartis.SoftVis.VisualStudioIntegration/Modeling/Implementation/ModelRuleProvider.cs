@@ -27,8 +27,21 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 },
                 [ModelRelationshipStereotypes.Association] = new (ModelNodeStereotype, ModelNodeStereotype?)[]
                 {
-                    (ModelNodeStereotypes.Property, ModelNodeStereotypes.Class),
-                    (ModelNodeStereotypes.Property, ModelNodeStereotypes.Interface)
+                    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Class),
+                    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Interface),
+                    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Struct),
+                    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Enum),
+                    (ModelNodeStereotypes.Class, ModelNodeStereotypes.Delegate),
+                    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Class),
+                    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Interface),
+                    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Struct),
+                    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Enum),
+                    (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Delegate),
+                    (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Class),
+                    (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Interface),
+                    (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Struct),
+                    (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Enum),
+                    (ModelNodeStereotypes.Struct, ModelNodeStereotypes.Delegate),
                 },
                 [ModelRelationshipStereotypes.Implementation] = new (ModelNodeStereotype, ModelNodeStereotype?)[]
                 {
