@@ -1,5 +1,7 @@
-﻿using Codartis.SoftVis.Modeling.Definition;
+﻿using System;
+using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.TestHostApp.Modeling;
+using Codartis.Util;
 
 namespace Codartis.SoftVis.TestHostApp.TestData
 {
@@ -22,11 +24,13 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             var node = new ClassNode(name, isAbstract);
             ModelService.AddNode(node);
 
-            if (baseName != null)
-            {
-                var baseNode = ModelService.GetTestNodeByName(baseName);
-                AddInheritance(node, baseNode);
-            }
+            if (baseName == null)
+                return this;
+
+            ModelService.TryGetTestNodeByName(baseName).Match(
+                some => AddBase(name, baseName),
+                () => throw new Exception($"Base {baseName} wa not found.")
+            );
 
             return this;
         }
@@ -36,40 +40,51 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             var node = new InterfaceNode(name);
             ModelService.AddNode(node);
 
-            if (baseName != null)
-            {
-                var baseNode = ModelService.GetTestNodeByName(baseName);
-                AddInheritance(node, baseNode);
-            }
+            if (baseName == null)
+                return this;
+
+            ModelService.TryGetTestNodeByName(baseName).Match(
+                some => AddBase(name, baseName),
+                () => throw new Exception($"Base {baseName} wa not found.")
+            );
 
             return this;
         }
 
         public TestModelBuilder AddBase(string name, string baseName)
         {
-            var node = ModelService.GetTestNodeByName(name);
-            var baseNode = ModelService.GetTestNodeByName(baseName);
-            AddInheritance(node, baseNode);
+            AddRelationship(name, baseName, ModelRelationshipStereotypes.Inheritance);
             return this;
         }
 
         public TestModelBuilder AddImplements(string name, string interfaceName)
         {
-            var node = ModelService.GetTestNodeByName(name);
-            var interfaceNode = ModelService.GetTestNodeByName(interfaceName);
-            AddImplements(node, interfaceNode);
+            AddRelationship(name, interfaceName, ModelRelationshipStereotypes.Implementation);
             return this;
         }
 
         public TestModelBuilder AddProperty(string typeName, string propertyName, string propertyTypeName)
         {
-            var ownerTypeNode = ModelService.GetTestNodeByName(typeName);
+            var ownerTypeNode = typeName == null ? null : ModelService.TryGetTestNodeByName(typeName).Value;
+
             var propertyNode = new PropertyNode(propertyName);
             ModelService.AddNode(propertyNode, ownerTypeNode);
 
-            var propertyTypeNode = ModelService.GetTestNodeByName(propertyTypeName);
-            AddRelationship(propertyNode, propertyTypeNode, ModelRelationshipStereotypes.Association);
+            if (propertyTypeName != null)
+                AddAssociation(propertyName, propertyTypeName);
 
+            return this;
+        }
+
+        public TestModelBuilder AddChild(string parentName, string childName)
+        {
+            AddRelationship(parentName, childName, ModelRelationshipStereotype.Containment);
+            return this;
+        }
+
+        public TestModelBuilder AddAssociation(string sourceName, string targetName)
+        {
+            AddRelationship(sourceName, targetName, ModelRelationshipStereotypes.Association);
             return this;
         }
 
@@ -79,21 +94,11 @@ namespace Codartis.SoftVis.TestHostApp.TestData
             return this;
         }
 
-        private void AddInheritance(ITestNode node, ITestNode baseNode)
+        private void AddRelationship(string sourceName, string targetName, ModelRelationshipStereotype stereotype)
         {
-            AddRelationship(node, baseNode, ModelRelationshipStereotypes.Inheritance);
-        }
-
-        private void AddImplements(ITestNode node, ITestNode baseNode)
-        {
-            AddRelationship(node, baseNode, ModelRelationshipStereotypes.Implementation);
-        }
-
-        private void AddRelationship(ITestNode node, ITestNode baseNode, ModelRelationshipStereotype stereotype)
-        {
-            var underlyingNode = ModelService.GetUnderlyingNode(node);
-            var underlyingBaseNode = ModelService.GetUnderlyingNode(baseNode);
-            ModelService.AddRelationship(underlyingNode.Id, underlyingBaseNode.Id, stereotype);
+            var parentNode = ModelService.TryGetUnderlyingNodeByName(sourceName).Value;
+            var childNode = ModelService.TryGetUnderlyingNodeByName(targetName).Value;
+            ModelService.AddRelationship(parentNode.Id, childNode.Id, stereotype);
         }
     }
 }

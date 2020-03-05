@@ -10,11 +10,20 @@ namespace Codartis.SoftVis.TestHostApp.TestData
 
             modelBuilder
 
+                .AddProperty(null,"P1", null)
+                .EndGroup()
+
                 .AddClass("W1")
+                .AddChild("W1", "P1")
+                .EndGroup()
+
+                .AddProperty("W1", "P2_WithLongName", null)
+                .EndGroup()
+
                 .AddClass("W2")
+                .AddAssociation("P1", "W2")
+                .AddAssociation("P2_WithLongName", "W2")
                 .AddClass("W3")
-                .AddProperty("W1", "P1", "W2")
-                .AddProperty("W1", "P2_WithLongName", "W2")
                 .AddProperty("W2", "P3", "W3")
                 .AddProperty("W3", "P4", "W1")
                 .EndGroup()

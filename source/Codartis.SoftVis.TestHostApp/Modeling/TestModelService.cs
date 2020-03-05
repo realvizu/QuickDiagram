@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
@@ -54,10 +55,14 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         }
 
         public IModelNode GetUnderlyingNode(ITestNode node) => GetWrapperNode(node);
-
-        public ITestNode GetTestNodeByName(string name)
+        public Maybe<IModelNode> TryGetUnderlyingNodeByName(string name)
         {
-            return (ITestNode)_modelService.LatestModel.Nodes.Single(i => i.Name.Equals(name)).Payload;
+            return Maybe.Create(_modelService.LatestModel.Nodes.SingleOrDefault(i => i.Name.Equals(name)));
+        }
+
+        public Maybe<ITestNode> TryGetTestNodeByName(string name)
+        {
+            return TryGetUnderlyingNodeByName(name).Select(i => (ITestNode)i.Payload);
         }
 
         private void AddItemToCurrentGroup(IModelNode modelItem)

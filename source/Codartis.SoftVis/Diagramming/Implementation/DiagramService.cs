@@ -57,10 +57,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public void AddNode(ModelNodeId nodeId, ModelNodeId? parentNodeId = null)
         {
             MutateWithLockThenRaiseEvents(diagramMutator => diagramMutator.AddNode(nodeId, parentNodeId));
-
-            // Temp
-            foreach (var relatedNode in LatestDiagram.Model.GetRelatedNodes(nodeId, CommonDirectedModelRelationshipTypes.Contained))
-                AddNode(relatedNode.Id, nodeId);
         }
 
         public void UpdateSize(ModelNodeId nodeId, Size2D newSize)

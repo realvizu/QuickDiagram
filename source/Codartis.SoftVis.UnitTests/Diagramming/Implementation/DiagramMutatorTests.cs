@@ -39,7 +39,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         }
 
         [Fact]
-        public void AddNodeToParent_Works()
+        public void AddChildToExistingNode_Works()
         {
             var model = _modelBuilder.AddNodes("A").AddChildNodes("A", "B").Model;
             var parentNode = _modelBuilder.GetNode("A");
@@ -58,8 +58,32 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
                     var newNode = i.Should().BeOfType<DiagramNodeAddedEvent>().Which.NewNode;
                     newNode.Id.Should().Be(childNode.Id);
                     newNode.ParentNodeId.Value.Should().Be(parentNode.Id);
-                });
+                }
+                );
         }
+
+        //[Fact]
+        //public void AddParentToExistingNode_Works()
+        //{
+        //    var model = _modelBuilder.AddNodes("A").AddChildNodes("A", "B").Model;
+        //    var parentNode = _modelBuilder.GetNode("A");
+        //    var childNode = _modelBuilder.GetNode("B");
+
+        //    var diagram = new DiagramBuilder(model).AddNodes("B").GetDiagram();
+
+        //    var diagramMutator = CreateDiagramMutator(diagram);
+        //    diagramMutator.AddNode(childNode.Id, parentNode.Id);
+        //    var diagramEvent = diagramMutator.GetDiagramEvent();
+
+        //    diagramEvent.NewDiagram.Nodes.ShouldBeEquivalentById(parentNode.Id, childNode.Id);
+        //    diagramEvent.ShapeEvents.Should().SatisfyRespectively(
+        //        i =>
+        //        {
+        //            var newNode = i.Should().BeOfType<DiagramNodeAddedEvent>().Which.NewNode;
+        //            newNode.Id.Should().Be(childNode.Id);
+        //            newNode.ParentNodeId.Value.Should().Be(parentNode.Id);
+        //        });
+        //}
 
         [Fact]
         public void UpdateNodeSize_Works()

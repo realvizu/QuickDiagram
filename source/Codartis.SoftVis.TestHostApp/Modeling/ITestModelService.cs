@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Codartis.SoftVis.Modeling.Definition;
+using Codartis.Util;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp.Modeling
@@ -22,7 +23,7 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
         [NotNull]
         IModelNode GetUnderlyingNode([NotNull] ITestNode node);
 
-        [NotNull]
-        ITestNode GetTestNodeByName([NotNull] string name);
+        Maybe<IModelNode> TryGetUnderlyingNodeByName([NotNull] string name);
+        Maybe<ITestNode> TryGetTestNodeByName([NotNull] string name);
     }
 }

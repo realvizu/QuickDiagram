@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using Codartis.Util;
 using EnvDTE;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -22,9 +23,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     {
         private const string CSharpContentTypeName = "CSharp";
 
+        [NotNull]
         private readonly IVisualStudioServices _visualStudioServices;
 
-        public HostWorkspaceGateway(IVisualStudioServices visualStudioServices)
+        public HostWorkspaceGateway([NotNull] IVisualStudioServices visualStudioServices)
         {
             _visualStudioServices = visualStudioServices;
         }

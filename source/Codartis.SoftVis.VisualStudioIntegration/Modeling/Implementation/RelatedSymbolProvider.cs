@@ -276,7 +276,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         private async Task<Solution> GetCurrentSolutionAsync()
         {
             var workspace = await _roslynWorkspaceProvider.GetWorkspaceAsync();
-            return workspace?.CurrentSolution;
+            return workspace.CurrentSolution;
         }
     }
 }
