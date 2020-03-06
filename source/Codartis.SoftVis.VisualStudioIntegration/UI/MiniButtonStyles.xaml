@@ -22,7 +22,7 @@
                                  Init="{StaticResource DefaultRelatedNodeCuePlacementMap}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}"
-                                   Vertical="Top" Horizontal="Right" Translate="-0.5,39.5" />
+                                   Vertical="Bottom" Horizontal="Right" Translate="-0.5,-0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}"
                                    Vertical="Top" Horizontal="Center" Translate="-9,0.5" />
@@ -36,6 +36,12 @@
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementerType}"
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-0.5" />
 
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatedType}"
+                                   Vertical="Center" Horizontal="Right" Translate="-0.5,0" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatingType}"
+                                   Vertical="Center" Horizontal="Left" Translate="0.5,0" />
+
     </markupExtensions:Dictionary>
 
     <markupExtensions:Dictionary x:Key="MiniButtonPlacementMap"
@@ -44,7 +50,7 @@
                                  Init="{StaticResource DefaultMiniButtonPlacementMap}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}"
-                                   Vertical="Top" Horizontal="Right" Translate="-3,37" />
+                                   Vertical="Bottom" Horizontal="Right" Translate="-3,-3" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}"
                                    Vertical="Top" Horizontal="Center" Translate="-9,3" />
@@ -57,6 +63,12 @@
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementerType}"
                                    Vertical="Bottom" Horizontal="Center" Translate="9,-3" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatedType}"
+                                   Vertical="Center" Horizontal="Right" Translate="-3,0" />
+
+        <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatingType}"
+                                   Vertical="Center" Horizontal="Left" Translate="3,0" />
 
     </markupExtensions:Dictionary>
 
