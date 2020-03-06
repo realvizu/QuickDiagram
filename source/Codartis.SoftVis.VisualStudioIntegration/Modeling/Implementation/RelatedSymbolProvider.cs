@@ -65,6 +65,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 {
                     [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
                 },
+                [ModelNodeStereotypes.Field] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
+                {
+                    [CommonDirectedModelRelationshipTypes.Container] = GetContainerTypeAsync,
+                },
+                [ModelNodeStereotypes.Property] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
+                {
+                    [CommonDirectedModelRelationshipTypes.Container] = GetContainerTypeAsync,
+                },
+                [ModelNodeStereotypes.Method] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
+                {
+                    [CommonDirectedModelRelationshipTypes.Container] = GetContainerTypeAsync,
+                },
+                [ModelNodeStereotypes.Event] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
+                {
+                    [CommonDirectedModelRelationshipTypes.Container] = GetContainerTypeAsync,
+                },
             };
         }
 
@@ -248,6 +264,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 IFieldSymbol fieldSymbol => fieldSymbol.Type,
                 _ => throw new Exception($"Unexpected symbol type {symbol.GetType().Name}")
             };
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        private static Task<IEnumerable<RelatedSymbolPair>> GetContainerTypeAsync([NotNull] ISymbol symbol)
+        {
+            var result = new List<RelatedSymbolPair>();
+
+            if (symbol.ContainingType != null)
+                result.Add(new RelatedSymbolPair(symbol, symbol.ContainingType, CommonDirectedModelRelationshipTypes.Container));
+
+            return Task.FromResult((IEnumerable<RelatedSymbolPair>)result);
         }
 
         private static bool IsModeledMember([NotNull] ISymbol i) => i.Kind.In(MemberSymbolKinds);

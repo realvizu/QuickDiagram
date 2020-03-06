@@ -126,6 +126,90 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
             );
         }
 
+        [Fact]
+        public async Task FindRelatedSymbols_ForAField_Async()
+        {
+            var modelProvider = CreateTestModelProvider();
+            modelProvider.AddSource(
+                @"
+                class C1
+                {
+                    C2 _f1;
+                }
+                class C2 {}
+                ");
+
+            var baseSymbol = await modelProvider.GetSymbolAsync("_f1");
+            var relatedSymbolPairs = await CreateRelatedSymbolProvider(modelProvider).GetRelatedSymbolsAsync(baseSymbol);
+
+            relatedSymbolPairs.Should().BeEquivalentTo(
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), CommonDirectedModelRelationshipTypes.Container)
+            );
+        }
+
+        [Fact]
+        public async Task FindRelatedSymbols_ForAProperty_Async()
+        {
+            var modelProvider = CreateTestModelProvider();
+            modelProvider.AddSource(
+                @"
+                class C1
+                {
+                    C2 P1 {get; set; }
+                }
+                class C2 {}
+                ");
+
+            var baseSymbol = await modelProvider.GetSymbolAsync("P1");
+            var relatedSymbolPairs = await CreateRelatedSymbolProvider(modelProvider).GetRelatedSymbolsAsync(baseSymbol);
+
+            relatedSymbolPairs.Should().BeEquivalentTo(
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), CommonDirectedModelRelationshipTypes.Container)
+            );
+        }
+
+        [Fact]
+        public async Task FindRelatedSymbols_ForAMethod_Async()
+        {
+            var modelProvider = CreateTestModelProvider();
+            modelProvider.AddSource(
+                @"
+                class C1
+                {
+                    C2 M1()
+                }
+                class C2 {}
+                ");
+
+            var baseSymbol = await modelProvider.GetSymbolAsync("M1");
+            var relatedSymbolPairs = await CreateRelatedSymbolProvider(modelProvider).GetRelatedSymbolsAsync(baseSymbol);
+
+            relatedSymbolPairs.Should().BeEquivalentTo(
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), CommonDirectedModelRelationshipTypes.Container)
+            );
+        }
+
+        [Fact]
+        public async Task FindRelatedSymbols_ForAnEvent_Async()
+        {
+            var modelProvider = CreateTestModelProvider();
+            modelProvider.AddSource(
+                @"
+                class C1
+                {
+                    event D1 E1;
+                }
+                delegate D1();
+                ");
+
+            var baseSymbol = await modelProvider.GetSymbolAsync("E1");
+            var relatedSymbolPairs = await CreateRelatedSymbolProvider(modelProvider).GetRelatedSymbolsAsync(baseSymbol);
+
+            relatedSymbolPairs.Should().BeEquivalentTo(
+                new RelatedSymbolPair(baseSymbol, await modelProvider.GetSymbolAsync("C1"), CommonDirectedModelRelationshipTypes.Container)
+            );
+        }
+
         [NotNull]
         private static TestWorkspaceProvider CreateTestModelProvider() => new TestWorkspaceProvider();
 
