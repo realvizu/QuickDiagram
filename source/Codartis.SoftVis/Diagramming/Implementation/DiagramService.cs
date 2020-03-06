@@ -24,6 +24,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IDiagram LatestDiagram { get; private set; }
 
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
+        [NotNull] private readonly IModelRelationshipFeatureProvider _modelRelationshipFeatureProvider;
         private readonly double _childrenAreaPadding;
         [NotNull] private readonly object _diagramUpdateLockObject;
         [NotNull] private readonly ISubject<DiagramEvent> _diagramChangedEventStream;
@@ -34,10 +35,12 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public DiagramService(
             [NotNull] IDiagram diagram,
             [NotNull] IConnectorTypeResolver connectorTypeResolver,
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider,
             double childrenAreaPadding = DefaultChildrenAreaPadding)
         {
             LatestDiagram = diagram;
             _connectorTypeResolver = connectorTypeResolver;
+            _modelRelationshipFeatureProvider = modelRelationshipFeatureProvider;
             _childrenAreaPadding = childrenAreaPadding;
             _diagramUpdateLockObject = new object();
             _diagramChangedEventStream = new Subject<DiagramEvent>();
@@ -46,8 +49,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public DiagramService(
             [NotNull] IModel model,
             [NotNull] IConnectorTypeResolver connectorTypeResolver,
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider,
             double childrenAreaPadding = DefaultChildrenAreaPadding)
-            : this(ImmutableDiagram.Create(model), connectorTypeResolver, childrenAreaPadding)
+            : this(
+                ImmutableDiagram.Create(model, modelRelationshipFeatureProvider),
+                connectorTypeResolver,
+                modelRelationshipFeatureProvider,
+                childrenAreaPadding)
         {
         }
 
@@ -171,7 +179,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull]
         private DiagramMutator CreateDiagramMutator()
         {
-            return new DiagramMutator(LatestDiagram, _connectorTypeResolver, _childrenAreaPadding);
+            return new DiagramMutator(
+                LatestDiagram,
+                _connectorTypeResolver,
+                _modelRelationshipFeatureProvider,
+                _childrenAreaPadding);
         }
     }
 }

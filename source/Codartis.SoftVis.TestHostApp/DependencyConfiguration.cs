@@ -9,6 +9,7 @@ using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Services;
 using Codartis.SoftVis.Services.Plugins;
 using Codartis.SoftVis.TestHostApp.Diagramming;
+using Codartis.SoftVis.TestHostApp.Modeling;
 using Codartis.SoftVis.TestHostApp.UI;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf;
@@ -16,14 +17,16 @@ using Codartis.SoftVis.UI.Wpf.View;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.Util.Ids;
 using Codartis.Util.UI.Wpf.Resources;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.TestHostApp
 {
     public static class DependencyConfiguration
     {
-        private const string DiagramStylesXaml = "Resources/Styles.xaml";
+        [NotNull] private const string DiagramStylesXaml = "Resources/Styles.xaml";
         private const double ChildrenAreaPadding = 2;
 
+        [NotNull]
         public static IContainer Create()
         {
             var builder = new ContainerBuilder();
@@ -40,7 +43,7 @@ namespace Codartis.SoftVis.TestHostApp
             return builder.Build();
         }
 
-        private static void RegisterModelComponents(ContainerBuilder builder)
+        private static void RegisterModelComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<SequenceGenerator>().As<ISequenceProvider>().SingleInstance();
 
@@ -51,9 +54,10 @@ namespace Codartis.SoftVis.TestHostApp
                 .SingleInstance();
 
             builder.RegisterType<TestRelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>();
+            builder.RegisterType<ModelRelationshipFeatureProvider>().As<IModelRelationshipFeatureProvider>();
         }
 
-        private static void RegisterDiagramComponents(ContainerBuilder builder)
+        private static void RegisterDiagramComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<DiagramService>().As<IDiagramService>()
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
@@ -64,7 +68,7 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
         }
 
-        private static void RegisterDiagramUiComponents(ContainerBuilder builder)
+        private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<WpfDiagramUiService>().As<IDiagramUiService>();
 
@@ -87,7 +91,7 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DataCloningDiagramImageCreator>().As<IDiagramImageCreator>();
         }
 
-        private static void RegisterDiagramPlugins(ContainerBuilder builder)
+        private static void RegisterDiagramPlugins([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>();
             builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>();

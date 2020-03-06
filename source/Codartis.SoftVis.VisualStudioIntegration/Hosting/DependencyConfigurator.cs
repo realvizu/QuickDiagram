@@ -20,16 +20,18 @@ using Codartis.SoftVis.VisualStudioIntegration.Plugins;
 using Codartis.SoftVis.VisualStudioIntegration.UI;
 using Codartis.Util.Ids;
 using Codartis.Util.UI.Wpf.Resources;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 {
     public static class DependencyConfigurator
     {
-        private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
+        [NotNull] private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
         private const double ChildrenAreaPadding = 2;
 
-        public static IContainer CreateDependencyContainer(IVisualStudioServices visualStudioServices)
+        [NotNull]
+        public static IContainer CreateDependencyContainer([NotNull] IVisualStudioServices visualStudioServices)
         {
             var builder = new ContainerBuilder();
 
@@ -46,7 +48,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return builder.Build();
         }
 
-        private static void RegisterModelComponents(ContainerBuilder builder)
+        private static void RegisterModelComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<SequenceGenerator>().As<ISequenceProvider>().SingleInstance();
             builder.RegisterType<ModelRuleProvider>().As<IModelRuleProvider>().SingleInstance();
@@ -69,10 +71,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>().SingleInstance();
             builder.RegisterType<RelatedSymbolProvider>().As<IRelatedSymbolProvider>().SingleInstance();
+            builder.RegisterType<ModelRelationshipFeatureProvider>().As<IModelRelationshipFeatureProvider>().SingleInstance();
             builder.RegisterType<RoslynBasedModelService>().As<IRoslynBasedModelService>().SingleInstance();
         }
 
-        private static void RegisterDiagramComponents(ContainerBuilder builder)
+        private static void RegisterDiagramComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<DiagramService>().As<IDiagramService>()
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding)
@@ -85,7 +88,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>().SingleInstance();
         }
 
-        private static void RegisterDiagramUiComponents(ContainerBuilder builder)
+        private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<DiagramWindowService>().As<IDiagramUiService>().SingleInstance();
 
@@ -112,15 +115,16 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<DataCloningDiagramImageCreator>().As<IDiagramImageCreator>().SingleInstance();
         }
 
-        private static void RegisterDiagramPlugins(ContainerBuilder builder)
+        private static void RegisterDiagramPlugins([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<AutoLayoutDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
             builder.RegisterType<ConnectorHandlerDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
             builder.RegisterType<ModelTrackingDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
             builder.RegisterType<ModelExtenderDiagramPlugin>().As<IDiagramPlugin>().SingleInstance();
-            builder.RegisterType<DiagramExtenderPlugin>().As<IDiagramPlugin>().SingleInstance();        }
+            builder.RegisterType<DiagramExtenderPlugin>().As<IDiagramPlugin>().SingleInstance();
+        }
 
-        private static void RegisterHostComponents(ContainerBuilder builder, IVisualStudioServices visualStudioServices)
+        private static void RegisterHostComponents([NotNull] ContainerBuilder builder, [NotNull] IVisualStudioServices visualStudioServices)
         {
             var softVisPackage = new TypedParameter(typeof(IVisualStudioServices), visualStudioServices);
             builder.RegisterType<HostWorkspaceGateway>().WithParameter(softVisPackage).As<IRoslynWorkspaceProvider>().SingleInstance();

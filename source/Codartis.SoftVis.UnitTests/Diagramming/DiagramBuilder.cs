@@ -15,6 +15,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
     /// </summary>
     public sealed class DiagramBuilder
     {
+        private static readonly IModelRelationshipFeatureProvider DummyModelRelationshipFeatureProvider = new DummyModelRelationshipFeatureProvider();
+
         private readonly DiagramMutator _diagramMutator;
 
         public DiagramBuilder(
@@ -22,8 +24,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             IConnectorTypeResolver connectorTypeResolver = null,
             double childrenAreaPadding = 1)
         {
-            var diagram = ImmutableDiagram.Create(model);
-            _diagramMutator = new DiagramMutator(diagram, connectorTypeResolver ?? new DummyConnectorTypeResolver(), childrenAreaPadding);
+            var diagram = ImmutableDiagram.Create(model, DummyModelRelationshipFeatureProvider);
+            _diagramMutator = new DiagramMutator(
+                diagram,
+                connectorTypeResolver ?? new DummyConnectorTypeResolver(),
+                DummyModelRelationshipFeatureProvider,
+                childrenAreaPadding);
         }
 
         [NotNull]
@@ -176,12 +182,5 @@ namespace Codartis.SoftVis.UnitTests.Diagramming
             return maybeParent.HasValue && GetDiagram().TryGetNode(maybeParent.Value.Id).HasValue;
         }
 
-        /// <summary>
-        /// A dummy resolver that always returns Dependency connector type.
-        /// </summary>
-        private sealed class DummyConnectorTypeResolver : IConnectorTypeResolver
-        {
-            public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype) => ConnectorTypes.Dependency;
-        }
     }
 }

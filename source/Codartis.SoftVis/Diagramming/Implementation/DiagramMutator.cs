@@ -39,6 +39,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull] private readonly IDiagram _initialDiagram;
         [NotNull] private IModel _model;
         [NotNull] private readonly IConnectorTypeResolver _connectorTypeResolver;
+        [NotNull] private readonly IModelRelationshipFeatureProvider _modelRelationshipFeatureProvider;
         private readonly double _childrenAreaPadding;
 
         [NotNull] private readonly IDictionary<ModelNodeId, IDiagramNode> _nodes;
@@ -48,11 +49,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public DiagramMutator(
             [NotNull] IDiagram diagram,
             [NotNull] IConnectorTypeResolver connectorTypeResolver,
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider,
             double childrenAreaPadding)
         {
             _initialDiagram = diagram;
             _model = diagram.Model;
             _connectorTypeResolver = connectorTypeResolver;
+            _modelRelationshipFeatureProvider = modelRelationshipFeatureProvider;
             _childrenAreaPadding = childrenAreaPadding;
             _nodes = diagram.Nodes.ToDictionary(i => i.Id);
             _connectors = diagram.Connectors.ToDictionary(i => i.Id);
@@ -66,7 +69,8 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             var newDiagram = new ImmutableDiagram(
                 _model,
                 _nodes.ToImmutableDictionary(),
-                _connectors.ToImmutableDictionary());
+                _connectors.ToImmutableDictionary(),
+                _modelRelationshipFeatureProvider);
 
             return new DiagramEvent(_initialDiagram, newDiagram, _shapeEvents);
         }

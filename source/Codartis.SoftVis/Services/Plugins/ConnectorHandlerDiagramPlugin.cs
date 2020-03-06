@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
+﻿using System.Linq;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
@@ -11,9 +12,14 @@ namespace Codartis.SoftVis.Services.Plugins
     /// </summary>
     public sealed class ConnectorHandlerDiagramPlugin : ConnectorManipulatorDiagramPluginBase
     {
-        public ConnectorHandlerDiagramPlugin([NotNull] IDiagramService diagramService)
+        [NotNull] private readonly IModelRelationshipFeatureProvider _modelRelationshipFeatureProvider;
+
+        public ConnectorHandlerDiagramPlugin(
+            [NotNull] IDiagramService diagramService,
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider)
             : base(diagramService)
         {
+            _modelRelationshipFeatureProvider = modelRelationshipFeatureProvider;
             DiagramService.AfterDiagramChanged += OnDiagramChanged;
         }
 
@@ -31,7 +37,7 @@ namespace Codartis.SoftVis.Services.Plugins
                 ProcessDiagramChange(change, model, diagram);
         }
 
-        private void ProcessDiagramChange(DiagramShapeEventBase diagramShapeEvent, IModel model, IDiagram diagram)
+        private void ProcessDiagramChange([NotNull] DiagramShapeEventBase diagramShapeEvent, [NotNull] IModel model, [NotNull] IDiagram diagram)
         {
             switch (diagramShapeEvent)
             {
@@ -56,9 +62,9 @@ namespace Codartis.SoftVis.Services.Plugins
             }
         }
 
-        private void HideRedundantConnectors(IDiagram diagram)
+        private void HideRedundantConnectors([NotNull] IDiagram diagram)
         {
-            foreach (var connector in diagram.Connectors)
+            foreach (var connector in diagram.Connectors.Where(i => _modelRelationshipFeatureProvider.IsTransitive(i.ModelRelationship.Stereotype)))
                 if (diagram.IsConnectorRedundant(connector.Id, connector.ModelRelationship.Stereotype))
                     DiagramService.RemoveConnector(connector.Id);
         }

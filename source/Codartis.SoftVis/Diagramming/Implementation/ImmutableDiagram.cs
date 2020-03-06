@@ -21,6 +21,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IModel Model { get; }
         [NotNull] private readonly IImmutableDictionary<ModelNodeId, IDiagramNode> _nodes;
         [NotNull] private readonly IImmutableDictionary<ModelRelationshipId, IDiagramConnector> _connectors;
+        [NotNull] private readonly IModelRelationshipFeatureProvider _modelRelationshipFeatureProvider;
 
         public IImmutableSet<IDiagramNode> Nodes { get; }
         public IImmutableSet<IDiagramConnector> Connectors { get; }
@@ -28,31 +29,37 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public bool IsEmpty { get; }
 
         /// <remarks>
-        /// We need a separate graph for each relationship type because redundant edges are meant per type.
+        /// We need a separate graph for each group of relationships that are transitive.
         /// </remarks>
-        [NotNull] private readonly IDictionary<ModelRelationshipStereotype, IDiagramGraph> _diagramGraphsByRelationshipType;
+        [NotNull]
+        private readonly IDictionary<string, IDiagramGraph> _diagramGraphsByRelationshipTransitivityGroup;
 
         public ImmutableDiagram(
             [NotNull] IModel model,
             [NotNull] IImmutableDictionary<ModelNodeId, IDiagramNode> nodes,
-            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors)
+            [NotNull] IImmutableDictionary<ModelRelationshipId, IDiagramConnector> connectors,
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider)
         {
             Model = model;
             _nodes = nodes;
             _connectors = connectors;
+            _modelRelationshipFeatureProvider = modelRelationshipFeatureProvider;
+
             Nodes = nodes.Values.ToImmutableHashSet();
             Connectors = connectors.Values.ToImmutableHashSet();
             Rect = CalculateRect();
             IsEmpty = !_nodes.Any() && !_connectors.Any();
-            _diagramGraphsByRelationshipType = CreateDiagramGraphsByRelationshipType(Nodes, Connectors);
+            _diagramGraphsByRelationshipTransitivityGroup =
+                CreateDiagramGraphsByRelationshipTransitivityGroup(modelRelationshipFeatureProvider, Nodes, Connectors);
         }
 
         [NotNull]
-        private IDictionary<ModelRelationshipStereotype, IDiagramGraph> CreateDiagramGraphsByRelationshipType(
+        private static IDictionary<string, IDiagramGraph> CreateDiagramGraphsByRelationshipTransitivityGroup(
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider,
             [NotNull] [ItemNotNull] IImmutableSet<IDiagramNode> nodes,
             [NotNull] [ItemNotNull] IImmutableSet<IDiagramConnector> connectors)
         {
-            return connectors.GroupBy(i => i.ModelRelationship.Stereotype)
+            return connectors.GroupBy(i => modelRelationshipFeatureProvider.GetTransitivityPartitionKey(i.ModelRelationship.Stereotype))
                 .ToDictionary(i => i.Key, i => DiagramGraph.Create(nodes, i.ToImmutableHashSet()));
         }
 
@@ -106,17 +113,21 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         [NotNull]
         private IDiagramGraph GetGraph(ModelRelationshipStereotype stereotype)
         {
-            _diagramGraphsByRelationshipType.TryGetValue(stereotype, out var graph);
+            var transitivityPartitionKey = _modelRelationshipFeatureProvider.GetTransitivityPartitionKey(stereotype);
+            _diagramGraphsByRelationshipTransitivityGroup.TryGetValue(transitivityPartitionKey, out var graph);
             return graph ?? DiagramGraph.Empty();
         }
 
         [NotNull]
-        public static IDiagram Create([NotNull] IModel model)
+        public static IDiagram Create(
+            [NotNull] IModel model,
+            [NotNull] IModelRelationshipFeatureProvider modelRelationshipFeatureProvider)
         {
             return new ImmutableDiagram(
                 model,
                 ImmutableDictionary<ModelNodeId, IDiagramNode>.Empty,
-                ImmutableDictionary<ModelRelationshipId, IDiagramConnector>.Empty);
+                ImmutableDictionary<ModelRelationshipId, IDiagramConnector>.Empty,
+                modelRelationshipFeatureProvider);
         }
     }
 }

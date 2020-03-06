@@ -198,7 +198,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [NotNull]
         private static DiagramMutator CreateDiagramMutator([NotNull] IModel model)
         {
-            var diagram = ImmutableDiagram.Create(model);
+            var diagram = ImmutableDiagram.Create(model, new DummyModelRelationshipFeatureProvider());
             return CreateDiagramMutator(diagram);
         }
 
@@ -208,15 +208,11 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
             IConnectorTypeResolver connectorTypeResolver = null,
             double childrenAreaPadding = 1)
         {
-            return new DiagramMutator(diagram, connectorTypeResolver ?? new DummyConnectorTypeResolver(), childrenAreaPadding);
-        }
-
-        /// <summary>
-        /// A dummy resolver that always returns Dependency connector type.
-        /// </summary>
-        private sealed class DummyConnectorTypeResolver : IConnectorTypeResolver
-        {
-            public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype) => ConnectorTypes.Dependency;
+            return new DiagramMutator(
+                diagram,
+                connectorTypeResolver ?? new DummyConnectorTypeResolver(),
+                new DummyModelRelationshipFeatureProvider(),
+                childrenAreaPadding);
         }
     }
 }

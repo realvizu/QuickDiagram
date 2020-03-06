@@ -42,12 +42,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
         [NotNull]
         private static IDiagramService CreateDiagramService([NotNull] IModel model)
         {
-            return new DiagramService(model, new DummyConnectorTypeResolver());
-        }
-
-        private sealed class DummyConnectorTypeResolver : IConnectorTypeResolver
-        {
-            public ConnectorType GetConnectorType(ModelRelationshipStereotype stereotype) => ConnectorTypes.Dependency;
+            return new DiagramService(model, new DummyConnectorTypeResolver(), new DummyModelRelationshipFeatureProvider());
         }
     }
 }
