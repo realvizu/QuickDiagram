@@ -69,6 +69,9 @@
                                                        Target="{x:Static FrameworkElement.WidthProperty}" />
                             <behaviors:PropertyMapping Source="{x:Static Canvas.TopProperty}" />
                             <behaviors:PropertyMapping Source="{x:Static Canvas.LeftProperty}" />
+                            <!-- This RenderTransform implements the appear/disappear effect. -->
+                            <behaviors:PropertyMapping Source="{x:Static FrameworkElement.RenderTransformProperty}" />
+                            <behaviors:PropertyMapping Source="{x:Static FrameworkElement.RenderTransformOriginProperty}" />
                         </behaviors:PropertyMappingList>
                     </behaviors:CopycatBehavior.PropertyMappings>
                 </behaviors:CopycatBehavior>

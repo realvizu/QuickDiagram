@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Codartis.Util.UI.Wpf.Commands;
 using Codartis.Util.UI.Wpf.ViewModels;
@@ -21,7 +22,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// Caches minibutton viewmodels by diagram shape stereotype name.
         /// </summary>
         [NotNull]
-        private readonly Dictionary<string, List<MiniButtonViewModelBase>> _miniButtonViewModelCache;
+        private readonly Dictionary<string, ObservableCollection<MiniButtonViewModelBase>> _miniButtonViewModelCache;
 
         [NotNull] private readonly object _cacheLockObject;
 
@@ -43,7 +44,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// <summary>
         /// The currently visible minibuttons. Null if the panel is not associated with a shape.
         /// </summary>
-        private List<MiniButtonViewModelBase> _miniButtonViewModels;
+        private ObservableCollection<MiniButtonViewModelBase> _miniButtonViewModels;
 
         /// <summary>
         /// Indicates that the mouse points at a different item.
@@ -55,13 +56,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public MiniButtonPanelViewModel()
         {
-            _miniButtonViewModelCache = new Dictionary<string, List<MiniButtonViewModelBase>>();
+            _miniButtonViewModelCache = new Dictionary<string, ObservableCollection<MiniButtonViewModelBase>>();
             _cacheLockObject = new object();
 
             _focusedDiagramShape = null;
             _isFocusPinned = false;
 
-            MiniButtonViewModels = new List<MiniButtonViewModelBase>();
+            MiniButtonViewModels = new ObservableCollection<MiniButtonViewModelBase>();
 
             MouseFocusChangedCommand = new DelegateCommand<IDiagramShapeUi>(OnMouseFocusChanged);
         }
@@ -85,7 +86,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        public List<MiniButtonViewModelBase> MiniButtonViewModels
+        public ObservableCollection<MiniButtonViewModelBase> MiniButtonViewModels
         {
             get { return _miniButtonViewModels; }
             set
@@ -139,19 +140,12 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public void UnpinFocus()
         {
-            AssignMiniButtonsTo(_mouseFocusedDiagramShapeUi);
+            _isFocusPinned = false;
+            OnMouseFocusChanged(_mouseFocusedDiagramShapeUi);
         }
 
         private void AssignMiniButtonsTo(IDiagramShapeUi diagramShapeUi)
         {
-            _isFocusPinned = false;
-
-            if (MiniButtonViewModels != null)
-            {
-                foreach (var decorator in MiniButtonViewModels)
-                    decorator.Hide();
-            }
-
             FocusedDiagramShape = diagramShapeUi;
 
             if (diagramShapeUi == null)
@@ -166,7 +160,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             }
         }
 
-        private List<MiniButtonViewModelBase> GetMiniButtonsFor([NotNull] IDiagramShapeUi diagramShapeUi)
+        private ObservableCollection<MiniButtonViewModelBase> GetMiniButtonsFor([NotNull] IDiagramShapeUi diagramShapeUi)
         {
             lock (_cacheLockObject)
             {
@@ -174,7 +168,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 if (_miniButtonViewModelCache.ContainsKey(hostType))
                     return _miniButtonViewModelCache[hostType];
 
-                var miniButtonViewModels = diagramShapeUi.CreateMiniButtons().OfType<MiniButtonViewModelBase>().ToList();
+                var miniButtonViewModels = new ObservableCollection<MiniButtonViewModelBase>(
+                    diagramShapeUi.CreateMiniButtons().OfType<MiniButtonViewModelBase>()
+                );
                 _miniButtonViewModelCache.Add(hostType, miniButtonViewModels);
                 return miniButtonViewModels;
             }
