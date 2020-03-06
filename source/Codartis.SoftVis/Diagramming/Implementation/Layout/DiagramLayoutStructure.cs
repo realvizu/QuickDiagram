@@ -32,7 +32,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout
         public DiagramLayoutStructure([NotNull] IDiagram diagram)
         {
             _nodeLayoutGroups = CreateLayoutGroupForAllNodes(diagram);
-            _crossLayoutGroupConnectors = diagram.GetCrossLayoutGroupConnectors();
+            _crossLayoutGroupConnectors = diagram.GetCrossLayoutGroupConnectors().ToDictionary(i => i.Id);
             RootLayoutGroup = diagram.CreateLayoutGroup(Maybe<ModelNodeId>.Nothing);
         }
 

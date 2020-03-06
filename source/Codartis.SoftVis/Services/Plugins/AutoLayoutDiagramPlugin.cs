@@ -125,7 +125,8 @@ namespace Codartis.SoftVis.Services.Plugins
                 layoutAlgorithm = _layoutAlgorithmSelectionStrategy.GetForNode(newDiagram.GetNode(parentId.Value));
             }
 
-            var layoutGroup = newDiagram.CreateLayoutGroup(parentId.ToMaybe());
+            // BUGBUG: Until a better layout algorithm is implemented all connectors that might cause a loop are treated as cross-layout-group connectors.
+            var layoutGroup = newDiagram.CreateLayoutGroup(parentId.ToMaybe(), i => !CanCauseLoop(i));
             if (layoutGroup.IsEmpty)
                 return;
 
@@ -136,13 +137,18 @@ namespace Codartis.SoftVis.Services.Plugins
 
         private void LayoutCrossGroupConnectors([NotNull] IDiagram diagram)
         {
-            var connectors = diagram.GetCrossLayoutGroupConnectors();
+            var connectors = diagram.GetCrossLayoutGroupConnectors()
+                // BUGBUG: Until a better layout algorithm is implemented all connectors that might cause a loop are treated as cross-layout-group connectors.
+                .Union(diagram.Connectors.Where(CanCauseLoop));
+
             var nodeRects = diagram.Nodes.Where(i => i.AbsoluteRect.IsDefined()).ToDictionary(i => i.Id, i => i.AbsoluteRect);
 
-            var connectorRoutes = _crossLayoutGroupConnectorRoutingAlgorithm.Calculate(connectors.Values, nodeRects);
+            var connectorRoutes = _crossLayoutGroupConnectorRoutingAlgorithm.Calculate(connectors, nodeRects);
             var layoutInfo = new LayoutInfo(connectorRoutes);
             DiagramService.ApplyLayout(layoutInfo);
         }
+
+        private static bool CanCauseLoop([NotNull] IDiagramConnector connector) => connector.ModelRelationship.Stereotype.Name == "Association";
 
         private static bool IsLayoutTriggeringChange(DiagramShapeEventBase diagramShapeEvent)
         {
