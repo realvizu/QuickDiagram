@@ -195,7 +195,7 @@ namespace Codartis.SoftVis.Graphs.Immutable
 
         public bool PathExists(TVertexId sourceVertexId, TVertexId targetVertexId)
         {
-            return _graph.PathExists(sourceVertexId, targetVertexId);
+            return _edges.Any() && _graph.PathExists(sourceVertexId, targetVertexId);
         }
 
         public IEnumerable<TVertex> GetAdjacentVertices(

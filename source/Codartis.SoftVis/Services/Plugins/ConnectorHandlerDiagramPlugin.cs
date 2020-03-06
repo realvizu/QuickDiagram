@@ -59,7 +59,7 @@ namespace Codartis.SoftVis.Services.Plugins
         private void HideRedundantConnectors(IDiagram diagram)
         {
             foreach (var connector in diagram.Connectors)
-                if (diagram.IsConnectorRedundant(connector.Id))
+                if (diagram.IsConnectorRedundant(connector.Id, connector.ModelRelationship.Stereotype))
                     DiagramService.RemoveConnector(connector.Id);
         }
     }

@@ -42,9 +42,9 @@ namespace Codartis.SoftVis.Diagramming.Definition
 
         bool NodeExists(ModelNodeId modelNodeId);
         bool ConnectorExists(ModelRelationshipId modelRelationshipId);
-        bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId);
-        bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId);
-        bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId);
+        bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId, ModelRelationshipStereotype stereotype);
+        bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId, ModelRelationshipStereotype stereotype);
+        bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId, ModelRelationshipStereotype stereotype);
 
         [NotNull]
         IDiagramNode GetNode(ModelNodeId modelNodeId);
@@ -65,7 +65,5 @@ namespace Codartis.SoftVis.Diagramming.Definition
         [NotNull]
         [ItemNotNull]
         IEnumerable<IDiagramNode> GetChildNodes(ModelNodeId diagramNodeId);
-
-        //IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null);
     }
 }

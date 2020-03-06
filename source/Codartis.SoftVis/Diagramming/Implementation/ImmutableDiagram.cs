@@ -26,7 +26,11 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         public IImmutableSet<IDiagramConnector> Connectors { get; }
         public Rect2D Rect { get; }
         public bool IsEmpty { get; }
-        [NotNull] private readonly IDiagramGraph _allShapesGraph;
+
+        /// <remarks>
+        /// We need a separate graph for each relationship type because redundant edges are meant per type.
+        /// </remarks>
+        [NotNull] private readonly IDictionary<ModelRelationshipStereotype, IDiagramGraph> _diagramGraphsByRelationshipType;
 
         public ImmutableDiagram(
             [NotNull] IModel model,
@@ -40,25 +44,39 @@ namespace Codartis.SoftVis.Diagramming.Implementation
             Connectors = connectors.Values.ToImmutableHashSet();
             Rect = CalculateRect();
             IsEmpty = !_nodes.Any() && !_connectors.Any();
-            _allShapesGraph = DiagramGraph.Create(Nodes, Connectors);
+            _diagramGraphsByRelationshipType = CreateDiagramGraphsByRelationshipType(Nodes, Connectors);
+        }
+
+        [NotNull]
+        private IDictionary<ModelRelationshipStereotype, IDiagramGraph> CreateDiagramGraphsByRelationshipType(
+            [NotNull] [ItemNotNull] IImmutableSet<IDiagramNode> nodes,
+            [NotNull] [ItemNotNull] IImmutableSet<IDiagramConnector> connectors)
+        {
+            return connectors.GroupBy(i => i.ModelRelationship.Stereotype)
+                .ToDictionary(i => i.Key, i => DiagramGraph.Create(nodes, i.ToImmutableHashSet()));
         }
 
         public bool NodeExists(ModelNodeId modelNodeId) => Nodes.Any(i => i.Id == modelNodeId);
         public bool ConnectorExists(ModelRelationshipId modelRelationshipId) => Connectors.Any(i => i.Id == modelRelationshipId);
 
-        public bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId)
-            => NodeExists(sourceModelNodeId) && NodeExists(targetModelNodeId) && _allShapesGraph.PathExists(sourceModelNodeId, targetModelNodeId);
+        public bool PathExists(ModelNodeId sourceModelNodeId, ModelNodeId targetModelNodeId, ModelRelationshipStereotype stereotype)
+        {
+            return NodeExists(sourceModelNodeId) && NodeExists(targetModelNodeId) && GetGraph(stereotype).PathExists(sourceModelNodeId, targetModelNodeId);
+        }
 
-        public bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId)
+        public bool PathExists(Maybe<ModelNodeId> maybeSourceModelNodeId, Maybe<ModelNodeId> maybeTargetModelNodeId, ModelRelationshipStereotype stereotype)
         {
             return maybeSourceModelNodeId.Match(
                 sourceNodeId => maybeTargetModelNodeId.Match(
-                    targetNodeId => PathExists(sourceNodeId, targetNodeId),
+                    targetNodeId => PathExists(sourceNodeId, targetNodeId, stereotype),
                     () => false),
                 () => false);
         }
 
-        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId) => _allShapesGraph.IsEdgeRedundant(modelRelationshipId);
+        public bool IsConnectorRedundant(ModelRelationshipId modelRelationshipId, ModelRelationshipStereotype stereotype)
+        {
+            return GetGraph(stereotype).IsEdgeRedundant(modelRelationshipId);
+        }
 
         public IDiagramNode GetNode(ModelNodeId modelNodeId) => _nodes[modelNodeId];
 
@@ -76,25 +94,6 @@ namespace Codartis.SoftVis.Diagramming.Implementation
 
         public IEnumerable<IDiagramNode> GetChildNodes(ModelNodeId diagramNodeId) => Nodes.Where(i => i.ParentNodeId.ToNullable() == diagramNodeId);
 
-        //public IEnumerable<IDiagramNode> GetAdjacentNodes(ModelNodeId id, DirectedModelRelationshipType? directedModelRelationshipType = null)
-        //{
-        //    IEnumerable<IDiagramNode> result;
-
-        //    if (directedModelRelationshipType != null)
-        //    {
-        //        result = _allShapesGraph.GetAdjacentVertices(
-        //            id,
-        //            directedModelRelationshipType.Value.Direction,
-        //            e => e.ModelRelationship.Stereotype == directedModelRelationshipType.Value.Stereotype);
-        //    }
-        //    else
-        //    {
-        //        result = _allShapesGraph.GetAdjacentVertices(id, EdgeDirection.In)
-        //            .Union(_allShapesGraph.GetAdjacentVertices(id, EdgeDirection.Out));
-        //    }
-
-        //    return result;
-        //}
         public Rect2D GetRect(IEnumerable<ModelNodeId> modelNodeIds)
         {
             return modelNodeIds
@@ -103,6 +102,13 @@ namespace Codartis.SoftVis.Diagramming.Implementation
         }
 
         private Rect2D CalculateRect() => Nodes.Select(i => i.AbsoluteRect).Concat(Connectors.Select(i => i.AbsoluteRect)).Union();
+
+        [NotNull]
+        private IDiagramGraph GetGraph(ModelRelationshipStereotype stereotype)
+        {
+            _diagramGraphsByRelationshipType.TryGetValue(stereotype, out var graph);
+            return graph ?? DiagramGraph.Empty();
+        }
 
         [NotNull]
         public static IDiagram Create([NotNull] IModel model)

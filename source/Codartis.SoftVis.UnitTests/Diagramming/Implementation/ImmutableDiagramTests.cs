@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.UnitTests.Modeling;
+﻿using Codartis.SoftVis.Modeling.Definition;
+using Codartis.SoftVis.UnitTests.Modeling;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -23,8 +24,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagram = new DiagramBuilder(model).AddAllModelItems().GetDiagram();
 
-            diagram.PathExists(node1.Id, node2.Id).Should().BeTrue();
-            diagram.PathExists(node2.Id, node1.Id).Should().BeFalse();
+            diagram.PathExists(node1.Id, node2.Id, ModelRelationshipStereotype.Default).Should().BeTrue();
+            diagram.PathExists(node2.Id, node1.Id, ModelRelationshipStereotype.Default).Should().BeFalse();
         }
 
         [Fact]
@@ -41,8 +42,8 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagram = new DiagramBuilder(model).AddAllModelItems().GetDiagram();
 
-            diagram.PathExists(childNode1.Id, childNode2.Id).Should().BeTrue();
-            diagram.PathExists(childNode2.Id, childNode1.Id).Should().BeFalse();
+            diagram.PathExists(childNode1.Id, childNode2.Id, ModelRelationshipStereotype.Default).Should().BeTrue();
+            diagram.PathExists(childNode2.Id, childNode1.Id, ModelRelationshipStereotype.Default).Should().BeFalse();
         }
 
         [Fact]
@@ -62,9 +63,9 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation
 
             var diagram = new DiagramBuilder(model).AddAllModelItems().GetDiagram();
 
-            diagram.PathExists(childNode1.Id, childNode2.Id).Should().BeTrue();
-            diagram.PathExists(childNode2.Id, childNode1.Id).Should().BeFalse();
-            diagram.PathExists(parentNode1.Id, parentNode2.Id).Should().BeFalse();
+            diagram.PathExists(childNode1.Id, childNode2.Id, ModelRelationshipStereotype.Default).Should().BeTrue();
+            diagram.PathExists(childNode2.Id, childNode1.Id, ModelRelationshipStereotype.Default).Should().BeFalse();
+            diagram.PathExists(parentNode1.Id, parentNode2.Id, ModelRelationshipStereotype.Default).Should().BeFalse();
         }
     }
 }

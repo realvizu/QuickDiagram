@@ -8,7 +8,7 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// </summary>
     public struct ModelRelationshipStereotype : IEquatable<ModelRelationshipStereotype>
     {
-        public static readonly ModelRelationshipStereotype Default = default;
+        public static readonly ModelRelationshipStereotype Default = new ModelRelationshipStereotype(string.Empty);
         public static readonly ModelRelationshipStereotype Containment = new ModelRelationshipStereotype(nameof(Containment));
 
         [NotNull] public string Name { get; }

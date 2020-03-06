@@ -37,7 +37,8 @@ namespace Codartis.SoftVis.Services.Plugins
         {
             return diagram.PathExists(
                 diagram.TryGetNode(modelRelationship.Source).Select(i => i.Id),
-                diagram.TryGetNode(modelRelationship.Target).Select(i => i.Id));
+                diagram.TryGetNode(modelRelationship.Target).Select(i => i.Id),
+                modelRelationship.Stereotype);
         }
 
         protected void AddDiagramConnectorIfNotExists(IModelRelationship modelRelationship, IDiagram diagram)
