@@ -13,18 +13,35 @@
                                  KeyType="{x:Type definition:ModelNodeStereotype}"
                                  ValueType="{x:Type ImageSource}">
 
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Class}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Class_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Constant}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Constant_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Delegate}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Delegate_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Enum}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Enumerator_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Event}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Event_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Field}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Field_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Interface}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Interface_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Method}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Method_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Property}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Property_16x.png" presentationOptions:Freeze="true" />
-        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Struct}" UriSource="pack://application:,,,/QuickDiagramTool;component/UI/Images/Structure_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Class}" UriSource="Images/Class_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Constant}" UriSource="Images/Constant_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Delegate}" UriSource="Images/Delegate_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Enum}" UriSource="Images/Enumerator_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Event}" UriSource="Images/Event_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Field}" UriSource="Images/Field_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Interface}" UriSource="Images/Interface_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Method}" UriSource="Images/Method_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Property}" UriSource="Images/Property_16x.png" presentationOptions:Freeze="true" />
+        <BitmapImage x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Struct}" UriSource="Images/Structure_16x.png" presentationOptions:Freeze="true" />
 
     </markupExtensions:Dictionary>
 
+    <markupExtensions:Dictionary x:Key="ModelNodeStereotypeToBackgroundBrushMap"
+                                 x:Shared="True"
+                                 KeyType="{x:Type definition:ModelNodeStereotype}"
+                                 ValueType="{x:Type Brush}">
+
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Class}" Color="#FFF5E3D6" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Constant}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Delegate}" Color="Lavender" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Enum}" Color="Gold" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Event}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Field}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Interface}" Color="LightGray" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Method}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Property}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Struct}" Color="#FFD1EAF3" presentationOptions:Freeze="true" />
+
+    </markupExtensions:Dictionary>
 
 </ResourceDictionary>

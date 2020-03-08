@@ -3,7 +3,6 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"
-                    xmlns:ui="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View;assembly=Codartis.SoftVis"
                     xmlns:viewModel="clr-namespace:Codartis.SoftVis.VisualStudioIntegration.UI"
                     xmlns:controls="clr-namespace:Codartis.Util.UI.Wpf.Controls;assembly=Codartis.Util"
@@ -27,7 +26,6 @@
     <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <ui:StereotypeToBackgroundBrushConverter x:Key="StereotypeToBackgroundBrushConverter" />
 
     <Style TargetType="{x:Type view:DiagramControl}">
         <Setter Property="FontFamily" Value="Ariel" />
@@ -43,7 +41,8 @@
 
     <Style TargetType="{x:Type view:DiagramNodeControl}"
            d:DataContext="{d:DesignInstance {x:Type viewModel:RoslynDiagramNodeViewModel}}">
-        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, Converter={StaticResource StereotypeToBackgroundBrushConverter}}" />
+        <Setter Property="DiagramFill" Value="{Binding Path=Stereotype, 
+                    Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToBackgroundBrushMap}}}" />
     </Style>
 
     <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeHeaderViewModel}">
@@ -59,7 +58,8 @@
                 <Image Grid.Row="0"
                        Margin="1"
                        HorizontalAlignment="Left"
-                       Source="{Binding Path=Stereotype, Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
+                       Source="{Binding Path=Stereotype, 
+                            Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
                 <TextBlock x:Name="TextBlock"
                            Grid.Row="1"
                            Margin="4,0,4,4"
@@ -105,7 +105,9 @@
         <Grid MinWidth="{StaticResource MemberDiagramNodeHeaderMinWidth}"
               ToolTip="{Binding Path=FullName}"
               Margin="4"
-              HorizontalAlignment="Stretch">
+              HorizontalAlignment="Stretch"
+              view:DiagramVisual.DiagramFill="{Binding Path=Stereotype, 
+                    Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToBackgroundBrushMap}}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -113,7 +115,8 @@
             <Image Grid.Column="0"
                    Margin="1"
                    HorizontalAlignment="Left"
-                   Source="{Binding Path=Stereotype, Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
+                   Source="{Binding Path=Stereotype, 
+                        Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
             <TextBlock x:Name="TextBlock"
                        Grid.Column="1"
                        VerticalAlignment="Top"
