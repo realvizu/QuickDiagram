@@ -40,7 +40,7 @@
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\MiniButtonStyles.xaml">
+    <Page Include="Resources\RelatedNodeCueAndMiniButtonStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles.xaml">

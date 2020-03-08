@@ -115,7 +115,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var result = new List<RelatedSymbolPair>();
 
-            var typeSymbol = symbol.Ensure<ITypeSymbol>();
+            var typeSymbol = symbol.EnsureType<ITypeSymbol>();
             var baseSymbol = typeSymbol.BaseType;
             if (baseSymbol?.TypeKind == TypeKind.Class)
                 result.Add(new RelatedSymbolPair(typeSymbol, baseSymbol, DirectedModelRelationshipTypes.BaseType));
@@ -127,7 +127,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private async Task<IEnumerable<RelatedSymbolPair>> GetDerivedTypesAsync([NotNull] ISymbol symbol)
         {
-            var classSymbol = symbol.Ensure<INamedTypeSymbol>();
+            var classSymbol = symbol.EnsureType<INamedTypeSymbol>();
 
             var solution = await GetCurrentSolutionAsync();
 
@@ -141,7 +141,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [NotNull]
         private Task<IEnumerable<RelatedSymbolPair>> GetBaseInterfacesAsync([NotNull] ISymbol symbol)
         {
-            var namedTypeSymbol = symbol.Ensure<INamedTypeSymbol>();
+            var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
 
             var result = namedTypeSymbol.Interfaces
                 .Where(i => i.TypeKind == TypeKind.Interface)
@@ -154,7 +154,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private Task<IEnumerable<RelatedSymbolPair>> GetImplementedInterfacesAsync([NotNull] ISymbol symbol)
         {
-            var namedTypeSymbol = symbol.Ensure<INamedTypeSymbol>();
+            var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
 
             var result = namedTypeSymbol.Interfaces.Where(i => i.TypeKind == TypeKind.Interface)
                 .Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.ImplementedInterface));
@@ -166,7 +166,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private async Task<IEnumerable<RelatedSymbolPair>> GetImplementingTypesAsync([NotNull] ISymbol symbol)
         {
-            var namedTypeSymbol = symbol.Ensure<INamedTypeSymbol>();
+            var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
             var implementingTypes = await FindImplementingTypesAsync(namedTypeSymbol);
             return implementingTypes.Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.ImplementerType));
         }
@@ -175,7 +175,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private async Task<IEnumerable<RelatedSymbolPair>> GetDerivedInterfacesAsync([NotNull] ISymbol symbol)
         {
-            var namedTypeSymbol = symbol.Ensure<INamedTypeSymbol>();
+            var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
             var derivedInterfaces = await FindDerivedInterfacesAsync(namedTypeSymbol);
             return derivedInterfaces.Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.Subtype));
         }
@@ -212,7 +212,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private async Task<IEnumerable<INamedTypeSymbol>> FindDerivedInterfacesAsync([NotNull] ISymbol symbol)
         {
-            var namedTypeSymbol = symbol.Ensure<INamedTypeSymbol>();
+            var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
 
             var result = new List<INamedTypeSymbol>();
 
@@ -231,7 +231,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private static Task<IEnumerable<RelatedSymbolPair>> GetMembersAsync([NotNull] ISymbol symbol)
         {
-            var typeSymbol = symbol.Ensure<ITypeSymbol>();
+            var typeSymbol = symbol.EnsureType<ITypeSymbol>();
 
             var result = typeSymbol.GetMembers()
                 .Where(IsModeledMember)
@@ -246,7 +246,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         [ItemNotNull]
         private static Task<IEnumerable<RelatedSymbolPair>> GetAssociatedTypesAsync([NotNull] ISymbol symbol)
         {
-            var typeSymbol = symbol.Ensure<ITypeSymbol>();
+            var typeSymbol = symbol.EnsureType<ITypeSymbol>();
 
             var result = typeSymbol.GetMembers()
                 .Where(IsAssociationMember)

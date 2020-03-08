@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         {
             ModelNodeStereotypes.Class,
             ModelNodeStereotypes.Interface,
-            ModelNodeStereotypes.Class,
+            ModelNodeStereotypes.Struct,
             ModelNodeStereotypes.Enum
         };
 

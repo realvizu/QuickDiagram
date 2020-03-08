@@ -46,16 +46,48 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="UI\Images\Class_16x.png" />
+      <None Remove="UI\Images\Class_16x.svg" />
+      <None Remove="UI\Images\Class_16x.xaml" />
+      <None Remove="UI\Images\Constant_16x.png" />
+      <None Remove="UI\Images\Constant_16x.svg" />
+      <None Remove="UI\Images\Constant_16x.xaml" />
+      <None Remove="UI\Images\Delegate_16x.png" />
+      <None Remove="UI\Images\Delegate_16x.svg" />
+      <None Remove="UI\Images\Delegate_16x.xaml" />
+      <None Remove="UI\Images\Enumerator_16x.png" />
+      <None Remove="UI\Images\Enumerator_16x.svg" />
+      <None Remove="UI\Images\Enumerator_16x.xaml" />
+      <None Remove="UI\Images\Event_16x.png" />
+      <None Remove="UI\Images\Event_16x.svg" />
+      <None Remove="UI\Images\Event_16x.xaml" />
+      <None Remove="UI\Images\Field_16x.png" />
+      <None Remove="UI\Images\Field_16x.svg" />
+      <None Remove="UI\Images\Field_16x.xaml" />
+      <None Remove="UI\Images\Interface_16x.png" />
+      <None Remove="UI\Images\Interface_16x.svg" />
+      <None Remove="UI\Images\Interface_16x.xaml" />
+      <None Remove="UI\Images\Method_16x.png" />
+      <None Remove="UI\Images\Method_16x.svg" />
+      <None Remove="UI\Images\Method_16x.xaml" />
+      <None Remove="UI\Images\Namespace_16x.png" />
+      <None Remove="UI\Images\Namespace_16x.svg" />
+      <None Remove="UI\Images\Namespace_16x.xaml" />
+      <None Remove="UI\Images\Property_16x.png" />
+      <None Remove="UI\Images\Property_16x.svg" />
+      <None Remove="UI\Images\Property_16x.xaml" />
+      <None Remove="UI\Images\Structure_16x.png" />
+      <None Remove="UI\Images\Structure_16x.svg" />
+      <None Remove="UI\Images\Structure_16x.xaml" />
+      <None Remove="UI\StereotypeStyleMaps.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
         <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="UI\Images\Class.png" />
-        <Resource Include="UI\Images\Delegate.png" />
-        <Resource Include="UI\Images\Enum.png" />
-        <Resource Include="UI\Images\Interface.png" />
-        <Resource Include="UI\Images\Struct.png" />
         <Content Include="Resources\AddClause_16x16.png" />
         <Content Include="Resources\AddToDependancyGraph_16x16.png" />
         <Content Include="Resources\AutoSizeOptimize_16x16.png" />
@@ -92,7 +124,10 @@
         <Page Include="UI\DiagramNodeExpander.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
-        <Page Include="UI\MiniButtonStyles.xaml">
+        <Page Include="UI\StereotypeStyleMaps.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="UI\RelatedNodeCueAndMiniButtonStyles.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Include="UI\DiagramStyles.xaml">
@@ -139,6 +174,42 @@
         <Reference Include="System.Windows.Forms" />
         <Reference Include="System.Xaml" />
         <Reference Include="WindowsBase" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="UI\Images\Class_16x.png" />
+      <Resource Include="UI\Images\Class_16x.svg" />
+      <Resource Include="UI\Images\Class_16x.xaml" />
+      <Resource Include="UI\Images\Constant_16x.png" />
+      <Resource Include="UI\Images\Constant_16x.svg" />
+      <Resource Include="UI\Images\Constant_16x.xaml" />
+      <Resource Include="UI\Images\Delegate_16x.png" />
+      <Resource Include="UI\Images\Delegate_16x.svg" />
+      <Resource Include="UI\Images\Delegate_16x.xaml" />
+      <Resource Include="UI\Images\Enumerator_16x.png" />
+      <Resource Include="UI\Images\Enumerator_16x.svg" />
+      <Resource Include="UI\Images\Enumerator_16x.xaml" />
+      <Resource Include="UI\Images\Event_16x.png" />
+      <Resource Include="UI\Images\Event_16x.svg" />
+      <Resource Include="UI\Images\Event_16x.xaml" />
+      <Resource Include="UI\Images\Field_16x.png" />
+      <Resource Include="UI\Images\Field_16x.svg" />
+      <Resource Include="UI\Images\Field_16x.xaml" />
+      <Resource Include="UI\Images\Interface_16x.png" />
+      <Resource Include="UI\Images\Interface_16x.svg" />
+      <Resource Include="UI\Images\Interface_16x.xaml" />
+      <Resource Include="UI\Images\Method_16x.png" />
+      <Resource Include="UI\Images\Method_16x.svg" />
+      <Resource Include="UI\Images\Method_16x.xaml" />
+      <Resource Include="UI\Images\Namespace_16x.png" />
+      <Resource Include="UI\Images\Namespace_16x.svg" />
+      <Resource Include="UI\Images\Namespace_16x.xaml" />
+      <Resource Include="UI\Images\Property_16x.png" />
+      <Resource Include="UI\Images\Property_16x.svg" />
+      <Resource Include="UI\Images\Property_16x.xaml" />
+      <Resource Include="UI\Images\Structure_16x.png" />
+      <Resource Include="UI\Images\Structure_16x.svg" />
+      <Resource Include="UI\Images\Structure_16x.xaml" />
     </ItemGroup>
 
     <!-- Disabling extension deployment for command line builds; required for AppVeyor. -->

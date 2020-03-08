@@ -10,7 +10,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="/TestHostApp;component/Resources/MiniButtonStyles.xaml" />
+        <ResourceDictionary Source="/TestHostApp;component/Resources/RelatedNodeCueAndMiniButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter" />
