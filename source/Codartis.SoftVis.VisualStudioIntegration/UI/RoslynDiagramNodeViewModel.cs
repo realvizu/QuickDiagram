@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
+﻿using System;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -38,6 +39,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         }
 
         [NotNull] private RoslynDiagramNodeHeaderViewModelBase TypedHeader => (RoslynDiagramNodeHeaderViewModelBase)Header;
+
+        [NotNull] public Type HeaderType => Header.GetType();
 
         public bool IsDescriptionVisible
         {

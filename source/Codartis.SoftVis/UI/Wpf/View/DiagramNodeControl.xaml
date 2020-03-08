@@ -7,6 +7,7 @@
              xmlns:viewModel="clr-namespace:Codartis.SoftVis.UI.Wpf.ViewModel"
              xmlns:behaviors="clr-namespace:Codartis.Util.UI.Wpf.Behaviors;assembly=Codartis.Util"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:view="clr-namespace:Codartis.SoftVis.UI.Wpf.View"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type viewModel:DiagramNodeViewModel}}">
@@ -26,19 +27,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0"
-                BorderThickness="1"
-                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                Background="{Binding DiagramFill, ElementName=ThisControl}">
-
-            <ContentPresenter Content="{Binding Header}"
-                              MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
-                              MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}" />
-
-        </Border>
+        <ContentPresenter Grid.Row="0"
+                          Content="{Binding Header}"
+                          view:DiagramVisual.DiagramStroke="{Binding DiagramStroke, ElementName=ThisControl}"
+                          view:DiagramVisual.DiagramFill="{Binding DiagramFill, ElementName=ThisControl}"
+                          MinHeight="{Binding Path=MinHeight, ElementName=ThisControl}"
+                          MinWidth="{Binding Path=MinWidth, ElementName=ThisControl}" />
 
         <Border Grid.Row="1"
-                BorderThickness="1,0,1,1"
+                BorderThickness="{Binding ElementName=ThisControl, Path=ChildrenAreaBorderThickness}"
                 BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
                 Background="{Binding DiagramFill, ElementName=ThisControl}">
 
