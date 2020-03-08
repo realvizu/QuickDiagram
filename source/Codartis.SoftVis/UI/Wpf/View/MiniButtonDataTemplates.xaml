@@ -20,7 +20,7 @@
                                    Vertical="Top" Horizontal="Left" Translate="0.5,0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}"
-                                   Vertical="Top" Horizontal="Right" Translate="-0.5,24.5" />
+                                   Vertical="Bottom" Horizontal="Right" Translate="-0.5,-0.5" />
     </markupExtensions:Dictionary>
 
     <markupExtensions:Dictionary x:Key="DefaultMiniButtonPlacementMap"
@@ -28,13 +28,13 @@
                                  ValueType="{x:Type wpf:RectRelativePlacement}">
 
         <wpf:RectRelativePlacement x:Key="{x:Type viewModel:CloseMiniButtonViewModel}"
-                                   Vertical="Top" Horizontal="Right" Translate="-3,3" />
+                                   Vertical="Top" Horizontal="Right" Translate="-0.5,0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Container}"
-                                   Vertical="Top" Horizontal="Left" Translate="3,3" />
+                                   Vertical="Top" Horizontal="Left" Translate="0.5,0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static definition:CommonDirectedModelRelationshipTypes.Contained}"
-                                   Vertical="Top" Horizontal="Right" Translate="-3,22" />
+                                   Vertical="Bottom" Horizontal="Right" Translate="-0.5,-0.5" />
     </markupExtensions:Dictionary>
 
     <DataTemplate DataType="{x:Type viewModel:CloseMiniButtonViewModel}">
