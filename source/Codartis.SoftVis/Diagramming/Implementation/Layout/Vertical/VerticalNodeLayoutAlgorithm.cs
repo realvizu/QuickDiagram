@@ -13,10 +13,14 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
     /// </summary>
     public sealed class VerticalNodeLayoutAlgorithm : IGroupLayoutAlgorithm
     {
+        [NotNull] private readonly IDiagramNodeOrderProvider _diagramNodeOrderProvider;
         private readonly double _gapBetweenNodes;
 
-        public VerticalNodeLayoutAlgorithm(double gapBetweenNodes = 2)
+        public VerticalNodeLayoutAlgorithm(
+            [NotNull] IDiagramNodeOrderProvider diagramNodeOrderProvider,
+            double gapBetweenNodes = 2)
         {
+            _diagramNodeOrderProvider = diagramNodeOrderProvider;
             _gapBetweenNodes = gapBetweenNodes;
         }
 
@@ -31,7 +35,7 @@ namespace Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical
         private IDictionary<ModelNodeId, Rect2D> CalculateNodeRects([NotNull] ILayoutGroup layoutGroup)
         {
             var result = new Dictionary<ModelNodeId, Rect2D>();
-            var orderedNodes = layoutGroup.Nodes.OrderBy(i => i.ModelNode.Name).ToList();
+            var orderedNodes = _diagramNodeOrderProvider.OrderNodes(layoutGroup.Nodes).ToList();
 
             double yPos = 0;
             foreach (var node in orderedNodes)

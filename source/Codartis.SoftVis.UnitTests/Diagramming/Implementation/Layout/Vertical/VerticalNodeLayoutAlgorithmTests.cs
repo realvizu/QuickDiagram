@@ -78,7 +78,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
                         Point2D.Undefined,
                         Point2D.Undefined,
                         i.Size,
-                        Point2D.Zero, 
+                        Point2D.Zero,
                         Size2D.Zero,
                         0,
                         Maybe<ModelNodeId>.Nothing))
@@ -125,7 +125,12 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         }
 
         [NotNull]
-        private static IGroupLayoutAlgorithm CreateLayoutAlgorithm() => new VerticalNodeLayoutAlgorithm(gapBetweenNodes: 2);
+        private static IGroupLayoutAlgorithm CreateLayoutAlgorithm()
+        {
+            return new VerticalNodeLayoutAlgorithm(
+                new NameBasedDiagramNodeOrderProvider(),
+                gapBetweenNodes: 2);
+        }
 
         private struct NodeSpecification
         {

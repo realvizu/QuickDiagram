@@ -4,6 +4,9 @@ using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Selection;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
+using Codartis.SoftVis.Diagramming.Implementation.Layout.Vertical;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Implementation;
 using Codartis.SoftVis.Services;
@@ -25,6 +28,7 @@ namespace Codartis.SoftVis.TestHostApp
     {
         [NotNull] private const string DiagramStylesXaml = "Resources/Styles.xaml";
         private const double ChildrenAreaPadding = 2;
+        private const double GapBetweenNodes = 2;
 
         [NotNull]
         public static IContainer Create()
@@ -63,9 +67,15 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
+            builder.RegisterType<SugiyamaLayoutAlgorithm>().AsSelf();
+            builder.RegisterType<VerticalNodeLayoutAlgorithm>()
+                .WithParameter("gapBetweenNodes", GapBetweenNodes)
+                .AsSelf();
+
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
+            builder.RegisterType<NameBasedDiagramNodeOrderProvider>().As<IDiagramNodeOrderProvider>();
         }
 
         private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)
