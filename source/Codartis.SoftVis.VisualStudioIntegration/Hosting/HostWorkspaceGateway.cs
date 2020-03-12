@@ -93,6 +93,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                     {
                         ILocalSymbol localSymbol => localSymbol.Type,
                         IFieldSymbol _ => symbol,
+                        IEventSymbol _ => symbol,
                         _ => throw new Exception($"Symbol {symbol} is unexpected.")
                     };
                 }
