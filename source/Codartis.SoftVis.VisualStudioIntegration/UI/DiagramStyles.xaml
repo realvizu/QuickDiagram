@@ -24,6 +24,7 @@
     <system:Double x:Key="MemberDiagramNodeHeaderMinHeight">20</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinWidth">50</system:Double>
     <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
+    <system:Double x:Key="NodeTypeIconSize">16</system:Double>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -63,12 +64,14 @@
                         ToolTip="{Binding Path=FullName}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Image Grid.Row="0"
                            Margin="1"
                            HorizontalAlignment="Left"
+                           Height="{StaticResource NodeTypeIconSize}"
+                           Width="{StaticResource NodeTypeIconSize}"
                            Source="{Binding Path=Stereotype, 
                             Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
                     <TextBlock x:Name="TextBlock"
@@ -124,12 +127,15 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Image Grid.Column="0"
-                   Margin="1"
+                   Margin="3,3,0,3"
+                   Height="{StaticResource NodeTypeIconSize}"
+                   Width="{StaticResource NodeTypeIconSize}"
                    HorizontalAlignment="Left"
                    Source="{Binding Path=Stereotype, 
                         Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
             <TextBlock x:Name="TextBlock"
                        Grid.Column="1"
+                       Margin="3"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        MaxWidth="{StaticResource NodeNameMaxWidth}"

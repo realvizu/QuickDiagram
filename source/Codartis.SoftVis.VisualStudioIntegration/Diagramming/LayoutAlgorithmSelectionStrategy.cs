@@ -14,7 +14,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Diagramming
 
         public IGroupLayoutAlgorithm GetForNode(IDiagramNode node)
         {
-            return new VerticalNodeLayoutAlgorithm(2);
+            return new VerticalNodeLayoutAlgorithm(0);
         }
     }
 }

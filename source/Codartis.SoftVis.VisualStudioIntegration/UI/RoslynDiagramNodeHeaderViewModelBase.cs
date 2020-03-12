@@ -1,13 +1,12 @@
 ﻿using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.UI;
+using Codartis.SoftVis.UI.Wpf.ViewModel;
 using Codartis.SoftVis.VisualStudioIntegration.Modeling;
-using Codartis.Util.UI.Wpf.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    public abstract class RoslynDiagramNodeHeaderViewModelBase : ViewModelBase, IDiagramNodeHeaderUi
+    public abstract class RoslynDiagramNodeHeaderViewModelBase : DiagramNodeHeaderViewModel
     {
         private ModelOrigin _origin;
         private ModelNodeStereotype _stereotype;

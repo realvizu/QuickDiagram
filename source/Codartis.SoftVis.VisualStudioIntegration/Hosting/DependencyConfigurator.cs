@@ -28,7 +28,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
     public static class DependencyConfigurator
     {
         [NotNull] private const string DiagramStylesXaml = "UI/DiagramStyles.xaml";
-        private const double ChildrenAreaPadding = 2;
+        private const double ChildrenAreaPadding = 0;
 
         [NotNull]
         public static IContainer CreateDependencyContainer([NotNull] IVisualStudioServices visualStudioServices)
