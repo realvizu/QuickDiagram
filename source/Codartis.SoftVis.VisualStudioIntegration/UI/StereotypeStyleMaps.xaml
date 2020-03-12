@@ -26,20 +26,22 @@
 
     </markupExtensions:Dictionary>
 
+    <Color x:Key="MemberBrush">Transparent</Color>
+
     <markupExtensions:Dictionary x:Key="ModelNodeStereotypeToBackgroundBrushMap"
                                  x:Shared="True"
                                  KeyType="{x:Type definition:ModelNodeStereotype}"
                                  ValueType="{x:Type Brush}">
 
         <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Class}" Color="#FFF5E3D6" presentationOptions:Freeze="true" />
-        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Constant}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Constant}" Color="{StaticResource MemberBrush}" presentationOptions:Freeze="true" />
         <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Delegate}" Color="Lavender" presentationOptions:Freeze="true" />
         <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Enum}" Color="Gold" presentationOptions:Freeze="true" />
-        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Event}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
-        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Field}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Event}" Color="{StaticResource MemberBrush}" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Field}" Color="{StaticResource MemberBrush}" presentationOptions:Freeze="true" />
         <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Interface}" Color="LightGray" presentationOptions:Freeze="true" />
-        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Method}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
-        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Property}" Color="#7FFFFFFF" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Method}" Color="{StaticResource MemberBrush}" presentationOptions:Freeze="true" />
+        <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Property}" Color="{StaticResource MemberBrush}" presentationOptions:Freeze="true" />
         <SolidColorBrush x:Key="{x:Static roslynModeling:ModelNodeStereotypes.Struct}" Color="#FFD1EAF3" presentationOptions:Freeze="true" />
 
     </markupExtensions:Dictionary>
