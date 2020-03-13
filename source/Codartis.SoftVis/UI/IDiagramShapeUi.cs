@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI
 {
@@ -12,9 +11,5 @@ namespace Codartis.SoftVis.UI
         /// This a string to be able to unify node and connector stereotypes.
         /// </summary>
         [NotNull] string StereotypeName { get; }
-
-        [NotNull]
-        [ItemNotNull]
-        IEnumerable<IMiniButton> CreateMiniButtons();
     }
 }

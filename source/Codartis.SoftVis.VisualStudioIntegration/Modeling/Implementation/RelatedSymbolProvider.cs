@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Codartis.SoftVis.Modeling.Definition;
@@ -14,19 +13,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     {
         private delegate Task<IEnumerable<RelatedSymbolPair>> SymbolFinderDelegate(ISymbol symbol);
 
-        [NotNull] private static readonly SymbolKind[] MemberSymbolKinds = { SymbolKind.Event, SymbolKind.Field, SymbolKind.Method, SymbolKind.Property };
-        [NotNull] private static readonly SymbolKind[] AssociationMemberSymbolKinds = { SymbolKind.Field, SymbolKind.Property };
-        [NotNull] private static readonly MethodKind[] MethodMemberMethodKinds = { MethodKind.Ordinary };
-
         [NotNull] private readonly IRoslynWorkspaceProvider _roslynWorkspaceProvider;
+        [NotNull] private readonly IRoslynSymbolTranslator _roslynSymbolTranslator;
         [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
         [NotNull] private readonly IDictionary<ModelNodeStereotype, IDictionary<DirectedModelRelationshipType, SymbolFinderDelegate>> _symbolFinderMethods;
 
         public RelatedSymbolProvider(
             [NotNull] IRoslynWorkspaceProvider roslynWorkspaceProvider,
+            [NotNull] IRoslynSymbolTranslator roslynSymbolTranslator,
             [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer)
         {
             _roslynWorkspaceProvider = roslynWorkspaceProvider;
+            _roslynSymbolTranslator = roslynSymbolTranslator;
             _symbolEqualityComparer = symbolEqualityComparer;
             _symbolFinderMethods = CreateSymbolFinderMethodsMap();
         }
@@ -90,7 +88,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var result = Enumerable.Empty<RelatedSymbolPair>();
 
-            var stereotype = symbol.GetStereotype();
+            var stereotype = _roslynSymbolTranslator.GetStereotype(symbol);
 
             if (!_symbolFinderMethods.TryGetValue(stereotype, out var methodsForStereotype))
                 return result;
@@ -234,9 +232,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var typeSymbol = symbol.EnsureType<ITypeSymbol>();
 
             var result = typeSymbol.GetMembers()
-                .Where(IsModeledMember)
-                .Where(IfMethodThenModeledMethod)
-                .Where(IsExplicitlyDeclared)
+                .Where(RoslynSymbolTranslator.IsModeledMember)
+                .Where(RoslynSymbolTranslator.IfMethodThenModeledMethod)
+                .Where(RoslynSymbolTranslator.IsExplicitlyDeclared)
                 .Select(i => new RelatedSymbolPair(typeSymbol, i, CommonDirectedModelRelationshipTypes.Contained));
 
             return Task.FromResult(result);
@@ -249,21 +247,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var typeSymbol = symbol.EnsureType<ITypeSymbol>();
 
             var result = typeSymbol.GetMembers()
-                .Where(IsAssociationMember)
-                .Where(IsExplicitlyDeclared)
-                .Select(i => new RelatedSymbolPair(typeSymbol, GetTypeSymbolOfMemberSymbol(i), DirectedModelRelationshipTypes.AssociatedType));
+                .Where(RoslynSymbolTranslator.IsAssociationMember)
+                .Where(RoslynSymbolTranslator.IsExplicitlyDeclared)
+                .Select(i => new RelatedSymbolPair(typeSymbol, RoslynSymbolTranslator.GetTypeSymbolOfMemberSymbol(i), DirectedModelRelationshipTypes.AssociatedType));
 
             return Task.FromResult(result);
-        }
-
-        private static ISymbol GetTypeSymbolOfMemberSymbol([NotNull] ISymbol symbol)
-        {
-            return symbol switch
-            {
-                IPropertySymbol propertySymbol => propertySymbol.Type,
-                IFieldSymbol fieldSymbol => fieldSymbol.Type,
-                _ => throw new Exception($"Unexpected symbol type {symbol.GetType().Name}")
-            };
         }
 
         [NotNull]
@@ -277,17 +265,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             return Task.FromResult((IEnumerable<RelatedSymbolPair>)result);
         }
-
-        private static bool IsModeledMember([NotNull] ISymbol i) => i.Kind.In(MemberSymbolKinds);
-
-        private static bool IfMethodThenModeledMethod([NotNull] ISymbol i)
-        {
-            return !(i is IMethodSymbol methodSymbol) || methodSymbol.MethodKind.In(MethodMemberMethodKinds);
-        }
-
-        private static bool IsAssociationMember([NotNull] ISymbol i) => i.Kind.In(AssociationMemberSymbolKinds);
-
-        private static bool IsExplicitlyDeclared([NotNull] ISymbol i) => !i.IsImplicitlyDeclared;
 
         [NotNull]
         [ItemNotNull]

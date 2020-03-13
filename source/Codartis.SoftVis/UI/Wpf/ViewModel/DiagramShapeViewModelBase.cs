@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
@@ -47,8 +45,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         [NotNull]
         public abstract IDiagramShapeUi CloneForImageExport();
-
-        public virtual IEnumerable<IMiniButton> CreateMiniButtons() => Enumerable.Empty<IMiniButton>();
 
         public override string ToString() => DiagramShape.ToString();
     }

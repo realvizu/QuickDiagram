@@ -2,6 +2,7 @@
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
+using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
@@ -9,24 +10,25 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
     public sealed class RoslynDiagramShapeViewModelFactory : DiagramShapeViewModelFactory, IRoslynDiagramShapeUiFactory
     {
+        [NotNull] private readonly IRoslynSymbolTranslator _roslynSymbolTranslator;
+
         public bool IsDescriptionVisible { get; set; }
 
         public RoslynDiagramShapeViewModelFactory(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
+            [NotNull] IRoslynSymbolTranslator roslynSymbolTranslator,
             [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             bool isDescriptionVisible)
             : base(modelEventSource, diagramEventSource, relatedNodeTypeProvider)
         {
+            _roslynSymbolTranslator = roslynSymbolTranslator;
             IsDescriptionVisible = isDescriptionVisible;
         }
 
         public override IDiagramNodeUi CreateDiagramNodeUi(IDiagramNode diagramNode)
         {
-            var payload = diagramNode.ModelNode.Payload;
-
-            if (!(payload is ISymbol symbol))
-                return null;
+            var symbol = (ISymbol)diagramNode.ModelNode.Payload;
 
             var headerUi = CreateDiagramNodeHeaderUi(symbol);
 
@@ -34,22 +36,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 ModelEventSource,
                 DiagramEventSource,
                 diagramNode,
-                RelatedNodeTypeProvider,
                 IsDescriptionVisible,
-                symbol,
-                headerUi);
+                headerUi,
+                CreateRelatedNodeCueViewModels(diagramNode));
         }
 
-        private RoslynDiagramNodeHeaderViewModelBase CreateDiagramNodeHeaderUi(ISymbol symbol)
+        [NotNull]
+        private RoslynDiagramNodeHeaderViewModelBase CreateDiagramNodeHeaderUi([NotNull] ISymbol symbol)
         {
-            switch (symbol)
+            RoslynDiagramNodeHeaderViewModelBase result = symbol switch
             {
-                case INamedTypeSymbol namedTypeSymbol:
-                    return new RoslynTypeDiagramNodeHeaderViewModel(namedTypeSymbol, IsDescriptionVisible);
-
-                default:
-                    return new RoslynMemberDiagramNodeHeaderViewModel(symbol);
-            }
+                INamedTypeSymbol _ => new RoslynTypeDiagramNodeHeaderViewModel(symbol, _roslynSymbolTranslator, IsDescriptionVisible),
+                _ => new RoslynMemberDiagramNodeHeaderViewModel(symbol, _roslynSymbolTranslator)
+            };
+            return result;
         }
     }
 }

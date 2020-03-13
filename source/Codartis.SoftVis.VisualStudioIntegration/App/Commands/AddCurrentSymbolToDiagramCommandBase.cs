@@ -18,7 +18,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
         public override async Task<bool> IsEnabledAsync()
         {
             var maybeSymbol = await RoslynWorkspaceProvider.TryGetCurrentSymbolAsync();
-            return maybeSymbol.Select(RoslynBasedModelService.IsModeledSymbol).Match(i => i, () => false);
+            return maybeSymbol.Select(RoslynBasedModelService.CanAddSymbol).Match(i => i, () => false);
         }
 
         protected async Task<Maybe<IModelNode>> TryAddCurrentSymbolToDiagramAsync()

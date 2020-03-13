@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Geometry;
@@ -24,7 +23,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramNodeHeaderUi Header { get; }
 
-        [NotNull] protected IRelatedNodeTypeProvider RelatedNodeTypeProvider { get; }
         [NotNull] [ItemNotNull] public List<RelatedNodeCueViewModel> RelatedNodeCueViewModels { get; }
 
         public event Action<IDiagramNode, Size2D> SizeChanged;
@@ -37,12 +35,11 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
-            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
-            [NotNull] IDiagramNodeHeaderUi header)
+            [NotNull] IDiagramNodeHeaderUi header,
+            [NotNull] [ItemNotNull] List<RelatedNodeCueViewModel> relatedCueViewModels)
             : base(modelEventSource, diagramEventSource, diagramNode)
         {
-            RelatedNodeTypeProvider = relatedNodeTypeProvider;
-            RelatedNodeCueViewModels = CreateRelatedNodeCueViewModels();
+            RelatedNodeCueViewModels = relatedCueViewModels;
             Header = header;
 
             SetDiagramNodeProperties(diagramNode);
@@ -176,8 +173,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                 ModelEventSource,
                 DiagramEventSource,
                 DiagramNode,
-                RelatedNodeTypeProvider,
-                Header);
+                Header,
+                RelatedNodeCueViewModels);
         }
 
         private void SetPropertiesForImageExport([NotNull] DiagramNodeViewModel clone)
@@ -185,17 +182,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             // For image export we must set those properties that are calculated on the normal UI.
             clone._childrenAreaSize = _childrenAreaSize;
         }
-
-        public override IEnumerable<IMiniButton> CreateMiniButtons()
-        {
-            yield return new CloseMiniButtonViewModel(ModelEventSource, DiagramEventSource);
-
-            foreach (var entityRelationType in GetRelatedNodeTypes())
-                yield return new RelatedNodeMiniButtonViewModel(ModelEventSource, DiagramEventSource, entityRelationType);
-        }
-
-        [NotNull]
-        private IEnumerable<RelatedNodeType> GetRelatedNodeTypes() => RelatedNodeTypeProvider.GetRelatedNodeTypes(ModelNode.Stereotype);
 
         public void Update([NotNull] IDiagramNode diagramNode)
         {
@@ -226,13 +212,6 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
             return diagramNode.ChildrenAreaSize.IsDefined && diagramNode.ChildrenAreaSize != Size2D.Zero;
         }
 
-        [NotNull]
-        [ItemNotNull]
-        private List<RelatedNodeCueViewModel> CreateRelatedNodeCueViewModels()
-        {
-            return GetRelatedNodeTypes()
-                .Select(i => new RelatedNodeCueViewModel(ModelEventSource, DiagramEventSource, DiagramNode, i))
-                .ToList();
-        }
+
     }
 }

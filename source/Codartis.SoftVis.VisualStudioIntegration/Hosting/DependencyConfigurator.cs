@@ -73,6 +73,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 .As<IModelEventSource>()
                 .SingleInstance();
 
+            builder.RegisterType<RoslynSymbolTranslator>().As<IRoslynSymbolTranslator>()
+                .WithParameter("excludeTrivialTypes", true)
+                .SingleInstance();
+
             builder.RegisterType<RelatedNodeTypeProvider>().As<IRelatedNodeTypeProvider>().SingleInstance();
             builder.RegisterType<RelatedSymbolProvider>().As<IRelatedSymbolProvider>().SingleInstance();
             builder.RegisterType<ModelRelationshipFeatureProvider>().As<IModelRelationshipFeatureProvider>().SingleInstance();
@@ -81,7 +85,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterDiagramComponents([NotNull] ContainerBuilder builder)
         {
-            builder.RegisterType<DiagramService>().As<IDiagramService>()
+            builder.RegisterType<DiagramService>()
+                .As<IDiagramService>()
+                .As<IDiagramEventSource>()
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding)
                 .SingleInstance();
 
@@ -95,7 +101,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>().SingleInstance();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>().SingleInstance();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>().SingleInstance();
-            builder.RegisterType<RoslynBasedDiagramNodeOrderProvider>().As<IDiagramNodeOrderProvider>();        }
+            builder.RegisterType<RoslynBasedDiagramNodeOrderProvider>().As<IDiagramNodeOrderProvider>();
+        }
 
         private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)
         {
@@ -113,6 +120,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 .WithParameter("isDescriptionVisible", true)
                 .SingleInstance();
 
+            builder.RegisterType<MiniButtonViewModelFactory>().As<IMiniButtonFactory>().SingleInstance();
             builder.RegisterType<MiniButtonPanelViewModel>().As<IMiniButtonManager>().SingleInstance();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());

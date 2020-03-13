@@ -15,20 +15,15 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         [NotNull] IModel LatestModel { get; }
 
         /// <summary>
-        /// Controls whether trivial types like object can be added to the model.
-        /// </summary>
-        bool ExcludeTrivialTypes { get; set; }
-
-        /// <summary>
-        /// Returns a value indicating whether the given symbol can be added to the model.
-        /// </summary>
-        bool IsModeledSymbol([NotNull] ISymbol symbol);
-
-        /// <summary>
         /// Returns the Roslyn symbol for a given model node.
         /// </summary>
         [NotNull]
         ISymbol GetSymbol([NotNull] IModelNode modelNode);
+
+        /// <summary>
+        /// Returns a value indicating whether the given symbol can be added to the model.
+        /// </summary>
+        bool CanAddSymbol([NotNull] ISymbol symbol);
 
         /// <summary>
         /// Creates a model node from a roslyn symbol and adds it to the model or just returns it if the model already contains it.

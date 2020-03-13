@@ -16,62 +16,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
     /// </summary>
     internal sealed class RoslynBasedModelService : IRoslynBasedModelService
     {
-        [NotNull]
-        [ItemNotNull]
-        private static readonly List<string> TrivialTypeNames =
-            new List<string>
-            {
-                "bool", "System.Boolean",
-                "byte", "System.Byte",
-                "sbyte", "System.SByte",
-                "char", "System.Char",
-                "decimal", "System.Decimal",
-                "double", "System.Double",
-                "float", "System.Single",
-                "int", "System.Int32",
-                "uint", "System.UInt32",
-                "long", "System.Int64",
-                "ulong", "System.UInt64",
-                "short", "System.Int16",
-                "ushort", "System.UInt16",
-                "object", "System.Object",
-                "string", "System.String"
-            };
-
-        [NotNull]
-        private static readonly SymbolKind[] ModeledSymbolKinds =
-        {
-            SymbolKind.NamedType,
-            SymbolKind.Field,
-            SymbolKind.Method,
-            SymbolKind.Property
-        };
-
-        [NotNull]
-        private static readonly TypeKind[] ModeledTypeKinds =
-        {
-            TypeKind.Class,
-            TypeKind.Delegate,
-            TypeKind.Enum,
-            TypeKind.Interface,
-            TypeKind.Struct
-        };
-
         [NotNull] private readonly IModelService _modelService;
+        [NotNull] private readonly IRoslynSymbolTranslator _roslynSymbolTranslator;
         [NotNull] private readonly IRelatedSymbolProvider _relatedSymbolProvider;
         [NotNull] private readonly IEqualityComparer<ISymbol> _symbolEqualityComparer;
         [NotNull] private readonly IRoslynWorkspaceProvider _roslynWorkspaceProvider;
         [NotNull] private readonly AsyncLock _asyncLock;
 
-        public bool ExcludeTrivialTypes { get; set; }
-
         public RoslynBasedModelService(
             [NotNull] IModelService modelService,
+            [NotNull] IRoslynSymbolTranslator roslynSymbolTranslator,
             [NotNull] IRelatedSymbolProvider relatedSymbolProvider,
             [NotNull] IEqualityComparer<ISymbol> symbolEqualityComparer,
             [NotNull] IRoslynWorkspaceProvider roslynWorkspaceProvider)
         {
             _modelService = modelService;
+            _roslynSymbolTranslator = roslynSymbolTranslator;
             _relatedSymbolProvider = relatedSymbolProvider;
             _symbolEqualityComparer = symbolEqualityComparer;
             _roslynWorkspaceProvider = roslynWorkspaceProvider;
@@ -80,11 +40,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public IModel LatestModel => _modelService.LatestModel;
 
-        public bool IsModeledSymbol(ISymbol symbol)
+        public bool CanAddSymbol(ISymbol symbol)
         {
-            return symbol.Kind.In(ModeledSymbolKinds) &&
-                   (symbol is INamedTypeSymbol).Implies(() => ((INamedTypeSymbol)symbol).TypeKind.In(ModeledTypeKinds)) &&
-                   !IsHidden(symbol);
+            return _roslynSymbolTranslator.IsModeledSymbol(symbol);
         }
 
         public ISymbol GetSymbol(IModelNode modelNode)
@@ -94,7 +52,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         public Maybe<IModelNode> TryGetOrAddNode(ISymbol symbol)
         {
-            return IsModeledSymbol(symbol)
+            return CanAddSymbol(symbol)
                 ? Maybe.Create(GetOrAddNode(symbol))
                 : Maybe<IModelNode>.Nothing;
         }
@@ -106,7 +64,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             {
                 return _modelService.LatestModel.TryGetNodeByPayload(symbol).Match(
                     some => some,
-                    () => _modelService.AddNode(symbol.GetName(), symbol.GetStereotype(), symbol));
+                    () => _modelService.AddNode(
+                        symbol.GetName(),
+                        _roslynSymbolTranslator.GetStereotype(symbol),
+                        symbol));
             }
         }
 
@@ -258,11 +219,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return symbol.OriginalDefinition ?? symbol;
         }
 
-        private bool IsHidden(ISymbol roslynSymbol)
-        {
-            return ExcludeTrivialTypes && TrivialTypeNames.Contains(roslynSymbol.GetFullyQualifiedName());
-        }
-
         private async Task ExtendModelWithRelatedNodesRecursiveAsync(
             [NotNull] IModelNode node,
             DirectedModelRelationshipType? directedModelRelationshipType,
@@ -275,7 +231,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             var presentableRelatedSymbolPairs = relatedSymbolPairs
                 .Select(GetOriginalDefinition)
-                .Where(i => IsModeledSymbol(i.RelatedSymbol))
+                .Where(i => CanAddSymbol(i.RelatedSymbol))
                 .ToList();
 
             foreach (var relatedSymbolPair in presentableRelatedSymbolPairs)

@@ -217,7 +217,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
         private static IRelatedSymbolProvider CreateRelatedSymbolProvider([NotNull] IRoslynWorkspaceProvider roslynWorkspaceProvider)
         {
             var symbolEqualityComparer = new SymbolEqualityComparer();
-            return new RelatedSymbolProvider(roslynWorkspaceProvider, symbolEqualityComparer);
+            return new RelatedSymbolProvider(roslynWorkspaceProvider, new RoslynSymbolTranslator(), symbolEqualityComparer);
         }
     }
 }

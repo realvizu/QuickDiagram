@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
-using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
-using Codartis.SoftVis.VisualStudioIntegration.Modeling;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
@@ -16,26 +15,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
     {
         private bool _isDescriptionVisible;
 
-        [NotNull] private readonly ISymbol _symbol;
-
         public RoslynDiagramNodeViewModel(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
             [NotNull] IDiagramNode diagramNode,
-            [NotNull] IRelatedNodeTypeProvider relatedNodeTypeProvider,
             bool isDescriptionVisible,
-            [NotNull] ISymbol symbol,
-            RoslynDiagramNodeHeaderViewModelBase header)
+            [NotNull] RoslynDiagramNodeHeaderViewModelBase header,
+            [NotNull] [ItemNotNull] List<RelatedNodeCueViewModel> relatedCueViewModels)
             : base(
                 modelEventSource,
                 diagramEventSource,
                 diagramNode,
-                relatedNodeTypeProvider,
-                header)
+                header,
+                relatedCueViewModels)
         {
             _isDescriptionVisible = isDescriptionVisible;
-            _symbol = symbol;
-            Name = symbol.GetName();
+            Name = diagramNode.Name;
         }
 
         [NotNull] private RoslynDiagramNodeHeaderViewModelBase TypedHeader => (RoslynDiagramNodeHeaderViewModelBase)Header;
@@ -59,7 +54,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         protected override void UpdateHeader(IDiagramNode diagramNode)
         {
-            TypedHeader.Update((ISymbol)diagramNode.ModelNode.Payload);
+            var symbol = (ISymbol)diagramNode.ModelNode.Payload;
+            TypedHeader.Update(symbol);
         }
 
         protected override DiagramNodeViewModel CreateInstance()
@@ -68,10 +64,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 ModelEventSource,
                 DiagramEventSource,
                 DiagramNode,
-                RelatedNodeTypeProvider,
                 _isDescriptionVisible,
-                _symbol,
-                TypedHeader);
+                TypedHeader,
+                RelatedNodeCueViewModels);
         }
     }
 }

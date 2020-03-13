@@ -6,8 +6,15 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
+    /// <summary>
+    /// Abstract base class for Roslyn-based diagram node header view models.
+    /// Responsible for translating Roslyn symbol info into presentable format
+    /// using an <see cref="IRoslynSymbolTranslator"/>.
+    /// </summary>
     public abstract class RoslynDiagramNodeHeaderViewModelBase : DiagramNodeHeaderViewModel
     {
+        [NotNull] protected IRoslynSymbolTranslator RoslynSymbolTranslator { get; }
+
         private ModelOrigin _origin;
         private ModelNodeStereotype _stereotype;
         private string _name;
@@ -17,8 +24,12 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _isDescriptionVisible;
         private bool _isAbstract;
 
-        protected RoslynDiagramNodeHeaderViewModelBase([NotNull] ISymbol symbol, bool isDescriptionVisible)
+        protected RoslynDiagramNodeHeaderViewModelBase(
+            [NotNull] ISymbol symbol,
+            [NotNull] IRoslynSymbolTranslator roslynSymbolTranslator,
+            bool isDescriptionVisible)
         {
+            RoslynSymbolTranslator = roslynSymbolTranslator;
             _isDescriptionVisible = isDescriptionVisible;
             SetProperties(symbol);
         }
@@ -135,7 +146,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private void SetProperties([NotNull] ISymbol symbol)
         {
             Origin = symbol.GetOrigin();
-            Stereotype = symbol.GetStereotype();
+            Stereotype = RoslynSymbolTranslator.GetStereotype(symbol);
             Name = symbol.GetName();
             FullName = symbol.GetFullName();
             Description = symbol.GetDescription();

@@ -42,10 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
             DiagramWindowService.ShowModelItemsRequested += OnShowItemsRequested;
 
             RoslynWorkspaceProvider = roslynWorkspaceProvider;
-
             RoslynBasedModelService = roslynBasedModelService;
-            RoslynBasedModelService.ExcludeTrivialTypes = AppDefaults.ExcludeTrivialTypes;
-
             HostUiService = hostUiService;
         }
 

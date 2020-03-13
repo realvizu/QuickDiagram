@@ -18,6 +18,8 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </remarks>
     public sealed class MiniButtonPanelViewModel : ViewModelBase, IMiniButtonManager
     {
+        [NotNull] private readonly IMiniButtonFactory _miniButtonFactory;
+
         /// <summary>
         /// Caches minibutton viewmodels by diagram shape stereotype name.
         /// </summary>
@@ -54,8 +56,10 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         /// </remarks>
         public DelegateCommand<IDiagramShapeUi> MouseFocusChangedCommand { get; }
 
-        public MiniButtonPanelViewModel()
+        public MiniButtonPanelViewModel([NotNull] IMiniButtonFactory miniButtonFactory)
         {
+            _miniButtonFactory = miniButtonFactory;
+
             _miniButtonViewModelCache = new Dictionary<string, ObservableCollection<MiniButtonViewModelBase>>();
             _cacheLockObject = new object();
 
@@ -169,7 +173,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
                     return _miniButtonViewModelCache[hostType];
 
                 var miniButtonViewModels = new ObservableCollection<MiniButtonViewModelBase>(
-                    diagramShapeUi.CreateMiniButtons().OfType<MiniButtonViewModelBase>()
+                    _miniButtonFactory.CreateForDiagramShape(diagramShapeUi).OfType<MiniButtonViewModelBase>()
                 );
                 _miniButtonViewModelCache.Add(hostType, miniButtonViewModels);
                 return miniButtonViewModels;

@@ -63,8 +63,11 @@ namespace Codartis.SoftVis.TestHostApp
 
         private static void RegisterDiagramComponents([NotNull] ContainerBuilder builder)
         {
-            builder.RegisterType<DiagramService>().As<IDiagramService>()
+            builder.RegisterType<DiagramService>()
+                .As<IDiagramService>()
+                .As<IDiagramEventSource>()
                 .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
+
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 
             builder.RegisterType<SugiyamaLayoutAlgorithm>().AsSelf();
@@ -90,7 +93,7 @@ namespace Codartis.SoftVis.TestHostApp
                 .WithParameter("initialZoom", 1d);
 
             builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
-
+            builder.RegisterType<MiniButtonViewModelFactory>().As<IMiniButtonFactory>().SingleInstance();
             builder.RegisterType<MiniButtonPanelViewModel>().As<IMiniButtonManager>();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
