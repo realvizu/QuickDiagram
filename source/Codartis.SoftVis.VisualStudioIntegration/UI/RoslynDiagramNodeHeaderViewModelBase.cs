@@ -145,11 +145,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
 
         private void SetProperties([NotNull] ISymbol symbol)
         {
-            Origin = symbol.GetOrigin();
+            Origin = RoslynSymbolTranslator.GetOrigin(symbol);
             Stereotype = RoslynSymbolTranslator.GetStereotype(symbol);
-            Name = symbol.GetName();
-            FullName = symbol.GetFullName();
-            Description = symbol.GetDescription();
+            Name = RoslynSymbolTranslator.GetName(symbol);
+            FullName = RoslynSymbolTranslator.GetFullName(symbol);
+            Description = RoslynSymbolTranslator.GetDescription(symbol);
             DescriptionExists = !string.IsNullOrWhiteSpace(Description);
             IsAbstract = symbol.IsAbstract;
         }

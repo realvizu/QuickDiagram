@@ -19,9 +19,32 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
         /// </summary>
         bool IsModeledSymbol([NotNull] ISymbol symbol);
 
+        bool IsModeledType([NotNull] ISymbol symbol);
+
+        bool IsModeledMember([NotNull] ISymbol symbol);
+
         /// <summary>
-        /// Returns the stereotype for a given Roslyn symbol.
+        /// Returns a value indicating whether the given symbol is a member that defines an association relationship.
+        /// (Eg. fields, properties, etc.)
         /// </summary>
+        bool IsAssociationMember(ISymbol symbol);
+
+        /// <summary>
+        /// If the given symbol is a member that has a type then gives back that type's symbol, otherwise throws.
+        /// </summary>
+        ISymbol GetTypeSymbolOfMemberSymbol(ISymbol symbol);
+
         ModelNodeStereotype GetStereotype([NotNull] ISymbol symbol);
+
+        ModelOrigin GetOrigin([NotNull] ISymbol symbol);
+
+        [NotNull]
+        string GetName([NotNull] ISymbol symbol);
+
+        [NotNull]
+        string GetFullName([NotNull] ISymbol symbol);
+
+        [NotNull]
+        string GetDescription([NotNull] ISymbol symbol);
     }
 }

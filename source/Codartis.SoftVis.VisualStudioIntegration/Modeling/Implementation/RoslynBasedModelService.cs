@@ -65,7 +65,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 return _modelService.LatestModel.TryGetNodeByPayload(symbol).Match(
                     some => some,
                     () => _modelService.AddNode(
-                        symbol.GetName(),
+                        _roslynSymbolTranslator.GetName(symbol),
                         _roslynSymbolTranslator.GetStereotype(symbol),
                         symbol));
             }

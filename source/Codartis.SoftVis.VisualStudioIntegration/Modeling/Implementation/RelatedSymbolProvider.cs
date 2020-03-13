@@ -63,6 +63,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 {
                     [CommonDirectedModelRelationshipTypes.Contained] = GetMembersAsync,
                 },
+                [ModelNodeStereotypes.Constant] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
+                {
+                    [CommonDirectedModelRelationshipTypes.Container] = GetContainerTypeAsync,
+                },
                 [ModelNodeStereotypes.Field] = new Dictionary<DirectedModelRelationshipType, SymbolFinderDelegate>
                 {
                     [CommonDirectedModelRelationshipTypes.Container] = GetContainerTypeAsync,
@@ -116,7 +120,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var typeSymbol = symbol.EnsureType<ITypeSymbol>();
             var baseSymbol = typeSymbol.BaseType;
             if (baseSymbol?.TypeKind == TypeKind.Class)
-                result.Add(new RelatedSymbolPair(typeSymbol, baseSymbol, DirectedModelRelationshipTypes.BaseType));
+                result.Add(
+                    new RelatedSymbolPair(
+                        typeSymbol,
+                        baseSymbol,
+                        DirectedModelRelationshipTypes.BaseType));
 
             return Task.FromResult((IEnumerable<RelatedSymbolPair>)result);
         }
@@ -133,7 +141,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             return derivedClasses
                 .Where(i => _symbolEqualityComparer.Equals(classSymbol, i.BaseType.OriginalDefinition) && i.TypeKind == TypeKind.Class)
-                .Select(i => new RelatedSymbolPair(classSymbol, i, DirectedModelRelationshipTypes.Subtype));
+                .Select(
+                    i => new RelatedSymbolPair(
+                        classSymbol,
+                        i,
+                        DirectedModelRelationshipTypes.Subtype));
         }
 
         [NotNull]
@@ -143,7 +155,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
             var result = namedTypeSymbol.Interfaces
                 .Where(i => i.TypeKind == TypeKind.Interface)
-                .Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.BaseType));
+                .Select(
+                    i => new RelatedSymbolPair(
+                        namedTypeSymbol,
+                        i,
+                        DirectedModelRelationshipTypes.BaseType));
 
             return Task.FromResult(result);
         }
@@ -155,7 +171,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
 
             var result = namedTypeSymbol.Interfaces.Where(i => i.TypeKind == TypeKind.Interface)
-                .Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.ImplementedInterface));
+                .Select(
+                    i => new RelatedSymbolPair(
+                        namedTypeSymbol,
+                        i,
+                        DirectedModelRelationshipTypes.ImplementedInterface));
 
             return Task.FromResult(result);
         }
@@ -166,7 +186,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
             var implementingTypes = await FindImplementingTypesAsync(namedTypeSymbol);
-            return implementingTypes.Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.ImplementerType));
+            return implementingTypes.Select(
+                i => new RelatedSymbolPair(
+                    namedTypeSymbol,
+                    i,
+                    DirectedModelRelationshipTypes.ImplementerType));
         }
 
         [NotNull]
@@ -175,7 +199,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         {
             var namedTypeSymbol = symbol.EnsureType<INamedTypeSymbol>();
             var derivedInterfaces = await FindDerivedInterfacesAsync(namedTypeSymbol);
-            return derivedInterfaces.Select(i => new RelatedSymbolPair(namedTypeSymbol, i, DirectedModelRelationshipTypes.Subtype));
+            return derivedInterfaces.Select(
+                i => new RelatedSymbolPair(
+                    namedTypeSymbol,
+                    i,
+                    DirectedModelRelationshipTypes.Subtype));
         }
 
         [NotNull]
@@ -227,29 +255,37 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 
         [NotNull]
         [ItemNotNull]
-        private static Task<IEnumerable<RelatedSymbolPair>> GetMembersAsync([NotNull] ISymbol symbol)
+        private Task<IEnumerable<RelatedSymbolPair>> GetMembersAsync([NotNull] ISymbol symbol)
         {
             var typeSymbol = symbol.EnsureType<ITypeSymbol>();
 
             var result = typeSymbol.GetMembers()
-                .Where(RoslynSymbolTranslator.IsModeledMember)
-                .Where(RoslynSymbolTranslator.IfMethodThenModeledMethod)
-                .Where(RoslynSymbolTranslator.IsExplicitlyDeclared)
-                .Select(i => new RelatedSymbolPair(typeSymbol, i, CommonDirectedModelRelationshipTypes.Contained));
+                .Where(_roslynSymbolTranslator.IsModeledMember)
+                .Select(
+                    i => new RelatedSymbolPair(
+                        typeSymbol,
+                        i,
+                        CommonDirectedModelRelationshipTypes.Contained));
 
             return Task.FromResult(result);
         }
 
         [NotNull]
         [ItemNotNull]
-        private static Task<IEnumerable<RelatedSymbolPair>> GetAssociatedTypesAsync([NotNull] ISymbol symbol)
+        private Task<IEnumerable<RelatedSymbolPair>> GetAssociatedTypesAsync([NotNull] ISymbol symbol)
         {
             var typeSymbol = symbol.EnsureType<ITypeSymbol>();
 
             var result = typeSymbol.GetMembers()
-                .Where(RoslynSymbolTranslator.IsAssociationMember)
-                .Where(RoslynSymbolTranslator.IsExplicitlyDeclared)
-                .Select(i => new RelatedSymbolPair(typeSymbol, RoslynSymbolTranslator.GetTypeSymbolOfMemberSymbol(i), DirectedModelRelationshipTypes.AssociatedType));
+                .Where(_roslynSymbolTranslator.IsModeledMember)
+                .Where(_roslynSymbolTranslator.IsAssociationMember)
+                .Select(i => _roslynSymbolTranslator.GetTypeSymbolOfMemberSymbol(i))
+                .Where(i => _roslynSymbolTranslator.IsModeledType(i))
+                .Select(
+                    i => new RelatedSymbolPair(
+                        typeSymbol,
+                        i,
+                        DirectedModelRelationshipTypes.AssociatedType));
 
             return Task.FromResult(result);
         }
@@ -261,7 +297,11 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             var result = new List<RelatedSymbolPair>();
 
             if (symbol.ContainingType != null)
-                result.Add(new RelatedSymbolPair(symbol, symbol.ContainingType, CommonDirectedModelRelationshipTypes.Container));
+                result.Add(
+                    new RelatedSymbolPair(
+                        symbol,
+                        symbol.ContainingType,
+                        CommonDirectedModelRelationshipTypes.Container));
 
             return Task.FromResult((IEnumerable<RelatedSymbolPair>)result);
         }

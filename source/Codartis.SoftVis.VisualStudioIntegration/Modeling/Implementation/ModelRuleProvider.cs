@@ -23,7 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                     (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Property),
                     (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Method),
                     (ModelNodeStereotypes.Interface, ModelNodeStereotypes.Event),
-                    (ModelNodeStereotypes.Enum, ModelNodeStereotypes.Field),
+                    (ModelNodeStereotypes.Enum, ModelNodeStereotypes.Constant),
                 },
                 [ModelRelationshipStereotypes.Association] = new (ModelNodeStereotype, ModelNodeStereotype?)[]
                 {
