@@ -30,10 +30,13 @@
     <Style TargetType="{x:Type view:DiagramNodeControl}">
         <Setter Property="MaxWidth" Value="250" />
         <Setter Property="MinWidth" Value="60" />
+        <Setter Property="ChildrenAreaBorderThickness" Value="1,0,1,1" />
     </Style>
 
     <DataTemplate DataType="{x:Type testHostAppModeling:PropertyNode}">
-        <Border Background="LightGray"
+        <Border BorderThickness="1"
+                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                Background="LightGray"
                 HorizontalAlignment="Stretch">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay}"
                        HorizontalAlignment="Left"
@@ -42,7 +45,10 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type testHostAppModeling:TypeNodeBase}">
-        <Border ToolTip="{Binding Path=FullName}">
+        <Border ToolTip="{Binding Path=FullName}"
+                BorderThickness="1"
+                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                Background="{Binding DiagramFill, ElementName=ThisControl}">
             <StackPanel Orientation="Vertical"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">

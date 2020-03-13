@@ -66,7 +66,8 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DiagramService>()
                 .As<IDiagramService>()
                 .As<IDiagramEventSource>()
-                .WithParameter("childrenAreaPadding", ChildrenAreaPadding);
+                .WithParameter("childrenAreaPadding", ChildrenAreaPadding)
+                .SingleInstance();
 
             builder.RegisterType<TestConnectorTypeResolver>().As<IConnectorTypeResolver>();
 

@@ -47,22 +47,22 @@
                                  Init="{StaticResource DefaultMiniButtonPlacementMap}">
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.BaseType}"
-                                   Vertical="Top" Horizontal="Center" Translate="-9,0" />
+                                   Vertical="Top" Horizontal="Center" Translate="-9,0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.Subtype}"
-                                   Vertical="Bottom" Horizontal="Center" Translate="-9,0" />
+                                   Vertical="Bottom" Horizontal="Center" Translate="-9,-0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementedInterface}"
-                                   Vertical="Top" Horizontal="Center" Translate="9,0" />
+                                   Vertical="Top" Horizontal="Center" Translate="9,0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.ImplementerType}"
-                                   Vertical="Bottom" Horizontal="Center" Translate="9,0" />
+                                   Vertical="Bottom" Horizontal="Center" Translate="9,-0.5" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatedType}"
-                                   Vertical="Center" Horizontal="Right" Translate="0,0" />
+                                   Vertical="Center" Horizontal="Right" Translate="-0.5,0" />
 
         <wpf:RectRelativePlacement x:Key="{x:Static roslynModeling:DirectedModelRelationshipTypes.AssociatingType}"
-                                   Vertical="Center" Horizontal="Left" Translate="0,0" />
+                                   Vertical="Center" Horizontal="Left" Translate="0.5,0" />
 
     </markupExtensions:Dictionary>
 
