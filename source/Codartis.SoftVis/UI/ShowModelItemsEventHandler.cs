@@ -3,5 +3,5 @@ using Codartis.SoftVis.Modeling.Definition;
 
 namespace Codartis.SoftVis.UI
 {
-    public delegate void ShowModelItemsEventHandler(IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes);
+    public delegate void ShowModelItemsEventHandler(IReadOnlyList<ModelNodeId> modelNodeIds, bool followNewDiagramNodes);
 }

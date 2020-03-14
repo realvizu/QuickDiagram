@@ -5,25 +5,25 @@ using Codartis.SoftVis.Diagramming.Definition.Events;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.Modeling.Definition.Events;
 using Codartis.Util.UI.Wpf.ViewModels;
+using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.UI.Wpf.ViewModel
 {
     /// <summary>
     /// View model for a bubble list box that attaches to related entity selector diagram shape buttons.
     /// </summary>
-    public class RelatedNodeListBoxViewModel : BubbleListBoxViewModel<IModelNode>
+    public class RelatedNodeListBoxViewModel : BubbleListBoxViewModel<IRelatedNodeItemViewModel>
     {
-        private readonly IModelEventSource _modelEventSource;
-        private readonly IDiagramEventSource _diagramEventSource;
+        [NotNull] private readonly IModelEventSource _modelEventSource;
+        [NotNull] private readonly IDiagramEventSource _diagramEventSource;
 
         public RelatedNodeListBoxViewModel(
-            IModelEventSource modelEventSource,
-            IDiagramEventSource diagramEventSource)
+            [NotNull] IModelEventSource modelEventSource,
+            [NotNull] IDiagramEventSource diagramEventSource)
         {
             _modelEventSource = modelEventSource;
-            _modelEventSource.ModelChanged += OnModelChanged;
-
             _diagramEventSource = diagramEventSource;
+            _modelEventSource.ModelChanged += OnModelChanged;
             _diagramEventSource.DiagramChanged += OnDiagramChanged;
         }
 
@@ -49,7 +49,7 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
 
         public IDiagramShapeUi OwnerDiagramShape => _ownerButton?.HostUiElement;
 
-        public void Show(RelatedNodeMiniButtonViewModel ownerButton, IEnumerable<IModelNode> items)
+        public void Show(RelatedNodeMiniButtonViewModel ownerButton, IEnumerable<IRelatedNodeItemViewModel> items)
         {
             OwnerButton = ownerButton;
             base.Show(items);

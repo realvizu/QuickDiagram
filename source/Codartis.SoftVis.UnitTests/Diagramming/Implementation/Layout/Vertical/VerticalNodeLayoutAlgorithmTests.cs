@@ -128,7 +128,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Vertical
         private static IGroupLayoutAlgorithm CreateLayoutAlgorithm()
         {
             return new VerticalNodeLayoutAlgorithm(
-                new NameBasedDiagramNodeOrderProvider(),
+                new DefaultDiagramNodeComparer(),
                 gapBetweenNodes: 2);
         }
 

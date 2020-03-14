@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using Autofac;
 using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
@@ -50,6 +51,7 @@ namespace Codartis.SoftVis.TestHostApp
         private static void RegisterModelComponents([NotNull] ContainerBuilder builder)
         {
             builder.RegisterType<SequenceGenerator>().As<ISequenceProvider>().SingleInstance();
+            builder.RegisterType<DefaultModelNodeComparer>().As<IComparer<IModelNode>>();
 
             builder.RegisterType<ModelService>()
                 .WithParameter("payloadEqualityComparer", null)
@@ -63,6 +65,8 @@ namespace Codartis.SoftVis.TestHostApp
 
         private static void RegisterDiagramComponents([NotNull] ContainerBuilder builder)
         {
+            builder.RegisterType<DefaultDiagramNodeComparer>().As<IComparer<IDiagramNode>>();
+
             builder.RegisterType<DiagramService>()
                 .As<IDiagramService>()
                 .As<IDiagramEventSource>()
@@ -79,7 +83,6 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<TestLayoutPriorityProvider>().As<ILayoutPriorityProvider>();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>();
-            builder.RegisterType<NameBasedDiagramNodeOrderProvider>().As<IDiagramNodeOrderProvider>();
         }
 
         private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)
@@ -96,6 +99,8 @@ namespace Codartis.SoftVis.TestHostApp
             builder.RegisterType<DiagramShapeViewModelFactory>().As<IDiagramShapeUiFactory>();
             builder.RegisterType<MiniButtonViewModelFactory>().As<IMiniButtonFactory>().SingleInstance();
             builder.RegisterType<MiniButtonPanelViewModel>().As<IMiniButtonManager>();
+
+            builder.RegisterType<PayloadWrapperRelatedNodeItemViewModelFactory>().As<IRelatedNodeItemViewModelFactory>().SingleInstance();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 

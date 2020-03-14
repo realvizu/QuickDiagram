@@ -71,12 +71,12 @@ namespace Codartis.SoftVis.TestHostApp
             }
         }
 
-        private void OnShowModelItemsRequested(IReadOnlyList<IModelNode> modelNodes, bool followNewDiagramNodes)
+        private void OnShowModelItemsRequested(IReadOnlyList<ModelNodeId> modelNodeIds, bool followNewDiagramNodes)
         {
-            _diagramService.AddNodes(modelNodes.Select(i => i.Id));
+            _diagramService.AddNodes(modelNodeIds);
 
             if (followNewDiagramNodes)
-                _wpfDiagramUiService.FollowDiagramNodes(modelNodes.Select(i => i.Id).ToArray());
+                _wpfDiagramUiService.FollowDiagramNodes(modelNodeIds);
         }
 
         private void AddShapes()

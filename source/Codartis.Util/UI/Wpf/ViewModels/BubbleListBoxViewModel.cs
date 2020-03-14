@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Codartis.Util.UI.Wpf.Collections;
 using Codartis.Util.UI.Wpf.Commands;
+using JetBrains.Annotations;
 
 namespace Codartis.Util.UI.Wpf.ViewModels
 {
@@ -45,12 +45,12 @@ namespace Codartis.Util.UI.Wpf.ViewModels
             }
         }
 
-        protected void Show(IEnumerable<TItem> items)
+        protected void Show([NotNull] [ItemNotNull] IEnumerable<TItem> items)
         {
             SelectedItem = null;
             Items.Clear();
 
-            foreach (var item in items.OrderBy(i => i.ToString()))
+            foreach (var item in items)
                 Items.Add(item);
 
             base.Show();

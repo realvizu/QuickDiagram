@@ -54,6 +54,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterModelComponents([NotNull] ContainerBuilder builder)
         {
+            builder.RegisterType<RoslynBasedModelNodeComparer>().As<IComparer<IModelNode>>();
             builder.RegisterType<SequenceGenerator>().As<ISequenceProvider>().SingleInstance();
             builder.RegisterType<ModelRuleProvider>().As<IModelRuleProvider>().SingleInstance();
 
@@ -85,6 +86,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
         private static void RegisterDiagramComponents([NotNull] ContainerBuilder builder)
         {
+            builder.RegisterType<RoslynBasedDiagramNodeComparer>().As<IComparer<IDiagramNode>>();
+
             builder.RegisterType<DiagramService>()
                 .As<IDiagramService>()
                 .As<IDiagramEventSource>()
@@ -101,7 +104,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>().SingleInstance();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>().SingleInstance();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>().SingleInstance();
-            builder.RegisterType<RoslynBasedDiagramNodeOrderProvider>().As<IDiagramNodeOrderProvider>();
         }
 
         private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)
@@ -122,6 +124,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
 
             builder.RegisterType<MiniButtonViewModelFactory>().As<IMiniButtonFactory>().SingleInstance();
             builder.RegisterType<MiniButtonPanelViewModel>().As<IMiniButtonManager>().SingleInstance();
+
+            builder.RegisterType<RoslynBasedRelatedNodeItemViewModelFactory>().As<IRelatedNodeItemViewModelFactory>().SingleInstance();
 
             var resourceDictionary = ResourceHelpers.GetResourceDictionary(DiagramStylesXaml, Assembly.GetExecutingAssembly());
 

@@ -51,7 +51,9 @@
                                 ItemsSource="{Binding Path=Items}"
                                 ItemContainerStyle="{StaticResource BubbleListBoxItemContainerStyle}"
                                 ItemSelectedCommand="{Binding Path=ItemSelectedCommand}"
-                                Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                MinWidth="12" MinHeight="12"
+                                MaxWidth="350" MaxHeight="225"/>
 
         <controls:PopupTextControl DataContext="{Binding PopupTextViewModel}"
                                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"

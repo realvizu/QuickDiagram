@@ -33,7 +33,7 @@ namespace Codartis.SoftVis.UnitTests.Diagramming.Implementation.Layout.Sugiyama.
         [NotNull]
         protected LayoutVertexBase CreateLayoutVertex([NotNull] string name, int priority = 1)
         {
-            return name.StartsWith("*", StringComparison.Ordinal)
+            return name.StartsWith("*", StringComparison.OrdinalIgnoreCase)
                 ? (LayoutVertexBase)CreateDummyLayoutVertex(name)
                 : CreateTestLayoutVertex(name, priority);
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
 
@@ -65,5 +66,7 @@ namespace Codartis.SoftVis.Modeling.Implementation
                 return obj.Id.GetHashCode();
             }
         }
+
+        public int CompareTo([NotNull] IModelNode other) => string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
     }
 }

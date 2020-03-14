@@ -58,15 +58,14 @@ namespace Codartis.SoftVis.VisualStudioIntegration.App
                 await new ShowSourceFileCommand(this, diagramNode).ExecuteAsync();
         }
 
-        private void OnShowItemsRequested([NotNull] IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
+        private void OnShowItemsRequested([NotNull] IReadOnlyList<ModelNodeId> modelNodeIds, bool followWithViewport)
         {
-            HostUiService.Run(async () => await OnShowItemsRequestAsync(modelNodes, followWithViewport));
+            HostUiService.Run(async () => await OnShowItemsRequestAsync(modelNodeIds, followWithViewport));
         }
 
         [NotNull]
-        private async Task OnShowItemsRequestAsync([NotNull] IReadOnlyList<IModelNode> modelNodes, bool followWithViewport)
+        private async Task OnShowItemsRequestAsync([NotNull] IReadOnlyList<ModelNodeId> modelNodeIds, bool followWithViewport)
         {
-            var modelNodeIds = modelNodes.Select(i => i.Id).ToArray();
             if (modelNodeIds.Any())
                 await new AddItemsToDiagramCommand(this, modelNodeIds, followWithViewport).ExecuteAsync();
         }

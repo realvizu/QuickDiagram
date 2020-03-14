@@ -145,4 +145,29 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type viewModel:RelatedNodeItemViewModel}">
+        <Grid ToolTip="{Binding Path=FullName}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"
+                   Margin="0,0,2,0"
+                   Height="{StaticResource NodeTypeIconSize}"
+                   Width="{StaticResource NodeTypeIconSize}"
+                   HorizontalAlignment="Left"
+                   Source="{Binding Path=Stereotype, 
+                        Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
+            <TextBlock x:Name="TextBlock"
+                       Grid.Column="1"
+                       Margin="1"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Left"
+                       MaxWidth="{StaticResource NodeNameMaxWidth}"
+                       Text="{Binding Path=Name, Mode=OneWay}"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis" />
+        </Grid>
+    </DataTemplate>
+
 </ResourceDictionary>

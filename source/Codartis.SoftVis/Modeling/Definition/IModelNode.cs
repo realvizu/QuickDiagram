@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Graphs.Immutable;
+﻿using System;
+using Codartis.SoftVis.Graphs.Immutable;
 using JetBrains.Annotations;
 
 namespace Codartis.SoftVis.Modeling.Definition
@@ -7,7 +8,7 @@ namespace Codartis.SoftVis.Modeling.Definition
     /// Represents a named item in the model.
     /// Immutable.
     /// </summary>
-    public interface IModelNode : IImmutableVertex<ModelNodeId>
+    public interface IModelNode : IImmutableVertex<ModelNodeId>, IComparable<IModelNode>
     {
         [NotNull] string Name { get; }
         ModelNodeStereotype Stereotype { get; }

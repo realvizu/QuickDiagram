@@ -1,4 +1,5 @@
-﻿using Codartis.SoftVis.Diagramming.Definition;
+﻿using System.Collections.Generic;
+using Codartis.SoftVis.Diagramming.Definition;
 using Codartis.SoftVis.Modeling.Definition;
 using Codartis.SoftVis.UI;
 using Codartis.SoftVis.UI.Wpf.ViewModel;
@@ -16,8 +17,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public RoslynDiagramViewModel(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
-            [NotNull] IDiagramViewportUi diagramViewportUi)
-            : base(modelEventSource, diagramEventSource, diagramViewportUi)
+            [NotNull] IDiagramViewportUi diagramViewportUi,
+            [NotNull] IRelatedNodeItemViewModelFactory relatedNodeItemViewModelFactory,
+            [NotNull] IComparer<IModelNode> modelNodeComparer)
+            : base(modelEventSource, diagramEventSource, diagramViewportUi, relatedNodeItemViewModelFactory, modelNodeComparer)
         {
             _roslynDiagramViewportViewModel = (RoslynDiagramViewportViewModel)diagramViewportUi;
         }

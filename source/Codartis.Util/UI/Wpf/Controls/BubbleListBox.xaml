@@ -169,8 +169,8 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Hidden"
                               VerticalScrollBarVisibility="Auto"
                               Margin="2"
-                              MinWidth="12" MinHeight="12"
-                              MaxWidth="350" MaxHeight="140"
+                              MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}"
+                              MaxWidth="{TemplateBinding MaxWidth}" MaxHeight="{TemplateBinding MaxHeight}"
                               Style="{StaticResource BubbleScrollViewer}">
                     <ItemsPresenter />
                 </ScrollViewer>

@@ -11,6 +11,8 @@ namespace Codartis.SoftVis.TestHostApp.Modeling
             Name = name;
         }
 
+        public override string ToString() => Name;
+
         public string FullName => $"Full name of {Name}";
     }
 }

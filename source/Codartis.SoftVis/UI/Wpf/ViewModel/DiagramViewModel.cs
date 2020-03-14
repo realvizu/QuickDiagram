@@ -17,6 +17,9 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
     /// </summary>
     public class DiagramViewModel : ModelObserverViewModelBase, IDiagramUi
     {
+        [NotNull] private readonly IRelatedNodeItemViewModelFactory _relatedNodeItemViewModelFactory;
+        [NotNull] private readonly IComparer<IModelNode> _modelNodeComparer;
+
         private IDiagram _lastDiagram;
         private Rect _diagramContentRect;
 
@@ -36,9 +39,13 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         public DiagramViewModel(
             [NotNull] IModelEventSource modelEventSource,
             [NotNull] IDiagramEventSource diagramEventSource,
-            [NotNull] IDiagramViewportUi diagramViewportUi)
+            [NotNull] IDiagramViewportUi diagramViewportUi,
+            [NotNull] IRelatedNodeItemViewModelFactory relatedNodeItemViewModelFactory,
+            [NotNull] IComparer<IModelNode> modelNodeComparer)
             : base(modelEventSource, diagramEventSource)
         {
+            _relatedNodeItemViewModelFactory = relatedNodeItemViewModelFactory;
+            _modelNodeComparer = modelNodeComparer;
             DiagramViewportViewModel = (DiagramViewportViewModel)diagramViewportUi;
 
             RelatedNodeListBoxViewModel = new RelatedNodeListBoxViewModel(ModelEventSource, DiagramEventSource);
@@ -166,29 +173,32 @@ namespace Codartis.SoftVis.UI.Wpf.ViewModel
         private void OnRelatedNodeSelectorRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
         {
             DiagramViewportViewModel.PinFocus();
-            RelatedNodeListBoxViewModel.Show(ownerButton, modelNodes);
+            var viewModelItems = modelNodes.OrderBy(i => i, _modelNodeComparer).Select(_relatedNodeItemViewModelFactory.Create);
+            RelatedNodeListBoxViewModel.Show(ownerButton, viewModelItems);
         }
 
         private void OnShowRelatedNodesRequested(RelatedNodeMiniButtonViewModel ownerButton, IReadOnlyList<IModelNode> modelNodes)
         {
+            var modelNodeIds = modelNodes.Select(i => i.Id).ToArray();
+
             switch (modelNodes.Count)
             {
                 case 0:
                     return;
                 case 1:
-                    ShowModelItemsRequested?.Invoke(modelNodes, followNewDiagramNodes: true);
+                    ShowModelItemsRequested?.Invoke(modelNodeIds, followNewDiagramNodes: true);
                     break;
                 default:
                     HideRelatedNodeListBox();
-                    ShowModelItemsRequested?.Invoke(modelNodes, followNewDiagramNodes: true);
+                    ShowModelItemsRequested?.Invoke(modelNodeIds, followNewDiagramNodes: true);
                     break;
             }
         }
 
-        private void OnRelatedNodeSelected(IModelNode modelNode)
+        private void OnRelatedNodeSelected(IRelatedNodeItemViewModel relatedNodeItemViewModel)
         {
             StopFollowingDiagramNodes();
-            ShowModelItemsRequested?.Invoke(new[] { modelNode }, followNewDiagramNodes: false);
+            ShowModelItemsRequested?.Invoke(new[] { relatedNodeItemViewModel.Id }, followNewDiagramNodes: false);
         }
 
         private void OnDiagramNodeInvoked(IDiagramNode diagramNode)
