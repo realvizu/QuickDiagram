@@ -73,6 +73,54 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             MethodKind.Ordinary
         };
 
+        [NotNull]
+        private static readonly SymbolDisplayFormat SymbolNameDisplayFormat = new SymbolDisplayFormat(
+            memberOptions: SymbolDisplayMemberOptions.IncludeType |
+                           SymbolDisplayMemberOptions.IncludeParameters,
+            parameterOptions: SymbolDisplayParameterOptions.IncludeType |
+                              SymbolDisplayParameterOptions.IncludeName,
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+        private const SymbolDisplayMiscellaneousOptions MiscDisplayOptions = SymbolDisplayMiscellaneousOptions.UseSpecialTypes;
+
+        private const SymbolDisplayParameterOptions ParameterDisplayOptions = SymbolDisplayParameterOptions.IncludeExtensionThis |
+                                                                              SymbolDisplayParameterOptions.IncludeParamsRefOut |
+                                                                              SymbolDisplayParameterOptions.IncludeType |
+                                                                              SymbolDisplayParameterOptions.IncludeName |
+                                                                              SymbolDisplayParameterOptions.IncludeDefaultValue;
+
+        private const SymbolDisplayMemberOptions MemberDisplayOptions = SymbolDisplayMemberOptions.IncludeParameters |
+                                                                        SymbolDisplayMemberOptions.IncludeExplicitInterface |
+                                                                        SymbolDisplayMemberOptions.IncludeModifiers |
+                                                                        SymbolDisplayMemberOptions.IncludeType |
+                                                                        SymbolDisplayMemberOptions.IncludeAccessibility |
+                                                                        SymbolDisplayMemberOptions.IncludeConstantValue;
+
+        private const SymbolDisplayGenericsOptions GenericDisplayOptions = SymbolDisplayGenericsOptions.IncludeTypeParameters |
+                                                                           SymbolDisplayGenericsOptions.IncludeTypeConstraints |
+                                                                           SymbolDisplayGenericsOptions.IncludeVariance;
+
+        [NotNull]
+        private static readonly SymbolDisplayFormat TypeSymbolFullNameDisplayFormat = new SymbolDisplayFormat(
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+            delegateStyle: SymbolDisplayDelegateStyle.NameAndSignature,
+            kindOptions: SymbolDisplayKindOptions.IncludeTypeKeyword,
+            memberOptions: MemberDisplayOptions,
+            parameterOptions: ParameterDisplayOptions,
+            genericsOptions: GenericDisplayOptions,
+            miscellaneousOptions: MiscDisplayOptions);
+
+        [NotNull]
+        private static readonly SymbolDisplayFormat MemberSymbolFullNameDisplayFormat = new SymbolDisplayFormat(
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameOnly,
+            propertyStyle: SymbolDisplayPropertyStyle.ShowReadWriteDescriptor,
+            kindOptions: SymbolDisplayKindOptions.IncludeMemberKeyword,
+            memberOptions: MemberDisplayOptions,
+            parameterOptions: ParameterDisplayOptions,
+            genericsOptions: GenericDisplayOptions,
+            miscellaneousOptions: MiscDisplayOptions);
+
         public bool ExcludeTrivialTypes { get; set; }
 
         public RoslynSymbolTranslator(bool excludeTrivialTypes = true)
@@ -173,42 +221,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
             return summary;
         }
 
-        public string GetName(ISymbol symbol)
+        public string GetName(ISymbol symbol) => symbol.ToDisplayString(SymbolNameDisplayFormat);
+
+        public string GetFullName(ISymbol symbol)
         {
             switch (symbol)
             {
-                case IMethodSymbol methodSymbol:
-                    var parametersString = string.Join(", ", methodSymbol.Parameters.Select(ToDisplayString));
-                    return $"{methodSymbol.Name}({parametersString})";
+                case INamedTypeSymbol _:
+                    return symbol.ToDisplayString(TypeSymbolFullNameDisplayFormat);
                 default:
-                    return GetMinimallyQualifiedName(symbol);
+                    return symbol.ToDisplayString(MemberSymbolFullNameDisplayFormat);
             }
         }
 
-        public string GetFullName(ISymbol symbol) => GetNamespaceQualifiedName(symbol);
-
         [NotNull]
-        private static string ToDisplayString([NotNull] IParameterSymbol parameterSymbol)
-        {
-            return $"{parameterSymbol.Type?.Name} {parameterSymbol.Name}";
-        }
-
-        [NotNull]
-        private static string GetFullyQualifiedName([NotNull] ISymbol symbol)
-        {
-            return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        }
-
-        [NotNull]
-        private static string GetNamespaceQualifiedName([NotNull] ISymbol symbol)
-        {
-            return symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
-        }
-
-        [NotNull]
-        private static string GetMinimallyQualifiedName([NotNull] ISymbol symbol)
-        {
-            return symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
-        }
+        private static string GetFullyQualifiedName([NotNull] ISymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
     }
 }

@@ -221,7 +221,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UnitTests.Modeling.Implementa
                 {
                     event D1 E1;
                 }
-                delegate D1();
+                delegate int D1();
                 ");
 
             var baseSymbol = await modelProvider.GetSymbolAsync("E1");
