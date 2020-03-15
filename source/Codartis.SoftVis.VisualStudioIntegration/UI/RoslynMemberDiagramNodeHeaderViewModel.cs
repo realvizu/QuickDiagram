@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    public sealed class RoslynMemberDiagramNodeHeaderViewModel : RoslynDiagramNodeHeaderViewModelBase
+    public sealed class RoslynMemberDiagramNodeHeaderViewModel : RoslynDiagramNodeHeaderViewModelBase, ICommonRoslynNodeViewModel
     {
         public RoslynMemberDiagramNodeHeaderViewModel(
             [NotNull] ISymbol symbol,

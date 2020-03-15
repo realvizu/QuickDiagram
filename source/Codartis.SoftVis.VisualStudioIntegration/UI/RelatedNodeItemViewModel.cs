@@ -4,7 +4,7 @@ using Codartis.Util.UI.Wpf.ViewModels;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.UI
 {
-    public sealed class RelatedNodeItemViewModel : ViewModelBase, IRelatedNodeItemViewModel
+    public sealed class RelatedNodeItemViewModel : ViewModelBase, IRelatedNodeItemViewModel, ICommonRoslynNodeViewModel
     {
         public ModelNodeId Id { get; }
         public string Name { get; }

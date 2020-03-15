@@ -46,6 +46,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="UI\DiagramConstants.xaml" />
       <None Remove="UI\Images\Class_16x.png" />
       <None Remove="UI\Images\Class_16x.svg" />
       <None Remove="UI\Images\Class_16x.xaml" />
@@ -79,6 +80,7 @@
       <None Remove="UI\Images\Structure_16x.png" />
       <None Remove="UI\Images\Structure_16x.svg" />
       <None Remove="UI\Images\Structure_16x.xaml" />
+      <None Remove="UI\SimpleRoslynNodeControl.xaml" />
       <None Remove="UI\StereotypeStyleMaps.xaml" />
     </ItemGroup>
 
@@ -121,6 +123,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Page Include="UI\DiagramConstants.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="UI\SimpleRoslynNodeControl.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </Page>
         <Page Include="UI\DiagramNodeExpander.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>

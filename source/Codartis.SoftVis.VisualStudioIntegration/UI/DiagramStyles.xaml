@@ -13,6 +13,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Codartis.SoftVis;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/Codartis.SoftVis;component/UI/Wpf/View/AnimationConstants.xaml" />
+        <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramConstants.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/RelatedNodeCueAndMiniButtonStyles.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/DiagramNodeExpander.xaml" />
         <ResourceDictionary Source="/QuickDiagramTool;component/UI/StereotypeStyleMaps.xaml" />
@@ -20,11 +21,9 @@
 
     <system:Double x:Key="TypeDiagramNodeHeaderMinHeight">38</system:Double>
     <system:Double x:Key="TypeDiagramNodeHeaderMinWidth">60</system:Double>
-    <system:Double x:Key="NodeNameMaxWidth">300</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinHeight">20</system:Double>
     <system:Double x:Key="MemberDiagramNodeHeaderMinWidth">50</system:Double>
     <system:Double x:Key="DiagramNodeDescriptionMaxHeight">114</system:Double>
-    <system:Double x:Key="NodeTypeIconSize">16</system:Double>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -117,57 +116,16 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModel:RoslynMemberDiagramNodeHeaderViewModel}">
-        <Grid MinWidth="{StaticResource MemberDiagramNodeHeaderMinWidth}"
-              ToolTip="{Binding Path=FullName}"
-              HorizontalAlignment="Stretch"
-              Background="{Binding Path=Stereotype, 
-                    Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToBackgroundBrushMap}}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image Grid.Column="0"
-                   Margin="3,3,0,3"
-                   Height="{StaticResource NodeTypeIconSize}"
-                   Width="{StaticResource NodeTypeIconSize}"
-                   HorizontalAlignment="Left"
-                   Source="{Binding Path=Stereotype, 
-                        Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
-            <TextBlock x:Name="TextBlock"
-                       Grid.Column="1"
-                       Margin="3"
-                       VerticalAlignment="Top"
-                       HorizontalAlignment="Left"
-                       MaxWidth="{StaticResource NodeNameMaxWidth}"
-                       Text="{Binding Path=Name, Mode=OneWay}"
-                       TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis" />
-        </Grid>
+        <viewModel:SimpleRoslynNodeControl
+            MinWidth="{StaticResource MemberDiagramNodeHeaderMinWidth}"
+            Padding="3"
+            HorizontalAlignment="Stretch"
+            Background="{Binding Path=Stereotype, 
+                    Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToBackgroundBrushMap}}}" />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModel:RelatedNodeItemViewModel}">
-        <Grid ToolTip="{Binding Path=FullName}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image Grid.Column="0"
-                   Margin="0,0,2,0"
-                   Height="{StaticResource NodeTypeIconSize}"
-                   Width="{StaticResource NodeTypeIconSize}"
-                   HorizontalAlignment="Left"
-                   Source="{Binding Path=Stereotype, 
-                        Converter={converters:DictionaryItemSelectorConverter Dictionary={StaticResource ModelNodeStereotypeToImageSourceMap}}}" />
-            <TextBlock x:Name="TextBlock"
-                       Grid.Column="1"
-                       Margin="1"
-                       VerticalAlignment="Top"
-                       HorizontalAlignment="Left"
-                       MaxWidth="{StaticResource NodeNameMaxWidth}"
-                       Text="{Binding Path=Name, Mode=OneWay}"
-                       TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis" />
-        </Grid>
+        <viewModel:SimpleRoslynNodeControl />
     </DataTemplate>
 
 </ResourceDictionary>
