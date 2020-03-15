@@ -46,5 +46,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling
 
         [NotNull]
         string GetDescription([NotNull] ISymbol symbol);
+
+        bool GetIsStatic([NotNull] ISymbol symbol);
+        
+        bool GetIsAbstract([NotNull] ISymbol symbol);
     }
 }

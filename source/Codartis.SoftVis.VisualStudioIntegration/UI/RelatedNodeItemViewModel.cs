@@ -10,13 +10,20 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         public string Name { get; }
         public string FullName { get; }
         public ModelNodeStereotype Stereotype { get; }
+        public bool IsStatic { get; }
 
-        public RelatedNodeItemViewModel(ModelNodeId id, string name, string fullName, ModelNodeStereotype stereotype)
+        public RelatedNodeItemViewModel(
+            ModelNodeId id,
+            string name,
+            string fullName,
+            ModelNodeStereotype stereotype,
+            bool isStatic)
         {
             Id = id;
             Name = name;
             FullName = fullName;
             Stereotype = stereotype;
+            IsStatic = isStatic;
         }
     }
 }

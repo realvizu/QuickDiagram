@@ -23,7 +23,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
                 modelNode.Id,
                 _roslynSymbolTranslator.GetName(symbol),
                 _roslynSymbolTranslator.GetFullName(symbol),
-                _roslynSymbolTranslator.GetStereotype(symbol));
+                _roslynSymbolTranslator.GetStereotype(symbol),
+                _roslynSymbolTranslator.GetIsStatic(symbol));
         }
     }
 }

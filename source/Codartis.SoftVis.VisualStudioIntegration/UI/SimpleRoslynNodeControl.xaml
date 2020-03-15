@@ -37,6 +37,17 @@
                    MaxWidth="{StaticResource NodeNameMaxWidth}"
                    Text="{Binding Path=Name, Mode=OneWay}"
                    TextWrapping="NoWrap"
-                   TextTrimming="CharacterEllipsis" />
+                   TextTrimming="CharacterEllipsis">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsStatic}" Value="True">
+                            <Setter Property="TextDecorations" Value="Underline" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
     </Grid>
 </UserControl>

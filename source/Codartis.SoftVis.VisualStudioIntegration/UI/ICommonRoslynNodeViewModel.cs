@@ -10,5 +10,6 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         string Name { get; }
         string FullName { get; }
         ModelNodeStereotype Stereotype { get; }
+        bool IsStatic { get; }
     }
 }

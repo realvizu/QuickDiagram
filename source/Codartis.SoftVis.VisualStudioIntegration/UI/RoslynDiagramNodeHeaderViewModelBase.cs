@@ -23,6 +23,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
         private bool _descriptionExists;
         private bool _isDescriptionVisible;
         private bool _isAbstract;
+        private bool _isStatic;
 
         protected RoslynDiagramNodeHeaderViewModelBase(
             [NotNull] ISymbol symbol,
@@ -138,6 +139,19 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             }
         }
 
+        public bool IsStatic
+        {
+            get { return _isStatic; }
+            set
+            {
+                if (_isStatic != value)
+                {
+                    _isStatic = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void Update([NotNull] ISymbol symbol)
         {
             SetProperties(symbol);
@@ -151,7 +165,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.UI
             FullName = RoslynSymbolTranslator.GetFullName(symbol);
             Description = RoslynSymbolTranslator.GetDescription(symbol);
             DescriptionExists = !string.IsNullOrWhiteSpace(Description);
-            IsAbstract = symbol.IsAbstract;
+            IsAbstract = RoslynSymbolTranslator.GetIsAbstract(symbol);
+            IsStatic = RoslynSymbolTranslator.GetIsStatic(symbol);
         }
     }
 }

@@ -204,6 +204,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         }
 
         public string GetDescription(ISymbol symbol) => GetCommentSummary(symbol)?.Trim();
+        
+        public bool GetIsStatic(ISymbol symbol) => symbol.IsStatic;
+
+        public bool GetIsAbstract(ISymbol symbol) => symbol.IsAbstract;
 
         private static string GetCommentSummary([NotNull] ISymbol symbol)
         {
