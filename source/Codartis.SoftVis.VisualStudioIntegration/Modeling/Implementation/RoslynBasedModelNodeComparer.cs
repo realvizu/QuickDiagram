@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Codartis.SoftVis.Modeling.Definition;
 using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
 {
@@ -21,10 +22,18 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
         public int Compare(IModelNode x, IModelNode y)
         {
             var stereotypeComparisonResult = GetStereotypePriority(x) - GetStereotypePriority(y);
+            if (stereotypeComparisonResult != 0)
+                return stereotypeComparisonResult;
 
-            return stereotypeComparisonResult == 0
-                ? string.Compare(x.Name, y.Name, StringComparison.Ordinal)
-                : stereotypeComparisonResult;
+            var symbolNameX = GetSymbolName(x);
+            var symbolNameY = GetSymbolName(y);
+            return string.Compare(symbolNameX, symbolNameY, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string GetSymbolName(IModelNode modelNode)
+        {
+            var symbol = (ISymbol)modelNode.Payload;
+            return symbol.Name;
         }
 
         private static int GetStereotypePriority([NotNull] IModelNode x)
@@ -33,6 +42,5 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Modeling.Implementation
                 ? priority
                 : 100;
         }
-
     }
 }
