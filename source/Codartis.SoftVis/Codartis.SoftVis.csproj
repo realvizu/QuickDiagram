@@ -25,6 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Themes\ScrollViewerStyle.xaml" />
     <None Remove="UI\Wpf\View\DiagramNodeWithCuesControl.xaml" />
     <None Remove="UI\Wpf\View\MiniButtonPanel.xaml" />
   </ItemGroup>
@@ -45,6 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="Themes\ScrollViewerStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Wpf\View\MiniButtonPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
