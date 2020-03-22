@@ -1,26 +1,26 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:view="clr-namespace:Codartis.Util.UI.Wpf.Controls"
                     mc:Ignorable="d">
 
-    <SolidColorBrush x:Key="BubbleBackgroundBrush" Color="White" Opacity=".9"/>
+    <SolidColorBrush x:Key="BubbleBackgroundBrush" Color="White" Opacity=".9" />
     <SolidColorBrush x:Key="BubbleBorderBrush" Color="Black" />
 
     <ControlTemplate x:Key="BubbleListBox" TargetType="{x:Type view:BubbleListBox}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="6"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="6"/>
+                <RowDefinition Height="6" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="6" />
             </Grid.RowDefinitions>
             <Path x:Name="TopHandle"
-              Grid.Row="0"
-              Stroke="{StaticResource BubbleBorderBrush}"
-              Fill="{StaticResource BubbleBorderBrush}"
-              Stretch="Uniform"
-              Data="M -1 0 L 0 -1 L 1 0 Z"/>
+                  Grid.Row="0"
+                  Stroke="{StaticResource BubbleBorderBrush}"
+                  Fill="{StaticResource BubbleBorderBrush}"
+                  Stretch="Uniform"
+                  Data="M -1 0 L 0 -1 L 1 0 Z" />
             <Border Grid.Row="1"
                     BorderBrush="{StaticResource BubbleBorderBrush}"
                     BorderThickness="2"
@@ -29,37 +29,39 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Hidden"
                               VerticalScrollBarVisibility="Auto"
                               Margin="2"
+                              BorderBrush="{StaticResource BubbleBorderBrush}"
+                              Background="White"
                               MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}"
                               MaxWidth="{TemplateBinding MaxWidth}" MaxHeight="{TemplateBinding MaxHeight}">
                     <ItemsPresenter />
                 </ScrollViewer>
             </Border>
             <Path x:Name="BottomHandle"
-              Grid.Row="2"
-              Stroke="{StaticResource BubbleBorderBrush}"
-              Fill="{StaticResource BubbleBorderBrush}"
-              Stretch="Uniform"
-              Data="M -1 0 L 0 1 L 1 0 Z"/>
+                  Grid.Row="2"
+                  Stroke="{StaticResource BubbleBorderBrush}"
+                  Fill="{StaticResource BubbleBorderBrush}"
+                  Stretch="Uniform"
+                  Data="M -1 0 L 0 1 L 1 0 Z" />
         </Grid>
 
         <ControlTemplate.Triggers>
             <Trigger Property="HandleOrientation" Value="None">
-                <Setter TargetName="TopHandle" Property="Visibility" Value="Hidden"></Setter>
-                <Setter TargetName="BottomHandle" Property="Visibility" Value="Hidden"></Setter>
+                <Setter TargetName="TopHandle" Property="Visibility" Value="Hidden" />
+                <Setter TargetName="BottomHandle" Property="Visibility" Value="Hidden" />
             </Trigger>
             <Trigger Property="HandleOrientation" Value="Top">
-                <Setter TargetName="TopHandle" Property="Visibility" Value="Visible"></Setter>
-                <Setter TargetName="BottomHandle" Property="Visibility" Value="Hidden"></Setter>
+                <Setter TargetName="TopHandle" Property="Visibility" Value="Visible" />
+                <Setter TargetName="BottomHandle" Property="Visibility" Value="Hidden" />
             </Trigger>
             <Trigger Property="HandleOrientation" Value="Bottom">
-                <Setter TargetName="TopHandle" Property="Visibility" Value="Hidden"></Setter>
-                <Setter TargetName="BottomHandle" Property="Visibility" Value="Visible"></Setter>
+                <Setter TargetName="TopHandle" Property="Visibility" Value="Hidden" />
+                <Setter TargetName="BottomHandle" Property="Visibility" Value="Visible" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
     <Style TargetType="{x:Type view:BubbleListBox}">
-        <Setter Property="Template" Value="{StaticResource BubbleListBox}"/>
+        <Setter Property="Template" Value="{StaticResource BubbleListBox}" />
     </Style>
 
 </ResourceDictionary>

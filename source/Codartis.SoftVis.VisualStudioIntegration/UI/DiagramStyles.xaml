@@ -55,9 +55,9 @@
 
     <DataTemplate DataType="{x:Type viewModel:RoslynTypeDiagramNodeHeaderViewModel}">
         <Border BorderThickness="1"
-                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
-                Background="{Binding DiagramFill, ElementName=ThisControl}">
+                BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}">
             <StackPanel Orientation="Vertical"
+                        Background="{Binding DiagramFill, ElementName=ThisControl}"
                         MinHeight="{StaticResource TypeDiagramNodeHeaderMinHeight}"
                         MinWidth="{StaticResource TypeDiagramNodeHeaderMinWidth}"
                         ToolTip="{Binding Path=FullName}">
@@ -92,8 +92,11 @@
                                               MaxHeight="{StaticResource DiagramNodeDescriptionMaxHeight}">
                     <ScrollViewer HorizontalScrollBarVisibility="Hidden"
                                   VerticalScrollBarVisibility="Auto"
+                                  Margin="1"
+                                  BorderBrush="{Binding DiagramStroke, ElementName=ThisControl}"
+                                  Background="{Binding DiagramFill, ElementName=ThisControl}"
                                   controls:ScrollViewerCorrector.FixScrolling="True">
-                        <TextBlock Margin="4,4,4,4"
+                        <TextBlock Margin="3"
                                    FontSize="10"
                                    HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
