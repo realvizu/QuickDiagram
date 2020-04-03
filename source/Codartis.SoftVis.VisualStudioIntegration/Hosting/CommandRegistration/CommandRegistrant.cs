@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Threading.Tasks;
-using Codartis.SoftVis.VisualStudioIntegration.App;
+using Autofac;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands;
 using Codartis.SoftVis.VisualStudioIntegration.App.Commands.Toggle;
 using Codartis.SoftVis.VisualStudioIntegration.Hosting.ComboAdapters;
@@ -13,22 +13,22 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
     /// <summary>
     /// Implements logic to register commands with the VS host.
     /// </summary>
-    internal class CommandRegistrant
+    internal sealed class CommandRegistrant
     {
         private readonly IMenuCommandService _menuCommandService;
-        private readonly IAppServices _appServices;
+        private readonly IContainer _container;
 
-        public CommandRegistrant(IMenuCommandService menuCommandService, IAppServices appServices)
+        public CommandRegistrant(IMenuCommandService menuCommandService, IContainer container)
         {
             _menuCommandService = menuCommandService;
-            _appServices = appServices;
+            _container = container;
         }
 
         public void RegisterCommands(Guid commandSetGuid, IEnumerable<ICommandSpecification> commandSpecifications)
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (CommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (CommandBase)_container.Resolve(commandSpecification.CommandType);
 
                 AddMenuCommand(
                     commandSetGuid,
@@ -42,7 +42,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var commandSpecification in commandSpecifications)
             {
-                var command = (ToggleCommandBase) Activator.CreateInstance(commandSpecification.CommandType, _appServices);
+                var command = (ToggleCommandBase) _container.Resolve(commandSpecification.CommandType);
 
                 AddMenuCommand(
                     commandSetGuid,
@@ -58,7 +58,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting.CommandRegistration
         {
             foreach (var comboSpecification in comboSpecifications)
             {
-                var comboAdapter = (IComboAdapter) Activator.CreateInstance(comboSpecification.ComboAdapterType, _appServices);
+                var comboAdapter = (IComboAdapter) _container.Resolve(comboSpecification.ComboAdapterType);
                 AddMenuCommand(commandSetGuid, comboSpecification.GetItemsCommandId, comboAdapter.GetItemsCommandHandler);
                 AddMenuCommand(commandSetGuid, comboSpecification.ComboCommandId, comboAdapter.ComboCommandHandler);
             }

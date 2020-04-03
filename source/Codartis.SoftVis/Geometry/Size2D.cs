@@ -1,5 +1,6 @@
 ﻿using System;
 using Codartis.Util;
+using Newtonsoft.Json;
 
 namespace Codartis.SoftVis.Geometry
 {
@@ -25,8 +26,9 @@ namespace Codartis.SoftVis.Geometry
             Height = height;
         }
 
-        public bool IsDefined => !IsUndefined;
+        [JsonIgnore] public bool IsDefined => !IsUndefined;
 
+        [JsonIgnore]
         public bool IsUndefined
             => double.IsNaN(Width) ||
                double.IsNaN(Height) ||

@@ -1,4 +1,5 @@
 ﻿using Codartis.Util;
+using Newtonsoft.Json;
 
 namespace Codartis.SoftVis.Geometry
 {
@@ -19,8 +20,8 @@ namespace Codartis.SoftVis.Geometry
             Y = y;
         }
 
-        public bool IsDefined => !IsUndefined;
-        public bool IsUndefined => double.IsNaN(X) || double.IsNaN(Y);
+        [JsonIgnore] public bool IsDefined => !IsUndefined;
+        [JsonIgnore] public bool IsUndefined => double.IsNaN(X) || double.IsNaN(Y);
 
         public static Point2D operator +(Point2D point, Size2D size) => new Point2D(point.X + size.Width, point.Y + size.Height);
 

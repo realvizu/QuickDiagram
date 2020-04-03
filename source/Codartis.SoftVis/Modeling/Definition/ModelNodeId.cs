@@ -26,7 +26,9 @@ namespace Codartis.SoftVis.Modeling.Definition
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+
             return obj is ModelNodeId && Equals((ModelNodeId)obj);
         }
 
@@ -49,5 +51,7 @@ namespace Codartis.SoftVis.Modeling.Definition
         {
             return _id.CompareTo(other._id);
         }
+
+        public static explicit operator long(ModelNodeId id) => id._id;
     }
 }

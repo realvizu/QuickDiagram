@@ -31,6 +31,7 @@
     <Allowed From="*" To="JetBrains.Annotations" />
     <Allowed From="*" To="Codartis.Util.*" />
     <Allowed From="*" To="CellWars.Threading" />
+    <Allowed From="*" To="Newtonsoft.Json" />
 
     <Allowed From="XamlGeneratedNamespace" To="*" />
     

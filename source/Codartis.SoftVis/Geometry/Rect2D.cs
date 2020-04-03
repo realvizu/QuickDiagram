@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Codartis.SoftVis.Geometry
 {
@@ -40,12 +41,12 @@ namespace Codartis.SoftVis.Geometry
         {
         }
 
-        public double Top => TopLeft.Y;
-        public double Bottom => TopLeft.Y + Size.Height;
-        public double Left => TopLeft.X;
-        public double Right => TopLeft.X + Size.Width;
-        public double Width => Size.Width;
-        public double Height => Size.Height;
+        [JsonIgnore]        public double Top => TopLeft.Y;
+        [JsonIgnore]public double Bottom => TopLeft.Y + Size.Height;
+        [JsonIgnore]public double Left => TopLeft.X;
+        [JsonIgnore]public double Right => TopLeft.X + Size.Width;
+        [JsonIgnore]public double Width => Size.Width;
+        [JsonIgnore]public double Height => Size.Height;
 
         public Point2D BottomRight => new Point2D(Right, Bottom);
         public Point2D Center => new Point2D(Left + Size.Width / 2, Top + Size.Height / 2);

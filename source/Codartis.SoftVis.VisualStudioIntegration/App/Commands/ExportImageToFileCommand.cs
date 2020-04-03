@@ -8,12 +8,12 @@ using JetBrains.Annotations;
 namespace Codartis.SoftVis.VisualStudioIntegration.App.Commands
 {
     /// <summary>
-    /// Exports the current diagram to a file.
+    /// Exports the image of the current diagram to a file.
     /// </summary>
     [UsedImplicitly]
-    internal sealed class ExportToFileCommand : DiagramImageCreatorCommandBase
+    internal sealed class ExportImageToFileCommand : DiagramImageCreatorCommandBase
     {
-        public ExportToFileCommand([NotNull] IAppServices appServices)
+        public ExportImageToFileCommand([NotNull] IAppServices appServices)
             : base(appServices)
         {
         }

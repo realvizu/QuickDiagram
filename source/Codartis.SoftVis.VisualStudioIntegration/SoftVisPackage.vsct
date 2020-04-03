@@ -74,6 +74,12 @@
                     <ButtonText>&amp;Update Diagram From Code</ButtonText>
                 </Strings>
             </Button>
+            <Button guid="SoftVisCommandSetGuid" id="ExportDiagramSpecToFileCommand" type="Button">
+                <Icon guid="ExportDiagramSpecToFileGuid" id="ExportDiagramSpecToFileId" />
+                <Strings>
+                    <ButtonText>&amp;Export Diagram Spec...</ButtonText>
+                </Strings>
+            </Button>
             <Button guid="SoftVisCommandSetGuid" id="ShowDiagramWindowCommand" priority="1" type="Button">
                 <Icon guid="DiagramImageGuid" id="DiagramImageId" />
                 <Strings>
@@ -122,14 +128,15 @@
             <Bitmap guid="AutoSizeImageGuid" href="Resources\AutoSizeOptimize_16x16.png" />
             <Bitmap guid="CopyImageGuid" href="Resources\Copy_16x16.png" />
             <Bitmap guid="DeleteImageGuid" href="Resources\Cancel_16x16.png" />
-            <Bitmap guid="DiagramImageGuid" href="Resources\DependancyGraph_16x16.png" />
+            <Bitmap guid="DiagramImageGuid" href="Resources\DependencyGraph_16x16.png" />
             <Bitmap guid="RefreshImageGuid" href="Resources\Refresh_16x16.png" />
             <Bitmap guid="SaveImageGuid" href="Resources\Save_16x16.png" />
             <Bitmap guid="AddToDiagramImageGuid" href="Resources\AddClause_16x16.png" />
-            <Bitmap guid="AddToDiagramWithHierarchyImageGuid" href="Resources\AddToDependancyGraph_16x16.png" />
+            <Bitmap guid="AddToDiagramWithHierarchyImageGuid" href="Resources\AddToDependencyGraph_16x16.png" />
             <Bitmap guid="ExpandAllImageGuid" href="Resources\ExpandAll_16x16.png" />
             <Bitmap guid="CollapseAllImageGuid" href="Resources\CollapseAll_16x16.png" />
             <Bitmap guid="ShowHideNodeDescriptionsImageGuid" href="Resources\SmallInfo_16x16.png" />
+            <Bitmap guid="ExportDiagramSpecToFileGuid" href="Resources\Save_16x16.png" />
         </Bitmaps>
     </Commands>
 
@@ -185,6 +192,9 @@
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ClearModelCommand" priority="2">
             <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup3" />
         </CommandPlacement>
+        <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportDiagramSpecToFileCommand" priority="3">
+            <Parent guid="SoftVisCommandSetGuid" id="ToolbarGroup3" />
+        </CommandPlacement>
 
         <!-- ExportImage menu controller -->
         <CommandPlacement guid="SoftVisCommandSetGuid" id="ExportImageCommandGroup" priority="1">
@@ -213,6 +223,7 @@
         <KeyBinding guid="SoftVisCommandSetGuid" id="ExportToFileCommand" editor="DiagramToolWindowGuid" key1="S" mod1="Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="UpdateModelFromSourceCommand" editor="DiagramToolWindowGuid" key1="U" mod1="Control"/>
         <KeyBinding guid="SoftVisCommandSetGuid" id="ClearModelCommand" editor="DiagramToolWindowGuid" key1="VK_DELETE" mod1="Control"/>
+        <KeyBinding guid="SoftVisCommandSetGuid" id="ExportDiagramSpecToFileCommand" editor="DiagramToolWindowGuid" key1="E" mod1="Control"/>
     </KeyBindings>
 
     <Symbols>
@@ -247,6 +258,7 @@
             <IDSymbol name="ExpandAllNodesCommand" value="111" />
             <IDSymbol name="CollapseAllNodesCommand" value="112" />
             <IDSymbol name="ShowHideNodeDescriptionsCommand" value="113" />
+            <IDSymbol name="ExportDiagramSpecToFileCommand" value="114"/>
         </GuidSymbol>
 
         <GuidSymbol name="AutoSizeImageGuid" value="{581dc3ea-bdc2-424c-9c85-e4227c6ca1ad}">
@@ -263,6 +275,9 @@
         </GuidSymbol>
         <GuidSymbol name="RefreshImageGuid" value="{F88B78F7-AC5D-421D-8EB4-BA2B72A99A4B}" >
             <IDSymbol name="RefreshImageId" value="1" />
+        </GuidSymbol>
+        <GuidSymbol name="ExportDiagramSpecToFileGuid" value="{EDFB4054-E08E-41F9-8FB9-105394969947}" >
+            <IDSymbol name="ExportDiagramSpecToFileId" value="1" />
         </GuidSymbol>
         <GuidSymbol name="SaveImageGuid" value="{6CD2D9B8-33F6-40B7-800E-F4228CD0418A}" >
             <IDSymbol name="SaveImageId" value="1" />

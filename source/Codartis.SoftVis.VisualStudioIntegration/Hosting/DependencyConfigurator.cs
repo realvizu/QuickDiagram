@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Autofac;
+using Autofac.Features.ResolveAnything;
 using Codartis.SoftVis.Diagramming.Definition;
+using Codartis.SoftVis.Diagramming.Definition.Export;
 using Codartis.SoftVis.Diagramming.Definition.Layout;
 using Codartis.SoftVis.Diagramming.Implementation;
+using Codartis.SoftVis.Diagramming.Implementation.Export;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.DirectConnector;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Selection;
 using Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama;
@@ -47,7 +50,9 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             RegisterHostComponents(builder, visualStudioServices);
 
             builder.RegisterType<VisualizationService>().As<IVisualizationService>().SingleInstance();
-            builder.RegisterType<DiagramToolApplication>().SingleInstance();
+            builder.RegisterType<DiagramToolApplication>().As<IAppServices>().SingleInstance();
+
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
 
             return builder.Build();
         }
@@ -104,6 +109,8 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             builder.RegisterType<LayoutPriorityProvider>().As<ILayoutPriorityProvider>().SingleInstance();
             builder.RegisterType<LayoutAlgorithmSelectionStrategy>().As<ILayoutAlgorithmSelectionStrategy>().SingleInstance();
             builder.RegisterType<DirectConnectorRoutingAlgorithm>().As<IConnectorRoutingAlgorithm>().SingleInstance();
+
+            builder.RegisterType<DiagramExporter>().As<IDiagramExporter>();
         }
 
         private static void RegisterDiagramUiComponents([NotNull] ContainerBuilder builder)

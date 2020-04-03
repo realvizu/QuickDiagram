@@ -91,12 +91,12 @@
 
     <ItemGroup>
         <Content Include="Resources\AddClause_16x16.png" />
-        <Content Include="Resources\AddToDependancyGraph_16x16.png" />
+        <Content Include="Resources\AddToDependencyGraph_16x16.png" />
         <Content Include="Resources\AutoSizeOptimize_16x16.png" />
         <Content Include="Resources\Cancel_16x16.png" />
         <Content Include="Resources\CollapseAll_16x16.png" />
         <Content Include="Resources\Copy_16x16.png" />
-        <Content Include="Resources\DependancyGraph_16x16.png" />
+        <Content Include="Resources\DependencyGraph_16x16.png" />
         <Content Include="Resources\ExpandAll_16x16.png" />
         <Content Include="Resources\Refresh_16x16.png" />
         <Content Include="Resources\Save_16x16.png" />
@@ -218,6 +218,21 @@
       <Resource Include="UI\Images\Structure_16x.png" />
       <Resource Include="UI\Images\Structure_16x.svg" />
       <Resource Include="UI\Images\Structure_16x.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="SoftVisPackage.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>SoftVisPackage.vsct</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="SoftVisPackage.vsct">
+        <Generator>VsctGenerator</Generator>
+        <LastGenOutput>SoftVisPackage.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
     <!-- Disabling extension deployment for command line builds; required for AppVeyor. -->

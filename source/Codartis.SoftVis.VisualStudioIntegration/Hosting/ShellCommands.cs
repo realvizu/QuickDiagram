@@ -20,9 +20,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
                 new CommandSpecification<ClearDiagramCommand>(PackageIds.ClearDiagramCommand),
                 new CommandSpecification<UpdateModelFromSourceCommand>(PackageIds.UpdateModelFromSourceCommand),
                 new CommandSpecification<CopyToClipboardCommand>(PackageIds.CopyToClipboardCommand),
-                new CommandSpecification<ExportToFileCommand>(PackageIds.ExportToFileCommand),
+                new CommandSpecification<ExportImageToFileCommand>(PackageIds.ExportToFileCommand),
                 new CommandSpecification<ShowDiagramWindowCommand>(PackageIds.ShowDiagramWindowCommand),
                 new CommandSpecification<ZoomToDiagramCommand>(PackageIds.ZoomToDiagramCommand),
+                new CommandSpecification<ExportDiagramSpecToFileCommand>(PackageIds.ExportDiagramSpecToFileCommand),
             };
 
         public static readonly List<ICommandSpecification> ToggleCommandSpecifications =

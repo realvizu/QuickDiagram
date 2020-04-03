@@ -47,7 +47,7 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             _diagramToolApplication = container.Resolve<DiagramToolApplication>();
 
-            RegisterShellCommands(GetMenuCommandService(), _diagramToolApplication);
+            RegisterShellCommands(GetMenuCommandService(), container);
         }
 
         public async Task ShowToolWindowAsync<TWindow>(int instanceId = 0)
@@ -143,10 +143,10 @@ namespace Codartis.SoftVis.VisualStudioIntegration.Hosting
             return await ShowToolWindowAsync(typeof(TWindow), instanceId, create: true, cancellationToken: DisposalToken) as TWindow;
         }
 
-        private static void RegisterShellCommands(IMenuCommandService menuCommandService, IAppServices appServices)
+        private static void RegisterShellCommands(IMenuCommandService menuCommandService, IContainer container)
         {
             var commandSetGuid = PackageGuids.SoftVisCommandSetGuid;
-            var commandRegistrant = new CommandRegistrant(menuCommandService, appServices);
+            var commandRegistrant = new CommandRegistrant(menuCommandService, container);
             commandRegistrant.RegisterCommands(commandSetGuid, ShellCommands.CommandSpecifications);
             commandRegistrant.RegisterToggleCommands(commandSetGuid, ShellCommands.ToggleCommandSpecifications);
             commandRegistrant.RegisterCombos(commandSetGuid, ShellCommands.ComboSpecifications);

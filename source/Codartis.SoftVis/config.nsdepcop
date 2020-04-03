@@ -17,8 +17,8 @@
   <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative.*" />
   <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Absolute" To="Codartis.SoftVis.Diagramming.Implementation.Layout.Sugiyama.Relative" />
   <Allowed From="Codartis.SoftVis.Diagramming.Implementation.Layout.Selection" To="Codartis.SoftVis.Diagramming.Implementation.Layout.*" />
-
-    <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
+  
+  <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Geometry" />
   <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Modeling.Definition.*" />
   <Allowed From="Codartis.SoftVis.UI.*" To="Codartis.SoftVis.Diagramming.Definition.*" />
 

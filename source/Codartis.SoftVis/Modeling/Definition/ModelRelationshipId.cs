@@ -51,5 +51,7 @@ namespace Codartis.SoftVis.Modeling.Definition
         {
             return _id.CompareTo(other._id);
         }
+
+        public static explicit operator long(ModelRelationshipId id) => id._id;
     }
 }
