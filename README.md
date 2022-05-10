@@ -2,10 +2,17 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/sw2picivqnv5buj8?svg=true)](https://ci.appveyor.com/project/realvizu/softvis)
 
 Code visualization tool for C# to quickly **explore, navigate and document** source code structure and relationships. 
-Integrates into Visual Studio 2015, 2017 and 2019.
-Similar to the Code Map feature of Visual Studio Enterprise Edition but more lightweight ... and free.
 
-Install from: [![Visual Studio extension](https://vsmarketplacebadge.apphb.com/version/FerencVizkeleti.QuickDiagramToolforC.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC)
+## NEWS
+The new version of the tool has been released! It's much better and supports VS2022 too, but it's not free any more.
+
+If you would like to give it a try, then visit [codartis.com](https://codartis.com)!
+
+There's a free 30-day trial period built into the tool, just install it and start the trial!
+
+The old version in this repo will be archived.
+
+---
 
 **Explore code visually**
 * Add types or entire hierarchies from source code to diagram to visualize their relationships.
@@ -17,13 +24,7 @@ Install from: [![Visual Studio extension](https://vsmarketplacebadge.apphb.com/v
 **Document with diagrams**
 * Copy/paste diagrams into documentation.
 
-## NEWS
-The next version of this tool will no longer be free. It will become a commercial product to finance the ongoing efforts of development.
 
-Any questions, feedback or feature requests are more than welcome!
-
-Please use the [Q&A on Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.QuickDiagramToolforC&ssr=false#qna), or send a twitter message to [![@realvizu](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
- 
 ## Getting Started
 * Use the context menu in the source code editor to add types or entire hierarchies to the diagram.
 
